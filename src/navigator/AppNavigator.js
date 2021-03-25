@@ -9,20 +9,18 @@ import HomeNavigator from './HomeNavigator'
 
 const Tab = createBottomTabNavigator()
 
+const tabBarIcons = {
+  Home: fill => <HomeIcon fill={fill} />,
+  Settings: fill => <SettingsIcon fill={fill} />,
+  Konnectors: fill => <CozyLaughIcon fill={fill} />,
+}
+
 const AppNavigator = () => (
   <Tab.Navigator
     screenOptions={({route}) => ({
       tabBarIcon: ({focused}) => {
         const fill = focused ? '#297EF2' : 'gray'
-        if (route.name === 'Home') {
-          return <HomeIcon fill={fill} />
-        } else if (route.name === 'Settings') {
-          return <SettingsIcon fill={fill} />
-        } else if (route.name === 'Konnectors') {
-          return <CozyLaughIcon fill={fill} />
-        }
-
-        return null
+        return tabBarIcons[route.name](fill)
       },
     })}
     tabBarOptions={{
