@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface CozyRNWebTests : XCTestCase
+@interface CozyReactNativeTests : XCTestCase
 
 @end
 
-@implementation CozyRNWebTests
+@implementation CozyReactNativeTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL(^)(UIView *view))test
 {

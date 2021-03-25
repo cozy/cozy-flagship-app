@@ -35,12 +35,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "com.cozyrnweb",
+    package = "com.cozyreactnative",
 )
 
 android_resource(
     name = "res",
-    package = "com.cozyrnweb",
+    package = "com.cozyreactnative",
     res = "src/main/res",
 )
 

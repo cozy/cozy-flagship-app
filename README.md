@@ -1,8 +1,4 @@
-# Cozy React Native Web POC
-
-## Introduction
-This POC aims to demonstrate the use of reusable component for 
-react native and react (web).
+# Cozy React Native
 
 ## Setup / Requirements
 - [RN Environnement setup](https://reactnative.dev/docs/environment-setup)

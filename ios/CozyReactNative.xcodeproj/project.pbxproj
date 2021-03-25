@@ -7,19 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* CozyRNWebTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* CozyRNWebTests.m */; };
+		00E356F31AD99517003FC87E /* CozyReactNativeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* CozyReactNativeTests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		1E64B31A8ACCD26C8FE8B56D /* libPods-CozyRNWeb-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E1F206ECBC241C40279CE6E /* libPods-CozyRNWeb-tvOS.a */; };
+		1E64B31A8ACCD26C8FE8B56D /* libPods-CozyReactNative-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E1F206ECBC241C40279CE6E /* libPods-CozyReactNative-tvOS.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2DCD954D1E0B4F2C00145EB5 /* CozyRNWebTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* CozyRNWebTests.m */; };
+		2DCD954D1E0B4F2C00145EB5 /* CozyReactNativeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* CozyReactNativeTests.m */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		8867497A7227FBEBE682EB7E /* libPods-CozyRNWeb-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3A7737677E46E77B50BA08F /* libPods-CozyRNWeb-tvOSTests.a */; };
-		8F5862A214D8C37C64407E2A /* libPods-CozyRNWeb-CozyRNWebTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F059EAB4661AAB4CDEF0E3B1 /* libPods-CozyRNWeb-CozyRNWebTests.a */; };
-		F8FFAA03C653566398978C28 /* libPods-CozyRNWeb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7BC4C3B709AAC6447391019 /* libPods-CozyRNWeb.a */; };
+		8867497A7227FBEBE682EB7E /* libPods-CozyReactNative-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3A7737677E46E77B50BA08F /* libPods-CozyReactNative-tvOSTests.a */; };
+		8F5862A214D8C37C64407E2A /* libPods-CozyReactNative-CozyReactNativeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F059EAB4661AAB4CDEF0E3B1 /* libPods-CozyReactNative-CozyReactNativeTests.a */; };
+		F8FFAA03C653566398978C28 /* libPods-CozyReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7BC4C3B709AAC6447391019 /* libPods-CozyReactNative.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,45 +28,45 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = CozyRNWeb;
+			remoteInfo = CozyReactNative;
 		};
 		2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
-			remoteInfo = "CozyRNWeb-tvOS";
+			remoteInfo = "CozyReactNative-tvOS";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
-		00E356EE1AD99517003FC87E /* CozyRNWebTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CozyRNWebTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* CozyReactNativeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CozyReactNativeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* CozyRNWebTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CozyRNWebTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* CozyRNWeb.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CozyRNWeb.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = CozyRNWeb/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = CozyRNWeb/AppDelegate.m; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = CozyRNWeb/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = CozyRNWeb/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = CozyRNWeb/main.m; sourceTree = "<group>"; };
-		269853CD612404946A7B67B3 /* Pods-CozyRNWeb.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyRNWeb.release.xcconfig"; path = "Target Support Files/Pods-CozyRNWeb/Pods-CozyRNWeb.release.xcconfig"; sourceTree = "<group>"; };
-		2D02E47B1E0B4A5D006451C7 /* CozyRNWeb-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CozyRNWeb-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D02E4901E0B4A5D006451C7 /* CozyRNWeb-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CozyRNWeb-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3FA9195FA32D6078645B3747 /* Pods-CozyRNWeb.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyRNWeb.debug.xcconfig"; path = "Target Support Files/Pods-CozyRNWeb/Pods-CozyRNWeb.debug.xcconfig"; sourceTree = "<group>"; };
-		457BFB9DBFC95ABAF7D053E6 /* Pods-CozyRNWeb-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyRNWeb-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-CozyRNWeb-tvOSTests/Pods-CozyRNWeb-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		4DF67088B985CD281DEB6970 /* Pods-CozyRNWeb-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyRNWeb-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-CozyRNWeb-tvOSTests/Pods-CozyRNWeb-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		5E1F206ECBC241C40279CE6E /* libPods-CozyRNWeb-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyRNWeb-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		636A65F518FA8A3D95B65A7F /* Pods-CozyRNWeb-CozyRNWebTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyRNWeb-CozyRNWebTests.debug.xcconfig"; path = "Target Support Files/Pods-CozyRNWeb-CozyRNWebTests/Pods-CozyRNWeb-CozyRNWebTests.debug.xcconfig"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CozyRNWeb/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		913E4560DFCE63A459ECB5BC /* Pods-CozyRNWeb-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyRNWeb-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-CozyRNWeb-tvOS/Pods-CozyRNWeb-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		9957048B912EE836B6FB82D4 /* Pods-CozyRNWeb-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyRNWeb-tvOS.release.xcconfig"; path = "Target Support Files/Pods-CozyRNWeb-tvOS/Pods-CozyRNWeb-tvOS.release.xcconfig"; sourceTree = "<group>"; };
-		B7BC4C3B709AAC6447391019 /* libPods-CozyRNWeb.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyRNWeb.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E3A7737677E46E77B50BA08F /* libPods-CozyRNWeb-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyRNWeb-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356F21AD99517003FC87E /* CozyReactNativeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CozyReactNativeTests.m; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* CozyReactNative.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CozyReactNative.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = CozyReactNative/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = CozyReactNative/AppDelegate.m; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = CozyReactNative/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = CozyReactNative/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = CozyReactNative/main.m; sourceTree = "<group>"; };
+		269853CD612404946A7B67B3 /* Pods-CozyReactNative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative/Pods-CozyReactNative.release.xcconfig"; sourceTree = "<group>"; };
+		2D02E47B1E0B4A5D006451C7 /* CozyReactNative-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CozyReactNative-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E4901E0B4A5D006451C7 /* CozyReactNative-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CozyReactNative-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3FA9195FA32D6078645B3747 /* Pods-CozyReactNative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative.debug.xcconfig"; path = "Target Support Files/Pods-CozyReactNative/Pods-CozyReactNative.debug.xcconfig"; sourceTree = "<group>"; };
+		457BFB9DBFC95ABAF7D053E6 /* Pods-CozyReactNative-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-tvOSTests/Pods-CozyReactNative-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		4DF67088B985CD281DEB6970 /* Pods-CozyReactNative-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-tvOSTests/Pods-CozyReactNative-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		5E1F206ECBC241C40279CE6E /* libPods-CozyReactNative-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyReactNative-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		636A65F518FA8A3D95B65A7F /* Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-CozyReactNativeTests/Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig"; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CozyReactNative/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		913E4560DFCE63A459ECB5BC /* Pods-CozyReactNative-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-tvOS/Pods-CozyReactNative-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		9957048B912EE836B6FB82D4 /* Pods-CozyReactNative-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-tvOS.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-tvOS/Pods-CozyReactNative-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		B7BC4C3B709AAC6447391019 /* libPods-CozyReactNative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyReactNative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E3A7737677E46E77B50BA08F /* libPods-CozyReactNative-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyReactNative-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		F059EAB4661AAB4CDEF0E3B1 /* libPods-CozyRNWeb-CozyRNWebTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyRNWeb-CozyRNWebTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		FB056883D471261D185EC2A7 /* Pods-CozyRNWeb-CozyRNWebTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyRNWeb-CozyRNWebTests.release.xcconfig"; path = "Target Support Files/Pods-CozyRNWeb-CozyRNWebTests/Pods-CozyRNWeb-CozyRNWebTests.release.xcconfig"; sourceTree = "<group>"; };
+		F059EAB4661AAB4CDEF0E3B1 /* libPods-CozyReactNative-CozyReactNativeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyReactNative-CozyReactNativeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FB056883D471261D185EC2A7 /* Pods-CozyReactNative-CozyReactNativeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-CozyReactNativeTests.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-CozyReactNativeTests/Pods-CozyReactNative-CozyReactNativeTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,7 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8F5862A214D8C37C64407E2A /* libPods-CozyRNWeb-CozyRNWebTests.a in Frameworks */,
+				8F5862A214D8C37C64407E2A /* libPods-CozyReactNative-CozyReactNativeTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,7 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8FFAA03C653566398978C28 /* libPods-CozyRNWeb.a in Frameworks */,
+				F8FFAA03C653566398978C28 /* libPods-CozyReactNative.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,7 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E64B31A8ACCD26C8FE8B56D /* libPods-CozyRNWeb-tvOS.a in Frameworks */,
+				1E64B31A8ACCD26C8FE8B56D /* libPods-CozyReactNative-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,20 +98,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8867497A7227FBEBE682EB7E /* libPods-CozyRNWeb-tvOSTests.a in Frameworks */,
+				8867497A7227FBEBE682EB7E /* libPods-CozyReactNative-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00E356EF1AD99517003FC87E /* CozyRNWebTests */ = {
+		00E356EF1AD99517003FC87E /* CozyReactNativeTests */ = {
 			isa = PBXGroup;
 			children = (
-				00E356F21AD99517003FC87E /* CozyRNWebTests.m */,
+				00E356F21AD99517003FC87E /* CozyReactNativeTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
-			path = CozyRNWebTests;
+			path = CozyReactNativeTests;
 			sourceTree = "<group>";
 		};
 		00E356F01AD99517003FC87E /* Supporting Files */ = {
@@ -122,7 +122,7 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* CozyRNWeb */ = {
+		13B07FAE1A68108700A75B9A /* CozyReactNative */ = {
 			isa = PBXGroup;
 			children = (
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -133,7 +133,7 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
-			name = CozyRNWeb;
+			name = CozyReactNative;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -141,10 +141,10 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				B7BC4C3B709AAC6447391019 /* libPods-CozyRNWeb.a */,
-				F059EAB4661AAB4CDEF0E3B1 /* libPods-CozyRNWeb-CozyRNWebTests.a */,
-				5E1F206ECBC241C40279CE6E /* libPods-CozyRNWeb-tvOS.a */,
-				E3A7737677E46E77B50BA08F /* libPods-CozyRNWeb-tvOSTests.a */,
+				B7BC4C3B709AAC6447391019 /* libPods-CozyReactNative.a */,
+				F059EAB4661AAB4CDEF0E3B1 /* libPods-CozyReactNative-CozyReactNativeTests.a */,
+				5E1F206ECBC241C40279CE6E /* libPods-CozyReactNative-tvOS.a */,
+				E3A7737677E46E77B50BA08F /* libPods-CozyReactNative-tvOSTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -167,9 +167,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* CozyRNWeb */,
+				13B07FAE1A68108700A75B9A /* CozyReactNative */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* CozyRNWebTests */,
+				00E356EF1AD99517003FC87E /* CozyReactNativeTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				E141499B6584C9FAE8FA6E9C /* Pods */,
@@ -183,10 +183,10 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* CozyRNWeb.app */,
-				00E356EE1AD99517003FC87E /* CozyRNWebTests.xctest */,
-				2D02E47B1E0B4A5D006451C7 /* CozyRNWeb-tvOS.app */,
-				2D02E4901E0B4A5D006451C7 /* CozyRNWeb-tvOSTests.xctest */,
+				13B07F961A680F5B00A75B9A /* CozyReactNative.app */,
+				00E356EE1AD99517003FC87E /* CozyReactNativeTests.xctest */,
+				2D02E47B1E0B4A5D006451C7 /* CozyReactNative-tvOS.app */,
+				2D02E4901E0B4A5D006451C7 /* CozyReactNative-tvOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -194,14 +194,14 @@
 		E141499B6584C9FAE8FA6E9C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				3FA9195FA32D6078645B3747 /* Pods-CozyRNWeb.debug.xcconfig */,
-				269853CD612404946A7B67B3 /* Pods-CozyRNWeb.release.xcconfig */,
-				636A65F518FA8A3D95B65A7F /* Pods-CozyRNWeb-CozyRNWebTests.debug.xcconfig */,
-				FB056883D471261D185EC2A7 /* Pods-CozyRNWeb-CozyRNWebTests.release.xcconfig */,
-				913E4560DFCE63A459ECB5BC /* Pods-CozyRNWeb-tvOS.debug.xcconfig */,
-				9957048B912EE836B6FB82D4 /* Pods-CozyRNWeb-tvOS.release.xcconfig */,
-				4DF67088B985CD281DEB6970 /* Pods-CozyRNWeb-tvOSTests.debug.xcconfig */,
-				457BFB9DBFC95ABAF7D053E6 /* Pods-CozyRNWeb-tvOSTests.release.xcconfig */,
+				3FA9195FA32D6078645B3747 /* Pods-CozyReactNative.debug.xcconfig */,
+				269853CD612404946A7B67B3 /* Pods-CozyReactNative.release.xcconfig */,
+				636A65F518FA8A3D95B65A7F /* Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig */,
+				FB056883D471261D185EC2A7 /* Pods-CozyReactNative-CozyReactNativeTests.release.xcconfig */,
+				913E4560DFCE63A459ECB5BC /* Pods-CozyReactNative-tvOS.debug.xcconfig */,
+				9957048B912EE836B6FB82D4 /* Pods-CozyReactNative-tvOS.release.xcconfig */,
+				4DF67088B985CD281DEB6970 /* Pods-CozyReactNative-tvOSTests.debug.xcconfig */,
+				457BFB9DBFC95ABAF7D053E6 /* Pods-CozyReactNative-tvOSTests.release.xcconfig */,
 			);
 			name = Pods;
 			path = Pods;
@@ -210,9 +210,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* CozyRNWebTests */ = {
+		00E356ED1AD99517003FC87E /* CozyReactNativeTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "CozyRNWebTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "CozyReactNativeTests" */;
 			buildPhases = (
 				37B3471346734148AD3C425E /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -225,14 +225,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = CozyRNWebTests;
-			productName = CozyRNWebTests;
-			productReference = 00E356EE1AD99517003FC87E /* CozyRNWebTests.xctest */;
+			name = CozyReactNativeTests;
+			productName = CozyReactNativeTests;
+			productReference = 00E356EE1AD99517003FC87E /* CozyReactNativeTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* CozyRNWeb */ = {
+		13B07F861A680F5B00A75B9A /* CozyReactNative */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CozyRNWeb" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CozyReactNative" */;
 			buildPhases = (
 				53B34D8037BFD10216A55BA9 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -246,14 +246,14 @@
 			);
 			dependencies = (
 			);
-			name = CozyRNWeb;
-			productName = CozyRNWeb;
-			productReference = 13B07F961A680F5B00A75B9A /* CozyRNWeb.app */;
+			name = CozyReactNative;
+			productName = CozyReactNative;
+			productReference = 13B07F961A680F5B00A75B9A /* CozyReactNative.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E47A1E0B4A5D006451C7 /* CozyRNWeb-tvOS */ = {
+		2D02E47A1E0B4A5D006451C7 /* CozyReactNative-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "CozyRNWeb-tvOS" */;
+			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "CozyReactNative-tvOS" */;
 			buildPhases = (
 				9F809959311FC4F8759F9727 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
@@ -266,14 +266,14 @@
 			);
 			dependencies = (
 			);
-			name = "CozyRNWeb-tvOS";
-			productName = "CozyRNWeb-tvOS";
-			productReference = 2D02E47B1E0B4A5D006451C7 /* CozyRNWeb-tvOS.app */;
+			name = "CozyReactNative-tvOS";
+			productName = "CozyReactNative-tvOS";
+			productReference = 2D02E47B1E0B4A5D006451C7 /* CozyReactNative-tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E48F1E0B4A5D006451C7 /* CozyRNWeb-tvOSTests */ = {
+		2D02E48F1E0B4A5D006451C7 /* CozyReactNative-tvOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "CozyRNWeb-tvOSTests" */;
+			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "CozyReactNative-tvOSTests" */;
 			buildPhases = (
 				C4D3B6B88F254EC3B0E126F5 /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
@@ -285,9 +285,9 @@
 			dependencies = (
 				2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */,
 			);
-			name = "CozyRNWeb-tvOSTests";
-			productName = "CozyRNWeb-tvOSTests";
-			productReference = 2D02E4901E0B4A5D006451C7 /* CozyRNWeb-tvOSTests.xctest */;
+			name = "CozyReactNative-tvOSTests";
+			productName = "CozyReactNative-tvOSTests";
+			productReference = 2D02E4901E0B4A5D006451C7 /* CozyReactNative-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -316,7 +316,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CozyRNWeb" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CozyReactNative" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -329,10 +329,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* CozyRNWeb */,
-				00E356ED1AD99517003FC87E /* CozyRNWebTests */,
-				2D02E47A1E0B4A5D006451C7 /* CozyRNWeb-tvOS */,
-				2D02E48F1E0B4A5D006451C7 /* CozyRNWeb-tvOSTests */,
+				13B07F861A680F5B00A75B9A /* CozyReactNative */,
+				00E356ED1AD99517003FC87E /* CozyReactNativeTests */,
+				2D02E47A1E0B4A5D006451C7 /* CozyReactNative-tvOS */,
+				2D02E48F1E0B4A5D006451C7 /* CozyReactNative-tvOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -415,7 +415,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CozyRNWeb-CozyRNWebTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-CozyReactNative-CozyReactNativeTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -437,7 +437,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CozyRNWeb-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-CozyReactNative-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -450,7 +450,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CozyRNWeb/Pods-CozyRNWeb-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-CozyReactNative/Pods-CozyReactNative-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -459,7 +459,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CozyRNWeb/Pods-CozyRNWeb-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CozyReactNative/Pods-CozyReactNative-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		9F809959311FC4F8759F9727 /* [CP] Check Pods Manifest.lock */ = {
@@ -477,7 +477,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CozyRNWeb-tvOS-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-CozyReactNative-tvOS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -490,7 +490,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CozyRNWeb-CozyRNWebTests/Pods-CozyRNWeb-CozyRNWebTests-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-CozyReactNative-CozyReactNativeTests/Pods-CozyReactNative-CozyReactNativeTests-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -499,7 +499,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CozyRNWeb-CozyRNWebTests/Pods-CozyRNWeb-CozyRNWebTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CozyReactNative-CozyReactNativeTests/Pods-CozyReactNative-CozyReactNativeTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C4D3B6B88F254EC3B0E126F5 /* [CP] Check Pods Manifest.lock */ = {
@@ -517,7 +517,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CozyRNWeb-tvOSTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-CozyReactNative-tvOSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -569,7 +569,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E356F31AD99517003FC87E /* CozyRNWebTests.m in Sources */,
+				00E356F31AD99517003FC87E /* CozyReactNativeTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -595,7 +595,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DCD954D1E0B4F2C00145EB5 /* CozyRNWebTests.m in Sources */,
+				2DCD954D1E0B4F2C00145EB5 /* CozyReactNativeTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -604,12 +604,12 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* CozyRNWeb */;
+			target = 13B07F861A680F5B00A75B9A /* CozyReactNative */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 		2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2D02E47A1E0B4A5D006451C7 /* CozyRNWeb-tvOS */;
+			target = 2D02E47A1E0B4A5D006451C7 /* CozyReactNative-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -617,14 +617,14 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 636A65F518FA8A3D95B65A7F /* Pods-CozyRNWeb-CozyRNWebTests.debug.xcconfig */;
+			baseConfigurationReference = 636A65F518FA8A3D95B65A7F /* Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = CozyRNWebTests/Info.plist;
+				INFOPLIST_FILE = CozyReactNativeTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -634,17 +634,17 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CozyRNWeb.app/CozyRNWeb";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CozyReactNative.app/CozyReactNative";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FB056883D471261D185EC2A7 /* Pods-CozyRNWeb-CozyRNWebTests.release.xcconfig */;
+			baseConfigurationReference = FB056883D471261D185EC2A7 /* Pods-CozyReactNative-CozyReactNativeTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = CozyRNWebTests/Info.plist;
+				INFOPLIST_FILE = CozyReactNativeTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -654,19 +654,19 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CozyRNWeb.app/CozyRNWeb";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CozyReactNative.app/CozyReactNative";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3FA9195FA32D6078645B3747 /* Pods-CozyRNWeb.debug.xcconfig */;
+			baseConfigurationReference = 3FA9195FA32D6078645B3747 /* Pods-CozyReactNative.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = CozyRNWeb/Info.plist;
+				INFOPLIST_FILE = CozyReactNative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -674,7 +674,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = CozyRNWeb;
+				PRODUCT_NAME = CozyReactNative;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -683,12 +683,12 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 269853CD612404946A7B67B3 /* Pods-CozyRNWeb.release.xcconfig */;
+			baseConfigurationReference = 269853CD612404946A7B67B3 /* Pods-CozyReactNative.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = CozyRNWeb/Info.plist;
+				INFOPLIST_FILE = CozyReactNative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -696,7 +696,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = CozyRNWeb;
+				PRODUCT_NAME = CozyReactNative;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -704,7 +704,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 913E4560DFCE63A459ECB5BC /* Pods-CozyRNWeb-tvOS.debug.xcconfig */;
+			baseConfigurationReference = 913E4560DFCE63A459ECB5BC /* Pods-CozyReactNative-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -715,14 +715,14 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "CozyRNWeb-tvOS/Info.plist";
+				INFOPLIST_FILE = "CozyReactNative-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.CozyRNWeb-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.CozyReactNative-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -732,7 +732,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9957048B912EE836B6FB82D4 /* Pods-CozyRNWeb-tvOS.release.xcconfig */;
+			baseConfigurationReference = 9957048B912EE836B6FB82D4 /* Pods-CozyReactNative-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -743,14 +743,14 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "CozyRNWeb-tvOS/Info.plist";
+				INFOPLIST_FILE = "CozyReactNative-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.CozyRNWeb-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.CozyReactNative-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -760,7 +760,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4DF67088B985CD281DEB6970 /* Pods-CozyRNWeb-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = 4DF67088B985CD281DEB6970 /* Pods-CozyReactNative-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -770,24 +770,24 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "CozyRNWeb-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "CozyReactNative-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.CozyRNWeb-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.CozyReactNative-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CozyRNWeb-tvOS.app/CozyRNWeb-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CozyReactNative-tvOS.app/CozyReactNative-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Debug;
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 457BFB9DBFC95ABAF7D053E6 /* Pods-CozyRNWeb-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = 457BFB9DBFC95ABAF7D053E6 /* Pods-CozyReactNative-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -797,17 +797,17 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "CozyRNWeb-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "CozyReactNative-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.CozyRNWeb-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.CozyReactNative-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CozyRNWeb-tvOS.app/CozyRNWeb-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CozyReactNative-tvOS.app/CozyReactNative-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Release;
@@ -928,7 +928,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "CozyRNWebTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "CozyReactNativeTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -937,7 +937,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CozyRNWeb" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CozyReactNative" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -946,7 +946,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "CozyRNWeb-tvOS" */ = {
+		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "CozyReactNative-tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4971E0B4A5E006451C7 /* Debug */,
@@ -955,7 +955,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "CozyRNWeb-tvOSTests" */ = {
+		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "CozyReactNative-tvOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4991E0B4A5E006451C7 /* Debug */,
@@ -964,7 +964,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CozyRNWeb" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CozyReactNative" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

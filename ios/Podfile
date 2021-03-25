@@ -3,13 +3,13 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '10.0'
 
-target 'CozyRNWeb' do
+target 'CozyReactNative' do
   config = use_native_modules!
 
   use_react_native!(:path => config["reactNativePath"])
 
 
-  target 'CozyRNWebTests' do
+  target 'CozyReactNativeTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -24,10 +24,10 @@ target 'CozyRNWeb' do
   end
 end
 
-target 'CozyRNWeb-tvOS' do
-  # Pods for CozyRNWeb-tvOS
+target 'CozyReactNative-tvOS' do
+  # Pods for CozyReactNative-tvOS
 
-  target 'CozyRNWeb-tvOSTests' do
+  target 'CozyReactNative-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end
