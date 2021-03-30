@@ -1,4 +1,5 @@
 {
-  "domain": "testchristophe.cozy.works",
-  "folderPath": "/cozy-connector-mobile"
+  "domain": "cozy.works",
+  "cozy": "testchristophe",
+  "slug": "sncfempty"
 }

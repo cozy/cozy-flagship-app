@@ -1,13 +1,13 @@
 import React from 'react'
 import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native'
-import CozyApp from './CozyApp'
+import Container from './Container'
 
 const Konnectors = ({navigation}) => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeAreaView}>
-        <CozyApp />
+        <Container />
       </SafeAreaView>
     </View>
   )
