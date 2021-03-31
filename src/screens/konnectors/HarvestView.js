@@ -1,25 +1,23 @@
 import React, {useEffect, useRef} from 'react'
 import {domain, cozy, slug} from '../../../config.json'
 import {get} from 'lodash'
-import CookieManager from '@react-native-cookies/cookies'
+// import CookieManager from '@react-native-cookies/cookies'
 import {WebView} from 'react-native-webview'
 
 const injectLauncherRef = (webViewRef) => {
-  useEffect(() => {
-    setTimeout(() => {
-      const run = `
+  setTimeout(() => {
+    const run = `
        window.ClientConnectorLauncher = 'react-native'
        console.log('Injected Launcher reference')
       `
-      webViewRef.current.injectJavaScript(run)
-    }, 3000)
-  }, [])
+    webViewRef.current.injectJavaScript(run)
+  }, 3000)
 }
 
-const HarvestView = props => {
+const HarvestView = (props) => {
   const {setLauncherContext} = props
   const webViewRef = useRef()
-  injectLauncherRef(webViewRef)
+  useEffect(() => injectLauncherRef(webViewRef))
   return (
     <WebView
       ref={webViewRef}
@@ -28,7 +26,7 @@ const HarvestView = props => {
       javaScriptEnabled={true}
       source={{uri: `https://${cozy}-home.${domain}/#connected/${slug}/new`}}
       sharedCookiesEnabled={true}
-      onMessage={m => {
+      onMessage={(m) => {
         const data = get(m, 'nativeEvent.data')
         if (data) {
           const {message, value} = JSON.parse(data)

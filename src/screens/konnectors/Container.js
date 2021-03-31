@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react'
+import React, {useState} from 'react'
 import {StyleSheet, View} from 'react-native'
 import HarvestView from './HarvestView'
 import LauncherView from './LauncherView'
@@ -8,7 +8,10 @@ const Container = () => {
   return (
     <View style={styles.container}>
       {launcherContext ? (
-        LauncherView({launcherContext, retry: () => setLauncherContext(null)})
+        <LauncherView
+          launcherContext={launcherContext}
+          retry={() => setLauncherContext(null)}
+        />
       ) : (
         <HarvestView setLauncherContext={setLauncherContext} />
       )}
@@ -17,7 +20,7 @@ const Container = () => {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1}
+  container: {flex: 1},
 })
 
 export default Container
