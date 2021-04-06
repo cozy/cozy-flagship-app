@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "name": "Connecteur de test",
+  "type": "konnector",
+  "language": "node",
+  "icon": "icon.svg",
+  "slug": "test",
+  "source": "git@github.com:konnectors/cozy-konnector-sncf.git",
+  "editor": "Cozy",
+  "vendor_link": "https://www.oui.sncf/espaceclient/accueil",
+  "categories": [
+    "transport"
+  ],
+  "fields": { }
+}
