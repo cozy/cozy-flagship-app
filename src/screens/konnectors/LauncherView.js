@@ -8,12 +8,14 @@ export default class LauncherView extends Component {
     super(props)
     this.onMessage = this.onMessage.bind(this)
     this.webViewRef = null
-    this.LauncherContext = props.launcherContext
+    this.launcherContext = props.launcherContext
   }
   async componentDidMount() {
     this.launcher = new ReactNativeLauncher()
     await this.launcher.init({
-      webViewRef: this.webViewRef,
+      bridgeOptions: {
+        webViewRef: this.webViewRef,
+      },
       contentScript: connector.source,
     })
     await this.launcher.start({context: this.launcherContext})

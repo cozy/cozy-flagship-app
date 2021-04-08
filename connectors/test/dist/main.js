@@ -123,15 +123,12 @@ connector.init().catch((err) => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ContentScript; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LauncherBridge", function() { return LauncherBridge; });
-/* harmony import */ var post_me__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
-/* eslint-disable no-console */
-
+/* harmony import */ var _bridge_LauncherBridge_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 
 
 class ContentScript {
   async init() {
-    this.bridge = new LauncherBridge({localWindow: window})
+    this.bridge = new _bridge_LauncherBridge_js__WEBPACK_IMPORTED_MODULE_0__["default"]({localWindow: window})
     const exposedMethodsNames = [
       'ensureAuthenticated',
       'getAccountInformation',
@@ -153,58 +150,42 @@ class ContentScript {
   async fetch({context}) {}
 }
 
-class LauncherBridge {
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return LauncherBridge; });
+/* harmony import */ var post_me__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
+/* harmony import */ var _ContentScriptMessenger_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4);
+/* harmony import */ var _libs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5);
+
+
+
+
+/**
+ * Bridge to the Launcher object via post-me
+ */
+class LauncherBridge extends _libs__WEBPACK_IMPORTED_MODULE_2__["Bridge"] {
   constructor({localWindow}) {
     this.localWindow = localWindow
   }
 
   async init({exposedMethods = {}} = {}) {
-    const messenger = new ContentScriptMessenger({
+    const messenger = new _ContentScriptMessenger_js__WEBPACK_IMPORTED_MODULE_1__["default"]({
       localWindow: this.localWindow,
     })
     this.connection = await Object(post_me__WEBPACK_IMPORTED_MODULE_0__["ChildHandshake"])(messenger, exposedMethods)
     this.localHandle = this.connection.localHandle()
     this.remoteHandle = this.connection.remoteHandle()
   }
-
-  async call(...args) {
-    return this.remoteHandle.call(...args)
-  }
-
-  async emit(...args) {
-    return this.localHandle.emit(...args)
-  }
-
-  async addEventListener(...args) {
-    this.remoteHandle.addEventListener(...args)
-  }
-}
-
-class ContentScriptMessenger {
-  constructor({localWindow}) {
-    this.localWindow = localWindow
-  }
-  postMessage(message) {
-    this.localWindow.ReactNativeWebView.postMessage(JSON.stringify(message))
-  }
-  addMessageListener(listener) {
-    const outerListener = (event) => {
-      listener(event)
-    }
-
-    this.localWindow.addEventListener('message', outerListener)
-
-    const removeListener = () => {
-      this.localWindow.removeEventListener('message', outerListener)
-    }
-
-    return removeListener
-  }
 }
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(__webpack_module__, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1170,6 +1151,152 @@ function DebugMessenger(messenger, log) {
 }
 
 
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ContentScriptMessenger; });
+/* harmony import */ var _libs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
+
+
+/**
+ * post-me messenger implementation for a content script
+ */
+class ContentScriptMessenger extends _libs__WEBPACK_IMPORTED_MODULE_0__["MessengerInterface"] {
+  constructor({localWindow}) {
+    this.localWindow = localWindow
+  }
+  postMessage(message) {
+    this.localWindow.ReactNativeWebView.postMessage(JSON.stringify(message))
+  }
+  addMessageListener(listener) {
+    const outerListener = (event) => {
+      listener(event)
+    }
+
+    this.localWindow.addEventListener('message', outerListener)
+
+    const removeListener = () => {
+      this.localWindow.removeEventListener('message', outerListener)
+    }
+
+    return removeListener
+  }
+}
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _src_libs_bridgeHelpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Bridge", function() { return _src_libs_bridgeHelpers__WEBPACK_IMPORTED_MODULE_0__["Bridge"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MessengerInterface", function() { return _src_libs_bridgeHelpers__WEBPACK_IMPORTED_MODULE_0__["MessengerInterface"]; });
+
+/**
+ * Short cut to launcher's bridgeHelpers interfaces and classes
+ * Will probably become a npm package in the future
+ */
+
+
+
+
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Bridge", function() { return Bridge; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MessengerInterface", function() { return MessengerInterface; });
+/**
+ * @typedef PostMeConnection
+ * @property {function} localHandle  : get handle to the local end of the connection
+ * @property {function} remoteHandle : get handle to the remote end of the connection
+ * @property {function} close        : stop listening to incoming message from the other side
+ */
+
+/**
+ * All bridges are supposed to implement this interface
+ */
+class Bridge {
+  /**
+   * Initialize the communication between the parent and the child via post-me protocol
+   * https://github.com/alesgenova/post-me
+   *
+   * @param  {Object} options.exposedMethods  : The list of methods of the launcher and their implementation, which will be exposed via the post-me interface
+   * @return {PostMeConnection} : the resulting post-me connection
+   */
+  async init({exposedMethods}) {}
+
+  /**
+   * Shortcut to remoteHandle.call method
+   *
+   * @param  {string} method : The remote method name
+   * @param  {array} args    : Any number of parameters which will be given to the remote method.
+   * It is also possible to pass callback functions (which must support serialization). post-me
+   * will wait the the remote method end before resolving the promise
+   *
+   *
+   * @return {any} remote method return value
+   */
+  async call(method, ...args) {
+    return this.connection.remoteHandle.call(method, ...args)
+  }
+
+  /**
+   * Shortcut to localHandle.emit method. Will emit an event which could be listened by the remote
+   * object
+   *
+   * @param  {string} eventName
+   * @param  {array} args : Any number of parameters.
+   */
+  emit(eventName, ...args) {
+    this.connection.localHandle.emit(eventName, ...args)
+  }
+
+  /**
+   * Shortcut to remoteHandle.addEventListener method. Will listen to the given event on the remote
+   * object and call the listener function
+   *
+   * @param  {string} remoteEventName
+   * @param  {function} listener
+   */
+  addEventListener(remoteEventName, listener) {
+    this.connection.remoteHandle.addEventListener(remoteEventName, listener)
+  }
+}
+
+/**
+ * All messengers are supposed to implement this interface
+ *
+ * @interface
+ */
+class MessengerInterface {
+  /**
+   * Send a message to the other context
+   *
+   * @param {string} message : The payload of the message
+   */
+  postMessage(message) {}
+
+  /**
+   * Add a listener to messages received by the other context
+   *
+   * @param {function} listener : A listener that will receive the MessageEvent
+   * @return {function} A function that can be invoked to remove the listener
+   */
+  addMessageListener(listener) {}
+}
 
 
 /***/ })

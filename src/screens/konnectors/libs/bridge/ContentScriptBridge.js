@@ -1,29 +1,25 @@
 import {ParentHandshake} from 'post-me'
-import LauncherMessenger from './LauncherMessenger.js'
+import {Bridge} from '../../../../libs/bridgeHelpers'
+import ReactNativeLauncherMessenger from './ReactNativeLauncherMessenger'
 
-export default class ContentScriptBridge {
+/**
+ * Bridge to the contentScript object via post-me
+ */
+export default class ContentScriptBridge extends Bridge {
   constructor({webViewRef}) {
+    super()
     this.webViewRef = webViewRef
   }
 
   async init({exposedMethods = {}} = {}) {
-    this.messenger = new LauncherMessenger({
+    this.messenger = new ReactNativeLauncherMessenger({
       webViewRef: this.webViewRef,
     })
+
     this.connection = await ParentHandshake(this.messenger, exposedMethods)
     this.localHandle = this.connection.localHandle()
     this.remoteHandle = this.connection.remoteHandle()
-  }
 
-  async call(...args) {
-    return this.remoteHandle.call(...args)
-  }
-
-  async emit(...args) {
-    return this.localHandle.emit(...args)
-  }
-
-  async addEventListener(...args) {
-    this.remoteHandle.addEventListener(...args)
+    return this.connection
   }
 }

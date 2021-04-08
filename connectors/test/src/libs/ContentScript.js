@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
-
-import {ChildHandshake} from 'post-me'
+import LauncherBridge from './bridge/LauncherBridge'
 
 export default class ContentScript {
   async init() {
@@ -24,53 +22,4 @@ export default class ContentScript {
   async ensureAuthenticated() {}
   async getAccountInformation() {}
   async fetch({context}) {}
-}
-
-export class LauncherBridge {
-  constructor({localWindow}) {
-    this.localWindow = localWindow
-  }
-
-  async init({exposedMethods = {}} = {}) {
-    const messenger = new ContentScriptMessenger({
-      localWindow: this.localWindow,
-    })
-    this.connection = await ChildHandshake(messenger, exposedMethods)
-    this.localHandle = this.connection.localHandle()
-    this.remoteHandle = this.connection.remoteHandle()
-  }
-
-  async call(...args) {
-    return this.remoteHandle.call(...args)
-  }
-
-  async emit(...args) {
-    return this.localHandle.emit(...args)
-  }
-
-  async addEventListener(...args) {
-    this.remoteHandle.addEventListener(...args)
-  }
-}
-
-class ContentScriptMessenger {
-  constructor({localWindow}) {
-    this.localWindow = localWindow
-  }
-  postMessage(message) {
-    this.localWindow.ReactNativeWebView.postMessage(JSON.stringify(message))
-  }
-  addMessageListener(listener) {
-    const outerListener = (event) => {
-      listener(event)
-    }
-
-    this.localWindow.addEventListener('message', outerListener)
-
-    const removeListener = () => {
-      this.localWindow.removeEventListener('message', outerListener)
-    }
-
-    return removeListener
-  }
 }
