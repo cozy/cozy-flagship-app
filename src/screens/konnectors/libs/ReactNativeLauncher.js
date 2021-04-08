@@ -1,4 +1,4 @@
-import {ParentHandshake} from 'post-me'
+import ContentScriptBridge from './bridge/ContentScriptBridge.js'
 
 export default class ReactNativeLauncher {
   async init({webViewRef, contentScript}) {
@@ -44,60 +44,5 @@ export default class ReactNativeLauncher {
   onMessage(event) {
     const messenger = this.bridge.messenger
     messenger.onMessage.bind(messenger)(event)
-  }
-  // TODO define exposed methods if any
-}
-
-export class ContentScriptBridge {
-  constructor({webViewRef}) {
-    this.webViewRef = webViewRef
-  }
-
-  async init({exposedMethods = {}} = {}) {
-    this.messenger = new LauncherMessenger({
-      webViewRef: this.webViewRef,
-    })
-    this.connection = await ParentHandshake(this.messenger, exposedMethods)
-    this.localHandle = this.connection.localHandle()
-    this.remoteHandle = this.connection.remoteHandle()
-  }
-
-  async call(...args) {
-    return this.remoteHandle.call(...args)
-  }
-
-  async emit(...args) {
-    return this.localHandle.emit(...args)
-  }
-
-  async addEventListener(...args) {
-    this.remoteHandle.addEventListener(...args)
-  }
-}
-
-class LauncherMessenger {
-  constructor({webViewRef}) {
-    this.webViewRef = webViewRef
-  }
-
-  postMessage(message) {
-    // console.log('postMessage(message)', message)
-    const script = `window.postMessage(${JSON.stringify(message)})`
-    this.webViewRef.injectJavaScript(script)
-  }
-  addMessageListener(listener) {
-    this.listener = listener
-
-    const removeListener = () => {
-      this.listener = null
-    }
-
-    return removeListener
-  }
-
-  onMessage(event) {
-    const data = JSON.parse(event.nativeEvent.data)
-    // console.log('onMessage data', data)
-    this.listener({data})
   }
 }
