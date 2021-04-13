@@ -28,8 +28,12 @@ export default class LauncherView extends Component {
         source={{uri: connector.manifest.vendor_link}}
         sharedCookiesEnabled={true}
         onMessage={this.onMessage}
+        onError={this.onError}
       />
     )
+  }
+  onError(event) {
+    console.error('error event', event)
   }
   onMessage(event) {
     if (this.launcher) {

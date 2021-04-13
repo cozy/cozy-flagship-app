@@ -1,8 +1,6 @@
-/* eslint-disable no-console */
-
 import ContentScript from './libs/ContentScript'
 
-class TestContenScript extends ContentScript {
+class TestContentScript extends ContentScript {
   async ensureAuthenticated() {
     return true
   }
@@ -17,7 +15,7 @@ class TestContenScript extends ContentScript {
   }
 }
 
-const connector = new TestContenScript()
+const connector = new TestContentScript()
 connector.init().catch((err) => {
   console.error(err)
 })

@@ -30,7 +30,7 @@ export class Bridge {
    * @return {any} remote method return value
    */
   async call(method, ...args) {
-    return this.connection.remoteHandle.call(method, ...args)
+    return this.remoteHandle.call(method, ...args)
   }
 
   /**
@@ -41,7 +41,7 @@ export class Bridge {
    * @param  {array} args : Any number of parameters.
    */
   emit(eventName, ...args) {
-    this.connection.localHandle.emit(eventName, ...args)
+    this.localHandle.emit(eventName, ...args)
   }
 
   /**
@@ -52,7 +52,7 @@ export class Bridge {
    * @param  {function} listener
    */
   addEventListener(remoteEventName, listener) {
-    this.connection.remoteHandle.addEventListener(remoteEventName, listener)
+    this.remoteHandle.addEventListener(remoteEventName, listener)
   }
 }
 

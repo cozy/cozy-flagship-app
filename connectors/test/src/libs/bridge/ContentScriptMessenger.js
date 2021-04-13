@@ -1,10 +1,16 @@
 import {MessengerInterface} from '../../../../libs'
 
 /**
- * post-me messenger implementation for a content script
+ * post-me messenger implementation for a content script imlanted in a react native webview
  */
-export default class ContentScriptMessenger extends MessengerInterface {
+export default class ReactNativeWebviewMessenger extends MessengerInterface {
+  /**
+   * Init the window which will be used to post messages and listen to messages
+   *
+   * @param  {Object} options.localWindow : The window object
+   */
   constructor({localWindow}) {
+    super()
     this.localWindow = localWindow
   }
   postMessage(message) {
@@ -17,10 +23,10 @@ export default class ContentScriptMessenger extends MessengerInterface {
 
     this.localWindow.addEventListener('message', outerListener)
 
-    const removeListener = () => {
+    const removeMessageListener = () => {
       this.localWindow.removeEventListener('message', outerListener)
     }
 
-    return removeListener
+    return removeMessageListener
   }
 }

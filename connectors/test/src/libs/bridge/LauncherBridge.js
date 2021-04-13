@@ -1,17 +1,23 @@
 import {ChildHandshake} from 'post-me'
-import ContentScriptMessenger from './ContentScriptMessenger.js'
+import ReactNativeWebviewMessenger from './ContentScriptMessenger.js'
 import {Bridge} from '../../../../libs'
 
 /**
  * Bridge to the Launcher object via post-me
  */
 export default class LauncherBridge extends Bridge {
+  /**
+   * Init the window which will be used to communicate with the launcher
+   *
+   * @param {Object} options.localWindow : The window used to communicate with the launcher
+   */
   constructor({localWindow}) {
+    super()
     this.localWindow = localWindow
   }
 
   async init({exposedMethods = {}} = {}) {
-    const messenger = new ContentScriptMessenger({
+    const messenger = new ReactNativeWebviewMessenger({
       localWindow: this.localWindow,
     })
     this.connection = await ChildHandshake(messenger, exposedMethods)
