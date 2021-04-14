@@ -1,3 +1,5 @@
+.vscode
+
 connectors/*/dist
 
 # OSX
