@@ -1,3 +1,3 @@
-import Konnectors from './Konnectors'
+import Connectors from './Connectors'
 
-export default Konnectors
+export default Connectors
