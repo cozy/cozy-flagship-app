@@ -5,7 +5,7 @@ export default class ContentScript {
     this.bridge = new LauncherBridge({localWindow: window})
     const exposedMethodsNames = [
       'ensureAuthenticated',
-      'getAccountInformation',
+      'getUserDataFromWebsite',
       'fetch',
     ]
     const exposedMethods = {}
@@ -19,7 +19,31 @@ export default class ContentScript {
   log(message) {
     this.bridge.emit('log', message)
   }
+
+  /**
+   * Make sur that the connector is authenticated to the website.
+   * If not, show the login webview to the user to let her/him authenticated.
+   * Resolve the promise when authenticated
+   *
+   * @throws LOGIN_FAILED
+   * @returns void
+   */
   async ensureAuthenticated() {}
-  async getAccountInformation() {}
+
+  /**
+   * Returns whatever unique information on the authenticated user which will be usefull
+   * to identify fetched data : destination folder name, fetched data metadata
+   *
+   * @returns {Object}
+   */
+  async getUserDataFromWebsite() {}
+
+  /**
+   * Main function, fetches all connector data and save it to the cozy
+   *
+   * @param {Object} options.context : all the data already fetched by the connector in a previous execution. Will be usefull to optimize
+   * connector execution by not fetching data we already have.
+   * @returns {Object} : Connector execution result. TBD
+   */
   async fetch({context}) {}
 }

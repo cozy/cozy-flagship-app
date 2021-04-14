@@ -38,19 +38,22 @@ class LauncherInterface {
  */
 export default class ReactNativeLauncher extends LauncherInterface {
   async init({bridgeOptions, contentScript}) {
-    this.bridge = new ContentScriptBridge(bridgeOptions)
-    this.bridge.webViewRef.injectJavaScript(contentScript)
+    this.contentScriptBridge = new ContentScriptBridge(bridgeOptions)
+    this.contentScriptBridge.webViewRef.injectJavaScript(contentScript)
     const exposedMethodsNames = []
     const exposedMethods = {}
     for (const method of exposedMethodsNames) {
       exposedMethods[method] = this[method].bind(this)
     }
     const listenedEvents = ['log']
-    await this.bridge.init({exposedMethods})
+    await this.contentScriptBridge.init({exposedMethods})
     for (const event of listenedEvents) {
-      await this.bridge.addEventListener(event, this[event].bind(this))
+      await this.contentScriptBridge.addEventListener(
+        event,
+        this[event].bind(this),
+      )
     }
-    return this.bridge
+    return this.contentScriptBridge
   }
 
   log(message) {
@@ -62,15 +65,17 @@ export default class ReactNativeLauncher extends LauncherInterface {
     // * need the cozy url + token
     // * get remote context if launcher has a destination folder + get all the documents in doctypes
     // declared in the manifest and created by the given account (or sourceAccountIdentifier ?
-    await this.bridge.call('ensureAuthenticated')
-    const accountInformation = await this.bridge.call('getAccountInformation')
-    console.log('accountInformation', accountInformation)
-    // await this.saveAccountInformation(accountInformation, context)
+    await this.contentScriptBridge.call('ensureAuthenticated')
+    const userData = await this.contentScriptBridge.call(
+      'getUserDataFromWebsite',
+    )
+    console.log('userData', userData)
+    // await this.saveUserData(userData, context)
     // this.folder = await this.ensureDestinationFolder(
-    //   accountInformation,
+    //   userData,
     //   context,
     // )
-    const result = await this.bridge.call('fetch', {context})
+    const result = await this.contentScriptBridge.call('fetch', {context})
     console.log('result', result)
     // TODO update the job result when the job
   }
@@ -79,7 +84,7 @@ export default class ReactNativeLauncher extends LauncherInterface {
    * Relay between the webview and the bridge to allow the bridge to work
    */
   onMessage(event) {
-    const messenger = this.bridge.messenger
+    const messenger = this.contentScriptBridge.messenger
     messenger.onMessage.bind(messenger)(event)
   }
 }
