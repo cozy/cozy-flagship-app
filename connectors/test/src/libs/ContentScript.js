@@ -1,6 +1,10 @@
 import LauncherBridge from './bridge/LauncherBridge'
 
 export default class ContentScript {
+  /**
+   * Init the bridge communication with the launcher.
+   * It also exposes the methods which will be callable by the launcher
+   */
   async init() {
     this.bridge = new LauncherBridge({localWindow: window})
     const exposedMethodsNames = [
@@ -16,6 +20,13 @@ export default class ContentScript {
     }
     await this.bridge.init({exposedMethods})
   }
+
+  /**
+   * Send log message to the launcher
+   *
+   * @param {string} : the log message
+   * @todo Use cozy-logger to add logging level and other features
+   */
   log(message) {
     this.bridge.emit('log', message)
   }

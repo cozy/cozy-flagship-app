@@ -54,6 +54,17 @@ export class Bridge {
   addEventListener(remoteEventName, listener) {
     this.remoteHandle.addEventListener(remoteEventName, listener)
   }
+
+  /**
+   * Shortcut to remoteHandle.removeEventListener method. Will stop listening to the given event
+   * on the remote object.
+   *
+   * @param  {string} remoteEventName
+   * @param  {function} listener : previously defined listener function
+   */
+  removeEventListener(remoteEventName, listener) {
+    this.remoteHandle.removeEventListener(remoteEventName, listener)
+  }
 }
 
 /**
