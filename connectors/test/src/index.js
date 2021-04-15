@@ -4,7 +4,7 @@ class TestContentScript extends ContentScript {
   async ensureAuthenticated() {
     return true
   }
-  async getAccountInformation() {
+  async getUserDataFromWebsite() {
     return {
       email: 'toto@cozycloud.cc',
     }
