@@ -1,17 +1,14 @@
 import React, {useEffect, useRef} from 'react'
 import {domain, cozy, slug} from '../../../config.json'
 import {get} from 'lodash'
-// import CookieManager from '@react-native-cookies/cookies'
 import {WebView} from 'react-native-webview'
 
 const injectLauncherRef = (webViewRef) => {
-  setTimeout(() => {
-    const run = `
-       window.ClientConnectorLauncher = 'react-native'
-       console.log('Injected Launcher reference')
-      `
-    webViewRef.current.injectJavaScript(run)
-  }, 3000)
+  const run = `
+     window.cozy.ClientConnectorLauncher = 'react-native'
+     console.log('Injected Launcher reference')
+    `
+  webViewRef.current.injectJavaScript(run)
 }
 
 const HarvestView = (props) => {
