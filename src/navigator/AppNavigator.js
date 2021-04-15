@@ -10,9 +10,9 @@ import HomeNavigator from './HomeNavigator'
 const Tab = createBottomTabNavigator()
 
 const tabBarIcons = {
-  Home: fill => <HomeIcon fill={fill} />,
-  Settings: fill => <SettingsIcon fill={fill} />,
-  Konnectors: fill => <CozyLaughIcon fill={fill} />,
+  Home: (fill) => <HomeIcon fill={fill} />,
+  Settings: (fill) => <SettingsIcon fill={fill} />,
+  Konnectors: (fill) => <CozyLaughIcon fill={fill} />,
 }
 
 const AppNavigator = () => (
