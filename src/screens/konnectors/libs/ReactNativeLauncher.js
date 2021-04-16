@@ -45,7 +45,7 @@ export default class ReactNativeLauncher extends LauncherInterface {
   async init({bridgeOptions, contentScript}) {
     console.time('bridges init')
     const promises = [
-      this.initWebview({
+      this.initContentScriptBridge({
         bridgeName: 'mainWebviewBridge',
         webViewRef: bridgeOptions.mainWebView,
         contentScript,
@@ -55,7 +55,7 @@ export default class ReactNativeLauncher extends LauncherInterface {
     ]
     if (bridgeOptions.workerWebview) {
       promises.push(
-        this.initWebview({
+        this.initContentScriptBridge({
           bridgeName: 'workerWebviewBridge',
           webViewRef: bridgeOptions.workerWebview,
           contentScript,
@@ -76,30 +76,44 @@ export default class ReactNativeLauncher extends LauncherInterface {
     // TODO update the job result when the job is finished
   }
 
+  /**
+   * Makes the launcherView display the worker webview
+   *
+   * @param {String} url : url displayed by the worker webview for the login
+   */
   async doLogin(url) {
     this.launcherView.setState({
       workerUrl: url,
     })
   }
 
-  async initWebview({
+  /**
+   * This method creates and init a content script bridge to the launcher with some facilities to make
+   * it's own method callable by the content script
+   *
+   * @param {String} options.bridgeName : Name of the attribute where the bridge instance will be placed
+   * @param {WebView} options.webViewRef : WebView object to link to the launcher thanks to the bridge
+   * @param {Array.<String>} options.exposedMethodsNames : list of methods of the launcher to expose to the content script
+   * @param {Array.<String>} options.listenedEvents : list of methods of the launcher to link to content script emitted events
+   * @returns {ContentScriptBridge}
+   */
+  async initContentScriptBridge({
     bridgeName,
     webViewRef,
-    contentScript,
     exposedMethodsNames,
     listenedEvents,
   }) {
-    const webviewBridge = new ContentScriptBridge({
-      webViewRef,
-    })
-    this[bridgeName] = webviewBridge
+    const webviewBridge = new ContentScriptBridge({webViewRef})
     const exposedMethods = {}
     for (const method of exposedMethodsNames) {
       exposedMethods[method] = this[method].bind(this)
     }
+    // the bridge must be exposed before the call to the webviewBridge.init function or else the init sequence won't work
+    // since the init sequence needs an already working bridge
+    this[bridgeName] = webviewBridge
     await webviewBridge.init({exposedMethods})
     for (const event of listenedEvents) {
-      await webviewBridge.addEventListener(event, this[event].bind(this))
+      webviewBridge.addEventListener(event, this[event].bind(this))
     }
     return webviewBridge
   }
@@ -109,7 +123,7 @@ export default class ReactNativeLauncher extends LauncherInterface {
   }
 
   /**
-   * Relay between the webview and the bridge to allow the bridge to work
+   * Relay between the main webview and the bridge to allow the bridge to work
    */
   onMainMessage(event) {
     if (this.mainWebviewBridge) {
@@ -118,6 +132,9 @@ export default class ReactNativeLauncher extends LauncherInterface {
     }
   }
 
+  /**
+   * Relay between the worker webview and the bridge to allow the bridge to work
+   */
   onWorkerMessage(event) {
     if (this.workerWebviewBridge) {
       const messenger = this.workerWebviewBridge.messenger
