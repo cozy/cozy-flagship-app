@@ -6,15 +6,21 @@ import ReactNativeLauncher from './libs/ReactNativeLauncher.js'
 export default class LauncherView extends Component {
   constructor(props) {
     super(props)
-    this.onMessage = this.onMessage.bind(this)
-    this.webViewRef = null
+    this.onMainMessage = this.onMainMessage.bind(this)
+    this.onWorkerMessage = this.onWorkerMessage.bind(this)
+    this.mainWebView = null
+    this.workerWebview = null
     this.launcherContext = props.launcherContext
+    this.state = {
+      workerUrl: null,
+    }
   }
   async componentDidMount() {
-    this.launcher = new ReactNativeLauncher()
+    this.launcher = new ReactNativeLauncher({launcherView: this})
     await this.launcher.init({
       bridgeOptions: {
-        webViewRef: this.webViewRef,
+        mainWebView: this.mainWebView,
+        // workerWebview: this.workerWebview,
       },
       contentScript: connector.source,
     })
@@ -22,22 +28,52 @@ export default class LauncherView extends Component {
   }
   render() {
     return (
+      <>
       <WebView
-        ref={(ref) => (this.webViewRef = ref)}
+          ref={(ref) => (this.mainWebView = ref)}
         originWhitelist={['*']}
-        source={{uri: connector.manifest.vendor_link}}
+          source={{
+            uri: connector.manifest.vendor_link,
+          }}
+          useWebKit={true}
+          javaScriptEnabled={true}
         sharedCookiesEnabled={true}
-        onMessage={this.onMessage}
+          onMessage={this.onMainMessage}
         onError={this.onError}
+          injectedJavaScriptBeforeContentLoaded={connector.source}
       />
+        {this.state.workerUrl ? (
+          <WebView
+            ref={(ref) => (this.workerWebview = ref)}
+            originWhitelist={['*']}
+            useWebKit={true}
+            javaScriptEnabled={true}
+            source={{
+              uri: this.state.workerUrl,
+            }}
+            sharedCookiesEnabled={true}
+            onMessage={this.onWorkerMessage}
+            onError={this.onWorkerError}
+            injectedJavaScriptBeforeContentLoaded={connector.source}
+          />
+        ) : null}
+      </>
     )
+  }
+  onWorkerError(event) {
+    console.error('worker error event', event)
   }
   onError(event) {
     console.error('error event', event)
   }
-  onMessage(event) {
+  onMainMessage(event) {
     if (this.launcher) {
-      this.launcher.onMessage(event)
+      this.launcher.onMainMessage(event)
+    }
+  }
+  onWorkerMessage(event) {
+    if (this.launcher) {
+      this.launcher.onWorkerMessage(event)
     }
   }
 }

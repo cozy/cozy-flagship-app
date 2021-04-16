@@ -37,55 +37,92 @@ class LauncherInterface {
  * This is the launcher implementation for a React native application
  */
 export default class ReactNativeLauncher extends LauncherInterface {
+  constructor({launcherView}) {
+    super()
+    this.launcherView = launcherView
+  }
+
   async init({bridgeOptions, contentScript}) {
-    this.contentScriptBridge = new ContentScriptBridge(bridgeOptions)
-    this.contentScriptBridge.webViewRef.injectJavaScript(contentScript)
-    const exposedMethodsNames = []
+    console.time('bridges init')
+    const promises = [
+      this.initWebview({
+        bridgeName: 'mainWebviewBridge',
+        webViewRef: bridgeOptions.mainWebView,
+        contentScript,
+        exposedMethodsNames: ['doLogin'],
+        listenedEvents: ['log'],
+      }),
+    ]
+    if (bridgeOptions.workerWebview) {
+      promises.push(
+        this.initWebview({
+          bridgeName: 'workerWebviewBridge',
+          webViewRef: bridgeOptions.workerWebview,
+          contentScript,
+          exposedMethodsNames: [],
+          listenedEvents: ['log'],
+        }),
+      )
+    }
+    await Promise.all(promises)
+    console.timeEnd('bridges init')
+  }
+  async start({context}) {
+    await this.mainWebviewBridge.call('ensureAuthenticated')
+    // TODO
+    // * need the cozy url + token
+    // * get remote context if launcher has a destination folder + get all the documents in doctypes
+    // declared in the manifest and created by the given account (or sourceAccountIdentifier ?
+    // TODO update the job result when the job is finished
+  }
+
+  async doLogin(url) {
+    this.launcherView.setState({
+      workerUrl: url,
+    })
+  }
+
+  async initWebview({
+    bridgeName,
+    webViewRef,
+    contentScript,
+    exposedMethodsNames,
+    listenedEvents,
+  }) {
+    const webviewBridge = new ContentScriptBridge({
+      webViewRef,
+    })
+    this[bridgeName] = webviewBridge
     const exposedMethods = {}
     for (const method of exposedMethodsNames) {
       exposedMethods[method] = this[method].bind(this)
     }
-    const listenedEvents = ['log']
-    await this.contentScriptBridge.init({exposedMethods})
+    await webviewBridge.init({exposedMethods})
     for (const event of listenedEvents) {
-      await this.contentScriptBridge.addEventListener(
-        event,
-        this[event].bind(this),
-      )
+      await webviewBridge.addEventListener(event, this[event].bind(this))
     }
-    return this.contentScriptBridge
+    return webviewBridge
   }
 
   log(message) {
     console.log('contentscript: ', message)
   }
 
-  async start({context}) {
-    // TODO
-    // * need the cozy url + token
-    // * get remote context if launcher has a destination folder + get all the documents in doctypes
-    // declared in the manifest and created by the given account (or sourceAccountIdentifier ?
-    await this.contentScriptBridge.call('ensureAuthenticated')
-    const userData = await this.contentScriptBridge.call(
-      'getUserDataFromWebsite',
-    )
-    console.log('userData', userData)
-    // await this.saveUserData(userData, context)
-    // this.folder = await this.ensureDestinationFolder(
-    //   userData,
-    //   context,
-    // )
-    const result = await this.contentScriptBridge.call('fetch', {context})
-    console.log('result', result)
-    // TODO update the job result when the job
-  }
-
   /**
    * Relay between the webview and the bridge to allow the bridge to work
    */
-  onMessage(event) {
-    const messenger = this.contentScriptBridge.messenger
-    messenger.onMessage.bind(messenger)(event)
+  onMainMessage(event) {
+    if (this.mainWebviewBridge) {
+      const messenger = this.mainWebviewBridge.messenger
+      messenger.onMessage.bind(messenger)(event)
+    }
+  }
+
+  onWorkerMessage(event) {
+    if (this.workerWebviewBridge) {
+      const messenger = this.workerWebviewBridge.messenger
+      messenger.onMessage.bind(messenger)(event)
+    }
   }
 }
 
