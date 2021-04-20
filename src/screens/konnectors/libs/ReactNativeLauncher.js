@@ -42,8 +42,8 @@ class ReactNativeLauncher extends LauncherInterface {
     console.time('bridges init')
     const promises = [
       this.initContentScriptBridge({
-        bridgeName: 'mainWebviewBridge',
-        webViewRef: bridgeOptions.mainWebView,
+        bridgeName: 'pilotWebviewBridge',
+        webViewRef: bridgeOptions.pilotWebView,
         contentScript,
         exposedMethodsNames: ['setWorkerState'],
         listenedEvents: ['log'],
@@ -64,7 +64,7 @@ class ReactNativeLauncher extends LauncherInterface {
     console.timeEnd('bridges init')
   }
   async start({context}) {
-    await this.mainWebviewBridge.call('ensureAuthenticated')
+    await this.pilotWebviewBridge.call('ensureAuthenticated')
     // TODO
     // * need the cozy url + token
     // * get remote context if launcher has a destination folder + get all the documents in doctypes
@@ -117,11 +117,11 @@ class ReactNativeLauncher extends LauncherInterface {
   }
 
   /**
-   * Relay between the main webview and the bridge to allow the bridge to work
+   * Relay between the pilot webview and the bridge to allow the bridge to work
    */
-  onMainMessage(event) {
-    if (this.mainWebviewBridge) {
-      const messenger = this.mainWebviewBridge.messenger
+  onPilotMessage(event) {
+    if (this.pilotWebviewBridge) {
+      const messenger = this.pilotWebviewBridge.messenger
       messenger.onMessage.bind(messenger)(event)
     }
   }

@@ -6,9 +6,9 @@ import ReactNativeLauncher from './libs/ReactNativeLauncher.js'
 export default class LauncherView extends Component {
   constructor(props) {
     super(props)
-    this.onMainMessage = this.onMainMessage.bind(this)
+    this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
-    this.mainWebView = null
+    this.pilotWebView = null
     this.workerWebview = null
     this.launcherContext = props.launcherContext
     this.state = {
@@ -22,7 +22,7 @@ export default class LauncherView extends Component {
   async componentDidMount() {
     await this.launcher.init({
       bridgeOptions: {
-        mainWebView: this.mainWebView,
+        pilotWebView: this.pilotWebView,
         // workerWebview: this.workerWebview,
       },
       contentScript: connector.source,
@@ -39,7 +39,7 @@ export default class LauncherView extends Component {
     return (
       <>
         <WebView
-          ref={(ref) => (this.mainWebView = ref)}
+          ref={(ref) => (this.pilotWebView = ref)}
           originWhitelist={['*']}
           source={{
             uri: connector.manifest.vendor_link,
@@ -47,7 +47,7 @@ export default class LauncherView extends Component {
           useWebKit={true}
           javaScriptEnabled={true}
           sharedCookiesEnabled={true}
-          onMessage={this.onMainMessage}
+          onMessage={this.onPilotMessage}
           onError={this.onError}
           injectedJavaScriptBeforeContentLoaded={connector.source}
         />
@@ -75,9 +75,9 @@ export default class LauncherView extends Component {
   onError(event) {
     console.error('error event', event)
   }
-  onMainMessage(event) {
+  onPilotMessage(event) {
     if (this.launcher) {
-      this.launcher.onMainMessage(event)
+      this.launcher.onPilotMessage(event)
     }
   }
   onWorkerMessage(event) {
