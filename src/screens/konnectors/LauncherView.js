@@ -12,11 +12,14 @@ export default class LauncherView extends Component {
     this.workerWebview = null
     this.launcherContext = props.launcherContext
     this.state = {
-      workerUrl: null,
+      worker: {},
     }
+    this.launcher = new ReactNativeLauncher()
+    this.launcher.on('SET_WORKER_STATE', (options) => {
+      this.setState({worker: options})
+    })
   }
   async componentDidMount() {
-    this.launcher = new ReactNativeLauncher({launcherView: this})
     await this.launcher.init({
       bridgeOptions: {
         mainWebView: this.mainWebView,
@@ -26,30 +29,36 @@ export default class LauncherView extends Component {
     })
     await this.launcher.start({context: this.launcherContext})
   }
+
+  componentWillUnmount() {
+    if (this.launcher.removeAllListener) {
+      this.launcher.removeAllListener()
+    }
+  }
   render() {
     return (
       <>
-      <WebView
+        <WebView
           ref={(ref) => (this.mainWebView = ref)}
-        originWhitelist={['*']}
+          originWhitelist={['*']}
           source={{
             uri: connector.manifest.vendor_link,
           }}
           useWebKit={true}
           javaScriptEnabled={true}
-        sharedCookiesEnabled={true}
+          sharedCookiesEnabled={true}
           onMessage={this.onMainMessage}
-        onError={this.onError}
+          onError={this.onError}
           injectedJavaScriptBeforeContentLoaded={connector.source}
-      />
-        {this.state.workerUrl ? (
+        />
+        {this.state.worker.visible ? (
           <WebView
             ref={(ref) => (this.workerWebview = ref)}
             originWhitelist={['*']}
             useWebKit={true}
             javaScriptEnabled={true}
             source={{
-              uri: this.state.workerUrl,
+              uri: this.state.worker.url,
             }}
             sharedCookiesEnabled={true}
             onMessage={this.onWorkerMessage}

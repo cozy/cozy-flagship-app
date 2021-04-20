@@ -1,4 +1,5 @@
-import ContentScriptBridge from './bridge/ContentScriptBridge.js'
+import ContentScriptBridge from './bridge/ContentScriptBridge'
+import MicroEE from 'microee'
 
 /**
  * All launchers are supposed to implement this interface
@@ -36,12 +37,7 @@ class LauncherInterface {
 /**
  * This is the launcher implementation for a React native application
  */
-export default class ReactNativeLauncher extends LauncherInterface {
-  constructor({launcherView}) {
-    super()
-    this.launcherView = launcherView
-  }
-
+class ReactNativeLauncher extends LauncherInterface {
   async init({bridgeOptions, contentScript}) {
     console.time('bridges init')
     const promises = [
@@ -49,7 +45,7 @@ export default class ReactNativeLauncher extends LauncherInterface {
         bridgeName: 'mainWebviewBridge',
         webViewRef: bridgeOptions.mainWebView,
         contentScript,
-        exposedMethodsNames: ['doLogin'],
+        exposedMethodsNames: ['setWorkerState'],
         listenedEvents: ['log'],
       }),
     ]
@@ -81,10 +77,8 @@ export default class ReactNativeLauncher extends LauncherInterface {
    *
    * @param {String} url : url displayed by the worker webview for the login
    */
-  async doLogin(url) {
-    this.launcherView.setState({
-      workerUrl: url,
-    })
+  async setWorkerState(options) {
+    this.emit('SET_WORKER_STATE', options)
   }
 
   /**
@@ -158,3 +152,6 @@ export default class ReactNativeLauncher extends LauncherInterface {
  * @property {string | null} label     : user defined label
  * @property {string | null} namespace : user defined namespace
  */
+
+MicroEE.mixin(ReactNativeLauncher)
+export default ReactNativeLauncher

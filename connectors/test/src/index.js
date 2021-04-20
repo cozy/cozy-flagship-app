@@ -5,19 +5,19 @@ monkeyPatch()
 
 class TestContentScript extends ContentScript {
   async ensureAuthenticated(val) {
-    document.body.innerHTML = 'not authenticated'
+    setTimeout(() => (document.body.innerHTML = 'not authenticated'), 1000)
     if (!(await isAuthenticated())) {
       this.log('not authenticated')
       await this.showLoginFormAndWaitForAuthentication()
     }
-    document.body.innerHTML = 'Authenticated o/'
+    setTimeout(() => (document.body.innerHTML = 'Authenticated o/'), 1000)
   }
 
   async showLoginFormAndWaitForAuthentication() {
-    await this.bridge.call(
-      'doLogin',
-      'https://www.oui.sncf/espaceclient/accueil',
-    )
+    await this.bridge.call('setWorkerState', {
+      url: 'https://www.oui.sncf/espaceclient/accueil',
+      visible: true,
+    })
     await new Promise((resolve, reject) => {
       let interval
       interval = window.setInterval(async () => {
@@ -28,7 +28,9 @@ class TestContentScript extends ContentScript {
         }
       }, 5000)
     })
-    await this.bridge.call('doLogin', null)
+    await this.bridge.call('setWorkerState', {
+      visible: false,
+    })
   }
 
   async getUserDataFromWebsite() {
