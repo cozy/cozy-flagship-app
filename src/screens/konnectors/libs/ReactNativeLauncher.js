@@ -49,17 +49,15 @@ class ReactNativeLauncher extends LauncherInterface {
         listenedEvents: ['log'],
       }),
     ]
-    if (bridgeOptions.workerWebview) {
-      promises.push(
-        this.initContentScriptBridge({
-          bridgeName: 'workerWebviewBridge',
-          webViewRef: bridgeOptions.workerWebview,
-          contentScript,
-          exposedMethodsNames: [],
-          listenedEvents: ['log'],
-        }),
-      )
-    }
+    promises.push(
+      this.initContentScriptBridge({
+        bridgeName: 'workerWebviewBridge',
+        webViewRef: bridgeOptions.workerWebview,
+        contentScript,
+        exposedMethodsNames: [],
+        listenedEvents: ['log'],
+      }),
+    )
     await Promise.all(promises)
     console.timeEnd('bridges init')
   }
@@ -79,6 +77,14 @@ class ReactNativeLauncher extends LauncherInterface {
    */
   async setWorkerState(options) {
     this.emit('SET_WORKER_STATE', options)
+  }
+
+  /**
+   * Reestablish the connection between launcher and the worker after a web page reload
+   */
+  async restartWorkerConnection() {
+    await this.workerWebviewBridge.init()
+    console.log('webworker bridge connection restarted')
   }
 
   /**
@@ -134,6 +140,14 @@ class ReactNativeLauncher extends LauncherInterface {
       const messenger = this.workerWebviewBridge.messenger
       messenger.onMessage.bind(messenger)(event)
     }
+  }
+
+  /**
+   * Actions to do before the worker reloads : restart the connection
+   */
+  onWorkerWillReload() {
+    this.restartWorkerConnection()
+    return true // allows the webview to load the new page
   }
 }
 

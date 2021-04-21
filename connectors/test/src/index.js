@@ -15,7 +15,8 @@ class TestContentScript extends ContentScript {
 
   async showLoginFormAndWaitForAuthentication() {
     await this.bridge.call('setWorkerState', {
-      url: 'https://www.oui.sncf/espaceclient/accueil',
+      url: 'https://www.oui.sncf/espaceclient/identification',
+
       visible: true,
     })
     await new Promise((resolve, reject) => {

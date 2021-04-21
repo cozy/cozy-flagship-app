@@ -19,6 +19,10 @@ export default class ContentScript {
       exposedMethods[method] = this[method].bind(this)
     }
     await this.bridge.init({exposedMethods})
+    window.onbeforeunload = () =>
+      this.log(
+        'window.beforeunload detected with previous url : ' + document.location,
+      )
   }
 
   /**
