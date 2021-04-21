@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {WebView} from 'react-native-webview'
 import connector from '../../../connectors/test/dist/webviewScript.js'
 import ReactNativeLauncher from './libs/ReactNativeLauncher.js'
+import CookieManager from '@react-native-cookies/cookies'
 
 export default class LauncherView extends Component {
   constructor(props) {
@@ -18,7 +19,13 @@ export default class LauncherView extends Component {
     this.launcher.on('SET_WORKER_STATE', (options) => {
       this.setState({worker: options})
     })
+    // this.resetSession()
   }
+
+  resetSession() {
+    CookieManager.clearAll()
+  }
+
   async componentDidMount() {
     await this.launcher.init({
       bridgeOptions: {
