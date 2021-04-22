@@ -26,6 +26,24 @@ export default class ContentScript {
   }
 
   /**
+   * Wait for a specific event from the worker and then resolve the promise
+   *
+   * @param {String} eventName : name of the awaited event
+   */
+  async waitForWorkerEvent(eventName) {
+    let listener
+    await new Promise((resolve) => {
+      listener = (event) => {
+        if (event.name === eventName) {
+          resolve()
+        }
+      }
+      this.bridge.addEventListener('workerEvent', listener)
+    })
+    this.bridge.removeEventListener('workerEvent', listener)
+  }
+
+  /**
    * Send log message to the launcher
    *
    * @param {string} : the log message

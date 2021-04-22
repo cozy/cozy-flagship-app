@@ -4,13 +4,13 @@ import {StyleSheet} from 'react-native'
 import connector from '../../../connectors/test/dist/webviewScript.js'
 import ReactNativeLauncher from './libs/ReactNativeLauncher.js'
 import CookieManager from '@react-native-cookies/cookies'
-
+import debounce from 'lodash/debounce'
 export default class LauncherView extends Component {
   constructor(props) {
     super(props)
     this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
-    this.onWorkerWillReload = this.onWorkerWillReload.bind(this)
+    this.onWorkerWillReload = debounce(this.onWorkerWillReload, 1000).bind(this)
     this.pilotWebView = null
     this.workerWebview = null
     this.launcherContext = props.launcherContext
@@ -20,7 +20,7 @@ export default class LauncherView extends Component {
     this.launcher = new ReactNativeLauncher()
     this.launcher.on('SET_WORKER_STATE', (options) => {
       if (this.state.worker.url !== options.url) {
-        this.onWorkerWillReload()
+        this.onWorkerWillReload(options)
       }
       this.setState({worker: options})
     })
@@ -60,7 +60,7 @@ export default class LauncherView extends Component {
           javaScriptEnabled={true}
           sharedCookiesEnabled={true}
           onMessage={this.onPilotMessage}
-          onError={this.onError}
+          onError={this.onPilotError}
           injectedJavaScriptBeforeContentLoaded={connector.source}
         />
         <WebView
@@ -85,25 +85,51 @@ export default class LauncherView extends Component {
       </>
     )
   }
+
+  /**
+   * When an error is detected in the worker webview
+   *
+   * @param {Object} event
+   */
   onWorkerError(event) {
     console.error('worker error event', event)
   }
-  onError(event) {
+  /**
+   * When an error is detected in the pilot webview
+   *
+   * @param {Object} event
+   */
+  onPilotError(event) {
     console.error('error event', event)
   }
+  /**
+   * Postmessage relay from the pilot to  the launcher
+   *
+   * @param {Object} event
+   */
   onPilotMessage(event) {
     if (this.launcher) {
       this.launcher.onPilotMessage(event)
     }
   }
+  /**
+   * Postmessage relay from the worker to  the launcher
+   *
+   * @param {Object} event
+   */
   onWorkerMessage(event) {
     if (this.launcher) {
       this.launcher.onWorkerMessage(event)
     }
   }
-  onWorkerWillReload() {
+  /**
+   * Detection of a page reload in the worker webview
+   *
+   * @param {Object} event
+   */
+  onWorkerWillReload(event) {
     if (this.launcher) {
-      return this.launcher.onWorkerWillReload()
+      return this.launcher.onWorkerWillReload(event)
     } else {
       return true
     }

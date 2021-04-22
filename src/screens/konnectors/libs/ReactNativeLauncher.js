@@ -38,6 +38,10 @@ class LauncherInterface {
  * This is the launcher implementation for a React native application
  */
 class ReactNativeLauncher extends LauncherInterface {
+  constructor() {
+    super()
+    this.workerListenedEvents = ['log', 'workerEvent']
+  }
   async init({bridgeOptions, contentScript}) {
     console.time('bridges init')
     const promises = [
@@ -48,16 +52,14 @@ class ReactNativeLauncher extends LauncherInterface {
         exposedMethodsNames: ['setWorkerState'],
         listenedEvents: ['log'],
       }),
-    ]
-    promises.push(
       this.initContentScriptBridge({
         bridgeName: 'workerWebviewBridge',
         webViewRef: bridgeOptions.workerWebview,
         contentScript,
         exposedMethodsNames: [],
-        listenedEvents: ['log'],
+        listenedEvents: this.workerListenedEvents,
       }),
-    )
+    ]
     await Promise.all(promises)
     console.timeEnd('bridges init')
   }
@@ -82,8 +84,20 @@ class ReactNativeLauncher extends LauncherInterface {
   /**
    * Reestablish the connection between launcher and the worker after a web page reload
    */
-  async restartWorkerConnection() {
-    await this.workerWebviewBridge.init()
+  async restartWorkerConnection(event) {
+    console.log('restarting worker', event)
+
+    try {
+      await this.workerWebviewBridge.init()
+      for (const eventName of this.workerListenedEvents) {
+        this.workerWebviewBridge.addEventListener(
+          eventName,
+          this[eventName].bind(this),
+        )
+      }
+    } catch (err) {
+      throw new Error(`worker bridge restart init error: ${err.message}`)
+    }
     console.log('webworker bridge connection restarted')
   }
 
@@ -111,15 +125,33 @@ class ReactNativeLauncher extends LauncherInterface {
     // the bridge must be exposed before the call to the webviewBridge.init function or else the init sequence won't work
     // since the init sequence needs an already working bridge
     this[bridgeName] = webviewBridge
-    await webviewBridge.init({exposedMethods})
+    try {
+      await webviewBridge.init({exposedMethods})
+    } catch (err) {
+      throw new Error(`Init error ${bridgeName}: ${err.message}`)
+    }
     for (const event of listenedEvents) {
       webviewBridge.addEventListener(event, this[event].bind(this))
     }
     return webviewBridge
   }
 
+  /**
+   * log messages emitted from the worker and the pilot
+   *
+   * @param {String} message
+   */
   log(message) {
     console.log('contentscript: ', message)
+  }
+
+  /**
+   * Relays events from the worker to the pilot
+   *
+   * @param {Object} event
+   */
+  workerEvent(event) {
+    this.pilotWebviewBridge.emit('workerEvent', event)
   }
 
   /**
@@ -145,8 +177,8 @@ class ReactNativeLauncher extends LauncherInterface {
   /**
    * Actions to do before the worker reloads : restart the connection
    */
-  onWorkerWillReload() {
-    this.restartWorkerConnection()
+  onWorkerWillReload(event) {
+    this.restartWorkerConnection(event)
     return true // allows the webview to load the new page
   }
 }
