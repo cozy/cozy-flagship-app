@@ -1,5 +1,8 @@
 import ContentScriptBridge from './bridge/ContentScriptBridge'
 import MicroEE from 'microee'
+import Minilog from '@cozy/minilog'
+
+const log = Minilog('Launcher')
 
 /**
  * All launchers are supposed to implement this interface
@@ -43,7 +46,7 @@ class ReactNativeLauncher extends LauncherInterface {
     this.workerListenedEvents = ['log', 'workerEvent']
   }
   async init({bridgeOptions, contentScript}) {
-    console.time('bridges init')
+    log('debug', 'bridges init start')
     const promises = [
       this.initContentScriptBridge({
         bridgeName: 'pilotWebviewBridge',
@@ -61,9 +64,10 @@ class ReactNativeLauncher extends LauncherInterface {
       }),
     ]
     await Promise.all(promises)
-    console.timeEnd('bridges init')
+    log('debug', 'bridges init done')
   }
   async start({context}) {
+    log('start')
     await this.pilotWebviewBridge.call('ensureAuthenticated')
     // TODO
     // * need the cozy url + token
@@ -106,7 +110,7 @@ class ReactNativeLauncher extends LauncherInterface {
    * Reestablish the connection between launcher and the worker after a web page reload
    */
   async restartWorkerConnection(event) {
-    console.log('restarting worker', event)
+    log('warn', 'restarting worker', event)
 
     try {
       await this.workerWebviewBridge.init()
@@ -119,7 +123,7 @@ class ReactNativeLauncher extends LauncherInterface {
     } catch (err) {
       throw new Error(`worker bridge restart init error: ${err.message}`)
     }
-    console.log('webworker bridge connection restarted')
+    log('info', 'webworker bridge connection restarted')
   }
 
   /**
@@ -163,7 +167,7 @@ class ReactNativeLauncher extends LauncherInterface {
    * @param {String} message
    */
   log(message) {
-    console.log('contentscript: ', message)
+    Minilog('ContentScript').info(message)
   }
 
   /**

@@ -1,9 +1,14 @@
 import ContentScript from './libs/ContentScript'
 import {kyScraper} from './libs/utils'
+import Minilog from '@cozy/minilog'
+
+const log = Minilog('ContentScript')
+window.Minilog = Minilog
 
 monkeyPatch()
 class SncfContentScript extends ContentScript {
   async ensureAuthenticated() {
+    log.debug('ensureAuthenticated start')
     setTimeout(() => (document.body.innerHTML = 'not authenticated'), 1000)
     if (!(await this.checkAuthenticated())) {
       this.log('not authenticated')
@@ -16,6 +21,7 @@ class SncfContentScript extends ContentScript {
    * Display the login form in the worker webview and wait for worker event to continue execution
    */
   async showLoginFormAndWaitForAuthentication() {
+    log.debug('showLoginFormAndWaitForAuthentication start')
     await this.bridge.call('setWorkerState', {
       url: 'https://www.oui.sncf/espaceclient/identification',
       visible: true,

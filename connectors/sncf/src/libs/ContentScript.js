@@ -1,4 +1,7 @@
 import LauncherBridge from './bridge/LauncherBridge'
+import Minilog from '@cozy/minilog'
+
+const log = Minilog('ContentScript class')
 
 export default class ContentScript {
   /**
@@ -32,16 +35,12 @@ export default class ContentScript {
    * @param {String} eventName : name of the awaited event
    */
   async runInWorkerUntilTrue(method) {
-  async waitForWorkerEvent(eventName) {
-    let listener
-    await new Promise((resolve) => {
-      listener = (event) => {
-        if (event.name === eventName) {
-          resolve()
-        }
+    log('runInWorkerUntilTrue', method)
     let result = false
     while (!result) {
+      log('runInWorker call', method)
       result = await this.bridge.call('runInWorker', method)
+      log('runInWorker result', result)
     }
     return result
   }

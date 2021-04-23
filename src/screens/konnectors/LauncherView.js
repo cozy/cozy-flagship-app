@@ -24,7 +24,7 @@ export default class LauncherView extends Component {
       }
       this.setState({worker: options})
     })
-    // this.resetSession()
+    this.resetSession()
   }
 
   resetSession() {
