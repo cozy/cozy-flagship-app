@@ -10,7 +10,6 @@ export default class ReactNativeLauncherMessenger extends MessengerInterface {
   }
 
   postMessage(message) {
-    // console.log('postMessage(message)', message)
     const script = `window.postMessage(${JSON.stringify(message)})`
     this.webViewRef.injectJavaScript(script)
   }

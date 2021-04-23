@@ -1,4 +1,8 @@
-import ContentScriptBridge from './bridge/ContentScriptBridge.js'
+import ContentScriptBridge from './bridge/ContentScriptBridge'
+import MicroEE from 'microee'
+import Minilog from '@cozy/minilog'
+
+const log = Minilog('Launcher')
 
 /**
  * All launchers are supposed to implement this interface
@@ -36,56 +40,172 @@ class LauncherInterface {
 /**
  * This is the launcher implementation for a React native application
  */
-export default class ReactNativeLauncher extends LauncherInterface {
+class ReactNativeLauncher extends LauncherInterface {
+  constructor() {
+    super()
+    this.workerListenedEvents = ['log', 'workerEvent']
+  }
   async init({bridgeOptions, contentScript}) {
-    this.contentScriptBridge = new ContentScriptBridge(bridgeOptions)
-    this.contentScriptBridge.webViewRef.injectJavaScript(contentScript)
-    const exposedMethodsNames = []
-    const exposedMethods = {}
-    for (const method of exposedMethodsNames) {
-      exposedMethods[method] = this[method].bind(this)
-    }
-    const listenedEvents = ['log']
-    await this.contentScriptBridge.init({exposedMethods})
-    for (const event of listenedEvents) {
-      await this.contentScriptBridge.addEventListener(
-        event,
-        this[event].bind(this),
-      )
-    }
-    return this.contentScriptBridge
+    log('debug', 'bridges init start')
+    const promises = [
+      this.initContentScriptBridge({
+        bridgeName: 'pilotWebviewBridge',
+        webViewRef: bridgeOptions.pilotWebView,
+        contentScript,
+        exposedMethodsNames: ['setWorkerState', 'runInWorker'],
+        listenedEvents: ['log'],
+      }),
+      this.initContentScriptBridge({
+        bridgeName: 'workerWebviewBridge',
+        webViewRef: bridgeOptions.workerWebview,
+        contentScript,
+        exposedMethodsNames: [],
+        listenedEvents: this.workerListenedEvents,
+      }),
+    ]
+    await Promise.all(promises)
+    log('debug', 'bridges init done')
   }
-
-  log(message) {
-    console.log('contentscript: ', message)
-  }
-
   async start({context}) {
+    log('start')
+    await this.pilotWebviewBridge.call('ensureAuthenticated')
     // TODO
     // * need the cozy url + token
     // * get remote context if launcher has a destination folder + get all the documents in doctypes
     // declared in the manifest and created by the given account (or sourceAccountIdentifier ?
-    await this.contentScriptBridge.call('ensureAuthenticated')
-    const userData = await this.contentScriptBridge.call(
-      'getUserDataFromWebsite',
-    )
-    console.log('userData', userData)
-    // await this.saveUserData(userData, context)
-    // this.folder = await this.ensureDestinationFolder(
-    //   userData,
-    //   context,
-    // )
-    const result = await this.contentScriptBridge.call('fetch', {context})
-    console.log('result', result)
-    // TODO update the job result when the job
+    // TODO update the job result when the job is finished
   }
 
   /**
-   * Relay between the webview and the bridge to allow the bridge to work
+   * Makes the launcherView display the worker webview
+   *
+   * @param {String} url : url displayed by the worker webview for the login
    */
-  onMessage(event) {
-    const messenger = this.contentScriptBridge.messenger
-    messenger.onMessage.bind(messenger)(event)
+  async setWorkerState(options) {
+    this.emit('SET_WORKER_STATE', options)
+  }
+
+  /**
+   * Run the specified method in the worker and make it fail with WORKER_RELOAD message
+   * if the worker page is reloaded
+   *
+   * @param {String} method
+   * @returns {any} the worker method return value
+   */
+  async runInWorker(method) {
+    log('runInworker called')
+    try {
+      return await new Promise((resolve, reject) => {
+        this.once('WORKER_RELOAD', () => reject('WORKER_RELOAD'))
+        log(`calling ${method} on worker`)
+        this.workerWebviewBridge.call(method).then(resolve)
+      })
+    } catch (err) {
+      log(`Got error in runInWorker ${err}`)
+      return false
+    }
+  }
+
+  /**
+   * Reestablish the connection between launcher and the worker after a web page reload
+   */
+  async restartWorkerConnection(event) {
+    log('warn', 'restarting worker', event)
+
+    try {
+      await this.workerWebviewBridge.init()
+      for (const eventName of this.workerListenedEvents) {
+        this.workerWebviewBridge.addEventListener(
+          eventName,
+          this[eventName].bind(this),
+        )
+      }
+    } catch (err) {
+      throw new Error(`worker bridge restart init error: ${err.message}`)
+    }
+    log('info', 'webworker bridge connection restarted')
+  }
+
+  /**
+   * This method creates and init a content script bridge to the launcher with some facilities to make
+   * it's own method callable by the content script
+   *
+   * @param {String} options.bridgeName : Name of the attribute where the bridge instance will be placed
+   * @param {WebView} options.webViewRef : WebView object to link to the launcher thanks to the bridge
+   * @param {Array.<String>} options.exposedMethodsNames : list of methods of the launcher to expose to the content script
+   * @param {Array.<String>} options.listenedEvents : list of methods of the launcher to link to content script emitted events
+   * @returns {ContentScriptBridge}
+   */
+  async initContentScriptBridge({
+    bridgeName,
+    webViewRef,
+    exposedMethodsNames,
+    listenedEvents,
+  }) {
+    const webviewBridge = new ContentScriptBridge({webViewRef})
+    const exposedMethods = {}
+    for (const method of exposedMethodsNames) {
+      exposedMethods[method] = this[method].bind(this)
+    }
+    // the bridge must be exposed before the call to the webviewBridge.init function or else the init sequence won't work
+    // since the init sequence needs an already working bridge
+    this[bridgeName] = webviewBridge
+    try {
+      await webviewBridge.init({exposedMethods})
+    } catch (err) {
+      throw new Error(`Init error ${bridgeName}: ${err.message}`)
+    }
+    for (const event of listenedEvents) {
+      webviewBridge.addEventListener(event, this[event].bind(this))
+    }
+    return webviewBridge
+  }
+
+  /**
+   * log messages emitted from the worker and the pilot
+   *
+   * @param {String} message
+   */
+  log(message) {
+    Minilog('ContentScript').info(message)
+  }
+
+  /**
+   * Relays events from the worker to the pilot
+   *
+   * @param {Object} event
+   */
+  workerEvent(event) {
+    this.pilotWebviewBridge.emit('workerEvent', event)
+  }
+
+  /**
+   * Relay between the pilot webview and the bridge to allow the bridge to work
+   */
+  onPilotMessage(event) {
+    if (this.pilotWebviewBridge) {
+      const messenger = this.pilotWebviewBridge.messenger
+      messenger.onMessage.bind(messenger)(event)
+    }
+  }
+
+  /**
+   * Relay between the worker webview and the bridge to allow the bridge to work
+   */
+  onWorkerMessage(event) {
+    if (this.workerWebviewBridge) {
+      const messenger = this.workerWebviewBridge.messenger
+      messenger.onMessage.bind(messenger)(event)
+    }
+  }
+
+  /**
+   * Actions to do before the worker reloads : restart the connection
+   */
+  onWorkerWillReload(event) {
+    this.emit('WORKER_RELOAD')
+    this.restartWorkerConnection(event)
+    return true // allows the webview to load the new page
   }
 }
 
@@ -104,3 +224,6 @@ export default class ReactNativeLauncher extends LauncherInterface {
  * @property {string | null} label     : user defined label
  * @property {string | null} namespace : user defined namespace
  */
+
+MicroEE.mixin(ReactNativeLauncher)
+export default ReactNativeLauncher

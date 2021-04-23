@@ -1,4 +1,7 @@
 import LauncherBridge from './bridge/LauncherBridge'
+import Minilog from '@cozy/minilog'
+
+const log = Minilog('ContentScript class')
 
 export default class ContentScript {
   /**
@@ -9,6 +12,7 @@ export default class ContentScript {
     this.bridge = new LauncherBridge({localWindow: window})
     const exposedMethodsNames = [
       'ensureAuthenticated',
+      'checkAuthenticated',
       'getUserDataFromWebsite',
       'fetch',
     ]
@@ -19,6 +23,26 @@ export default class ContentScript {
       exposedMethods[method] = this[method].bind(this)
     }
     await this.bridge.init({exposedMethods})
+    window.onbeforeunload = () =>
+      this.log(
+        'window.beforeunload detected with previous url : ' + document.location,
+      )
+  }
+
+  /**
+   * Wait for a specific event from the worker and then resolve the promise
+   *
+   * @param {String} method : name of the method to run
+   */
+  async runInWorkerUntilTrue(method) {
+    log('runInWorkerUntilTrue', method)
+    let result = false
+    while (!result) {
+      log('runInWorker call', method)
+      result = await this.bridge.call('runInWorker', method)
+      log('runInWorker result', result)
+    }
+    return result
   }
 
   /**

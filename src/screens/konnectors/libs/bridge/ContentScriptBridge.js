@@ -12,6 +12,9 @@ export default class ContentScriptBridge extends Bridge {
   }
 
   async init({exposedMethods = {}} = {}) {
+    if (this.connection) {
+      this.connection.close()
+    }
     this.messenger = new ReactNativeLauncherMessenger({
       webViewRef: this.webViewRef,
     })
