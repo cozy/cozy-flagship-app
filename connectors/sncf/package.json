@@ -5,10 +5,12 @@
   "license": "MIT",
   "dependencies": {
     "cheerio": "^1.0.0-rc.5",
-    "ky": "^0.26.0"
+    "ky": "^0.27.0",
+    "post-me": "^0.4.5"
   },
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "watch": "webpack --watch"
   },
   "devDependencies": {
     "hook-shell-script-webpack-plugin": "^0.1.3",
