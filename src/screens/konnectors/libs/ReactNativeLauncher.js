@@ -49,7 +49,7 @@ class ReactNativeLauncher extends LauncherInterface {
         bridgeName: 'pilotWebviewBridge',
         webViewRef: bridgeOptions.pilotWebView,
         contentScript,
-        exposedMethodsNames: ['setWorkerState'],
+        exposedMethodsNames: ['setWorkerState', 'runInWorker'],
         listenedEvents: ['log'],
       }),
       this.initContentScriptBridge({
@@ -79,6 +79,27 @@ class ReactNativeLauncher extends LauncherInterface {
    */
   async setWorkerState(options) {
     this.emit('SET_WORKER_STATE', options)
+  }
+
+  /**
+   * Run the specified method in the worker and make it fail with WORKER_RELOAD message
+   * if the worker page is reloaded
+   *
+   * @param {String} method
+   * @returns {any} the worker method return value
+   */
+  async runInWorker(method) {
+    log('runInworker called')
+    try {
+      return await new Promise((resolve, reject) => {
+        this.once('WORKER_RELOAD', () => reject('WORKER_RELOAD'))
+        log(`calling ${method} on worker`)
+        this.workerWebviewBridge.call(method).then(resolve)
+      })
+    } catch (err) {
+      log(`Got error in runInWorker ${err}`)
+      return false
+    }
   }
 
   /**
@@ -178,6 +199,7 @@ class ReactNativeLauncher extends LauncherInterface {
    * Actions to do before the worker reloads : restart the connection
    */
   onWorkerWillReload(event) {
+    this.emit('WORKER_RELOAD')
     this.restartWorkerConnection(event)
     return true // allows the webview to load the new page
   }

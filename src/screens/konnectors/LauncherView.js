@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {WebView} from 'react-native-webview'
 import {StyleSheet} from 'react-native'
-import connector from '../../../connectors/test/dist/webviewScript.js'
-import ReactNativeLauncher from './libs/ReactNativeLauncher.js'
+import connector from '../../../connectors/sncf/dist/webviewScript'
+import ReactNativeLauncher from './libs/ReactNativeLauncher'
 import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
 export default class LauncherView extends Component {

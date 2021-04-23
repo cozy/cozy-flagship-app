@@ -9,6 +9,7 @@ export default class ContentScript {
     this.bridge = new LauncherBridge({localWindow: window})
     const exposedMethodsNames = [
       'ensureAuthenticated',
+      'checkAuthenticated',
       'getUserDataFromWebsite',
       'fetch',
     ]
@@ -30,6 +31,7 @@ export default class ContentScript {
    *
    * @param {String} eventName : name of the awaited event
    */
+  async runInWorkerUntilTrue(method) {
   async waitForWorkerEvent(eventName) {
     let listener
     await new Promise((resolve) => {
@@ -37,10 +39,11 @@ export default class ContentScript {
         if (event.name === eventName) {
           resolve()
         }
-      }
-      this.bridge.addEventListener('workerEvent', listener)
-    })
-    this.bridge.removeEventListener('workerEvent', listener)
+    let result = false
+    while (!result) {
+      result = await this.bridge.call('runInWorker', method)
+    }
+    return result
   }
 
   /**

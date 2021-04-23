@@ -2,10 +2,10 @@ import ContentScript from './libs/ContentScript'
 import {kyScraper} from './libs/utils'
 
 monkeyPatch()
-class TestContentScript extends ContentScript {
+class SncfContentScript extends ContentScript {
   async ensureAuthenticated() {
     setTimeout(() => (document.body.innerHTML = 'not authenticated'), 1000)
-    if (!(await isAuthenticated())) {
+    if (!(await this.checkAuthenticated())) {
       this.log('not authenticated')
       await this.showLoginFormAndWaitForAuthentication()
     }
@@ -20,10 +20,17 @@ class TestContentScript extends ContentScript {
       url: 'https://www.oui.sncf/espaceclient/identification',
       visible: true,
     })
-    await this.waitForWorkerEvent('authenticated')
+    await this.runInWorkerUntilTrue('checkAuthenticated')
     await this.bridge.call('setWorkerState', {
       visible: false,
     })
+  }
+
+  async checkAuthenticated() {
+    const {redirected} = await kyScraper.get(
+      'https://www.oui.sncf/espaceclient/commandes-en-cours',
+    )
+    return !redirected
   }
 
   async getUserDataFromWebsite() {
@@ -35,38 +42,13 @@ class TestContentScript extends ContentScript {
   async fetch() {}
 }
 
-const connector = new TestContentScript()
-connector
-  .init()
-  .then(workerSendAuthenticatedEvent)
-  .catch((err) => {
-    console.warn(err)
-  })
+const connector = new SncfContentScript()
+connector.init().catch((err) => {
+  console.warn(err)
+})
 
 function monkeyPatch() {
   window.open = function (url) {
     document.location = url
   }
-}
-
-/**
- * If authentication is detected as done, send a worker event to the pilot to indicate it.
- */
-async function workerSendAuthenticatedEvent() {
-  console.log('are we authenticated ?')
-  if (await isAuthenticated()) {
-    connector.bridge.emit('workerEvent', {name: 'authenticated'})
-  }
-}
-
-/**
- * Detect authentication
- *
- * @returns {Boolean}
- */
-async function isAuthenticated() {
-  const {redirected} = await kyScraper.get(
-    'https://www.oui.sncf/espaceclient/commandes-en-cours',
-  )
-  return !redirected
 }
