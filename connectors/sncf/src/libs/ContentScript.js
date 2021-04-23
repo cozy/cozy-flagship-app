@@ -32,7 +32,7 @@ export default class ContentScript {
   /**
    * Wait for a specific event from the worker and then resolve the promise
    *
-   * @param {String} eventName : name of the awaited event
+   * @param {String} method : name of the method to run
    */
   async runInWorkerUntilTrue(method) {
     log('runInWorkerUntilTrue', method)
