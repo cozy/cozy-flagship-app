@@ -1,8 +1,17 @@
 import ContentScriptBridge from './bridge/ContentScriptBridge'
 import MicroEE from 'microee'
 import Minilog from '@cozy/minilog'
+import CozyClient, {Q} from 'cozy-client'
+import {url, token} from '../../../../token.json'
+import {decode} from 'base-64'
+import saveFiles from './saveFiles'
+if (!global.atob) {
+  global.atob = decode
+}
 
 const log = Minilog('Launcher')
+
+Minilog.enable()
 
 /**
  * All launchers are supposed to implement this interface
@@ -41,18 +50,20 @@ class LauncherInterface {
  * This is the launcher implementation for a React native application
  */
 class ReactNativeLauncher extends LauncherInterface {
-  constructor() {
+  constructor(context) {
     super()
+    log.debug(context, 'context')
+    this.context = context
     this.workerListenedEvents = ['log', 'workerEvent']
   }
   async init({bridgeOptions, contentScript}) {
-    log('debug', 'bridges init start')
+    log.debug('bridges init start')
     const promises = [
       this.initContentScriptBridge({
         bridgeName: 'pilotWebviewBridge',
         webViewRef: bridgeOptions.pilotWebView,
         contentScript,
-        exposedMethodsNames: ['setWorkerState', 'runInWorker'],
+        exposedMethodsNames: ['setWorkerState', 'runInWorker', 'saveFiles'],
         listenedEvents: ['log'],
       }),
       this.initContentScriptBridge({
@@ -64,15 +75,18 @@ class ReactNativeLauncher extends LauncherInterface {
       }),
     ]
     await Promise.all(promises)
-    log('debug', 'bridges init done')
+    log.debug('bridges init done')
   }
   async start({context}) {
-    log('start')
-    await this.pilotWebviewBridge.call('ensureAuthenticated')
-    // TODO
-    // * need the cozy url + token
-    // * get remote context if launcher has a destination folder + get all the documents in doctypes
-    // declared in the manifest and created by the given account (or sourceAccountIdentifier ?
+    this.client = this.getClient({manifest: this.context.manifest})
+    this.userData = await this.pilotWebviewBridge.call('getUserDataFromWebsite')
+    const {sourceAccountIdentifier} = this.userData
+    const slug = this.context.manifest.slug
+    const pilotContext = await this.getPilotContext({
+      sourceAccountIdentifier,
+      slug,
+    })
+    await this.pilotWebviewBridge.call('fetch', pilotContext)
     // TODO update the job result when the job is finished
   }
 
@@ -93,24 +107,100 @@ class ReactNativeLauncher extends LauncherInterface {
    * @returns {any} the worker method return value
    */
   async runInWorker(method) {
-    log('runInworker called')
+    log.debug('runInworker called')
     try {
       return await new Promise((resolve, reject) => {
         this.once('WORKER_RELOAD', () => reject('WORKER_RELOAD'))
-        log(`calling ${method} on worker`)
+        log.debug(`calling ${method} on worker`)
         this.workerWebviewBridge.call(method).then(resolve)
       })
     } catch (err) {
-      log(`Got error in runInWorker ${err}`)
+      log.error(`Got error in runInWorker ${err}`)
       return false
     }
+  }
+
+  /**
+   * Calls cozy-konnector-libs' saveFiles function
+   *
+   * @param {Array} entries : list of file entries to save
+   * @param {String} options.folderPath : folder path relative to the connector folder path (default '/')
+   * @returns {Array} list of saved files
+   */
+  async saveFiles(entries, options) {
+    log.debug(entries, 'saveFiles entries')
+
+    options.client = this.client
+    options.manifest = this.context.manifest
+    options.sourceAccount = this.context.job.message.account
+    const {sourceAccountIdentifier} = this.userData
+    if (sourceAccountIdentifier) {
+      options.sourceAccountIdentifier = sourceAccountIdentifier
+    }
+    log.debug('saveFiles start')
+    for (const entry of entries) {
+      if (entry.dataUri) {
+        entry.filestream = dataURItoArrayBuffer(entry.dataUri).ab
+        delete entry.dataUri
+      }
+    }
+    log.info(entries, 'saveFiles entries')
+    const result = await saveFiles(entries, '/Administratif', options)
+    log.info(result, 'saveFiles result')
+
+    return result
+  }
+
+  /**
+   * Fetches data already imported by the connector with the current sourceAccountIdentifier
+   * This allows the connector to only fetch new data
+   *
+   * @param {String} options.sourceAccountIdentifier: current account unique identifier
+   * @param {String} options.slug: connector slug
+   * @returns {Object}
+   */
+  async getPilotContext({sourceAccountIdentifier, slug}) {
+    const result = await this.client.queryAll(
+      Q('io.cozy.files')
+        .where({
+          trashed: false,
+          cozyMetadata: {
+            sourceAccountIdentifier,
+            createdByApp: slug,
+          },
+        })
+        .indexFields([
+          'trashed',
+          'cozyMetadata.sourceAccountIdentifier',
+          'cozyMetadata.createdByApp',
+        ]),
+    )
+
+    return result
+  }
+
+  /**
+   * cozy-client object initialization
+   *
+   * @param {Object} manifest
+   * @returns {CozyClient}
+   */
+  getClient({manifest}) {
+    return new CozyClient({
+      token: token,
+      uri: url,
+      appMetadata: {
+        slug: manifest.slug,
+        version: manifest.version,
+      },
+    })
   }
 
   /**
    * Reestablish the connection between launcher and the worker after a web page reload
    */
   async restartWorkerConnection(event) {
-    log('warn', 'restarting worker', event)
+    log.warn('restarting worker', event)
 
     try {
       await this.workerWebviewBridge.init()
@@ -123,7 +213,7 @@ class ReactNativeLauncher extends LauncherInterface {
     } catch (err) {
       throw new Error(`worker bridge restart init error: ${err.message}`)
     }
-    log('info', 'webworker bridge connection restarted')
+    log.info('webworker bridge connection restarted')
   }
 
   /**
@@ -207,6 +297,19 @@ class ReactNativeLauncher extends LauncherInterface {
     this.restartWorkerConnection(event)
     return true // allows the webview to load the new page
   }
+}
+
+function dataURItoArrayBuffer(dataURI) {
+  const [contentType, base64String] = dataURI
+    .match(/^data:(.*);base64,(.*)$/)
+    .slice(1)
+  const byteString = global.atob(base64String)
+  const ab = new ArrayBuffer(byteString.length)
+  const ia = new Uint8Array(ab)
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i)
+  }
+  return {contentType, ab}
 }
 
 /**

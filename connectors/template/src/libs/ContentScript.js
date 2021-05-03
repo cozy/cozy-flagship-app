@@ -1,5 +1,7 @@
 import LauncherBridge from './bridge/LauncherBridge'
 import Minilog from '@cozy/minilog'
+import {kyScraper as ky, blobToBase64} from './utils'
+import get from 'lodash/get'
 
 const log = Minilog('ContentScript class')
 
@@ -42,6 +44,65 @@ export default class ContentScript {
       log('runInWorker result', result)
     }
     return result
+  }
+
+  /**
+   * Bridge to the saveFiles method from the laucher.
+   * - it prefilters files according to the context comming from the launcher
+   * - download files when not filtered out
+   * - converts blob files to base64 uri to be serializable
+   *
+   * @param {Array} entries : list of file entries to save
+   * @param {Object} options : saveFiles options
+   */
+  async saveFiles(entries, options) {
+    log.debug(entries, 'saveFiles input entries')
+    const context = options.context
+    log.debug(context, 'saveFiles input context')
+
+    let filteredEntries = entries
+    if (options.fileIdAttributes) {
+      const contextFilesIndex = this.getContextFilesIndex(
+        context,
+        options.fileIdAttributes,
+      )
+      filteredEntries = filteredEntries.filter(
+        (entry) =>
+          contextFilesIndex[
+            this.calculateFileKey(entry, options.fileIdAttributes)
+          ] === undefined,
+      )
+    }
+    log.debug(filteredEntries, 'saveFiles filtered entries')
+    for (const entry of filteredEntries) {
+      if (entry.fileurl) {
+        entry.blob = await ky.get(entry.fileurl).blob()
+        delete entry.fileurl
+      }
+      if (entry.blob) {
+        // TODO paralelize
+        entry.dataUri = await blobToBase64(entry.blob)
+        delete entry.blob
+      }
+    }
+    await this.bridge.call('saveFiles', entries, options)
+  }
+
+  getContextFilesIndex(context, fileIdAttributes) {
+    log.debug('getContextFilesIndex', context, fileIdAttributes)
+    let index = {}
+    for (const entry of context) {
+      index[entry.metadata.fileIdAttributes] = entry
+    }
+    return index
+  }
+
+  calculateFileKey(entry, fileIdAttributes) {
+    console.log('calculateFileKey', entry, fileIdAttributes)
+    return fileIdAttributes
+      .sort()
+      .map((key) => get(entry, key))
+      .join('####')
   }
 
   /**
