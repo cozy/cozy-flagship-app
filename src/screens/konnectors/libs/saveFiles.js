@@ -18,7 +18,7 @@ const saveFiles = async (entries, folderPath, options = {}) => {
     log.warn('There is no sourceAccount given to saveFiles')
   }
   if (!options.sourceAccountIdentifier) {
-    log.warn('There is no sourceAccountIdentifier given to saveFIles')
+    log.warn('There is no sourceAccountIdentifier given to saveFiles')
   }
   if (!options.client) {
     throw new Error('No cozy-client instance given')

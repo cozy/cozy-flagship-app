@@ -5,6 +5,7 @@ import CozyClient, {Q} from 'cozy-client'
 import {url, token} from '../../../../token.json'
 import {decode} from 'base-64'
 import saveFiles from './saveFiles'
+import saveBills from './saveBills'
 if (!global.atob) {
   global.atob = decode
 }
@@ -63,7 +64,12 @@ class ReactNativeLauncher extends LauncherInterface {
         bridgeName: 'pilotWebviewBridge',
         webViewRef: bridgeOptions.pilotWebView,
         contentScript,
-        exposedMethodsNames: ['setWorkerState', 'runInWorker', 'saveFiles'],
+        exposedMethodsNames: [
+          'setWorkerState',
+          'runInWorker',
+          'saveFiles',
+          'saveBills',
+        ],
         listenedEvents: ['log'],
       }),
       this.initContentScriptBridge({
@@ -78,9 +84,12 @@ class ReactNativeLauncher extends LauncherInterface {
     log.debug('bridges init done')
   }
   async start({context}) {
-    this.client = this.getClient({manifest: this.context.manifest})
     this.userData = await this.pilotWebviewBridge.call('getUserDataFromWebsite')
     const {sourceAccountIdentifier} = this.userData
+    this.client = this.getClient({
+      context: this.context,
+      sourceAccountIdentifier,
+    })
     const slug = this.context.manifest.slug
     const pilotContext = await this.getPilotContext({
       sourceAccountIdentifier,
@@ -121,6 +130,26 @@ class ReactNativeLauncher extends LauncherInterface {
   }
 
   /**
+   * Calls cozy-konnector-libs' saveBills function
+   *
+   * @param {Array} entries : list of file entries to save
+   * @param {String} options.folderPath : folder path relative to the connector folder path (default '/')
+   * @returns {Array} list of saved bills
+   */
+  async saveBills(entries, options) {
+    log.debug(entries, 'saveBills entries')
+    options.client = this.client
+    options.manifest = this.context.manifest
+    options.sourceAccount = this.context.job.message.account
+    const {sourceAccountIdentifier} = this.userData
+    if (sourceAccountIdentifier) {
+      options.sourceAccountIdentifier = sourceAccountIdentifier
+    }
+    const result = await saveBills(entries, options)
+    return result
+  }
+
+  /**
    * Calls cozy-konnector-libs' saveFiles function
    *
    * @param {Array} entries : list of file entries to save
@@ -137,7 +166,6 @@ class ReactNativeLauncher extends LauncherInterface {
     if (sourceAccountIdentifier) {
       options.sourceAccountIdentifier = sourceAccountIdentifier
     }
-    log.debug('saveFiles start')
     for (const entry of entries) {
       if (entry.dataUri) {
         entry.filestream = dataURItoArrayBuffer(entry.dataUri).ab
@@ -185,13 +213,17 @@ class ReactNativeLauncher extends LauncherInterface {
    * @param {Object} manifest
    * @returns {CozyClient}
    */
-  getClient({manifest}) {
+  getClient({context, sourceAccountIdentifier}) {
+    const manifest = context.manifest
+    const sourceAccount = context.job.message.account
     return new CozyClient({
       token: token,
       uri: url,
       appMetadata: {
         slug: manifest.slug,
         version: manifest.version,
+        sourceAccount,
+        sourceAccountIdentifier,
       },
     })
   }

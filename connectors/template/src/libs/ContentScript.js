@@ -60,20 +60,7 @@ export default class ContentScript {
     const context = options.context
     log.debug(context, 'saveFiles input context')
 
-    let filteredEntries = entries
-    if (options.fileIdAttributes) {
-      const contextFilesIndex = this.getContextFilesIndex(
-        context,
-        options.fileIdAttributes,
-      )
-      filteredEntries = filteredEntries.filter(
-        (entry) =>
-          contextFilesIndex[
-            this.calculateFileKey(entry, options.fileIdAttributes)
-          ] === undefined,
-      )
-    }
-    log.debug(filteredEntries, 'saveFiles filtered entries')
+    const filteredEntries = this.filterOutExistingFiles(entries, options)
     for (const entry of filteredEntries) {
       if (entry.fileurl) {
         entry.blob = await ky.get(entry.fileurl).blob()
@@ -85,10 +72,55 @@ export default class ContentScript {
         delete entry.blob
       }
     }
-    await this.bridge.call('saveFiles', entries, options)
+    return await this.bridge.call('saveFiles', entries, options)
   }
 
-  getContextFilesIndex(context, fileIdAttributes) {
+  /**
+   * Bridge to the saveBills method from the laucher.
+   * - it first saves the files
+   * - then saves bills linked to corresponding files
+   *
+   * @param {Array} entries : list of file entries to save
+   * @param {Object} options : saveFiles options
+   */
+  async saveBills(entries, options) {
+    const files = await this.saveFiles(entries, options)
+    return await this.bridge.call('saveBills', files, options)
+  }
+
+  /**
+   * Do not download files which already exist
+   *
+   * @param {Array} files
+   * @param {Array<String>} options.fileIdAttributes: list of attributes defining the unicity of the file
+   * @param {Object} options.context: current launcher context
+   * @returns Array
+   */
+  filterOutExistingFiles(files, options) {
+    if (options.fileIdAttributes) {
+      const contextFilesIndex = this.createContextFilesIndex(
+        options.context,
+        options.fileIdAttributes,
+      )
+      return files.filter(
+        (file) =>
+          contextFilesIndex[
+            this.calculateFileKey(file, options.fileIdAttributes)
+          ] === undefined,
+      )
+    } else {
+      return files
+    }
+  }
+
+  /**
+   * Creates an index of files, indexed by uniq id defined by fileIdAttributes
+   *
+   * @param {Object} context
+   * @param {Array<String>} fileIdAttributes: list of attributes defining the unicity of a file
+   * @returns Object
+   */
+  createContextFilesIndex(context, fileIdAttributes) {
     log.debug('getContextFilesIndex', context, fileIdAttributes)
     let index = {}
     for (const entry of context) {
@@ -97,11 +129,17 @@ export default class ContentScript {
     return index
   }
 
-  calculateFileKey(entry, fileIdAttributes) {
-    console.log('calculateFileKey', entry, fileIdAttributes)
+  /**
+   * Calculates the key defining the uniqueness of a given file
+   *
+   * @param {Object} file
+   * @param {Array<String>} fileIdAttributes: list of attributes defining the unicity of a file
+   * @returns String
+   */
+  calculateFileKey(file, fileIdAttributes) {
     return fileIdAttributes
       .sort()
-      .map((key) => get(entry, key))
+      .map((key) => get(file, key))
       .join('####')
   }
 
