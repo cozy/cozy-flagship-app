@@ -61,6 +61,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CozyReactNative/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		913E4560DFCE63A459ECB5BC /* Pods-CozyReactNative-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-tvOS/Pods-CozyReactNative-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		9957048B912EE836B6FB82D4 /* Pods-CozyReactNative-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-tvOS.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-tvOS/Pods-CozyReactNative-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		99A26C682632A5AC00365D30 /* CozyReactNative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = CozyReactNative.entitlements; path = CozyReactNative/CozyReactNative.entitlements; sourceTree = "<group>"; };
 		B7BC4C3B709AAC6447391019 /* libPods-CozyReactNative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyReactNative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3A7737677E46E77B50BA08F /* libPods-CozyReactNative-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyReactNative-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -125,6 +126,7 @@
 		13B07FAE1A68108700A75B9A /* CozyReactNative */ = {
 			isa = PBXGroup;
 			children = (
+				99A26C682632A5AC00365D30 /* CozyReactNative.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -154,7 +156,6 @@
 			children = (
 			);
 			name = Resources;
-			path = "";
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -203,7 +204,6 @@
 				4DF67088B985CD281DEB6970 /* Pods-CozyReactNative-tvOSTests.debug.xcconfig */,
 				457BFB9DBFC95ABAF7D053E6 /* Pods-CozyReactNative-tvOSTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -303,6 +303,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = 3AKXFMV43J;
 						LastSwiftMigration = 1120;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -664,7 +665,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = CozyReactNative/CozyReactNative.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3AKXFMV43J;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = CozyReactNative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -687,7 +690,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = CozyReactNative/CozyReactNative.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3AKXFMV43J;
 				INFOPLIST_FILE = CozyReactNative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
