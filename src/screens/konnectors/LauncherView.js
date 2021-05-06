@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {WebView} from 'react-native-webview'
 import {StyleSheet} from 'react-native'
-import connector from '../../../connectors/sncf/dist/webviewScript'
+import connector from '../../../connectors/template/dist/webviewScript'
 import ReactNativeLauncher from './libs/ReactNativeLauncher'
 import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
@@ -14,10 +14,11 @@ export default class LauncherView extends Component {
     this.pilotWebView = null
     this.workerWebview = null
     this.launcherContext = props.launcherContext
+    this.launcherContext.manifest = connector.manifest
     this.state = {
       worker: {},
     }
-    this.launcher = new ReactNativeLauncher()
+    this.launcher = new ReactNativeLauncher(this.launcherContext)
     this.launcher.on('SET_WORKER_STATE', (options) => {
       if (this.state.worker.url !== options.url) {
         this.onWorkerWillReload(options)
@@ -39,7 +40,9 @@ export default class LauncherView extends Component {
       },
       contentScript: connector.source,
     })
-    await this.launcher.start({context: this.launcherContext})
+    await this.launcher.start({
+      context: this.launcherContext,
+    })
   }
 
   componentWillUnmount() {
