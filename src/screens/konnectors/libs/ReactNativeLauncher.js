@@ -137,15 +137,16 @@ class ReactNativeLauncher extends LauncherInterface {
    * @returns {Array} list of saved bills
    */
   async saveBills(entries, options) {
+    const currentOptions = clone(options)
     log.debug(entries, 'saveBills entries')
-    options.client = this.client
-    options.manifest = this.context.manifest
-    options.sourceAccount = this.context.job.message.account
+    currentOptions.client = this.client
+    currentOptions.manifest = this.context.manifest
+    currentOptions.sourceAccount = this.context.job.message.account
     const {sourceAccountIdentifier} = this.userData
     if (sourceAccountIdentifier) {
-      options.sourceAccountIdentifier = sourceAccountIdentifier
+      currentOptions.sourceAccountIdentifier = sourceAccountIdentifier
     }
-    const result = await saveBills(entries, options)
+    const result = await saveBills(entries, currentOptions)
     return result
   }
 
