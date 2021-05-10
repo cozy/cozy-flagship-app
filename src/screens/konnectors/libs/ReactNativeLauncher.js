@@ -6,6 +6,7 @@ import {url, token} from '../../../../token.json'
 import {decode} from 'base-64'
 import saveFiles from './saveFiles'
 import saveBills from './saveBills'
+import clone from 'lodash/clone'
 if (!global.atob) {
   global.atob = decode
 }
@@ -211,7 +212,8 @@ class ReactNativeLauncher extends LauncherInterface {
   /**
    * cozy-client object initialization
    *
-   * @param {Object} manifest
+   * @param {Object} options.context : context given by harvest
+   * @param {String} options.sourceAccountIdentifier: current account unique identifier
    * @returns {CozyClient}
    */
   getClient({context, sourceAccountIdentifier}) {

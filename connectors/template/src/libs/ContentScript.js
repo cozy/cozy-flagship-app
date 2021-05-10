@@ -14,6 +14,7 @@ export default class ContentScript {
     this.bridge = new LauncherBridge({localWindow: window})
     const exposedMethodsNames = [
       'ensureAuthenticated',
+      'checkAuthenticated',
       'getUserDataFromWebsite',
       'fetch',
     ]
