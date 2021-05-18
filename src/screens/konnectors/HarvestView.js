@@ -4,6 +4,7 @@ import {get} from 'lodash'
 import {WebView} from 'react-native-webview'
 
 const HarvestView = (props) => {
+  const {slug, accountId, setLauncherContext} = props
   const run = `
     window.cozy = {
       ClientConnectorLauncher: 'react-native',
@@ -13,10 +14,9 @@ const HarvestView = (props) => {
     return true
     `
   let uri = `https://${name}-home.${domain}`
-  if (props.slug && props.accountId) {
-    uri = `https://${name}-home.${domain}/#connected/${props.slug}/accounts/${props.accountId}`
+  if (slug && accountId) {
+    uri = `https://${name}-home.${domain}/#connected/${slug}/accounts/${accountId}`
   }
-  const {setLauncherContext} = props
   return (
     <WebView
       originWhitelist={['*']}
