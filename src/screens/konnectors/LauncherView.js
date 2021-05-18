@@ -22,16 +22,18 @@ export default class LauncherView extends Component {
     this.workerWebview = null
     this.launcherContext = props.launcherContext
     this.connector = connectors[this.launcherContext.job.message.konnector]
-    this.launcherContext.manifest = this.connector.manifest
     if (!this.connector) {
       throw new Error(
-        `No client connector available for slug ${this.launcherContext.manifest.slug}`,
+        `No client connector available for slug ${this.connector.manifest.slug}`,
       )
     }
     this.state = {
       worker: {},
     }
-    this.launcher = new ReactNativeLauncher(this.launcherContext)
+    this.launcher = new ReactNativeLauncher(
+      this.launcherContext,
+      this.connector,
+    )
     this.launcher.on('SET_WORKER_STATE', (options) => {
       if (this.state.worker.url !== options.url) {
         this.onWorkerWillReload(options)

@@ -52,10 +52,11 @@ class LauncherInterface {
  * This is the launcher implementation for a React native application
  */
 class ReactNativeLauncher extends LauncherInterface {
-  constructor(context) {
+  constructor(context, connector) {
     super()
     log.debug(context, 'context')
     this.context = context
+    this.connector = connector
     this.workerListenedEvents = ['log', 'workerEvent']
   }
   async init({bridgeOptions, contentScript}) {
@@ -92,7 +93,7 @@ class ReactNativeLauncher extends LauncherInterface {
       context: this.context,
       sourceAccountIdentifier,
     })
-    const slug = this.context.manifest.slug
+    const slug = this.connector.manifest.slug
     await this.ensureAccountNameAndFolder(
       this.context.account,
       this.context.trigger.message.folder_to_save,
@@ -173,7 +174,7 @@ class ReactNativeLauncher extends LauncherInterface {
     const currentOptions = clone(options)
     log.debug(entries, 'saveBills entries')
     currentOptions.client = this.client
-    currentOptions.manifest = this.context.manifest
+    currentOptions.manifest = this.connector.manifest
     currentOptions.sourceAccount = this.context.job.message.account
     const {sourceAccountIdentifier} = this.userData
     if (sourceAccountIdentifier) {
@@ -192,7 +193,7 @@ class ReactNativeLauncher extends LauncherInterface {
   async saveFiles(entries, options) {
     log.debug(entries, 'saveFiles entries')
     options.client = this.client
-    options.manifest = this.context.manifest
+    options.manifest = this.connector.manifest
     options.sourceAccount = this.context.job.message.account
 
     const {sourceAccountIdentifier} = this.userData
@@ -249,7 +250,7 @@ class ReactNativeLauncher extends LauncherInterface {
    * @returns {CozyClient}
    */
   getClient({context, sourceAccountIdentifier}) {
-    const manifest = context.manifest
+    const manifest = this.connector.manifest
     const sourceAccount = context.job.message.account
     return new CozyClient({
       token: token,
