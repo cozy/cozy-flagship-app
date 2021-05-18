@@ -7,14 +7,16 @@ import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
 import ReactNativeLauncher from './libs/ReactNativeLauncher'
 import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
+import {withClient} from 'cozy-client'
 
 const connectors = {
   template: templateConnector,
   sncf: sncfConnector,
 }
-export default class LauncherView extends Component {
+class LauncherView extends Component {
   constructor(props) {
     super(props)
+    this.client = props.client
     this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
     this.onWorkerWillReload = debounce(this.onWorkerWillReload, 1000).bind(this)
@@ -51,7 +53,7 @@ export default class LauncherView extends Component {
   }
 
   resetSession() {
-    CookieManager.clearAll()
+    CookieManager.flush()
   }
 
   async componentDidMount() {
@@ -64,6 +66,7 @@ export default class LauncherView extends Component {
     })
     await this.launcher.start({
       context: this.launcherContext,
+      client: this.client,
     })
   }
 
@@ -177,3 +180,5 @@ const styles = StyleSheet.create({
     flex: 0,
   },
 })
+
+export default withClient(LauncherView)

@@ -512,5 +512,5 @@ async function getOrCreateDestinationPath(entry, saveOptions) {
 
 function initCozyClientJs(cozyClient) {
   const {uri, token} = cozyClient.stackClient
-  return new Client({cozyURL: uri, token: token.token})
+  return new Client({cozyURL: uri, token: token.accessToken})
 }

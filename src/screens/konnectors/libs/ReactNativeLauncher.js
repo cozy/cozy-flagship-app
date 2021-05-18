@@ -1,8 +1,7 @@
 import ContentScriptBridge from './bridge/ContentScriptBridge'
 import MicroEE from 'microee'
 import Minilog from '@cozy/minilog'
-import CozyClient, {Q} from 'cozy-client'
-import {url, token} from '../../../../token.json'
+import {Q} from 'cozy-client'
 import {decode} from 'base-64'
 import saveFiles from './saveFiles'
 import saveBills from './saveBills'
@@ -85,14 +84,11 @@ class ReactNativeLauncher extends LauncherInterface {
     await Promise.all(promises)
     log.debug('bridges init done')
   }
-  async start({context}) {
+  async start({context, client}) {
     await this.pilotWebviewBridge.call('ensureAuthenticated')
     this.userData = await this.pilotWebviewBridge.call('getUserDataFromWebsite')
     const {sourceAccountIdentifier} = this.userData
-    this.client = this.getClient({
-      context: this.context,
-      sourceAccountIdentifier,
-    })
+    this.client = client
     const slug = this.connector.manifest.slug
     await this.ensureAccountNameAndFolder(
       this.context.account,
@@ -159,7 +155,7 @@ class ReactNativeLauncher extends LauncherInterface {
         this.workerWebviewBridge.call(method).then(resolve)
       })
     } catch (err) {
-      log.error(`Got error in runInWorker ${err}`)
+      log.info(`Got error in runInWorker ${err}`)
       return false
     }
   }
@@ -243,32 +239,10 @@ class ReactNativeLauncher extends LauncherInterface {
   }
 
   /**
-   * cozy-client object initialization
-   *
-   * @param {Object} options.context : context given by harvest
-   * @param {String} options.sourceAccountIdentifier: current account unique identifier
-   * @returns {CozyClient}
-   */
-  getClient({context, sourceAccountIdentifier}) {
-    const manifest = this.connector.manifest
-    const sourceAccount = context.job.message.account
-    return new CozyClient({
-      token: token,
-      uri: url,
-      appMetadata: {
-        slug: manifest.slug,
-        version: manifest.version,
-        sourceAccount,
-        sourceAccountIdentifier,
-      },
-    })
-  }
-
-  /**
    * Reestablish the connection between launcher and the worker after a web page reload
    */
   async restartWorkerConnection(event) {
-    log.warn('restarting worker', event)
+    log.info('restarting worker', event)
 
     try {
       await this.workerWebviewBridge.init()

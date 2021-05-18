@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@cozy/minilog": "^1.0.0",
+    "@react-native-async-storage/async-storage": "^1.15.4",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-cookies/cookies": "^6.0.4",
     "@react-navigation/bottom-tabs": "5.11.8",
