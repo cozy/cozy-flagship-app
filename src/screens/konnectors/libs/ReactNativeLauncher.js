@@ -111,7 +111,9 @@ class ReactNativeLauncher extends LauncherInterface {
   async ensureAccountNameAndFolder(account, folderId, sourceAccountIdentifier) {
     const firstRun = !account.label
     if (!firstRun) {
-      const result = await this.client.collection('io.cozy.files').get(folderId)
+      const result = await this.client.query(
+        Q('io.cozy.files').getById(folderId),
+      )
       this.folderPath = result.data.path
       return account
     }
