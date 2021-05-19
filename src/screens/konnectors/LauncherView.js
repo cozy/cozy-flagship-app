@@ -1,10 +1,17 @@
 import React, {Component} from 'react'
 import {WebView} from 'react-native-webview'
-import {StyleSheet} from 'react-native'
-import connector from '../../../connectors/template/dist/webviewScript'
+import {StyleSheet, View} from 'react-native'
+// TODO find a proper way to load a connector only when needed
+import templateConnector from '../../../connectors/template/dist/webviewScript'
+import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
 import ReactNativeLauncher from './libs/ReactNativeLauncher'
 import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
+
+const connectors = {
+  template: templateConnector,
+  sncf: sncfConnector,
+}
 export default class LauncherView extends Component {
   constructor(props) {
     super(props)
@@ -14,18 +21,33 @@ export default class LauncherView extends Component {
     this.pilotWebView = null
     this.workerWebview = null
     this.launcherContext = props.launcherContext
-    this.launcherContext.manifest = connector.manifest
+    this.connector = connectors[this.launcherContext.job.message.konnector]
+    if (!this.connector) {
+      throw new Error(
+        `No client connector available for slug ${this.connector.manifest.slug}`,
+      )
+    }
     this.state = {
       worker: {},
     }
-    this.launcher = new ReactNativeLauncher(this.launcherContext)
+    this.launcher = new ReactNativeLauncher(
+      this.launcherContext,
+      this.connector,
+    )
     this.launcher.on('SET_WORKER_STATE', (options) => {
       if (this.state.worker.url !== options.url) {
         this.onWorkerWillReload(options)
       }
       this.setState({worker: options})
     })
-    this.resetSession()
+    this.launcher.on('CONNECTOR_EXECUTION_END', () => {
+      this.props.setLauncherContext({
+        state: 'result',
+        slug: this.launcherContext.manifest.slug,
+        accountId: this.launcherContext.job.message.account,
+      })
+    })
+    // this.resetSession()
   }
 
   resetSession() {
@@ -38,7 +60,7 @@ export default class LauncherView extends Component {
         pilotWebView: this.pilotWebView,
         workerWebview: this.workerWebview,
       },
-      contentScript: connector.source,
+      contentScript: this.connector.source,
     })
     await this.launcher.start({
       context: this.launcherContext,
@@ -53,19 +75,21 @@ export default class LauncherView extends Component {
   render() {
     return (
       <>
-        <WebView
-          ref={(ref) => (this.pilotWebView = ref)}
-          originWhitelist={['*']}
-          source={{
-            uri: connector.manifest.vendor_link,
-          }}
-          useWebKit={true}
-          javaScriptEnabled={true}
-          sharedCookiesEnabled={true}
-          onMessage={this.onPilotMessage}
-          onError={this.onPilotError}
-          injectedJavaScriptBeforeContentLoaded={connector.source}
-        />
+        <View>
+          <WebView
+            ref={(ref) => (this.pilotWebView = ref)}
+            originWhitelist={['*']}
+            source={{
+              uri: this.connector.manifest.vendor_link,
+            }}
+            useWebKit={true}
+            javaScriptEnabled={true}
+            sharedCookiesEnabled={true}
+            onMessage={this.onPilotMessage}
+            onError={this.onPilotError}
+            injectedJavaScriptBeforeContentLoaded={this.connector.source}
+          />
+        </View>
         <WebView
           style={
             this.state.worker.visible
@@ -83,7 +107,7 @@ export default class LauncherView extends Component {
           onMessage={this.onWorkerMessage}
           onError={this.onWorkerError}
           onShouldStartLoadWithRequest={this.onWorkerWillReload}
-          injectedJavaScriptBeforeContentLoaded={connector.source}
+          injectedJavaScriptBeforeContentLoaded={this.connector.source}
         />
       </>
     )
@@ -142,8 +166,14 @@ export default class LauncherView extends Component {
 const styles = StyleSheet.create({
   workerVisible: {
     display: 'flex',
+    flex: 1,
   },
   workerHidden: {
-    display: 'none',
+    position: 'absolute',
+    left: -2000,
+    top: -2000,
+    height: 0,
+    width: 0,
+    flex: 0,
   },
 })

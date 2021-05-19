@@ -6,6 +6,7 @@ import {url, token} from '../../../../token.json'
 import {decode} from 'base-64'
 import saveFiles from './saveFiles'
 import saveBills from './saveBills'
+import clone from 'lodash/clone'
 if (!global.atob) {
   global.atob = decode
 }
@@ -51,10 +52,11 @@ class LauncherInterface {
  * This is the launcher implementation for a React native application
  */
 class ReactNativeLauncher extends LauncherInterface {
-  constructor(context) {
+  constructor(context, connector) {
     super()
     log.debug(context, 'context')
     this.context = context
+    this.connector = connector
     this.workerListenedEvents = ['log', 'workerEvent']
   }
   async init({bridgeOptions, contentScript}) {
@@ -84,19 +86,52 @@ class ReactNativeLauncher extends LauncherInterface {
     log.debug('bridges init done')
   }
   async start({context}) {
+    await this.pilotWebviewBridge.call('ensureAuthenticated')
     this.userData = await this.pilotWebviewBridge.call('getUserDataFromWebsite')
     const {sourceAccountIdentifier} = this.userData
     this.client = this.getClient({
       context: this.context,
       sourceAccountIdentifier,
     })
-    const slug = this.context.manifest.slug
+    const slug = this.connector.manifest.slug
+    await this.ensureAccountNameAndFolder(
+      this.context.account,
+      this.context.trigger.message.folder_to_save,
+      sourceAccountIdentifier,
+    )
+    log.debug('destination path', this.folderPath)
     const pilotContext = await this.getPilotContext({
       sourceAccountIdentifier,
       slug,
     })
     await this.pilotWebviewBridge.call('fetch', pilotContext)
+    this.emit('CONNECTOR_EXECUTION_END')
     // TODO update the job result when the job is finished
+  }
+
+  async ensureAccountNameAndFolder(account, folderId, sourceAccountIdentifier) {
+    const firstRun = !account.label
+    if (!firstRun) {
+      const result = await this.client.query(
+        Q('io.cozy.files').getById(folderId),
+      )
+      this.folderPath = result.data.path
+      return account
+    }
+
+    log.info('This is the first run')
+    const newAccount = await this.client.save({
+      ...account,
+      label: sourceAccountIdentifier,
+    })
+    log.debug(newAccount, 'resulting account')
+    // TODO normalize file name
+    this.folderPath = (
+      await this.client
+        .collection('io.cozy.files')
+        .updateAttributes(folderId, {name: sourceAccountIdentifier})
+    ).data.path
+    log.debug(this.folderPath, 'resulting folderPath')
   }
 
   /**
@@ -133,14 +168,13 @@ class ReactNativeLauncher extends LauncherInterface {
    * Calls cozy-konnector-libs' saveBills function
    *
    * @param {Array} entries : list of file entries to save
-   * @param {String} options.folderPath : folder path relative to the connector folder path (default '/')
    * @returns {Array} list of saved bills
    */
   async saveBills(entries, options) {
     const currentOptions = clone(options)
     log.debug(entries, 'saveBills entries')
     currentOptions.client = this.client
-    currentOptions.manifest = this.context.manifest
+    currentOptions.manifest = this.connector.manifest
     currentOptions.sourceAccount = this.context.job.message.account
     const {sourceAccountIdentifier} = this.userData
     if (sourceAccountIdentifier) {
@@ -154,15 +188,14 @@ class ReactNativeLauncher extends LauncherInterface {
    * Calls cozy-konnector-libs' saveFiles function
    *
    * @param {Array} entries : list of file entries to save
-   * @param {String} options.folderPath : folder path relative to the connector folder path (default '/')
    * @returns {Array} list of saved files
    */
   async saveFiles(entries, options) {
     log.debug(entries, 'saveFiles entries')
-
     options.client = this.client
-    options.manifest = this.context.manifest
+    options.manifest = this.connector.manifest
     options.sourceAccount = this.context.job.message.account
+
     const {sourceAccountIdentifier} = this.userData
     if (sourceAccountIdentifier) {
       options.sourceAccountIdentifier = sourceAccountIdentifier
@@ -174,7 +207,8 @@ class ReactNativeLauncher extends LauncherInterface {
       }
     }
     log.info(entries, 'saveFiles entries')
-    const result = await saveFiles(entries, '/Administratif', options)
+    log.info(this.folderPath, 'folderpath')
+    const result = await saveFiles(entries, this.folderPath, options)
     log.info(result, 'saveFiles result')
 
     return result
@@ -211,11 +245,12 @@ class ReactNativeLauncher extends LauncherInterface {
   /**
    * cozy-client object initialization
    *
-   * @param {Object} manifest
+   * @param {Object} options.context : context given by harvest
+   * @param {String} options.sourceAccountIdentifier: current account unique identifier
    * @returns {CozyClient}
    */
   getClient({context, sourceAccountIdentifier}) {
-    const manifest = context.manifest
+    const manifest = this.connector.manifest
     const sourceAccount = context.job.message.account
     return new CozyClient({
       token: token,

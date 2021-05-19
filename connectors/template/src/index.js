@@ -8,11 +8,45 @@ Minilog.enable()
 const baseUrl = 'http://books.toscrape.com'
 
 class TemplateContentScript extends ContentScript {
+  async ensureAuthenticated() {
+    await this.bridge.call('setWorkerState', {
+      url: 'http://quotes.toscrape.com/login',
+      visible: false,
+    })
+    const authenticated = await this.bridge.call(
+      'runInWorker',
+      'checkAuthenticated',
+    )
+    if (!authenticated) {
+      this.log('not authenticated')
+      await this.showLoginFormAndWaitForAuthentication()
+    }
+    return true
+  }
+
+  async checkAuthenticated() {
+    return Boolean(
+      Array.from(document.querySelectorAll(`a[href='/logout']`)).length,
+    )
+  }
+
+  async showLoginFormAndWaitForAuthentication() {
+    log.debug('showLoginFormAndWaitForAuthentication start')
+    await this.bridge.call('setWorkerState', {
+      url: 'http://quotes.toscrape.com/login',
+      visible: true,
+    })
+    await this.runInWorkerUntilTrue('checkAuthenticated')
+    await this.bridge.call('setWorkerState', {
+      visible: false,
+    })
+  }
+
   async fetch(context) {
     log.debug(context, 'fetch context')
     const resp = await ky.get(baseUrl + '/index.html')
     const entries = await this.parseDocuments(resp)
-    await this.saveBills(entries, {
+    await this.saveFiles(entries, {
       contentType: 'image/jpeg',
       fileIdAttributes: ['filename'],
       context,
@@ -21,7 +55,7 @@ class TemplateContentScript extends ContentScript {
 
   async getUserDataFromWebsite() {
     return {
-      sourceAccountIdentifier: 'template sourceAccountIdentifier',
+      sourceAccountIdentifier: 'defaultTemplateSourceAccountIdentifier',
     }
   }
 

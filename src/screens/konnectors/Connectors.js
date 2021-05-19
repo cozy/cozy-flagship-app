@@ -4,28 +4,18 @@ import HarvestView from './HarvestView'
 import LauncherView from './LauncherView'
 
 const Konnectors = ({navigation}) => {
-  // const [launcherContext, setLauncherContext] = useState(null)
-  const [launcherContext, setLauncherContext] = useState({
-    job: {
-      id: 'job test id',
-      trigger_id: 'trigger test id',
-      message: {
-        konnector: 'test',
-        account: 'account test id',
-      },
-    },
-  })
+  const [launcherContext, setLauncherContext] = useState({state: 'default'})
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeAreaView}>
-        {launcherContext ? (
+        <HarvestView setLauncherContext={setLauncherContext} />
+        {launcherContext.state === 'launch' && (
           <LauncherView
-            launcherContext={launcherContext}
+            launcherContext={launcherContext.value}
+            setLauncherContext={setLauncherContext}
             retry={() => setLauncherContext(null)}
           />
-        ) : (
-          <HarvestView setLauncherContext={setLauncherContext} />
         )}
       </SafeAreaView>
     </View>
@@ -37,24 +27,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  contentContainer: {
-    alignItems: 'center',
-    margin: 20,
-  },
-  descriptionContainer: {
-    alignItems: 'center',
-    height: 200,
-  },
-  description: {
-    fontSize: 40,
-    fontWeight: 'bold',
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
   safeAreaView: {
     flex: 1,
+  },
+  launcherView: {
+    position: 'absolute',
+    height: 0,
+    width: 0,
   },
 })
 
