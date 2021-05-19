@@ -25,10 +25,9 @@ class TemplateContentScript extends ContentScript {
   }
 
   async checkAuthenticated() {
-    const resp = await ky.get('http://quotes.toscrape.com/')
-    const $ = await resp.$()
-    const result = $(`a[href='/logout']`)
-    return result.length === 1
+    return Boolean(
+      Array.from(document.querySelectorAll(`a[href='/logout']`)).length,
+    )
   }
 
   async showLoginFormAndWaitForAuthentication() {
