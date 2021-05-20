@@ -45,7 +45,7 @@ class LauncherView extends Component {
     this.launcher.on('CONNECTOR_EXECUTION_END', () => {
       this.props.setLauncherContext({
         state: 'result',
-        slug: this.launcherContext.manifest.slug,
+        slug: this.connector.manifest.slug,
         accountId: this.launcherContext.job.message.account,
       })
     })
