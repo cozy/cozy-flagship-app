@@ -8,6 +8,8 @@ import {View} from 'react-native'
 import {getClient, saveClient, initClient, clearClient} from './libs/client'
 import {CozyProvider} from 'cozy-client'
 
+const COZY_PREFIX = 'cozy://'
+
 const config = {
   screens: {
     Home: {
@@ -22,24 +24,26 @@ const config = {
 }
 
 const linking = {
-  prefixes: ['cozy://'],
+  prefixes: [COZY_PREFIX],
   config,
 }
 
 const App = () => {
-  const [state, setState] = useState({})
+  const [client, setClient] = useState(null)
+  const [uri, setUri] = useState(null)
+  const [busy, setBusy] = useState(false)
   useEffect(() => {
-    getClient().then((client) => {
-      if (client) {
-        setState({client})
+    getClient().then((clientResult) => {
+      if (clientResult) {
+        setClient(clientResult)
       }
     })
   }, [])
 
   return (
     <PaperProvider theme={lightTheme}>
-      {state.client ? (
-        <CozyProvider client={state.client}>
+      {client ? (
+        <CozyProvider client={client}>
           <NavigationContainer linking={linking}>
             <AppNavigator />
           </NavigationContainer>
@@ -49,9 +53,16 @@ const App = () => {
           <TextInput
             label="Cozy url"
             placeholder="https://testchristophe.cozy.works"
-            onChange={(event) => setState({uri: event.nativeEvent.text})}
+            onChange={(event) => setUri(event.nativeEvent.text)}
           />
-          <Button onPress={() => callInitClient(state, setState)}>
+          <Button
+            busy={busy}
+            onPress={async () => {
+              setBusy(true)
+              const clientResult = await callInitClient(uri)
+              setClient(clientResult)
+              setBusy(false)
+            }}>
             Submit
           </Button>
         </View>
@@ -60,10 +71,16 @@ const App = () => {
   )
 }
 
-const callInitClient = async (state, setState) => {
-  const client = await initClient(state.uri)
+const callInitClient = async (uri) => {
+  const client = await initClient(uri, {
+    oauth: {
+      redirectURI: COZY_PREFIX,
+      softwareID: 'amiral',
+      clientKind: 'mobile',
+      clientName: 'Amiral',
+    },
+  })
   await saveClient(client)
-  setState({client})
 }
 
 export default App
