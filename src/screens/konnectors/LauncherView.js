@@ -34,7 +34,7 @@ class LauncherView extends Component {
     }
     this.launcher = new ReactNativeLauncher(
       this.launcherContext,
-      this.connector,
+      this.connector.manifest,
     )
     this.launcher.on('SET_WORKER_STATE', (options) => {
       if (this.state.worker.url !== options.url) {
