@@ -34,7 +34,7 @@ const App = () => {
         setState({client})
       }
     })
-  })
+  }, [])
 
   return (
     <PaperProvider theme={lightTheme}>
