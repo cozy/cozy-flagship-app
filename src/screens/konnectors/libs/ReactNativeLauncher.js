@@ -33,11 +33,9 @@ class LauncherInterface {
   /**
    * Start the connector execution
    *
-   * @param  {LauncherRunContext} options.context : current cozy context of the connector
-   *
    * @return {Bridge}
    */
-  async start({context}) {}
+  async start() {}
 
   /**
    * Get content script logs. This function is called by the content script via the bridge
@@ -49,13 +47,17 @@ class LauncherInterface {
 
 /**
  * This is the launcher implementation for a React native application
+ *
+ * @param {LauncherRunContext} context : current cozy context of the connector
+ * @param {Object}             manifest: connector manifest content
  */
 class ReactNativeLauncher extends LauncherInterface {
-  constructor(context, connector) {
+  constructor(context, manifest) {
     super()
     log.debug(context, 'context')
+    log.debug(manifest, 'manifest')
     this.context = context
-    this.connector = connector
+    this.manifest = manifest
     this.workerListenedEvents = ['log', 'workerEvent']
   }
   async init({bridgeOptions, contentScript}) {
@@ -84,12 +86,11 @@ class ReactNativeLauncher extends LauncherInterface {
     await Promise.all(promises)
     log.debug('bridges init done')
   }
-  async start({context, client}) {
+  async start() {
     await this.pilotWebviewBridge.call('ensureAuthenticated')
     this.userData = await this.pilotWebviewBridge.call('getUserDataFromWebsite')
     const {sourceAccountIdentifier} = this.userData
-    this.client = client
-    const slug = this.connector.manifest.slug
+    const slug = this.manifest.slug
     await this.ensureAccountNameAndFolder(
       this.context.account,
       this.context.trigger.message.folder_to_save,
@@ -170,7 +171,7 @@ class ReactNativeLauncher extends LauncherInterface {
     const currentOptions = clone(options)
     log.debug(entries, 'saveBills entries')
     currentOptions.client = this.client
-    currentOptions.manifest = this.connector.manifest
+    currentOptions.manifest = this.manifest
     currentOptions.sourceAccount = this.context.job.message.account
     const {sourceAccountIdentifier} = this.userData
     if (sourceAccountIdentifier) {
@@ -189,7 +190,7 @@ class ReactNativeLauncher extends LauncherInterface {
   async saveFiles(entries, options) {
     log.debug(entries, 'saveFiles entries')
     options.client = this.client
-    options.manifest = this.connector.manifest
+    options.manifest = this.manifest
     options.sourceAccount = this.context.job.message.account
 
     const {sourceAccountIdentifier} = this.userData
