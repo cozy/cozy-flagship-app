@@ -86,7 +86,8 @@ class ReactNativeLauncher extends LauncherInterface {
     await Promise.all(promises)
     log.debug('bridges init done')
   }
-  async start() {
+  async start({client}) {
+    this.client = client
     await this.pilotWebviewBridge.call('ensureAuthenticated')
     this.userData = await this.pilotWebviewBridge.call('getUserDataFromWebsite')
     const {sourceAccountIdentifier} = this.userData
