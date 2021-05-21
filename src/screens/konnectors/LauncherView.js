@@ -16,14 +16,12 @@ const connectors = {
 class LauncherView extends Component {
   constructor(props) {
     super(props)
-    this.client = props.client
     this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
     this.onWorkerWillReload = debounce(this.onWorkerWillReload, 1000).bind(this)
     this.pilotWebView = null
     this.workerWebview = null
-    this.launcherContext = props.launcherContext
-    this.connector = connectors[this.launcherContext.job.message.konnector]
+    this.connector = connectors[props.launcherContext.job.message.konnector]
     if (!this.connector) {
       throw new Error(
         `No client connector available for slug ${this.connector.manifest.slug}`,
@@ -32,23 +30,6 @@ class LauncherView extends Component {
     this.state = {
       worker: {},
     }
-    this.launcher = new ReactNativeLauncher(
-      this.launcherContext,
-      this.connector.manifest,
-    )
-    this.launcher.on('SET_WORKER_STATE', (options) => {
-      if (this.state.worker.url !== options.url) {
-        this.onWorkerWillReload(options)
-      }
-      this.setState({worker: options})
-    })
-    this.launcher.on('CONNECTOR_EXECUTION_END', () => {
-      this.props.setLauncherContext({
-        state: 'result',
-        slug: this.connector.manifest.slug,
-        accountId: this.launcherContext.job.message.account,
-      })
-    })
     // this.resetSession()
   }
 
@@ -57,6 +38,17 @@ class LauncherView extends Component {
   }
 
   async componentDidMount() {
+    this.launcher = new ReactNativeLauncher({
+      context: this.props.launcherContext,
+      manifest: this.connector.manifest,
+      client: this.props.client,
+    })
+    this.launcher.on('SET_WORKER_STATE', (options) => {
+      if (this.state.worker.url !== options.url) {
+        this.onWorkerWillReload(options)
+      }
+      this.setState({worker: options})
+    })
     await this.launcher.init({
       bridgeOptions: {
         pilotWebView: this.pilotWebView,
@@ -64,10 +56,7 @@ class LauncherView extends Component {
       },
       contentScript: this.connector.source,
     })
-    await this.launcher.start({
-      context: this.launcherContext,
-      client: this.client,
-    })
+    await this.launcher.start()
   }
 
   componentWillUnmount() {

@@ -5,7 +5,6 @@ import {Q} from 'cozy-client'
 import {decode} from 'base-64'
 import saveFiles from './saveFiles'
 import saveBills from './saveBills'
-import clone from 'lodash/clone'
 if (!global.atob) {
   global.atob = decode
 }
@@ -52,12 +51,11 @@ class LauncherInterface {
  * @param {Object}             manifest: connector manifest content
  */
 class ReactNativeLauncher extends LauncherInterface {
-  constructor(context, manifest) {
+  constructor({context, manifest, client}) {
     super()
     log.debug(context, 'context')
     log.debug(manifest, 'manifest')
-    this.context = context
-    this.manifest = manifest
+    this.startContext = {context, manifest, client}
     this.workerListenedEvents = ['log', 'workerEvent']
   }
   async init({bridgeOptions, contentScript}) {
@@ -86,50 +84,55 @@ class ReactNativeLauncher extends LauncherInterface {
     await Promise.all(promises)
     log.debug('bridges init done')
   }
-  async start({client}) {
-    this.client = client
+  async start() {
     await this.pilotWebviewBridge.call('ensureAuthenticated')
     this.userData = await this.pilotWebviewBridge.call('getUserDataFromWebsite')
-    const {sourceAccountIdentifier} = this.userData
-    const slug = this.manifest.slug
-    await this.ensureAccountNameAndFolder(
-      this.context.account,
-      this.context.trigger.message.folder_to_save,
-      sourceAccountIdentifier,
-    )
-    log.debug('destination path', this.folderPath)
-    const pilotContext = await this.getPilotContext({
-      sourceAccountIdentifier,
-      slug,
+
+    const {context, client} = this.getStartContext()
+    await this.ensureAccountNameAndFolder({
+      account: context.account,
+      folderId: context.trigger.message.folder_to_save,
+      sourceAccountIdentifier: this.userData.sourceAccountIdentifier,
+      client,
     })
-    await this.pilotWebviewBridge.call('fetch', pilotContext)
+
+    const pilotContext = []
+    // FIXME not used at the moment since the fetched file will not have the proper "createdByApp"
+    // const pilotContext = await this.getPilotContext({
+    //   sourceAccountIdentifier: userData.sourceAccountIdentifier,
+    //   slug: manifest.slug,
+    // })
+    await this.pilotWebviewBridge.call('fetch', this.getPilotContext)
     this.emit('CONNECTOR_EXECUTION_END')
     // TODO update the job result when the job is finished
   }
 
-  async ensureAccountNameAndFolder(account, folderId, sourceAccountIdentifier) {
+  async getFolderPath({folderId, client}) {
+    const result = await client.query(Q('io.cozy.files').getById(folderId))
+    return result.data.path
+  }
+
+  async ensureAccountNameAndFolder({
+    account,
+    folderId,
+    sourceAccountIdentifier,
+    client,
+  }) {
     const firstRun = !account.label
     if (!firstRun) {
-      const result = await this.client.query(
-        Q('io.cozy.files').getById(folderId),
-      )
-      this.folderPath = result.data.path
-      return account
+      return
     }
 
     log.info('This is the first run')
-    const newAccount = await this.client.save({
+    const newAccount = await client.save({
       ...account,
       label: sourceAccountIdentifier,
     })
     log.debug(newAccount, 'resulting account')
     // TODO normalize file name
-    this.folderPath = (
-      await this.client
-        .collection('io.cozy.files')
-        .updateAttributes(folderId, {name: sourceAccountIdentifier})
-    ).data.path
-    log.debug(this.folderPath, 'resulting folderPath')
+    await client
+      .collection('io.cozy.files')
+      .updateAttributes(folderId, {name: sourceAccountIdentifier})
   }
 
   /**
@@ -162,6 +165,14 @@ class ReactNativeLauncher extends LauncherInterface {
     }
   }
 
+  getStartContext() {
+    return this.startContext
+  }
+
+  getUserData() {
+    return this.userData
+  }
+
   /**
    * Calls cozy-konnector-libs' saveBills function
    *
@@ -169,16 +180,16 @@ class ReactNativeLauncher extends LauncherInterface {
    * @returns {Array} list of saved bills
    */
   async saveBills(entries, options) {
-    const currentOptions = clone(options)
     log.debug(entries, 'saveBills entries')
-    currentOptions.client = this.client
-    currentOptions.manifest = this.manifest
-    currentOptions.sourceAccount = this.context.job.message.account
-    const {sourceAccountIdentifier} = this.userData
-    if (sourceAccountIdentifier) {
-      currentOptions.sourceAccountIdentifier = sourceAccountIdentifier
-    }
-    const result = await saveBills(entries, currentOptions)
+    const {client, context, manifest} = this.getStartContext()
+    const {sourceAccountIdentifier} = this.getUserData()
+    const result = await saveBills(entries, {
+      ...options,
+      client,
+      manifest,
+      sourceAccount: context.job.message.account,
+      sourceAccountIdentifier,
+    })
     return result
   }
 
@@ -190,14 +201,8 @@ class ReactNativeLauncher extends LauncherInterface {
    */
   async saveFiles(entries, options) {
     log.debug(entries, 'saveFiles entries')
-    options.client = this.client
-    options.manifest = this.manifest
-    options.sourceAccount = this.context.job.message.account
-
-    const {sourceAccountIdentifier} = this.userData
-    if (sourceAccountIdentifier) {
-      options.sourceAccountIdentifier = sourceAccountIdentifier
-    }
+    const {client, context, manifest} = this.getStartContext()
+    const {sourceAccountIdentifier} = this.getUserData()
     for (const entry of entries) {
       if (entry.dataUri) {
         entry.filestream = dataURItoArrayBuffer(entry.dataUri).ab
@@ -205,8 +210,20 @@ class ReactNativeLauncher extends LauncherInterface {
       }
     }
     log.info(entries, 'saveFiles entries')
-    log.info(this.folderPath, 'folderpath')
-    const result = await saveFiles(entries, this.folderPath, options)
+    const result = await saveFiles(
+      entries,
+      await this.getFolderPath({
+        folderId: context.trigger.message.folder_to_save,
+        client,
+      }),
+      {
+        ...options,
+        client,
+        manifest,
+        sourceAccount: context.job.message.account,
+        sourceAccountIdentifier,
+      },
+    )
     log.info(result, 'saveFiles result')
 
     return result
