@@ -120,8 +120,11 @@ class ReactNativeLauncher extends LauncherInterface {
     }
 
     log.info('This is the first run')
+    const updatedAccount = await client.query(
+      Q('io.cozy.accounts').getById(account._id),
+    )
     const newAccount = await client.save({
-      ...account,
+      ...updatedAccount.data,
       label: sourceAccountIdentifier,
     })
     log.debug(newAccount, 'resulting account')
