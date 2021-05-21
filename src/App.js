@@ -73,6 +73,7 @@ const App = () => {
 
 const callInitClient = async (uri) => {
   const client = await initClient(uri, {
+    scope: ['io.cozy.files', 'io.cozy.accounts'],
     oauth: {
       redirectURI: COZY_PREFIX,
       softwareID: 'amiral',
@@ -81,6 +82,7 @@ const callInitClient = async (uri) => {
     },
   })
   await saveClient(client)
+  return client
 }
 
 export default App
