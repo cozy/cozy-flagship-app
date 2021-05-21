@@ -16,10 +16,12 @@ export const clearClient = () => {
  * @param {CozyClient} client : client instance
  */
 export const saveClient = (client) => {
+  const { uri, oauthOptions } = client.getStackClient()
+  const token = client.getStackClient().getAccessToken()
   const state = JSON.stringify({
-    oauthOptions: client.stackClient.oauthOptions,
-    token: client.stackClient.token,
-    uri: client.stackClient.uri,
+    oauthOptions,
+    token,
+    uri
   })
   return AsyncStorage.setItem(OAUTH_STORAGE_KEY, state)
 }
@@ -34,14 +36,13 @@ export const getClient = async () => {
   if (!val) {
     return false
   }
-
   const state = JSON.parse(val)
+  const { uri, oauthOptions, token } = state
   const client = new CozyClient({
-    uri: state.uri,
-    oauthOptions: state.oauthOptions,
+    uri,
+    token,
+    oauthOptions
   })
-  client.stackClient.setToken(state.token.accessToken)
-  await client.login()
   return client
 }
 

@@ -5,9 +5,10 @@ import {useClient} from 'cozy-client'
 
 const HarvestView = (props) => {
   const client = useClient()
-  const uri = client.stackClient.uri
+  const { uri } = client.getStackClient()
+  const token = client.getStackClient().getAccessToken()
   const [scheme, cozyDomain] = uri.split('://')
-  const cozyToken = client.stackClient.token.accessToken
+  const cozyToken = token
   const {slug, accountId, setLauncherContext} = props
   const cozyClientConf = {
     scheme,
