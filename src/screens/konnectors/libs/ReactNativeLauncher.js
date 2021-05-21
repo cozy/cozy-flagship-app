@@ -102,7 +102,7 @@ class ReactNativeLauncher extends LauncherInterface {
     //   sourceAccountIdentifier: userData.sourceAccountIdentifier,
     //   slug: manifest.slug,
     // })
-    await this.pilotWebviewBridge.call('fetch', this.getPilotContext)
+    await this.pilotWebviewBridge.call('fetch', pilotContext)
     this.emit('CONNECTOR_EXECUTION_END')
     // TODO update the job result when the job is finished
   }
