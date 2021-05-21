@@ -7,6 +7,16 @@ import AppNavigator from './navigator'
 import {View} from 'react-native'
 import {getClient, saveClient, initClient, clearClient} from './libs/client'
 import {CozyProvider} from 'cozy-client'
+// Polyfill needed for cozy-client connection
+import {decode, encode} from 'base-64'
+
+if (!global.btoa) {
+    global.btoa = encode;
+}
+
+if (!global.atob) {
+    global.atob = decode;
+}
 
 const COZY_PREFIX = 'cozy://'
 
@@ -72,6 +82,7 @@ const App = () => {
 }
 
 const callInitClient = async (uri) => {
+  console.log('callInit')
   const client = await initClient(uri, {
     scope: [
       'io.cozy.files.*',
@@ -86,6 +97,7 @@ const callInitClient = async (uri) => {
       clientName: 'Amiral',
     },
   })
+  console.log('saveClient')
   await saveClient(client)
   return client
 }

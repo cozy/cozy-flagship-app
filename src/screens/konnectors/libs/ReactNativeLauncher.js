@@ -2,12 +2,8 @@ import ContentScriptBridge from './bridge/ContentScriptBridge'
 import MicroEE from 'microee'
 import Minilog from '@cozy/minilog'
 import {Q} from 'cozy-client'
-import {decode} from 'base-64'
 import saveFiles from './saveFiles'
 import saveBills from './saveBills'
-if (!global.atob) {
-  global.atob = decode
-}
 
 const log = Minilog('Launcher')
 
