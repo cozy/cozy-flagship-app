@@ -73,10 +73,15 @@ const App = () => {
 
 const callInitClient = async (uri) => {
   const client = await initClient(uri, {
-    scope: ['io.cozy.files', 'io.cozy.accounts'],
+    scope: [
+      'io.cozy.files.*',
+      'io.cozy.bills',
+      'io.cozy.accounts',
+      'io.cozy.identities',
+    ],
     oauth: {
       redirectURI: COZY_PREFIX,
-      softwareID: 'amiral',
+      softwareID: 'registry://home',
       clientKind: 'mobile',
       clientName: 'Amiral',
     },

@@ -36,9 +36,11 @@ export const getClient = async () => {
   }
 
   const state = JSON.parse(val)
-  const client = new CozyClient({uri: state.uri})
-  client.stackClient.setToken(state.token)
-  client.stackClient.setOAuthOptions(state.oauthOptions)
+  const client = new CozyClient({
+    uri: state.uri,
+    oauthOptions: state.oauthOptions,
+  })
+  client.stackClient.setToken(state.token.accessToken)
   await client.login()
   return client
 }
