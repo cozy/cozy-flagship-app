@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native'
-import HarvestView from './HarvestView'
+import HomeView from './HomeView'
 import LauncherView from './LauncherView'
 
 const Konnectors = ({navigation}) => {
@@ -9,7 +9,7 @@ const Konnectors = ({navigation}) => {
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeAreaView}>
-        <HarvestView setLauncherContext={setLauncherContext} />
+        <HomeView setLauncherContext={setLauncherContext} />
         {launcherContext.state === 'launch' && (
           <LauncherView
             launcherContext={launcherContext.value}

@@ -1,5 +1,4 @@
-Client Side Connectors
-----------------------
+## Client Side Connectors
 
 At the moment, this needs a little bit of setup to work:
 
@@ -14,5 +13,3 @@ cozy-stack konnectors install sncfempty git://github.com/konnectors/cozy-konnect
    the targeted cozy
 
 cozy-stack apps update home git://github.com/doubleface/cozy-collect.git#build-debug
-
-3. At the moment, only https://testchristophe.cozy.works is targetted
