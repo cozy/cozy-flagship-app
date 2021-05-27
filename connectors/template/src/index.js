@@ -26,7 +26,7 @@ class TemplateContentScript extends ContentScript {
 
   async checkAuthenticated() {
     return Boolean(
-      Array.from(document.querySelectorAll(`a[href='/logout']`)).length,
+      Array.from(document.querySelectorAll("a[href='/logout']")).length,
     )
   }
 
@@ -36,7 +36,7 @@ class TemplateContentScript extends ContentScript {
       url: 'http://quotes.toscrape.com/login',
       visible: true,
     })
-    await this.runInWorkerUntilTrue('checkAuthenticated')
+    await this.runInWorkerUntilTrue('waitForAuthenticated')
     await this.bridge.call('setWorkerState', {
       visible: false,
     })

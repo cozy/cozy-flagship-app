@@ -2,12 +2,8 @@ import ContentScriptBridge from './bridge/ContentScriptBridge'
 import MicroEE from 'microee'
 import Minilog from '@cozy/minilog'
 import {Q} from 'cozy-client'
-import {decode} from 'base-64'
 import saveFiles from './saveFiles'
 import saveBills from './saveBills'
-if (!global.atob) {
-  global.atob = decode
-}
 
 const log = Minilog('Launcher')
 
@@ -124,8 +120,11 @@ class ReactNativeLauncher extends LauncherInterface {
     }
 
     log.info('This is the first run')
+    const updatedAccount = await client.query(
+      Q('io.cozy.accounts').getById(account._id),
+    )
     const newAccount = await client.save({
-      ...account,
+      ...updatedAccount.data,
       label: sourceAccountIdentifier,
     })
     log.debug(newAccount, 'resulting account')

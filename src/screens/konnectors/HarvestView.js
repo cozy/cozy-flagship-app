@@ -1,28 +1,35 @@
 import React from 'react'
-import {domain, name} from '../../../config.json'
 import {get} from 'lodash'
 import {WebView} from 'react-native-webview'
+import {useClient} from 'cozy-client'
 
 const HarvestView = (props) => {
+  const client = useClient()
+  const { uri } = client.getStackClient()
+  const token = client.getStackClient().getAccessToken()
+  const [scheme, cozyDomain] = uri.split('://')
+  const cozyToken = token
   const {slug, accountId, setLauncherContext} = props
+  const cozyClientConf = {
+    scheme,
+    lang: 'fr',
+    cozyDomain,
+    cozyToken,
+  }
   const run = `
     window.cozy = {
       ClientConnectorLauncher: 'react-native',
-      clientSideSlugs: ['ameli', 'sncf', 'blablacar', 'template']
+      clientSideSlugs: ['ameli', 'sncf', 'blablacar', 'template'],
     };
-    console.log('injected', window.cozy)
-    return true
+    window.cozyClientConf = ${JSON.stringify(cozyClientConf)}
+    return true;
     `
-  let uri = `https://${name}-home.${domain}`
-  if (slug && accountId) {
-    uri = `https://${name}-home.${domain}/#connected/${slug}/accounts/${accountId}`
-  }
   return (
     <WebView
       originWhitelist={['*']}
       useWebKit={true}
       javaScriptEnabled={true}
-      source={{uri}}
+      source={{uri: 'file:///android_asset/home/index.html'}}
       injectedJavaScriptBeforeContentLoaded={run}
       onMessage={(m) => {
         const data = get(m, 'nativeEvent.data')

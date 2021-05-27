@@ -19,7 +19,12 @@ export default class ContentScriptBridge extends Bridge {
       webViewRef: this.webViewRef,
     })
 
-    this.connection = await ParentHandshake(this.messenger, exposedMethods)
+    this.connection = await ParentHandshake(
+      this.messenger,
+      exposedMethods,
+      50,
+      100,
+    )
     this.localHandle = this.connection.localHandle()
     this.remoteHandle = this.connection.remoteHandle()
 

@@ -7,8 +7,14 @@ const kyScraper = ky.create({
   },
 })
 
+/**
+ * Convert a blob object to a base64 uri
+ *
+ * @param {Blob} blob
+ * @returns {String}
+ */
 async function blobToBase64(blob) {
-  const reader = new FileReader()
+  const reader = new window.FileReader()
   await new Promise((resolve, reject) => {
     reader.onload = resolve
     reader.onerror = reject
@@ -22,7 +28,9 @@ export {kyScraper, blobToBase64}
 function addKyScraper(_request, _options, response) {
   response.$ = async () => Cheerio.load(await response.text())
   response.scrape = async (...args) => {
-    if (typeof args[0] !== 'string') args.unshift(await response.$())
+    if (typeof args[0] !== 'string') {
+      args.unshift(await response.$())
+    }
     return scrape(...args)
   }
   response.getFormData = async (formSelector) =>
