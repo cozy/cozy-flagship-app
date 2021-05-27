@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react'
 
-import {NavigationContainer} from '@react-navigation/native'
 import {Provider as PaperProvider, TextInput, Button} from 'react-native-paper'
 import {lightTheme} from './theme'
-import Connectors from './screens/konnectors'
+import {NavigationContainer} from '@react-navigation/native'
+import Connectors from './screens/connectors'
 import {View} from 'react-native'
 import {getClient, saveClient, initClient} from './libs/client'
 import {CozyProvider} from 'cozy-client'
