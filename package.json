@@ -11,7 +11,9 @@
     "start": "react-native start",
     "test": "jest",
     "token": "node scripts/token.js",
-    "lint": "eslint src/ scripts/"
+    "lint": "eslint src/ scripts/",
+    "home:build": "(cd cozy-home && yarn build:mobile)",
+    "home:watch": "(cd cozy-home && yarn watch:mobile)"
   },
   "dependencies": {
     "@cozy/minilog": "^1.0.0",
