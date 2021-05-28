@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from 'react'
-
-import {Provider as PaperProvider, TextInput, Button} from 'react-native-paper'
-import {lightTheme} from './theme'
-import {NavigationContainer} from '@react-navigation/native'
-import Connectors from './screens/connectors'
 import {View} from 'react-native'
-import {getClient, saveClient, initClient} from './libs/client'
-import {CozyProvider} from 'cozy-client'
-// Polyfill needed for cozy-client connection
+import {NavigationContainer} from '@react-navigation/native'
+import {Provider as PaperProvider, TextInput, Button} from 'react-native-paper'
+
 import {decode, encode} from 'base-64'
+
+import {CozyProvider} from 'cozy-client'
+
+import {lightTheme} from './theme'
+import Connectors from './screens/connectors'
+import {getClient, saveClient, initClient} from './libs/client'
+// Polyfill needed for cozy-client connection
 
 if (!global.btoa) {
   global.btoa = encode
