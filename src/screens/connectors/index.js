@@ -7,8 +7,8 @@ const Konnectors = ({navigation}) => {
   const [launcherContext, setLauncherContext] = useState({state: 'default'})
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeAreaView}>
+        <StatusBar barStyle="dark-content" />
         <HomeView setLauncherContext={setLauncherContext} />
         {launcherContext.state === 'launch' && (
           <LauncherView
@@ -29,11 +29,6 @@ const styles = StyleSheet.create({
   },
   safeAreaView: {
     flex: 1,
-  },
-  launcherView: {
-    position: 'absolute',
-    height: 0,
-    width: 0,
   },
 })
 
