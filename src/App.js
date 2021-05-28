@@ -1,35 +1,30 @@
 import React, {useEffect, useState} from 'react'
-
+import {View} from 'react-native'
 import {NavigationContainer} from '@react-navigation/native'
 import {Provider as PaperProvider, TextInput, Button} from 'react-native-paper'
-import {lightTheme} from './theme'
-import AppNavigator from './navigator'
-import {View} from 'react-native'
-import {getClient, saveClient, initClient, clearClient} from './libs/client'
-import {CozyProvider} from 'cozy-client'
-// Polyfill needed for cozy-client connection
+
 import {decode, encode} from 'base-64'
 
+import {CozyProvider} from 'cozy-client'
+
+import {lightTheme} from './theme'
+import Connectors from './screens/connectors'
+import {getClient, saveClient, initClient} from './libs/client'
+// Polyfill needed for cozy-client connection
+
 if (!global.btoa) {
-    global.btoa = encode;
+  global.btoa = encode
 }
 
 if (!global.atob) {
-    global.atob = decode;
+  global.atob = decode
 }
 
 const COZY_PREFIX = 'cozy://'
 
 const config = {
   screens: {
-    Home: {
-      screens: {
-        FileListPage: 'file-list',
-        Details: 'details',
-      },
-    },
-    Settings: 'settings',
-    Konnectors: 'konnectors',
+    connectors: 'connectors',
   },
 }
 
@@ -55,7 +50,7 @@ const App = () => {
       {client ? (
         <CozyProvider client={client}>
           <NavigationContainer linking={linking}>
-            <AppNavigator />
+            <Connectors />
           </NavigationContainer>
         </CozyProvider>
       ) : (
@@ -82,7 +77,6 @@ const App = () => {
 }
 
 const callInitClient = async (uri) => {
-  console.log('callInit')
   const client = await initClient(uri, {
     scope: [
       'io.cozy.files.*',
@@ -97,7 +91,6 @@ const callInitClient = async (uri) => {
       clientName: 'Amiral',
     },
   })
-  console.log('saveClient')
   await saveClient(client)
   return client
 }
