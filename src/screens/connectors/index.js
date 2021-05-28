@@ -8,6 +8,7 @@ const Konnectors = ({navigation}) => {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeAreaView}>
+        <StatusBar barStyle="dark-content" />
         <HomeView setLauncherContext={setLauncherContext} />
         {launcherContext.state === 'launch' && (
           <LauncherView
