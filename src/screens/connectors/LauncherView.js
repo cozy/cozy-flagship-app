@@ -82,25 +82,32 @@ class LauncherView extends Component {
             injectedJavaScriptBeforeContentLoaded={this.connector.source}
           />
         </View>
-        <WebView
+        <View
           style={
             this.state.worker.visible
               ? styles.workerVisible
               : styles.workerHidden
-          }
-          ref={(ref) => (this.workerWebview = ref)}
-          originWhitelist={['*']}
-          useWebKit={true}
-          javaScriptEnabled={true}
-          source={{
-            uri: this.state.worker.url,
-          }}
-          sharedCookiesEnabled={true}
-          onMessage={this.onWorkerMessage}
-          onError={this.onWorkerError}
-          onShouldStartLoadWithRequest={this.onWorkerWillReload}
-          injectedJavaScriptBeforeContentLoaded={this.connector.source}
-        />
+          }>
+          <WebView
+            style={
+              this.state.worker.visible
+                ? styles.workerVisible
+                : styles.workerHidden
+            }
+            ref={(ref) => (this.workerWebview = ref)}
+            originWhitelist={['*']}
+            useWebKit={true}
+            javaScriptEnabled={true}
+            source={{
+              uri: this.state.worker.url,
+            }}
+            sharedCookiesEnabled={true}
+            onMessage={this.onWorkerMessage}
+            onError={this.onWorkerError}
+            onShouldStartLoadWithRequest={this.onWorkerWillReload}
+            injectedJavaScriptBeforeContentLoaded={this.connector.source}
+          />
+        </View>
       </>
     )
   }
