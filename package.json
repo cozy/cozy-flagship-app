@@ -12,8 +12,8 @@
     "test": "jest",
     "token": "node scripts/token.js",
     "lint": "eslint src/ scripts/",
-    "build:home": "(cd cozy-home && yarn build:mobile)",
-    "watch:home": "(cd cozy-home && yarn watch:mobile)"
+    "home:build": "(cd cozy-home && yarn build:mobile)",
+    "home:watch": "(cd cozy-home && yarn watch:mobile)"
   },
   "dependencies": {
     "@cozy/minilog": "^1.0.0",
