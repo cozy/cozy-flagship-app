@@ -9,8 +9,11 @@ export default class ContentScript {
   /**
    * Init the bridge communication with the launcher.
    * It also exposes the methods which will be callable by the launcher
+   *
+   * @param {Array<String>}options.additionalExposedMethodsNames : list of additional method of the
+   * content script to expose expose. To make it callable via the worker
    */
-  async init() {
+  async init(options = {}) {
     this.bridge = new LauncherBridge({localWindow: window})
     const exposedMethodsNames = [
       'ensureAuthenticated',
@@ -19,6 +22,14 @@ export default class ContentScript {
       'getUserDataFromWebsite',
       'fetch',
     ]
+
+    if (options.additionalExposedMethodsNames) {
+      exposedMethodsNames.push.apply(
+        exposedMethodsNames,
+        options.additionalExposedMethodsNames,
+      )
+    }
+
     const exposedMethods = {}
     // TODO error handling
     // should catch and call onError on the launcher to let it handle the job update
