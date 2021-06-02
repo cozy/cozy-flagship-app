@@ -15,6 +15,7 @@ export default class ContentScript {
     const exposedMethodsNames = [
       'ensureAuthenticated',
       'checkAuthenticated',
+      'waitForAuthenticated',
       'getUserDataFromWebsite',
       'fetch',
     ]
@@ -29,6 +30,21 @@ export default class ContentScript {
       this.log(
         'window.beforeunload detected with previous url : ' + document.location,
       )
+  }
+
+  /**
+   * This method is made to run in the worker and will resolve only when
+   * the user is authenticated
+   *
+   * @returns Promise.<Boolean>
+   */
+  async waitForAuthenticated() {
+    let result = false
+    while (result === false) {
+      result = await this.checkAuthenticated()
+      await sleep(1000)
+    }
+    return result
   }
 
   /**
@@ -48,7 +64,7 @@ export default class ContentScript {
   }
 
   /**
-   * Bridge to the saveFiles method from the laucher.
+   * Bridge to the saveFiles method from the launcher.
    * - it prefilters files according to the context comming from the launcher
    * - download files when not filtered out
    * - converts blob files to base64 uri to be serializable
@@ -77,7 +93,7 @@ export default class ContentScript {
   }
 
   /**
-   * Bridge to the saveBills method from the laucher.
+   * Bridge to the saveBills method from the launcher.
    * - it first saves the files
    * - then saves bills linked to corresponding files
    *
@@ -182,4 +198,8 @@ export default class ContentScript {
    * @returns {Object} : Connector execution result. TBD
    */
   async fetch({context}) {}
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }

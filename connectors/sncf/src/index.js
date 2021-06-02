@@ -1,7 +1,6 @@
-import ContentScript from './libs/ContentScript'
-import {kyScraper} from './libs/utils'
+import ContentScript from '../../connectorLibs/ContentScript'
+import {kyScraper} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
-import format from 'date-fns/format'
 const log = Minilog('ContentScript')
 Minilog.enable()
 
@@ -17,10 +16,16 @@ class SncfContentScript extends ContentScript {
   }
 
   async checkAuthenticated() {
-    const {redirected} = await kyScraper.get(
-      'https://www.oui.sncf/espaceclient/commandes-en-cours',
-    )
-    return !redirected
+    console.log('before checkAutnenticated')
+    try {
+      const {redirected} = await kyScraper.get(
+        'https://www.oui.sncf/espaceclient/commandes-en-cours',
+      )
+      return !redirected
+    } catch (err) {
+      console.warn(err)
+      return false
+    }
   }
 
   /**
@@ -28,6 +33,7 @@ class SncfContentScript extends ContentScript {
    */
   async showLoginFormAndWaitForAuthentication() {
     log.debug('showLoginFormAndWaitForAuthentication start')
+
     await this.bridge.call('setWorkerState', {
       url: 'https://www.oui.sncf/espaceclient/identification',
       visible: true,
@@ -46,11 +52,11 @@ class SncfContentScript extends ContentScript {
     const orders = await resp.scrape(
       {
         fileurl: {
-          sel: `.show-for-small-only a[title='Justificatif']`,
+          sel: ".show-for-small-only a[title='Justificatif']",
           attr: 'href',
           parse: (href) => href.replace(':80'),
         },
-        vendorRef: `.order__detail [data-auto=ccl_orders_travel_number]`,
+        vendorRef: '.order__detail [data-auto=ccl_orders_travel_number]',
         // label: {
         //   sel: '.order__top .texte--insecable',
         //   fn: (el) =>

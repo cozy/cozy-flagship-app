@@ -1,4 +1,4 @@
-import {MessengerInterface} from '../../../../libs'
+import {MessengerInterface} from '../../libs'
 
 /**
  * post-me messenger implementation for a content script imlanted in a react native webview
@@ -14,10 +14,12 @@ export default class ReactNativeWebviewMessenger extends MessengerInterface {
     this.localWindow = localWindow
   }
   postMessage(message) {
+    // console.log('postMessage', message)
     this.localWindow.ReactNativeWebView.postMessage(JSON.stringify(message))
   }
   addMessageListener(listener) {
     const outerListener = (event) => {
+      // console.log('onMessage', event.data)
       listener(event)
     }
 
