@@ -150,13 +150,13 @@ class ReactNativeLauncher extends LauncherInterface {
    * @param {String} method
    * @returns {any} the worker method return value
    */
-  async runInWorker(method) {
+  async runInWorker(method, ...args) {
     log.debug('runInworker called')
     try {
       return await new Promise((resolve, reject) => {
         this.once('WORKER_RELOAD', () => reject('WORKER_RELOAD'))
         log.debug(`calling ${method} on worker`)
-        this.workerWebviewBridge.call(method).then(resolve)
+        this.workerWebviewBridge.call(method, ...args).then(resolve)
       })
     } catch (err) {
       log.info(`Got error in runInWorker ${err}`)
