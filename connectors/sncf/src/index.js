@@ -1,6 +1,8 @@
 import ContentScript from '../../connectorLibs/ContentScript'
 import {kyScraper} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
+import waitFor from 'p-wait-for'
+
 const log = Minilog('ContentScript')
 Minilog.enable()
 
@@ -8,20 +10,21 @@ monkeyPatch()
 class SncfContentScript extends ContentScript {
   async ensureAuthenticated() {
     log.debug('ensureAuthenticated start')
-    if (!(await this.checkAuthenticated())) {
+    if (!(await this.checkAuthenticated(5000))) {
       this.log('not authenticated')
       await this.showLoginFormAndWaitForAuthentication()
     }
     return true
   }
 
-  async checkAuthenticated() {
-    console.log('before checkAutnenticated')
+  detectLogoutLink() {
+    return document.querySelector('.wcc__logout') !== null
+  }
+
+  async checkAuthenticated(timeout = Infinity) {
     try {
-      const {redirected} = await kyScraper.get(
-        'https://www.oui.sncf/espaceclient/commandes-en-cours',
-      )
-      return !redirected
+      await waitFor(this.detectLogoutLink, {timeout, interval: 100})
+      return true
     } catch (err) {
       console.warn(err)
       return false
