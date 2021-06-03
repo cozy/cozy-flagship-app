@@ -4,6 +4,7 @@ import Minilog from '@cozy/minilog'
 import {Q} from 'cozy-client'
 import saveFiles from './saveFiles'
 import saveBills from './saveBills'
+import saveIdentity from './saveIdentity'
 
 const log = Minilog('Launcher')
 
@@ -66,6 +67,7 @@ class ReactNativeLauncher extends LauncherInterface {
           'runInWorker',
           'saveFiles',
           'saveBills',
+          'saveIdentity',
         ],
         listenedEvents: ['log'],
       }),
@@ -226,6 +228,18 @@ class ReactNativeLauncher extends LauncherInterface {
     log.info(result, 'saveFiles result')
 
     return result
+  }
+
+  /**
+   * Calls cozy-konnector-libs' saveIdentifier function
+   *
+   * @param {Object} contact : contact object
+   */
+  async saveIdentity(contact) {
+    const {client} = this.getStartContext()
+    log.debug(contact, 'saveIdentity contact')
+    const {sourceAccountIdentifier} = this.getUserData()
+    await saveIdentity(contact, sourceAccountIdentifier, {client})
   }
 
   /**
