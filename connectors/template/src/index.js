@@ -1,5 +1,5 @@
-import ContentScript from './libs/ContentScript'
-import {kyScraper as ky} from './libs/utils'
+import ContentScript from '../../connectorLibs/ContentScript'
+import {kyScraper as ky} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
 import format from 'date-fns/format'
 const log = Minilog('ContentScript')

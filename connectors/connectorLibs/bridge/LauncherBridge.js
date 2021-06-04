@@ -1,6 +1,6 @@
 import {ChildHandshake} from 'post-me'
-import ReactNativeWebviewMessenger from './ContentScriptMessenger.js'
-import {Bridge} from '../../../../libs'
+import ReactNativeWebviewMessenger from './ContentScriptMessenger'
+import {Bridge} from '../../libs'
 
 /**
  * Bridge to the Launcher object via post-me

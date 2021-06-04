@@ -9,15 +9,27 @@ export default class ContentScript {
   /**
    * Init the bridge communication with the launcher.
    * It also exposes the methods which will be callable by the launcher
+   *
+   * @param {Array<String>}options.additionalExposedMethodsNames : list of additional method of the
+   * content script to expose expose. To make it callable via the worker
    */
-  async init() {
+  async init(options = {}) {
     this.bridge = new LauncherBridge({localWindow: window})
     const exposedMethodsNames = [
       'ensureAuthenticated',
       'checkAuthenticated',
+      'waitForAuthenticated',
       'getUserDataFromWebsite',
       'fetch',
     ]
+
+    if (options.additionalExposedMethodsNames) {
+      exposedMethodsNames.push.apply(
+        exposedMethodsNames,
+        options.additionalExposedMethodsNames,
+      )
+    }
+
     const exposedMethods = {}
     // TODO error handling
     // should catch and call onError on the launcher to let it handle the job update
@@ -29,6 +41,21 @@ export default class ContentScript {
       this.log(
         'window.beforeunload detected with previous url : ' + document.location,
       )
+  }
+
+  /**
+   * This method is made to run in the worker and will resolve only when
+   * the user is authenticated
+   *
+   * @returns Promise.<Boolean>
+   */
+  async waitForAuthenticated() {
+    let result = false
+    while (result === false) {
+      result = await this.checkAuthenticated()
+      await sleep(1000)
+    }
+    return result
   }
 
   /**
@@ -48,7 +75,7 @@ export default class ContentScript {
   }
 
   /**
-   * Bridge to the saveFiles method from the laucher.
+   * Bridge to the saveFiles method from the launcher.
    * - it prefilters files according to the context comming from the launcher
    * - download files when not filtered out
    * - converts blob files to base64 uri to be serializable
@@ -77,7 +104,7 @@ export default class ContentScript {
   }
 
   /**
-   * Bridge to the saveBills method from the laucher.
+   * Bridge to the saveBills method from the launcher.
    * - it first saves the files
    * - then saves bills linked to corresponding files
    *
@@ -182,4 +209,8 @@ export default class ContentScript {
    * @returns {Object} : Connector execution result. TBD
    */
   async fetch({context}) {}
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }

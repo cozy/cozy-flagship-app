@@ -5,10 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@cozy/minilog": "^1.0.0",
-    "cheerio": "^1.0.0-rc.5",
-    "date-fns": "^2.21.1",
-    "ky": "^0.27.0",
-    "post-me": "^0.4.5"
+    "date-fns": "^2.21.1"
   },
   "scripts": {
     "build": "webpack",
