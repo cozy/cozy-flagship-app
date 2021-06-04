@@ -2,6 +2,7 @@ import ContentScript from '../../connectorLibs/ContentScript'
 import {kyScraper as ky} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
+import waitFor from 'p-wait-for'
 
 const log = Minilog('ContentScript')
 Minilog.enable()
@@ -63,8 +64,6 @@ class BlablacarContentScript extends ContentScript {
       visible: false,
     })
 
-    // FIXME waitForElement
-    await sleep(5000)
     let result = await this.bridge.call('runInWorker', 'getPayments')
     await this.saveFiles(
       result.map((entry) => ({
@@ -80,6 +79,7 @@ class BlablacarContentScript extends ContentScript {
   }
 
   async getPayments() {
+    await waitFor(() => document.querySelector('.my-payments'))
     const result = Array.from(
       document.querySelectorAll('.my-payments .card'),
     ).map((doc) => ({
@@ -89,15 +89,12 @@ class BlablacarContentScript extends ContentScript {
       amount: doc.querySelector('strong').innerText,
       date: doc.querySelector('.span4 p.margin-half-bottom').innerText,
     }))
-    console.log(result)
     return result
   }
 
   async parseDocuments(resp) {
     const $ = await resp.$()
-    console.log($.html())
     const cards = Array.from($('.my-payments .card')).map((d) => d.html())
-    console.log(cards)
     // const result = await resp.scrape(
     //   {
     //     filecontent: {
@@ -152,7 +149,3 @@ connector
   .catch((err) => {
     console.warn(err)
   })
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
