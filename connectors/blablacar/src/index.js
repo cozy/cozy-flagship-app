@@ -92,47 +92,6 @@ class BlablacarContentScript extends ContentScript {
     return result
   }
 
-  async parseDocuments(resp) {
-    const $ = await resp.$()
-    const cards = Array.from($('.my-payments .card')).map((d) => d.html())
-    // const result = await resp.scrape(
-    //   {
-    //     filecontent: {
-    //       s
-    //     }
-    //     amount: {
-    //       sel: '.price_color',
-    //       parse: normalizePrice,
-    //     },
-    //     filename: {
-    //       sel: 'h3 a',
-    //       attr: 'title',
-    //     },
-    //     fileurl: {
-    //       sel: 'img',
-    //       attr: 'src',
-    //       parse: (src) => `${baseUrl}/${src}`,
-    //     },
-    //   },
-    //   '.my-payments .card',
-    // )
-    // return result.map((doc) => ({
-    //   ...doc,
-    //   // The saveBills function needs a date field
-    //   // even if it is a little artificial here (these are not real bills)
-    //   date: new Date(),
-    //   currency: 'EUR',
-    //   filename: `${format(
-    //     new Date(),
-    //     'yyyy-MM-dd',
-    //   )}_template_${doc.amount.toFixed(2)}EUR${
-    //     doc.vendorRef ? '_' + doc.vendorRef : ''
-    //   }.jpg`,
-    //   vendor: 'template',
-    // }))
-    // }
-  }
-
   async getUserDataFromWebsite() {
     log.debug('getUserDataFromWebsite')
     return {
