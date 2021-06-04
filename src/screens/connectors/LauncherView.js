@@ -4,6 +4,7 @@ import {StyleSheet, View} from 'react-native'
 // TODO find a proper way to load a connector only when needed
 import templateConnector from '../../../connectors/template/dist/webviewScript'
 import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
+import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
 import ReactNativeLauncher from './libs/ReactNativeLauncher'
 import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
@@ -12,6 +13,7 @@ import {withClient} from 'cozy-client'
 const connectors = {
   template: templateConnector,
   sncf: sncfConnector,
+  blablacar: blablacarConnector,
 }
 class LauncherView extends Component {
   constructor(props) {

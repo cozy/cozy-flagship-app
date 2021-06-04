@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "name": "Blablacar",
+  "type": "konnector",
+  "language": "node",
+  "icon": "icon.svg",
+  "slug": "blablacar",
+  "source": "git@github.com:konnectors/template.git",
+  "editor": "Cozy",
+  "vendor_link": "https://m.blablacar.fr/dashboard/profile/menu",
+  "categories": [
+    "transport"
+  ],
+  "fields": { }
+}

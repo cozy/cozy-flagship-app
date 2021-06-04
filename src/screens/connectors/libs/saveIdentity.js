@@ -21,7 +21,7 @@ const log = Minilog('saveIdentity')
  * ```
  */
 
-const saveIdentity = async (contact, accountIdentifier) => {
+const saveIdentity = async (contact, accountIdentifier, options) => {
   log.debug('saving user identity', accountIdentifier)
   if (accountIdentifier == null) {
     log.warn("Can't set identity as no accountIdentifier was provided")
@@ -44,10 +44,12 @@ const saveIdentity = async (contact, accountIdentifier) => {
     contact,
   }
 
-  await updateOrCreate([identity], 'io.cozy.identities', [
-    'identifier',
-    'cozyMetadata.createdByApp',
-  ])
+  await updateOrCreate(
+    [identity],
+    'io.cozy.identities',
+    ['identifier', 'cozyMetadata.createdByApp'],
+    options,
+  )
   return
 }
 

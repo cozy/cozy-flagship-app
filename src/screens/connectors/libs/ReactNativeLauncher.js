@@ -4,6 +4,7 @@ import Minilog from '@cozy/minilog'
 import {Q} from 'cozy-client'
 import saveFiles from './saveFiles'
 import saveBills from './saveBills'
+import saveIdentity from './saveIdentity'
 
 const log = Minilog('Launcher')
 
@@ -66,6 +67,7 @@ class ReactNativeLauncher extends LauncherInterface {
           'runInWorker',
           'saveFiles',
           'saveBills',
+          'saveIdentity',
         ],
         listenedEvents: ['log'],
       }),
@@ -150,13 +152,13 @@ class ReactNativeLauncher extends LauncherInterface {
    * @param {String} method
    * @returns {any} the worker method return value
    */
-  async runInWorker(method) {
+  async runInWorker(method, ...args) {
     log.debug('runInworker called')
     try {
       return await new Promise((resolve, reject) => {
         this.once('WORKER_RELOAD', () => reject('WORKER_RELOAD'))
         log.debug(`calling ${method} on worker`)
-        this.workerWebviewBridge.call(method).then(resolve)
+        this.workerWebviewBridge.call(method, ...args).then(resolve)
       })
     } catch (err) {
       log.info(`Got error in runInWorker ${err}`)
@@ -226,6 +228,18 @@ class ReactNativeLauncher extends LauncherInterface {
     log.info(result, 'saveFiles result')
 
     return result
+  }
+
+  /**
+   * Calls cozy-konnector-libs' saveIdentifier function
+   *
+   * @param {Object} contact : contact object
+   */
+  async saveIdentity(contact) {
+    const {client} = this.getStartContext()
+    log.debug(contact, 'saveIdentity contact')
+    const {sourceAccountIdentifier} = this.getUserData()
+    await saveIdentity(contact, sourceAccountIdentifier, {client})
   }
 
   /**

@@ -59,16 +59,25 @@ export default class ContentScript {
   }
 
   /**
+   * Run a specified method in the worker webview
+   *
+   * @param {String} method : name of the method to run
+   */
+  async runInWorker(method, ...args) {
+    return this.bridge.call('runInWorker', method, ...args)
+  }
+
+  /**
    * Wait for a specific event from the worker and then resolve the promise
    *
    * @param {String} method : name of the method to run
    */
-  async runInWorkerUntilTrue(method) {
+  async runInWorkerUntilTrue(method, ...args) {
     log('runInWorkerUntilTrue', method)
     let result = false
     while (!result) {
       log('runInWorker call', method)
-      result = await this.bridge.call('runInWorker', method)
+      result = await this.runInWorker(method, ...args)
       log('runInWorker result', result)
     }
     return result

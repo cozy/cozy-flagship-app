@@ -10,8 +10,8 @@ import {CozyProvider} from 'cozy-client'
 import {lightTheme} from './theme'
 import Connectors from './screens/connectors'
 import {getClient, saveClient, initClient} from './libs/client'
-// Polyfill needed for cozy-client connection
 
+// Polyfill needed for cozy-client connection
 if (!global.btoa) {
   global.btoa = encode
 }
@@ -79,6 +79,18 @@ const App = () => {
 const callInitClient = async (uri) => {
   const client = await initClient(uri, {
     scope: [
+      'io.cozy.apps',
+      'io.cozy.settings',
+      'io.cozy.konnectors',
+      'io.cozy.jobs',
+      'io.cozy.contacts',
+      'io.cozy.triggers',
+      'io.cozy.permissions',
+      'io.cozy.apps.suggestions',
+      'com.bitwarden.organizations',
+      'com.bitwarden.ciphers',
+      'io.cozy.bank.accounts',
+      'io.cozy.timeseries.geojson',
       'io.cozy.files.*',
       'io.cozy.bills',
       'io.cozy.accounts',
@@ -86,7 +98,7 @@ const callInitClient = async (uri) => {
     ],
     oauth: {
       redirectURI: COZY_PREFIX,
-      softwareID: 'registry://home',
+      softwareID: 'amiral',
       clientKind: 'mobile',
       clientName: 'Amiral',
     },
