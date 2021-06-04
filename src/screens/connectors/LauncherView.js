@@ -59,6 +59,7 @@ class LauncherView extends Component {
       contentScript: this.connector.source,
     })
     await this.launcher.start()
+    this.props.setLauncherContext({state: 'default'})
   }
 
   componentWillUnmount() {
