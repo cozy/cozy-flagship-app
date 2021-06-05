@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View} from 'react-native'
+import {SafeAreaView, StyleSheet, View} from 'react-native'
 import {NavigationContainer} from '@react-navigation/native'
 import {Provider as PaperProvider, TextInput, Button} from 'react-native-paper'
 
@@ -95,4 +95,16 @@ const callInitClient = async (uri) => {
   return client
 }
 
-export default App
+const AppSafeView = () => (
+  <SafeAreaView style={styles.container}>
+    <App />
+  </SafeAreaView>
+)
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+})
+
+export default AppSafeView
