@@ -62,3 +62,8 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+
+# build assets
+android/app/src/main/res/raw/*
+android/app/src/main/res/drawable-mdpi/*
+android/app/src/main/assets/index.android.bundle
