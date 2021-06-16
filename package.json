@@ -26,7 +26,7 @@
     "base-64": "^1.0.0",
     "bluebird-retry": "^0.11.0",
     "cheerio": "^1.0.0-rc.9",
-    "cozy-client": "^23.0.0",
+    "cozy-client": "^23.11.1",
     "cozy-client-js": "^0.19.0",
     "ky": "^0.28.5",
     "microee": "^0.0.6",
