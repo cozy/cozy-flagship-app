@@ -157,7 +157,7 @@ class LauncherView extends Component {
    * @param {Object} event
    */
   onWorkerWillReload(event) {
-    if (this.launcher) {
+    if (this.launcher && this.workerWebview) {
       return this.launcher.onWorkerWillReload(event)
     } else {
       return true
