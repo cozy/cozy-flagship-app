@@ -148,11 +148,11 @@ class ReactNativeLauncher extends LauncherInterface {
    */
   async sendLoginSuccess() {
     const {context, client} = this.getStartContext()
-    const accountToUpdate = await client.query(
+    const updatedAccount = await client.query(
       Q('io.cozy.accounts').getById(context.account._id),
     )
     await client.save({
-      ...accountToUpdate.data,
+      ...updatedAccount.data,
       state: 'LOGIN_SUCCESS',
     })
   }
