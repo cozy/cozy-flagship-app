@@ -306,7 +306,8 @@ class ReactNativeLauncher extends LauncherInterface {
    * @returns {Object}
    */
   async getPilotContext({sourceAccountIdentifier, slug}) {
-    const result = await this.client.queryAll(
+    const {client} = this.getStartContext()
+    const result = await client.queryAll(
       Q('io.cozy.files')
         .where({
           trashed: false,
