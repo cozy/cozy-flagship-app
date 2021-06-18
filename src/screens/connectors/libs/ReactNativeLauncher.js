@@ -2,9 +2,7 @@ import ContentScriptBridge from './bridge/ContentScriptBridge'
 import MicroEE from 'microee'
 import Minilog from '@cozy/minilog'
 import {Q} from 'cozy-client'
-import saveFiles from './saveFiles'
-import saveBills from './saveBills'
-import saveIdentity from './saveIdentity'
+import {saveFiles, saveBills, saveIdentity} from './connectorLibs'
 
 const log = Minilog('Launcher')
 
