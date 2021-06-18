@@ -1,5 +1,5 @@
 import {ParentHandshake} from 'post-me'
-import {Bridge} from '../../../../libs/bridgeHelpers'
+import {Bridge} from '../../../../libs/bridgeInterfaces'
 import ReactNativeLauncherMessenger from './ReactNativeLauncherMessenger'
 
 /**
