@@ -3,6 +3,7 @@ import MicroEE from 'microee'
 import Minilog from '@cozy/minilog'
 import {Q} from 'cozy-client'
 import {saveFiles, saveBills, saveIdentity} from '../../../libs/connectorLibs'
+import {dataURItoArrayBuffer} from '../../../libs/utils'
 
 const log = Minilog('Launcher')
 
@@ -264,7 +265,7 @@ class ReactNativeLauncher extends LauncherInterface {
     const {sourceAccountIdentifier} = this.getUserData()
     for (const entry of entries) {
       if (entry.dataUri) {
-        entry.filestream = dataURItoArrayBuffer(entry.dataUri).ab
+        entry.filestream = dataURItoArrayBuffer(entry.dataUri).arrayBuffer
         delete entry.dataUri
       }
     }
@@ -427,19 +428,6 @@ class ReactNativeLauncher extends LauncherInterface {
     this.restartWorkerConnection(event)
     return true // allows the webview to load the new page
   }
-}
-
-function dataURItoArrayBuffer(dataURI) {
-  const [contentType, base64String] = dataURI
-    .match(/^data:(.*);base64,(.*)$/)
-    .slice(1)
-  const byteString = global.atob(base64String)
-  const ab = new ArrayBuffer(byteString.length)
-  const ia = new Uint8Array(ab)
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i)
-  }
-  return {contentType, ab}
 }
 
 /**
