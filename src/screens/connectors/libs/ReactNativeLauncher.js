@@ -1,7 +1,8 @@
-import ContentScriptBridge from './bridge/ContentScriptBridge'
 import MicroEE from 'microee'
 import Minilog from '@cozy/minilog'
 import {Q} from 'cozy-client'
+
+import ContentScriptBridge from '../../../libs/bridge/ContentScriptBridge'
 import {saveFiles, saveBills, saveIdentity} from '../../../libs/connectorLibs'
 import {dataURItoArrayBuffer} from '../../../libs/utils'
 import LauncherInterface from '../../../libs/LauncherInterface'
