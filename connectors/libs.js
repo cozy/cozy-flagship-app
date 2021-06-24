@@ -3,6 +3,6 @@
  * Will probably become a npm package in the future
  */
 
-import {Bridge, MessengerInterface} from '../src/libs/bridgeHelpers'
+import {Bridge, MessengerInterface} from '../src/libs/bridge/bridgeInterfaces'
 
 export {Bridge, MessengerInterface}

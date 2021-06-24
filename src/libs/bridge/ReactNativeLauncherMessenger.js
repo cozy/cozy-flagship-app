@@ -1,4 +1,4 @@
-import {MessengerInterface} from '../../../../libs/bridge/bridgeInterfaces'
+import {MessengerInterface} from './bridgeInterfaces'
 
 /**
  * post-me messenger implementation for the react native launcher
