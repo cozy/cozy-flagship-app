@@ -76,7 +76,9 @@ class LauncherView extends Component {
     if (this.launcher.removeAllListener) {
       this.launcher.removeAllListener()
     }
+    this.launcher.close()
   }
+
   render() {
     return (
       <>

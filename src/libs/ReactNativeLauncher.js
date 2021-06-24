@@ -87,6 +87,11 @@ class ReactNativeLauncher extends LauncherInterface {
     this.emit('CONNECTOR_EXECUTION_END')
   }
 
+  async close() {
+    this.pilotWebviewBridge.close()
+    this.workerWebviewBridge.close()
+  }
+
   /**
    * Updates the result of the current job
    *
