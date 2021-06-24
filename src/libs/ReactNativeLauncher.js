@@ -2,10 +2,10 @@ import MicroEE from 'microee'
 import Minilog from '@cozy/minilog'
 import {Q} from 'cozy-client'
 
-import ContentScriptBridge from '../../../libs/bridge/ContentScriptBridge'
-import {saveFiles, saveBills, saveIdentity} from '../../../libs/connectorLibs'
-import {dataURItoArrayBuffer} from '../../../libs/utils'
-import LauncherInterface from '../../../libs/LauncherInterface'
+import ContentScriptBridge from './bridge/ContentScriptBridge'
+import {saveFiles, saveBills, saveIdentity} from './connectorLibs'
+import {dataURItoArrayBuffer} from './utils'
+import LauncherInterface from './LauncherInterface'
 
 const log = Minilog('Launcher')
 
@@ -319,7 +319,7 @@ class ReactNativeLauncher extends LauncherInterface {
   }
 
   /**
-   * This method creates and init a content script bridge to the launcher with some facilities to make
+   * This method creates and inits a content script bridge to the launcher with some facilities to make
    * it's own method callable by the content script
    *
    * @param {String} options.bridgeName : Name of the attribute where the bridge instance will be placed
