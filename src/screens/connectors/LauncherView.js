@@ -39,12 +39,22 @@ class LauncherView extends Component {
     CookieManager.flush()
   }
 
-  async componentDidMount() {
-    this.launcher = new ReactNativeLauncher({
+  async componentDidUpdate() {
+    this.launcher.setStartContext({
+      client: this.props.client,
       context: this.props.launcherContext,
       manifest: this.connector.manifest,
-      client: this.props.client,
     })
+  }
+
+  async componentDidMount() {
+    this.launcher = new ReactNativeLauncher()
+    this.launcher.setStartContext({
+      client: this.props.client,
+      context: this.props.launcherContext,
+      manifest: this.connector.manifest,
+    })
+
     this.launcher.on('SET_WORKER_STATE', (options) => {
       if (this.state.worker.url !== options.url) {
         this.onWorkerWillReload(options)
