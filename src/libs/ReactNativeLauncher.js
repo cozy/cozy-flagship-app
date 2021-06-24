@@ -18,13 +18,18 @@ Minilog.enable()
  * @param {Object}             manifest: connector manifest content
  */
 class ReactNativeLauncher extends LauncherInterface {
-  constructor({context, manifest, client}) {
+  constructor() {
     super()
-    log.debug(context, 'context')
-    log.debug(manifest, 'manifest')
-    this.startContext = {context, manifest, client}
     this.workerListenedEvents = ['log', 'workerEvent']
   }
+
+  setStartContext(startContext) {
+    log.debug(startContext.context, 'context')
+    log.debug(startContext.manifest, 'manifest')
+
+    this.startContext = startContext
+  }
+
   async init({bridgeOptions, contentScript}) {
     log.debug('bridges init start')
     const promises = [
@@ -52,6 +57,7 @@ class ReactNativeLauncher extends LauncherInterface {
     await Promise.all(promises)
     log.debug('bridges init done')
   }
+
   async start() {
     try {
       await this.pilotWebviewBridge.call('ensureAuthenticated')
