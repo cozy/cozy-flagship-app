@@ -13,7 +13,10 @@ export class Bridge {
    * Initialize the communication between the parent and the child via post-me protocol
    * https://github.com/alesgenova/post-me
    *
-   * @param  {Object} options.exposedMethods  : The list of methods of the launcher and their implementation, which will be exposed via the post-me interface
+   * @param  {Object} options.root                        : The object which will contain the exposed method names
+   * @param  {Array.<String>} options.exposedMethodNames  : The list of method names of the root object, which will be exposed via the post-me interface to the content script
+   * @param  {Array.<String>} options.listenedEventsNames : The list of method names of the root object, which will be call on given event name via the post-me interface to the content script
+   * @param  {Object} options.webViewRef                  : Reference to the webview obect containing the content script
    * @return {PostMeConnection} : the resulting post-me connection
    */
   async init({exposedMethods}) {}

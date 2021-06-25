@@ -20,7 +20,7 @@ Minilog.enable()
 class ReactNativeLauncher extends LauncherInterface {
   constructor() {
     super()
-    this.workerListenedEvents = ['log', 'workerEvent']
+    this.workerListenedEventsNames = ['log', 'workerEvent']
   }
 
   setStartContext(startContext) {
@@ -33,8 +33,7 @@ class ReactNativeLauncher extends LauncherInterface {
   async init({bridgeOptions, contentScript}) {
     log.debug('bridges init start')
     const promises = [
-      this.initContentScriptBridge({
-        bridgeName: 'pilotWebviewBridge',
+      this.initPilotContentScriptBridge({
         webViewRef: bridgeOptions.pilotWebView,
         contentScript,
         exposedMethodsNames: [
@@ -44,14 +43,13 @@ class ReactNativeLauncher extends LauncherInterface {
           'saveBills',
           'saveIdentity',
         ],
-        listenedEvents: ['log'],
+        listenedEventsNames: ['log'],
       }),
-      this.initContentScriptBridge({
-        bridgeName: 'workerWebviewBridge',
+      this.initWorkerContentScriptBridge({
         webViewRef: bridgeOptions.workerWebview,
         contentScript,
         exposedMethodsNames: [],
-        listenedEvents: this.workerListenedEvents,
+        listenedEventsNames: this.workerListenedEventsNames,
       }),
     ]
     await Promise.all(promises)
@@ -60,12 +58,10 @@ class ReactNativeLauncher extends LauncherInterface {
 
   async start() {
     try {
-      await this.pilotWebviewBridge.call('ensureAuthenticated')
+      await this.pilot.call('ensureAuthenticated')
       await this.sendLoginSuccess()
 
-      this.userData = await this.pilotWebviewBridge.call(
-        'getUserDataFromWebsite',
-      )
+      this.userData = await this.pilot.call('getUserDataFromWebsite')
 
       await this.ensureAccountNameAndFolder()
 
@@ -75,7 +71,7 @@ class ReactNativeLauncher extends LauncherInterface {
       //   sourceAccountIdentifier: userData.sourceAccountIdentifier,
       //   slug: manifest.slug,
       // })
-      await this.pilotWebviewBridge.call('fetch', pilotContext)
+      await this.pilot.call('fetch', pilotContext)
       await this.updateJobResult()
     } catch (err) {
       log.error(err, 'start error')
@@ -88,8 +84,8 @@ class ReactNativeLauncher extends LauncherInterface {
   }
 
   async close() {
-    this.pilotWebviewBridge.close()
-    this.workerWebviewBridge.close()
+    this.pilot.close()
+    this.worker.close()
   }
 
   /**
@@ -189,7 +185,7 @@ class ReactNativeLauncher extends LauncherInterface {
       return await new Promise((resolve, reject) => {
         this.once('WORKER_RELOAD', () => reject('WORKER_RELOAD'))
         log.debug(`calling ${method} on worker`)
-        this.workerWebviewBridge.call(method, ...args).then(resolve)
+        this.worker.call(method, ...args).then(resolve)
       })
     } catch (err) {
       log.info(`Got error in runInWorker ${err}`)
@@ -316,13 +312,9 @@ class ReactNativeLauncher extends LauncherInterface {
     log.info('restarting worker', event)
 
     try {
-      await this.workerWebviewBridge.init()
-      for (const eventName of this.workerListenedEvents) {
-        this.workerWebviewBridge.addEventListener(
-          eventName,
-          this[eventName].bind(this),
-        )
-      }
+      await this.worker.init({
+        listenedEventsNames: this.workerListenedEventsNames,
+      })
     } catch (err) {
       throw new Error(`worker bridge restart init error: ${err.message}`)
     }
@@ -330,38 +322,59 @@ class ReactNativeLauncher extends LauncherInterface {
   }
 
   /**
-   * This method creates and inits a content script bridge to the launcher with some facilities to make
+   * This method creates and inits the pilot content script bridge to the launcher with some facilities to make
    * it's own method callable by the content script
    *
-   * @param {String} options.bridgeName : Name of the attribute where the bridge instance will be placed
    * @param {WebView} options.webViewRef : WebView object to link to the launcher thanks to the bridge
    * @param {Array.<String>} options.exposedMethodsNames : list of methods of the launcher to expose to the content script
-   * @param {Array.<String>} options.listenedEvents : list of methods of the launcher to link to content script emitted events
-   * @returns {ContentScriptBridge}
+   * @param {Array.<String>} options.listenedEventsNames : list of methods of the launcher to link to content script emitted events
    */
-  async initContentScriptBridge({
-    bridgeName,
+  async initPilotContentScriptBridge({
     webViewRef,
     exposedMethodsNames,
-    listenedEvents,
+    listenedEventsNames,
   }) {
-    const webviewBridge = new ContentScriptBridge({webViewRef})
-    const exposedMethods = {}
-    for (const method of exposedMethodsNames) {
-      exposedMethods[method] = this[method].bind(this)
-    }
-    // the bridge must be exposed before the call to the webviewBridge.init function or else the init sequence won't work
+    // the bridge must be exposed before the call to the ContentScriptBridge.init function or else the init sequence won't work
     // since the init sequence needs an already working bridge
-    this[bridgeName] = webviewBridge
+    this.pilot = new ContentScriptBridge()
     try {
-      await webviewBridge.init({exposedMethods})
+      await this.pilot.init({
+        root: this,
+        exposedMethodsNames,
+        listenedEventsNames,
+        webViewRef,
+      })
     } catch (err) {
-      throw new Error(`Init error ${bridgeName}: ${err.message}`)
+      throw new Error(`Init error in pilot: ${err.message}`)
     }
-    for (const event of listenedEvents) {
-      webviewBridge.addEventListener(event, this[event].bind(this))
+  }
+
+  /**
+   * This method creates and inits the worker content script bridge to the launcher with some facilities to make
+   * it's own method callable by the content script
+   *
+   * @param {WebView} options.webViewRef : WebView object to link to the launcher thanks to the bridge
+   * @param {Array.<String>} options.exposedMethodsNames : list of methods of the launcher to expose to the content script
+   * @param {Array.<String>} options.listenedEventsNames : list of methods of the launcher to link to content script emitted events
+   */
+  async initWorkerContentScriptBridge({
+    webViewRef,
+    exposedMethodsNames,
+    listenedEventsNames,
+  }) {
+    // the bridge must be exposed before the call to the ContentScriptBridge.init function or else the init sequence won't work
+    // since the init sequence needs an already working bridge
+    this.worker = new ContentScriptBridge()
+    try {
+      await this.worker.init({
+        root: this,
+        exposedMethodsNames,
+        listenedEventsNames,
+        webViewRef,
+      })
+    } catch (err) {
+      throw new Error(`Init error in worker: ${err.message}`)
     }
-    return webviewBridge
   }
 
   /**
@@ -379,15 +392,15 @@ class ReactNativeLauncher extends LauncherInterface {
    * @param {Object} event
    */
   workerEvent(event) {
-    this.pilotWebviewBridge.emit('workerEvent', event)
+    this.pilot.emit('workerEvent', event)
   }
 
   /**
    * Relay between the pilot webview and the bridge to allow the bridge to work
    */
   onPilotMessage(event) {
-    if (this.pilotWebviewBridge) {
-      const messenger = this.pilotWebviewBridge.messenger
+    if (this.pilot) {
+      const messenger = this.pilot.messenger
       messenger.onMessage.bind(messenger)(event)
     }
   }
@@ -396,8 +409,8 @@ class ReactNativeLauncher extends LauncherInterface {
    * Relay between the worker webview and the bridge to allow the bridge to work
    */
   onWorkerMessage(event) {
-    if (this.workerWebviewBridge) {
-      const messenger = this.workerWebviewBridge.messenger
+    if (this.worker) {
+      const messenger = this.worker.messenger
       messenger.onMessage.bind(messenger)(event)
     }
   }
