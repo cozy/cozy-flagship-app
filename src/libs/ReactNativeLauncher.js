@@ -5,7 +5,7 @@ import {Q} from 'cozy-client'
 import ContentScriptBridge from './bridge/ContentScriptBridge'
 import {saveFiles, saveBills, saveIdentity} from './connectorLibs'
 import {dataURItoArrayBuffer} from './utils'
-import LauncherInterface from './LauncherInterface'
+import Launcher from './Launcher'
 
 const log = Minilog('Launcher')
 
@@ -13,21 +13,11 @@ Minilog.enable()
 
 /**
  * This is the launcher implementation for a React native application
- *
- * @param {LauncherRunContext} context : current cozy context of the connector
- * @param {Object}             manifest: connector manifest content
  */
-class ReactNativeLauncher extends LauncherInterface {
+class ReactNativeLauncher extends Launcher {
   constructor() {
     super()
     this.workerListenedEventsNames = ['log', 'workerEvent']
-  }
-
-  setStartContext(startContext) {
-    log.debug(startContext.context, 'context')
-    log.debug(startContext.manifest, 'manifest')
-
-    this.startContext = startContext
   }
 
   async init({bridgeOptions, contentScript}) {
@@ -97,11 +87,11 @@ class ReactNativeLauncher extends LauncherInterface {
    * @returns {JobDocument}
    */
   async updateJobResult({result = true, error} = {}) {
-    const {context, client} = this.getStartContext()
+    const {job, client} = this.getStartContext()
     return await client.save({
-      ...context.job,
+      ...job,
       attributes: {
-        ...context.job.attributes,
+        ...job.attributes,
         ...{state: result ? 'done' : 'errored', error},
       },
     })
@@ -124,9 +114,9 @@ class ReactNativeLauncher extends LauncherInterface {
    * Updates the account to send the LOGIN_SUCCESS message to harvest
    */
   async sendLoginSuccess() {
-    const {context, client} = this.getStartContext()
+    const {account, client} = this.getStartContext()
     const updatedAccount = await client.query(
-      Q('io.cozy.accounts').getById(context.account._id),
+      Q('io.cozy.accounts').getById(account._id),
     )
     await client.save({
       ...updatedAccount.data,
@@ -138,19 +128,19 @@ class ReactNativeLauncher extends LauncherInterface {
    * Ensure that the account and the destination folder get the name corresponding to sourceAccountIdentifier
    */
   async ensureAccountNameAndFolder() {
-    const {context, client} = this.getStartContext()
+    const {trigger, account, client} = this.getStartContext()
 
-    const firstRun = !context.account.label
+    const firstRun = !account.label
     if (!firstRun) {
       return
     }
 
     const {sourceAccountIdentifier} = this.getUserData()
-    const folderId = context.trigger.message.folder_to_save
+    const folderId = trigger.message.folder_to_save
 
     log.info('This is the first run')
     const updatedAccount = await client.query(
-      Q('io.cozy.accounts').getById(context.account._id),
+      Q('io.cozy.accounts').getById(account._id),
     )
     const newAccount = await client.save({
       ...updatedAccount.data,
@@ -194,15 +184,6 @@ class ReactNativeLauncher extends LauncherInterface {
   }
 
   /**
-   * Get the context given from Harvest to the launcher
-   *
-   * @returns {LauncherRunContext}
-   */
-  getStartContext() {
-    return this.startContext
-  }
-
-  /**
    * Get user unique identifier data, that the connector got after beeing authentified
    *
    * @returns {Object}
@@ -219,13 +200,13 @@ class ReactNativeLauncher extends LauncherInterface {
    */
   async saveBills(entries, options) {
     log.debug(entries, 'saveBills entries')
-    const {client, context, manifest} = this.getStartContext()
+    const {client, job, manifest} = this.getStartContext()
     const {sourceAccountIdentifier} = this.getUserData()
     const result = await saveBills(entries, {
       ...options,
       client,
       manifest,
-      sourceAccount: context.job.message.account,
+      sourceAccount: job.message.account,
       sourceAccountIdentifier,
     })
     return result
@@ -239,7 +220,7 @@ class ReactNativeLauncher extends LauncherInterface {
    */
   async saveFiles(entries, options) {
     log.debug(entries, 'saveFiles entries')
-    const {client, context, manifest} = this.getStartContext()
+    const {client, trigger, job, manifest} = this.getStartContext()
     const {sourceAccountIdentifier} = this.getUserData()
     for (const entry of entries) {
       if (entry.dataUri) {
@@ -250,12 +231,12 @@ class ReactNativeLauncher extends LauncherInterface {
     log.info(entries, 'saveFiles entries')
     const result = await saveFiles(
       entries,
-      await this.getFolderPath(context.trigger.message.folder_to_save),
+      await this.getFolderPath(trigger.message.folder_to_save),
       {
         ...options,
         client,
         manifest,
-        sourceAccount: context.job.message.account,
+        sourceAccount: job.message.account,
         sourceAccountIdentifier,
       },
     )
@@ -424,14 +405,6 @@ class ReactNativeLauncher extends LauncherInterface {
     return true // allows the webview to load the new page
   }
 }
-
-/**
- * @typedef LauncherRunContext
- * @property {Object} konnector : connector manifest
- * @property {io.cozy.accounts} : account
- * @property {io.cozy.triggers} : trigger
- * @property {io.cozy.jobs}     : job
- */
 
 /**
  * @typedef ContentScriptLogMessage

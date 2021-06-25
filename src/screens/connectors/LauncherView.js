@@ -41,8 +41,8 @@ class LauncherView extends Component {
 
   async componentDidUpdate() {
     this.launcher.setStartContext({
+      ...this.props.launcherContext,
       client: this.props.client,
-      context: this.props.launcherContext,
       manifest: this.connector.manifest,
     })
   }
@@ -50,8 +50,8 @@ class LauncherView extends Component {
   async componentDidMount() {
     this.launcher = new ReactNativeLauncher()
     this.launcher.setStartContext({
+      ...this.props.launcherContext,
       client: this.props.client,
-      context: this.props.launcherContext,
       manifest: this.connector.manifest,
     })
 
