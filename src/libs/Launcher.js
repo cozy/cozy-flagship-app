@@ -68,18 +68,18 @@ export default class Launcher {
   /**
    * Updates the result of the current job
    *
-   * @param {Boolean} options.result - Final result of the job. Default to true
+   * @param {String} options.state - Final result of the job. Can be 'errored' or 'done'
    * @param {String} options.error - Job error message if any
    *
    * @returns {JobDocument}
    */
-  async updateJobResult({result = true, error} = {}) {
+  async updateJobResult({state = 'done', error} = {}) {
     const {job, client} = this.getStartContext()
     return await client.save({
       ...job,
       attributes: {
         ...job.attributes,
-        ...{state: result ? 'done' : 'errored', error},
+        ...{state, error},
       },
     })
   }
