@@ -1,13 +1,10 @@
 import MicroEE from 'microee'
 import Minilog from '@cozy/minilog'
-import {Q} from 'cozy-client'
 
 import ContentScriptBridge from './bridge/ContentScriptBridge'
-import {saveFiles, saveBills, saveIdentity} from './connectorLibs'
-import {dataURItoArrayBuffer} from './utils'
 import Launcher from './Launcher'
 
-const log = Minilog('Launcher')
+const log = Minilog('ReactNativeLauncher')
 
 Minilog.enable()
 
@@ -79,81 +76,6 @@ class ReactNativeLauncher extends Launcher {
   }
 
   /**
-   * Updates the result of the current job
-   *
-   * @param {Boolean} options.result - Final result of the job. Default to true
-   * @param {String} options.error - Job error message if any
-   *
-   * @returns {JobDocument}
-   */
-  async updateJobResult({result = true, error} = {}) {
-    const {job, client} = this.getStartContext()
-    return await client.save({
-      ...job,
-      attributes: {
-        ...job.attributes,
-        ...{state: result ? 'done' : 'errored', error},
-      },
-    })
-  }
-
-  /**
-   * Get the folder path of any folder, given it's Id
-   *
-   * @param {String} folderId - Id of the folder
-   *
-   * @returns {String} Folder path
-   */
-  async getFolderPath(folderId) {
-    const {client} = this.getStartContext()
-    const result = await client.query(Q('io.cozy.files').getById(folderId))
-    return result.data.path
-  }
-
-  /**
-   * Updates the account to send the LOGIN_SUCCESS message to harvest
-   */
-  async sendLoginSuccess() {
-    const {account, client} = this.getStartContext()
-    const updatedAccount = await client.query(
-      Q('io.cozy.accounts').getById(account._id),
-    )
-    await client.save({
-      ...updatedAccount.data,
-      state: 'LOGIN_SUCCESS',
-    })
-  }
-
-  /**
-   * Ensure that the account and the destination folder get the name corresponding to sourceAccountIdentifier
-   */
-  async ensureAccountNameAndFolder() {
-    const {trigger, account, client} = this.getStartContext()
-
-    const firstRun = !account.label
-    if (!firstRun) {
-      return
-    }
-
-    const {sourceAccountIdentifier} = this.getUserData()
-    const folderId = trigger.message.folder_to_save
-
-    log.info('This is the first run')
-    const updatedAccount = await client.query(
-      Q('io.cozy.accounts').getById(account._id),
-    )
-    const newAccount = await client.save({
-      ...updatedAccount.data,
-      label: sourceAccountIdentifier,
-    })
-    log.debug(newAccount, 'resulting account')
-    // TODO normalize file name
-    await client
-      .collection('io.cozy.files')
-      .updateAttributes(folderId, {name: sourceAccountIdentifier})
-  }
-
-  /**
    * Makes the launcherView display the worker webview
    *
    * @param {String} url : url displayed by the worker webview for the login
@@ -181,109 +103,6 @@ class ReactNativeLauncher extends Launcher {
       log.info(`Got error in runInWorker ${err}`)
       return false
     }
-  }
-
-  /**
-   * Get user unique identifier data, that the connector got after beeing authentified
-   *
-   * @returns {Object}
-   */
-  getUserData() {
-    return this.userData
-  }
-
-  /**
-   * Calls cozy-konnector-libs' saveBills function
-   *
-   * @param {Array} entries : list of file entries to save
-   * @returns {Array} list of saved bills
-   */
-  async saveBills(entries, options) {
-    log.debug(entries, 'saveBills entries')
-    const {client, job, manifest} = this.getStartContext()
-    const {sourceAccountIdentifier} = this.getUserData()
-    const result = await saveBills(entries, {
-      ...options,
-      client,
-      manifest,
-      sourceAccount: job.message.account,
-      sourceAccountIdentifier,
-    })
-    return result
-  }
-
-  /**
-   * Calls cozy-konnector-libs' saveFiles function
-   *
-   * @param {Array} entries : list of file entries to save
-   * @returns {Array} list of saved files
-   */
-  async saveFiles(entries, options) {
-    log.debug(entries, 'saveFiles entries')
-    const {client, trigger, job, manifest} = this.getStartContext()
-    const {sourceAccountIdentifier} = this.getUserData()
-    for (const entry of entries) {
-      if (entry.dataUri) {
-        entry.filestream = dataURItoArrayBuffer(entry.dataUri).arrayBuffer
-        delete entry.dataUri
-      }
-    }
-    log.info(entries, 'saveFiles entries')
-    const result = await saveFiles(
-      entries,
-      await this.getFolderPath(trigger.message.folder_to_save),
-      {
-        ...options,
-        client,
-        manifest,
-        sourceAccount: job.message.account,
-        sourceAccountIdentifier,
-      },
-    )
-    log.info(result, 'saveFiles result')
-
-    return result
-  }
-
-  /**
-   * Calls cozy-konnector-libs' saveIdentifier function
-   *
-   * @param {Object} contact : contact object
-   */
-  async saveIdentity(contact) {
-    const {client} = this.getStartContext()
-    log.debug(contact, 'saveIdentity contact')
-    const {sourceAccountIdentifier} = this.getUserData()
-    await saveIdentity(contact, sourceAccountIdentifier, {client})
-  }
-
-  /**
-   * Fetches data already imported by the connector with the current sourceAccountIdentifier
-   * This allows the connector to only fetch new data
-   *
-   * @param {String} options.sourceAccountIdentifier: current account unique identifier
-   * @param {String} options.slug: connector slug
-   * @returns {Object}
-   */
-  async getPilotContext({sourceAccountIdentifier, slug}) {
-    const {client} = this.getStartContext()
-    const result = await client.queryAll(
-      Q('io.cozy.files')
-        .where({
-          trashed: false,
-          cozyMetadata: {
-            sourceAccountIdentifier,
-            createdByApp: slug,
-          },
-        })
-        .indexFields([
-          'trashed',
-          'cozyMetadata.sourceAccountIdentifier',
-          'cozyMetadata.createdByApp',
-        ]),
-    )
-
-    return result
   }
 
   /**
@@ -359,15 +178,6 @@ class ReactNativeLauncher extends Launcher {
   }
 
   /**
-   * log messages emitted from the worker and the pilot
-   *
-   * @param {String} message
-   */
-  log(message) {
-    Minilog('ContentScript').info(message)
-  }
-
-  /**
    * Relays events from the worker to the pilot
    *
    * @param {Object} event
@@ -405,14 +215,6 @@ class ReactNativeLauncher extends Launcher {
     return true // allows the webview to load the new page
   }
 }
-
-/**
- * @typedef ContentScriptLogMessage
- * @property {string} level            : ( debug | info | warning | error | critical). Log level
- * @property {any} message             : message content
- * @property {string | null} label     : user defined label
- * @property {string | null} namespace : user defined namespace
- */
 
 MicroEE.mixin(ReactNativeLauncher)
 export default ReactNativeLauncher
