@@ -96,7 +96,7 @@ class ReactNativeLauncher extends LauncherInterface {
    *
    * @returns {JobDocument}
    */
-  async updateJobResult({result = true, error}) {
+  async updateJobResult({result = true, error} = {}) {
     const {context, client} = this.getStartContext()
     return await client.save({
       ...context.job,
