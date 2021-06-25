@@ -1,45 +1,15 @@
-import ContentScriptBridge from './bridge/ContentScriptBridge'
 import MicroEE from 'microee'
 import Minilog from '@cozy/minilog'
 import {Q} from 'cozy-client'
-import saveFiles from './saveFiles'
-import saveBills from './saveBills'
-import saveIdentity from './saveIdentity'
+
+import ContentScriptBridge from './bridge/ContentScriptBridge'
+import {saveFiles, saveBills, saveIdentity} from './connectorLibs'
+import {dataURItoArrayBuffer} from './utils'
+import LauncherInterface from './LauncherInterface'
 
 const log = Minilog('Launcher')
 
 Minilog.enable()
-
-/**
- * All launchers are supposed to implement this interface
- *
- * @interface
- */
-class LauncherInterface {
-  /**
-   * Inject the content script and initialize the bridge to communicate it
-   *
-   * @param  {Object} options.bridgeOptions : options which will be given as is to the bridge. Bridge options depend on the environment of the launcher
-   * @param  {String} options.contentScript : source code of the content script which will be injected
-   *
-   * @return {Bridge}
-   */
-  async init({bridgeOptions, contentScript}) {}
-
-  /**
-   * Start the connector execution
-   *
-   * @return {Bridge}
-   */
-  async start() {}
-
-  /**
-   * Get content script logs. This function is called by the content script via the bridge
-   *
-   * @param  {ContentScriptLogMessage} message : log message
-   */
-  log(message) {}
-}
 
 /**
  * This is the launcher implementation for a React native application
@@ -148,11 +118,11 @@ class ReactNativeLauncher extends LauncherInterface {
    */
   async sendLoginSuccess() {
     const {context, client} = this.getStartContext()
-    const accountToUpdate = await client.query(
+    const updatedAccount = await client.query(
       Q('io.cozy.accounts').getById(context.account._id),
     )
     await client.save({
-      ...accountToUpdate.data,
+      ...updatedAccount.data,
       state: 'LOGIN_SUCCESS',
     })
   }
@@ -266,7 +236,7 @@ class ReactNativeLauncher extends LauncherInterface {
     const {sourceAccountIdentifier} = this.getUserData()
     for (const entry of entries) {
       if (entry.dataUri) {
-        entry.filestream = dataURItoArrayBuffer(entry.dataUri).ab
+        entry.filestream = dataURItoArrayBuffer(entry.dataUri).arrayBuffer
         delete entry.dataUri
       }
     }
@@ -308,7 +278,8 @@ class ReactNativeLauncher extends LauncherInterface {
    * @returns {Object}
    */
   async getPilotContext({sourceAccountIdentifier, slug}) {
-    const result = await this.client.queryAll(
+    const {client} = this.getStartContext()
+    const result = await client.queryAll(
       Q('io.cozy.files')
         .where({
           trashed: false,
@@ -348,7 +319,7 @@ class ReactNativeLauncher extends LauncherInterface {
   }
 
   /**
-   * This method creates and init a content script bridge to the launcher with some facilities to make
+   * This method creates and inits a content script bridge to the launcher with some facilities to make
    * it's own method callable by the content script
    *
    * @param {String} options.bridgeName : Name of the attribute where the bridge instance will be placed
@@ -428,19 +399,6 @@ class ReactNativeLauncher extends LauncherInterface {
     this.restartWorkerConnection(event)
     return true // allows the webview to load the new page
   }
-}
-
-function dataURItoArrayBuffer(dataURI) {
-  const [contentType, base64String] = dataURI
-    .match(/^data:(.*);base64,(.*)$/)
-    .slice(1)
-  const byteString = global.atob(base64String)
-  const ab = new ArrayBuffer(byteString.length)
-  const ia = new Uint8Array(ab)
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i)
-  }
-  return {contentType, ab}
 }
 
 /**
