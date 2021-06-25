@@ -3,7 +3,7 @@
  *
  * @interface
  */
-export default class LauncherInterface {
+export default class Launcher {
   /**
    * Inject the content script and initialize the bridge to communicate it
    *
@@ -13,6 +13,24 @@ export default class LauncherInterface {
    * @return {Bridge}
    */
   async init({bridgeOptions, contentScript}) {}
+
+  /**
+   * startContext setter
+   *
+   * @param {LauncherStartContext} startContext
+   */
+  setStartContext(startContext) {
+    this.startContext = startContext
+  }
+
+  /**
+   * startContext getter
+   *
+   * @returns {LauncherStartContext}
+   */
+  getStartContext() {
+    return this.startContext
+  }
 
   /**
    * Start the connector execution
@@ -28,3 +46,12 @@ export default class LauncherInterface {
    */
   log(message) {}
 }
+
+/**
+ * @typedef LauncherStartContext
+ * @property {CozyClient} client - CozyClient instance
+ * @property {Object} manifest   - Manifest from the client side connector
+ * @property {io.cozy.accounts} account
+ * @property {io.cozy.triggers} trigger
+ * @property {io.cozy.jobs}     job
+ */
