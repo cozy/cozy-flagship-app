@@ -3,13 +3,13 @@ import {get} from 'lodash'
 import {WebView} from 'react-native-webview'
 import {useClient} from 'cozy-client'
 
-const HarvestView = (props) => {
+const HomeView = (props) => {
   const client = useClient()
-  const { uri } = client.getStackClient()
+  const {uri} = client.getStackClient()
   const token = client.getStackClient().getAccessToken()
   const [scheme, cozyDomain] = uri.split('://')
   const cozyToken = token
-  const {slug, accountId, setLauncherContext} = props
+  const {setLauncherContext} = props
   const cozyClientConf = {
     scheme,
     lang: 'fr',
@@ -44,4 +44,4 @@ const HarvestView = (props) => {
   )
 }
 
-export default HarvestView
+export default HomeView

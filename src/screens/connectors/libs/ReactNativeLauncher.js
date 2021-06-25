@@ -83,47 +83,97 @@ class ReactNativeLauncher extends LauncherInterface {
     log.debug('bridges init done')
   }
   async start() {
-    await this.pilotWebviewBridge.call('ensureAuthenticated')
-    this.userData = await this.pilotWebviewBridge.call('getUserDataFromWebsite')
+    try {
+      await this.pilotWebviewBridge.call('ensureAuthenticated')
+      await this.sendLoginSuccess()
 
-    const {context, client} = this.getStartContext()
-    await this.ensureAccountNameAndFolder({
-      account: context.account,
-      folderId: context.trigger.message.folder_to_save,
-      sourceAccountIdentifier: this.userData.sourceAccountIdentifier,
-      client,
-    })
+      this.userData = await this.pilotWebviewBridge.call(
+        'getUserDataFromWebsite',
+      )
 
-    const pilotContext = []
-    // FIXME not used at the moment since the fetched file will not have the proper "createdByApp"
-    // const pilotContext = await this.getPilotContext({
-    //   sourceAccountIdentifier: userData.sourceAccountIdentifier,
-    //   slug: manifest.slug,
-    // })
-    await this.pilotWebviewBridge.call('fetch', pilotContext)
+      await this.ensureAccountNameAndFolder()
+
+      const pilotContext = []
+      // FIXME not used at the moment since the fetched file will not have the proper "createdByApp"
+      // const pilotContext = await this.getPilotContext({
+      //   sourceAccountIdentifier: userData.sourceAccountIdentifier,
+      //   slug: manifest.slug,
+      // })
+      await this.pilotWebviewBridge.call('fetch', pilotContext)
+      await this.updateJobResult()
+    } catch (err) {
+      log.error(err, 'start error')
+      await this.updateJobResult({
+        result: false,
+        error: err.message,
+      })
+    }
     this.emit('CONNECTOR_EXECUTION_END')
-    // TODO update the job result when the job is finished
   }
 
-  async getFolderPath({folderId, client}) {
+  /**
+   * Updates the result of the current job
+   *
+   * @param {Boolean} options.result - Final result of the job. Default to true
+   * @param {String} options.error - Job error message if any
+   *
+   * @returns {JobDocument}
+   */
+  async updateJobResult({result = true, error}) {
+    const {context, client} = this.getStartContext()
+    return await client.save({
+      ...context.job,
+      attributes: {
+        ...context.job.attributes,
+        ...{state: result ? 'done' : 'errored', error},
+      },
+    })
+  }
+
+  /**
+   * Get the folder path of any folder, given it's Id
+   *
+   * @param {String} folderId - Id of the folder
+   *
+   * @returns {String} Folder path
+   */
+  async getFolderPath(folderId) {
+    const {client} = this.getStartContext()
     const result = await client.query(Q('io.cozy.files').getById(folderId))
     return result.data.path
   }
 
-  async ensureAccountNameAndFolder({
-    account,
-    folderId,
-    sourceAccountIdentifier,
-    client,
-  }) {
-    const firstRun = !account.label
+  /**
+   * Updates the account to send the LOGIN_SUCCESS message to harvest
+   */
+  async sendLoginSuccess() {
+    const {context, client} = this.getStartContext()
+    const accountToUpdate = await client.query(
+      Q('io.cozy.accounts').getById(context.account._id),
+    )
+    await client.save({
+      ...accountToUpdate.data,
+      state: 'LOGIN_SUCCESS',
+    })
+  }
+
+  /**
+   * Ensure that the account and the destination folder get the name corresponding to sourceAccountIdentifier
+   */
+  async ensureAccountNameAndFolder() {
+    const {context, client} = this.getStartContext()
+
+    const firstRun = !context.account.label
     if (!firstRun) {
       return
     }
 
+    const {sourceAccountIdentifier} = this.getUserData()
+    const folderId = context.trigger.message.folder_to_save
+
     log.info('This is the first run')
     const updatedAccount = await client.query(
-      Q('io.cozy.accounts').getById(account._id),
+      Q('io.cozy.accounts').getById(context.account._id),
     )
     const newAccount = await client.save({
       ...updatedAccount.data,
@@ -166,10 +216,20 @@ class ReactNativeLauncher extends LauncherInterface {
     }
   }
 
+  /**
+   * Get the context given from Harvest to the launcher
+   *
+   * @returns {LauncherRunContext}
+   */
   getStartContext() {
     return this.startContext
   }
 
+  /**
+   * Get user unique identifier data, that the connector got after beeing authentified
+   *
+   * @returns {Object}
+   */
   getUserData() {
     return this.userData
   }
@@ -213,10 +273,7 @@ class ReactNativeLauncher extends LauncherInterface {
     log.info(entries, 'saveFiles entries')
     const result = await saveFiles(
       entries,
-      await this.getFolderPath({
-        folderId: context.trigger.message.folder_to_save,
-        client,
-      }),
+      await this.getFolderPath(context.trigger.message.folder_to_save),
       {
         ...options,
         client,
