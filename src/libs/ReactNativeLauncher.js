@@ -63,7 +63,7 @@ class ReactNativeLauncher extends Launcher {
     } catch (err) {
       log.error(err, 'start error')
       await this.updateJobResult({
-        result: false,
+        state: 'errored',
         error: err.message,
       })
     }
