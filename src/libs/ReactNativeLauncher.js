@@ -48,8 +48,7 @@ class ReactNativeLauncher extends Launcher {
       await this.pilot.call('ensureAuthenticated')
       await this.sendLoginSuccess()
 
-      this.userData = await this.pilot.call('getUserDataFromWebsite')
-
+      this.setUserData(await this.pilot.call('getUserDataFromWebsite'))
       await this.ensureAccountNameAndFolder()
 
       const pilotContext = []
