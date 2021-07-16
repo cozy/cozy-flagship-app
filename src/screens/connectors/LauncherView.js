@@ -179,8 +179,8 @@ class LauncherView extends Component {
 
 const styles = StyleSheet.create({
   workerVisible: {
-    display: 'flex',
-    flex: 1,
+    height: '100%',
+    width: '100%',
   },
   workerHidden: {
     position: 'absolute',
