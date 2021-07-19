@@ -94,7 +94,14 @@ class ReactNativeLauncher extends Launcher {
     log.debug('runInworker called')
     try {
       return await new Promise((resolve, reject) => {
-        this.once('WORKER_RELOAD', () => reject('WORKER_RELOAD'))
+        this.once('WORKER_RELOAD', () => {
+          // we need to reject once the worker is back and ready.
+          // This way, the pilot can call the worker on more time
+          // and be sure it is ready
+          this.once('WORKER_RELOADED', () => {
+            reject('WORKER_RELOADED')
+          })
+        })
         log.debug(`calling ${method} on worker`)
         this.worker.call(method, ...args).then(resolve)
       })
@@ -117,6 +124,7 @@ class ReactNativeLauncher extends Launcher {
     } catch (err) {
       throw new Error(`worker bridge restart init error: ${err.message}`)
     }
+    this.emit('WORKER_RELOADED')
     log.info('webworker bridge connection restarted')
   }
 
