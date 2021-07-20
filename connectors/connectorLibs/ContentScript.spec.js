@@ -23,5 +23,12 @@ describe('ContentScript', () => {
       const result = await contentScript.runInWorkerUntilTrue('tocall')
       expect(result).toEqual('result last')
     })
+
+    it('should reject when timeout is expired', async () => {
+      contentScript.runInWorker.mockResolvedValue(false)
+      await expect(
+        contentScript.runInWorkerUntilTrue('tocall', {timeout: 1}),
+      ).rejects.toThrow('Timeout error')
+    })
   })
 })
