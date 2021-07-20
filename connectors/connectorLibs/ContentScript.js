@@ -7,6 +7,12 @@ import {kyScraper as ky, blobToBase64} from './utils'
 
 const log = Minilog('ContentScript class')
 
+const s = 1000
+const m = 60 * s
+
+const DEFAULT_LOGIN_TIMEOUT = 5 * m
+const DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT = 30 * s
+
 export default class ContentScript {
   /**
    * Init the bridge communication with the launcher.
@@ -52,13 +58,11 @@ export default class ContentScript {
    *
    * @returns Promise.<Boolean>
    */
-  async waitForAuthenticated() {
-    let result = false
-    while (result === false) {
-      result = await this.checkAuthenticated()
-      await sleep(1000)
-    }
-    return result
+  waitForAuthenticated() {
+    return waitFor(this.checkAuthenticated, {
+      interval: 1000,
+      timeout: DEFAULT_LOGIN_TIMEOUT,
+    })
   }
 
   /**
@@ -75,10 +79,15 @@ export default class ContentScript {
    *
    * @param {String} method : name of the method to run
    */
-  async runInWorkerUntilTrue(method, ...args) {
+  async runInWorkerUntilTrue(method, options = {}, ...args) {
     log('runInWorkerUntilTrue', method)
     let result = false
+    const start = Date.now()
+    const isTimeout = (timeout) => Date.now() - start >= timeout
     while (!result) {
+      if (isTimeout(options.timeout || Infinity)) {
+        throw new Error('Timeout error')
+      }
       log('runInWorker call', method)
       result = await this.runInWorker(method, ...args)
       log('runInWorker result', result)
@@ -93,7 +102,7 @@ export default class ContentScript {
    * @param {String} selector - css selector we are waiting for
    */
   async waitForElementInWorker(selector) {
-    await this.runInWorkerUntilTrue('waitForElementNoReload', selector)
+    await this.runInWorkerUntilTrue('waitForElementNoReload', {}, selector)
   }
 
   /**
@@ -104,7 +113,9 @@ export default class ContentScript {
    */
   async waitForElementNoReload(selector) {
     log('waitForElementNoReload', selector)
-    await waitFor(() => Boolean(document.querySelector(selector)))
+    await waitFor(() => Boolean(document.querySelector(selector)), {
+      timeout: DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT,
+    })
     return true
   }
 
@@ -243,8 +254,4 @@ export default class ContentScript {
    * @returns {Object} : Connector execution result. TBD
    */
   async fetch({context}) {}
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
 }
