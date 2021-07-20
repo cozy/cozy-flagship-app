@@ -85,17 +85,16 @@ class BlablacarContentScript extends ContentScript {
   async getPayments() {
     const result = Array.from(
       document.querySelectorAll('.section-content > .kirk-item'),
-    ).map((doc) => ({
-      html: doc.innerHTML,
-      from: doc
-        .querySelectorAll('.kirk-item-body > span > span')[0]
-        .innerText.trim(),
-      to: doc
-        .querySelectorAll('.kirk-item-body > span > span')[1]
-        .innerText.trim(),
-      amount: doc.querySelector('.kirk-item-rightText').innerText,
-      date: doc.querySelector('.kirk-text-title').innerText,
-    }))
+    ).map((doc) => {
+      const [from, to] = doc.querySelectorAll('.kirk-item-body > span > span')
+      return {
+        html: doc.innerHTML,
+        from: from.innerText.trim(),
+        to: to.innerText.trim(),
+        amount: doc.querySelector('.kirk-item-rightText').innerText,
+        date: doc.querySelector('.kirk-text-title').innerText,
+      }
+    })
     return result
   }
 
