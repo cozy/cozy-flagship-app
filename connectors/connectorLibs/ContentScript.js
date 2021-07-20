@@ -77,15 +77,19 @@ export default class ContentScript {
   /**
    * Wait for a specific event from the worker and then resolve the promise
    *
-   * @param {String} method : name of the method to run
+   * @param {String} options.method - name of the method to run
+   * @param {Number} options.timeout - number of miliseconds before the function sends a timeout error. Default Infinity
+   * @param {Array} options.args - array of args to pass to the method
+   *
+   * @return {Object} - final return value of the method
    */
-  async runInWorkerUntilTrue(method, options = {}, ...args) {
+  async runInWorkerUntilTrue({method, timeout = Infinity, args = []}) {
     log('runInWorkerUntilTrue', method)
     let result = false
     const start = Date.now()
     const isTimeout = (timeout) => Date.now() - start >= timeout
     while (!result) {
-      if (isTimeout(options.timeout || Infinity)) {
+      if (isTimeout(timeout)) {
         throw new Error('Timeout error')
       }
       log('runInWorker call', method)

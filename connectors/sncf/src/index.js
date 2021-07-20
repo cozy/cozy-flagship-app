@@ -41,7 +41,7 @@ class SncfContentScript extends ContentScript {
       url: 'https://www.oui.sncf/espaceclient/identification',
       visible: true,
     })
-    await this.runInWorkerUntilTrue('checkAuthenticated')
+    await this.runInWorkerUntilTrue({method: 'checkAuthenticated'})
     await this.bridge.call('setWorkerState', {
       visible: false,
     })

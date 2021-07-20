@@ -29,7 +29,7 @@ class BlablacarContentScript extends ContentScript {
       url: baseUrl,
       visible: true,
     })
-    await this.runInWorkerUntilTrue('waitForAuthenticated')
+    await this.runInWorkerUntilTrue({method: 'waitForAuthenticated'})
     await this.bridge.call('setWorkerState', {
       visible: false,
     })
