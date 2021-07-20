@@ -84,7 +84,7 @@ class ReactNativeLauncher extends Launcher {
   }
 
   /**
-   * Run the specified method in the worker and make it fail with WORKER_RELOAD message
+   * Run the specified method in the worker and make it fail with WORKER_WILL_RELOAD message
    * if the worker page is reloaded
    *
    * @param {String} method
@@ -94,7 +94,7 @@ class ReactNativeLauncher extends Launcher {
     log.debug('runInworker called')
     try {
       return await new Promise((resolve, reject) => {
-        this.once('WORKER_RELOAD', () => {
+        this.once('WORKER_WILL_RELOAD', () => {
           // we need to reject once the worker is back and ready.
           // This way, the pilot can call the worker one more time
           // and be sure it is ready
@@ -217,7 +217,7 @@ class ReactNativeLauncher extends Launcher {
    * Actions to do before the worker reloads : restart the connection
    */
   onWorkerWillReload(event) {
-    this.emit('WORKER_RELOAD')
+    this.emit('WORKER_WILL_RELOAD')
     this.restartWorkerConnection(event)
     return true // allows the webview to load the new page
   }
