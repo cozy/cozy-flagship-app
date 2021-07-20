@@ -1,7 +1,9 @@
-import LauncherBridge from './bridge/LauncherBridge'
-import Minilog from '@cozy/minilog'
-import {kyScraper as ky, blobToBase64} from './utils'
 import get from 'lodash/get'
+import waitFor from 'p-wait-for'
+import Minilog from '@cozy/minilog'
+
+import LauncherBridge from './bridge/LauncherBridge'
+import {kyScraper as ky, blobToBase64} from './utils'
 
 const log = Minilog('ContentScript class')
 
@@ -19,6 +21,7 @@ export default class ContentScript {
       'ensureAuthenticated',
       'checkAuthenticated',
       'waitForAuthenticated',
+      'waitForElementNoReload',
       'getUserDataFromWebsite',
       'fetch',
     ]
@@ -81,6 +84,28 @@ export default class ContentScript {
       log('runInWorker result', result)
     }
     return result
+  }
+
+  /**
+   * Wait for a dom element to be present on the page, even if there are page redirects or page
+   * reloads
+   *
+   * @param {String} selector - css selector we are waiting for
+   */
+  async waitForElementInWorker(selector) {
+    await this.runInWorkerUntilTrue('waitForElementNoReload', selector)
+  }
+
+  /**
+   * Wait for a dom element to be present on the page. This won't resolve if the page reloads
+   *
+   * @param {String} selector - css selector we are waiting for
+   * @returns Boolean
+   */
+  async waitForElementNoReload(selector) {
+    log('waitForElementNoReload', selector)
+    await waitFor(() => Boolean(document.querySelector(selector)))
+    return true
   }
 
   /**
