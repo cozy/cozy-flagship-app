@@ -96,7 +96,7 @@ class ReactNativeLauncher extends Launcher {
       return await new Promise((resolve, reject) => {
         this.once('WORKER_RELOAD', () => {
           // we need to reject once the worker is back and ready.
-          // This way, the pilot can call the worker on more time
+          // This way, the pilot can call the worker one more time
           // and be sure it is ready
           this.once('WORKER_RELOADED', () => {
             reject('WORKER_RELOADED')
