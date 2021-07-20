@@ -36,7 +36,7 @@ class TemplateContentScript extends ContentScript {
       url: 'http://quotes.toscrape.com/login',
       visible: true,
     })
-    await this.runInWorkerUntilTrue('waitForAuthenticated')
+    await this.runInWorkerUntilTrue({method: 'waitForAuthenticated'})
     await this.bridge.call('setWorkerState', {
       visible: false,
     })

@@ -12,7 +12,9 @@ describe('ContentScript', () => {
     })
     it('should resolve with result of the specified method returns truthy value', async () => {
       contentScript.runInWorker.mockResolvedValueOnce('result')
-      const result = await contentScript.runInWorkerUntilTrue('tocall')
+      const result = await contentScript.runInWorkerUntilTrue({
+        method: 'tocall',
+      })
       expect(result).toEqual('result')
     })
     it('should resolve only once the specified method returns truthy value', async () => {
@@ -20,14 +22,16 @@ describe('ContentScript', () => {
         .mockResolvedValueOnce(false)
         .mockResolvedValueOnce(false)
         .mockResolvedValueOnce('result last')
-      const result = await contentScript.runInWorkerUntilTrue('tocall')
+      const result = await contentScript.runInWorkerUntilTrue({
+        method: 'tocall',
+      })
       expect(result).toEqual('result last')
     })
 
     it('should reject when timeout is expired', async () => {
       contentScript.runInWorker.mockResolvedValue(false)
       await expect(
-        contentScript.runInWorkerUntilTrue('tocall', {timeout: 1}),
+        contentScript.runInWorkerUntilTrue({method: 'tocall', timeout: 1}),
       ).rejects.toThrow('Timeout error')
     })
   })
