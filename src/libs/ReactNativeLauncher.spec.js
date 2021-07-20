@@ -100,9 +100,9 @@ describe('ReactNativeLauncher', () => {
       expect(launcher.worker.call).toHaveBeenCalledTimes(1)
       expect(result).toEqual('worker result')
     })
-    it('should return false WORKER_RELOAD event is emitted', async () => {
+    it('should return false WORKER_WILL_RELOAD event is emitted', async () => {
       launcher.worker.call.mockImplementation(async () => {
-        launcher.emit('WORKER_RELOAD')
+        launcher.emit('WORKER_WILL_RELOAD')
         launcher.emit('WORKER_RELOADED')
         await new Promise((resolve) => setTimeout(resolve, 100))
       })
