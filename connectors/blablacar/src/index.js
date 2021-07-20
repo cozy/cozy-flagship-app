@@ -2,7 +2,6 @@ import ContentScript from '../../connectorLibs/ContentScript'
 import {kyScraper as ky} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
-import waitFor from 'p-wait-for'
 
 const log = Minilog('ContentScript')
 Minilog.enable()
@@ -60,34 +59,42 @@ class BlablacarContentScript extends ContentScript {
     // await this.saveIdentity(identity) FIXME permission problem
 
     await this.bridge.call('setWorkerState', {
-      url: 'https://m.blablacar.fr/dashboard/account/payments-done',
+      url: 'https://m.blablacar.fr/dashboard/account/payments-history',
       visible: false,
     })
 
-    let result = await this.bridge.call('runInWorker', 'getPayments')
-    await this.saveFiles(
-      result.map((entry) => ({
-        filestream: entry.html,
-        filename: `${entry.from} - ${entry.to}_${entry.date}_${entry.amount}.html`,
-      })),
-      {
-        contentType: 'application/html',
-        fileIdAttributes: ['filename'],
-        context,
-      },
-    )
+    await this.waitForElementInWorker('.section-content > .kirk-item')
+    let result = await this.runInWorker('getPayments')
+    if (result && result.length) {
+      await this.saveFiles(
+        result.map((entry) => ({
+          filestream: entry.html,
+          filename: `${entry.from} - ${entry.to}_${entry.date}_${entry.amount}.html`,
+        })),
+        {
+          contentType: 'application/html',
+          fileIdAttributes: ['filename'],
+          context,
+        },
+      )
+    } else {
+      log('No file to save', result)
+    }
   }
 
   async getPayments() {
-    await waitFor(() => document.querySelector('.my-payments'))
     const result = Array.from(
-      document.querySelectorAll('.my-payments .card'),
+      document.querySelectorAll('.section-content > .kirk-item'),
     ).map((doc) => ({
       html: doc.innerHTML,
-      from: doc.querySelector('h4.fromto').innerText.trim(),
-      to: doc.querySelector('h4 .to').innerText.trim(),
-      amount: doc.querySelector('strong').innerText,
-      date: doc.querySelector('.span4 p.margin-half-bottom').innerText,
+      from: doc
+        .querySelectorAll('.kirk-item-body > span > span')[0]
+        .innerText.trim(),
+      to: doc
+        .querySelectorAll('.kirk-item-body > span > span')[1]
+        .innerText.trim(),
+      amount: doc.querySelector('.kirk-item-rightText').innerText,
+      date: doc.querySelector('.kirk-text-title').innerText,
     }))
     return result
   }
