@@ -1,5 +1,5 @@
 import Cheerio from 'cheerio'
-import ky from 'ky'
+import ky from 'ky/umd'
 
 const kyScraper = ky.create({
   hooks: {
