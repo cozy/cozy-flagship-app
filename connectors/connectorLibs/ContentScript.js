@@ -87,7 +87,7 @@ export default class ContentScript {
     log('runInWorkerUntilTrue', method)
     let result = false
     const start = Date.now()
-    const isTimeout = (timeout) => Date.now() - start >= timeout
+    const isTimeout = () => Date.now() - start >= timeout
     while (!result) {
       if (isTimeout(timeout)) {
         throw new Error('Timeout error')
@@ -106,7 +106,10 @@ export default class ContentScript {
    * @param {String} selector - css selector we are waiting for
    */
   async waitForElementInWorker(selector) {
-    await this.runInWorkerUntilTrue('waitForElementNoReload', {}, selector)
+    await this.runInWorkerUntilTrue({
+      method: 'waitForElementNoReload',
+      args: [selector],
+    })
   }
 
   /**
