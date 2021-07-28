@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {WebView} from 'react-native-webview'
-import {StyleSheet, View} from 'react-native'
+import {StyleSheet, View, Text} from 'react-native'
 // TODO find a proper way to load a connector only when needed
 // import templateConnector from '../../../connectors/template/dist/webviewScript'
 import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
@@ -10,7 +10,7 @@ import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
 import {withClient} from 'cozy-client'
 
-const connectors = {
+const embeddedConnectors = {
   // template: templateConnector,
   sncf: sncfConnector,
   blablacar: blablacarConnector,
@@ -23,13 +23,8 @@ class LauncherView extends Component {
     this.onWorkerWillReload = debounce(this.onWorkerWillReload, 1000).bind(this)
     this.pilotWebView = null
     this.workerWebview = null
-    this.connector = connectors[props.launcherContext.job.message.konnector]
-    if (!this.connector) {
-      throw new Error(
-        `No client connector available for slug ${this.connector.manifest.slug}`,
-      )
-    }
     this.state = {
+      connector: null,
       worker: {},
     }
     // this.resetSession()
@@ -39,11 +34,25 @@ class LauncherView extends Component {
     CookieManager.flush()
   }
 
+  async initConnector() {
+    let connector =
+      embeddedConnectors[this.props.launcherContext.job.message.konnector]
+    if (!connector) {
+      connector = {
+        source: await this.launcher.ensureConnectorIsInstalled(
+          this.props.launcherContext,
+        ),
+        manifest: this.props.launcherContext.connector.attributes,
+      }
+    }
+    this.setState({connector})
+  }
+
   async componentDidUpdate() {
     this.launcher.setStartContext({
       ...this.props.launcherContext,
       client: this.props.client,
-      manifest: this.connector.manifest,
+      manifest: this.props.launcherContext.connector.attributes,
     })
   }
 
@@ -52,8 +61,9 @@ class LauncherView extends Component {
     this.launcher.setStartContext({
       ...this.props.launcherContext,
       client: this.props.client,
-      manifest: this.connector.manifest,
+      manifest: this.props.launcherContext.connector.attributes,
     })
+    await this.initConnector()
 
     this.launcher.on('SET_WORKER_STATE', (options) => {
       if (this.state.worker.url !== options.url) {
@@ -62,18 +72,12 @@ class LauncherView extends Component {
       this.setState({worker: options})
     })
 
-    const contentScript = this.connector
-      ? this.connector.source
-      : await this.launcher.ensureConnectorIsInstalled(
-          this.props.launcherContext,
-        )
-
     await this.launcher.init({
       bridgeOptions: {
         pilotWebView: this.pilotWebView,
         workerWebview: this.workerWebview,
       },
-      contentScript,
+      contentScript: this.state.connector.source,
     })
     await this.launcher.start()
     this.props.setLauncherContext({state: 'default'})
@@ -89,47 +93,59 @@ class LauncherView extends Component {
   render() {
     return (
       <>
-        <View>
-          <WebView
-            ref={(ref) => (this.pilotWebView = ref)}
-            originWhitelist={['*']}
-            source={{
-              uri: this.connector.manifest.vendor_link,
-            }}
-            useWebKit={true}
-            javaScriptEnabled={true}
-            sharedCookiesEnabled={true}
-            onMessage={this.onPilotMessage}
-            onError={this.onPilotError}
-            injectedJavaScriptBeforeContentLoaded={this.connector.source}
-          />
-        </View>
-        <View
-          style={
-            this.state.worker.visible
-              ? styles.workerVisible
-              : styles.workerHidden
-          }>
-          <WebView
-            style={
-              this.state.worker.visible
-                ? styles.workerVisible
-                : styles.workerHidden
-            }
-            ref={(ref) => (this.workerWebview = ref)}
-            originWhitelist={['*']}
-            useWebKit={true}
-            javaScriptEnabled={true}
-            source={{
-              uri: this.state.worker.url,
-            }}
-            sharedCookiesEnabled={true}
-            onMessage={this.onWorkerMessage}
-            onError={this.onWorkerError}
-            onShouldStartLoadWithRequest={this.onWorkerWillReload}
-            injectedJavaScriptBeforeContentLoaded={this.connector.source}
-          />
-        </View>
+        {this.state.connector ? (
+          <>
+            <View>
+              <WebView
+                ref={(ref) => (this.pilotWebView = ref)}
+                originWhitelist={['*']}
+                source={{
+                  uri: this.state.connector.manifest.vendor_link,
+                }}
+                useWebKit={true}
+                javaScriptEnabled={true}
+                sharedCookiesEnabled={true}
+                onMessage={this.onPilotMessage}
+                onError={this.onPilotError}
+                injectedJavaScriptBeforeContentLoaded={
+                  this.state.connector.source
+                }
+              />
+            </View>
+            <View
+              style={
+                this.state.worker.visible
+                  ? styles.workerVisible
+                  : styles.workerHidden
+              }>
+              <WebView
+                style={
+                  this.state.worker.visible
+                    ? styles.workerVisible
+                    : styles.workerHidden
+                }
+                ref={(ref) => (this.workerWebview = ref)}
+                originWhitelist={['*']}
+                useWebKit={true}
+                javaScriptEnabled={true}
+                source={{
+                  uri: this.state.worker.url,
+                }}
+                sharedCookiesEnabled={true}
+                onMessage={this.onWorkerMessage}
+                onError={this.onWorkerError}
+                onShouldStartLoadWithRequest={this.onWorkerWillReload}
+                injectedJavaScriptBeforeContentLoaded={
+                  this.state.connector.source
+                }
+              />
+            </View>
+          </>
+        ) : (
+          <View>
+            <Text>Loading...</Text>
+          </View>
+        )}
       </>
     )
   }

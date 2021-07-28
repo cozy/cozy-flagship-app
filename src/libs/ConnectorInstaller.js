@@ -20,7 +20,7 @@ export const ensureConnectorIsInstalled = async ({slug, source}) => {
   const connectorLocalPath = CONNECTORS_LOCAL_PATH + slug
   await RNFS.mkdir(connectorLocalPath)
 
-  const archiveUrl = getArchiveUrl(source)
+  const archiveUrl = await getArchiveUrl(source)
   const unzipPath = await downloadAndExtractArchive({
     url: archiveUrl,
     localPath: connectorLocalPath,
@@ -63,10 +63,12 @@ export const cleanConnectorsFiles = async () => {
  *
  * @returns {String} archive url
  */
-const getArchiveUrl = (source) => {
+const getArchiveUrl = async (source) => {
   let result
   if (source.includes('git://github.com')) {
     result = extractGithubSourceUrl(source)
+  } else if (source.includes('registry://')) {
+    result = await extractRegistrySourceUrl(source)
   } else {
     throw new Error(`getArchiveUrl: unknown source type  ${source}`)
   }
@@ -124,7 +126,7 @@ const cleanConnectorDirectory = async ({connectorLocalPath, unzipPath}) => {
 }
 
 /**
- * Convert a github repository source to the corresponding tar.gz archive url
+ * Converts a github repository source to the corresponding tar.gz archive url
  *
  * @param {String} source - github repository source, formatted as git://github.com/konnectors/cozy-konnector-template.git#build-debug
  * @returns {String} - github archive url like https://github.com/konnectors/cozy-konnector-template/archive/refs/heads/build-debug.tar.gz
@@ -139,4 +141,24 @@ export const extractGithubSourceUrl = (source) => {
   return `https://${url}/archive/refs/heads/${
     branch ? branch.replace('#', '') : 'master'
   }.tar.gz`
+}
+
+/**
+ * Converts a registry source to the corresponding tar.gz archive url
+ *
+ * @param {String} source - registry source, formatted as registry://template/stable
+ * @returns {String} - registry archive url like https://apps-registry.cozycloud.cc/registry/template/1.0.0/tarball/xxx.tar.gz
+ */
+export const extractRegistrySourceUrl = async (source) => {
+  const matches = source.match(/^registry:\/\/(.*)\/(.*)$/)
+  if (!matches) {
+    throw new Error(`extractRegistrySourceUrl: Could not install ${source}`)
+  }
+
+  const [slug, channel] = matches.slice(1)
+  const response = await fetch(
+    `https://apps-registry.cozycloud.cc/registry/${slug}/${channel}/latest`,
+  )
+  const json = await response.json()
+  return json.url
 }
