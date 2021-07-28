@@ -32,6 +32,31 @@ export const ensureConnectorIsInstalled = async ({slug, source}) => {
 }
 
 /**
+ * Gets the list of connectors directories with their content
+ *
+ * @returns {Object}
+ */
+export const getConnectorsFiles = async () => {
+  let result = {}
+  const connectors = await RNFS.readDir(CONNECTORS_LOCAL_PATH)
+  for (const connector of connectors) {
+    result[connector.name] = await RNFS.readDir(connector.path)
+  }
+
+  return result
+}
+
+/**
+ * Removes the connector's files
+ */
+export const cleanConnectorsFiles = async () => {
+  const connectors = await RNFS.readDir(CONNECTORS_LOCAL_PATH)
+  for (const connector of connectors) {
+    await RNFS.unlink(connector.path)
+  }
+}
+
+/**
  * Gets archive url
  *
  * @param {String} source - connector source or channel. Can be like git://github.com/konnectors/cozy-konnector-template.git#build-debug or registry://template/stable

@@ -1,15 +1,19 @@
 import React, {useState} from 'react'
-import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native'
+import {SafeAreaView, StatusBar, StyleSheet, View, Button} from 'react-native'
 import HomeView from './HomeView'
 import LauncherView from './LauncherView'
+import DebugView from './DebugView'
 
 const Konnectors = ({navigation}) => {
+  const [debug, setDebug] = useState(false)
   const [launcherContext, setLauncherContext] = useState({state: 'default'})
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeAreaView}>
         <StatusBar barStyle="dark-content" />
+        <Button title="Debug" onPress={() => onPress(debug, setDebug)} />
         <HomeView setLauncherContext={setLauncherContext} />
+        {debug && <DebugView />}
         {launcherContext.state === 'launch' && (
           <LauncherView
             launcherContext={launcherContext.value}
@@ -20,6 +24,10 @@ const Konnectors = ({navigation}) => {
       </SafeAreaView>
     </View>
   )
+}
+
+const onPress = (debug, setDebug) => {
+  setDebug(!debug)
 }
 
 const styles = StyleSheet.create({
