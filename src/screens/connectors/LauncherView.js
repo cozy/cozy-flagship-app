@@ -61,12 +61,17 @@ class LauncherView extends Component {
       }
       this.setState({worker: options})
     })
+
+    const contentScript = await this.launcher.ensureConnectorIsInstalled(
+      this.props.launcherContext,
+    )
+
     await this.launcher.init({
       bridgeOptions: {
         pilotWebView: this.pilotWebView,
         workerWebview: this.workerWebview,
       },
-      contentScript: this.connector.source,
+      contentScript,
     })
     await this.launcher.start()
     this.props.setLauncherContext({state: 'default'})

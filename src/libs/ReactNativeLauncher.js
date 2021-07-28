@@ -3,6 +3,7 @@ import Minilog from '@cozy/minilog'
 
 import ContentScriptBridge from './bridge/ContentScriptBridge'
 import Launcher from './Launcher'
+import {ensureConnectorIsInstalled} from './ConnectorInstaller'
 
 const log = Minilog('ReactNativeLauncher')
 
@@ -41,6 +42,10 @@ class ReactNativeLauncher extends Launcher {
     ]
     await Promise.all(promises)
     log.debug('bridges init done')
+  }
+
+  async ensureConnectorIsInstalled({connector}) {
+    return ensureConnectorIsInstalled(connector)
   }
 
   async start() {

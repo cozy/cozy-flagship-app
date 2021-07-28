@@ -9,6 +9,10 @@ target 'CozyReactNative' do
   use_react_native!(:path => config["reactNativePath"])
 
 
+  pod 'react-native-gzip', :path => '../node_modules/@fengweichong/react-native-gzip'
+
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
   target 'CozyReactNativeTests' do
     inherit! :complete
     # Pods for testing

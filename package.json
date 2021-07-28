@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@cozy/minilog": "^1.0.0",
+    "@fengweichong/react-native-gzip": "^2.0.0",
     "@react-native-async-storage/async-storage": "^1.15.4",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-cookies/cookies": "^6.0.4",
@@ -36,6 +37,7 @@
     "react-art": "17.0.2",
     "react-dom": "17.0.2",
     "react-native": "0.63.4",
+    "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "1.10.3",
     "react-native-inappbrowser-reborn": "^3.5.1",
     "react-native-paper": "4.7.2",
