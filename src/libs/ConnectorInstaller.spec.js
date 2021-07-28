@@ -12,12 +12,40 @@ jest.mock('@fengweichong/react-native-gzip', () => ({
 }))
 import {
   extractGithubSourceUrl,
+  extractRegistrySourceUrl,
   ensureConnectorIsInstalled,
 } from './ConnectorInstaller'
 import RNFS from 'react-native-fs'
 import Gzip from '@fengweichong/react-native-gzip'
 
 describe('ConnectorInstaller', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+  })
+
+  describe('extractRegistrySourceUrl', () => {
+    it('should extract registry source url from a registry stable source', async () => {
+      fetch = jest.fn()
+      fetch.mockResolvedValue({
+        json: async () => ({
+          url: 'https://apps-registry.cozycloud.cc/registry/template/1.0.0/tarball/xxx.tar.gz',
+        }),
+      })
+      expect(
+        await extractRegistrySourceUrl('registry://template/stable'),
+      ).toEqual(
+        'https://apps-registry.cozycloud.cc/registry/template/1.0.0/tarball/xxx.tar.gz',
+      )
+      expect(fetch).toHaveBeenCalledWith(
+        'https://apps-registry.cozycloud.cc/registry/template/stable/latest',
+      )
+    })
+    it('should throw when not a registry source', async () => {
+      await expect(extractRegistrySourceUrl('wrong url')).rejects.toThrow(
+        'extractRegistrySourceUrl: Could not install wrong url',
+      )
+    })
+  })
   describe('extractGithubSourceUrl', () => {
     it('should extract github source url from a source without branch to master branch', () => {
       expect(
@@ -55,6 +83,7 @@ describe('ConnectorInstaller', () => {
           isDirectory: () => true,
         },
       ])
+      RNFS.readFile.mockResolvedValue('script content')
       const contentScript = await ensureConnectorIsInstalled({
         slug: 'template',
         source: 'git://github.com/konnectors/cozy-konnector-template.git',
@@ -88,7 +117,6 @@ describe('ConnectorInstaller', () => {
         2,
         '/app/connectors/template/unzip',
       )
-      RNFS.readFile.mockResolvedValue('script content')
       expect(contentScript).toEqual('script content')
     })
   })
