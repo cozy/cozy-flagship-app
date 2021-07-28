@@ -1,3 +1,10 @@
+jest.mock('react-native-fs', () => {
+  return {}
+})
+jest.mock('@fengweichong/react-native-gzip', () => {
+  return {}
+})
+
 import ReactNativeLauncher from './ReactNativeLauncher'
 
 const fixtures = {

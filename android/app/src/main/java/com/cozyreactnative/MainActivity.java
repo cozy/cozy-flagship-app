@@ -1,6 +1,9 @@
 package com.cozyreactnative;
 
 import com.facebook.react.ReactActivity;
+// import com.rnfs.RNFSPackage;
+// import java.util.List;
+// import com.facebook.react.ReactPackage;
 
 public class MainActivity extends ReactActivity {
 
@@ -12,4 +15,12 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "CozyReactNative";
   }
+
+  // @Override
+  //   protected List<ReactPackage> getPackages() {
+  //     return Arrays.<ReactPackage>asList(
+  //       new MainReactPackage(), // <---- add comma
+  //       new RNFSPackage() // <---------- add package
+  //     );
+  //   }
 }
