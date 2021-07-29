@@ -5,6 +5,7 @@ jest.mock('react-native-fs', () => ({
   readDir: jest.fn(),
   moveFile: jest.fn(),
   readFile: jest.fn(),
+  writeFile: jest.fn(),
   DocumentDirectoryPath: '/app',
 }))
 jest.mock('@fengweichong/react-native-gzip', () => ({
@@ -118,6 +119,22 @@ describe('ConnectorInstaller', () => {
         '/app/connectors/template/unzip',
       )
       expect(contentScript).toEqual('script content')
+    })
+    it('should not install a new version if the expected version is already installed', async () => {
+      RNFS.readFile
+        .mockResolvedValueOnce('1.0.0')
+        .mockResolvedValueOnce('script content 1.0.0')
+      const contentScript = await ensureConnectorIsInstalled({
+        slug: 'template',
+        source: 'git://github.com/konnectors/cozy-konnector-template.git',
+        version: '1.0.0',
+      })
+      expect(RNFS.mkdir).toHaveBeenCalledWith('/app/connectors/template')
+      expect(RNFS.downloadFile).not.toHaveBeenCalled()
+      expect(Gzip.unGzipTar).not.toHaveBeenCalled()
+      expect(RNFS.unlink).not.toHaveBeenCalled()
+      expect(RNFS.moveFile).not.toHaveBeenCalled()
+      expect(contentScript).toEqual('script content 1.0.0')
     })
   })
 })
