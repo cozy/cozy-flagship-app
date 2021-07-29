@@ -16,19 +16,57 @@ const CONNECTORS_LOCAL_PATH = RNFS.DocumentDirectoryPath + '/connectors/'
  *
  * @returns {String} Content Script code
  */
-export const ensureConnectorIsInstalled = async ({slug, source}) => {
+export const ensureConnectorIsInstalled = async ({slug, source, version}) => {
   const connectorLocalPath = CONNECTORS_LOCAL_PATH + slug
   await RNFS.mkdir(connectorLocalPath)
 
-  const archiveUrl = await getArchiveUrl(source)
-  const unzipPath = await downloadAndExtractArchive({
-    url: archiveUrl,
-    localPath: connectorLocalPath,
-  })
-  await cleanConnectorDirectory({connectorLocalPath, unzipPath})
+  const currentVersion = await getConnectorVersion({connectorLocalPath})
+  if (version !== currentVersion) {
+    log.info(
+      `${currentVersion} !== ${version}`,
+      `upgrading connector from ${source}`,
+    )
+    const archiveUrl = await getArchiveUrl(source)
+    const unzipPath = await downloadAndExtractArchive({
+      url: archiveUrl,
+      localPath: connectorLocalPath,
+    })
+    await cleanConnectorDirectory({connectorLocalPath, unzipPath})
+    await setConnectorVersion({connectorLocalPath, version})
+  } else {
+    log.info(`${currentVersion} is already the last version no install needed`)
+  }
 
   const content = await RNFS.readFile(connectorLocalPath + '/webviewScript.js')
   return content
+}
+
+/**
+ * Get the version of a connector given it's installation path
+ *
+ * @param {String} options.connectorLocalPath - Connector installation path
+ *
+ * @returns {String} Connector version
+ */
+const getConnectorVersion = async ({connectorLocalPath}) => {
+  try {
+    const version = await RNFS.readFile(connectorLocalPath + '/VERSION')
+    return version.trim()
+  } catch (err) {
+    log.info('no version available in ' + connectorLocalPath, err)
+    return false
+  }
+}
+
+/**
+ * Set the version of a connector
+ *
+ * @param {String} options.connectorLocalPath - Connector installation path
+ * @param {String} options.version - Connector version
+ */
+const setConnectorVersion = async ({connectorLocalPath, version}) => {
+  await RNFS.writeFile(connectorLocalPath + '/VERSION', version)
+  await RNFS.writeFile(connectorLocalPath + '/' + version, version) // to make it readable in the DebugView
 }
 
 /**
