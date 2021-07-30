@@ -91,6 +91,9 @@ class LauncherView extends Component {
   }
 
   render() {
+    const workerStyle = this.state.worker.visible
+      ? styles.workerVisible
+      : styles.workerHidden
     return (
       <>
         {this.state.connector ? (
@@ -112,18 +115,9 @@ class LauncherView extends Component {
                 }
               />
             </View>
-            <View
-              style={
-                this.state.worker.visible
-                  ? styles.workerVisible
-                  : styles.workerHidden
-              }>
+            <View style={workerStyle}>
               <WebView
-                style={
-                  this.state.worker.visible
-                    ? styles.workerVisible
-                    : styles.workerHidden
-                }
+                style={workerStyle}
                 ref={(ref) => (this.workerWebview = ref)}
                 originWhitelist={['*']}
                 useWebKit={true}
