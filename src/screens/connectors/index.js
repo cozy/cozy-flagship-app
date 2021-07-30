@@ -11,7 +11,7 @@ const Konnectors = ({navigation}) => {
     <View style={styles.container}>
       <SafeAreaView style={styles.safeAreaView}>
         <StatusBar barStyle="dark-content" />
-        <Button title="Debug" onPress={() => onPress(debug, setDebug)} />
+        <Button title="Debug" onPress={() => setDebug(!debug)} />
         <HomeView setLauncherContext={setLauncherContext} />
         {debug && <DebugView />}
         {launcherContext.state === 'launch' && (
@@ -24,10 +24,6 @@ const Konnectors = ({navigation}) => {
       </SafeAreaView>
     </View>
   )
-}
-
-const onPress = (debug, setDebug) => {
-  setDebug(!debug)
 }
 
 const styles = StyleSheet.create({

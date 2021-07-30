@@ -21,7 +21,7 @@ const DebugView = (props) => {
       }
       setContent(result)
     })
-  })
+  }, [content])
   return (
     <>
       <WebView source={{html: content}} />
