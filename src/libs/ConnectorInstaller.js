@@ -25,11 +25,11 @@ export const ensureConnectorIsInstalled = async ({slug, source, version}) => {
       `upgrading connector from ${source}`,
     )
     const archiveUrl = await getArchiveUrl(source)
-    const unzipPath = await downloadAndExtractArchive({
+    await downloadAndExtractArchive({
       url: archiveUrl,
       localPath: connectorLocalPath,
     })
-    await cleanConnectorDirectory({connectorLocalPath, unzipPath})
+    await cleanConnectorDirectory({connectorLocalPath})
     await setConnectorVersion({connectorLocalPath, version})
   } else {
     log.info(`${currentVersion} is already the last version no install needed`)
@@ -127,8 +127,6 @@ const getArchiveUrl = async (source) => {
  *
  * @param {String} options.url - archive url
  * @param {String} options.localPath - connector local path
- *
- * @returns {String} extracted zip file path
  */
 const downloadAndExtractArchive = async ({url, localPath}) => {
   const archiveLocalPath = localPath + '/' + url.split('/').pop() // extract file name
@@ -145,30 +143,28 @@ const downloadAndExtractArchive = async ({url, localPath}) => {
   )
   log.debug(unZipRes, 'unZipRes')
   await RNFS.unlink(archiveLocalPath)
-  return localPath + '/unzip'
-}
 
-/**
- * Gets extracted files from extracted archive and cleans what remains
- *
- * @param {String} options.connectorLocalPath - connector path
- * @param {String} options.unzipPath - unzipped archive path
- */
-const cleanConnectorDirectory = async ({connectorLocalPath, unzipPath}) => {
-  const firstDirectory = (await RNFS.readDir(unzipPath)).find((f) =>
+  const firstDirectory = (await RNFS.readDir(localPath + '/unzip')).find((f) =>
     f.isDirectory(),
   )
 
   await RNFS.moveFile(
     firstDirectory.path + '/manifest.konnector',
-    connectorLocalPath + '/manifest.konnector',
+    localPath + '/manifest.konnector',
   )
   await RNFS.moveFile(
     firstDirectory.path + '/webviewScript.js',
-    connectorLocalPath + '/webviewScript.js',
+    localPath + '/webviewScript.js',
   )
+}
 
-  await RNFS.unlink(unzipPath)
+/**
+ * Cleans what remains after connector archive extraction
+ *
+ * @param {String} options.connectorLocalPath - connector path
+ */
+const cleanConnectorDirectory = async ({connectorLocalPath}) => {
+  await RNFS.unlink(connectorLocalPath + '/unzip')
 }
 
 /**
