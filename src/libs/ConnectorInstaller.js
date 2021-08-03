@@ -9,12 +9,10 @@ Minilog.enable()
 const CONNECTORS_LOCAL_PATH = RNFS.DocumentDirectoryPath + '/connectors/'
 
 /**
- * Ensures that a connector is installed and returns the content of content script
+ * Ensures that a connector is installed
  *
  * @param {String} options.slug - connector slug
  * @param {String} options.source - connector source or channel. Can be like git://github.com/konnectors/cozy-konnector-template.git#build-debug or registry://template/stable
- *
- * @returns {String} Content Script code
  */
 export const ensureConnectorIsInstalled = async ({slug, source, version}) => {
   const connectorLocalPath = CONNECTORS_LOCAL_PATH + slug
@@ -36,7 +34,17 @@ export const ensureConnectorIsInstalled = async ({slug, source, version}) => {
   } else {
     log.info(`${currentVersion} is already the last version no install needed`)
   }
+}
 
+/**
+ * Get the content of a content script
+ *
+ * @param {String} options.slug - connector slug
+ *
+ * @returns {String} Content Script code
+ */
+export const getContentScriptContent = async ({slug}) => {
+  const connectorLocalPath = CONNECTORS_LOCAL_PATH + slug
   const content = await RNFS.readFile(connectorLocalPath + '/webviewScript.js')
   return content
 }
