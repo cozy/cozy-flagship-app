@@ -192,15 +192,42 @@ export const extractGithubSourceUrl = (source) => {
  * @returns {String} - registry archive url like https://apps-registry.cozycloud.cc/registry/template/1.0.0/tarball/xxx.tar.gz
  */
 export const extractRegistrySourceUrl = async (source) => {
-  const matches = source.match(/^registry:\/\/(.*)\/(.*)$/)
+  const matches = source.match(/^registry:\/\/(.*)$/)
   if (!matches) {
     throw new Error(`extractRegistrySourceUrl: Could not install ${source}`)
   }
 
-  const [slug, channel] = matches.slice(1)
-  const response = await fetch(
-    `https://apps-registry.cozycloud.cc/registry/${slug}/${channel}/latest`,
-  )
+  let url = 'https://apps-registry.cozycloud.cc/registry/'
+  const registryUrlPart = matches[1]
+  const splittedPath = registryUrlPart.split('/')
+  if (splittedPath.length === 3) {
+    // slug/channel/versionOrLatest
+    const [slug, channel, versionOrLatest] = splittedPath
+    const isVersion = versionOrLatest.match(/^\d/)
+    if (isVersion) {
+      url += `${slug}/${versionOrLatest}`
+    } else {
+      url += `${slug}/${channel}/latest`
+    }
+  } else if (splittedPath.length === 2) {
+    // slug/channel or slug/version
+    const [slug, channelOrVersion] = splittedPath
+    const isVersion = channelOrVersion.match(/^\d/)
+    url += `${slug}/${channelOrVersion}`
+    if (!isVersion) {
+      url += '/latest'
+    }
+  } else if (splittedPath.length === 1) {
+    // slug
+    const [slug] = splittedPath
+    url += `${slug}/stable/latest`
+  } else {
+    throw new Error(
+      `extractRegistrySourceUrl: Could not parse ${registryUrlPart}`,
+    )
+  }
+
+  const response = await fetch(url)
   const json = await response.json()
   return json.url
 }
