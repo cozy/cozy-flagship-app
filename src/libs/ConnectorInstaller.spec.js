@@ -76,7 +76,7 @@ describe('ConnectorInstaller', () => {
     })
   })
   describe('ensureConnectorIsInstalled', () => {
-    it('should work in nominal case', async () => {
+    it('should download and extract connector archive from github with github source', async () => {
       RNFS.downloadFile.mockResolvedValue({promise: new Promise.resolve()})
       RNFS.readDir.mockResolvedValue([
         {
