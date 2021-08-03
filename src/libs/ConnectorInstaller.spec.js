@@ -8,9 +8,7 @@ jest.mock('react-native-fs', () => ({
   writeFile: jest.fn(),
   DocumentDirectoryPath: '/app',
 }))
-jest.mock('@fengweichong/react-native-gzip', () => ({
-  unGzipTar: jest.fn(),
-}))
+jest.mock('@fengweichong/react-native-gzip', () => ({unGzipTar: jest.fn()}))
 import {
   extractGithubSourceUrl,
   extractRegistrySourceUrl,
@@ -41,6 +39,39 @@ describe('ConnectorInstaller', () => {
       expect(fetch).toHaveBeenCalledWith(
         'https://apps-registry.cozycloud.cc/registry/template/stable/latest',
       )
+    })
+    it('should extract registry source url from any possible registry source ', async () => {
+      fetch = jest.fn()
+      fetch.mockResolvedValue({
+        json: async () => ({}),
+      })
+      const registryTestSuite = [
+        [
+          'registry://template',
+          'https://apps-registry.cozycloud.cc/registry/template/stable/latest',
+        ],
+        [
+          'registry://template/beta',
+          'https://apps-registry.cozycloud.cc/registry/template/beta/latest',
+        ],
+        [
+          'registry://template/dev/latest',
+          'https://apps-registry.cozycloud.cc/registry/template/dev/latest',
+        ],
+        [
+          'registry://template/stable/1.0.1',
+          'https://apps-registry.cozycloud.cc/registry/template/1.0.1',
+        ],
+        [
+          'registry://template/1.0.2',
+          'https://apps-registry.cozycloud.cc/registry/template/1.0.2',
+        ],
+      ]
+
+      for (const [i, [source, url]] of registryTestSuite.entries()) {
+        await extractRegistrySourceUrl(source)
+        expect(fetch).toHaveBeenNthCalledWith(i + 1, url)
+      }
     })
     it('should throw when not a registry source', async () => {
       await expect(extractRegistrySourceUrl('wrong url')).rejects.toThrow(
