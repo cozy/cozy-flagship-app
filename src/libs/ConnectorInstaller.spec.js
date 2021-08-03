@@ -15,6 +15,7 @@ import {
   extractGithubSourceUrl,
   extractRegistrySourceUrl,
   ensureConnectorIsInstalled,
+  getContentScriptContent,
 } from './ConnectorInstaller'
 import RNFS from 'react-native-fs'
 import Gzip from '@fengweichong/react-native-gzip'
@@ -85,7 +86,7 @@ describe('ConnectorInstaller', () => {
         },
       ])
       RNFS.readFile.mockResolvedValue('script content')
-      const contentScript = await ensureConnectorIsInstalled({
+      await ensureConnectorIsInstalled({
         slug: 'template',
         source: 'git://github.com/konnectors/cozy-konnector-template.git',
       })
@@ -118,13 +119,12 @@ describe('ConnectorInstaller', () => {
         2,
         '/app/connectors/template/unzip',
       )
-      expect(contentScript).toEqual('script content')
     })
     it('should not install a new version if the expected version is already installed', async () => {
       RNFS.readFile
         .mockResolvedValueOnce('1.0.0')
         .mockResolvedValueOnce('script content 1.0.0')
-      const contentScript = await ensureConnectorIsInstalled({
+      await ensureConnectorIsInstalled({
         slug: 'template',
         source: 'git://github.com/konnectors/cozy-konnector-template.git',
         version: '1.0.0',
@@ -134,7 +134,16 @@ describe('ConnectorInstaller', () => {
       expect(Gzip.unGzipTar).not.toHaveBeenCalled()
       expect(RNFS.unlink).not.toHaveBeenCalled()
       expect(RNFS.moveFile).not.toHaveBeenCalled()
-      expect(contentScript).toEqual('script content 1.0.0')
+    })
+  })
+  describe('getContentScriptContent', () => {
+    it('should get content script content from local fs', async () => {
+      await getContentScriptContent({slug: 'sncf'})
+      expect(RNFS.readFile).toHaveBeenNthCalledWith(
+        1,
+        '/app/connectors/sncf/webviewScript.js',
+      )
+      RNFS.readFile.mockResolvedValue('local script content')
     })
   })
 })
