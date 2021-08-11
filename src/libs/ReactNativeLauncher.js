@@ -5,7 +5,7 @@ import ContentScriptBridge from './bridge/ContentScriptBridge'
 import Launcher from './Launcher'
 import {
   ensureConnectorIsInstalled,
-  getContentScriptContent,
+  getContentScript,
 } from './ConnectorInstaller'
 
 const log = Minilog('ReactNativeLauncher')
@@ -49,8 +49,8 @@ class ReactNativeLauncher extends Launcher {
 
   async ensureConnectorIsInstalled({connector}) {
     await ensureConnectorIsInstalled(connector)
-    const content = await getContentScriptContent(connector)
-    return content
+    const contentScript = await getContentScript(connector)
+    return contentScript
   }
 
   async start({initConnectorError} = {}) {
