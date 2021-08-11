@@ -53,8 +53,12 @@ class ReactNativeLauncher extends Launcher {
     return content
   }
 
-  async start() {
+  async start({initConnectorError} = {}) {
     try {
+      if (initConnectorError) {
+        log.info('Got initConnectorError ' + initConnectorError.message)
+        throw initConnectorError
+      }
       await this.pilot.call('ensureAuthenticated')
       await this.sendLoginSuccess()
 
@@ -80,8 +84,12 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async close() {
-    this.pilot.close()
-    this.worker.close()
+    if (this.pilot) {
+      this.pilot.close()
+    }
+    if (this.worker) {
+      this.worker.close()
+    }
   }
 
   /**

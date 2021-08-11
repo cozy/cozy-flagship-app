@@ -15,24 +15,31 @@ const CONNECTORS_LOCAL_PATH = RNFS.DocumentDirectoryPath + '/connectors/'
  * @param {String} options.source - connector source or channel. Can be like git://github.com/konnectors/cozy-konnector-template.git#build-debug or registry://template/stable
  */
 export const ensureConnectorIsInstalled = async ({slug, source, version}) => {
-  const connectorLocalPath = CONNECTORS_LOCAL_PATH + slug
-  await RNFS.mkdir(connectorLocalPath)
+  try {
+    const connectorLocalPath = CONNECTORS_LOCAL_PATH + slug
+    await RNFS.mkdir(connectorLocalPath)
 
-  const currentVersion = await getConnectorVersion({connectorLocalPath})
-  if (version !== currentVersion) {
-    log.info(
-      `${currentVersion} !== ${version}`,
-      `upgrading connector from ${source}`,
-    )
-    const archiveUrl = await getArchiveUrl(source)
-    await downloadAndExtractArchive({
-      url: archiveUrl,
-      localPath: connectorLocalPath,
-    })
-    await cleanConnectorDirectory({connectorLocalPath})
-    await setConnectorVersion({connectorLocalPath, version})
-  } else {
-    log.info(`${currentVersion} is already the last version no install needed`)
+    const currentVersion = await getConnectorVersion({connectorLocalPath})
+    if (version !== currentVersion) {
+      log.info(
+        `${currentVersion} !== ${version}`,
+        `upgrading connector from ${source}`,
+      )
+      const archiveUrl = await getArchiveUrl(source)
+      await downloadAndExtractArchive({
+        url: archiveUrl,
+        localPath: connectorLocalPath,
+      })
+      await cleanConnectorDirectory({connectorLocalPath})
+      await setConnectorVersion({connectorLocalPath, version})
+    } else {
+      log.info(
+        `${currentVersion} is already the last version no install needed`,
+      )
+    }
+  } catch (err) {
+    log.error(err.message)
+    throw new Error('CLIENT_CONNECTOR_INSTALL_ERROR')
   }
 }
 
@@ -43,7 +50,7 @@ export const ensureConnectorIsInstalled = async ({slug, source, version}) => {
  *
  * @returns {String} Content Script code
  */
-export const getContentScriptContent = async ({slug}) => {
+export const getContentScript = async ({slug}) => {
   const connectorLocalPath = CONNECTORS_LOCAL_PATH + slug
   const content = await RNFS.readFile(connectorLocalPath + '/webviewScript.js')
   return content
@@ -136,6 +143,11 @@ const downloadAndExtractArchive = async ({url, localPath}) => {
   })
   const downloadResult = await downloadJob.promise // or else won't wait for the end of the download
   log.debug(downloadResult, 'downloadResult')
+  if (downloadResult.statusCode >= 300) {
+    throw new Error(
+      `ConnectorInstall.downloadAndExtractArchive error: HTTPError ${downloadResult.statusCode} fromUrl ${url}`,
+    )
+  }
   const unZipRes = await Gzip.unGzipTar(
     archiveLocalPath,
     localPath + '/unzip',
