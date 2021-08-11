@@ -108,7 +108,9 @@ describe('ConnectorInstaller', () => {
   })
   describe('ensureConnectorIsInstalled', () => {
     it('should download and extract connector archive from github with github source', async () => {
-      RNFS.downloadFile.mockResolvedValue({promise: new Promise.resolve()})
+      RNFS.downloadFile.mockResolvedValue({
+        promise: new Promise.resolve({statusCode: 200}),
+      })
       RNFS.readDir.mockResolvedValue([
         {
           name: 'template',
@@ -165,6 +167,26 @@ describe('ConnectorInstaller', () => {
       expect(Gzip.unGzipTar).not.toHaveBeenCalled()
       expect(RNFS.unlink).not.toHaveBeenCalled()
       expect(RNFS.moveFile).not.toHaveBeenCalled()
+    })
+    it('should raise an error when there is a network error', async () => {
+      RNFS.downloadFile.mockResolvedValue({
+        promise: new Promise.resolve({statusCode: 404}),
+      })
+      await expect(
+        ensureConnectorIsInstalled({
+          slug: 'template',
+          source: 'git://github.com/konnectors/cozy-konnector-template.git',
+        }),
+      ).rejects.toThrow('CLIENT_CONNECTOR_INSTALL_ERROR')
+    })
+    it('should raise an error when there is a file system error', async () => {
+      RNFS.downloadFile.mockRejectedValue(new Error('ENOENT'))
+      await expect(
+        ensureConnectorIsInstalled({
+          slug: 'template',
+          source: 'git://github.com/konnectors/cozy-konnector-template.git',
+        }),
+      ).rejects.toThrow('CLIENT_CONNECTOR_INSTALL_ERROR')
     })
   })
   describe('getContentScriptContent', () => {

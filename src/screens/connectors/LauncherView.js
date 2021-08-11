@@ -35,17 +35,23 @@ class LauncherView extends Component {
   }
 
   async initConnector() {
+    let result = null
     let connector =
       embeddedConnectors[this.props.launcherContext.job.message.konnector]
     if (!connector) {
-      connector = {
-        source: await this.launcher.ensureConnectorIsInstalled(
-          this.props.launcherContext,
-        ),
-        manifest: this.props.launcherContext.connector.attributes,
+      try {
+        connector = {
+          source: await this.launcher.ensureConnectorIsInstalled(
+            this.props.launcherContext,
+          ),
+          manifest: this.props.launcherContext.connector.attributes,
+        }
+      } catch (err) {
+        result = err
       }
     }
     this.setState({connector})
+    return result
   }
 
   async componentDidUpdate() {
@@ -63,7 +69,7 @@ class LauncherView extends Component {
       client: this.props.client,
       manifest: this.props.launcherContext.connector.attributes,
     })
-    await this.initConnector()
+    const initConnectorError = await this.initConnector()
 
     this.launcher.on('SET_WORKER_STATE', (options) => {
       if (this.state.worker.url !== options.url) {
@@ -72,14 +78,16 @@ class LauncherView extends Component {
       this.setState({worker: options})
     })
 
-    await this.launcher.init({
-      bridgeOptions: {
-        pilotWebView: this.pilotWebView,
-        workerWebview: this.workerWebview,
-      },
-      contentScript: this.state.connector.source,
-    })
-    await this.launcher.start()
+    if (this.state.connector) {
+      await this.launcher.init({
+        bridgeOptions: {
+          pilotWebView: this.pilotWebView,
+          workerWebview: this.workerWebview,
+        },
+        contentScript: this.state.connector.source,
+      })
+    }
+    await this.launcher.start({initConnectorError})
     this.props.setLauncherContext({state: 'default'})
   }
 
