@@ -1,6 +1,7 @@
 import Minilog from '@cozy/minilog'
 import RNFS from 'react-native-fs'
 import Gzip from '@fengweichong/react-native-gzip'
+import {Registry} from 'cozy-client'
 
 const log = Minilog('ConnectorInstaller')
 
@@ -12,9 +13,16 @@ const CONNECTORS_LOCAL_PATH = RNFS.DocumentDirectoryPath + '/connectors/'
  * Ensures that a connector is installed
  *
  * @param {String} options.slug - connector slug
- * @param {String} options.source - connector source or channel. Can be like git://github.com/konnectors/cozy-konnector-template.git#build-debug or registry://template/stable
+ * @param {String} options.source - connector source. Can be like git://github.com/konnectors/cozy-konnector-template.git#build-debug or registry://template/stable
+ * @param {String} options.version - connector version
+ * @param {CozyClient} options.client - CozyClient instance
  */
-export const ensureConnectorIsInstalled = async ({slug, source, version}) => {
+export const ensureConnectorIsInstalled = async ({
+  slug,
+  source,
+  version,
+  client,
+}) => {
   try {
     const connectorLocalPath = CONNECTORS_LOCAL_PATH + slug
     await RNFS.mkdir(connectorLocalPath)
@@ -25,7 +33,7 @@ export const ensureConnectorIsInstalled = async ({slug, source, version}) => {
         `${currentVersion} !== ${version}`,
         `upgrading connector from ${source}`,
       )
-      const archiveUrl = await getArchiveUrl(source)
+      const archiveUrl = await getArchiveUrl({source, client})
       await downloadAndExtractArchive({
         url: archiveUrl,
         localPath: connectorLocalPath,
@@ -116,16 +124,18 @@ export const cleanConnectorsFiles = async () => {
 /**
  * Gets archive url
  *
- * @param {String} source - connector source or channel. Can be like git://github.com/konnectors/cozy-konnector-template.git#build-debug or registry://template/stable
+ * @param {Object} params
+ * @param {String} params.source - connector source or channel. Can be like git://github.com/konnectors/cozy-konnector-template.git#build-debug or registry://template/stable
+ * @param {CozyClient} params.client - CozyClient instance
  *
  * @returns {String} archive url
  */
-const getArchiveUrl = async (source) => {
+const getArchiveUrl = async ({source, client}) => {
   let result
   if (source.includes('git://github.com')) {
     result = extractGithubSourceUrl(source)
   } else if (source.includes('registry://')) {
-    result = await extractRegistrySourceUrl(source)
+    result = await extractRegistrySourceUrl({source, client})
   } else {
     throw new Error(`getArchiveUrl: unknown source type  ${source}`)
   }
@@ -204,46 +214,53 @@ export const extractGithubSourceUrl = (source) => {
 /**
  * Converts a registry source to the corresponding tar.gz archive url
  *
- * @param {String} source - registry source, formatted as registry://template/stable
+ * @param {Object} params
+ * @param {String} params.source - registry source, formatted as registry://template/stable
+ * @param {CozyClient} params.client - CozyClient instance
+ *
  * @returns {String} - registry archive url like https://apps-registry.cozycloud.cc/registry/template/1.0.0/tarball/xxx.tar.gz
  */
-export const extractRegistrySourceUrl = async (source) => {
+export const extractRegistrySourceUrl = async ({source, client}) => {
   const matches = source.match(/^registry:\/\/(.*)$/)
   if (!matches) {
     throw new Error(`extractRegistrySourceUrl: Could not install ${source}`)
   }
 
-  let url = 'https://apps-registry.cozycloud.cc/registry/'
   const registryUrlPart = matches[1]
   const splittedPath = registryUrlPart.split('/')
+
+  const isVersion = (strVersion) => strVersion.match(/^\d/)
+  const registryParams = {}
   if (splittedPath.length === 3) {
     // slug/channel/versionOrLatest
     const [slug, channel, versionOrLatest] = splittedPath
-    const isVersion = versionOrLatest.match(/^\d/)
-    if (isVersion) {
-      url += `${slug}/${versionOrLatest}`
+    registryParams.slug = slug
+    if (isVersion(versionOrLatest)) {
+      registryParams.version = versionOrLatest
     } else {
-      url += `${slug}/${channel}/latest`
+      registryParams.channel = channel
     }
   } else if (splittedPath.length === 2) {
     // slug/channel or slug/version
     const [slug, channelOrVersion] = splittedPath
-    const isVersion = channelOrVersion.match(/^\d/)
-    url += `${slug}/${channelOrVersion}`
-    if (!isVersion) {
-      url += '/latest'
+    registryParams.slug = slug
+    if (isVersion(channelOrVersion)) {
+      registryParams.version = channelOrVersion
+    } else {
+      registryParams.channel = channelOrVersion
     }
   } else if (splittedPath.length === 1) {
     // slug
     const [slug] = splittedPath
-    url += `${slug}/stable/latest`
+    registryParams.slug = slug
   } else {
     throw new Error(
       `extractRegistrySourceUrl: Could not parse ${registryUrlPart}`,
     )
   }
 
-  const response = await fetch(url)
-  const json = await response.json()
-  return json.url
+  const registry = new Registry({client})
+  const connectorVersion = await registry.fetchAppVersion(registryParams)
+
+  return connectorVersion.url
 }

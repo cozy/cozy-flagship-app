@@ -9,6 +9,7 @@ import ReactNativeLauncher from '../../libs/ReactNativeLauncher'
 import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
 import {withClient} from 'cozy-client'
+import {get} from 'lodash'
 
 const embeddedConnectors = {
   // template: templateConnector,
@@ -35,17 +36,15 @@ class LauncherView extends Component {
   }
 
   async initConnector() {
+    const {client, launcherContext} = this.props
     let result = null
-    let connector =
-      embeddedConnectors[this.props.launcherContext.job.message.konnector]
+    let connector = embeddedConnectors[launcherContext.job.message.konnector]
     if (!connector) {
       try {
-        connector = {
-          source: await this.launcher.ensureConnectorIsInstalled(
-            this.props.launcherContext,
-          ),
-          manifest: this.props.launcherContext.connector.attributes,
-        }
+        connector = await this.launcher.ensureConnectorIsInstalled({
+          ...launcherContext,
+          client,
+        })
       } catch (err) {
         result = err
       }
@@ -58,7 +57,7 @@ class LauncherView extends Component {
     this.launcher.setStartContext({
       ...this.props.launcherContext,
       client: this.props.client,
-      manifest: this.props.launcherContext.connector.attributes,
+      manifest: get(this, 'state.connector.manifest'),
     })
   }
 
@@ -67,7 +66,7 @@ class LauncherView extends Component {
     this.launcher.setStartContext({
       ...this.props.launcherContext,
       client: this.props.client,
-      manifest: this.props.launcherContext.connector.attributes,
+      manifest: get(this, 'state.connector.manifest'),
     })
     const initConnectorError = await this.initConnector()
 
@@ -84,7 +83,7 @@ class LauncherView extends Component {
           pilotWebView: this.pilotWebView,
           workerWebview: this.workerWebview,
         },
-        contentScript: this.state.connector.source,
+        contentScript: get(this, 'state.connector.content'),
       })
     }
     await this.launcher.start({initConnectorError})
@@ -111,16 +110,17 @@ class LauncherView extends Component {
                 ref={(ref) => (this.pilotWebView = ref)}
                 originWhitelist={['*']}
                 source={{
-                  uri: this.state.connector.manifest.vendor_link,
+                  uri: get(this, 'state.connector.manifest.vendor_link'),
                 }}
                 useWebKit={true}
                 javaScriptEnabled={true}
                 sharedCookiesEnabled={true}
                 onMessage={this.onPilotMessage}
                 onError={this.onPilotError}
-                injectedJavaScriptBeforeContentLoaded={
-                  this.state.connector.source
-                }
+                injectedJavaScriptBeforeContentLoaded={get(
+                  this,
+                  'state.connector.content',
+                )}
               />
             </View>
             <View style={workerStyle}>
@@ -137,9 +137,10 @@ class LauncherView extends Component {
                 onMessage={this.onWorkerMessage}
                 onError={this.onWorkerError}
                 onShouldStartLoadWithRequest={this.onWorkerWillReload}
-                injectedJavaScriptBeforeContentLoaded={
-                  this.state.connector.source
-                }
+                injectedJavaScriptBeforeContentLoaded={get(
+                  this,
+                  'state.connector.content',
+                )}
               />
             </View>
           </>

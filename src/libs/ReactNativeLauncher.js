@@ -47,8 +47,8 @@ class ReactNativeLauncher extends Launcher {
     log.debug('bridges init done')
   }
 
-  async ensureConnectorIsInstalled({connector}) {
-    await ensureConnectorIsInstalled(connector)
+  async ensureConnectorIsInstalled({connector, client}) {
+    await ensureConnectorIsInstalled({...connector, client})
     const contentScript = await getContentScript(connector)
     return contentScript
   }
