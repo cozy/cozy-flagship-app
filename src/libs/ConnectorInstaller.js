@@ -27,7 +27,7 @@ export const ensureConnectorIsInstalled = async ({
     const connectorLocalPath = CONNECTORS_LOCAL_PATH + slug
     await RNFS.mkdir(connectorLocalPath)
 
-    const currentVersion = await getConnectorVersion({connectorLocalPath})
+    const currentVersion = await readConnectorVersion({connectorLocalPath})
     if (version !== currentVersion) {
       log.info(
         `${currentVersion} !== ${version}`,
@@ -39,7 +39,7 @@ export const ensureConnectorIsInstalled = async ({
         localPath: connectorLocalPath,
       })
       await cleanConnectorDirectory({connectorLocalPath})
-      await setConnectorVersion({connectorLocalPath, version})
+      await writeConnectorVersion({connectorLocalPath, version})
     } else {
       log.info(
         `${currentVersion} is already the last version no install needed`,
@@ -69,13 +69,13 @@ export const getContentScript = async ({slug}) => {
 }
 
 /**
- * Get the version of a connector given it's installation path
+ * Read the version of a connector given it's installation path
  *
  * @param {String} options.connectorLocalPath - Connector installation path
  *
  * @returns {String} Connector version
  */
-const getConnectorVersion = async ({connectorLocalPath}) => {
+const readConnectorVersion = async ({connectorLocalPath}) => {
   try {
     const version = await RNFS.readFile(connectorLocalPath + '/VERSION')
     return version.trim()
@@ -86,12 +86,12 @@ const getConnectorVersion = async ({connectorLocalPath}) => {
 }
 
 /**
- * Set the version of a connector
+ * Write the version of a connector
  *
  * @param {String} options.connectorLocalPath - Connector installation path
  * @param {String} options.version - Connector version
  */
-const setConnectorVersion = async ({connectorLocalPath, version}) => {
+const writeConnectorVersion = async ({connectorLocalPath, version}) => {
   await RNFS.writeFile(connectorLocalPath + '/VERSION', version)
 }
 
@@ -106,7 +106,7 @@ export const getConnectorsFiles = async () => {
   for (const connector of connectors) {
     result[connector.name] = {
       files: await RNFS.readDir(connector.path),
-      version: await getConnectorVersion({connectorLocalPath: connector.path}),
+      version: await readConnectorVersion({connectorLocalPath: connector.path}),
     }
   }
 
