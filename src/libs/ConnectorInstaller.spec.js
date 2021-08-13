@@ -14,6 +14,7 @@ import {
   extractRegistrySourceUrl,
   ensureConnectorIsInstalled,
   getContentScript,
+  getManifest,
 } from './ConnectorInstaller'
 import RNFS from 'react-native-fs'
 import Gzip from '@fengweichong/react-native-gzip'
@@ -191,18 +192,24 @@ describe('ConnectorInstaller', () => {
   })
   describe('getContentScript', () => {
     it('should get content script content from local fs', async () => {
-      RNFS.readFile
-        .mockResolvedValueOnce('local script content')
-        .mockResolvedValue('{"slug": "sncf"}')
-      await getContentScript({slug: 'sncf'})
+      RNFS.readFile.mockResolvedValueOnce('local script content')
+      const content = await getContentScript({slug: 'sncf'})
       expect(RNFS.readFile).toHaveBeenNthCalledWith(
         1,
         '/app/connectors/sncf/webviewScript.js',
       )
+      expect(content).toEqual('local script content')
+    })
+  })
+  describe('getManifest', () => {
+    it('should get the connector manifest from the local fs', async () => {
+      RNFS.readFile.mockResolvedValue('{"slug": "sncf"}')
+      const manifest = await getManifest({slug: 'sncf'})
       expect(RNFS.readFile).toHaveBeenNthCalledWith(
         2,
         '/app/connectors/sncf/manifest.konnector',
       )
+      expect(manifest).toEqual({slug: 'sncf'})
     })
   })
 })

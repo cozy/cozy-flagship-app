@@ -52,20 +52,32 @@ export const ensureConnectorIsInstalled = async ({
 }
 
 /**
- * Get the content of a content script
+ * Get the manifest of a connector
  *
  * @param {String} options.slug - connector slug
  *
- * @returns {Object} Content Script code and manifest
+ * @returns {Object} Manifest as a javascript object
  */
-export const getContentScript = async ({slug}) => {
+export const getManifest = async ({slug}) => {
   const connectorLocalPath = CONNECTORS_LOCAL_PATH + slug
-  const content = await RNFS.readFile(connectorLocalPath + '/webviewScript.js')
   const manifestJSON = await RNFS.readFile(
     connectorLocalPath + '/manifest.konnector',
   )
   const manifest = JSON.parse(manifestJSON)
-  return {content, manifest}
+  return manifest
+}
+
+/**
+ * Get the content script of a connector
+ *
+ * @param {String} options.slug - connector slug
+ *
+ * @returns {String} Content Script source
+ */
+export const getContentScript = async ({slug}) => {
+  const connectorLocalPath = CONNECTORS_LOCAL_PATH + slug
+  const content = await RNFS.readFile(connectorLocalPath + '/webviewScript.js')
+  return content
 }
 
 /**
