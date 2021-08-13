@@ -93,11 +93,10 @@ const getConnectorVersion = async ({connectorLocalPath}) => {
  */
 const setConnectorVersion = async ({connectorLocalPath, version}) => {
   await RNFS.writeFile(connectorLocalPath + '/VERSION', version)
-  await RNFS.writeFile(connectorLocalPath + '/' + version, version) // to make it readable in the DebugView
 }
 
 /**
- * Gets the list of connectors directories with their content
+ * Gets the list of connectors directories with their content + the version of the connectors
  *
  * @returns {Object}
  */
@@ -105,7 +104,10 @@ export const getConnectorsFiles = async () => {
   let result = {}
   const connectors = await RNFS.readDir(CONNECTORS_LOCAL_PATH)
   for (const connector of connectors) {
-    result[connector.name] = await RNFS.readDir(connector.path)
+    result[connector.name] = {
+      files: await RNFS.readDir(connector.path),
+      version: await getConnectorVersion({connectorLocalPath: connector.path}),
+    }
   }
 
   return result
