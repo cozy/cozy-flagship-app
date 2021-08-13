@@ -10,12 +10,17 @@ const DebugView = (props) => {
   const [content, setContent] = useState('<h1>loading...</h1>')
   useEffect(() => {
     let result = '<h1>Installed connectors</h1>'
-    getConnectorsFiles().then((connectors) => {
+    getConnectorsFiles().then(async (connectors) => {
       for (const connector in connectors) {
         result += `<h2>${connector}</h2>
           <ul>`
-        for (const file of connectors[connector]) {
-          result += `<li>${file.name} ${Math.floor(file.size / 1024)} kB</li>`
+        for (const file of connectors[connector].files) {
+          const size = Math.floor(file.size / 1024) + 'kB'
+          let version
+          if (file.name === 'VERSION') {
+            version = connectors[connector].version
+          }
+          result += `<li>${file.name} ${version ? version : size}</li>`
         }
         result += '</ul>'
       }
