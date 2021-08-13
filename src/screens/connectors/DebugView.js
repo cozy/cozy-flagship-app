@@ -36,8 +36,13 @@ const DebugView = (props) => {
 }
 
 async function cleanDirectory(setContent) {
-  await cleanConnectorsFiles()
-  setContent('<h1>Cleaned</h1>')
+  try {
+    await cleanConnectorsFiles()
+    setContent('<h1>Cleaned</h1>')
+  } catch (err) {
+    console.error(err)
+    setContent(`<h1>Not Cleaned: ${err.message}</h1>`)
+  }
 }
 
 export default DebugView
