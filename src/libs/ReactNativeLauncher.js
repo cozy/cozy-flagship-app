@@ -6,6 +6,7 @@ import Launcher from './Launcher'
 import {
   ensureConnectorIsInstalled,
   getContentScript,
+  getManifest,
 } from './ConnectorInstaller'
 
 const log = Minilog('ReactNativeLauncher')
@@ -49,8 +50,9 @@ class ReactNativeLauncher extends Launcher {
 
   async ensureConnectorIsInstalled({connector, client}) {
     await ensureConnectorIsInstalled({...connector, client})
-    const contentScript = await getContentScript(connector)
-    return contentScript
+    const content = await getContentScript(connector)
+    const manifest = await getManifest(connector)
+    return {content, manifest}
   }
 
   async start({initConnectorError} = {}) {
