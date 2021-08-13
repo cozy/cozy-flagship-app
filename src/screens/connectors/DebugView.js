@@ -8,9 +8,11 @@ import {
 
 const DebugView = (props) => {
   const [content, setContent] = useState('<h1>loading...</h1>')
+
   useEffect(() => {
-    let result = '<h1>Installed connectors</h1>'
-    getConnectorsFiles().then(async (connectors) => {
+    (async function listFiles() {
+      let result = '<h1>Installed connectors</h1>'
+      const connectors = await getConnectorsFiles()
       for (const connector in connectors) {
         result += `<h2>${connector}</h2>
           <ul>`
@@ -25,7 +27,7 @@ const DebugView = (props) => {
         result += '</ul>'
       }
       setContent(result)
-    })
+    })()
   }, [content])
   return (
     <>
