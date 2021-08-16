@@ -9,6 +9,16 @@ import {
 const DebugView = (props) => {
   const [content, setContent] = useState('<h1>loading...</h1>')
 
+  const onPress = async () => {
+    try {
+      await cleanConnectorsFiles()
+      setContent('<h1>Cleaned</h1>')
+    } catch (err) {
+      console.error(err)
+      setContent(`<h1>Not Cleaned: ${err.message}</h1>`)
+    }
+  }
+
   useEffect(() => {
     (async function listFiles() {
       let result = '<h1>Installed connectors</h1>'
@@ -32,19 +42,9 @@ const DebugView = (props) => {
   return (
     <>
       <WebView source={{html: content}} />
-      <Button title="Clean" onPress={() => cleanDirectory(setContent)} />
+      <Button title="Clean" onPress={onPress} />
     </>
   )
-}
-
-async function cleanDirectory(setContent) {
-  try {
-    await cleanConnectorsFiles()
-    setContent('<h1>Cleaned</h1>')
-  } catch (err) {
-    console.error(err)
-    setContent(`<h1>Not Cleaned: ${err.message}</h1>`)
-  }
 }
 
 export default DebugView
