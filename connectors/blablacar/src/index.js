@@ -85,16 +85,27 @@ class BlablacarContentScript extends ContentScript {
   async getPayments() {
     const result = Array.from(
       document.querySelectorAll('.section-content > .kirk-item'),
-    ).map((doc) => {
-      const [from, to] = doc.querySelectorAll('.kirk-item-body > span > span')
-      return {
-        html: doc.innerHTML,
-        from: from.innerText.trim(),
-        to: to.innerText.trim(),
-        amount: doc.querySelector('.kirk-item-rightText').innerText,
-        date: doc.querySelector('.kirk-text-title').innerText,
-      }
-    })
+    )
+      .map((doc) => {
+        const [from, to] =
+          doc.querySelectorAll('.kirk-item-body > span > span') || []
+        const amount = doc.querySelector('.kirk-item-rightText')
+        const date = doc.querySelector('.kirk-text-title')
+        return {
+          html: doc.innerHTML,
+          from: from ? from.innerText.trim() : null,
+          to: to ? to.innerText.trim() : null,
+          amount: amount ? amount.innerText : null,
+          date: date ? date.innerText : null,
+        }
+      })
+      .filter((doc) => {
+        const isCorrectBill = doc.from && doc.to && doc.amount && doc.date
+        if (!isCorrectBill) {
+          log.warn(doc, 'is not a correct bill')
+        }
+        return isCorrectBill
+      })
     return result
   }
 
