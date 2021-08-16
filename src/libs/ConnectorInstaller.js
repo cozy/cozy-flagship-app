@@ -169,7 +169,10 @@ const downloadAndExtractArchive = async ({url, localPath}) => {
     fromUrl: url,
     toFile: archiveLocalPath,
   })
-  const downloadResult = await downloadJob.promise // or else won't wait for the end of the download
+
+  // The first promise only states that the job is created, the second promise resolves when the
+  // job is finished. And we need the job to be finished to have the archive ready to be extracted
+  const downloadResult = await downloadJob.promise
   log.debug(downloadResult, 'downloadResult')
   if (downloadResult.statusCode >= 300) {
     throw new Error(
