@@ -3,11 +3,7 @@ import Minilog from '@cozy/minilog'
 
 import ContentScriptBridge from './bridge/ContentScriptBridge'
 import Launcher from './Launcher'
-import {
-  ensureConnectorIsInstalled,
-  getContentScript,
-  getManifest,
-} from './ConnectorInstaller'
+import * as ConnectorInstaller from './ConnectorInstaller'
 
 const log = Minilog('ReactNativeLauncher')
 
@@ -49,9 +45,9 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async ensureConnectorIsInstalled({connector, client}) {
-    await ensureConnectorIsInstalled({...connector, client})
-    const content = await getContentScript(connector)
-    const manifest = await getManifest(connector)
+    await ConnectorInstaller.ensureConnectorIsInstalled({...connector, client})
+    const content = await ConnectorInstaller.getContentScript(connector)
+    const manifest = await ConnectorInstaller.getManifest(connector)
     return {content, manifest}
   }
 
