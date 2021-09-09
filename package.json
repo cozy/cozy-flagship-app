@@ -8,6 +8,7 @@
     "web": "webpack serve --open --config webpack.config.js --inline --hot --port=9999",
     "web:test": "react-app-rewired test --env=jsdom",
     "build": "react-app-rewired build",
+    "build:android:debug": "./scripts/build-debug-offline-apk.sh",
     "start": "react-native start",
     "test": "jest connectors/connectorLibs/* src/libs/*",
     "token": "node scripts/token.js",

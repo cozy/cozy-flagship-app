@@ -12,17 +12,17 @@
 # Download Dependencies
 $ yarn
 
-# Run native server 
+# Run native server
 $ yarn start # (must be started for the following commands)
 
-# Run on iOS Device 
+# Run on iOS Device
 $ cd ios && pod install # Only the first time
-$ yarn ios 
+$ yarn ios
 
 # Run on Android Device
 $ yarn android
 
-# Run in the browser 
+# Run in the browser
 $ yarn web
 ```
 
@@ -49,3 +49,8 @@ $ yarn test
 
 
 
+## Build an offline apk
+
+* First, you must have `yarn start` running in another terminal
+* Then run ./scripts/build-debug-offline-apk.sh
+* The output will give you the path to the apk
