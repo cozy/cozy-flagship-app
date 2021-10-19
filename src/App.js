@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import {SafeAreaView, StyleSheet, View} from 'react-native'
+import {SafeAreaView, StyleSheet, View, Linking} from 'react-native'
 import {NavigationContainer} from '@react-navigation/native'
+import {createStackNavigator} from '@react-navigation/stack'
 import {Provider as PaperProvider, TextInput, Button} from 'react-native-paper'
 
 import {decode, encode} from 'base-64'
@@ -9,7 +10,10 @@ import {CozyProvider} from 'cozy-client'
 
 import {lightTheme} from './theme'
 import Connectors from './screens/connectors'
+import StoreView from './screens/store/StoreView'
 import {getClient, saveClient, initClient} from './libs/client'
+
+const Root = createStackNavigator()
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -21,17 +25,6 @@ if (!global.atob) {
 }
 
 const COZY_PREFIX = 'cozy://'
-
-const config = {
-  screens: {
-    connectors: 'connectors',
-  },
-}
-
-const linking = {
-  prefixes: [COZY_PREFIX],
-  config,
-}
 
 const App = () => {
   const [client, setClient] = useState(null)
@@ -49,8 +42,15 @@ const App = () => {
     <PaperProvider theme={lightTheme}>
       {client ? (
         <CozyProvider client={client}>
-          <NavigationContainer linking={linking}>
-            <Connectors />
+          <NavigationContainer>
+            <Root.Navigator initialRouteName="home">
+              <Root.Screen
+                name="home"
+                component={Connectors}
+                options={{headerShown: false}}
+              />
+              <Root.Screen name="store" component={StoreView} />
+            </Root.Navigator>
           </NavigationContainer>
         </CozyProvider>
       ) : (
