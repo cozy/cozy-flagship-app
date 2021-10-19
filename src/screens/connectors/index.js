@@ -4,15 +4,18 @@ import HomeView from './HomeView'
 import LauncherView from './LauncherView'
 import DebugView from './DebugView'
 
-const Konnectors = ({navigation}) => {
+const Konnectors = ({route, navigation}) => {
   const [debug, setDebug] = useState(false)
   const [launcherContext, setLauncherContext] = useState({state: 'default'})
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeAreaView}>
         <StatusBar barStyle="dark-content" />
-        <Button title="Debug" onPress={() => setDebug(!debug)} />
-        <HomeView setLauncherContext={setLauncherContext} />
+        <HomeView
+          setLauncherContext={setLauncherContext}
+          navigation={navigation}
+          route={route}
+        />
         {debug && <DebugView />}
         {launcherContext.state === 'launch' && (
           <LauncherView
