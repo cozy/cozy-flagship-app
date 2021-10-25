@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react'
 import {get} from 'lodash'
-import {WebView} from 'react-native-webview'
+import CozyWebView, {COZY_PREFIX} from '../CozyWebView'
 import {useClient} from 'cozy-client'
 import {generateWebLink} from 'cozy-ui/transpiled/react/AppLinker'
 
@@ -8,9 +8,9 @@ const HOME_URL = 'file:///android_asset/home/index.html'
 
 const HomeView = ({route, navigation, setLauncherContext}) => {
   let initUrl = HOME_URL
-  const slugParam = get(route, 'params.slug')
-  if (slugParam) {
-    initUrl += `#/connected/${slugParam}`
+  const connectorParam = get(route, 'params.connector')
+  if (connectorParam) {
+    initUrl += `#/connected/${connectorParam}`
   }
 
   const client = useClient()
@@ -40,15 +40,13 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
       slug: 'store',
       subDomainType,
     })
-  }, [uri])
+  }, [client, uri])
 
   return (
-    <WebView
-      originWhitelist={['*']}
-      useWebKit={true}
-      javaScriptEnabled={true}
+    <CozyWebView
       source={{uri: initUrl}}
       injectedJavaScriptBeforeContentLoaded={run}
+      navigation={navigation}
       onMessage={(m) => {
         const data = get(m, 'nativeEvent.data')
         if (data) {
@@ -59,11 +57,14 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
         }
       }}
       onShouldStartLoadWithRequest={(request) => {
-        if (isStoreUrl(request.url)) {
-          navigation.push('store', {url: request.url})
-          return false
+        if (isStoreUrl({url: request.url, storeAddUrl})) {
+          return {
+            ...request,
+            url: `${COZY_PREFIX}?app=store`,
+            originalRequest: request,
+          }
         }
-        return true
+        return request
       }}
     />
   )
