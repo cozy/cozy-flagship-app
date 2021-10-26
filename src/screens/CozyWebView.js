@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {WebView} from 'react-native-webview'
+import {CommonActions} from '@react-navigation/native'
 import Minilog from '@cozy/minilog'
 
 const log = Minilog('CozyWebView')
@@ -11,8 +12,12 @@ export const COZY_PREFIX = 'cozy://flagship'
 const navigationMap = {
   'app=store': ({request, navigation}) =>
     navigation.push('store', {url: addRedirect(request.originalRequest.url)}),
-  'konnector=(.*)': ({params, navigation}) =>
-    navigation.push('home', {konnector: params[0]}),
+  'konnector=(.*)': ({params, navigation}) => {
+    navigation.dispatch(
+      // navigate directly to home without creating a new view
+      CommonActions.navigate({name: 'home', params: {konnector: params[0]}}),
+    )
+  },
 }
 
 const CozyWebView = (props) => {
