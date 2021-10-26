@@ -11,8 +11,8 @@ export const COZY_PREFIX = 'cozy://flagship'
 const navigationMap = {
   'app=store': ({request, navigation}) =>
     navigation.push('store', {url: addRedirect(request.originalRequest.url)}),
-  'connector=(.*)': ({params, navigation}) =>
-    navigation.push('home', {connector: params[0]}),
+  'konnector=(.*)': ({params, navigation}) =>
+    navigation.push('home', {konnector: params[0]}),
 }
 
 const CozyWebView = (props) => {
@@ -69,7 +69,7 @@ function escapeRegexp(string) {
 
 function addRedirect(url) {
   const newUrl = new URL(url)
-  newUrl.searchParams.append('connector_open_uri', COZY_PREFIX)
+  newUrl.searchParams.append('konnector_open_uri', COZY_PREFIX)
   return newUrl.href
 }
 
