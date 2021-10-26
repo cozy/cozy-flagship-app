@@ -8,9 +8,9 @@ const HOME_URL = 'file:///android_asset/home/index.html'
 
 const HomeView = ({route, navigation, setLauncherContext}) => {
   let initUrl = HOME_URL
-  const connectorParam = get(route, 'params.connector')
-  if (connectorParam) {
-    initUrl += `#/connected/${connectorParam}`
+  const konnectorParam = get(route, 'params.konnector')
+  if (konnectorParam) {
+    initUrl += `#/connected/${konnectorParam}`
   }
 
   const client = useClient()
