@@ -1,7 +1,9 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useMemo} from 'react'
 import {WebView} from 'react-native-webview'
 import {CommonActions} from '@react-navigation/native'
 import Minilog from '@cozy/minilog'
+import {generateWebLink} from 'cozy-ui/transpiled/react/AppLinker'
+import {useClient} from 'cozy-client'
 
 const log = Minilog('CozyWebView')
 
@@ -20,9 +22,10 @@ const navigationMap = {
   },
 }
 
-const CozyWebView = (props) => {
-  const {navigation, onShouldStartLoadWithRequest} = props
+const CozyWebView = ({navigation, onShouldStartLoadWithRequest, ...rest}) => {
   const [flagshipRequest, setFlagshipRequest] = useState(null)
+  const client = useClient()
+  const {uri} = client.getStackClient()
 
   useEffect(() => {
     if (flagshipRequest) {
@@ -31,16 +34,30 @@ const CozyWebView = (props) => {
     }
   }, [flagshipRequest, navigation])
 
+  const storeAddUrl = useMemo(() => {
+    const {subdomain: subDomainType} = client.getInstanceOptions()
+    return generateWebLink({
+      cozyUrl: new URL(uri).origin,
+      slug: 'store',
+      subDomainType,
+    })
+  }, [client, uri])
+
   return (
     <WebView
-      {...props}
+      {...rest}
       originWhitelist={['*']}
       useWebKit={true}
       javaScriptEnabled={true}
       onShouldStartLoadWithRequest={(initialRequest) => {
-        const request = onShouldStartLoadWithRequest
+        // we use onShouldStartLoadWithRequest since links to cozy://flagship in the webview do not
+        // trigger deep linking
+        let request = onShouldStartLoadWithRequest
           ? onShouldStartLoadWithRequest(initialRequest)
           : initialRequest
+
+        request = interceptStoreUrls({request, storeAddUrl})
+
         if (request.url.substring(0, COZY_PREFIX.length) === COZY_PREFIX) {
           setFlagshipRequest({url: request.url, request})
           return false
@@ -76,6 +93,21 @@ function addRedirect(url) {
   const newUrl = new URL(url)
   newUrl.searchParams.append('konnector_open_uri', COZY_PREFIX)
   return newUrl.href
+}
+
+function isStoreUrl({url, storeAddUrl}) {
+  return url.includes(storeAddUrl.split('#').shift())
+}
+
+function interceptStoreUrls({request, storeAddUrl}) {
+  if (isStoreUrl({url: request.url, storeAddUrl})) {
+    return {
+      ...request,
+      url: `${COZY_PREFIX}?app=store`,
+      originalRequest: request,
+    }
+  }
+  return request
 }
 
 export default CozyWebView

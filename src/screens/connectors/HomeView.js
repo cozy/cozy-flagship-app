@@ -1,8 +1,7 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import {get} from 'lodash'
-import CozyWebView, {COZY_PREFIX} from '../CozyWebView'
+import CozyWebView from '../CozyWebView'
 import {useClient} from 'cozy-client'
-import {generateWebLink} from 'cozy-ui/transpiled/react/AppLinker'
 
 const HOME_URL = 'file:///android_asset/home/index.html'
 
@@ -33,15 +32,6 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
     return true;
     `
 
-  const storeAddUrl = useMemo(() => {
-    const {subdomain: subDomainType} = client.getInstanceOptions()
-    return generateWebLink({
-      cozyUrl: new URL(uri).origin,
-      slug: 'store',
-      subDomainType,
-    })
-  }, [client, uri])
-
   return (
     <CozyWebView
       source={{uri: initUrl}}
@@ -56,22 +46,8 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
           }
         }
       }}
-      onShouldStartLoadWithRequest={(request) => {
-        if (isStoreUrl({url: request.url, storeAddUrl})) {
-          return {
-            ...request,
-            url: `${COZY_PREFIX}?app=store`,
-            originalRequest: request,
-          }
-        }
-        return request
-      }}
     />
   )
-}
-
-function isStoreUrl({url, storeAddUrl}) {
-  return url.includes(storeAddUrl.split('#').shift())
 }
 
 export default HomeView
