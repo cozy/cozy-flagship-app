@@ -59,6 +59,7 @@ const App = () => {
             label="Cozy url"
             placeholder="https://testchristophe.cozy.works"
             onChange={(event) => setUri(event.nativeEvent.text)}
+            autoCapitalize="none"
           />
           <Button
             busy={busy}
