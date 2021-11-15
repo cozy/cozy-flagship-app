@@ -12,6 +12,16 @@
 # Download Dependencies
 $ yarn
 
+#install konnectors (for now)
+$ cd connectors/sncf
+$ yarn install && yarn build
+$ cd ../blablacar
+$ yarn install && yarn build
+
+#install the home application 
+$ git submodule update --init --recursive
+$ yarn home:build
+
 # Run native server
 $ yarn start # (must be started for the following commands)
 
@@ -22,8 +32,6 @@ $ yarn ios
 # Run on Android Device
 $ yarn android
 
-# Run in the browser
-$ yarn web
 ```
 
 
