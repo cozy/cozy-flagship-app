@@ -9,7 +9,7 @@ const MANIFEST_PATH = path.join(BASE_PATH, 'manifest.konnector')
 const js = fs.readFileSync(SOURCE_PATH, 'utf8')
 const manifest = fs.readFileSync(MANIFEST_PATH, 'utf8')
 const json = `module.exports = {
-  source: ${JSON.stringify(js)},
+  content: ${JSON.stringify(js)},
   manifest: ${manifest.trim()}
 }`
 fs.writeFileSync(OUT_PATH, json)
