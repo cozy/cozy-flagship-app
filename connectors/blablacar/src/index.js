@@ -58,7 +58,7 @@ class BlablacarContentScript extends ContentScript {
       ],
     }
 
-    // await this.saveIdentity(identity) FIXME permission problem
+    await this.saveIdentity(identity)
 
     await this.bridge.call('setWorkerState', {
       url: 'https://m.blablacar.fr/dashboard/account/payments-history',

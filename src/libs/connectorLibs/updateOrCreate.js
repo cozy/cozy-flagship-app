@@ -22,7 +22,7 @@ const updateOrCreate = async (
   options = {},
 ) => {
   const client = options.client
-  const {data: existings} = await client.queryAll(Q(doctype))
+  const existings = await client.queryAll(Q(doctype))
   for (const entry of entries) {
     const toUpdate = existings.find((doc) =>
       matchingAttributes.reduce(
@@ -34,13 +34,16 @@ const updateOrCreate = async (
     )
     if (toUpdate) {
       log.debug('updating', toUpdate)
-      const {data: result} = await client
-        .collection(doctype)
-        .update(Object.assign({_id: toUpdate._id}, entry))
+      const {data: result} = await client.save({
+        ...entry,
+        _id: toUpdate._id,
+        _rev: toUpdate._rev,
+        _type: doctype,
+      })
       return result
     } else {
       log.debug('creating', entry)
-      const {data: result} = await client.collection(doctype).create(entry)
+      const {data: result} = await client.save({...entry, _type: doctype})
       return result
     }
   }
