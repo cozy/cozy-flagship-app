@@ -26,10 +26,34 @@ if (!global.atob) {
 
 const COZY_PREFIX = 'cozy://'
 
-const App = () => {
-  const [client, setClient] = useState(null)
+const Authenticate = ({setClient}) => {
   const [uri, setUri] = useState(null)
   const [busy, setBusy] = useState(false)
+
+  return (
+    <View>
+      <TextInput
+        label="Cozy url"
+        placeholder="https://testchristophe.cozy.works"
+        onChange={(event) => setUri(event.nativeEvent.text)}
+      />
+      <Button
+        busy={busy}
+        onPress={async () => {
+          setBusy(true)
+          const clientResult = await callInitClient(uri)
+          await setClient(clientResult)
+          setBusy(false)
+        }}>
+        Submit
+      </Button>
+    </View>
+  )
+}
+
+const App = () => {
+  const [client, setClient] = useState(null)
+
   useEffect(() => {
     getClient().then((clientResult) => {
       if (clientResult) {
@@ -38,40 +62,30 @@ const App = () => {
     })
   }, [])
 
+  const Routing = ({auth}) => (
+    <NavigationContainer>
+      <Root.Navigator initialRouteName={auth ? 'home' : 'authenticate'}>
+        <Root.Screen
+          name="home"
+          component={Connectors}
+          options={{headerShown: false}}
+        />
+        <Root.Screen name="store" component={StoreView} />
+        <Root.Screen name="authenticate">
+          {() => <Authenticate setClient={setClient} />}
+        </Root.Screen>
+      </Root.Navigator>
+    </NavigationContainer>
+  )
+
   return (
     <PaperProvider theme={lightTheme}>
       {client ? (
         <CozyProvider client={client}>
-          <NavigationContainer>
-            <Root.Navigator initialRouteName="home">
-              <Root.Screen
-                name="home"
-                component={Connectors}
-                options={{headerShown: false}}
-              />
-              <Root.Screen name="store" component={StoreView} />
-            </Root.Navigator>
-          </NavigationContainer>
+          <Routing auth={true} />
         </CozyProvider>
       ) : (
-        <View>
-          <TextInput
-            label="Cozy url"
-            placeholder="https://testchristophe.cozy.works"
-            onChange={(event) => setUri(event.nativeEvent.text)}
-            autoCapitalize="none"
-          />
-          <Button
-            busy={busy}
-            onPress={async () => {
-              setBusy(true)
-              const clientResult = await callInitClient(uri)
-              setClient(clientResult)
-              setBusy(false)
-            }}>
-            Submit
-          </Button>
-        </View>
+        <Routing auth={false} />
       )}
     </PaperProvider>
   )

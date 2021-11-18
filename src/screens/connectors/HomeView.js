@@ -3,6 +3,7 @@ import {get} from 'lodash'
 import CozyWebView from '../CozyWebView'
 import {useClient} from 'cozy-client'
 
+import {clearClient} from '../../libs/client'
 const HOME_URL = 'file:///android_asset/home/index.html'
 
 const HomeView = ({route, navigation, setLauncherContext}) => {
@@ -26,7 +27,8 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
 
   const run = `
     window.cozy = {
-      ClientConnectorLauncher: 'react-native'
+      ClientConnectorLauncher: 'react-native',
+      isWebview: true
     };
     window.cozyClientConf = ${JSON.stringify(cozyClientConf)}
     return true;
@@ -37,10 +39,16 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
       source={{uri: initUrl}}
       injectedJavaScriptBeforeContentLoaded={run}
       navigation={navigation}
-      onMessage={(m) => {
+      onMessage={async (m) => {
         const data = get(m, 'nativeEvent.data')
         if (data) {
+          if (data === 'LOGOUT') {
+            await clearClient()
+            return navigation.navigate('authenticate')
+          }
+
           const {message, value} = JSON.parse(data)
+
           if (message === 'startLauncher') {
             setLauncherContext({state: 'launch', value})
           }
