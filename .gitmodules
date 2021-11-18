@@ -1,3 +1,4 @@
 [submodule "cozy-home"]
 	path = cozy-home
 	url = git@github.com:cozy/cozy-home.git
+	branch = feat/logout
