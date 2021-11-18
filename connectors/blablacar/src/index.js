@@ -18,7 +18,9 @@ class BlablacarContentScript extends ContentScript {
 
   async checkAuthenticated() {
     log.debug('checkAuthenticated start')
-    const {redirected} = await ky.get('https://m.blablacar.fr/dashboard')
+    const {redirected} = await ky.get(
+      'https://m.blablacar.fr/dashboard/profile/menu',
+    )
     return !redirected
   }
 
@@ -37,7 +39,7 @@ class BlablacarContentScript extends ContentScript {
   async fetch(context) {
     log.debug(context, 'fetch context')
     log.debug('identity')
-    const {session} = window.INIT_STORE
+    const {session} = window.INFRASTRUCTURE_DEPRECATED_REDUX_STORE
     const identity = {
       fullname: `${session.firstName} ${session.lastName}`,
       name: {
@@ -112,7 +114,10 @@ class BlablacarContentScript extends ContentScript {
   async getUserDataFromWebsite() {
     log.debug('getUserDataFromWebsite')
     return {
-      sourceAccountIdentifier: window.INIT_STORE.session.email,
+      // deprecated redux store but the token which allow to access the same data via a json api is
+      // also in the same deprecated redux store at the moment
+      sourceAccountIdentifier:
+        window.INFRASTRUCTURE_DEPRECATED_REDUX_STORE.session.email,
     }
   }
 }
