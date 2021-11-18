@@ -53,10 +53,10 @@ export default class ContentScript {
   }
 
   /**
-   * This method is made to run in the worker and will resolve only when
+   * This method is made to run in the worker and will resolve as true when
    * the user is authenticated
    *
-   * @returns Promise.<Boolean>
+   * @returns Promise.<true>
    */
   async waitForAuthenticated() {
     await waitFor(this.checkAuthenticated, {
@@ -76,13 +76,13 @@ export default class ContentScript {
   }
 
   /**
-   * Wait for a specific event from the worker and then resolve the promise
+   * Wait for a method to resolve as true on worker
    *
    * @param {String} options.method - name of the method to run
    * @param {Number} options.timeout - number of miliseconds before the function sends a timeout error. Default Infinity
    * @param {Array} options.args - array of args to pass to the method
    *
-   * @return {Object} - final return value of the method
+   * @return {Boolean} - true
    */
   async runInWorkerUntilTrue({method, timeout = Infinity, args = []}) {
     log('runInWorkerUntilTrue', method)
@@ -167,6 +167,15 @@ export default class ContentScript {
   async saveBills(entries, options) {
     const files = await this.saveFiles(entries, options)
     return await this.bridge.call('saveBills', files, options)
+  }
+
+  /**
+   * Bridge to the saveIdentity method from the launcher.
+   *
+   * @param {Object} identity
+   */
+  async saveIdentity(identity) {
+    return await this.bridge.call('saveIdentity', identity)
   }
 
   /**
