@@ -58,11 +58,12 @@ export default class ContentScript {
    *
    * @returns Promise.<Boolean>
    */
-  waitForAuthenticated() {
-    return waitFor(this.checkAuthenticated, {
+  async waitForAuthenticated() {
+    await waitFor(this.checkAuthenticated, {
       interval: 1000,
       timeout: DEFAULT_LOGIN_TIMEOUT,
     })
+    return true
   }
 
   /**
