@@ -31,7 +31,6 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
       isWebview: true
     };
     window.cozyClientConf = ${JSON.stringify(cozyClientConf)}
-    return true;
     `
 
   return (
