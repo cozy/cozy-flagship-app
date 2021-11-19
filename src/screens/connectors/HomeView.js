@@ -29,7 +29,6 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
       ClientConnectorLauncher: 'react-native'
     };
     window.cozyClientConf = ${JSON.stringify(cozyClientConf)}
-    return true;
     `
 
   return (
