@@ -1,12 +1,28 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
+import {Platform} from 'react-native'
 import {get} from 'lodash'
 import CozyWebView from '../CozyWebView'
 import {useClient} from 'cozy-client'
+import RNFS from 'react-native-fs'
 
 const HOME_URL = 'file:///android_asset/home/index.html'
 
 const HomeView = ({route, navigation, setLauncherContext}) => {
-  let initUrl = HOME_URL
+  const [content, setContent] = useState()
+  useEffect(() => {
+    const readContent = async () => {
+      const data = await RNFS.readFile(RNFS.MainBundlePath + '/www/index.html')
+      setContent(data)
+    }
+    if (Platform.OS === 'ios') {
+      readContent().catch((e) => console.log('error reading html file', e))
+    }
+  })
+
+  let initUrl
+  if (Platform.OS === 'android') {
+    initUrl = HOME_URL
+  }
   const konnectorParam = get(route, 'params.konnector')
   if (konnectorParam) {
     initUrl += `#/connected/${konnectorParam}`
@@ -30,10 +46,18 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
     };
     window.cozyClientConf = ${JSON.stringify(cozyClientConf)}
     `
-
+  const webviewSourceObject =
+    Platform.OS === 'ios'
+      ? {
+          html: content,
+          baseUrl: RNFS.MainBundlePath + '/www/',
+        }
+      : {
+          uri: initUrl,
+        }
   return (
     <CozyWebView
-      source={{uri: initUrl}}
+      source={webviewSourceObject}
       injectedJavaScriptBeforeContentLoaded={run}
       navigation={navigation}
       onMessage={(m) => {
