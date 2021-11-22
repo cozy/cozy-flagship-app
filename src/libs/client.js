@@ -40,7 +40,7 @@ export const getClient = async () => {
   const {uri, oauthOptions, token} = state
   const client = new CozyClient({
     uri,
-    token,
+    oauth: {token},
     oauthOptions,
   })
   return client
