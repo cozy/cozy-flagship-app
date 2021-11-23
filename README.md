@@ -3,6 +3,7 @@
 ## Setup / Requirements
 - [RN Environnement setup](https://reactnative.dev/docs/environment-setup)
 - install XCode and Android Studio (or Android SDK)
+- Node 16
 
 ## Run the React Native App
 
