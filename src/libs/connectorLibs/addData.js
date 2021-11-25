@@ -1,4 +1,3 @@
-import omit from 'lodash/omit'
 import Minilog from '@cozy/minilog'
 const log = Minilog('addData')
 
@@ -16,13 +15,8 @@ const addData = async (entries, doctype, options = {}) => {
   const client = options.client
   const result = []
   for (const entry of entries) {
-    log.debug('Adding entry', entry, omit(entry, '_rev'))
-    let doc
-    if (entry._id) {
-      doc = await client.collection(doctype).update(omit(entry, '_rev'))
-    } else {
-      doc = await client.collection(doctype).create(entry)
-    }
+    log.debug('Adding entry', entry)
+    const doc = await client.save({...entry, _type: doctype})
     const dbEntry = doc.data
     entry._id = dbEntry._id
     result.push(dbEntry)
