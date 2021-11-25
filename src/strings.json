@@ -1,0 +1,6 @@
+{
+  "loginUri": "https://manager.cozycloud.cc/v2/cozy/login",
+  "remind": "remind",
+  "onboard": "onboard",
+  "home": "home"
+}

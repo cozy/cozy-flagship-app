@@ -2,6 +2,7 @@ import CozyClient from 'cozy-client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const OAUTH_STORAGE_KEY = '@cozy_AmiralAppOAuthConfig'
+const COZY_PREFIX = 'cozy://'
 
 /**
  * Clears the storage key related to client authentication
@@ -56,5 +57,36 @@ export const initClient = async (uri, options) => {
   const client = new CozyClient(options)
   await client.register(uri)
   await client.login()
+  return client
+}
+
+export const callInitClient = async (uri) => {
+  const client = await initClient(uri, {
+    scope: [
+      'io.cozy.apps',
+      'io.cozy.settings',
+      'io.cozy.konnectors',
+      'io.cozy.jobs',
+      'io.cozy.contacts',
+      'io.cozy.triggers',
+      'io.cozy.permissions',
+      'io.cozy.apps.suggestions',
+      'com.bitwarden.organizations',
+      'com.bitwarden.ciphers',
+      'io.cozy.bank.accounts',
+      'io.cozy.timeseries.geojson',
+      'io.cozy.files.*',
+      'io.cozy.bills',
+      'io.cozy.accounts',
+      'io.cozy.identities',
+    ],
+    oauth: {
+      redirectURI: COZY_PREFIX,
+      softwareID: 'amiral',
+      clientKind: 'mobile',
+      clientName: 'Amiral',
+    },
+  })
+  await saveClient(client)
   return client
 }
