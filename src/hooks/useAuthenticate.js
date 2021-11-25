@@ -13,7 +13,7 @@ export const useAuthenticate = (navigation, setClient) => {
         await setClient(client)
         navigation.navigate(strings.home)
       } catch (error) {
-        console.log(error)
+        setUri('')
       }
     }
 
