@@ -1,5 +1,6 @@
 import {Q} from 'cozy-client'
 import Minilog from '@cozy/minilog'
+import get from 'lodash/get'
 
 import {saveFiles, saveBills, saveIdentity} from './connectorLibs'
 import {dataURItoArrayBuffer} from './utils'
@@ -104,7 +105,7 @@ export default class Launcher {
   async ensureAccountNameAndFolder() {
     const {trigger, account, client} = this.getStartContext()
 
-    const firstRun = !account.label
+    const firstRun = !get(account, 'auth.accountName')
     if (!firstRun) {
       return
     }
@@ -112,19 +113,25 @@ export default class Launcher {
     const {sourceAccountIdentifier} = this.getUserData()
     const folderId = trigger.message.folder_to_save
 
-    log.info('This is the first run')
+    log.info('This is the first run for this account')
     const updatedAccount = await client.query(
       Q('io.cozy.accounts').getById(account._id),
     )
     const newAccount = await client.save({
       ...updatedAccount.data,
-      label: sourceAccountIdentifier,
+      auth: {accountName: sourceAccountIdentifier},
     })
     log.debug(newAccount, 'resulting account')
-    // TODO normalize file name
-    await client
-      .collection('io.cozy.files')
-      .updateAttributes(folderId, {name: sourceAccountIdentifier})
+
+    try {
+      await client
+        .collection('io.cozy.files')
+        .updateAttributes(folderId, {name: sourceAccountIdentifier})
+    } catch (err) {
+      log.warn(
+        `Could not rename the destination folder ${folderId} to ${sourceAccountIdentifier}. ${err.message}`,
+      )
+    }
   }
 
   /**
