@@ -61,6 +61,7 @@ export const initClient = async (uri, options) => {
 }
 
 export const callInitClient = async (uri) => {
+  // Your IDE might tell you the following 'await' has no effect, this seems to be a mistake
   const client = await initClient(uri, {
     scope: [
       'io.cozy.apps',
