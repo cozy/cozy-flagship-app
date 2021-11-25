@@ -93,7 +93,9 @@ const hydrateAndFilter = async (documents = [], doctype, options = {}) => {
     })
   }
 
-  // We add _id to `documents` that we find in the database.
+  // Here we add _id and _rev to the documents given to hydrateAndFilter.
+  // These documents are generated from the content of the scraped webside
+  // and then do not come from db.
   // This is useful when linking with bank operations (a bill
   // can already be in the database but not already matched
   // to an operation) since the linking operation need the _id
