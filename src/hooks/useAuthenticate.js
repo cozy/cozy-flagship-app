@@ -3,18 +3,29 @@ import {useEffect, useState} from 'react'
 import strings from '../strings.json'
 import {callInitClient} from '../libs/client'
 
-const isLoginUrl = (url) => new URL(url).pathname === strings.loginPathname
+const getFqdn = (url) =>
+  new URL(window.decodeURIComponent(url)).searchParams.get(
+    strings.loginQueryString,
+  )
+
+const handleProtocol = (url) => {
+  try {
+    return new URL(url).href
+  } catch {
+    return `${strings.defaultScheme}${url}`
+  }
+}
 
 export const useAuthenticate = (navigation, setClient) => {
   const [uri, setUri] = useState(strings.emptyString)
 
   const onShouldStartLoadWithRequest = ({url}) => {
-    if (isLoginUrl(url)) {
-      setUri(url)
+    try {
+      setUri(handleProtocol(getFqdn(url)))
       return false
+    } catch {
+      return true
     }
-
-    return true
   }
 
   useEffect(() => {
@@ -22,6 +33,7 @@ export const useAuthenticate = (navigation, setClient) => {
       try {
         const client = await callInitClient(uri)
         await setClient(client)
+
         navigation.navigate(strings.home)
       } catch (error) {
         setUri(strings.emptyString)
