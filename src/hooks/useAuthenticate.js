@@ -8,12 +8,9 @@ export const useAuthenticate = (navigation, setClient) => {
   const [uri, setUri] = useState(strings.emptyString)
 
   const onShouldStartLoadWithRequest = (request) => {
-    try {
-      setUri(getUriFromRequest(request))
-      return false
-    } catch {
-      return true
-    }
+    const hasUri = getUriFromRequest(request)
+
+    return hasUri ? setUri(hasUri) && false : true
   }
 
   useEffect(() => {
