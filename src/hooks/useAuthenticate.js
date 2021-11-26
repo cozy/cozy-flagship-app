@@ -7,11 +7,10 @@ import {getUriFromRequest} from '../libs/functions/getUriFromRequest'
 export const useAuthenticate = (navigation, setClient) => {
   const [uri, setUri] = useState(strings.emptyString)
 
-  const onShouldStartLoadWithRequest = (request) => {
-    const hasUri = getUriFromRequest(request)
-
-    return hasUri ? setUri(hasUri) && false : true
-  }
+  const onShouldStartLoadWithRequest = (request) =>
+    getUriFromRequest(request)
+      ? setUri(getUriFromRequest(request)) && false
+      : true
 
   useEffect(() => {
     const initClient = async () => {
