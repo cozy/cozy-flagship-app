@@ -2,26 +2,14 @@ import {useEffect, useState} from 'react'
 
 import strings from '../strings.json'
 import {callInitClient} from '../libs/client'
-
-const getFqdn = (url) =>
-  new URL(window.decodeURIComponent(url)).searchParams.get(
-    strings.loginQueryString,
-  )
-
-const handleProtocol = (url) => {
-  try {
-    return new URL(url).href
-  } catch {
-    return `${strings.defaultScheme}${url}`
-  }
-}
+import {getUriFromRequest} from '../libs/functions/getUriFromRequest'
 
 export const useAuthenticate = (navigation, setClient) => {
   const [uri, setUri] = useState(strings.emptyString)
 
-  const onShouldStartLoadWithRequest = ({url}) => {
+  const onShouldStartLoadWithRequest = (request) => {
     try {
-      setUri(handleProtocol(getFqdn(url)))
+      setUri(getUriFromRequest(request))
       return false
     } catch {
       return true
