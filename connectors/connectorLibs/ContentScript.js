@@ -30,6 +30,7 @@ export default class ContentScript {
       'waitForElementNoReload',
       'getUserDataFromWebsite',
       'fetch',
+      'click',
     ]
 
     if (options.additionalExposedMethodsNames) {
@@ -85,7 +86,7 @@ export default class ContentScript {
    * @return {Boolean} - true
    */
   async runInWorkerUntilTrue({method, timeout = Infinity, args = []}) {
-    log('runInWorkerUntilTrue', method)
+    log.debug('runInWorkerUntilTrue', method)
     let result = false
     const start = Date.now()
     const isTimeout = () => Date.now() - start >= timeout
@@ -93,9 +94,9 @@ export default class ContentScript {
       if (isTimeout(timeout)) {
         throw new Error('Timeout error')
       }
-      log('runInWorker call', method)
+      log.debug('runInWorker call', method)
       result = await this.runInWorker(method, ...args)
-      log('runInWorker result', result)
+      log.debug('runInWorker result', result)
     }
     return result
   }
@@ -120,11 +121,23 @@ export default class ContentScript {
    * @returns Boolean
    */
   async waitForElementNoReload(selector) {
-    log('waitForElementNoReload', selector)
+    log.debug('waitForElementNoReload', selector)
     await waitFor(() => Boolean(document.querySelector(selector)), {
       timeout: DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT,
     })
     return true
+  }
+
+  async click(selector) {
+    document.querySelector(selector).click()
+  }
+
+  async clickAndWait(elementToClick, elementToWait) {
+    log.debug('clicking ' + elementToClick)
+    await this.runInWorker('click', elementToClick)
+    log.debug('waiting for ' + elementToWait)
+    await this.waitForElementInWorker(elementToWait)
+    log.debug('done waiting ' + elementToWait)
   }
 
   /**
