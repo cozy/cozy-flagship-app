@@ -30,6 +30,7 @@ class ReactNativeLauncher extends Launcher {
           'saveFiles',
           'saveBills',
           'saveIdentity',
+          'setUserAgent',
         ],
         listenedEventsNames: ['log'],
       }),
@@ -97,6 +98,15 @@ class ReactNativeLauncher extends Launcher {
    */
   async setWorkerState(options) {
     this.emit('SET_WORKER_STATE', options)
+  }
+
+  /**
+   * Set the user agent for launcherView's webviews
+   *
+   * @param {String} userAgent
+   */
+  async setUserAgent(userAgent) {
+    this.emit('SET_USER_AGENT', userAgent)
   }
 
   /**

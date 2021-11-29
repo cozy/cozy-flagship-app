@@ -25,6 +25,7 @@ class LauncherView extends Component {
     this.pilotWebView = null
     this.workerWebview = null
     this.state = {
+      userAgent: undefined,
       connector: null,
       worker: {},
     }
@@ -77,6 +78,10 @@ class LauncherView extends Component {
       this.setState({worker: options})
     })
 
+    this.launcher.on('SET_USER_AGENT', (userAgent) => {
+      this.setState({userAgent})
+    })
+
     if (this.state.connector) {
       await this.launcher.init({
         bridgeOptions: {
@@ -112,6 +117,7 @@ class LauncherView extends Component {
                 source={{
                   uri: get(this, 'state.connector.manifest.vendor_link'),
                 }}
+                userAgent={this.state.userAgent}
                 useWebKit={true}
                 javaScriptEnabled={true}
                 sharedCookiesEnabled={true}
@@ -130,6 +136,7 @@ class LauncherView extends Component {
                 originWhitelist={['*']}
                 useWebKit={true}
                 javaScriptEnabled={true}
+                userAgent={this.state.userAgent}
                 source={{
                   uri: this.state.worker.url,
                 }}
