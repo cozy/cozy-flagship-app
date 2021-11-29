@@ -5,8 +5,6 @@ import {Registry} from 'cozy-client'
 
 const log = Minilog('ConnectorInstaller')
 
-Minilog.enable()
-
 const CONNECTORS_LOCAL_PATH = RNFS.DocumentDirectoryPath + '/connectors/'
 
 /**

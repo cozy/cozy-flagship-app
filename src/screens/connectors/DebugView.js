@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import Minilog from '@cozy/minilog'
 import {Button} from 'react-native'
 import {WebView} from 'react-native-webview'
 import {
@@ -19,6 +20,12 @@ const DebugView = (props) => {
     }
   }
 
+  const onPressSave = async () => {
+    const trace = Minilog.backends.array.get().join('\n')
+    const traceFileName = `launcher_trace_${new Date().toJSON()}.txt`
+    // TODO get the last run connector destination folder ???
+  }
+
   useEffect(() => {
     (async function listFiles() {
       let result = '<h1>Installed connectors</h1>'
@@ -36,12 +43,16 @@ const DebugView = (props) => {
         }
         result += '</ul>'
       }
+
+      result += `<pre>${Minilog.backends.array.get().join('\n')}</pre>`
+
       setContent(result)
     })()
   }, [content])
   return (
     <>
       <WebView source={{html: content}} />
+      <Button title="Save trace on Cozy" onPress={onPressSave} />
       <Button title="Clean" onPress={onPress} />
     </>
   )

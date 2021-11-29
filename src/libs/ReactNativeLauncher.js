@@ -7,8 +7,6 @@ import * as ConnectorInstaller from './ConnectorInstaller'
 
 const log = Minilog('ReactNativeLauncher')
 
-Minilog.enable()
-
 /**
  * This is the launcher implementation for a React native application
  */
@@ -52,6 +50,7 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async start({initConnectorError} = {}) {
+    Minilog.backends.array.empty()
     try {
       if (initConnectorError) {
         log.info('Got initConnectorError ' + initConnectorError.message)
@@ -71,7 +70,14 @@ class ReactNativeLauncher extends Launcher {
       // })
       await this.pilot.call('fetch', pilotContext)
       await this.updateJobResult()
+      const logs = Minilog.backends.array.get()
+      console.log('logs array')
+      for (const l of logs) {
+        console.log(l)
+      }
+      console.log('logs array end')
     } catch (err) {
+      console.log('err', err)
       log.error(err, 'start error')
       await this.updateJobResult({
         state: 'errored',

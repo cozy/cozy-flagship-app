@@ -5,6 +5,8 @@ import get from 'lodash/get'
 import {saveFiles, saveBills, saveIdentity} from './connectorLibs'
 import {dataURItoArrayBuffer} from './utils'
 
+Minilog.pipe(Minilog.backends.array)
+
 const log = Minilog('Launcher')
 
 /**

@@ -7,8 +7,6 @@ import {useClient} from 'cozy-client'
 
 const log = Minilog('CozyWebView')
 
-Minilog.enable()
-
 export const COZY_PREFIX = 'cozy://flagship'
 
 const navigationMap = {
