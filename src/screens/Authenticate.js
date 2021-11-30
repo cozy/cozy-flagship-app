@@ -1,14 +1,14 @@
 import React from 'react'
-import {WebView} from 'react-native-webview'
+import {CozyWebView} from 'react-native-webview'
 
 import strings from '../strings.json'
 import {useAuthenticate} from '../hooks/useAuthenticate'
 
-export const Authenticate = ({navigation, setClient}) => {
-  const {onShouldStartLoadWithRequest} = useAuthenticate(navigation, setClient)
+export const Authenticate = ({setClient}) => {
+  const {onShouldStartLoadWithRequest} = useAuthenticate(setClient)
 
   return (
-    <WebView
+    <CozyWebView
       source={{uri: strings.loginUri}}
       onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
     />
