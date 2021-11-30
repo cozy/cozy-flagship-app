@@ -1,42 +1,60 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {get} from 'lodash'
 import CozyWebView from '../CozyWebView'
-import {useClient} from 'cozy-client'
+import {useClient, Q, generateWebLink} from 'cozy-client'
 
 import {clearClient} from '../../libs/client'
-const HOME_URL = 'file:///android_asset/home/index.html'
 
 const HomeView = ({route, navigation, setLauncherContext}) => {
-  let initUrl = HOME_URL
-  const konnectorParam = get(route, 'params.konnector')
-  if (konnectorParam) {
-    initUrl += `#/connected/${konnectorParam}`
-  }
-
   const client = useClient()
-  const {uri} = client.getStackClient()
-  const token = client.getStackClient().getAccessToken()
-  const [scheme, cozyDomain] = uri.split('://')
-  const cozyToken = token
-  const cozyClientConf = {
-    scheme,
-    lang: 'fr',
-    cozyDomain,
-    cozyToken,
-  }
+  const [uri, setUri] = useState('')
+  const [run, setRun] = useState('')
 
-  const run = `
-    window.cozy = {
-      ClientConnectorLauncher: 'react-native',
-      isWebview: true
-    };
-    window.cozyClientConf = ${JSON.stringify(cozyClientConf)}
-    return true;
-    `
+  useEffect(() => {
+    const getCapabilities = async () => {
+      const {data} = await client.query(
+        Q('io.cozy.settings').getById('capabilities'),
+      )
 
-  return (
+      setUri(
+        generateWebLink({
+          cozyUrl: client.getStackClient().uri,
+          pathname: '/',
+          slug: 'home',
+          subDomainType: data.attributes.flat_subdomains ? 'flat' : 'nested',
+        }),
+      )
+    }
+
+    const konnectorParam = get(route, 'params.konnector')
+    if (konnectorParam) {
+      setUri(`${uri}#/connected/${konnectorParam}`)
+    }
+    const token = client.getStackClient().getAccessToken()
+    const [scheme, cozyDomain] = uri.split('://')
+    const cozyToken = token
+    const cozyClientConf = {
+      scheme,
+      lang: 'fr',
+      cozyDomain,
+      cozyToken,
+    }
+
+    setRun(`
+      window.cozy = {
+        ClientConnectorLauncher: 'react-native',
+        isWebview: true
+      };
+      window.cozyClientConf = ${JSON.stringify(cozyClientConf)}
+      return true;
+      `)
+
+    getCapabilities()
+  }, [uri, client, run, route])
+
+  return uri ? (
     <CozyWebView
-      source={{uri: initUrl}}
+      source={{uri}}
       injectedJavaScriptBeforeContentLoaded={run}
       navigation={navigation}
       onMessage={async (m) => {
@@ -55,7 +73,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
         }
       }}
     />
-  )
+  ) : null
 }
 
 export default HomeView
