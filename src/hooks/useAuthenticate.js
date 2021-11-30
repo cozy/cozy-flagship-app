@@ -4,7 +4,7 @@ import strings from '../strings.json'
 import {callInitClient} from '../libs/client'
 import {getUriFromRequest} from '../libs/functions/getUriFromRequest'
 
-export const useAuthenticate = (navigation, setClient) => {
+export const useAuthenticate = (setClient) => {
   const [uri, setUri] = useState(strings.emptyString)
 
   const onShouldStartLoadWithRequest = (request) =>
@@ -17,15 +17,13 @@ export const useAuthenticate = (navigation, setClient) => {
       try {
         const client = await callInitClient(uri)
         await setClient(client)
-
-        navigation.navigate(strings.home)
       } catch (error) {
         setUri(strings.emptyString)
       }
     }
 
     uri && initClient()
-  }, [uri, setClient, navigation])
+  }, [uri, setClient])
 
   return {onShouldStartLoadWithRequest}
 }
