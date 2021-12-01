@@ -19,10 +19,6 @@ $ yarn install && yarn build
 $ cd ../blablacar
 $ yarn install && yarn build
 
-#install the home application 
-$ git submodule update --init --recursive
-$ yarn home:build
-
 # Run native server
 $ yarn start # (must be started for the following commands)
 
