@@ -11,19 +11,30 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
   const [run, setRun] = useState('')
 
   useEffect(() => {
-    const getCapabilities = async () => {
-      const {data} = await client.query(
-        Q('io.cozy.settings').getById('capabilities'),
-      )
-
+    const getHomeUri = async () => {
       setUri(
         generateWebLink({
           cozyUrl: client.getStackClient().uri,
           pathname: '/',
           slug: 'home',
-          subDomainType: data.attributes.flat_subdomains ? 'flat' : 'nested',
+          subDomainType: await getSubDomainType(),
         }),
       )
+    }
+
+    const getSubDomainType = async () => {
+      try {
+        const {
+          data: {
+            attributes: {flat_subdomains},
+          },
+        } = await client.query(Q('io.cozy.settings').getById('capabilities'))
+
+        return flat_subdomains ? 'flat' : 'nested'
+      } catch (error) {
+        // Defaulting to flat if for whatever reason the subDomainType could not be fetched
+        return 'flat'
+      }
     }
 
     const konnectorParam = get(route, 'params.konnector')
@@ -49,7 +60,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
       return true;
       `)
 
-    getCapabilities()
+    getHomeUri()
   }, [uri, client, run, route])
 
   return uri ? (
