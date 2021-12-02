@@ -10,19 +10,17 @@ const validateRequest = (request) =>
 const validateFqdn = (fqdn) => fqdn || null
 
 const getFqdn = (url) =>
-  new URL(window.decodeURIComponent(url)).searchParams.get(
-    strings.loginQueryString,
-  )
+  new URL(window.decodeURIComponent(url)).searchParams.get(strings.fqdn)
 
 const handleProtocol = (url) => {
   if (!url) {
-    return url
+    return null
   }
 
   try {
     return new URL(url).href
   } catch {
-    return `${strings.defaultScheme}${url}/`
+    return `${strings.defaultHttpScheme}${url}/`
   }
 }
 

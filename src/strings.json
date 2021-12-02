@@ -1,7 +1,7 @@
 {
   "loginUri": "https://manager.cozycloud.cc/v2/cozy/login?redirect=https://cozydrive",
   "home": "home",
-  "loginQueryString": "fqdn",
+  "fqdn": "fqdn",
   "emptyString": "",
-  "defaultScheme": "https://"
+  "defaultHttpScheme": "https://"
 }
