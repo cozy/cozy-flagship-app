@@ -7,10 +7,12 @@ import {getUriFromRequest} from '../libs/functions/getUriFromRequest'
 export const useAuthenticate = (setClient) => {
   const [uri, setUri] = useState(strings.emptyString)
 
-  const onShouldStartLoadWithRequest = (request) =>
-    getUriFromRequest(request)
-      ? setUri(getUriFromRequest(request)) && false
-      : true
+  const onShouldStartLoadWithRequest = (request) => {
+    // If fqdn is inside the URL, let's use it
+    const fqdn = getUriFromRequest(request)
+
+    return fqdn ? setUri(fqdn) && false : true
+  }
 
   useEffect(() => {
     const initClient = async () => {
