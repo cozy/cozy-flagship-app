@@ -58,6 +58,8 @@ class ReactNativeLauncher extends Launcher {
         log.info('Got initConnectorError ' + initConnectorError.message)
         throw initConnectorError
       }
+      await this.pilot.call('setContentScriptType', 'pilot')
+      await this.worker.call('setContentScriptType', 'worker')
       await this.pilot.call('ensureAuthenticated')
       await this.sendLoginSuccess()
 
@@ -146,7 +148,9 @@ class ReactNativeLauncher extends Launcher {
     try {
       await this.worker.init({
         listenedEventsNames: this.workerListenedEventsNames,
+        label: 'worker',
       })
+      await this.worker.call('setContentScriptType', 'worker')
     } catch (err) {
       throw new Error(`worker bridge restart init error: ${err.message}`)
     }
@@ -176,6 +180,7 @@ class ReactNativeLauncher extends Launcher {
         exposedMethodsNames,
         listenedEventsNames,
         webViewRef,
+        label: 'pilot',
       })
     } catch (err) {
       throw new Error(`Init error in pilot: ${err.message}`)
@@ -204,6 +209,7 @@ class ReactNativeLauncher extends Launcher {
         exposedMethodsNames,
         listenedEventsNames,
         webViewRef,
+        label: 'worker',
       })
     } catch (err) {
       throw new Error(`Init error in worker: ${err.message}`)

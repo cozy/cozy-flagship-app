@@ -24,6 +24,7 @@ export default class ContentScript {
   async init(options = {}) {
     this.bridge = new LauncherBridge({localWindow: window})
     const exposedMethodsNames = [
+      'setContentScriptType',
       'ensureAuthenticated',
       'checkAuthenticated',
       'waitForAuthenticated',
@@ -51,6 +52,16 @@ export default class ContentScript {
       this.log(
         'window.beforeunload detected with previous url : ' + document.location,
       )
+  }
+
+  /**
+   * Set the ContentScript type. This is usefull to know which webview is the pilot or the worker
+   *
+   * @param {String} contentScriptType - ("pilot" | "worker")
+   */
+  async setContentScriptType(contentScriptType) {
+    this.contentScriptType = contentScriptType
+    log.info(`I am the ${contentScriptType}`)
   }
 
   /**
