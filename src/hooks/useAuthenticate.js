@@ -11,7 +11,7 @@ export const useAuthenticate = (setClient) => {
     // If fqdn is inside the URL, let's use it
     const fqdn = getUriFromRequest(request)
 
-    return fqdn ? setUri(fqdn) && false : true
+    return fqdn ? setUri(fqdn) || false : true
   }
 
   useEffect(() => {
