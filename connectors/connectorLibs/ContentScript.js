@@ -68,7 +68,8 @@ export default class ContentScript {
    * This method is made to run in the worker and will resolve as true when
    * the user is authenticated
    *
-   * @returns Promise.<true>
+   * @returns Promise.<true> : if authenticated
+   * @throws {Exception}: TimeoutError from p-wait-for package if timeout expired
    */
   async waitForAuthenticated() {
     await waitFor(this.checkAuthenticated, {
@@ -95,6 +96,7 @@ export default class ContentScript {
    * @param {Array} options.args - array of args to pass to the method
    *
    * @return {Boolean} - true
+   * @throws {Exception} - if timeout expired
    */
   async runInWorkerUntilTrue({method, timeout = Infinity, args = []}) {
     log.debug('runInWorkerUntilTrue', method)
