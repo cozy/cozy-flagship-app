@@ -13,6 +13,7 @@ import Connectors from './screens/connectors'
 import StoreView from './screens/store/StoreView'
 import {getClient} from './libs/client'
 import {Authenticate} from './screens/Authenticate'
+import {OCR} from './screens/OCR'
 
 const Root = createStackNavigator()
 
@@ -38,7 +39,7 @@ const App = () => {
 
   const Routing = ({auth}) => (
     <NavigationContainer>
-      <Root.Navigator initialRouteName={auth ? 'home' : 'authenticate'}>
+      <Root.Navigator initialRouteName={auth ? 'OCR' : 'authenticate'}>
         <Root.Screen
           name="home"
           component={Connectors}
@@ -48,6 +49,7 @@ const App = () => {
         <Root.Screen name="authenticate">
           {() => <Authenticate setClient={setClient} />}
         </Root.Screen>
+        <Root.Screen name="OCR" component={OCR} />
       </Root.Navigator>
     </NavigationContainer>
   )
