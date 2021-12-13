@@ -14354,6 +14354,14 @@ react-native-bootsplash@3.2.3:
   resolved "https://github.com/Michaelvilleneuve/react-native-document-scanner#1c03ac3d7f806dd2c052362ac947cb90096fbc6f"
   dependencies:
     react "16.0.0-beta.5"
+react-native-bootsplash@3.2.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/react-native-bootsplash/-/react-native-bootsplash-3.2.3.tgz#5f985a492696e14c73dc3b8475be5385b7436593"
+  integrity sha512-JNuDZ1sL9kppFrZ4OcK/ZM6gf9h5NmM6VfsLJEfa/lSPlD5wXoOyXIaeBn/6odaIPxSp31WIryeaNiZZIltu7g==
+  dependencies:
+    chalk "^4.1.0"
+    fs-extra "^9.1.0"
+    jimp "^0.16.1"
 
 react-native-fs@^2.18.0:
   version "2.18.0"
@@ -17828,6 +17836,13 @@ xcode@^2.0.0:
     simple-plist "^1.0.0"
     uuid "^3.3.2"
 
+<<<<<<< HEAD
+=======
+xdg-basedir@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/xdg-basedir/-/xdg-basedir-3.0.0.tgz#496b2cc109eca8dbacfe2dc72b603c17c5870ad4"
+  integrity sha1-SWsswQnsqNus/i3HK2A8F8WHCtQ=
+>>>>>>> feat: Install and configure react-native-bootsplash
 xhr@^2.0.1:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/xhr/-/xhr-2.6.0.tgz#b69d4395e792b4173d6b7df077f0fc5e4e2b249d"
