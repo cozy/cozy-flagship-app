@@ -13,6 +13,8 @@ import Connectors from './screens/connectors'
 import StoreView from './screens/store/StoreView'
 import {getClient} from './libs/client'
 import {Authenticate} from './screens/Authenticate'
+import {useSplashScreen} from './hooks/useSplashScreen'
+import {SplashScreenProvider} from './screens/providers/SplashScreenProvider'
 
 const Root = createStackNavigator()
 
@@ -27,14 +29,17 @@ if (!global.atob) {
 
 const App = () => {
   const [client, setClient] = useState(null)
+  const {hideSplashScreen} = useSplashScreen()
 
   useEffect(() => {
     getClient().then((clientResult) => {
       if (clientResult) {
         setClient(clientResult)
       }
+
+      hideSplashScreen()
     })
-  }, [])
+  }, [hideSplashScreen])
 
   const Routing = ({auth}) => (
     <NavigationContainer>
@@ -65,10 +70,12 @@ const App = () => {
   )
 }
 
-const AppSafeView = () => (
-  <SafeAreaView style={styles.container}>
-    <App />
-  </SafeAreaView>
+const WrappedApp = () => (
+  <SplashScreenProvider>
+    <SafeAreaView style={styles.container}>
+      <App />
+    </SafeAreaView>
+  </SplashScreenProvider>
 )
 
 const styles = StyleSheet.create({
@@ -77,4 +84,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default AppSafeView
+export default WrappedApp
