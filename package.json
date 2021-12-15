@@ -14,7 +14,8 @@
     "token": "node scripts/token.js",
     "lint": "eslint src/ scripts/",
     "home:build": "(cd cozy-home && yarn build:mobile)",
-    "home:watch": "(cd cozy-home && yarn watch:mobile)"
+    "home:watch": "(cd cozy-home && yarn watch:mobile)",
+    "generate-boot-icon": "yarn react-native generate-bootsplash src/assets/icon-cozy.png --background-color=297EF2 --logo-width=160 --assets-path=src/assets --flavor=main"
   },
   "dependencies": {
     "@cozy/minilog": "^1.0.0",
