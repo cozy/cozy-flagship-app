@@ -19,6 +19,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8867497A7227FBEBE682EB7E /* libPods-CozyReactNative-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3A7737677E46E77B50BA08F /* libPods-CozyReactNative-tvOSTests.a */; };
 		8F5862A214D8C37C64407E2A /* libPods-CozyReactNative-CozyReactNativeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F059EAB4661AAB4CDEF0E3B1 /* libPods-CozyReactNative-CozyReactNativeTests.a */; };
+		997B98B22769CFD100089037 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 997B98B12769CFD100089037 /* BootSplash.storyboard */; };
 		F8FFAA03C653566398978C28 /* libPods-CozyReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7BC4C3B709AAC6447391019 /* libPods-CozyReactNative.a */; };
 /* End PBXBuildFile section */
 
@@ -61,6 +62,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CozyReactNative/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		913E4560DFCE63A459ECB5BC /* Pods-CozyReactNative-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-tvOS/Pods-CozyReactNative-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		9957048B912EE836B6FB82D4 /* Pods-CozyReactNative-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-tvOS.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-tvOS/Pods-CozyReactNative-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		997B98B12769CFD100089037 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = CozyReactNative/BootSplash.storyboard; sourceTree = "<group>"; };
 		99A26C682632A5AC00365D30 /* CozyReactNative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = CozyReactNative.entitlements; path = CozyReactNative/CozyReactNative.entitlements; sourceTree = "<group>"; };
 		B7BC4C3B709AAC6447391019 /* libPods-CozyReactNative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyReactNative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3A7737677E46E77B50BA08F /* libPods-CozyReactNative-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyReactNative-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,6 +131,7 @@
 				99A26C682632A5AC00365D30 /* CozyReactNative.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
+				997B98B12769CFD100089037 /* BootSplash.storyboard */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -352,6 +355,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				997B98B22769CFD100089037 /* BootSplash.storyboard in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
