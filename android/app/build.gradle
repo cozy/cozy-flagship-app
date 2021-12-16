@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.cozyreactnative"
+        applicationId "io.cozy.flagship.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

@@ -1,7 +1,8 @@
-package com.cozyreactnative;
+package io.cozy.flagship.mobile;
 
 import android.os.Bundle;
 
+import io.cozy.flagship.mobile.R;
 import com.facebook.react.ReactActivity;
 import com.zoontek.rnbootsplash.RNBootSplash;
 
