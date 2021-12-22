@@ -25,7 +25,7 @@ $ yarn start # (must be started for the following commands)
 # Run on Android Device
 $ yarn android
 
-# (DEPREACTED FOR NOW. You should dev on Android) Run on iOS Device
+# Run on iOS Device
 $ cd ios && pod install # Only the first time
 $ yarn ios
 
