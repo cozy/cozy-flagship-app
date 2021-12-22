@@ -44,8 +44,6 @@
     "react-native": "0.63.4",
     "react-native-bootsplash": "3.2.3",
     "react-native-document-scanner": "https://github.com/Michaelvilleneuve/react-native-document-scanner",
-    "react-native-bootsplash": "3.2.3",
-    "react-native-document-scanner": "https://github.com/Michaelvilleneuve/react-native-document-scanner",
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "1.10.3",
     "react-native-image-picker": "^4.4.2",
