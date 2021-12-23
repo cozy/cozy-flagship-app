@@ -6,5 +6,10 @@
 
     <uses-sdk tools:overrideLibrary="androidx.core.splashscreen" />
 
-    <application android:usesCleartextTraffic="true" tools:targetApi="28" tools:ignore="GoogleAppIndexingWarning" />
+    <application
+        android:usesCleartextTraffic="true"
+        tools:targetApi="28"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+    </application>
 </manifest>
