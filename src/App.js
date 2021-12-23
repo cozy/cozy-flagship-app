@@ -20,7 +20,6 @@ import {CozyAppView} from './screens/routes/CozyAppView'
 import {OCR} from './screens/scanner/OCR'
 import {useSplashScreen} from './hooks/useSplashScreen'
 import {SplashScreenProvider} from './screens/providers/SplashScreenProvider'
-import {OCR} from './screens/scanner/OCR'
 
 const Root = createStackNavigator()
 const MainStack = createStackNavigator()
