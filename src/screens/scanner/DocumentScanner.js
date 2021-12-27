@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native'
 import DocumentScanner from 'react-native-document-scanner'
 //import DocumentScanner from '@woonivers/react-native-document-scanner'
-import {CropView} from './Crop'
+import {CropView} from './CropView'
 import {ImagePreview} from './ImagePreview'
 
 export const Scanner = () => {
@@ -51,19 +51,20 @@ export const Scanner = () => {
   if (scanned.croppedImage) {
     // FIXME: sometimes the coordinates are NOT provided
     const coordinates = scanned.rectangleCoordinates
-      ? scanned.rectangleCoordinates
-      : {
-          bottomLeft: {x: 40, y: 715},
-          bottomRight: {x: 421, y: 736},
-          topLeft: {x: 75, y: 290},
-          topRight: {x: 425, y: 374},
-        }
+    console.log('coordiantes : ', scanned.rectangleCoordinates)
 
-    return (
+    /*return (
       <ImagePreview
         uri={scanned.initialImage}
         onRetry={retry}
         rectangleCoordinates={coordinates}
+      />
+    )*/
+    return (
+      <CropView
+        initialImage={scanned.initialImage}
+        rectangleCoordinates={scanned.rectangleCoordinates}
+        onRetry={retry}
       />
     )
   }
@@ -74,14 +75,14 @@ export const Scanner = () => {
         style={styles.scanner}
         saveInAppDocument={false}
         onPictureTaken={handleImageScanner}
-        overlayColor="rgba(255,130,0, 0.7)"
+        overlayColor="rgba(33, 172, 51, 0.8)"
         enableTorch={false}
         brightness={0.3}
         saturation={1}
         contrast={1.1}
         quality={0.5}
         onRectangleDetect={onRectangleDetect}
-        detectionCountBeforeCapture={15}
+        detectionCountBeforeCapture={30}
         detectionRefreshRateInMS={50}
         onPermissionsDenied={() => console.log('Permissions Denied')}
       />

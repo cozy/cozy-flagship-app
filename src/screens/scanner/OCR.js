@@ -69,8 +69,6 @@ export const OCR = () => {
       </SafeAreaView>
     )
   }
-  console.log('result : ', result)
-  console.log('imagescanner : ', imageScanner)
 
   if (showDocScanner) {
     /*return (
