@@ -14363,9 +14363,9 @@ react-native-bootsplash@3.2.3:
     fs-extra "^9.1.0"
     jimp "^0.16.1"
 
-"react-native-document-scanner@https://github.com/Michaelvilleneuve/react-native-document-scanner":
+"react-native-document-scanner@https://github.com/paultranvan/react-native-document-scanner":
   version "1.4.3"
-  resolved "https://github.com/Michaelvilleneuve/react-native-document-scanner#1c03ac3d7f806dd2c052362ac947cb90096fbc6f"
+  resolved "https://github.com/paultranvan/react-native-document-scanner#c01e4eb654c43360cd7964c7e3dee2ddcc2f2743"
   dependencies:
     react "16.0.0-beta.5"
 
@@ -14425,10 +14425,9 @@ react-native-permissions@^3.2.0:
   resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-3.2.0.tgz#2199a49e96bac633016955d36142032d747d0d3e"
   integrity sha512-UPXxf2twjYL9vPI4HP2kT15AOTY489MhsNuyAgp+wJM2IRkkSVW6rO3k4WuSRL9ZmPhwkWb9bYjf8EEwRzZcXg==
 
-react-native-perspective-image-cropper@^0.4.4:
+"react-native-perspective-image-cropper@https://github.com/paultranvan/react-native-perspective-image-cropper":
   version "0.4.4"
-  resolved "https://registry.yarnpkg.com/react-native-perspective-image-cropper/-/react-native-perspective-image-cropper-0.4.4.tgz#f636e67730027f2a25d6d2e5908450ca9627ca9b"
-  integrity sha512-cTR695lClNyH8X97NPbkl9h2RGgKA0Ao+jWDH2HW4x8MJ+mm/psdsctXFbJxhU5Lw0Ev1k1a3jBVaJH+AlG+Tw==
+  resolved "https://github.com/paultranvan/react-native-perspective-image-cropper#c81d5900a9d442e8caa01bcb1054b41644b9b306"
 
 react-native-reanimated@2.0.0:
   version "2.0.0"
