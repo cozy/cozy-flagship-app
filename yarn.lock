@@ -14427,7 +14427,7 @@ react-native-permissions@^3.2.0:
 
 "react-native-perspective-image-cropper@https://github.com/paultranvan/react-native-perspective-image-cropper":
   version "0.4.4"
-  resolved "https://github.com/paultranvan/react-native-perspective-image-cropper#c81d5900a9d442e8caa01bcb1054b41644b9b306"
+  resolved "https://github.com/paultranvan/react-native-perspective-image-cropper#38e6ef2a77eedcbbbc55d0fbd9ccf6e37116f861"
 
 react-native-reanimated@2.0.0:
   version "2.0.0"
