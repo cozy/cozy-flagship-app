@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "name": "Edf",
+  "type": "konnector",
+  "language": "node",
+  "clientSide": true,
+  "icon": "icon.svg",
+  "slug": "edf",
+  "source": "git@github.com:konnectors/cozy-konnector-template.git",
+  "editor": "Cozy",
+  "vendor_link": "https://particulier.edf.fr/fr/accueil/aide-contact/faq.html",
+  "categories": [
+    "transport"
+  ],
+  "folders": [
+    {
+      "defaultDir": "$administrative/$konnector/$account"
+    }
+  ],
+  "fields": { }
+}
