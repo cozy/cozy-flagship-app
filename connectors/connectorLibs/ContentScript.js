@@ -270,14 +270,21 @@ export default class ContentScript {
   }
 
   /**
+   * This is a proxy to the "setWorkerState" command in the launcher
+   *
+   * @param {SetWorkerStateOptions} options
+   */
+  async setWorkerState(options = {}) {
+    await this.bridge.call('setWorkerState', options)
+  }
+
+  /**
    * Set the current url of the worker
    *
    * @param {string} : the url
    */
   async goto(url) {
-    await this.bridge.call('setWorkerState', {
-      url,
-    })
+    await this.setWorkerState({url})
   }
 
   /**
