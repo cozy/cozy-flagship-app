@@ -95,7 +95,7 @@ export default class ContentScript {
    * @param {Number} options.timeout - number of miliseconds before the function sends a timeout error. Default Infinity
    * @param {Array} options.args - array of args to pass to the method
    *
-   * @return {Boolean} - true
+   * @return {Promise<Boolean>} - true
    * @throws {Exception} - if timeout expired
    */
   async runInWorkerUntilTrue({method, timeout = Infinity, args = []}) {
@@ -267,6 +267,17 @@ export default class ContentScript {
    */
   log(message) {
     this.bridge.emit('log', message)
+  }
+
+  /**
+   * Set the current url of the worker
+   *
+   * @param {string} : the url
+   */
+  async goto(url) {
+    await this.bridge.call('setWorkerState', {
+      url,
+    })
   }
 
   /**
