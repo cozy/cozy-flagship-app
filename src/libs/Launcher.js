@@ -1,6 +1,7 @@
-import {Q} from 'cozy-client'
+import {Q, models} from 'cozy-client'
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
+import set from 'lodash/set'
 
 import {saveFiles, saveBills, saveIdentity} from './connectorLibs'
 import {dataURItoArrayBuffer} from './utils'
@@ -202,6 +203,13 @@ export default class Launcher {
       if (entry.dataUri) {
         entry.filestream = dataURItoArrayBuffer(entry.dataUri).arrayBuffer
         delete entry.dataUri
+      }
+      if (options.qualificationLabel) {
+        set(
+          entry,
+          'fileAttributes.metadata.qualification',
+          models.document.Qualification.getByLabel(options.qualificationLabel),
+        )
       }
     }
     log.info(entries, 'saveFiles entries')
