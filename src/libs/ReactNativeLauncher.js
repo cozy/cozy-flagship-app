@@ -94,9 +94,15 @@ class ReactNativeLauncher extends Launcher {
   }
 
   /**
+   * @typedef SetWorkerStateOptions
+   * @property {String} url      : url displayed by the worker webview for the login
+   * @property {Boolean} visible : will the worker be visible or not
+   */
+
+  /**
    * Makes the launcherView display the worker webview
    *
-   * @param {String} url : url displayed by the worker webview for the login
+   * @param {SetWorkerStateOptions} options
    */
   async setWorkerState(options) {
     this.emit('SET_WORKER_STATE', options)
