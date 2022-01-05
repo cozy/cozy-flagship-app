@@ -47,61 +47,74 @@ class SncfContentScript extends ContentScript {
     })
   }
 
-  async fetch() {
-    const resp = await kyScraper.get(
-      'https://www.oui.sncf/espaceclient/ordersconsultation/showOrdersForAjaxRequest?pastOrder=true&cancelledOrder=false&pageToLoad=1&_=' +
-        Date.now(),
-    )
-    const orders = await resp.scrape(
-      {
-        fileurl: {
-          sel: ".show-for-small-only a[title='Justificatif']",
-          attr: 'href',
-          parse: (href) => href.replace(':80'),
-        },
-        vendorRef: '.order__detail [data-auto=ccl_orders_travel_number]',
-        // label: {
-        //   sel: '.order__top .texte--insecable',
-        //   fn: (el) =>
-        //     Array.from(el)
-        //       .map((e) =>
-        //         e.children
-        //           .filter((n) => n.type === 'text')
-        //           .map((n) => n.data.trim()),
-        //       )
-        //       .join('-')
-        //       .replace(',', ''),
-        // },
-        date: {
-          sel: '.order__detail div:nth-child(2) .texte--important',
-          parse: (date) => new Date(date.split('/').reverse().join('-')),
-        },
-        amount: {
-          sel: '.order__detail div:nth-child(3) .texte--important',
-          parse: (amount) => parseFloat(amount.replace(' €', '')),
-        },
-      },
-      '.order',
-    )
+  extractBillsFromOrder(order) {
+    return Object.values(order.transactions)
+      .filter((t) => t.status === 'PAID') // keep only paid transactions and avoid canceled ones
+      .map((transaction) => {
+        const {amount, id} = transaction
+        const date = new Date(transaction.date)
+        const train = this.findTicketUriAndReference(id, order.trainFolders)
+        if (train) {
+          return {
+            amount,
+            vendor: 'sncf',
+            date,
+            vendorRef: id,
+            fileurl: train.uri,
+            filename: `${date.toISOString().split('T').shift()}_${
+              train.reference
+            }_${amount}€.pdf`,
+            fileAttributes: {
+              metadata: {
+                invoiceNumber: id,
+                contentAuthor: 'sncf',
+                datetime: date,
+                datetimeLabel: 'startDate',
+                isSubscription: true,
+                startDate: date,
+                carbonCopy: true,
+              },
+            },
+          }
+        }
+      })
+  }
 
-    return await this.saveFiles(
-      orders.map((doc) => {
-        doc.vendor = 'sncf'
-        doc.filename =
-          doc.date.toISOString().split('T').shift() +
-          '_' +
-          doc.vendorRef +
-          '_' +
-          doc.amount +
-          '€.pdf'
-        return doc
-      }),
-      {
-        contentType: 'application/pdf',
-        fileIdAttributes: ['vendorRef'],
-        context: [],
-      },
-    )
+  findTicketUriAndReference(vendorRef, trainFolders) {
+    const train = trainFolders.find((t) => t.transactionIds.includes(vendorRef))
+    if (
+      train &&
+      train.deliveryMode.type === 'TKD' &&
+      train.deliveryMode.receipt.status === 'AVAILABLE'
+    ) {
+      return {
+        uri:
+          'https://www.oui.sncf/vsc/aftersale/generateJustificatifVoyage?pdfFileName=' +
+          train.deliveryMode.receipt.uri,
+        reference: train.reference,
+      }
+    }
+  }
+
+  async fetch(context) {
+    const resp = await kyScraper
+      .get(
+        'https://www.oui.sncf/api/gtw/aftersale/prd/vsa/api/v2/orders/oui-account?ascSort=false&localeParam=fr_FR&pageNumber=1&pageResultsCount=100&statusFilter=ALL',
+      )
+      .json()
+
+    const orders = resp.orders.filter((o) => o.status === 'VALID')
+    const bills = []
+    for (const order of orders) {
+      bills.push(...this.extractBillsFromOrder(order).filter(Boolean))
+    }
+
+    return await this.saveBills(bills, {
+      contentType: 'application/pdf',
+      fileIdAttributes: ['vendorRef'],
+      qualificationLabel: 'transport_invoice',
+      context,
+    })
   }
 
   async getUserDataFromWebsite() {
