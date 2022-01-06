@@ -7,6 +7,7 @@ import {Provider as PaperProvider} from 'react-native-paper'
 import {decode, encode} from 'base-64'
 
 import {CozyProvider} from 'cozy-client'
+import {NativeIntentProvider} from 'cozy-intent'
 
 import {lightTheme} from './theme'
 import Connectors from './screens/connectors'
@@ -15,8 +16,10 @@ import {getClient} from './libs/client'
 import {Authenticate} from './screens/Authenticate'
 import {useSplashScreen} from './hooks/useSplashScreen'
 import {SplashScreenProvider} from './screens/providers/SplashScreenProvider'
+import {CozyAppView} from './screens/routes/CozyAppView'
 
 const Root = createStackNavigator()
+const MainStack = createStackNavigator()
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -43,17 +46,38 @@ const App = () => {
 
   const Routing = ({auth}) => (
     <NavigationContainer>
-      <Root.Navigator initialRouteName={auth ? 'home' : 'authenticate'}>
-        <Root.Screen
-          name="home"
-          component={Connectors}
-          options={{headerShown: false}}
-        />
-        <Root.Screen name="store" component={StoreView} />
-        <Root.Screen name="authenticate">
-          {() => <Authenticate setClient={setClient} />}
-        </Root.Screen>
-      </Root.Navigator>
+      <NativeIntentProvider>
+        <Root.Navigator initialRouteName="main" mode="modal">
+          <Root.Screen options={{headerShown: false}} name="main">
+            {() => (
+              <MainStack.Navigator
+                initialRouteName={auth ? 'home' : 'authenticate'}>
+                <MainStack.Screen
+                  name="home"
+                  component={Connectors}
+                  options={{headerShown: false}}
+                />
+                <MainStack.Screen
+                  name="store"
+                  component={StoreView}
+                  options={{headerShown: false}}
+                />
+                <MainStack.Screen
+                  name="authenticate"
+                  options={{headerShown: false}}>
+                  {() => <Authenticate setClient={setClient} />}
+                </MainStack.Screen>
+              </MainStack.Navigator>
+            )}
+          </Root.Screen>
+
+          <Root.Screen
+            name="cozyapp"
+            component={CozyAppView}
+            options={{headerShown: false}}
+          />
+        </Root.Navigator>
+      </NativeIntentProvider>
     </NavigationContainer>
   )
 

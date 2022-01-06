@@ -22,7 +22,12 @@ const navigationMap = {
   },
 }
 
-const CozyWebView = ({navigation, onShouldStartLoadWithRequest, ...rest}) => {
+const CozyWebView = ({
+  navigation,
+  onShouldStartLoadWithRequest,
+  setRef,
+  ...rest
+}) => {
   const [flagshipRequest, setFlagshipRequest] = useState(null)
   const client = useClient()
   const {uri} = client.getStackClient()
@@ -49,6 +54,7 @@ const CozyWebView = ({navigation, onShouldStartLoadWithRequest, ...rest}) => {
       originWhitelist={['*']}
       useWebKit={true}
       javaScriptEnabled={true}
+      ref={(ref) => setRef?.(ref)}
       onShouldStartLoadWithRequest={(initialRequest) => {
         // we use onShouldStartLoadWithRequest since links to cozy://flagship in the webview do not
         // trigger deep linking

@@ -1,16 +1,29 @@
 import React, {useEffect, useState} from 'react'
 import {get} from 'lodash'
-import CozyWebView from '../CozyWebView'
 import {useClient, Q, generateWebLink} from 'cozy-client'
+import {useNativeIntent} from 'cozy-intent'
 
+import CozyWebView from '../CozyWebView'
 import {clearClient} from '../../libs/client'
 
 const HomeView = ({route, navigation, setLauncherContext}) => {
   const client = useClient()
   const [uri, setUri] = useState('')
   const [run, setRun] = useState('')
+  const [ref, setRef] = useState('')
+  const nativeIntent = useNativeIntent()
 
   useEffect(() => {
+    if (ref && route.name === 'home') {
+      nativeIntent.registerWebview(ref, {
+        logout: async () => {
+          await clearClient()
+          return navigation.navigate('authenticate')
+        },
+        openApp: (href) => navigation.navigate('cozyapp', {href}),
+      })
+    }
+
     const getHomeUri = async () => {
       setUri(
         generateWebLink({
@@ -54,28 +67,29 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
     setRun(`
       window.cozy = {
         ClientConnectorLauncher: 'react-native',
-        isWebview: true
+        isFlagshipApp: true
       };
       window.cozyClientConf = ${JSON.stringify(cozyClientConf)}
       return true;
       `)
 
-    getHomeUri()
-  }, [uri, client, run, route])
+    if (!uri) {
+      getHomeUri()
+    }
+  }, [uri, client, run, route, nativeIntent, ref, navigation])
 
   return uri ? (
     <CozyWebView
       source={{uri}}
       injectedJavaScriptBeforeContentLoaded={run}
       navigation={navigation}
+      setRef={setRef}
       onMessage={async (m) => {
-        const data = get(m, 'nativeEvent.data')
-        if (data) {
-          if (data === 'LOGOUT') {
-            await clearClient()
-            return navigation.navigate('authenticate')
-          }
+        nativeIntent.tryEmit(m)
 
+        const data = get(m, 'nativeEvent.data')
+
+        if (data) {
           const {message, value} = JSON.parse(data)
 
           if (message === 'startLauncher') {
