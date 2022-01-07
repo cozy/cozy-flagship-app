@@ -142,6 +142,12 @@ export default class ContentScript {
   }
 
   async click(selector) {
+    const elem = document.querySelector(selector)
+    if (!elem) {
+      throw new Error(
+        `click: No DOM element is matched with the ${selector} selector`,
+      )
+    }
     document.querySelector(selector).click()
   }
 
