@@ -31,7 +31,7 @@
     "cheerio": "^1.0.0-rc.9",
     "cozy-client": "^27.4.0",
     "cozy-client-js": "^0.20.0",
-    "cozy-intent": "^1.1.0",
+    "cozy-intent": "^1.1.1",
     "cozy-ui": "^52.0.0",
     "ky": "0.25.1",
     "lodash": "^4.17.21",
