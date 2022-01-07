@@ -8,12 +8,15 @@ const DEBUG_BRIDGE = false
  * Bridge to the contentScript object via post-me
  */
 export default class ContentScriptBridge extends Bridge {
+  constructor({label}) {
+    this.label = label
+  }
+
   async init({
     root,
     exposedMethodsNames = [],
     listenedEventsNames = [],
     webViewRef,
-    label,
     debug = DEBUG_BRIDGE,
   } = {}) {
     if (root) {
@@ -27,7 +30,7 @@ export default class ContentScriptBridge extends Bridge {
     this.messenger = new ReactNativeLauncherMessenger({
       webViewRef: this.webViewRef,
       debug,
-      label,
+      label: this.label,
     })
 
     this.connection = await ParentHandshake(

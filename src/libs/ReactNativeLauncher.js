@@ -148,7 +148,6 @@ class ReactNativeLauncher extends Launcher {
     try {
       await this.worker.init({
         listenedEventsNames: this.workerListenedEventsNames,
-        label: 'worker',
       })
       await this.worker.call('setContentScriptType', 'worker')
     } catch (err) {
@@ -173,14 +172,13 @@ class ReactNativeLauncher extends Launcher {
   }) {
     // the bridge must be exposed before the call to the ContentScriptBridge.init function or else the init sequence won't work
     // since the init sequence needs an already working bridge
-    this.pilot = new ContentScriptBridge()
+    this.pilot = new ContentScriptBridge({label: 'pilot'})
     try {
       await this.pilot.init({
         root: this,
         exposedMethodsNames,
         listenedEventsNames,
         webViewRef,
-        label: 'pilot',
       })
     } catch (err) {
       throw new Error(`Init error in pilot: ${err.message}`)
@@ -202,14 +200,13 @@ class ReactNativeLauncher extends Launcher {
   }) {
     // the bridge must be exposed before the call to the ContentScriptBridge.init function or else the init sequence won't work
     // since the init sequence needs an already working bridge
-    this.worker = new ContentScriptBridge()
+    this.worker = new ContentScriptBridge({label: 'worker'})
     try {
       await this.worker.init({
         root: this,
         exposedMethodsNames,
         listenedEventsNames,
         webViewRef,
-        label: 'worker',
       })
     } catch (err) {
       throw new Error(`Init error in worker: ${err.message}`)
