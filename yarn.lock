@@ -6172,6 +6172,13 @@ cozy-device-helper@^1.12.0:
   dependencies:
     lodash "^4.17.19"
 
+cozy-device-helper@^1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/cozy-device-helper/-/cozy-device-helper-1.16.0.tgz#76f124724b340cac222d33789787e3c841f4b123"
+  integrity sha512-VcHkceUaYT79wu0wiYR8BrcTloVqY+GrLMGgJAFPdH1d8r3Vzcs3v/juor77TTOPcYEWuG702U93kx1u5rXpCg==
+  dependencies:
+    lodash "^4.17.19"
+
 cozy-flags@2.7.1:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/cozy-flags/-/cozy-flags-2.7.1.tgz#f37251fee248ef9bef079a22bc52954f1a892dfc"
@@ -6179,10 +6186,14 @@ cozy-flags@2.7.1:
   dependencies:
     microee "^0.0.6"
 
-cozy-intent@../cozy-libs/packages/cozy-intent:
-  version "1.0.0"
+cozy-intent@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-1.1.0.tgz#07463bfc3b88ab38ace124ed44b4257477948040"
+  integrity sha512-PYlxWBWfoOyEdENfouo84OWnMVCUmLvKN9IL4BfkwOjiNTA2rDu7soqZwyFDwxoKTSnG2YfoJc87jMa/NELM8g==
   dependencies:
+    cozy-device-helper "^1.16.0"
     post-me "0.4.5"
+    typescript "^4.5.2"
 
 cozy-interapp@^0.5.4:
   version "0.5.7"
@@ -16090,6 +16101,11 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
+
+typescript@^4.5.2:
+  version "4.5.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.4.tgz#a17d3a0263bf5c8723b9c52f43c5084edf13c2e8"
+  integrity sha512-VgYs2A2QIRuGphtzFV7aQJduJ2gyfTljngLzjpfW9FoYZF6xuw1W0vW9ghCKLfcWrCFxK81CSGRAvS1pn4fIUg==
 
 ua-parser-js@^0.7.18:
   version "0.7.28"
