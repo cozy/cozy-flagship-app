@@ -8,12 +8,19 @@ const DEBUG_BRIDGE = false
  * Bridge to the contentScript object via post-me
  */
 export default class ContentScriptBridge extends Bridge {
+  constructor({label}) {
+    this.label = label
+  }
+
   async init({
     root,
     exposedMethodsNames = [],
     listenedEventsNames = [],
     webViewRef,
+<<<<<<< HEAD
     label,
+=======
+>>>>>>> feat/AmazonConnector
     debug = DEBUG_BRIDGE,
   } = {}) {
     if (root) {
@@ -27,7 +34,11 @@ export default class ContentScriptBridge extends Bridge {
     this.messenger = new ReactNativeLauncherMessenger({
       webViewRef: this.webViewRef,
       debug,
+<<<<<<< HEAD
       label,
+=======
+      label: this.label,
+>>>>>>> feat/AmazonConnector
     })
 
     this.connection = await ParentHandshake(

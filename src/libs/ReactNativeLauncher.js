@@ -173,7 +173,7 @@ class ReactNativeLauncher extends Launcher {
   }) {
     // the bridge must be exposed before the call to the ContentScriptBridge.init function or else the init sequence won't work
     // since the init sequence needs an already working bridge
-    this.pilot = new ContentScriptBridge()
+    this.pilot = new ContentScriptBridge({label: 'pilot'})
     try {
       await this.pilot.init({
         root: this,
@@ -202,7 +202,7 @@ class ReactNativeLauncher extends Launcher {
   }) {
     // the bridge must be exposed before the call to the ContentScriptBridge.init function or else the init sequence won't work
     // since the init sequence needs an already working bridge
-    this.worker = new ContentScriptBridge()
+    this.worker = new ContentScriptBridge({label: 'worker'})
     try {
       await this.worker.init({
         root: this,
