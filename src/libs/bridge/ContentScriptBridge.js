@@ -17,10 +17,6 @@ export default class ContentScriptBridge extends Bridge {
     exposedMethodsNames = [],
     listenedEventsNames = [],
     webViewRef,
-<<<<<<< HEAD
-    label,
-=======
->>>>>>> feat/AmazonConnector
     debug = DEBUG_BRIDGE,
   } = {}) {
     if (root) {
@@ -34,11 +30,7 @@ export default class ContentScriptBridge extends Bridge {
     this.messenger = new ReactNativeLauncherMessenger({
       webViewRef: this.webViewRef,
       debug,
-<<<<<<< HEAD
-      label,
-=======
       label: this.label,
->>>>>>> feat/AmazonConnector
     })
 
     this.connection = await ParentHandshake(
