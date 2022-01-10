@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.cozyreactnative">
+  package="io.cozy.flagship.mobile">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
