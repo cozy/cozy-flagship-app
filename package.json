@@ -84,7 +84,10 @@
     "webpack-dev-server": "3.11.2"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native(-.*)?|@react-native(-community)?)/)"
+    ]
   },
   "browserslist": {
     "production": [
