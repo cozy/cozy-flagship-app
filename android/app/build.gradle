@@ -217,6 +217,7 @@ dependencies {
         implementation jscFlavor
     }
     implementation project(':react-native-fs')
+    implementation project(':react-native-google-safetynet')
 }
 
 // Run this once to be able to run the application with BUCK
