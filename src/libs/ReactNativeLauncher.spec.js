@@ -50,9 +50,12 @@ describe('ReactNativeLauncher', () => {
         trigger: fixtures.trigger,
       })
       client.query.mockResolvedValue({data: fixtures.account})
-      launcher.pilot.call.mockResolvedValueOnce(true).mockResolvedValueOnce({
-        sourceAccountIdentifier: 'testsourceaccountidentifier',
-      })
+      launcher.pilot.call
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce({
+          sourceAccountIdentifier: 'testsourceaccountidentifier',
+        })
       await launcher.start()
       expect(client.save).toHaveBeenNthCalledWith(1, {
         _id: 'normal_account_id',
@@ -60,7 +63,9 @@ describe('ReactNativeLauncher', () => {
       })
       expect(client.save).toHaveBeenNthCalledWith(2, {
         _id: 'normal_account_id',
-        label: 'testsourceaccountidentifier',
+        auth: {
+          accountName: 'testsourceaccountidentifier',
+        },
       })
       expect(client.save).toHaveBeenNthCalledWith(3, {
         _id: 'normal_job_id',
@@ -70,13 +75,18 @@ describe('ReactNativeLauncher', () => {
       })
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(
         1,
-        'ensureAuthenticated',
+        'setContentScriptType',
+        'pilot',
       )
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(
         2,
+        'ensureAuthenticated',
+      )
+      expect(launcher.pilot.call).toHaveBeenNthCalledWith(
+        3,
         'getUserDataFromWebsite',
       )
-      expect(launcher.pilot.call).toHaveBeenNthCalledWith(3, 'fetch', [])
+      expect(launcher.pilot.call).toHaveBeenNthCalledWith(4, 'fetch', [])
       expect(updateAttributes).toHaveBeenNthCalledWith(1, 'normalfolderid', {
         name: 'testsourceaccountidentifier',
       })

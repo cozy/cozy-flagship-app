@@ -20,64 +20,58 @@ import RNFS from 'react-native-fs'
 import Gzip from '@fengweichong/react-native-gzip'
 
 describe('ConnectorInstaller', () => {
+  const client = {
+    stackClient: {
+      fetchJSON: jest.fn(),
+    },
+  }
+
   beforeEach(() => {
     jest.resetAllMocks()
   })
 
   describe('extractRegistrySourceUrl', () => {
     it('should extract registry source url from a registry stable source', async () => {
-      fetch = jest.fn()
-      fetch.mockResolvedValue({
-        json: async () => ({
-          url: 'https://apps-registry.cozycloud.cc/registry/template/1.0.0/tarball/xxx.tar.gz',
-        }),
+      client.stackClient.fetchJSON.mockResolvedValue({
+        url: 'https://apps-registry.cozycloud.cc/registry/template/1.0.0/tarball/xxx.tar.gz',
       })
       expect(
-        await extractRegistrySourceUrl('registry://template/stable'),
+        await extractRegistrySourceUrl({
+          source: 'registry://template/stable',
+          client,
+        }),
       ).toEqual(
         'https://apps-registry.cozycloud.cc/registry/template/1.0.0/tarball/xxx.tar.gz',
       )
-      expect(fetch).toHaveBeenCalledWith(
-        'https://apps-registry.cozycloud.cc/registry/template/stable/latest',
+      expect(client.stackClient.fetchJSON).toHaveBeenCalledWith(
+        'GET',
+        '/registry/template/stable/latest',
       )
     })
     it('should extract registry source url from any possible registry source ', async () => {
+      client.stackClient.fetchJSON.mockResolvedValue({})
       fetch = jest.fn()
-      fetch.mockResolvedValue({
-        json: async () => ({}),
-      })
       const registryTestSuite = [
-        [
-          'registry://template',
-          'https://apps-registry.cozycloud.cc/registry/template/stable/latest',
-        ],
-        [
-          'registry://template/beta',
-          'https://apps-registry.cozycloud.cc/registry/template/beta/latest',
-        ],
-        [
-          'registry://template/dev/latest',
-          'https://apps-registry.cozycloud.cc/registry/template/dev/latest',
-        ],
-        [
-          'registry://template/stable/1.0.1',
-          'https://apps-registry.cozycloud.cc/registry/template/1.0.1',
-        ],
-        [
-          'registry://template/1.0.2',
-          'https://apps-registry.cozycloud.cc/registry/template/1.0.2',
-        ],
+        ['registry://template', '/registry/template/stable/latest'],
+        ['registry://template/beta', '/registry/template/beta/latest'],
+        ['registry://template/dev/latest', '/registry/template/dev/latest'],
+        ['registry://template/stable/1.0.1', '/registry/template/1.0.1'],
+        ['registry://template/1.0.2', '/registry/template/1.0.2'],
       ]
 
       for (const [i, [source, url]] of registryTestSuite.entries()) {
-        await extractRegistrySourceUrl(source)
-        expect(fetch).toHaveBeenNthCalledWith(i + 1, url)
+        await extractRegistrySourceUrl({source, client})
+        expect(client.stackClient.fetchJSON).toHaveBeenNthCalledWith(
+          i + 1,
+          'GET',
+          url,
+        )
       }
     })
     it('should throw when not a registry source', async () => {
-      await expect(extractRegistrySourceUrl('wrong url')).rejects.toThrow(
-        'extractRegistrySourceUrl: Could not install wrong url',
-      )
+      await expect(
+        extractRegistrySourceUrl({source: 'wrong url', client}),
+      ).rejects.toThrow('extractRegistrySourceUrl: Could not install wrong url')
     })
   })
   describe('extractGithubSourceUrl', () => {
@@ -206,7 +200,7 @@ describe('ConnectorInstaller', () => {
       RNFS.readFile.mockResolvedValue('{"slug": "sncf"}')
       const manifest = await getManifest({slug: 'sncf'})
       expect(RNFS.readFile).toHaveBeenNthCalledWith(
-        2,
+        1,
         '/app/connectors/sncf/manifest.konnector',
       )
       expect(manifest).toEqual({slug: 'sncf'})
