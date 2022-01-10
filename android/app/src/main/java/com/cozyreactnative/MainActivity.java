@@ -1,4 +1,4 @@
-package com.cozyreactnative;
+package io.cozy.flagship.mobile;
 
 import android.os.Bundle;
 
