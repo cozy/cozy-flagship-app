@@ -1,14 +1,14 @@
 import React, {useState, useEffect, useCallback, useMemo} from 'react'
 import {View, Image, StyleSheet, TouchableOpacity, Text} from 'react-native'
 
-export const ImagePreview = ({uri, rectangleCoordinates, onRetry}) => {
+export const ImagePreview = ({
+  uri,
+  rectangleCoordinates,
+  onRetry,
+  withCropped,
+}) => {
   const [layoutSize, setLayoutSize] = useState({})
   const [imgOriginalSize, setImgOriginalSize] = useState({})
-
-  // TODO: refactor and fix
-  // TODO: the coordinates are not correct
-  // TODO: the image size is not the same between java and Image.getSize: why? THis complexify the actual parallelogram to draw
-  // TODO: See https://github.com/Michaelvilleneuve/react-native-perspective-image-cropper that should handle it correctly
 
   const widthRatio = useMemo(() => {
     if (layoutSize.width < imgOriginalSize.width) {
@@ -69,7 +69,7 @@ export const ImagePreview = ({uri, rectangleCoordinates, onRetry}) => {
     })
   }
 
-  if (rectangleCoordinates) {
+  if (!withCropped) {
     const {topLeft, topRight, bottomLeft} = rectangleCoordinates
     const height = bottomLeft.y - topLeft.y
     const width = topRight.x - topLeft.x
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   photoPreview: {
     flex: 1,
     width: '100%',
-    //resizeMode: 'contain',
+    resizeMode: 'contain',
   },
   retryButton: {
     alignSelf: 'center',

@@ -13,6 +13,12 @@ export const Scanner = () => {
   const [scanParams, setScanParams] = useState({})
   const [allowed, setAllowed] = useState(false)
 
+  useEffect(() => {
+    if (scanned.initialImage) {
+      Image.getSize(scanned.initialImage, (width, height) => {})
+    }
+  }, [scanned])
+
   const handlePressCrop = () => {
     setIsValidatingImageCropping(true)
   }
@@ -21,16 +27,12 @@ export const Scanner = () => {
    * Start image cropping
    */
   const startImageCropping = () => {
-    console.log('scanner in crop : ', scanner)
     scanner.cropImage().then(({image}) => {
-      console.log('crop : ', image)
       setScanned({image, isValidatingImageCropping: false})
     })
   }
 
   const handleImageScanner = (data) => {
-    console.log('data picture taken : ', data)
-    console.log('coordinates : ', data.rectangleCoordinates)
     setScanned({
       croppedImage: data.croppedImage,
       initialImage: data.initialImage,
@@ -39,8 +41,6 @@ export const Scanner = () => {
   }
 
   const onRectangleDetect = ({stableCounter, lastDetectionType}) => {
-    console.log('stable counter : ', stableCounter)
-    console.log('lastDetectionType : ', lastDetectionType)
     setScanParams({stableCounter, lastDetectionType})
   }
 
@@ -49,17 +49,12 @@ export const Scanner = () => {
   }
 
   if (scanned.croppedImage) {
-    // FIXME: sometimes the coordinates are NOT provided
-    const coordinates = scanned.rectangleCoordinates
-    console.log('coordiantes : ', scanned.rectangleCoordinates)
+    if (!scanned.rectangleCoordinates) {
+      // FIXME: this should never happen, see the native part
+      setScanned({})
+    }
+    console.log('received coordinates : ', scanned.rectangleCoordinates)
 
-    /*return (
-      <ImagePreview
-        uri={scanned.initialImage}
-        onRetry={retry}
-        rectangleCoordinates={coordinates}
-      />
-    )*/
     return (
       <CropView
         initialImage={scanned.initialImage}
