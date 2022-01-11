@@ -1,4 +1,5 @@
 token.json
+src/api-keys.json
 .vscode
 
 connectors/*/dist

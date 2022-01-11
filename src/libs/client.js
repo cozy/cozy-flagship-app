@@ -1,6 +1,8 @@
 import CozyClient from 'cozy-client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
+import apiKeys from '../api-keys.json'
+
 const OAUTH_STORAGE_KEY = '@cozy_AmiralAppOAuthConfig'
 const COZY_PREFIX = 'cozy://'
 
@@ -86,6 +88,10 @@ export const callInitClient = async (uri) => {
       softwareID: 'amiral',
       clientKind: 'mobile',
       clientName: 'Amiral',
+      shouldRequireFlagshipPermissions: true,
+      certificationConfig: {
+        androidSafetyNetApiKey: apiKeys.androidSafetyNetApiKey
+      }
     },
   })
   await saveClient(client)
