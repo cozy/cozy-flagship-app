@@ -65,3 +65,25 @@ $ yarn test
 * First, you must have `yarn start` running in another terminal
 * Then run ./scripts/build-debug-offline-apk.sh
 * The output will give you the path to the apk
+
+
+## How to enable Flagship certification
+
+Flagship certification is the process of verifying that the current running app is a genuine Cozy application.
+
+This verification requires the `cozy-stack` to be configured with the app information.
+
+To enable Flagship certification:
+- Retrieve the project's Safetynet Api Key on the pass manager
+  - Or generate a new one following Google documentation: https://developer.android.com/training/safetynet/attestation#add-api-key
+- Create a file `src/api-keys.json` and fill it with the following content:
+```json
+{
+  "androidSafetyNetApiKey": "YOUR_GOOGLE_SAFETYNET_API_KEY"
+}
+```
+- On `src/libs/client.js` set `shouldRequireFlagshipPermissions` to `true`
+- Read `cozy-client` instruction in [flagship-certification/README.md](https://github.com/cozy/cozy-client/blob/master/packages/cozy-client/src/flagship-certification/README.md)
+
+If you want to disable Flagship certification:
+- On `src/libs/client.js` set `shouldRequireFlagshipPermissions` to `false`
