@@ -17,6 +17,7 @@ import {Authenticate} from './screens/Authenticate'
 import {useSplashScreen} from './hooks/useSplashScreen'
 import {SplashScreenProvider} from './screens/providers/SplashScreenProvider'
 import {CozyAppView} from './screens/routes/CozyAppView'
+import {Scanner} from './screens/scanner/DocumentScanner'
 import {OCR} from './screens/scanner/OCR'
 
 const Root = createStackNavigator()
@@ -52,7 +53,7 @@ const App = () => {
           <Root.Screen options={{headerShown: false}} name="main">
             {() => (
               <MainStack.Navigator
-                initialRouteName={auth ? 'home' : 'authenticate'}>
+                initialRouteName={auth ? 'OCR' : 'authenticate'}>
                 <MainStack.Screen
                   name="home"
                   component={Connectors}
@@ -68,6 +69,16 @@ const App = () => {
                   options={{headerShown: false}}>
                   {() => <Authenticate setClient={setClient} />}
                 </MainStack.Screen>
+                <MainStack.Screen
+                  name="scanner"
+                  options={{headerShown: false}}
+                  component={Scanner}
+                />
+                <MainStack.Screen
+                  name="OCR"
+                  options={{headerShown: false}}
+                  component={OCR}
+                />
               </MainStack.Navigator>
             )}
           </Root.Screen>

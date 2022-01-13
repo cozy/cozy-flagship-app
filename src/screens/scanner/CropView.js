@@ -1,39 +1,20 @@
-import React, {useEffect, useMemo, useState, useRef} from 'react'
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native'
+import React, {useState, useRef} from 'react'
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native'
 import {CropImage} from './CropImage'
 import CustomCrop from 'react-native-perspective-image-cropper'
 
-/*
-  TODO 28/12/21
-  Sur la détection en elle meme:
-    - Le paramètre detectionCountBeforeCapture fait prendre la photo trop vite si 5, mais prend trop de temps si 50, notamment sur iphone
-    - Il est perfectible, mais fait le job. Faiblard quand doc avec plusieurs rectangles (carte électeur) ou fond pas assez constraté
-    - L'app crash parfois : peut être parce que rectangleCoordinates n'est pas toujours dispo ? mPreviewPoints peut être null
-  Sur le cropping:
-    - Retraitemetn des coordonnées renvoyées par le natif, sans trop comprendre pourquoi
-    - Les coordonnées redonnées pour croper l'image finale est fausse -> fixer ça
-*/
-
-export const CropView = ({initialImage, rectangleCoordinates, onRetry}) => {
+export const CropView = ({
+  initialImage,
+  rectangleCoordinates,
+  onRetry,
+  imageSize,
+}) => {
   const customCrop = useRef(null)
-  //const [customCrop, setCustomCrop] = useState(null)
-  const [image, setImage] = useState(initialImage)
   const [croppedImage, setCroppedImage] = useState(null)
   const [coordinates, setCoordinates] = useState(rectangleCoordinates)
-  const [imageSize, setImageSize] = useState({width: 540, height: 1088})
+
   const [shouldDisplayCroppedImage, setShouldDisplayCroppedImage] =
     useState(false)
-
-  useEffect(() => {
-    Image.getSize(image, (width, height) => {
-      console.log('image width : ', width)
-      console.log('image height : ', height)
-      setImageSize({
-        width,
-        height,
-      })
-    })
-  }, [image])
 
   const updateCroppedImage = (updatedImage, newCoordinates) => {
     setCoordinates(newCoordinates)
