@@ -82,7 +82,7 @@ export const Scanner = () => {
         contrast={1.1}
         quality={0.5}
         onRectangleDetect={onRectangleDetect}
-        detectionCountBeforeCapture={30}
+        detectionCountBeforeCapture={5}
         detectionRefreshRateInMS={50}
         onPermissionsDenied={() => console.log('Permissions Denied')}
       />
