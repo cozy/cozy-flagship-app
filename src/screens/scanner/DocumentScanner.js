@@ -7,30 +7,20 @@ import {ImagePreview} from './ImagePreview'
 
 export const Scanner = () => {
   const [scanned, setScanned] = useState({})
-  const [scanner, setScanner] = useState(null)
   const [isValidatingImageCropping, setIsValidatingImageCropping] =
     useState(false)
   const [scanParams, setScanParams] = useState({})
-  const [allowed, setAllowed] = useState(false)
+  const [imageSize, setImageSize] = useState(null)
+
+  console.log('document scanner start')
 
   useEffect(() => {
     if (scanned.initialImage) {
-      Image.getSize(scanned.initialImage, (width, height) => {})
+      Image.getSize(scanned.initialImage, (width, height) => {
+        setImageSize({width, height})
+      })
     }
   }, [scanned])
-
-  const handlePressCrop = () => {
-    setIsValidatingImageCropping(true)
-  }
-
-  /**
-   * Start image cropping
-   */
-  const startImageCropping = () => {
-    scanner.cropImage().then(({image}) => {
-      setScanned({image, isValidatingImageCropping: false})
-    })
-  }
 
   const handleImageScanner = (data) => {
     setScanned({
@@ -48,9 +38,9 @@ export const Scanner = () => {
     setScanned({})
   }
 
-  if (scanned.croppedImage) {
+  if (scanned.croppedImage && imageSize) {
     if (!scanned.rectangleCoordinates) {
-      // FIXME: this should never happen, see the native part
+      // This is a safeguard, but should never happen
       setScanned({})
     }
     console.log('received coordinates : ', scanned.rectangleCoordinates)
@@ -59,6 +49,7 @@ export const Scanner = () => {
       <CropView
         initialImage={scanned.initialImage}
         rectangleCoordinates={scanned.rectangleCoordinates}
+        imageSize={imageSize}
         onRetry={retry}
       />
     )

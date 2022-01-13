@@ -1,6 +1,7 @@
 import React from 'react'
 import {View, Image, StyleSheet, TouchableOpacity, Text} from 'react-native'
 
+// TODO: add 'OK' button that returns the base64 image
 export const CropImage = ({image, onRetry}) => {
   return (
     <View style={{flex: 1}}>
