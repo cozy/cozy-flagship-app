@@ -70,5 +70,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>cozydrive</string>
+		<string>cozybanks</string>
+		<string>cozypass</string>
+	</array>
 </dict>
 </plist>
