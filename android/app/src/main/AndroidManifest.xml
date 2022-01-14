@@ -2,6 +2,20 @@
   package="io.cozy.flagship.mobile">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <queries>
+      <intent>
+        <action android:name="android.intent.action.VIEW" />
+        <data android:scheme="cozydrive" />
+      </intent>
+      <intent>
+        <action android:name="android.intent.action.VIEW" />
+        <data android:scheme="cozybanks" />
+      </intent>
+      <intent>
+        <action android:name="android.intent.action.VIEW" />
+        <data android:scheme="cozypass" />
+      </intent>
+    </queries>
 
     <application
       android:name=".MainApplication"
