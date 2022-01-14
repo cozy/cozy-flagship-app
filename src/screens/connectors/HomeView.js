@@ -47,22 +47,12 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
     if (konnectorParam) {
       setUri(`${uri}#/connected/${konnectorParam}`)
     }
-    const token = client.getStackClient().getAccessToken()
-    const [scheme, cozyDomain] = uri.split('://')
-    const cozyToken = token
-    const cozyClientConf = {
-      scheme,
-      lang: 'fr',
-      cozyDomain,
-      cozyToken,
-    }
 
     setRun(`
       window.cozy = {
         ClientConnectorLauncher: 'react-native',
         isFlagshipApp: true
       };
-      window.cozyClientConf = ${JSON.stringify(cozyClientConf)}
       return true;
       `)
 
