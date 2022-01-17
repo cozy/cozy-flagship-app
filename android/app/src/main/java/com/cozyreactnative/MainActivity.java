@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.facebook.react.ReactActivity;
 import com.zoontek.rnbootsplash.RNBootSplash;
+import com.documentscanner.DocumentScannerPackage;
 
 public class MainActivity extends ReactActivity {
 
