@@ -5,6 +5,7 @@ import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.documentscanner.DocumentScannerPackage;
+import fr.michaelvilleneuve.customcrop.RNCustomCropPackage;
 import com.rnfs.RNFSPackage;
 import com.reactlibrary.GzipPackage;
 import com.facebook.react.ReactInstanceManager;
