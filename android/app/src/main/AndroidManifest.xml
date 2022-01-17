@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="io.cozy.flagship.mobile">
+  package="io.cozy.flagship.mobile" xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -7,13 +7,15 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <!-- requestLegacyExternalStorage should be removed -> not allowed on play store => check how to do it properly -->
+    <!-- android:requestLegacyExternalStorage="true" -->
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
-      android:theme="@style/AppTheme">
+      android:theme="@style/AppTheme"
+      tools:replace="android:allowBackup">
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
