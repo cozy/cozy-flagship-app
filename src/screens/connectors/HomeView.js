@@ -4,7 +4,6 @@ import {useClient, Q, generateWebLink} from 'cozy-client'
 import {useNativeIntent} from 'cozy-intent'
 
 import CozyWebView from '../CozyWebView'
-import {clearClient} from '../../libs/client'
 
 const HomeView = ({route, navigation, setLauncherContext}) => {
   const client = useClient()
@@ -15,13 +14,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
 
   useEffect(() => {
     if (ref && route.name === 'home') {
-      nativeIntent.registerWebview(ref, {
-        logout: async () => {
-          await clearClient()
-          return navigation.navigate('authenticate')
-        },
-        openApp: (href) => navigation.navigate('cozyapp', {href}),
-      })
+      nativeIntent.registerWebview(ref)
     }
 
     const getHomeUri = async () => {
@@ -84,7 +77,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
       injectedJavaScriptBeforeContentLoaded={run}
       navigation={navigation}
       setRef={setRef}
-      onMessage={async (m) => {
+      onMessage={async m => {
         nativeIntent.tryEmit(m)
 
         const data = get(m, 'nativeEvent.data')
