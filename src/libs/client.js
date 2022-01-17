@@ -18,7 +18,7 @@ export const clearClient = () => {
  *
  * @param {CozyClient} client : client instance
  */
-export const saveClient = async (client) => {
+export const saveClient = async client => {
   const {uri, oauthOptions, token} = client.getStackClient()
   const state = JSON.stringify({
     oauthOptions,
@@ -62,7 +62,7 @@ export const initClient = async (uri, options) => {
   return client
 }
 
-export const callInitClient = async (uri) => {
+export const callInitClient = async uri => {
   // Your IDE might tell you the following 'await' has no effect, this seems to be a mistake
   const client = await initClient(uri, {
     scope: [
@@ -90,8 +90,8 @@ export const callInitClient = async (uri) => {
       clientName: 'Amiral',
       shouldRequireFlagshipPermissions: true,
       certificationConfig: {
-        androidSafetyNetApiKey: apiKeys.androidSafetyNetApiKey
-      }
+        androidSafetyNetApiKey: apiKeys.androidSafetyNetApiKey,
+      },
     },
   })
   await saveClient(client)

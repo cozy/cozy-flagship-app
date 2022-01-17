@@ -9,14 +9,15 @@ import {decode, encode} from 'base-64'
 import {CozyProvider} from 'cozy-client'
 import {NativeIntentProvider} from 'cozy-intent'
 
-import {lightTheme} from './theme'
+import * as RootNavigation from './libs/RootNavigation.js'
 import Connectors from './screens/connectors'
 import StoreView from './screens/store/StoreView'
-import {getClient} from './libs/client'
 import {Authenticate} from './screens/Authenticate'
-import {useSplashScreen} from './hooks/useSplashScreen'
-import {SplashScreenProvider} from './screens/providers/SplashScreenProvider'
 import {CozyAppView} from './screens/routes/CozyAppView'
+import {SplashScreenProvider} from './screens/providers/SplashScreenProvider'
+import {clearClient, getClient} from './libs/client'
+import {lightTheme} from './theme'
+import {useSplashScreen} from './hooks/useSplashScreen'
 
 const Root = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -35,7 +36,7 @@ const App = () => {
   const {hideSplashScreen} = useSplashScreen()
 
   useEffect(() => {
-    getClient().then((clientResult) => {
+    getClient().then(clientResult => {
       if (clientResult) {
         setClient(clientResult)
       }
@@ -45,61 +46,66 @@ const App = () => {
   }, [hideSplashScreen])
 
   const Routing = ({auth}) => (
-    <NavigationContainer>
-      <NativeIntentProvider>
-        <Root.Navigator initialRouteName="main" mode="modal">
-          <Root.Screen options={{headerShown: false}} name="main">
-            {() => (
-              <MainStack.Navigator
-                initialRouteName={auth ? 'home' : 'authenticate'}>
-                <MainStack.Screen
-                  name="home"
-                  component={Connectors}
-                  options={{headerShown: false}}
-                />
-                <MainStack.Screen
-                  name="store"
-                  component={StoreView}
-                  options={{headerShown: false}}
-                />
-                <MainStack.Screen
-                  name="authenticate"
-                  options={{headerShown: false}}>
-                  {() => <Authenticate setClient={setClient} />}
-                </MainStack.Screen>
-              </MainStack.Navigator>
-            )}
-          </Root.Screen>
+    <Root.Navigator initialRouteName="main" mode="modal">
+      <Root.Screen options={{headerShown: false}} name="main">
+        {() => (
+          <MainStack.Navigator
+            initialRouteName={auth ? 'home' : 'authenticate'}>
+            <MainStack.Screen
+              name="home"
+              component={Connectors}
+              options={{headerShown: false}}
+            />
+            <MainStack.Screen
+              name="store"
+              component={StoreView}
+              options={{headerShown: false}}
+            />
+            <MainStack.Screen
+              name="authenticate"
+              options={{headerShown: false}}>
+              {() => <Authenticate setClient={setClient} />}
+            </MainStack.Screen>
+          </MainStack.Navigator>
+        )}
+      </Root.Screen>
 
-          <Root.Screen
-            name="cozyapp"
-            component={CozyAppView}
-            options={{headerShown: false}}
-          />
-        </Root.Navigator>
-      </NativeIntentProvider>
-    </NavigationContainer>
+      <Root.Screen
+        name="cozyapp"
+        component={CozyAppView}
+        options={{headerShown: false}}
+      />
+    </Root.Navigator>
   )
 
-  return (
-    <PaperProvider theme={lightTheme}>
-      {client ? (
-        <CozyProvider client={client}>
-          <Routing auth={true} />
-        </CozyProvider>
-      ) : (
-        <Routing auth={false} />
-      )}
-    </PaperProvider>
+  return client ? (
+    <CozyProvider client={client}>
+      <Routing auth={true} />
+    </CozyProvider>
+  ) : (
+    <Routing auth={false} />
   )
 }
 
 const WrappedApp = () => (
-  <SplashScreenProvider>
-    <SafeAreaView style={styles.container}>
-      <App />
-    </SafeAreaView>
-  </SplashScreenProvider>
+  <NavigationContainer ref={RootNavigation.navigationRef}>
+    <NativeIntentProvider
+      localMethods={{
+        logout: async () => {
+          await clearClient()
+          return RootNavigation.navigate('authenticate')
+        },
+        openApp: href => RootNavigation.navigate('cozyapp', {href}),
+      }}>
+      <PaperProvider theme={lightTheme}>
+        <SplashScreenProvider>
+          <SafeAreaView style={styles.container}>
+            <App />
+          </SafeAreaView>
+        </SplashScreenProvider>
+      </PaperProvider>
+    </NativeIntentProvider>
+  </NavigationContainer>
 )
 
 const styles = StyleSheet.create({
