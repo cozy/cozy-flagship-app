@@ -19,6 +19,10 @@ target 'CozyReactNative' do
 
   pod 'RNIOS11DeviceCheck', :path => '../node_modules/react-native-ios11-devicecheck/ios'
 
+  pod 'react-native-document-scanner', :path => '../node_modules/react-native-document-scanner'
+
+  pod 'react-native-perspective-image-cropper', :path => '../node_modules/react-native-perspective-image-cropper'
+
   target 'CozyReactNativeTests' do
     inherit! :complete
     # Pods for testing
