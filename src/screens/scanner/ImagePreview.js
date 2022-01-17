@@ -6,6 +6,9 @@ export const ImagePreview = ({uri, rectangleCoordinates, onRetry}) => {
   const [imgOriginalSize, setImgOriginalSize] = useState({})
 
   // TODO: refactor and fix
+  // TODO: the coordinates are not correct
+  // TODO: the image size is not the same between java and Image.getSize: why? THis complexify the actual parallelogram to draw
+  // TODO: See https://github.com/Michaelvilleneuve/react-native-perspective-image-cropper that should handle it correctly
 
   const widthRatio = useMemo(() => {
     if (layoutSize.width < imgOriginalSize.width) {
@@ -47,29 +50,41 @@ export const ImagePreview = ({uri, rectangleCoordinates, onRetry}) => {
     return topLeft.y
   }, [heightRatio, rectangleCoordinates])
 
+  const leftWithRatio = useMemo(() => {
+    const {topLeft} = rectangleCoordinates
+    if (widthRatio !== 1) {
+      return topLeft.x * widthRatio
+    }
+    return topLeft.y
+  }, [widthRatio, rectangleCoordinates])
+
+  const onLayout = (event) => {
+    console.log('layout : ', event.nativeEvent.layout)
+    const {x, y, width, height} = event.nativeEvent.layout
+    setLayoutSize({width, height})
+    Image.getSize(uri, (imgWidth, imgHeight) => {
+      console.log('img get height : ', imgHeight)
+      console.log('img get width : ', imgWidth)
+      setImgOriginalSize({width: imgWidth, height: imgHeight})
+    })
+  }
+
   if (rectangleCoordinates) {
-    console.log('coordinates : ', rectangleCoordinates)
     const {topLeft, topRight, bottomLeft} = rectangleCoordinates
     const height = bottomLeft.y - topLeft.y
     const width = topRight.x - topLeft.x
     const top = topLeft.y
     const left = topLeft.x
 
-    console.log('width : ', width)
+    console.log('width ratio : ', widthRatio)
+    console.log('height ratio : ', heightRatio)
+
+    console.log('width : ', width, ' - with ratio : ', widthWithRatio)
     console.log('heigth : ', height)
-    console.log('left : ', left)
-    console.log('top : ', top)
+    console.log('left : ', left, ' - with ratio : ', leftWithRatio)
+    console.log('top : ', top, ' - with ratio : ', topWithRatio)
 
     console.log('top with ratio : ', topWithRatio)
-
-    const onLayout = (event) => {
-      console.log('layout : ', event.nativeEvent.layout)
-      const {x, y, width, height} = event.nativeEvent.layout
-      setLayoutSize({width, height})
-      Image.getSize(uri, (imgWidth, imgHeight) => {
-        setImgOriginalSize({width: imgWidth, height: imgHeight})
-      })
-    }
 
     return (
       <View style={{flex: 1}} onLayout={onLayout}>
@@ -81,7 +96,7 @@ export const ImagePreview = ({uri, rectangleCoordinates, onRetry}) => {
               width: widthWithRatio,
               height: heightWithRatio,
               top: topWithRatio,
-              left,
+              left: leftWithRatio,
             },
           ]}
         />
@@ -92,9 +107,8 @@ export const ImagePreview = ({uri, rectangleCoordinates, onRetry}) => {
     )
   } else {
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1}} onLayout={onLayout}>
         <Image source={{uri}} style={styles.photoPreview} />
-        <View style={styles.rectangle} />
         <TouchableOpacity onPress={onRetry} style={styles.retryButton}>
           <Text style={styles.retryButtonText}>Retry</Text>
         </TouchableOpacity>
@@ -132,7 +146,7 @@ const styles = StyleSheet.create({
   photoPreview: {
     flex: 1,
     width: '100%',
-    resizeMode: 'cover',
+    //resizeMode: 'contain',
   },
   retryButton: {
     alignSelf: 'center',
