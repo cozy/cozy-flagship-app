@@ -12,8 +12,10 @@ module.exports = {
     },
     'react-native-perspective-image-cropper': {
       platforms: {
-        android: NormalModuleReplacementPlugin,
-        // add more platform to disable auto-linking for them too
+        android: {
+          packageImportPath:
+            'import fr.michaelvilleneuve.customcrop.RNCustomCropPackage;',
+        },
       },
     },
   },
