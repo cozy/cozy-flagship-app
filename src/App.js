@@ -53,7 +53,7 @@ const App = () => {
           <Root.Screen options={{headerShown: false}} name="main">
             {() => (
               <MainStack.Navigator
-                initialRouteName={auth ? 'OCR' : 'authenticate'}>
+                initialRouteName={auth ? 'home' : 'authenticate'}>
                 <MainStack.Screen
                   name="home"
                   component={Connectors}

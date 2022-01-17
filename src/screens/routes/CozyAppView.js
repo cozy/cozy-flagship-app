@@ -1,13 +1,26 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {WebView} from 'react-native-webview'
+import {useNativeIntent} from 'cozy-intent'
 
-export const CozyAppView = ({route}) => {
+export const CozyAppView = ({route, navigation}) => {
   const run = `
     window.cozy = {
       isFlagshipApp: true
     };
     return true;
     `
+  const [ref, setRef] = useState('')
+  const nativeIntent = useNativeIntent()
+
+  useEffect(() => {
+    if (ref) {
+      nativeIntent.registerWebview(ref, {
+        scanner: () => {
+          return navigation.navigate('scanner')
+        },
+      })
+    }
+  }, [nativeIntent, ref, navigation])
 
   return (
     <WebView
@@ -16,6 +29,8 @@ export const CozyAppView = ({route}) => {
       originWhitelist={['*']}
       javaScriptEnabled={true}
       useWebKit={true}
+      ref={setRef}
+      onMessage={nativeIntent.tryEmit}
     />
   )
 }
