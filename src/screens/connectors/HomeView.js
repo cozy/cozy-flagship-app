@@ -49,11 +49,13 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
     }
 
     setRun(`
-      window.cozy = {
-        ClientConnectorLauncher: 'react-native',
-        isFlagshipApp: true
-      };
-      return true;
+      (function() { 
+        window.cozy = {
+          isFlagshipApp: "true",
+          ClientConnectorLauncher: "react-native",
+        };
+        return true;
+      })();
       `)
 
     if (!uri) {
