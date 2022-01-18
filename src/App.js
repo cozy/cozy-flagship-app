@@ -11,7 +11,6 @@ import {NativeIntentProvider} from 'cozy-intent'
 
 import * as RootNavigation from './libs/RootNavigation.js'
 import Connectors from './screens/connectors'
-import StoreView from './screens/store/StoreView'
 import {Authenticate} from './screens/Authenticate'
 import {CozyAppView} from './screens/routes/CozyAppView'
 import {SplashScreenProvider} from './screens/providers/SplashScreenProvider'
@@ -54,11 +53,6 @@ const App = () => {
             <MainStack.Screen
               name="home"
               component={Connectors}
-              options={{headerShown: false}}
-            />
-            <MainStack.Screen
-              name="store"
-              component={StoreView}
               options={{headerShown: false}}
             />
             <MainStack.Screen
