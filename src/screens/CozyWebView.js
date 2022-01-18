@@ -4,6 +4,7 @@ import {CommonActions} from '@react-navigation/native'
 import Minilog from '@cozy/minilog'
 import {generateWebLink} from 'cozy-ui/transpiled/react/AppLinker'
 import {useClient} from 'cozy-client'
+import * as RootNavigation from '../libs/RootNavigation.js'
 
 const log = Minilog('CozyWebView')
 
@@ -12,8 +13,10 @@ Minilog.enable()
 export const COZY_PREFIX = 'cozy://flagship'
 
 const navigationMap = {
-  'app=store': ({request, navigation}) =>
-    navigation.push('store', {url: addRedirect(request.originalRequest.url)}),
+  'app=store': ({request}) =>
+    RootNavigation.navigate('cozyapp', {
+      href: addRedirect(request.originalRequest.url),
+    }),
   'konnector=(.*)': ({params, navigation}) => {
     navigation.dispatch(
       // navigate directly to home without creating a new view
@@ -54,8 +57,8 @@ const CozyWebView = ({
       originWhitelist={['*']}
       useWebKit={true}
       javaScriptEnabled={true}
-      ref={(ref) => setRef?.(ref)}
-      onShouldStartLoadWithRequest={(initialRequest) => {
+      ref={ref => setRef?.(ref)}
+      onShouldStartLoadWithRequest={initialRequest => {
         // we use onShouldStartLoadWithRequest since links to cozy://flagship in the webview do not
         // trigger deep linking
         let request = onShouldStartLoadWithRequest
