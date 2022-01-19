@@ -1,18 +1,11 @@
 import React, {useState, useEffect} from 'react'
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native'
+import {View, Image, StyleSheet} from 'react-native'
 import DocumentScanner from 'react-native-document-scanner'
-//import DocumentScanner from '@woonivers/react-native-document-scanner'
 import {CropView} from './CropView'
-import {ImagePreview} from './ImagePreview'
 
 export const Scanner = () => {
   const [scanned, setScanned] = useState({})
-  const [isValidatingImageCropping, setIsValidatingImageCropping] =
-    useState(false)
-  const [scanParams, setScanParams] = useState({})
   const [imageSize, setImageSize] = useState(null)
-
-  console.log('document scanner start')
 
   useEffect(() => {
     if (scanned.initialImage) {
@@ -22,16 +15,12 @@ export const Scanner = () => {
     }
   }, [scanned])
 
-  const handleImageScanner = (data) => {
+  const handleImageScanner = data => {
     setScanned({
       croppedImage: data.croppedImage,
       initialImage: data.initialImage,
       rectangleCoordinates: data.rectangleCoordinates,
     })
-  }
-
-  const onRectangleDetect = ({stableCounter, lastDetectionType}) => {
-    setScanParams({stableCounter, lastDetectionType})
   }
 
   const retry = () => {
@@ -61,13 +50,12 @@ export const Scanner = () => {
         style={styles.scanner}
         saveInAppDocument={false}
         onPictureTaken={handleImageScanner}
-        overlayColor="rgba(33, 172, 51, 0.8)"
+        overlayColor="#297EF2" // The colors are passed to the native part, hence cannot use cozy-ui vars here.
         enableTorch={false}
         brightness={0.3}
         saturation={1}
         contrast={1.1}
         quality={0.5}
-        onRectangleDetect={onRectangleDetect}
         detectionCountBeforeCapture={5}
         detectionRefreshRateInMS={50}
         onPermissionsDenied={() => console.log('Permissions Denied')}

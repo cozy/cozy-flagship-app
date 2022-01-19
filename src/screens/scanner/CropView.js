@@ -38,9 +38,9 @@ export const CropView = ({
           height={imageSize.height}
           width={imageSize.width}
           ref={customCrop}
-          overlayColor="rgba(18,190,210, 1)"
-          overlayStrokeColor="rgba(20,190,210, 1)"
-          handlerColor="rgba(20,150,160, 1)"
+          overlayColor="#297EF2" // The colors are passed to the native part, hence cannot use cozy-ui vars here.
+          overlayStrokeColor="#297EF2"
+          handlerColor="#297EF2"
           enablePanStrict={false}
         />
         <TouchableOpacity onPress={crop} style={styles.cropButton}>
