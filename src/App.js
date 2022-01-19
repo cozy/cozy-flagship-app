@@ -12,7 +12,7 @@ import {NativeIntentProvider} from 'cozy-intent'
 import * as RootNavigation from './libs/RootNavigation.js'
 import {HomeScreen} from './screens/home/HomeScreen'
 import {Authenticate} from './screens/Authenticate'
-import {CozyAppView} from './screens/routes/CozyAppView'
+import {CozyAppScreen} from './screens/cozy-app/CozyAppScreen'
 import {SplashScreenProvider} from './providers/SplashScreenProvider'
 import {clearClient, getClient} from './libs/client'
 import {lightTheme} from './theme'
@@ -66,7 +66,7 @@ const App = () => {
 
       <Root.Screen
         name="cozyapp"
-        component={CozyAppView}
+        component={CozyAppScreen}
         options={{headerShown: false}}
       />
     </Root.Navigator>
