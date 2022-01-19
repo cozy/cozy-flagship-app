@@ -4,7 +4,7 @@ import {CommonActions} from '@react-navigation/native'
 import Minilog from '@cozy/minilog'
 import {generateWebLink} from 'cozy-ui/transpiled/react/AppLinker'
 import {useClient} from 'cozy-client'
-import * as RootNavigation from '../libs/RootNavigation.js'
+import * as RootNavigation from '../../libs/RootNavigation.js'
 
 const log = Minilog('CozyWebView')
 
