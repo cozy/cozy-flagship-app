@@ -1,10 +1,10 @@
 import React from 'react'
 import {WebView} from 'react-native-webview'
 
-import strings from '../strings.json'
-import {useAuthenticate} from '../hooks/useAuthenticate'
+import strings from '../../strings.json'
+import {useAuthenticate} from '../../hooks/useAuthenticate'
 
-export const Authenticate = ({setClient}) => {
+export const LoginScreen = ({setClient}) => {
   const {onShouldStartLoadWithRequest} = useAuthenticate(setClient)
 
   return (

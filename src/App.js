@@ -11,7 +11,7 @@ import {NativeIntentProvider} from 'cozy-intent'
 
 import * as RootNavigation from './libs/RootNavigation.js'
 import {HomeScreen} from './screens/home/HomeScreen'
-import {Authenticate} from './screens/Authenticate'
+import {LoginScreen} from './screens/login/LoginScreen'
 import {CozyAppScreen} from './screens/cozy-app/CozyAppScreen'
 import {SplashScreenProvider} from './providers/SplashScreenProvider'
 import {clearClient, getClient} from './libs/client'
@@ -58,7 +58,7 @@ const App = () => {
             <MainStack.Screen
               name="authenticate"
               options={{headerShown: false}}>
-              {() => <Authenticate setClient={setClient} />}
+              {() => <LoginScreen setClient={setClient} />}
             </MainStack.Screen>
           </MainStack.Navigator>
         )}
