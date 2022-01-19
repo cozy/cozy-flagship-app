@@ -10,7 +10,7 @@ import {CozyProvider} from 'cozy-client'
 import {NativeIntentProvider} from 'cozy-intent'
 
 import * as RootNavigation from './libs/RootNavigation.js'
-import Connectors from './screens/connectors'
+import {HomeScreen} from './screens/home/HomeScreen'
 import {Authenticate} from './screens/Authenticate'
 import {CozyAppView} from './screens/routes/CozyAppView'
 import {SplashScreenProvider} from './providers/SplashScreenProvider'
@@ -52,7 +52,7 @@ const App = () => {
             initialRouteName={auth ? 'home' : 'authenticate'}>
             <MainStack.Screen
               name="home"
-              component={Connectors}
+              component={HomeScreen}
               options={{headerShown: false}}
             />
             <MainStack.Screen

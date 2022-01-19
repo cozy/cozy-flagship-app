@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
 import {SafeAreaView, StatusBar, StyleSheet, View, Button} from 'react-native'
-import HomeView from './HomeView'
-import LauncherView from './LauncherView'
-import DebugView from './DebugView'
+import HomeView from './components/HomeView'
+import LauncherView from '../connectors/LauncherView'
+import DebugView from '../connectors/DebugView'
 
-const Konnectors = ({route, navigation}) => {
+export const HomeScreen = ({route, navigation}) => {
   const [debug, setDebug] = useState(false)
   const [launcherContext, setLauncherContext] = useState({state: 'default'})
   return (
@@ -38,5 +38,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 })
-
-export default Konnectors
