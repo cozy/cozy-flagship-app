@@ -8,7 +8,6 @@ import CozyWebView from '../../CozyWebView'
 const HomeView = ({route, navigation, setLauncherContext}) => {
   const client = useClient()
   const [uri, setUri] = useState('')
-  const [run, setRun] = useState('')
   const [ref, setRef] = useState('')
   const nativeIntent = useNativeIntent()
 
@@ -48,25 +47,14 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
       setUri(`${uri}#/connected/${konnectorParam}`)
     }
 
-    setRun(`
-      (function() { 
-        window.cozy = {
-          isFlagshipApp: "true",
-          ClientConnectorLauncher: "react-native",
-        };
-        return true;
-      })();
-      `)
-
     if (!uri) {
       getHomeUri()
     }
-  }, [uri, client, run, route, nativeIntent, ref, navigation])
+  }, [uri, client, route, nativeIntent, ref, navigation])
 
   return uri ? (
     <CozyWebView
       source={{uri}}
-      injectedJavaScriptBeforeContentLoaded={run}
       navigation={navigation}
       setRef={setRef}
       onMessage={async m => {

@@ -51,9 +51,20 @@ const CozyWebView = ({
     })
   }, [client, uri])
 
+  const run = `
+    (function() { 
+      window.cozy = {
+        isFlagshipApp: "true",
+        ClientConnectorLauncher: "react-native",
+      };
+      return true;
+    })();
+  `
+
   return (
     <WebView
       {...rest}
+      injectedJavaScriptBeforeContentLoaded={run}
       originWhitelist={['*']}
       useWebKit={true}
       javaScriptEnabled={true}
