@@ -3,7 +3,7 @@ import {get} from 'lodash'
 import {useClient, Q, generateWebLink} from 'cozy-client'
 import {useNativeIntent} from 'cozy-intent'
 
-import CozyWebView from '../CozyWebView'
+import CozyWebView from '../../CozyWebView'
 
 const HomeView = ({route, navigation, setLauncherContext}) => {
   const client = useClient()
