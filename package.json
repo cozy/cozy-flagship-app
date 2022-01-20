@@ -10,7 +10,7 @@
     "build": "react-app-rewired build",
     "build:android:debug": "./scripts/build-debug-offline-apk.sh",
     "start": "react-native start",
-    "test": "jest connectors/connectorLibs/* src/libs/*",
+    "test": "jest",
     "token": "node scripts/token.js",
     "lint": "eslint src/ scripts/",
     "home:build": "(cd cozy-home && yarn build:mobile)",
@@ -29,7 +29,7 @@
     "base-64": "^1.0.0",
     "bluebird-retry": "^0.11.0",
     "cheerio": "^1.0.0-rc.9",
-    "cozy-client": "^27.8.0",
+    "cozy-client": "^27.12.0",
     "cozy-client-js": "^0.20.0",
     "cozy-intent": "^1.3.0",
     "cozy-ui": "^52.0.0",
@@ -75,7 +75,7 @@
     "babel-plugin-react-native-web": "0.17.1",
     "eslint": "^7.31.0",
     "file-loader": "6.2.0",
-    "jest": "^27.0.5",
+    "jest": "^27.4.7",
     "metro-react-native-babel-preset": "^0.66.2",
     "react-app-rewired": "2.1.8",
     "react-native-svg-transformer": "0.14.3",
@@ -84,12 +84,6 @@
     "webpack": "5.47.0",
     "webpack-cli": "4.7.2",
     "webpack-dev-server": "3.11.2"
-  },
-  "jest": {
-    "preset": "react-native",
-    "transformIgnorePatterns": [
-      "node_modules/(?!((jest-)?react-native(-.*)?|@react-native(-community)?)/)"
-    ]
   },
   "browserslist": {
     "production": [
