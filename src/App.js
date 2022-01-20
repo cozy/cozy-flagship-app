@@ -15,6 +15,7 @@ import {LoginScreen} from './screens/login/LoginScreen'
 import {CozyAppScreen} from './screens/cozy-app/CozyAppScreen'
 import {SplashScreenProvider} from './providers/SplashScreenProvider'
 import {clearClient, getClient} from './libs/client'
+import {openApp} from './libs/functions/openApp'
 import {lightTheme} from './theme'
 import {useSplashScreen} from './hooks/useSplashScreen'
 
@@ -89,7 +90,7 @@ const WrappedApp = () => (
           await clearClient()
           return RootNavigation.navigate('authenticate')
         },
-        openApp: href => RootNavigation.navigate('cozyapp', {href}),
+        openApp: (href, app) => openApp(RootNavigation, href, app),
       }}>
       <PaperProvider theme={lightTheme}>
         <SplashScreenProvider>
