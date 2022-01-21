@@ -3,6 +3,7 @@ import {get} from 'lodash'
 import {useClient, Q, generateWebLink} from 'cozy-client'
 import {useNativeIntent} from 'cozy-intent'
 
+import {useSession} from '../../../hooks/useSession'
 import CozyWebView from '../../../components/webviews/CozyWebView'
 
 const HomeView = ({route, navigation, setLauncherContext}) => {
@@ -10,21 +11,32 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
   const [uri, setUri] = useState('')
   const [ref, setRef] = useState('')
   const nativeIntent = useNativeIntent()
+  const session = useSession()
 
   useEffect(() => {
+    const {shouldCreateSession, handleCreateSession, consumeSessionToken} =
+      session
+
     if (ref && route.name === 'home') {
       nativeIntent.registerWebview(ref)
     }
 
     const getHomeUri = async () => {
-      setUri(
-        generateWebLink({
-          cozyUrl: client.getStackClient().uri,
-          pathname: '/',
-          slug: 'home',
-          subDomainType: await getSubDomainType(),
-        }),
-      )
+      const webLink = generateWebLink({
+        cozyUrl: client.getStackClient().uri,
+        pathname: '/',
+        slug: 'home',
+        subDomainType: await getSubDomainType(),
+      }).replace('#/', '')
+
+      if (await shouldCreateSession(webLink)) {
+        const sessionLink = await handleCreateSession(webLink)
+        await consumeSessionToken()
+
+        setUri(sessionLink)
+      } else {
+        setUri(webLink)
+      }
     }
 
     const getSubDomainType = async () => {
@@ -50,7 +62,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
     if (!uri) {
       getHomeUri()
     }
-  }, [uri, client, route, nativeIntent, ref, navigation])
+  }, [uri, client, route, nativeIntent, ref, navigation, session])
 
   return uri ? (
     <CozyWebView

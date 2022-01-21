@@ -3,5 +3,12 @@
   "home": "home",
   "fqdn": "fqdn",
   "emptyString": "",
-  "defaultHttpScheme": "https://"
+  "defaultHttpScheme": "https://",
+  "SESSION_CREATED_FLAG": "SESSION_CREATED_FLAG",
+  "SESSION_CODE": "session_code",
+  "REDIRECT": "redirect",
+  "authLogin": "/auth/login?redirect=",
+  "errorAppendParamsFail": "Could not handle url, it is neither a valid URL string nor a string",
+  "OAUTH_STORAGE_KEY": "@cozy_AmiralAppOAuthConfig",
+  "COZY_SCHEME": "cozy://"
 }
