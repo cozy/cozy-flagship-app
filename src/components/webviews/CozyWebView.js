@@ -46,26 +46,6 @@ const CozyWebView = ({
       navigate({url, request, navigation})
     }
   }, [flagshipRequest, navigation])
-
-  /**
-   * First render: no uri
-   * Second render: use uri from props
-   * We're doing this to handle the cases were uri was modified by the handleInterceptAuth() function
-   * On subsequent renders, if the uri props ever change, it will overrides the session_code uri created by handleInterceptAuth()
-   */
-  useEffect(() => {
-    setUri(rest.source.uri)
-  }, [rest.source.uri])
-
-  const storeAddUrl = useMemo(() => {
-    const {subdomain: subDomainType} = client.getInstanceOptions()
-    return generateWebLink({
-      cozyUrl: new URL(clientUri).origin,
-      slug: 'store',
-      subDomainType,
-    })
-  }, [client, clientUri])
-
   const run = `
     (function() { 
       window.cozy = {
@@ -103,12 +83,7 @@ const CozyWebView = ({
           ? onShouldStartLoadWithRequest(initialRequest)
           : initialRequest
 
-        request = interceptStoreUrls({request, storeAddUrl})
-
-        if (
-          request.url.substring(0, strings.COZY_SCHEME.length) ===
-          strings.COZY_SCHEME
-        ) {
+        if (request.url.substring(0, COZY_PREFIX.length) === COZY_PREFIX) {
           setFlagshipRequest({url: request.url, request})
           return false
         } else {
@@ -144,20 +119,4 @@ function addRedirect(url) {
   newUrl.searchParams.append('konnector_open_uri', strings.COZY_SCHEME)
   return newUrl.href
 }
-
-function isStoreUrl({url, storeAddUrl}) {
-  return url.includes(storeAddUrl.split('#').shift())
-}
-
-function interceptStoreUrls({request, storeAddUrl}) {
-  if (isStoreUrl({url: request.url, storeAddUrl})) {
-    return {
-      ...request,
-      url: `${strings.COZY_SCHEME}?app=store`,
-      originalRequest: request,
-    }
-  }
-  return request
-}
-
 export default CozyWebView
