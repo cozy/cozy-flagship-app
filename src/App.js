@@ -14,10 +14,10 @@ import {HomeScreen} from './screens/home/HomeScreen'
 import {LoginScreen} from './screens/login/LoginScreen'
 import {CozyAppScreen} from './screens/cozy-app/CozyAppScreen'
 import {SplashScreenProvider} from './providers/SplashScreenProvider'
-import {clearClient, getClient} from './libs/client'
-import {openApp} from './libs/functions/openApp'
+import {getClient} from './libs/client'
 import {lightTheme} from './theme'
 import {useSplashScreen} from './hooks/useSplashScreen'
+import {localMethods} from './libs/intents/localMethods'
 
 const Root = createStackNavigator()
 const MainStack = createStackNavigator()
@@ -84,14 +84,7 @@ const App = () => {
 
 const WrappedApp = () => (
   <NavigationContainer ref={RootNavigation.navigationRef}>
-    <NativeIntentProvider
-      localMethods={{
-        logout: async () => {
-          await clearClient()
-          return RootNavigation.navigate('authenticate')
-        },
-        openApp: (href, app) => openApp(RootNavigation, href, app),
-      }}>
+    <NativeIntentProvider localMethods={localMethods}>
       <PaperProvider theme={lightTheme}>
         <SplashScreenProvider>
           <SafeAreaView style={styles.container}>

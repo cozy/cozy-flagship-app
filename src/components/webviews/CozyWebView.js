@@ -1,16 +1,18 @@
 import React, {useState, useEffect, useMemo} from 'react'
 import {WebView} from 'react-native-webview'
 import {CommonActions} from '@react-navigation/native'
+
 import Minilog from '@cozy/minilog'
 import {generateWebLink} from 'cozy-ui/transpiled/react/AppLinker'
 import {useClient} from 'cozy-client'
+
 import * as RootNavigation from '../../libs/RootNavigation.js'
+import {useSession} from '../../hooks/useSession.js'
+import strings from '../../strings.json'
 
 const log = Minilog('CozyWebView')
 
 Minilog.enable()
-
-export const COZY_PREFIX = 'cozy://flagship'
 
 const navigationMap = {
   'app=store': ({request}) =>
@@ -33,7 +35,10 @@ const CozyWebView = ({
 }) => {
   const [flagshipRequest, setFlagshipRequest] = useState(null)
   const client = useClient()
-  const {uri} = client.getStackClient()
+  const {uri: clientUri} = client.getStackClient()
+  const {shouldInterceptAuth, handleInterceptAuth, consumeSessionToken} =
+    useSession()
+  const [uri, setUri] = useState()
 
   useEffect(() => {
     if (flagshipRequest) {
@@ -42,14 +47,18 @@ const CozyWebView = ({
     }
   }, [flagshipRequest, navigation])
 
+  useEffect(() => {
+    setUri(rest.source.uri)
+  }, [rest.source.uri])
+
   const storeAddUrl = useMemo(() => {
     const {subdomain: subDomainType} = client.getInstanceOptions()
     return generateWebLink({
-      cozyUrl: new URL(uri).origin,
+      cozyUrl: new URL(clientUri).origin,
       slug: 'store',
       subDomainType,
     })
-  }, [client, uri])
+  }, [client, clientUri])
 
   const run = `
     (function() { 
@@ -61,15 +70,27 @@ const CozyWebView = ({
     })();
   `
 
-  return (
+  return uri ? (
     <WebView
       {...rest}
+      source={{uri}}
       injectedJavaScriptBeforeContentLoaded={run}
       originWhitelist={['*']}
       useWebKit={true}
       javaScriptEnabled={true}
       ref={ref => setRef?.(ref)}
       onShouldStartLoadWithRequest={initialRequest => {
+        if (shouldInterceptAuth(initialRequest.url)) {
+          const asyncRedirect = async () => {
+            const authLink = await handleInterceptAuth(initialRequest.url)
+            await consumeSessionToken()
+            setUri(authLink)
+          }
+
+          asyncRedirect()
+          return false
+        }
+
         // we use onShouldStartLoadWithRequest since links to cozy://flagship in the webview do not
         // trigger deep linking
         let request = onShouldStartLoadWithRequest
@@ -78,7 +99,10 @@ const CozyWebView = ({
 
         request = interceptStoreUrls({request, storeAddUrl})
 
-        if (request.url.substring(0, COZY_PREFIX.length) === COZY_PREFIX) {
+        if (
+          request.url.substring(0, strings.COZY_SCHEME.length) ===
+          strings.COZY_SCHEME
+        ) {
           setFlagshipRequest({url: request.url, request})
           return false
         } else {
@@ -86,12 +110,12 @@ const CozyWebView = ({
         }
       }}
     />
-  )
+  ) : null
 }
 
 function navigate({url, request, navigation}) {
   for (const regexp in navigationMap) {
-    const match = url.match(escapeRegexp(COZY_PREFIX + '?') + regexp)
+    const match = url.match(escapeRegexp(strings.COZY_SCHEME + '?') + regexp)
     if (match) {
       log.info(`url ${url} matches ${regexp} navigation rule`)
       return navigationMap[regexp]({
@@ -111,7 +135,7 @@ function escapeRegexp(string) {
 
 function addRedirect(url) {
   const newUrl = new URL(url)
-  newUrl.searchParams.append('konnector_open_uri', COZY_PREFIX)
+  newUrl.searchParams.append('konnector_open_uri', strings.COZY_SCHEME)
   return newUrl.href
 }
 
@@ -123,7 +147,7 @@ function interceptStoreUrls({request, storeAddUrl}) {
   if (isStoreUrl({url: request.url, storeAddUrl})) {
     return {
       ...request,
-      url: `${COZY_PREFIX}?app=store`,
+      url: `${strings.COZY_SCHEME}?app=store`,
       originalRequest: request,
     }
   }
