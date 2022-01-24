@@ -47,6 +47,12 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
     if (!uri && session.subDomainType) {
       getHomeUri()
     }
+
+    return () => {
+      if (ref) {
+        nativeIntent.unregisterWebview(ref)
+      }
+    }
   }, [uri, client, route, nativeIntent, ref, navigation, session])
 
   return uri ? (
