@@ -1,4 +1,5 @@
-import {useClient} from 'cozy-client'
+import {useClient, Q} from 'cozy-client'
+import {useEffect, useState} from 'react'
 
 import {
   consumeSessionToken,
@@ -11,11 +12,26 @@ import {
 
 export const useSession = () => {
   const client = useClient()
+  const [subdomain, setSubdomain] = useState()
+
+  useEffect(() => {
+    const getSubdomain = async () => {
+      const query = await client.query(
+        Q('io.cozy.settings').getById('capabilities'),
+      )
+
+      if (query) {
+        setSubdomain(query.data.attributes.flat_subdomains ? 'flat' : 'nested')
+      }
+    }
+
+    getSubdomain()
+  }, [client, subdomain])
 
   return {
     consumeSessionToken,
     handleCreateSession: handleCreateSession(client),
-    handleInterceptAuth: handleInterceptAuth(client),
+    handleInterceptAuth: handleInterceptAuth(client, subdomain),
     resetSessionToken,
     shouldCreateSession,
     shouldInterceptAuth: shouldInterceptAuth(client),
