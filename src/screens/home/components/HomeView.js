@@ -27,7 +27,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
         pathname: '/',
         slug: 'home',
         subDomainType: await getSubDomainType(),
-      }).replace('#/', '')
+      })
 
       if (await shouldCreateSession(webLink)) {
         const sessionLink = await handleCreateSession(webLink)
