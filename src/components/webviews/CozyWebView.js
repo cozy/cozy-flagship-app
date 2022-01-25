@@ -39,7 +39,13 @@ const CozyWebView = ({
   `
 
   const runLogInterception = `
-    const consoleLog = (type, log) => window.ReactNativeWebView.postMessage(JSON.stringify({'type': 'Console', 'data': {'type': type, 'log': log}}));
+    const originalJsConsole = console;
+    const consoleLog = (type, log) => {
+      originalJsConsole[type](log);
+      window.ReactNativeWebView.postMessage(
+        JSON.stringify({'type': 'Console', 'data': {'type': type, 'log': log}})
+      );
+    };
     console = {
       log: (log) => consoleLog('log', log),
       debug: (log) => consoleLog('debug', log),
