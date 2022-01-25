@@ -1,5 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+
+import Minilog from '@cozy/minilog'
 import {generateWebLink} from 'cozy-client'
+
+const log = Minilog('SessionScript')
+Minilog.enable()
 
 import strings from '../../strings.json'
 
@@ -22,20 +27,7 @@ const appendParams = (url, key, value) => {
   return `${appendedURL}`
 }
 
-const getSessionToken = async () => {
-  try {
-    const token = await AsyncStorage.getItem(strings.SESSION_CREATED_FLAG)
-    return token
-  } catch (error) {
-    return false
-  }
-}
-
 const validateRedirect = async (client, subDomainType, uri) => {
-  if (!subDomainType) {
-    return uri
-  }
-
   const webLink = generateWebLink({
     cozyUrl: client.getStackClient().uri,
     pathname: '/',
@@ -61,9 +53,7 @@ const validateRedirect = async (client, subDomainType, uri) => {
     if (modelArray[0].split('-')[0] !== inputArray[0].split('-')[0]) {
       _throw(strings.errors.cozyClientMismatch)
     }
-  }
-
-  if (subDomainType === 'nested') {
+  } else if (subDomainType === 'nested') {
     if (modelArray[1] !== inputArray[1]) {
       _throw(strings.errors.cozyClientMismatch)
     }
@@ -72,28 +62,59 @@ const validateRedirect = async (client, subDomainType, uri) => {
   return uri
 }
 
-const fetchSessionCode = client => async () =>
-  (await client.getStackClient().fetchSessionCode()).session_code
+const fetchSessionCode = async client => {
+  const {session_code} = await client.getStackClient().fetchSessionCode()
 
-const wrapUrl = (client, subdomain) => async uri =>
-  validateRedirect(
-    client,
-    subdomain,
-    appendParams(uri, strings.SESSION_CODE, await fetchSessionCode(client)()),
-  )
+  return session_code
+}
 
-export const shouldCreateSession = async () => !(await getSessionToken())
+const wrapUrl = async (client, uri) => {
+  const sessionCode = await fetchSessionCode(client)
 
-export const handleCreateSession = client => uri => wrapUrl(client)(uri)
+  return appendParams(new URL(uri), strings.SESSION_CODE, sessionCode)
+}
 
-export const shouldInterceptAuth = client => url =>
-  url.includes(`${client.getStackClient().uri}${strings.authLogin}`)
+const shouldCreateSession = async () => {
+  try {
+    const sessionCreatedFlag = await AsyncStorage.getItem(
+      strings.SESSION_CREATED_FLAG,
+    )
 
-export const handleInterceptAuth = (client, subdomain) => url =>
-  wrapUrl(client, subdomain)(new URL(url))
+    return !sessionCreatedFlag
+  } catch (error) {
+    log.error(`Error when reading the AsyncStorage : ${error.toString()}`)
 
-export const consumeSessionToken = () =>
+    return false
+  }
+}
+
+const consumeSessionToken = () =>
   AsyncStorage.setItem(strings.SESSION_CREATED_FLAG, '1')
 
-export const resetSessionToken = () =>
+const resetSessionToken = () =>
   AsyncStorage.removeItem(strings.SESSION_CREATED_FLAG)
+
+// Higher-order functions
+const handleInterceptAuth = (client, subdomain) => async url => {
+  const wrappedUrl = await wrapUrl(client, url)
+
+  return validateRedirect(client, subdomain, wrappedUrl)
+}
+
+const handleCreateSession = client => async uri => await wrapUrl(client, uri)
+
+const shouldInterceptAuth = client => url =>
+  url.startsWith(`${client.getStackClient().uri}${strings.authLogin}`)
+
+// Function factory taking environment values as parameters
+const makeSessionAPI = (client, subDomainType) => ({
+  consumeSessionToken,
+  handleCreateSession: handleCreateSession(client),
+  handleInterceptAuth: handleInterceptAuth(client, subDomainType),
+  resetSessionToken,
+  shouldCreateSession,
+  shouldInterceptAuth: shouldInterceptAuth(client),
+})
+
+// Exposed API
+export {makeSessionAPI, resetSessionToken}

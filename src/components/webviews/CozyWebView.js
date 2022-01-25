@@ -47,6 +47,12 @@ const CozyWebView = ({
     }
   }, [flagshipRequest, navigation])
 
+  /**
+   * First render: no uri
+   * Second render: use uri from props
+   * We're doing this to handle the cases were uri was modified by the handleInterceptAuth() function
+   * On subsequent renders, if the uri props ever change, it will overrides the session_code uri created by handleInterceptAuth()
+   */
   useEffect(() => {
     setUri(rest.source.uri)
   }, [rest.source.uri])
