@@ -1,39 +1,23 @@
-import {useClient, Q} from 'cozy-client'
-import {useEffect, useState} from 'react'
+import {useClient, useQuery, Q, isQueryLoading} from 'cozy-client'
+import {useEffect, useMemo, useState} from 'react'
 
-import {
-  consumeSessionToken,
-  handleCreateSession,
-  handleInterceptAuth,
-  resetSessionToken,
-  shouldCreateSession,
-  shouldInterceptAuth,
-} from '../libs/functions/session'
+import {makeSessionAPI} from '../libs/functions/session'
 
 export const useSession = () => {
+  const [subdomainType, setSubdomainType] = useState('flat')
   const client = useClient()
-  const [subdomain, setSubdomain] = useState()
+  const {data, ...query} = useQuery(
+    Q('io.cozy.settings').getById('capabilities'),
+    {as: 'subdomainTypeQuery', singleDocData: true},
+  )
 
   useEffect(() => {
-    const getSubdomain = async () => {
-      const query = await client.query(
-        Q('io.cozy.settings').getById('capabilities'),
-      )
+    !isQueryLoading(query) &&
+      setSubdomainType(data.attributes.flat_subdomains ? 'flat' : 'nested')
+  }, [data, query])
 
-      if (query) {
-        setSubdomain(query.data.attributes.flat_subdomains ? 'flat' : 'nested')
-      }
-    }
-
-    getSubdomain()
-  }, [client, subdomain])
-
-  return {
-    consumeSessionToken,
-    handleCreateSession: handleCreateSession(client),
-    handleInterceptAuth: handleInterceptAuth(client, subdomain),
-    resetSessionToken,
-    shouldCreateSession,
-    shouldInterceptAuth: shouldInterceptAuth(client),
-  }
+  return useMemo(
+    () => makeSessionAPI(client, subdomainType),
+    [client, subdomainType],
+  )
 }
