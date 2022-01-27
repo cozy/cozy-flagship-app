@@ -12,6 +12,7 @@ const CozyWebView = ({
   navigation,
   onShouldStartLoadWithRequest,
   onMessage: parentOnMessage,
+  logId = '',
   ...rest
 }) => {
   const [ref, setRef] = useState('')
@@ -21,17 +22,17 @@ const CozyWebView = ({
 
   useEffect(() => {
     if (ref) {
-      log.info(`[Native] registerWebview`)
+      log.info(`[Native ${logId}] registerWebview`)
       nativeIntent.registerWebview(ref)
     }
 
     return () => {
       if (ref) {
-        log.info(`[Native] unregisterWebview`)
+        log.info(`[Native ${logId}] unregisterWebview`)
         nativeIntent.unregisterWebview(ref)
       }
     }
-  }, [nativeIntent, ref])
+  }, [nativeIntent, ref, logId])
 
   const runCozyGlobal = `
     window.cozy = {
@@ -90,7 +91,7 @@ const CozyWebView = ({
         }
       }}
       onMessage={async m => {
-        tryConsole(m)
+        tryConsole(m, logId)
 
         nativeIntent.tryEmit(m)
 
@@ -102,14 +103,14 @@ const CozyWebView = ({
   )
 }
 
-const tryConsole = (payload) => {
+const tryConsole = (payload, logId) => {
   try {
     const dataPayload = JSON.parse(payload.nativeEvent.data)
 
     if (dataPayload) {
       if (dataPayload.type === 'Console') {
         const {type, log: msg} = dataPayload.data
-        log[type](`[Console] ${msg}`)
+        log[type](`[Console ${logId}] ${msg}`)
       }
     }
   } catch (e) {
