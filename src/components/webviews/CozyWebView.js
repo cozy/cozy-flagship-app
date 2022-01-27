@@ -21,11 +21,13 @@ const CozyWebView = ({
 
   useEffect(() => {
     if (ref) {
+      log.info(`[Native] registerWebview`)
       nativeIntent.registerWebview(ref)
     }
 
     return () => {
       if (ref) {
+        log.info(`[Native] unregisterWebview`)
         nativeIntent.unregisterWebview(ref)
       }
     }
