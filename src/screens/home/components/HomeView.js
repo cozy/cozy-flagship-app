@@ -47,6 +47,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
     <CozyWebView
       source={{uri: targetUri}}
       navigation={navigation}
+      logId="HomeView"
       onMessage={async m => {
         const data = get(m, 'nativeEvent.data')
 
