@@ -31,12 +31,30 @@ const CozyWebView = ({
     }
   }, [nativeIntent, ref])
 
+  const runCozyGlobal = `
+    window.cozy = {
+      isFlagshipApp: "true",
+      ClientConnectorLauncher: "react-native",
+    };
+  `
+
+  const runLogInterception = `
+    const consoleLog = (type, log) => window.ReactNativeWebView.postMessage(JSON.stringify({'type': 'Console', 'data': {'type': type, 'log': log}}));
+    console = {
+      log: (log) => consoleLog('log', log),
+      debug: (log) => consoleLog('debug', log),
+      info: (log) => consoleLog('info', log),
+      warn: (log) => consoleLog('warn', log),
+      error: (log) => consoleLog('error', log),
+    };
+  `
+
   const run = `
     (function() { 
-      window.cozy = {
-        isFlagshipApp: "true",
-        ClientConnectorLauncher: "react-native",
-      };
+      ${runCozyGlobal}
+      
+      ${runLogInterception}
+
       return true;
     })();
   `
@@ -64,6 +82,8 @@ const CozyWebView = ({
         }
       }}
       onMessage={async m => {
+        tryConsole(m)
+
         nativeIntent.tryEmit(m)
 
         if (parentOnMessage) {
@@ -72,6 +92,21 @@ const CozyWebView = ({
       }}
     />
   )
+}
+
+const tryConsole = (payload) => {
+  try {
+    const dataPayload = JSON.parse(payload.nativeEvent.data)
+
+    if (dataPayload) {
+      if (dataPayload.type === 'Console') {
+        const {type, log: msg} = dataPayload.data
+        log[type](`[Console] ${msg}`)
+      }
+    }
+  } catch (e) {
+    log.error(e)
+  }
 }
 
 export default CozyWebView
