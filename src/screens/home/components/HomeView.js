@@ -26,7 +26,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
         cozyUrl: client.getStackClient().uri,
         pathname: '/',
         slug: 'home',
-        subDomainType: await getSubDomainType(),
+        subDomainType: session.subDomainType,
       })
 
       if (await shouldCreateSession(webLink)) {
@@ -39,27 +39,12 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
       }
     }
 
-    const getSubDomainType = async () => {
-      try {
-        const {
-          data: {
-            attributes: {flat_subdomains},
-          },
-        } = await client.query(Q('io.cozy.settings').getById('capabilities'))
-
-        return flat_subdomains ? 'flat' : 'nested'
-      } catch (error) {
-        // Defaulting to flat if for whatever reason the subDomainType could not be fetched
-        return 'flat'
-      }
-    }
-
     const konnectorParam = get(route, 'params.konnector')
     if (konnectorParam) {
       setUri(`${uri}#/connected/${konnectorParam}`)
     }
 
-    if (!uri) {
+    if (!uri && session.subDomainType) {
       getHomeUri()
     }
   }, [uri, client, route, nativeIntent, ref, navigation, session])
