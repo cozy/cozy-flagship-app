@@ -8,7 +8,7 @@ export const useSession = () => {
   const client = useClient()
   const {data, ...query} = useQuery(
     Q('io.cozy.settings').getById('capabilities'),
-    {as: 'subdomainTypeQuery', singleDocData: true},
+    {as: 'io.cozy.settings/capabilities', singleDocData: true},
   )
 
   useEffect(() => {
