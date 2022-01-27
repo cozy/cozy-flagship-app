@@ -114,6 +114,7 @@ const makeSessionAPI = (client, subDomainType) => ({
   resetSessionToken,
   shouldCreateSession,
   shouldInterceptAuth: shouldInterceptAuth(client),
+  subDomainType,
 })
 
 // Exposed API
