@@ -13,6 +13,7 @@ const CozyWebView = ({
   onShouldStartLoadWithRequest,
   onMessage: parentOnMessage,
   logId = '',
+  source,
   ...rest
 }) => {
   const [ref, setRef] = useState('')
@@ -68,9 +69,12 @@ const CozyWebView = ({
     })();
   `
 
+  interceptHashAndNavigate(source.uri, ref, logId)
+
   return (
     <WebView
       {...rest}
+      source={source}
       injectedJavaScriptBeforeContentLoaded={run}
       originWhitelist={['*']}
       useWebKit={true}
@@ -101,6 +105,20 @@ const CozyWebView = ({
       }}
     />
   )
+}
+
+const interceptHashAndNavigate = (uri, webviewRef, logId) => {
+  const url = new URL(uri)
+
+  if (url.hash && webviewRef) {
+    log.info(`[Native ${logId}] Redirect webview to ${url.hash}`)
+    webviewRef.injectJavaScript(`
+      (function() {
+        window.location.hash = '${url.hash}';
+        true;
+      })();
+    `)
+  }
 }
 
 const tryConsole = (payload, logId) => {
