@@ -4,6 +4,10 @@ import Minilog from '@cozy/minilog'
 import {useNativeIntent} from 'cozy-intent'
 import {useSession} from '../../hooks/useSession.js'
 
+import {jsCozyGlobal} from './jsInteractions/jsCozyInjection'
+import {jsLogInterception, tryConsole} from './jsInteractions/jsLogInterception'
+import {interceptHashAndNavigate} from './jsInteractions/jsNavigation'
+
 const log = Minilog('CozyWebView')
 
 Minilog.enable()
@@ -35,41 +39,17 @@ const CozyWebView = ({
     }
   }, [nativeIntent, ref, logId])
 
-  const runCozyGlobal = `
-    window.cozy = {
-      isFlagshipApp: "true",
-      ClientConnectorLauncher: "react-native",
-    };
-  `
-
-  const runLogInterception = `
-    const originalJsConsole = console;
-    const consoleLog = (type, log) => {
-      originalJsConsole[type](log);
-      window.ReactNativeWebView.postMessage(
-        JSON.stringify({'type': 'Console', 'data': {'type': type, 'log': log}})
-      );
-    };
-    console = {
-      log: (log) => consoleLog('log', log),
-      debug: (log) => consoleLog('debug', log),
-      info: (log) => consoleLog('info', log),
-      warn: (log) => consoleLog('warn', log),
-      error: (log) => consoleLog('error', log),
-    };
-  `
-
   const run = `
     (function() { 
-      ${runCozyGlobal}
+      ${jsCozyGlobal}
       
-      ${runLogInterception}
+      ${jsLogInterception}
 
       return true;
     })();
   `
 
-  interceptHashAndNavigate(source.uri, ref, logId)
+  interceptHashAndNavigate(source.uri, ref, log, logId)
 
   return (
     <WebView
@@ -95,7 +75,7 @@ const CozyWebView = ({
         }
       }}
       onMessage={async m => {
-        tryConsole(m, logId)
+        tryConsole(m, log, logId)
 
         nativeIntent.tryEmit(m)
 
@@ -105,35 +85,6 @@ const CozyWebView = ({
       }}
     />
   )
-}
-
-const interceptHashAndNavigate = (uri, webviewRef, logId) => {
-  const url = new URL(uri)
-
-  if (url.hash && webviewRef) {
-    log.info(`[Native ${logId}] Redirect webview to ${url.hash}`)
-    webviewRef.injectJavaScript(`
-      (function() {
-        window.location.hash = '${url.hash}';
-        true;
-      })();
-    `)
-  }
-}
-
-const tryConsole = (payload, logId) => {
-  try {
-    const dataPayload = JSON.parse(payload.nativeEvent.data)
-
-    if (dataPayload) {
-      if (dataPayload.type === 'Console') {
-        const {type, log: msg} = dataPayload.data
-        log[type](`[Console ${logId}] ${msg}`)
-      }
-    }
-  } catch (e) {
-    log.error(e)
-  }
 }
 
 export default CozyWebView
