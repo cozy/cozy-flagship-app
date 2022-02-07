@@ -91,6 +91,22 @@ const openAppNative = async appNativeData => {
 }
 
 /**
+ * Open the connector pane in the Home view
+ * @param {any} navigation - The React navigation context
+ * @param {AppManifest} connector - The connector information
+ */
+const openConnectorInHome = (navigation, connector) => {
+  const {slug} = connector
+
+  navigation.navigate({
+    name: 'home',
+    params: {
+      konnector: slug,
+    },
+  })
+}
+
+/**
  * Open the native mobile app if the app has a mobile version
  * Otherwise open the app on a webview using href
  * @param {any} navigation - The React navigation context
@@ -99,6 +115,11 @@ const openAppNative = async appNativeData => {
  * @returns {Promise}
  */
 export const openApp = (navigation, href, app) => {
+  if (app?.type === 'konnector') {
+    openConnectorInHome(navigation, app)
+    return
+  }
+
   if (app?.mobile) {
     return openAppNative(app.mobile)
   }
