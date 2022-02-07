@@ -39,11 +39,6 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
       }
     }
 
-    const konnectorParam = get(route, 'params.konnector')
-    if (konnectorParam) {
-      setUri(`${uri}#/connected/${konnectorParam}`)
-    }
-
     if (!uri && session.subDomainType) {
       getHomeUri()
     }
@@ -55,9 +50,13 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
     }
   }, [uri, client, route, nativeIntent, ref, navigation, session])
 
-  return uri ? (
+  const konnectorParam = get(route, 'params.konnector')
+  const targetUri =
+    uri && konnectorParam ? `${uri}connected/${konnectorParam}` : uri
+
+  return targetUri ? (
     <CozyWebView
-      source={{uri}}
+      source={{uri: targetUri}}
       navigation={navigation}
       setRef={setRef}
       onMessage={async m => {
