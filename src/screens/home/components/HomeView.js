@@ -9,17 +9,12 @@ import CozyWebView from '../../../components/webviews/CozyWebView'
 const HomeView = ({route, navigation, setLauncherContext}) => {
   const client = useClient()
   const [uri, setUri] = useState('')
-  const [ref, setRef] = useState('')
   const nativeIntent = useNativeIntent()
   const session = useSession()
 
   useEffect(() => {
     const {shouldCreateSession, handleCreateSession, consumeSessionToken} =
       session
-
-    if (ref && route.name === 'home') {
-      nativeIntent.registerWebview(ref)
-    }
 
     const getHomeUri = async () => {
       const webLink = generateWebLink({
@@ -42,13 +37,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
     if (!uri && session.subDomainType) {
       getHomeUri()
     }
-
-    return () => {
-      if (ref) {
-        nativeIntent.unregisterWebview(ref)
-      }
-    }
-  }, [uri, client, route, nativeIntent, ref, navigation, session])
+  }, [uri, client, route, nativeIntent, navigation, session])
 
   const konnectorParam = get(route, 'params.konnector')
   const targetUri =
@@ -58,10 +47,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
     <CozyWebView
       source={{uri: targetUri}}
       navigation={navigation}
-      setRef={setRef}
       onMessage={async m => {
-        nativeIntent.tryEmit(m)
-
         const data = get(m, 'nativeEvent.data')
 
         if (data) {
