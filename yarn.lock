@@ -6625,13 +6625,6 @@ cozy-device-helper@^1.12.0:
   dependencies:
     lodash "^4.17.19"
 
-cozy-device-helper@^1.16.1:
-  version "1.16.1"
-  resolved "https://registry.yarnpkg.com/cozy-device-helper/-/cozy-device-helper-1.16.1.tgz#559b6c3f104541b53603590ccd6fc89296878f26"
-  integrity sha512-20IZGl7O1+J9qft+zMElL5nrSakAgqOx00IDsbbnJSFDLYtbA6wW6tIKOahYB+YLsDXEwiw6bzccqjiBXU0JAQ==
-  dependencies:
-    lodash "^4.17.19"
-
 cozy-flags@2.7.1:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/cozy-flags/-/cozy-flags-2.7.1.tgz#f37251fee248ef9bef079a22bc52954f1a892dfc"
@@ -6639,12 +6632,11 @@ cozy-flags@2.7.1:
   dependencies:
     microee "^0.0.6"
 
-cozy-intent@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-1.6.0.tgz#0fb0bd941219abc905121db8016a72f4f05aa258"
-  integrity sha512-HccShcWnG2jpoCnfbviUtImqLAkYHS9nB+rXyJ1rC+vkeQkY4Wo24EG98A8QIz0oXWCxOcYefbsR1l+7ogapOQ==
+cozy-intent@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-1.7.1.tgz#6ec12e2a29147f9e5c1c0bdaeef6ab882f97c13f"
+  integrity sha512-chSNdMaDKlAZUTtNqPt6T/m52n/d8irsiic8VuoAFJcBwGAJQ5WSxYM6jCZiuyGm3MXjSndeiNdSG9OQjr2nwA==
   dependencies:
-    cozy-device-helper "^1.16.1"
     post-me "0.4.5"
 
 cozy-interapp@^0.5.4:
