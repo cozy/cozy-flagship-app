@@ -14,7 +14,12 @@ const logout = () => {
   asyncCore()
 }
 
+const backToHome = () => {
+  RootNavigation.navigate('home')
+}
+
 export const localMethods = {
+  backToHome,
   logout,
   openApp: (href, app) => openApp(RootNavigation, href, app),
 }
