@@ -21,9 +21,20 @@ const CozyWebView = ({
   ...rest
 }) => {
   const [ref, setRef] = useState('')
+  const [uri, setUri] = useState()
   const nativeIntent = useNativeIntent()
   const {shouldInterceptAuth, handleInterceptAuth, consumeSessionToken} =
     useSession()
+
+  /**
+   * First render: no uri
+   * Second render: use uri from props
+   * We're doing this to handle the cases were uri was modified by the handleInterceptAuth() function
+   * On subsequent renders, if the uri props ever change, it will overrides the session_code uri created by handleInterceptAuth()
+   */
+  useEffect(() => {
+    setUri(source.uri)
+  }, [source.uri])
 
   useEffect(() => {
     if (ref) {
@@ -51,10 +62,10 @@ const CozyWebView = ({
 
   interceptHashAndNavigate(source.uri, ref, log, logId)
 
-  return (
+  return uri ? (
     <WebView
       {...rest}
-      source={source}
+      source={{uri}}
       injectedJavaScriptBeforeContentLoaded={run}
       originWhitelist={['*']}
       useWebKit={true}
@@ -84,7 +95,7 @@ const CozyWebView = ({
         }
       }}
     />
-  )
+  ) : null
 }
 
 export default CozyWebView
