@@ -16,3 +16,9 @@ test('logout should handle AsyncStorage and Navigation', async () => {
   expect(await AsyncStorage.getItem(strings.SESSION_CREATED_FLAG)).toBeFalsy()
   expect(RootNavigation.navigate).toHaveBeenCalledWith('authenticate')
 })
+
+test('backToHome should handle Navigation', async () => {
+  localMethods.backToHome()
+
+  expect(RootNavigation.navigate).toHaveBeenCalledWith('home')
+})
