@@ -64,22 +64,7 @@ export const callInitClient = async uri => {
   // Your IDE might tell you the following 'await' has no effect, this seems to be a mistake
   const client = await initClient(uri, {
     scope: [
-      'io.cozy.apps',
-      'io.cozy.settings',
-      'io.cozy.konnectors',
-      'io.cozy.jobs',
-      'io.cozy.contacts',
-      'io.cozy.triggers',
-      'io.cozy.permissions',
-      'io.cozy.apps.suggestions',
-      'com.bitwarden.organizations',
-      'com.bitwarden.ciphers',
-      'io.cozy.bank.accounts',
-      'io.cozy.timeseries.geojson',
-      'io.cozy.files.*',
-      'io.cozy.bills',
-      'io.cozy.accounts',
-      'io.cozy.identities',
+      '*',
     ],
     oauth: {
       redirectURI: strings.COZY_SCHEME,
