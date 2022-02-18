@@ -3,9 +3,10 @@ import {WebView} from 'react-native-webview'
 import {StyleSheet, View, Text} from 'react-native'
 // TODO find a proper way to load a connector only when needed
 // import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
-// import templateConnector from '../../../connectors/template/dist/webviewScript'
+import templateConnector from '../../../connectors/template/dist/webviewScript'
 // import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
-// import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
+import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
+import edfConnector from '../../../connectors/edf/dist/webviewScript'
 import ReactNativeLauncher from '../../libs/ReactNativeLauncher'
 import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
@@ -13,10 +14,11 @@ import {withClient} from 'cozy-client'
 import {get} from 'lodash'
 
 const embeddedConnectors = {
+  edf: edfConnector,
   // amazon: amazonConnector,
-  // template: templateConnector,
+  template: templateConnector,
   // sncf: sncfConnector,
-  // blablacar: blablacarConnector,
+  blablacar: blablacarConnector,
 }
 class LauncherView extends Component {
   constructor(props) {
@@ -73,14 +75,14 @@ class LauncherView extends Component {
     })
     const initConnectorError = await this.initConnector()
 
-    this.launcher.on('SET_WORKER_STATE', (options) => {
+    this.launcher.on('SET_WORKER_STATE', options => {
       if (this.state.worker.url !== options.url) {
         this.onWorkerWillReload(options)
       }
       this.setState({worker: options})
     })
 
-    this.launcher.on('SET_USER_AGENT', (userAgent) => {
+    this.launcher.on('SET_USER_AGENT', userAgent => {
       this.setState({userAgent})
     })
 
@@ -114,7 +116,7 @@ class LauncherView extends Component {
           <>
             <View>
               <WebView
-                ref={(ref) => (this.pilotWebView = ref)}
+                ref={ref => (this.pilotWebView = ref)}
                 originWhitelist={['*']}
                 source={{
                   uri: get(this, 'state.connector.manifest.vendor_link'),
@@ -134,7 +136,7 @@ class LauncherView extends Component {
             <View style={workerStyle}>
               <WebView
                 style={workerStyle}
-                ref={(ref) => (this.workerWebview = ref)}
+                ref={ref => (this.workerWebview = ref)}
                 originWhitelist={['*']}
                 useWebKit={true}
                 javaScriptEnabled={true}
