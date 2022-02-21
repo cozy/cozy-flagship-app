@@ -44,6 +44,11 @@ export const getClient = async () => {
     oauth: {token},
     oauthOptions,
   })
+  client.getStackClient().setOAuthOptions(oauthOptions)
+  await client.login({
+    uri,
+    token
+  })
   return client
 }
 
