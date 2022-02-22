@@ -6,7 +6,6 @@ import {useSession} from '../../hooks/useSession.js'
 
 import {jsCozyGlobal} from './jsInteractions/jsCozyInjection'
 import {jsLogInterception, tryConsole} from './jsInteractions/jsLogInterception'
-import {interceptHashAndNavigate} from './jsInteractions/jsNavigation'
 
 const log = Minilog('CozyWebView')
 
@@ -18,6 +17,7 @@ const CozyWebView = ({
   onMessage: parentOnMessage,
   logId = '',
   source,
+  trackWebviewInnerUri,
   ...rest
 }) => {
   const [ref, setRef] = useState('')
@@ -60,8 +60,6 @@ const CozyWebView = ({
     })();
   `
 
-  interceptHashAndNavigate(source.uri, ref, log, logId)
-
   return uri ? (
     <WebView
       {...rest}
@@ -83,6 +81,11 @@ const CozyWebView = ({
           return false
         } else {
           return true
+        }
+      }}
+      onLoad={({nativeEvent}) => {
+        if (trackWebviewInnerUri) {
+          trackWebviewInnerUri(nativeEvent.url)
         }
       }}
       onMessage={async m => {

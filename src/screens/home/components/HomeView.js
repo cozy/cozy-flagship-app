@@ -5,12 +5,44 @@ import {useNativeIntent} from 'cozy-intent'
 
 import {useSession} from '../../../hooks/useSession'
 import CozyWebView from '../../../components/webviews/CozyWebView'
+import {consumeRouteParameter} from '../../../libs/functions/routeHelpers'
 
 const HomeView = ({route, navigation, setLauncherContext}) => {
   const client = useClient()
   const [uri, setUri] = useState('')
+  const [trackedWebviewInnerUri, setTrackedWebviewInnerUri] = useState('')
   const nativeIntent = useNativeIntent()
   const session = useSession()
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      setUri(trackedWebviewInnerUri)
+    })
+
+    return unsubscribe
+  }, [navigation, uri, trackedWebviewInnerUri])
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (uri) {
+        const konnectorParam = consumeRouteParameter(
+          'konnector',
+          route,
+          navigation,
+        )
+
+        if (konnectorParam) {
+          const url = new URL(uri)
+          url.hash = `/connected/${konnectorParam}`
+
+          const targetUri = url.toString()
+          setUri(targetUri)
+        }
+      }
+    })
+
+    return unsubscribe
+  }, [navigation, route, uri])
 
   useEffect(() => {
     const {shouldCreateSession, handleCreateSession, consumeSessionToken} =
@@ -39,13 +71,16 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
     }
   }, [uri, client, route, nativeIntent, navigation, session])
 
-  const konnectorParam = get(route, 'params.konnector')
-  const targetUri =
-    uri && konnectorParam ? `${uri}connected/${konnectorParam}` : uri
+  const handleTrackWebviewInnerUri = webviewInneruri => {
+    if (webviewInneruri !== trackedWebviewInnerUri) {
+      setTrackedWebviewInnerUri(webviewInneruri)
+    }
+  }
 
-  return targetUri ? (
+  return uri ? (
     <CozyWebView
-      source={{uri: targetUri}}
+      source={{uri: uri}}
+      trackWebviewInnerUri={handleTrackWebviewInnerUri}
       navigation={navigation}
       logId="HomeView"
       onMessage={async m => {
