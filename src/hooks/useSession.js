@@ -13,7 +13,11 @@ export const useSession = () => {
 
   useEffect(() => {
     !isQueryLoading(query) &&
-      setSubdomainType(data && data.attributes && data.attributes.flat_subdomains ? 'flat' : 'nested')
+      setSubdomainType(
+        data && data.attributes && data.attributes.flat_subdomains
+          ? 'flat'
+          : 'nested',
+      )
   }, [data, query])
 
   return useMemo(

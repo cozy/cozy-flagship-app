@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import {SafeAreaView, StyleSheet} from 'react-native'
 import {NavigationContainer} from '@react-navigation/native'
 import {createStackNavigator} from '@react-navigation/stack'
@@ -14,13 +14,13 @@ import {HomeScreen} from './screens/home/HomeScreen'
 import {LoginScreen} from './screens/login/LoginScreen'
 import {CozyAppScreen} from './screens/cozy-app/CozyAppScreen'
 import {SplashScreenProvider} from './providers/SplashScreenProvider'
-import {getClient} from './libs/client'
 import {lightTheme} from './theme'
-import {useSplashScreen} from './hooks/useSplashScreen'
 import {localMethods} from './libs/intents/localMethods'
+import {useAppBootstrap} from './hooks/useAppBootstrap.js'
+import {routes} from './constants/routes.js'
 
 const Root = createStackNavigator()
-const MainStack = createStackNavigator()
+const Stack = createStackNavigator()
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -32,53 +32,50 @@ if (!global.atob) {
 }
 
 const App = () => {
-  const [client, setClient] = useState(null)
-  const {hideSplashScreen} = useSplashScreen()
+  const {client, setClient, initialScreen, initialRoute, isLoading} =
+    useAppBootstrap()
 
-  useEffect(() => {
-    getClient().then(clientResult => {
-      if (clientResult) {
-        setClient(clientResult)
-      }
+  if (isLoading) {
+    return null
+  }
 
-      hideSplashScreen()
-    })
-  }, [hideSplashScreen])
+  const StackNavigator = () => (
+    <Stack.Navigator
+      initialRouteName={client ? routes.home : initialScreen.stack}
+      screenOptions={{headerShown: false}}>
+      <Stack.Screen
+        name={routes.home}
+        component={HomeScreen}
+        {...(initialRoute.stack ? {initialParams: initialRoute.stack} : {})}
+      />
 
-  const Routing = ({auth}) => (
-    <Root.Navigator initialRouteName="main" mode="modal">
-      <Root.Screen options={{headerShown: false}} name="main">
-        {() => (
-          <MainStack.Navigator
-            initialRouteName={auth ? 'home' : 'authenticate'}>
-            <MainStack.Screen
-              name="home"
-              component={HomeScreen}
-              options={{headerShown: false}}
-            />
-            <MainStack.Screen
-              name="authenticate"
-              options={{headerShown: false}}>
-              {() => <LoginScreen setClient={setClient} />}
-            </MainStack.Screen>
-          </MainStack.Navigator>
-        )}
-      </Root.Screen>
+      <Stack.Screen name={routes.authenticate}>
+        {() => <LoginScreen setClient={setClient} />}
+      </Stack.Screen>
+    </Stack.Navigator>
+  )
+
+  const RootNavigator = () => (
+    <Root.Navigator
+      initialRouteName={initialScreen.root}
+      mode="modal"
+      screenOptions={{headerShown: false}}>
+      <Root.Screen name={routes.stack} component={StackNavigator} />
 
       <Root.Screen
-        name="cozyapp"
+        name={routes.cozyapp}
         component={CozyAppScreen}
-        options={{headerShown: false}}
+        {...(initialRoute.root ? {initialParams: initialRoute.root} : {})}
       />
     </Root.Navigator>
   )
 
   return client ? (
     <CozyProvider client={client}>
-      <Routing auth={true} />
+      <RootNavigator />
     </CozyProvider>
   ) : (
-    <Routing auth={false} />
+    <RootNavigator />
   )
 }
 

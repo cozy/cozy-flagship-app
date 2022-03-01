@@ -45,6 +45,12 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
   }, [navigation, route, uri])
 
   useEffect(() => {
+    const deepLink = consumeRouteParameter('href', route, navigation)
+
+    if (deepLink) {
+      return setUri(deepLink)
+    }
+
     const {shouldCreateSession, handleCreateSession, consumeSessionToken} =
       session
 

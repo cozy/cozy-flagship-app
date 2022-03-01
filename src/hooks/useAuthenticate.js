@@ -4,10 +4,10 @@ import strings from '../strings.json'
 import {callInitClient} from '../libs/client'
 import {getUriFromRequest} from '../libs/functions/getUriFromRequest'
 
-export const useAuthenticate = (setClient) => {
+export const useAuthenticate = setClient => {
   const [uri, setUri] = useState(strings.emptyString)
 
-  const onShouldStartLoadWithRequest = (request) => {
+  const onShouldStartLoadWithRequest = request => {
     // If fqdn is inside the URL, let's use it
     const fqdn = getUriFromRequest(request)
 
