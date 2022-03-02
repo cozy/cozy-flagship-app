@@ -2,13 +2,14 @@ import {ParentHandshake} from 'post-me'
 import {Bridge} from './bridgeInterfaces'
 import ReactNativeLauncherMessenger from './ReactNativeLauncherMessenger'
 
-const DEBUG_BRIDGE = false
+const DEBUG_BRIDGE = true
 
 /**
  * Bridge to the contentScript object via post-me
  */
 export default class ContentScriptBridge extends Bridge {
   constructor({label}) {
+    super()
     this.label = label
   }
 
