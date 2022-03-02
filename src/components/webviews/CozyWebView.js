@@ -6,6 +6,7 @@ import {useSession} from '../../hooks/useSession.js'
 
 import {jsCozyGlobal} from './jsInteractions/jsCozyInjection'
 import {jsLogInterception, tryConsole} from './jsInteractions/jsLogInterception'
+import {jsCSSclassInjection} from './jsInteractions/jsCSSclassInjection'
 
 const log = Minilog('CozyWebView')
 
@@ -18,6 +19,7 @@ const CozyWebView = ({
   logId = '',
   source,
   trackWebviewInnerUri,
+  route,
   ...rest
 }) => {
   const [ref, setRef] = useState('')
@@ -55,6 +57,8 @@ const CozyWebView = ({
       ${jsCozyGlobal}
       
       ${jsLogInterception}
+
+      ${jsCSSclassInjection(route.name)}
 
       return true;
     })();

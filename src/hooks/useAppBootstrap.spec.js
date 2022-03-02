@@ -1,5 +1,6 @@
 import {Linking} from 'react-native'
 import {act, renderHook} from '@testing-library/react-hooks'
+import {changeBarColors} from 'react-native-immersive-bars'
 
 import {getClient} from '../libs/client'
 import {navigate} from '../libs/RootNavigation'
@@ -26,6 +27,10 @@ jest.mock('../libs/client', () => ({
   getClient: jest.fn().mockResolvedValue(undefined),
 }))
 
+jest.mock('react-native-immersive-bars', () => ({
+  changeBarColors: jest.fn(),
+}))
+
 jest.mock('react-native', () => {
   const listeners = []
 
@@ -46,6 +51,7 @@ jest.mock('react-native', () => {
 
 afterEach(() => {
   expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
+  expect(changeBarColors).toHaveBeenCalled()
   Linking.getInitialURL.mockRestore()
   mockHideSplashScreen.mockClear()
   navigate.mockClear()
