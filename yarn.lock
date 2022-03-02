@@ -14226,6 +14226,11 @@ react-native-gesture-handler@1.10.3:
     jwt-decode "^2.2.0"
     react-native-securerandom "^0.1.1"
 
+react-native-immersive-bars@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-immersive-bars/-/react-native-immersive-bars-1.0.4.tgz#621e8a0d12aebb8471fc64aa0dc777af9f60557c"
+  integrity sha512-zGmaqzXZIsa7hvQKJ+2e6NU5HdypJXA5tqplEyA59pjqnR94sCfa0lBE921Q+dTLdDnuNNCbhdWiOuanJrPkzg==
+
 react-native-inappbrowser-reborn@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/react-native-inappbrowser-reborn/-/react-native-inappbrowser-reborn-3.5.1.tgz#a17e6548ac7864f074f5df6171781601d179d638"
