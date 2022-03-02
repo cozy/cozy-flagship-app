@@ -1,16 +1,16 @@
 import React, {useState} from 'react'
-import {SafeAreaView, StatusBar, StyleSheet, View, Button} from 'react-native'
+import {SafeAreaView, StyleSheet, View} from 'react-native'
+
 import HomeView from './components/HomeView'
 import LauncherView from '../connectors/LauncherView'
 import DebugView from '../connectors/DebugView'
 
 export const HomeScreen = ({route, navigation}) => {
-  const [debug, setDebug] = useState(false)
+  const [debug] = useState(false)
   const [launcherContext, setLauncherContext] = useState({state: 'default'})
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeAreaView}>
-        <StatusBar barStyle="dark-content" />
         <HomeView
           setLauncherContext={setLauncherContext}
           navigation={navigation}

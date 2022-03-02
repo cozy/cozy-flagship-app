@@ -26,6 +26,10 @@ jest.mock('../libs/client', () => ({
   getClient: jest.fn().mockResolvedValue(undefined),
 }))
 
+jest.mock('react-native-immersive-bars', () => ({
+  changeBarColors: jest.fn(),
+}))
+
 jest.mock('react-native', () => {
   const listeners = []
 

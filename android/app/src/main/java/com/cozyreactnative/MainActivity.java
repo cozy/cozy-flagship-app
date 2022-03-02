@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.facebook.react.ReactActivity;
 import com.zoontek.rnbootsplash.RNBootSplash;
+import com.rnimmersivebars.ImmersiveBars;
 
 public class MainActivity extends ReactActivity {
 
@@ -18,6 +19,8 @@ public class MainActivity extends ReactActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    boolean isDarkMode = false;
+    ImmersiveBars.changeBarColors(this, isDarkMode);
     super.onCreate(savedInstanceState);
     RNBootSplash.init(R.drawable.bootsplash, MainActivity.this);
   }
