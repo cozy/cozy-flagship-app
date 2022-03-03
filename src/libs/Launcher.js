@@ -4,6 +4,7 @@ import get from 'lodash/get'
 import set from 'lodash/set'
 
 import {saveFiles, saveBills, saveIdentity} from './connectorLibs'
+import {saveCredentials, getCredentials} from './credentials'
 import {dataURItoArrayBuffer} from './utils'
 
 const log = Minilog('Launcher')
@@ -84,6 +85,25 @@ export default class Launcher {
         ...{state, error},
       },
     })
+  }
+
+  /**
+   * Get saved credentials for the current context
+   *
+   * @param {Object} : any object containing credentials. Ex: {login: 'login', password: 'password'}
+   * @returns {Promise<Object>}
+   */
+  async saveCredentials(credentials) {
+    return saveCredentials(credentials, this.getStartContext())
+  }
+
+  /**
+   * Get saved credentials for the current context
+   *
+   * @returns {Promise<Object>}
+   */
+  async getCredentials() {
+    return getCredentials(this.getStartContext())
   }
 
   /**

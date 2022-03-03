@@ -31,6 +31,8 @@ class ReactNativeLauncher extends Launcher {
           'saveBills',
           'saveIdentity',
           'setUserAgent',
+          'getCredentials',
+          'saveCredentials',
         ],
         listenedEventsNames: ['log'],
       }),
