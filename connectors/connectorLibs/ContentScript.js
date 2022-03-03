@@ -32,6 +32,7 @@ export default class ContentScript {
       'getUserDataFromWebsite',
       'fetch',
       'click',
+      'storeFromWorker',
     ]
 
     if (options.additionalExposedMethodsNames) {
@@ -72,7 +73,7 @@ export default class ContentScript {
    * @throws {Exception}: TimeoutError from p-wait-for package if timeout expired
    */
   async waitForAuthenticated() {
-    await waitFor(this.checkAuthenticated, {
+    await waitFor(this.checkAuthenticated.bind(this), {
       interval: 1000,
       timeout: DEFAULT_LOGIN_TIMEOUT,
     })
@@ -225,7 +226,7 @@ export default class ContentScript {
         options.fileIdAttributes,
       )
       return files.filter(
-        (file) =>
+        file =>
           contextFilesIndex[
             this.calculateFileKey(file, options.fileIdAttributes)
           ] === undefined,
@@ -261,7 +262,7 @@ export default class ContentScript {
   calculateFileKey(file, fileIdAttributes) {
     return fileIdAttributes
       .sort()
-      .map((key) => get(file, key))
+      .map(key => get(file, key))
       .join('####')
   }
 
@@ -312,6 +313,28 @@ export default class ContentScript {
    * @returns {Object}
    */
   async getUserDataFromWebsite() {}
+
+  /**
+   * Send data to store from the worker to the pilot
+   *
+   * @param {Object} : any object with data to store
+   */
+  async sendToPilot(obj) {
+    return this.bridge.call('sendToPilot', obj)
+  }
+
+  /**
+   * Store data sent from worker with sendToPilot method
+   *
+   * @param {Object} : any object with data to store
+   */
+  async storeFromWorker(obj) {
+    if (!this.store) {
+      this.store = {}
+    }
+
+    Object.assign(this.store, obj)
+  }
 
   /**
    * Main function, fetches all connector data and save it to the cozy
