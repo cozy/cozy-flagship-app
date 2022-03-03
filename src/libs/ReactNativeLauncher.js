@@ -54,6 +54,18 @@ class ReactNativeLauncher extends Launcher {
     return {content, manifest}
   }
 
+  async stop({message} = {}) {
+    if (message) {
+      await this.updateJobResult({
+        state: 'errored',
+        error: message,
+      })
+    } else {
+      await this.updateJobResult()
+    }
+    this.close()
+  }
+
   async start({initConnectorError} = {}) {
     try {
       if (initConnectorError) {
@@ -75,13 +87,10 @@ class ReactNativeLauncher extends Launcher {
       //   slug: manifest.slug,
       // })
       await this.pilot.call('fetch', pilotContext)
-      await this.updateJobResult()
+      await this.stop()
     } catch (err) {
       log.error(err, 'start error')
-      await this.updateJobResult({
-        state: 'errored',
-        error: err.message,
-      })
+      await this.stop({message: err.message})
     }
     this.emit('CONNECTOR_EXECUTION_END')
   }
