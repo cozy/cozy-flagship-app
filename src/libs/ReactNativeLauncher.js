@@ -15,6 +15,7 @@ Minilog.enable()
 class ReactNativeLauncher extends Launcher {
   constructor() {
     super()
+    this.workerMethodNames = ['sendToPilot']
     this.workerListenedEventsNames = ['log', 'workerEvent']
   }
 
@@ -39,7 +40,7 @@ class ReactNativeLauncher extends Launcher {
       this.initWorkerContentScriptBridge({
         webViewRef: bridgeOptions.workerWebview,
         contentScript,
-        exposedMethodsNames: [],
+        exposedMethodsNames: this.workerMethodNames,
         listenedEventsNames: this.workerListenedEventsNames,
       }),
     ]
@@ -156,6 +157,10 @@ class ReactNativeLauncher extends Launcher {
     }
   }
 
+  async sendToPilot(obj) {
+    await this.pilot.call('storeFromWorker', obj)
+  }
+
   /**
    * Reestablish the connection between launcher and the worker after a web page reload
    */
@@ -164,6 +169,7 @@ class ReactNativeLauncher extends Launcher {
 
     try {
       await this.worker.init({
+        exposedMethodsNames: this.workerMethodNames,
         listenedEventsNames: this.workerListenedEventsNames,
         label: 'worker',
       })
