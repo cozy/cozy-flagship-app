@@ -32,6 +32,7 @@ export default class ContentScript {
       'getUserDataFromWebsite',
       'fetch',
       'click',
+      'fillText',
       'storeFromWorker',
     ]
 
@@ -149,7 +150,7 @@ export default class ContentScript {
         `click: No DOM element is matched with the ${selector} selector`,
       )
     }
-    document.querySelector(selector).click()
+    elem.click()
   }
 
   async clickAndWait(elementToClick, elementToWait) {
@@ -158,6 +159,19 @@ export default class ContentScript {
     log.debug('waiting for ' + elementToWait)
     await this.waitForElementInWorker(elementToWait)
     log.debug('done waiting ' + elementToWait)
+  }
+
+  async fillText(selector, text) {
+    const elem = document.querySelector(selector)
+    if (!elem) {
+      throw new Error(
+        `fillText: No DOM element is matched with the ${selector} selector`,
+      )
+    }
+    elem.focus()
+    elem.value = text
+    elem.dispatchEvent(new Event('input', {bubbles: true}))
+    elem.dispatchEvent(new Event('change', {bubbles: true}))
   }
 
   /**
