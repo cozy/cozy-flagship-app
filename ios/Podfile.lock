@@ -361,6 +361,8 @@ PODS:
     - React-Core
   - RNIOS11DeviceCheck (0.0.3):
     - React
+  - RNKeychain (8.0.0):
+    - React-Core
   - RNReanimated (2.2.3):
     - DoubleConversion
     - FBLazyVector
@@ -462,6 +464,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNInAppBrowser (from `../node_modules/react-native-inappbrowser-reborn`)
   - RNIOS11DeviceCheck (from `../node_modules/react-native-ios11-devicecheck/ios`)
+  - RNKeychain (from `../node_modules/react-native-keychain`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -566,6 +569,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-inappbrowser-reborn"
   RNIOS11DeviceCheck:
     :path: "../node_modules/react-native-ios11-devicecheck/ios"
+  RNKeychain:
+    :path: "../node_modules/react-native-keychain"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -630,6 +635,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
   RNIOS11DeviceCheck: 9b36378a945711eba558e5e0db3a15a9ccb83150
+  RNKeychain: 4f63aada75ebafd26f4bc2c670199461eab85d94
   RNReanimated: b04ef2a4f0cb61b062bbcf033f84a9e470f4f60b
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e

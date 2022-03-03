@@ -2,15 +2,16 @@ import * as RootNavigation from '../RootNavigation.js'
 import {clearClient} from '../client'
 import {resetSessionToken} from '../functions/session'
 import {openApp} from '../functions/openApp.js'
+import {deleteKeychain} from '../keychain'
+
+export const asyncCore = async () => {
+  await clearClient()
+  await resetSessionToken()
+  await deleteKeychain()
+  RootNavigation.navigate('authenticate')
+}
 
 const logout = () => {
-  const asyncCore = async () => {
-    await clearClient()
-    await resetSessionToken()
-
-    RootNavigation.navigate('authenticate')
-  }
-
   asyncCore()
 }
 
