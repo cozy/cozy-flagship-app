@@ -1,10 +1,5 @@
 import {Platform} from 'react-native'
-import {Dimensions, StatusBar} from 'react-native'
-
-const screenHeight = Dimensions.get('screen').height
-const windowHeight = Dimensions.get('window').height
-const navbarHeight = screenHeight - windowHeight
-const statusBarHeight = StatusBar.currentHeight
+import {statusBarHeight, navbarHeight} from '../../../libs/dimensions'
 
 export const jsCSSclassInjection = routeName => `
   window.addEventListener('load', (event) => {
