@@ -217,6 +217,22 @@ export default class ContentScript {
   }
 
   /**
+   * Bridge to the getCredentials method from the launcher.
+   */
+  async getCredentials() {
+    return await this.bridge.call('getCredentials')
+  }
+
+  /**
+   * Bridge to the saveCredentials method from the launcher.
+   *
+   * @param {Object} credentials
+   */
+  async saveCredentials(credentials) {
+    return await this.bridge.call('saveCredentials', credentials)
+  }
+
+  /**
    * Bridge to the saveIdentity method from the launcher.
    *
    * @param {Object} identity
