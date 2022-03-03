@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {WebView} from 'react-native-webview'
-import {StyleSheet, View, Text} from 'react-native'
+import {StyleSheet, View, Text, Button} from 'react-native'
 // TODO find a proper way to load a connector only when needed
 // import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
 import templateConnector from '../../../connectors/template/dist/webviewScript'
@@ -12,6 +12,8 @@ import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
 import {withClient} from 'cozy-client'
 import {get} from 'lodash'
+
+const DEBUG = false
 
 const embeddedConnectors = {
   edf: edfConnector,
@@ -25,6 +27,7 @@ class LauncherView extends Component {
     super(props)
     this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
+    this.onStopExecution = this.onStopExecution.bind(this)
     this.onWorkerWillReload = debounce(this.onWorkerWillReload, 1000).bind(this)
     this.pilotWebView = null
     this.workerWebview = null
@@ -33,11 +36,11 @@ class LauncherView extends Component {
       connector: null,
       worker: {},
     }
-    // this.resetSession()
   }
 
-  resetSession() {
-    CookieManager.flush()
+  onStopExecution() {
+    this.launcher.stop({message: 'stopped by user'})
+    this.props.setLauncherContext({state: 'default'})
   }
 
   async initConnector() {
@@ -107,13 +110,15 @@ class LauncherView extends Component {
   }
 
   render() {
-    const workerStyle = this.state.worker.visible
-      ? styles.workerVisible
-      : styles.workerHidden
+    const workerStyle =
+      this.state.worker.visible || DEBUG
+        ? styles.workerVisible
+        : styles.workerHidden
     return (
       <>
         {this.state.connector ? (
           <>
+          {DEBUG && <Button title="Stop execution" onPress={this.onStopExecution} />}
             <View>
               <WebView
                 ref={ref => (this.pilotWebView = ref)}
