@@ -4,7 +4,7 @@ import get from 'lodash/get'
 import set from 'lodash/set'
 
 import {saveFiles, saveBills, saveIdentity} from './connectorLibs'
-import {saveCredentials, getCredentials} from './credentials'
+import {saveCredential, getCredential} from './keychain'
 import {dataURItoArrayBuffer} from './utils'
 
 const log = Minilog('Launcher')
@@ -94,16 +94,20 @@ export default class Launcher {
    * @returns {Promise<Object>}
    */
   async saveCredentials(credentials) {
-    return saveCredentials(credentials, this.getStartContext())
+    const {account} = this.getStartContext()
+    account.auth = credentials
+    return (await saveCredential(account)).auth
   }
 
   /**
    * Get saved credentials for the current context
    *
-   * @returns {Promise<Object>}
+   * @returns {Promise<null|Object>}
    */
   async getCredentials() {
-    return getCredentials(this.getStartContext())
+    const {account} = this.getStartContext()
+    const encAccount = await getCredential(account)
+    return encAccount ? encAccount.auth : null
   }
 
   /**
