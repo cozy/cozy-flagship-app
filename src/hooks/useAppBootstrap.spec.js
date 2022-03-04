@@ -45,7 +45,6 @@ jest.mock('react-native', () => {
 })
 
 afterEach(() => {
-  expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
   Linking.getInitialURL.mockRestore()
   mockHideSplashScreen.mockClear()
   navigate.mockClear()
@@ -73,6 +72,8 @@ it('Should handle NO client NO initial URL', async () => {
     isLoading: false,
     setClient: expect.anything(),
   })
+
+  expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
 })
 
 it('Should handle NO client WITH initial URL as HOME', async () => {
@@ -117,6 +118,8 @@ it('Should handle NO client WITH initial URL as APP', async () => {
     isLoading: false,
     setClient: expect.anything(),
   })
+
+  expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
 })
 
 it('Should handle NO client WITH initial URL as INVALID', async () => {
@@ -139,6 +142,8 @@ it('Should handle NO client WITH initial URL as INVALID', async () => {
     isLoading: false,
     setClient: expect.anything(),
   })
+
+  expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
 })
 
 it('Should handle WITH client NO initial URL', async () => {

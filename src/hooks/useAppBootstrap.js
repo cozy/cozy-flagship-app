@@ -81,8 +81,11 @@ export const useAppBootstrap = () => {
   useEffect(() => {
     if (client !== 'fetching' && initialRoute !== 'fetching' && isLoading) {
       setIsLoading(false)
+      if (initialScreen.stack !== routes.home) {
+        hideSplashScreen()
+      }
     }
-  }, [isLoading, initialRoute, client])
+  }, [isLoading, initialRoute, client, hideSplashScreen, initialScreen.stack])
 
   // Handling post load side effects
   useEffect(() => {
@@ -100,12 +103,10 @@ export const useAppBootstrap = () => {
       navigate(isHome ? routes.home : routes.cozyapp, {href})
     })
 
-    hideSplashScreen()
-
     return () => {
       subscription.remove()
     }
-  }, [isLoading, hideSplashScreen])
+  }, [isLoading])
 
   return {
     client,
