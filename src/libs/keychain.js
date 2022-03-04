@@ -1,6 +1,11 @@
+import * as Keychain from 'react-native-keychain'
+
+import Minilog from '@cozy/minilog'
 import {AccountsDoctype} from 'cozy-client/dist/types.js' //eslint-disable-line no-unused-vars
 
-import * as Keychain from 'react-native-keychain'
+const log = Minilog('Keychain')
+
+Minilog.enable()
 
 /*
 Keychain's Structure
@@ -20,22 +25,39 @@ let isLocked = false
 
 /**
  *
+ * @param {String} reason
+ */
+function lockKeychain(reason) {
+  if (isLocked) {
+    throw new Error(reason)
+  }
+  log.debug(`lock keychain: ${reason}`)
+  isLocked = true
+}
+/**
+ *
+ * @param {String} reason
+ */
+function unlockKeychain(reason) {
+  if (!isLocked) {
+    log.warn('trying to unlock but keychain is not locked')
+  }
+  log.debug(`unlock keychain: ${reason}`)
+  isLocked = false
+}
+/**
+ *
  * @param {AccountsDoctype} account - io.cozy.accounts
  */
 export async function saveCredential(account) {
-  if (isLocked) {
-    throw new Error(
-      "saveCredential: You can't save while the keychain is locked ",
-    )
-  }
-  isLocked = true
+  lockKeychain("saveCredential: You can't save while the keychain is locked")
   const currentGenerics = await Keychain.getGenericPassword()
   const newJSON = addItem(
     {scope: CREDENTIALS_SCOPE, key: account._id, value: account},
     currentGenerics ? JSON.parse(currentGenerics.password) : {},
   )
   await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
-  isLocked = false
+  unlockKeychain('saveCredential is done')
 }
 /**
  *
@@ -61,19 +83,16 @@ export async function getCredential(account) {
  * @param {AccountsDoctype} account
  */
 export async function removeCredential(account) {
-  if (isLocked) {
-    throw new Error(
-      "removeCredential: You can't save while the keychain is locked ",
-    )
-  }
-  isLocked = true
+  lockKeychain(
+    "removeCredential: You can't remove while the keychain is locked",
+  )
   const currentGenerics = await Keychain.getGenericPassword()
   const newJSON = removeItem(
     {scope: CREDENTIALS_SCOPE, key: account._id},
     currentGenerics ? JSON.parse(currentGenerics.password) : {},
   )
   await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
-  isLocked = false
+  unlockKeychain('removeCredential is done')
 }
 /**
  *
@@ -81,19 +100,16 @@ export async function removeCredential(account) {
  * @param {String|Object} value
  */
 export async function saveVaultInformation(key, value) {
-  if (isLocked) {
-    throw new Error(
-      "saveVaultInformation: You can't save while the keychain is locked ",
-    )
-  }
-  isLocked = true
+  lockKeychain(
+    "saveVaultInformation: You can't save while the keychain is locked",
+  )
   const currentGenerics = await Keychain.getGenericPassword()
   const newJSON = addItem(
     {scope: VAULT_SCOPE, key, value},
     currentGenerics ? JSON.parse(currentGenerics.password) : {},
   )
   await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
-  isLocked = false
+  unlockKeychain('saveVaultInformation is done')
 }
 /**
  *
@@ -116,11 +132,9 @@ export async function getVaultInformation(key) {
  * @param {String} key
  */
 export async function removeVaultInformation(key) {
-  if (isLocked) {
-    throw new Error(
-      "removeVaultInformation: You can't save while the keychain is locked ",
-    )
-  }
+  lockKeychain(
+    "removeVaultInformation: You can't remove while the keychain is locked",
+  )
   isLocked = true
   const currentGenerics = await Keychain.getGenericPassword()
   const newJSON = removeItem(
@@ -128,7 +142,7 @@ export async function removeVaultInformation(key) {
     currentGenerics ? JSON.parse(currentGenerics.password) : {},
   )
   await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
-  isLocked = false
+  unlockKeychain('removeVaultInformation is done')
 }
 
 export async function deleteKeychain() {
