@@ -44,7 +44,7 @@ class EdfContentScript extends ContentScript {
   }
 
   async tryAutoLogin(credentials) {
-    log.debug('autologin start')
+    this.log('autologin start')
     await this.goto(
       'https://particulier.edf.fr/fr/accueil/espace-client/tableau-de-bord.html',
     )
@@ -55,12 +55,12 @@ class EdfContentScript extends ContentScript {
   }
 
   async autoLogin(credentials) {
-    log.debug('fill email field')
+    this.log('fill email field')
     await this.waitForElementInWorker('#email')
     await this.runInWorker('fillText', '#email', credentials.email)
     await this.runInWorker('click', '#username-next-button > span')
 
-    log.debug('wait for password field or otp')
+    this.log('wait for password field or otp')
     await Promise.race([
       this.waitForElementInWorker('#password2-password-field'),
       this.waitForElementInWorker('.auth #title-hotp3'),
