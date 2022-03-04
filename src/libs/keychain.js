@@ -155,7 +155,6 @@ function addItem({scope, key, value}, existingJSON = {}) {
   if (!clonedJSON[scope]) {
     clonedJSON[scope] = {}
   }
-  console.log('clonedJSON[scope]', clonedJSON[scope])
   if (clonedJSON[scope][key]) {
     throw new Error(
       `${key} is already saved in ${scope}. You can't add it again.`,
