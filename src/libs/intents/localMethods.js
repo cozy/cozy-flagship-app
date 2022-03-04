@@ -4,15 +4,17 @@ import {resetSessionToken} from '../functions/session'
 import {openApp} from '../functions/openApp.js'
 import {deleteKeychain} from '../keychain'
 
-export const asyncCore = async () => {
+export const asyncLogout = async () => {
   await clearClient()
   await resetSessionToken()
   await deleteKeychain()
   RootNavigation.navigate('authenticate')
 }
 
+// Since logout is used from localMethods
+// it can't be async for now.
 const logout = () => {
-  asyncCore()
+  asyncLogout()
 }
 
 const backToHome = () => {
