@@ -1,10 +1,9 @@
 import React from 'react'
+import {decode, encode} from 'base-64'
 import {SafeAreaView, StyleSheet} from 'react-native'
 import {NavigationContainer} from '@react-navigation/native'
 import {createStackNavigator} from '@react-navigation/stack'
 import {Provider as PaperProvider} from 'react-native-paper'
-
-import {decode, encode} from 'base-64'
 
 import {CozyProvider} from 'cozy-client'
 import {NativeIntentProvider} from 'cozy-intent'
@@ -61,8 +60,10 @@ const App = () => {
       mode="modal"
       screenOptions={{headerShown: false}}>
       <Root.Screen name={routes.stack} component={StackNavigator} />
-
       <Root.Screen
+        options={{
+          animationEnabled: false,
+        }}
         name={routes.cozyapp}
         component={CozyAppScreen}
         {...(initialRoute.root ? {initialParams: initialRoute.root} : {})}
