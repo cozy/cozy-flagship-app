@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {SafeAreaView, StatusBar, StyleSheet, View, Button} from 'react-native'
+import {StatusBar, StyleSheet, View} from 'react-native'
 import HomeView from './components/HomeView'
 import LauncherView from '../connectors/LauncherView'
 import DebugView from '../connectors/DebugView'
@@ -9,22 +9,20 @@ export const HomeScreen = ({route, navigation}) => {
   const [launcherContext, setLauncherContext] = useState({state: 'default'})
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.safeAreaView}>
-        <StatusBar barStyle="dark-content" />
-        <HomeView
+      <StatusBar barStyle="dark-content" />
+      <HomeView
+        setLauncherContext={setLauncherContext}
+        navigation={navigation}
+        route={route}
+      />
+      {debug && <DebugView />}
+      {launcherContext.state === 'launch' && (
+        <LauncherView
+          launcherContext={launcherContext.value}
           setLauncherContext={setLauncherContext}
-          navigation={navigation}
-          route={route}
+          retry={() => setLauncherContext(null)}
         />
-        {debug && <DebugView />}
-        {launcherContext.state === 'launch' && (
-          <LauncherView
-            launcherContext={launcherContext.value}
-            setLauncherContext={setLauncherContext}
-            retry={() => setLauncherContext(null)}
-          />
-        )}
-      </SafeAreaView>
+      )}
     </View>
   )
 }
@@ -33,8 +31,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-  },
-  safeAreaView: {
-    flex: 1,
   },
 })
