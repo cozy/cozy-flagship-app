@@ -1,8 +1,9 @@
-import {Dimensions, StatusBar} from 'react-native'
+import {Dimensions} from 'react-native'
+import {getStatusBarHeight} from 'react-native-status-bar-height'
 
 const screenHeight = Dimensions.get('screen').height
 const windowHeight = Dimensions.get('window').height
 const navbarHeight = screenHeight - windowHeight
-const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0
+const statusBarHeight = getStatusBarHeight()
 
 export {navbarHeight, statusBarHeight}
