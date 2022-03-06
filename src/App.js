@@ -1,10 +1,8 @@
 import React from 'react'
-import {SafeAreaView, StyleSheet} from 'react-native'
+import {decode, encode} from 'base-64'
 import {NavigationContainer} from '@react-navigation/native'
 import {createStackNavigator} from '@react-navigation/stack'
 import {Provider as PaperProvider} from 'react-native-paper'
-
-import {decode, encode} from 'base-64'
 
 import {CozyProvider} from 'cozy-client'
 import {NativeIntentProvider} from 'cozy-intent'
@@ -84,19 +82,11 @@ const WrappedApp = () => (
     <NativeIntentProvider localMethods={localMethods}>
       <PaperProvider theme={lightTheme}>
         <SplashScreenProvider>
-          <SafeAreaView style={styles.container}>
-            <App />
-          </SafeAreaView>
+          <App />
         </SplashScreenProvider>
       </PaperProvider>
     </NativeIntentProvider>
   </NavigationContainer>
 )
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-})
 
 export default WrappedApp
