@@ -19,6 +19,7 @@ const logout = () => {
 }
 
 const backToHome = () => {
+  changeBarColors(true)
   RootNavigation.navigate('home')
 }
 
