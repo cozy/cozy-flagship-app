@@ -21,7 +21,7 @@ export const CozyAppScreen = ({route, navigation}) => {
     setDisplayWebview(true)
     Animated.timing(webviewOpacity, {
       toValue: 1,
-      duration: 100,
+      duration: 200,
       useNativeDriver: true,
     }).start()
   }
@@ -44,22 +44,22 @@ export const CozyAppScreen = ({route, navigation}) => {
   useEffect(() => {
     Animated.timing(animatedHeight, {
       toValue: Dimensions.get('window').height,
-      duration: 1000,
+      duration: 500,
       //  useNativeDriver: true,
     }).start()
     Animated.timing(animatedWidth, {
       toValue: Dimensions.get('window').width,
-      duration: 1000,
+      duration: 500,
       // useNativeDriver: true,
     }).start()
     Animated.timing(animatedTop, {
       toValue: 0,
-      duration: 1000,
+      duration: 500,
       //  useNativeDriver: true,
     }).start()
     Animated.timing(animatedLeft, {
       toValue: 0,
-      duration: 1000,
+      duration: 500,
       //useNativeDriver: true,
     }).start()
   }, [animatedHeight, animatedWidth, animatedTop, animatedLeft])
@@ -70,15 +70,15 @@ export const CozyAppScreen = ({route, navigation}) => {
       setDisplayWebview(true)
       Animated.timing(webviewOpacity, {
         toValue: 0,
-        duration: 100,
+        duration: 500,
         //  useNativeDriver: true,
       }).start()
-    }, 1000)
+    }, 500)
   }, [webviewOpacity])
   useEffect(() => {
     setTimeout(() => {
       setDisplayAnimationView(false)
-    }, 1100)
+    }, 1000)
   }, [webviewOpacity])
   console.log('EVENT', route.params.event)
 
@@ -106,16 +106,19 @@ export const CozyAppScreen = ({route, navigation}) => {
 
   return (
     <View style={{flex: 1}}>
-      <View
-        style={{
-          height: statusBarHeight,
-          backgroundColor: statusBarColor,
-        }}
-      />
+      {!displayAnimationView && (
+        <View
+          style={{
+            height: statusBarHeight,
+            backgroundColor: statusBarColor,
+          }}
+        />
+      )}
 
       <CozyWebView
         source={{uri: route.params.href}}
         navigation={navigation}
+        route={route}
         logId="AppScreen"
         style={
           !displayWebview
@@ -128,28 +131,6 @@ export const CozyAppScreen = ({route, navigation}) => {
             : {opacity: 1, flex: 1}
         }
       />
-
-      {/* {visible && ( */}
-      <View
-        style={{
-          backgroundColor: '#FFFFFF',
-          position: 'absolute',
-          top: 50,
-          left: 50,
-          height: 50,
-          width: 50,
-          zIndex: 999,
-        }}>
-        <Button
-          onPress={() => {
-            //alert('test')
-            restartAnimation()
-          }}
-          title="Start"
-          color="#841584"
-          accessibilityLabel="Learn more about this purple button"
-        />
-      </View>
 
       {displayAnimationView && (
         <Animated.View
