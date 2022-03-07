@@ -5,6 +5,7 @@ import {openApp} from '../functions/openApp.js'
 import {deleteKeychain} from '../keychain'
 import {setStatusBarColor} from './setStatusBarColor'
 import {setNavBarColor} from './setNavBarColor'
+import {hideSplashScreen} from '../services/SplashScreenService'
 
 export const asyncLogout = async () => {
   await clearClient()
@@ -29,4 +30,5 @@ export const localMethods = {
   openApp: (href, app, event) => openApp(RootNavigation, href, app, event),
   setStatusBarColor,
   setNavBarColor,
+  hideSplashScreen,
 }
