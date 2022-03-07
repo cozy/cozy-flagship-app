@@ -1,5 +1,6 @@
 import {Linking} from 'react-native'
 import {useEffect, useState} from 'react'
+import {changeBarColors} from 'react-native-immersive-bars'
 
 import {getClient} from '../libs/client'
 import {navigate} from '../libs/RootNavigation'
@@ -101,6 +102,7 @@ export const useAppBootstrap = () => {
     })
 
     hideSplashScreen()
+    changeBarColors(true)
 
     return () => {
       subscription.remove()

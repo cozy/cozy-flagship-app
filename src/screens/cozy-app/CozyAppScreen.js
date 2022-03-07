@@ -1,7 +1,12 @@
 import React, {useState, useEffect} from 'react'
 import {View, Animated, Dimensions, Button, SafeAreaView} from 'react-native'
+import {changeBarColors} from 'react-native-immersive-bars'
 
 import CozyWebView from '../../components/webviews/CozyWebView'
+import {Values} from '../../constants/values'
+import {navBarColorEvent} from '../../libs/intents/setNavBarColor'
+import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
+import {statusBarColorEvent} from '../../libs/intents/setStatusBarColor'
 
 export const CozyAppScreen = ({route, navigation}) => {
   console.log('route', route)
@@ -76,72 +81,101 @@ export const CozyAppScreen = ({route, navigation}) => {
     }, 1100)
   }, [webviewOpacity])
   console.log('EVENT', route.params.event)
-  return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1}}>
-        <CozyWebView
-          source={{uri: route.params.href}}
-          navigation={navigation}
-          logId="AppScreen"
-          style={
-            !displayWebview
-              ? {
-                  top: 9999,
-                  left: 9999,
-                  opacity: 0,
-                  position: 'absolute',
-                }
-              : {opacity: 1, flex: 1}
-          }
-        />
 
-        {/* {visible && ( */}
-        <View
+  const [statusBarColor, setStatusBarColor] = useState(
+    Values.DEFAULT_STATUSBAR_COLOR,
+  )
+  const [navBarColor, setNavBarColor] = useState(Values.DEFAULT_NAVBAR_COLOR)
+
+  useEffect(() => {
+    changeBarColors(false)
+
+    statusBarColorEvent.on('change', color => {
+      setStatusBarColor(color)
+    })
+
+    navBarColorEvent.on('change', color => {
+      setNavBarColor(color)
+    })
+
+    return () => {
+      statusBarColorEvent.removeAllListeners()
+      navBarColorEvent.removeAllListeners()
+    }
+  }, [])
+
+  return (
+    <View style={{flex: 1}}>
+      <View
+        style={{
+          height: statusBarHeight,
+          backgroundColor: statusBarColor,
+        }}
+      />
+
+      <CozyWebView
+        source={{uri: route.params.href}}
+        navigation={navigation}
+        logId="AppScreen"
+        style={
+          !displayWebview
+            ? {
+                top: 9999,
+                left: 9999,
+                opacity: 0,
+                position: 'absolute',
+              }
+            : {opacity: 1, flex: 1}
+        }
+      />
+
+      {/* {visible && ( */}
+      <View
+        style={{
+          backgroundColor: '#FFFFFF',
+          position: 'absolute',
+          top: 50,
+          left: 50,
+          height: 50,
+          width: 50,
+          zIndex: 999,
+        }}>
+        <Button
+          onPress={() => {
+            //alert('test')
+            restartAnimation()
+          }}
+          title="Start"
+          color="#841584"
+          accessibilityLabel="Learn more about this purple button"
+        />
+      </View>
+
+      {displayAnimationView && (
+        <Animated.View
           style={{
             backgroundColor: '#FFFFFF',
             position: 'absolute',
-            top: 50,
-            left: 50,
-            height: 50,
-            width: 50,
-            zIndex: 999,
+            height: animatedHeight,
+            width: animatedWidth,
+            top: animatedTop,
+            left: animatedLeft,
+            paddingLeft: '20%',
+            paddingRight: '20%',
+            opacity: webviewOpacity,
           }}>
-          <Button
-            onPress={() => {
-              //alert('test')
-              restartAnimation()
-            }}
-            title="Start"
-            color="#841584"
-            accessibilityLabel="Learn more about this purple button"
-          />
-        </View>
-
-        {displayAnimationView && (
-          <Animated.View
+          <Animated.Image
+            source={require('../../assets/bootsplash_logo.png')}
+            useNativeDriver={true}
+            resizeMode="contain"
             style={{
-              backgroundColor: '#FFFFFF',
-              position: 'absolute',
-              height: animatedHeight,
-              width: animatedWidth,
-              top: animatedTop,
-              left: animatedLeft,
-              paddingLeft: '20%',
-              paddingRight: '20%',
-              opacity: webviewOpacity,
-            }}>
-            <Animated.Image
-              source={require('../../assets/bootsplash_logo.png')}
-              useNativeDriver={true}
-              resizeMode="contain"
-              style={{
-                // position: 'relative',
-                //left: '40%',
-                //top: '40%',
-                //height: 40,
-                height: '100%',
-                width: '100%',
-                /* transform: [
+              // position: 'relative',
+              //left: '40%',
+              //top: '40%',
+              //height: 40,
+              height: '100%',
+              width: '100%',
+              /* transform: [
               {
                 translateX: imageSize.interpolate({
                   inputRange: [0, 1],
@@ -167,12 +201,16 @@ export const CozyAppScreen = ({route, navigation}) => {
                 }),
               },
             ], */
-              }}
-            />
-          </Animated.View>
-        )}
-        {/* )} */}
-      </View>
-    </SafeAreaView>
+            }}
+          />
+        </Animated.View>
+      )}
+      <View
+        style={{
+          height: navbarHeight,
+          backgroundColor: navBarColor,
+        }}
+      />
+    </View>
   )
 }

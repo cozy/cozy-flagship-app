@@ -6673,10 +6673,10 @@ cozy-flags@2.7.1:
   dependencies:
     microee "^0.0.6"
 
-cozy-intent@^1.7.1:
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-1.7.1.tgz#6ec12e2a29147f9e5c1c0bdaeef6ab882f97c13f"
-  integrity sha512-chSNdMaDKlAZUTtNqPt6T/m52n/d8irsiic8VuoAFJcBwGAJQ5WSxYM6jCZiuyGm3MXjSndeiNdSG9OQjr2nwA==
+cozy-intent@^1.11.1:
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-1.11.1.tgz#21be782c7827e7dac372d11f35244f5ad2ded74d"
+  integrity sha512-kdMd1yLNt619CNozuSZhofJpk168iPWXyt9GfMSgSC29VOJ6AKOOhkn+3lemQXY2EDDOQLm8Y5C6Vcb9Iy9hQw==
   dependencies:
     post-me "0.4.5"
 
@@ -14226,6 +14226,11 @@ react-native-gesture-handler@1.10.3:
     jwt-decode "^2.2.0"
     react-native-securerandom "^0.1.1"
 
+react-native-immersive-bars@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-immersive-bars/-/react-native-immersive-bars-1.0.4.tgz#621e8a0d12aebb8471fc64aa0dc777af9f60557c"
+  integrity sha512-zGmaqzXZIsa7hvQKJ+2e6NU5HdypJXA5tqplEyA59pjqnR94sCfa0lBE921Q+dTLdDnuNNCbhdWiOuanJrPkzg==
+
 react-native-inappbrowser-reborn@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/react-native-inappbrowser-reborn/-/react-native-inappbrowser-reborn-3.5.1.tgz#a17e6548ac7864f074f5df6171781601d179d638"
@@ -14283,6 +14288,11 @@ react-native-securerandom@^0.1.1:
   integrity sha1-8TBiOkEsM4sK+t7bwgTFy7i/IHA=
   dependencies:
     base64-js "*"
+
+react-native-status-bar-height@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-status-bar-height/-/react-native-status-bar-height-2.6.0.tgz#b6afd25b6e3d533c43d0fcdcfd5cafd775592cea"
+  integrity sha512-z3SGLF0mHT+OlJDq7B7h/jXPjWcdBT3V14Le5L2PjntjjWM3+EJzq2BcXDwV+v67KFNJic5pgA26cCmseYek6w==
 
 react-native-svg-transformer@0.14.3:
   version "0.14.3"

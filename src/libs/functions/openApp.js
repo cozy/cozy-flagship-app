@@ -35,11 +35,6 @@ const slugFallbacks = {
     id_playstore: 'io.cozy.pass',
     id_appstore: 'cozy-pass/id1502262449',
   },
-  banks: {
-    schema: 'cozybanks://',
-    id_playstore: 'io.cozy.banks.mobile',
-    id_appstore: 'cozy-banks/id1349814380',
-  },
 }
 
 /**

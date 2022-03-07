@@ -1,8 +1,10 @@
-import * as RootNavigation from '../RootNavigation.js'
+import * as RootNavigation from '../RootNavigation'
 import {clearClient} from '../client'
 import {resetSessionToken} from '../functions/session'
 import {openApp} from '../functions/openApp.js'
 import {deleteKeychain} from '../keychain'
+import {setStatusBarColor} from './setStatusBarColor'
+import {setNavBarColor} from './setNavBarColor'
 
 export const asyncLogout = async () => {
   await clearClient()
@@ -25,4 +27,6 @@ export const localMethods = {
   backToHome,
   logout,
   openApp: (href, app, event) => openApp(RootNavigation, href, app, event),
+  setStatusBarColor,
+  setNavBarColor,
 }
