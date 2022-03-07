@@ -24,5 +24,5 @@ const backToHome = () => {
 export const localMethods = {
   backToHome,
   logout,
-  openApp: (href, app) => openApp(RootNavigation, href, app),
+  openApp: (href, app, event) => openApp(RootNavigation, href, app, event),
 }

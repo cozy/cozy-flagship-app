@@ -62,6 +62,9 @@ const App = () => {
       <Root.Screen
         options={{
           animationEnabled: false,
+          cardStyle: {
+            backgroundColor: 'transparent',
+          },
         }}
         name={routes.cozyapp}
         component={CozyAppScreen}

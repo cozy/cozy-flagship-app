@@ -19,14 +19,14 @@ import {Alert, Linking, Platform} from 'react-native'
  * Apps mobile information that can be used as a fallback if the Cozy
  * still has an old version of the app which doesn't describe its mobile
  * info on the manifest.webapp
- * 
+ *
  * This object is used for retro-compatibility support and may be deleted
  * in the future
- * 
+ *
  * If a new schema is inserted into this array or if a new app describe its
  * schema in its manifest.webapp, then AndroidManifest.xml and Info.plist
  * should be updated with the scheme permission
- * 
+ *
  * @type {Array.<AppManifestMobileInfo>}
  */
 const slugFallbacks = {
@@ -114,7 +114,8 @@ const openConnectorInHome = (navigation, connector) => {
  * @param {AppManifest} app - The app information
  * @returns {Promise}
  */
-export const openApp = (navigation, href, app) => {
+export const openApp = (navigation, href, app, event) => {
+  console.log('ici ? ', event)
   if (app?.type === 'konnector') {
     openConnectorInHome(navigation, app)
     return
@@ -132,5 +133,5 @@ export const openApp = (navigation, href, app) => {
     }
   }
 
-  return navigation.navigate('cozyapp', {href})
+  return navigation.navigate('cozyapp', {href, event, app})
 }
