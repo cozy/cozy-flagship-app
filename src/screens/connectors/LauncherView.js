@@ -3,10 +3,10 @@ import {WebView} from 'react-native-webview'
 import {StyleSheet, View, Text} from 'react-native'
 // TODO find a proper way to load a connector only when needed
 // import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
-import templateConnector from '../../../connectors/template/dist/webviewScript'
+//import templateConnector from '../../../connectors/template/dist/webviewScript'
 // import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
-import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
-import edfConnector from '../../../connectors/edf/dist/webviewScript'
+//import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
+//import edfConnector from '../../../connectors/edf/dist/webviewScript'
 import ReactNativeLauncher from '../../libs/ReactNativeLauncher'
 import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
@@ -14,11 +14,11 @@ import {withClient} from 'cozy-client'
 import {get} from 'lodash'
 
 const embeddedConnectors = {
-  edf: edfConnector,
+  //edf: edfConnector,
   // amazon: amazonConnector,
-  template: templateConnector,
+  //template: templateConnector,
   // sncf: sncfConnector,
-  blablacar: blablacarConnector,
+  //blablacar: blablacarConnector,
 }
 class LauncherView extends Component {
   constructor(props) {
