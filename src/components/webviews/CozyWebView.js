@@ -51,9 +51,9 @@ const CozyWebView = ({
   }, [nativeIntent, ref, logId])
 
   const run = `
-    (function() { 
+    (function() {
       ${jsCozyGlobal}
-      
+
       ${jsLogInterception}
 
       return true;
@@ -69,6 +69,7 @@ const CozyWebView = ({
       useWebKit={true}
       javaScriptEnabled={true}
       ref={ref => setRef(ref)}
+      decelerationRate="normal" // https://github.com/react-native-webview/react-native-webview/issues/1070
       onShouldStartLoadWithRequest={initialRequest => {
         if (shouldInterceptAuth(initialRequest.url)) {
           const asyncRedirect = async () => {
