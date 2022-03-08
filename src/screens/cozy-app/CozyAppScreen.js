@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {View, Animated, Dimensions, Button, SafeAreaView} from 'react-native'
+import {View, Animated, Dimensions, Button, SafeAreaView, Text, Image} from 'react-native'
 import {changeBarColors} from 'react-native-immersive-bars'
 
 import CozyWebView from '../../components/webviews/CozyWebView'
@@ -8,78 +8,79 @@ import {navBarColorEvent} from '../../libs/intents/setNavBarColor'
 import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
 import {statusBarColorEvent} from '../../libs/intents/setStatusBarColor'
 
+import ContactsIcon from '../../assets/apps/contacts.svg';
+import DriveIcon from '../../assets/apps/drive.svg';
+import MespapiersIcon from '../../assets/apps/mespapiers.svg';
+import SettingsIcon from '../../assets/apps/settings.svg';
+import NotesIcon from '../../assets/apps/notes.svg';
+import StoreIcon from '../../assets/apps/store.svg';
+
+const appsIcon = {
+    drive : DriveIcon,
+    contacts: ContactsIcon,
+    mespapiers: MespapiersIcon,
+    settings: SettingsIcon,
+    notes: NotesIcon,
+    store: StoreIcon
+}
+
+
+
 export const CozyAppScreen = ({route, navigation}) => {
   console.log('route', route)
+  const appslug = route.params.app.slug
+    const ImgApp = appsIcon[appslug]
+
   const [visible, setVisible] = useState(true)
-  const [imageSize, setImageSize] = useState(new Animated.Value(0))
-  const restartAnimation = () => {
-    setImageSize(new Animated.Value(0))
-    setAnimatedHeight(new Animated.Value(40))
-    setAnimatedWidth(new Animated.Value(40))
-    setAnimatedTop(new Animated.Value(clickX))
-    setAnimatedLeft(new Animated.Value(clickY))
-    setDisplayWebview(true)
-    Animated.timing(webviewOpacity, {
-      toValue: 1,
-      duration: 200,
-      useNativeDriver: true,
-    }).start()
-  }
-  useEffect(() => {
-    Animated.timing(imageSize, {
-      toValue: 1,
-      duration: 10000,
-      useNativeDriver: true,
-    }).start()
-  }, [imageSize])
+
   const clickX = route.params.event.x
   const clickY = route.params.event.y
+  console.log('clickX', clickX)
+  console.log('clicjY', clickY)
   console.log('heught', Dimensions.get('window').height)
   console.log('width', Dimensions.get('window').width)
-  const [animatedHeight, setAnimatedHeight] = useState(new Animated.Value(40))
-  const [animatedWidth, setAnimatedWidth] = useState(new Animated.Value(40))
-  const [animatedTop, setAnimatedTop] = useState(new Animated.Value(clickX))
-  const [animatedLeft, setAnimatedLeft] = useState(new Animated.Value(clickY))
-  const webviewOpacity = new Animated.Value(1)
-  useEffect(() => {
-    Animated.timing(animatedHeight, {
-      toValue: Dimensions.get('window').height,
-      duration: 500,
-      //  useNativeDriver: true,
-    }).start()
-    Animated.timing(animatedWidth, {
-      toValue: Dimensions.get('window').width,
-      duration: 500,
-      // useNativeDriver: true,
-    }).start()
-    Animated.timing(animatedTop, {
-      toValue: 0,
-      duration: 500,
-      //  useNativeDriver: true,
-    }).start()
-    Animated.timing(animatedLeft, {
-      toValue: 0,
-      duration: 500,
-      //useNativeDriver: true,
-    }).start()
-  }, [animatedHeight, animatedWidth, animatedTop, animatedLeft])
+
   const [displayWebview, setDisplayWebview] = useState(false)
   const [displayAnimationView, setDisplayAnimationView] = useState(true)
+  const scaleAnimation = new Animated.Value(0)
+  const displayAnimationViewOpacity = new Animated.Value(1)
+
+  const imgSize = new Animated.Value(40)
+  useEffect(() => {
+    Animated.timing(imgSize, {
+      toValue: 128,
+      duration: 300,
+      //easing: Easing.ease,
+      //useNativeDriver: true,
+    }).start()
+  }, [])
+  useEffect(() => {
+    Animated.timing(scaleAnimation, {
+      toValue: 1,
+      duration: 800,
+      //easing: Easing.ease,
+      useNativeDriver: true,
+    }).start()
+  }, [])
+  
+  useEffect(() => {
+    Animated.timing(displayAnimationViewOpacity, {
+      toValue: 0,
+      duration: 900,
+      //easing: Easing.ease,
+      useNativeDriver: true,
+    }).start()
+  }, [])
   useEffect(() => {
     setTimeout(() => {
       setDisplayWebview(true)
-      Animated.timing(webviewOpacity, {
-        toValue: 0,
-        duration: 500,
-        //  useNativeDriver: true,
-      }).start()
-    }, 500)
-  }, [webviewOpacity])
+    }, 800)
+  }, [])
   useEffect(() => {
     setTimeout(() => {
       setDisplayAnimationView(false)
-    }, 1000)
-  }, [webviewOpacity])
+    }, 800)
+  }, [])
   console.log('EVENT', route.params.event)
 
   const [statusBarColor, setStatusBarColor] = useState(
@@ -104,6 +105,7 @@ export const CozyAppScreen = ({route, navigation}) => {
     }
   }, [])
 
+  
   return (
     <View style={{flex: 1}}>
       {!displayAnimationView && (
@@ -132,58 +134,60 @@ export const CozyAppScreen = ({route, navigation}) => {
         }
       />
 
-      {displayAnimationView && (
+      {/* displayAnimationView */ true  && (
         <Animated.View
           style={{
             backgroundColor: '#FFFFFF',
             position: 'absolute',
-            height: animatedHeight,
-            width: animatedWidth,
-            top: animatedTop,
-            left: animatedLeft,
-            paddingLeft: '20%',
-            paddingRight: '20%',
-            opacity: webviewOpacity,
+            height: 40,
+            width: 40,
+            zIndex: 99999,
+            top: clickX,
+            left: clickY,
+            
+            opacity: 1,
+            //opacity: displayAnimationViewOpacity,
+            transform: [
+              {
+                translateX: scaleAnimation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [
+                    0,
+                    (Dimensions.get('window').width - 40) / 2 - clickY,
+                  ],
+                }),
+              },
+              {
+                translateY: scaleAnimation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [
+                    0,
+                    (Dimensions.get('window').height - 40) / 2 - clickX,
+                  ],
+                }),
+              },
+              {
+                scaleX: scaleAnimation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [1, Dimensions.get('window').width / 45],
+                }),
+              },
+              {
+                scaleY: scaleAnimation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [1, Dimensions.get('window').height / 45],
+                }),
+              },
+            ],
           }}>
-          <Animated.Image
-            source={require('../../assets/bootsplash_logo.png')}
-            useNativeDriver={true}
-            resizeMode="contain"
-            style={{
-              // position: 'relative',
-              //left: '40%',
-              //top: '40%',
-              //height: 40,
-              height: '100%',
-              width: '100%',
-              /* transform: [
-              {
-                translateX: imageSize.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [12, 128],
-                }),
-              },
-              {
-                translateY: imageSize.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, 25],
-                }),
-              },
-              {
-                scaleX: imageSize.interpolate({
-                  inputRange: [10, 100],
-                  outputRange: [10, 100],
-                }),
-              },
-              {
-                scaleY: imageSize.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [1, 12],
-                }),
-              },
-            ], */
-            }}
-          />
+          {/*<View style={{backgroundColor: "#FFFFFF", flex: 1,  alignItems: "center", justifyContent: "center", paddingLeft: "20%"}}>*/}
+          {/*  {ImgApp && <ImgApp /> } */}
+          <Text>Toto</Text>
+           {<Animated.Image source={require('../../assets/apps/drive.png')} style={{width: 100, height: 100}} resizeMode="center"
+              //resizeMode="contain"
+             
+          />} 
+          
         </Animated.View>
       )}
       <View

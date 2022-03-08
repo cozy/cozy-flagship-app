@@ -98,7 +98,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
       logId="HomeView"
       onMessage={async m => {
         const data = get(m, 'nativeEvent.data')
-
+        console.log({data})
         if (data) {
           const {message, value} = JSON.parse(data)
 

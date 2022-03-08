@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
 import {WebView} from 'react-native-webview'
-import {StyleSheet, View, Text} from 'react-native'
+import {StyleSheet, View, Text, Dimensions} from 'react-native'
 // TODO find a proper way to load a connector only when needed
-// import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
+import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
 //import templateConnector from '../../../connectors/template/dist/webviewScript'
-// import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
-//import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
-//import edfConnector from '../../../connectors/edf/dist/webviewScript'
+import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
+import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
+import edfConnector from '../../../connectors/edf/dist/webviewScript'
 import ReactNativeLauncher from '../../libs/ReactNativeLauncher'
 import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
@@ -14,7 +14,7 @@ import {withClient} from 'cozy-client'
 import {get} from 'lodash'
 
 const embeddedConnectors = {
-  //edf: edfConnector,
+  edf: edfConnector,
   // amazon: amazonConnector,
   //template: templateConnector,
   // sncf: sncfConnector,
@@ -107,14 +107,16 @@ class LauncherView extends Component {
   }
 
   render() {
+    const toto = this.state.connector
+    console.log({toto})
     const workerStyle = this.state.worker.visible
       ? styles.workerVisible
       : styles.workerHidden
     return (
       <>
         {this.state.connector ? (
-          <>
-            <View>
+          <View style={{position: 'absolute', top: 0, left: 0, height: Dimensions.get('window').height, width: Dimensions.get('window').width, zIndex: 999, backgroundColor: '#000000'}}>
+            <View style={{flex: 1}}>
               <WebView
                 ref={ref => (this.pilotWebView = ref)}
                 originWhitelist={['*']}
@@ -154,7 +156,7 @@ class LauncherView extends Component {
                 )}
               />
             </View>
-          </>
+          </View>
         ) : (
           <View>
             <Text>Loading...</Text>

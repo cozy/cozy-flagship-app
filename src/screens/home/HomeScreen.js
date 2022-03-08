@@ -8,6 +8,7 @@ import DebugView from '../connectors/DebugView'
 export const HomeScreen = ({route, navigation}) => {
   const [debug] = useState(false)
   const [launcherContext, setLauncherContext] = useState({state: 'default'})
+  console.log('launcherContext.state', launcherContext.state)
   return (
     <View style={styles.container}>
       <HomeView
