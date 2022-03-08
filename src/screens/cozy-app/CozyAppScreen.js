@@ -16,12 +16,12 @@ import NotesIcon from '../../assets/apps/notes.svg';
 import StoreIcon from '../../assets/apps/store.svg';
 
 const appsIcon = {
-    drive : DriveIcon,
-    contacts: ContactsIcon,
-    mespapiers: MespapiersIcon,
-    settings: SettingsIcon,
-    notes: NotesIcon,
-    store: StoreIcon
+    drive : require('../../assets/apps/drive.png'),
+    contacts: require('../../assets/apps/contacts.png'),
+    mespapiers: require('../../assets/apps/mespapiers.png'),
+    settings: require('../../assets/apps/settings.png'),
+    notes: require('../../assets/apps/notes.png'),
+    store: require('../../assets/apps/store.png')
 }
 
 
@@ -59,7 +59,7 @@ export const CozyAppScreen = ({route, navigation}) => {
       toValue: 1,
       duration: 800,
       //easing: Easing.ease,
-      useNativeDriver: true,
+      //: true,
     }).start()
   }, [])
   
@@ -68,7 +68,7 @@ export const CozyAppScreen = ({route, navigation}) => {
       toValue: 0,
       duration: 900,
       //easing: Easing.ease,
-      useNativeDriver: true,
+      //useNativeDriver: true,
     }).start()
   }, [])
   useEffect(() => {
@@ -81,6 +81,34 @@ export const CozyAppScreen = ({route, navigation}) => {
       setDisplayAnimationView(false)
     }, 800)
   }, [])
+
+  const [animatedHeight, setAnimatedHeight] = useState(new Animated.Value(40))
+  const [animatedWidth, setAnimatedWidth] = useState(new Animated.Value(40))
+  const [animatedTop, setAnimatedTop] = useState(new Animated.Value(clickX))
+  const [animatedLeft, setAnimatedLeft] = useState(new Animated.Value(clickY))
+  useEffect(() => {
+    Animated.timing(animatedHeight, {
+      toValue: Dimensions.get('window').height,
+      duration: 500,
+      //  useNativeDriver: true,
+    }).start()
+    Animated.timing(animatedWidth, {
+      toValue: Dimensions.get('window').width,
+      duration: 500,
+      // useNativeDriver: true,
+    }).start()
+    Animated.timing(animatedTop, {
+      toValue: 0,
+      duration: 500,
+      //  useNativeDriver: true,
+    }).start()
+    Animated.timing(animatedLeft, {
+      toValue: 0,
+      duration: 500,
+      //useNativeDriver: true,
+    }).start()
+  }, [animatedHeight, animatedWidth, animatedTop, animatedLeft])
+
   console.log('EVENT', route.params.event)
 
   const [statusBarColor, setStatusBarColor] = useState(
@@ -134,20 +162,24 @@ export const CozyAppScreen = ({route, navigation}) => {
         }
       />
 
-      {/* displayAnimationView */ true  && (
+      {displayAnimationView  && (
         <Animated.View
           style={{
             backgroundColor: '#FFFFFF',
             position: 'absolute',
-            height: 40,
-            width: 40,
+            height: animatedHeight,
+            width: animatedWidth,
+            top: animatedTop,
+            left: animatedLeft,
+            paddingLeft: '20%',
+            paddingRight: '20%',
+
             zIndex: 99999,
-            top: clickX,
-            left: clickY,
             
-            opacity: 1,
-            //opacity: displayAnimationViewOpacity,
-            transform: [
+            
+            //opacity: 1,
+            opacity: displayAnimationViewOpacity,
+           /*  transform: [
               {
                 translateX: scaleAnimation.interpolate({
                   inputRange: [0, 1],
@@ -178,15 +210,11 @@ export const CozyAppScreen = ({route, navigation}) => {
                   outputRange: [1, Dimensions.get('window').height / 45],
                 }),
               },
-            ],
+            ], */
           }}>
           {/*<View style={{backgroundColor: "#FFFFFF", flex: 1,  alignItems: "center", justifyContent: "center", paddingLeft: "20%"}}>*/}
-          {/*  {ImgApp && <ImgApp /> } */}
-          <Text>Toto</Text>
-           {<Animated.Image source={require('../../assets/apps/drive.png')} style={{width: 100, height: 100}} resizeMode="center"
-              //resizeMode="contain"
-             
-          />} 
+          {/* ImgApp && <ImgApp />  */}
+           {ImgApp && <Animated.Image source={ImgApp} style={{width: '100%', height: '100%'}} resizeMode="contain" />}
           
         </Animated.View>
       )}
