@@ -27,19 +27,19 @@ class EdfContentScript extends ContentScript {
     }
     log.debug('Not authenticated')
 
-    let credentials = await this.getCredentials()
-    if (credentials && credentials.email && credentials.password) {
-      try {
-        log.debug('Got credentials, trying autologin')
-        await this.tryAutoLogin(credentials)
-      } catch (err) {
-        log.warn('autoLogin error' + err.message)
-        await this.waitForUserAuthentication()
-      }
-    } else {
-      log.debug('No credentials saved, waiting for user input')
-      await this.waitForUserAuthentication()
-    }
+    // let credentials = await this.getCredentials()
+    // if (credentials && credentials.email && credentials.password) {
+    //   try {
+    //     log.debug('Got credentials, trying autologin')
+    //     await this.tryAutoLogin(credentials)
+    //   } catch (err) {
+    //     log.warn('autoLogin error' + err.message)
+    //     await this.waitForUserAuthentication()
+    //   }
+    // } else {
+    log.debug('No credentials saved, waiting for user input')
+    await this.waitForUserAuthentication()
+    // }
     return true
   }
 

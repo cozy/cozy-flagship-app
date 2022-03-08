@@ -1,11 +1,18 @@
 import React, {Component} from 'react'
 import {WebView} from 'react-native-webview'
-import {StyleSheet, View, Text, Dimensions} from 'react-native'
+import {
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  TouchableOpacity,
+  Image,
+} from 'react-native'
 // TODO find a proper way to load a connector only when needed
-import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
-//import templateConnector from '../../../connectors/template/dist/webviewScript'
-import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
-import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
+// import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
+// import templateConnector from '../../../connectors/template/dist/webviewScript'
+// import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
+// import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
 import edfConnector from '../../../connectors/edf/dist/webviewScript'
 import ReactNativeLauncher from '../../libs/ReactNativeLauncher'
 import CookieManager from '@react-native-cookies/cookies'
@@ -13,14 +20,14 @@ import debounce from 'lodash/debounce'
 import {withClient} from 'cozy-client'
 import {get} from 'lodash'
 
-const DEBUG = false
+const DEBUG = true
 
 const embeddedConnectors = {
   edf: edfConnector,
   // amazon: amazonConnector,
-  //template: templateConnector,
+  // template: templateConnector,
   // sncf: sncfConnector,
-  //blablacar: blablacarConnector,
+  // blablacar: blablacarConnector,
 }
 class LauncherView extends Component {
   constructor(props) {
@@ -110,16 +117,14 @@ class LauncherView extends Component {
   }
 
   render() {
-    const workerStyle = this.state.worker.visible
-      ? styles.workerVisible || DEBUG
-      : styles.workerHidden
+    const workerStyle =
+      this.state.worker.visible || DEBUG
+        ? styles.workerVisible
+        : styles.workerHidden
     return (
       <>
         {this.state.connector ? (
           <>
-            {DEBUG && (
-              <Button title="Stop execution" onPress={this.onStopExecution} />
-            )}
             <View>
               <WebView
                 ref={ref => (this.pilotWebView = ref)}
@@ -140,8 +145,20 @@ class LauncherView extends Component {
               />
             </View>
             <View style={workerStyle}>
+              <View style={styles.headerStyle}>
+                <TouchableOpacity
+                  style={styles.ImageIconStyle}
+                  activeOpacity={0.5}
+                  onPress={this.onStopExecution}>
+                  <Image
+                    source={require('../../assets/cross.png')}
+                    resizeMode="center"
+                    style={styles.cross}
+                  />
+                </TouchableOpacity>
+              </View>
               <WebView
-                style={workerStyle}
+                style={styles.webViewStyle}
                 ref={ref => (this.workerWebview = ref)}
                 originWhitelist={['*']}
                 useWebKit={true}
@@ -225,6 +242,9 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
+  webViewStyle: {
+    flex: 1,
+  },
   workerHidden: {
     position: 'absolute',
     left: -2000,
@@ -232,6 +252,18 @@ const styles = StyleSheet.create({
     height: 0,
     width: 0,
     flex: 0,
+  },
+  cross: {
+    width: 16,
+    height: 16,
+    zIndex: 99999,
+    position: 'absolute',
+    top: 30,
+    right: 20,
+  },
+  headerStyle: {
+    flaxBasis: 60,
+    height: 60,
   },
 })
 
