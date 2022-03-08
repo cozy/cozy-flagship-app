@@ -32,6 +32,8 @@ export default class ContentScript {
       'getUserDataFromWebsite',
       'fetch',
       'click',
+      'fillText',
+      'storeFromWorker',
     ]
 
     if (options.additionalExposedMethodsNames) {
@@ -72,7 +74,7 @@ export default class ContentScript {
    * @throws {Exception}: TimeoutError from p-wait-for package if timeout expired
    */
   async waitForAuthenticated() {
-    await waitFor(this.checkAuthenticated, {
+    await waitFor(this.checkAuthenticated.bind(this), {
       interval: 1000,
       timeout: DEFAULT_LOGIN_TIMEOUT,
     })
@@ -148,7 +150,7 @@ export default class ContentScript {
         `click: No DOM element is matched with the ${selector} selector`,
       )
     }
-    document.querySelector(selector).click()
+    elem.click()
   }
 
   async clickAndWait(elementToClick, elementToWait) {
@@ -157,6 +159,19 @@ export default class ContentScript {
     log.debug('waiting for ' + elementToWait)
     await this.waitForElementInWorker(elementToWait)
     log.debug('done waiting ' + elementToWait)
+  }
+
+  async fillText(selector, text) {
+    const elem = document.querySelector(selector)
+    if (!elem) {
+      throw new Error(
+        `fillText: No DOM element is matched with the ${selector} selector`,
+      )
+    }
+    elem.focus()
+    elem.value = text
+    elem.dispatchEvent(new Event('input', {bubbles: true}))
+    elem.dispatchEvent(new Event('change', {bubbles: true}))
   }
 
   /**
@@ -202,6 +217,22 @@ export default class ContentScript {
   }
 
   /**
+   * Bridge to the getCredentials method from the launcher.
+   */
+  async getCredentials() {
+    return await this.bridge.call('getCredentials')
+  }
+
+  /**
+   * Bridge to the saveCredentials method from the launcher.
+   *
+   * @param {Object} credentials
+   */
+  async saveCredentials(credentials) {
+    return await this.bridge.call('saveCredentials', credentials)
+  }
+
+  /**
    * Bridge to the saveIdentity method from the launcher.
    *
    * @param {Object} identity
@@ -225,7 +256,7 @@ export default class ContentScript {
         options.fileIdAttributes,
       )
       return files.filter(
-        (file) =>
+        file =>
           contextFilesIndex[
             this.calculateFileKey(file, options.fileIdAttributes)
           ] === undefined,
@@ -261,7 +292,7 @@ export default class ContentScript {
   calculateFileKey(file, fileIdAttributes) {
     return fileIdAttributes
       .sort()
-      .map((key) => get(file, key))
+      .map(key => get(file, key))
       .join('####')
   }
 
@@ -312,6 +343,28 @@ export default class ContentScript {
    * @returns {Object}
    */
   async getUserDataFromWebsite() {}
+
+  /**
+   * Send data to store from the worker to the pilot
+   *
+   * @param {Object} : any object with data to store
+   */
+  async sendToPilot(obj) {
+    return this.bridge.call('sendToPilot', obj)
+  }
+
+  /**
+   * Store data sent from worker with sendToPilot method
+   *
+   * @param {Object} : any object with data to store
+   */
+  async storeFromWorker(obj) {
+    if (!this.store) {
+      this.store = {}
+    }
+
+    Object.assign(this.store, obj)
+  }
 
   /**
    * Main function, fetches all connector data and save it to the cozy

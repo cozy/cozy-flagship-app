@@ -13,6 +13,8 @@ import debounce from 'lodash/debounce'
 import {withClient} from 'cozy-client'
 import {get} from 'lodash'
 
+const DEBUG = false
+
 const embeddedConnectors = {
   edf: edfConnector,
   // amazon: amazonConnector,
@@ -25,6 +27,7 @@ class LauncherView extends Component {
     super(props)
     this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
+    this.onStopExecution = this.onStopExecution.bind(this)
     this.onWorkerWillReload = debounce(this.onWorkerWillReload, 1000).bind(this)
     this.pilotWebView = null
     this.workerWebview = null
@@ -33,11 +36,11 @@ class LauncherView extends Component {
       connector: null,
       worker: {},
     }
-    // this.resetSession()
   }
 
-  resetSession() {
-    CookieManager.flush()
+  onStopExecution() {
+    this.launcher.stop({message: 'stopped by user'})
+    this.props.setLauncherContext({state: 'default'})
   }
 
   async initConnector() {
@@ -107,16 +110,17 @@ class LauncherView extends Component {
   }
 
   render() {
-    const toto = this.state.connector
-    console.log({toto})
     const workerStyle = this.state.worker.visible
-      ? styles.workerVisible
+      ? styles.workerVisible || DEBUG
       : styles.workerHidden
     return (
       <>
         {this.state.connector ? (
-          <View>
-            <View style={{flex: 1}}>
+          <>
+            {DEBUG && (
+              <Button title="Stop execution" onPress={this.onStopExecution} />
+            )}
+            <View>
               <WebView
                 ref={ref => (this.pilotWebView = ref)}
                 originWhitelist={['*']}
@@ -156,7 +160,7 @@ class LauncherView extends Component {
                 )}
               />
             </View>
-          </View>
+          </>
         ) : (
           <View>
             <Text>Loading...</Text>

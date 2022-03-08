@@ -3,6 +3,7 @@ import {kyScraper as ky} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import {format} from 'date-fns'
+import waitFor from 'p-wait-for'
 
 const log = Minilog('ContentScript')
 Minilog.enable()
@@ -12,18 +13,84 @@ class EdfContentScript extends ContentScript {
   //PILOT//
   /////////
   async ensureAuthenticated() {
-    // we always display the login form. This ensures all the actions expected by edf to keep the session are done
-    await this.showLoginFormAndWaitForAuthentication()
-    return true
-  }
-
-  async showLoginFormAndWaitForAuthentication() {
-    log.debug('showLoginFormAndWaitForAuthentication start')
     await this.goto(
       'https://particulier.edf.fr/fr/accueil/espace-client/tableau-de-bord.html',
     )
+    log.debug('waiting for any authentication confirmation or login form...')
+    await Promise.race([
+      this.runInWorkerUntilTrue({method: 'waitForAuthenticated'}),
+      this.runInWorkerUntilTrue({method: 'waitForLoginForm'}),
+    ])
+    if (await this.runInWorker('checkAuthenticated')) {
+      this.log('Authenticated')
+      return true
+    }
+    log.debug('Not authenticated')
+
+    let credentials = await this.getCredentials()
+    if (credentials && credentials.email && credentials.password) {
+      try {
+        log.debug('Got credentials, trying autologin')
+        await this.tryAutoLogin(credentials)
+      } catch (err) {
+        log.warn('autoLogin error' + err.message)
+        await this.waitForUserAuthentication()
+      }
+    } else {
+      log.debug('No credentials saved, waiting for user input')
+      await this.waitForUserAuthentication()
+    }
+    return true
+  }
+
+  async tryAutoLogin(credentials) {
+    this.log('autologin start')
+    await this.goto(
+      'https://particulier.edf.fr/fr/accueil/espace-client/tableau-de-bord.html',
+    )
+    await Promise.all([
+      this.autoLogin(credentials),
+      this.runInWorkerUntilTrue({method: 'waitForAuthenticated'}),
+    ])
+  }
+
+  async autoLogin(credentials) {
+    this.log('fill email field')
+    await this.waitForElementInWorker('#email')
+    await this.runInWorker('fillText', '#email', credentials.email)
+    await this.runInWorker('click', '#username-next-button > span')
+
+    this.log('wait for password field or otp')
+    await Promise.race([
+      this.waitForElementInWorker('#password2-password-field'),
+      this.waitForElementInWorker('.auth #title-hotp3'),
+    ])
+
+    if (await this.runInWorker('checkOtpNeeded')) {
+      log.warn('Found otp needed')
+      throw new Error('OTP_NEEDED')
+    }
+    log.debug('No otp needed')
+
+    log.debug('fill password field')
+    await this.runInWorker(
+      'fillText',
+      '#password2-password-field',
+      credentials.password,
+    )
+    await this.runInWorker('click', '#password2-next-button > span')
+  }
+
+  async waitForUserAuthentication() {
+    log.debug('waitForUserAuthentication start')
     await this.setWorkerState({visible: true})
+    await this.goto(
+      'https://particulier.edf.fr/fr/accueil/espace-client/tableau-de-bord.html',
+    )
     await this.runInWorkerUntilTrue({method: 'waitForAuthenticated'})
+    if (this.store && this.store.email && this.store.password) {
+      await this.saveCredentials(this.store)
+    }
     await this.setWorkerState({visible: false})
   }
 
@@ -75,8 +142,8 @@ class EdfContentScript extends ContentScript {
     ) {
       const startDate = new Date(get(result, 'paymentSchedule.startDate'))
       const bills = result.paymentSchedule.deadlines
-        .filter((bill) => bill.payment === 'EFFECTUE')
-        .map((bill) => ({
+        .filter(bill => bill.payment === 'EFFECTUE')
+        .map(bill => ({
           vendor: 'EDF',
           contractNumber,
           startDate,
@@ -125,7 +192,7 @@ class EdfContentScript extends ContentScript {
       )}_EDF_echancier.pdf`
 
       await this.saveBills(
-        bills.map((bill) => ({
+        bills.map(bill => ({
           ...bill,
           filename,
           fileurl,
@@ -417,22 +484,50 @@ class EdfContentScript extends ContentScript {
   //WORKER//
   //////////
   async checkAuthenticated() {
-    try {
-      const {userStatus} = await ky
-        .get(
-          'https://particulier.edf.fr/services/rest/checkuserstatus/getUserStatus?_=' +
-            Date.now(),
-        )
-        .json()
-      return userStatus === 1
-    } catch (err) {
-      log.warn('checkAuthenticated failed', err)
-      return false
+    // try to subscribe a listener in the password field if present and not already done
+    const passwordField = document.querySelector('#password2-password-field')
+    const subscribed = window.__passwordField_subscribed
+    if (passwordField && !subscribed) {
+      passwordField.addEventListener(
+        'change',
+        this.findAndSendCredentials.bind(this),
+      )
+      window.__passwordField_subscribed = true
     }
+
+    return Boolean(document.querySelector('.isAuthentified.show'))
+  }
+  async checkLoginForm() {
+    return Boolean(document.querySelector('.auth #email'))
+  }
+  async checkOtpNeeded() {
+    return Boolean(document.querySelector('.auth #title-hotp3'))
+  }
+
+  async waitForLoginForm() {
+    await waitFor(this.checkLoginForm, {
+      interval: 1000,
+      timeout: 30 * 1000,
+    })
+    return true
+  }
+
+  findAndSendCredentials(e) {
+    const emailField = document.querySelector('#emailHid')
+    const passwordField = document.querySelector('#password2-password-field')
+    if (emailField && passwordField) {
+      this.sendToPilot({
+        email: emailField.value,
+        password: passwordField.value,
+      })
+    }
+    return true
   }
 }
 
 const connector = new EdfContentScript()
-connector.init({additionalExposedMethodsNames: []}).catch((err) => {
-  console.warn(err)
-})
+connector
+  .init({additionalExposedMethodsNames: ['waitForLoginForm', 'checkOtpNeeded']})
+  .catch(err => {
+    console.warn(err)
+  })

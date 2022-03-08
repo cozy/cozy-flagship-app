@@ -15,6 +15,7 @@ Minilog.enable()
 class ReactNativeLauncher extends Launcher {
   constructor() {
     super()
+    this.workerMethodNames = ['sendToPilot']
     this.workerListenedEventsNames = ['log', 'workerEvent']
   }
 
@@ -39,7 +40,7 @@ class ReactNativeLauncher extends Launcher {
       this.initWorkerContentScriptBridge({
         webViewRef: bridgeOptions.workerWebview,
         contentScript,
-        exposedMethodsNames: [],
+        exposedMethodsNames: this.workerMethodNames,
         listenedEventsNames: this.workerListenedEventsNames,
       }),
     ]
@@ -52,6 +53,18 @@ class ReactNativeLauncher extends Launcher {
     const content = await ConnectorInstaller.getContentScript(connector)
     const manifest = await ConnectorInstaller.getManifest(connector)
     return {content, manifest}
+  }
+
+  async stop({message} = {}) {
+    if (message) {
+      await this.updateJobResult({
+        state: 'errored',
+        error: message,
+      })
+    } else {
+      await this.updateJobResult()
+    }
+    this.close()
   }
 
   async start({initConnectorError} = {}) {
@@ -75,13 +88,10 @@ class ReactNativeLauncher extends Launcher {
       //   slug: manifest.slug,
       // })
       await this.pilot.call('fetch', pilotContext)
-      await this.updateJobResult()
+      await this.stop()
     } catch (err) {
       log.error(err, 'start error')
-      await this.updateJobResult({
-        state: 'errored',
-        error: err.message,
-      })
+      await this.stop({message: err.message})
     }
     this.emit('CONNECTOR_EXECUTION_END')
   }
@@ -147,6 +157,10 @@ class ReactNativeLauncher extends Launcher {
     }
   }
 
+  async sendToPilot(obj) {
+    await this.pilot.call('storeFromWorker', obj)
+  }
+
   /**
    * Reestablish the connection between launcher and the worker after a web page reload
    */
@@ -155,6 +169,7 @@ class ReactNativeLauncher extends Launcher {
 
     try {
       await this.worker.init({
+        exposedMethodsNames: this.workerMethodNames,
         listenedEventsNames: this.workerListenedEventsNames,
         label: 'worker',
       })
