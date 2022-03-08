@@ -115,7 +115,7 @@ class LauncherView extends Component {
     return (
       <>
         {this.state.connector ? (
-          <View style={{position: 'absolute', top: 0, left: 0, height: Dimensions.get('window').height, width: Dimensions.get('window').width, zIndex: 999, backgroundColor: '#000000'}}>
+          <View>
             <View style={{flex: 1}}>
               <WebView
                 ref={ref => (this.pilotWebView = ref)}
