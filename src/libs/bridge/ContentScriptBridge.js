@@ -37,7 +37,7 @@ export default class ContentScriptBridge extends Bridge {
     this.connection = await ParentHandshake(
       this.messenger,
       this.bindExposedMethods(this.root, exposedMethodsNames),
-      50,
+      100,
       100,
     )
 
