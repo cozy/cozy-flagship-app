@@ -4,7 +4,7 @@ import get from 'lodash/get'
 import set from 'lodash/set'
 
 import {saveFiles, saveBills, saveIdentity} from './connectorLibs'
-import {saveCredential, getCredential} from './keychain'
+import {saveCredential, getCredential, removeCredential} from './keychain'
 import {dataURItoArrayBuffer} from './utils'
 
 const log = Minilog('Launcher')
@@ -88,15 +88,28 @@ export default class Launcher {
   }
 
   /**
-   * Get saved credentials for the current context
+   * Save credentials for the current context
    *
    * @param {Object} : any object containing credentials. Ex: {login: 'login', password: 'password'}
-   * @returns {Promise<Object>}
+   * @returns {Promise<null>}
    */
   async saveCredentials(credentials) {
     const {account} = this.getStartContext()
-    account.auth = credentials
-    return (await saveCredential(account)).auth
+    const existingCredentials = await this.getCredentials()
+    if (existingCredentials) {
+      await removeCredential()
+    }
+    await saveCredential(account)
+  }
+
+  /**
+   * Remove any existing credential for the current context
+   *
+   * @returns {Promise<null>}
+   */
+  async removeCredentials() {
+    const {account} = this.getStartContext()
+    await removeCredential(account)
   }
 
   /**
