@@ -118,7 +118,9 @@ class LauncherView extends Component {
       <>
         {this.state.connector ? (
           <>
-          {DEBUG && <Button title="Stop execution" onPress={this.onStopExecution} />}
+            {DEBUG && (
+              <Button title="Stop execution" onPress={this.onStopExecution} />
+            )}
             <View>
               <WebView
                 ref={ref => (this.pilotWebView = ref)}

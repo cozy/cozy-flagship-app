@@ -8,14 +8,16 @@ import waitFor from 'p-wait-for'
 const log = Minilog('ContentScript')
 Minilog.enable()
 
+const BASE_URL = 'https://particulier.edf.fr'
+const DEFAULT_PAGE_URL =
+  BASE_URL + '/fr/accueil/espace-client/tableau-de-bord.html'
+
 class EdfContentScript extends ContentScript {
   /////////
   //PILOT//
   /////////
   async ensureAuthenticated() {
-    await this.goto(
-      'https://particulier.edf.fr/fr/accueil/espace-client/tableau-de-bord.html',
-    )
+    await this.goto(DEFAULT_PAGE_URL)
     log.debug('waiting for any authentication confirmation or login form...')
     await Promise.race([
       this.runInWorkerUntilTrue({method: 'waitForAuthenticated'}),
@@ -45,9 +47,7 @@ class EdfContentScript extends ContentScript {
 
   async tryAutoLogin(credentials) {
     this.log('autologin start')
-    await this.goto(
-      'https://particulier.edf.fr/fr/accueil/espace-client/tableau-de-bord.html',
-    )
+    await this.goto(DEFAULT_PAGE_URL)
     await Promise.all([
       this.autoLogin(credentials),
       this.runInWorkerUntilTrue({method: 'waitForAuthenticated'}),
@@ -56,14 +56,19 @@ class EdfContentScript extends ContentScript {
 
   async autoLogin(credentials) {
     this.log('fill email field')
-    await this.waitForElementInWorker('#email')
-    await this.runInWorker('fillText', '#email', credentials.email)
-    await this.runInWorker('click', '#username-next-button > span')
+    const emailInputSelector = '#email'
+    const passwordInputSelector = '#password2-password-field'
+    const emailNextButtonSelector = '#username-next-button > span'
+    const passwordNextButtonSelector = '#password2-next-button > span'
+    const otpNeededSelector = '.auth #title-hotp3'
+    await this.waitForElementInWorker(emailInputSelector)
+    await this.runInWorker('fillText', emailInputSelector, credentials.email)
+    await this.runInWorker('click', emailNextButtonSelector)
 
     this.log('wait for password field or otp')
     await Promise.race([
-      this.waitForElementInWorker('#password2-password-field'),
-      this.waitForElementInWorker('.auth #title-hotp3'),
+      this.waitForElementInWorker(passwordInputSelector),
+      this.waitForElementInWorker(otpNeededSelector),
     ])
 
     if (await this.runInWorker('checkOtpNeeded')) {
@@ -75,18 +80,16 @@ class EdfContentScript extends ContentScript {
     log.debug('fill password field')
     await this.runInWorker(
       'fillText',
-      '#password2-password-field',
+      passwordInputSelector,
       credentials.password,
     )
-    await this.runInWorker('click', '#password2-next-button > span')
+    await this.runInWorker('click', passwordNextButtonSelector)
   }
 
   async waitForUserAuthentication() {
     log.debug('waitForUserAuthentication start')
     await this.setWorkerState({visible: true})
-    await this.goto(
-      'https://particulier.edf.fr/fr/accueil/espace-client/tableau-de-bord.html',
-    )
+    await this.goto(DEFAULT_PAGE_URL)
     await this.runInWorkerUntilTrue({method: 'waitForAuthenticated'})
     if (this.store && this.store.email && this.store.password) {
       await this.saveCredentials(this.store)
@@ -108,15 +111,12 @@ class EdfContentScript extends ContentScript {
     this.log('fetching echeancier bills')
 
     // files won't download if this page is not fully loaded before
-    await this.clickAndWait(
-      "a.accessPage[href*='factures-et-paiements.html']",
-      '.timeline-header__download',
-    )
+    const fullpageLoadedSelector = '.timeline-header__download'
+    const billLinkSelector = "a.accessPage[href*='factures-et-paiements.html']"
+    await this.clickAndWait(billLinkSelector, fullpageLoadedSelector)
 
     const result = await ky
-      .get(
-        `https://particulier.edf.fr/services/rest/bill/consult?_=${Date.now()}`,
-      )
+      .get(`${BASE_URL}/services/rest/bill/consult?_=${Date.now()}`)
       .json()
 
     if (!result || !result.feSouscriptionResponse) {
@@ -153,9 +153,7 @@ class EdfContentScript extends ContentScript {
         }))
 
       const paymentDocuments = await ky
-        .get(
-          'https://particulier.edf.fr/services/rest/edoc/getPaymentsDocuments',
-        )
+        .get(BASE_URL + '/services/rest/edoc/getPaymentsDocuments')
         .json()
 
       if (
@@ -170,7 +168,8 @@ class EdfContentScript extends ContentScript {
 
       const csrfToken = await this.getCsrfToken()
       const fileurl =
-        'https://particulier.edf.fr/services/rest/document/getDocumentGetXByData?' +
+        BASE_URL +
+        '/services/rest/document/getDocumentGetXByData?' +
         new URLSearchParams({
           csrfToken,
           dn: 'CalendrierPaiement',
@@ -223,9 +222,11 @@ class EdfContentScript extends ContentScript {
   async fetchBillsForAllContracts(contracts, context) {
     this.log('fetchBillsForAllContracts')
     // files won't download if this page is not fully loaded before
-    await this.clickAndWait('#facture', '#factureSelection')
+    const billButtonSelector = '#facture'
+    const billListSelector = '#factureSelection'
+    await this.clickAndWait(billButtonSelector, billListSelector)
     const billDocResp = await ky
-      .get('https://particulier.edf.fr/services/rest/edoc/getBillsDocuments')
+      .get(BASE_URL + '/services/rest/edoc/getBillsDocuments')
       .json()
 
     if (billDocResp.length === 0) {
@@ -269,7 +270,8 @@ class EdfContentScript extends ContentScript {
           )}_EDF_${cozyBill.amount.toFixed(2)}€.pdf`
           const csrfToken = await this.getCsrfToken()
           cozyBill.fileurl =
-            'https://particulier.edf.fr/services/rest/document/getDocumentGetXByData?' +
+            BASE_URL +
+            '/services/rest/document/getDocumentGetXByData?' +
             new URLSearchParams({
               csrfToken,
               dn: 'FACTURE',
@@ -304,28 +306,22 @@ class EdfContentScript extends ContentScript {
 
   async getCsrfToken() {
     const dataCsrfToken = await ky
-      .get(
-        `https://particulier.edf.fr/services/rest/init/initPage?_=${Date.now()}`,
-      )
+      .get(BASE_URL + `/services/rest/init/initPage?_=${Date.now()}`)
       .json()
     return dataCsrfToken.data
   }
 
   async fetchAttestations(contracts, context) {
-    await this.goto(
-      'https://particulier.edf.fr/fr/accueil/espace-client/tableau-de-bord.html',
-    )
+    await this.goto(DEFAULT_PAGE_URL)
 
-    await this.waitForElementInWorker(
-      "a.accessPage[href*='mes-documents.html']",
-    )
-    await this.clickAndWait(
-      "a.accessPage[href*='mes-documents.html']",
-      '.contract-icon',
-    )
+    const myDocumentsLinkSelector = "a.accessPage[href*='mes-documents.html']"
+    const contractDisplayedSelector = '.contract-icon'
+    await this.waitForElementInWorker()
+    await this.clickAndWait(myDocumentsLinkSelector, contractDisplayedSelector)
     const attestationData = await ky
       .get(
-        `https://particulier.edf.fr/services/rest/edoc/getAttestationsContract?_=${Date.now()}`,
+        BASE_URL +
+          `/services/rest/edoc/getAttestationsContract?_=${Date.now()}`,
       )
       .json()
 
@@ -362,7 +358,8 @@ class EdfContentScript extends ContentScript {
                 contracts.details[contract.accDTO.numAcc].contracts[0]
                   .pdlnumber,
               fileurl:
-                'https://particulier.edf.fr/services/rest/document/getAttestationContratPDFByData?' +
+                BASE_URL +
+                '/services/rest/document/getAttestationContratPDFByData?' +
                 new URLSearchParams({
                   csrfToken,
                   aN: contract.accDTO.numAccCrypt + '==',
@@ -391,9 +388,7 @@ class EdfContentScript extends ContentScript {
   async fetchContracts() {
     this.log('fetching contracts')
     const contracts = await ky
-      .get(
-        'https://particulier.edf.fr/services/rest/authenticate/getListContracts',
-      )
+      .get(BASE_URL + '/services/rest/authenticate/getListContracts')
       .json()
 
     const result = {folders: {}, details: {}}
@@ -411,9 +406,7 @@ class EdfContentScript extends ContentScript {
   async fetchIdentity() {
     this.log('fetching identity')
     const json = await ky
-      .get(
-        'https://particulier.edf.fr/services/rest/context/getCustomerContext',
-      )
+      .get(BASE_URL + '/services/rest/context/getCustomerContext')
       .json()
 
     let ident = {}
@@ -466,9 +459,7 @@ class EdfContentScript extends ContentScript {
 
   async getUserDataFromWebsite() {
     const context = await ky
-      .get(
-        'https://particulier.edf.fr/services/rest/context/getCustomerContext',
-      )
+      .get(BASE_URL + '/services/rest/context/getCustomerContext')
       .json()
     const mail = get(context, 'bp.mail')
     if (mail) {

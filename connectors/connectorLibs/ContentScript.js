@@ -345,7 +345,7 @@ export default class ContentScript {
   async getUserDataFromWebsite() {}
 
   /**
-   * Send data to store from the worker to the pilot
+   * In worker context, send the given data to the pilot to be stored in its own store
    *
    * @param {Object} : any object with data to store
    */
