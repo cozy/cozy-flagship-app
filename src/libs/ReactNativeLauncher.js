@@ -16,7 +16,7 @@ class ReactNativeLauncher extends Launcher {
   constructor() {
     super()
     this.workerMethodNames = ['sendToPilot']
-    this.workerListenedEventsNames = ['log', 'workerEvent']
+    this.workerListenedEventsNames = ['log', 'workerEvent', 'workerReady']
   }
 
   async init({bridgeOptions, contentScript}) {
@@ -247,6 +247,13 @@ class ReactNativeLauncher extends Launcher {
    */
   workerEvent(event) {
     this.pilot.emit('workerEvent', event)
+  }
+
+  /**
+   * Called when the worker is ready to be called
+   */
+  workerReady() {
+    this.emit('WORKER_READY')
   }
 
   /**
