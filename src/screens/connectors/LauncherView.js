@@ -8,7 +8,6 @@ import templateConnector from '../../../connectors/template/dist/webviewScript'
 import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
 import edfConnector from '../../../connectors/edf/dist/webviewScript'
 import ReactNativeLauncher from '../../libs/ReactNativeLauncher'
-import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
 import {withClient} from 'cozy-client'
 import {get} from 'lodash'
@@ -28,7 +27,10 @@ class LauncherView extends Component {
     this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
     this.onStopExecution = this.onStopExecution.bind(this)
-    this.onWorkerWillReload = debounce(this.onWorkerWillReload, 1000).bind(this)
+    this.onWorkerWillReload = debounce(
+      this.onWorkerWillReload.bind(this),
+      1000,
+    ).bind(this)
     this.pilotWebView = null
     this.workerWebview = null
     this.state = {
@@ -79,9 +81,6 @@ class LauncherView extends Component {
     const initConnectorError = await this.initConnector()
 
     this.launcher.on('SET_WORKER_STATE', options => {
-      if (this.state.worker.url !== options.url) {
-        this.onWorkerWillReload(options)
-      }
       this.setState({worker: options})
     })
 
@@ -114,6 +113,7 @@ class LauncherView extends Component {
       this.state.worker.visible || DEBUG
         ? styles.workerVisible
         : styles.workerHidden
+
     return (
       <>
         {this.state.connector ? (
@@ -128,9 +128,9 @@ class LauncherView extends Component {
                 source={{
                   uri: get(this, 'state.connector.manifest.vendor_link'),
                 }}
-                userAgent={this.state.userAgent}
                 useWebKit={true}
                 javaScriptEnabled={true}
+                userAgent={this.state.userAgent}
                 sharedCookiesEnabled={true}
                 onMessage={this.onPilotMessage}
                 onError={this.onPilotError}
@@ -154,7 +154,10 @@ class LauncherView extends Component {
                 sharedCookiesEnabled={true}
                 onMessage={this.onWorkerMessage}
                 onError={this.onWorkerError}
-                onShouldStartLoadWithRequest={this.onWorkerWillReload}
+                onShouldStartLoadWithRequest={event => {
+                  console.log('onShouldStartLoadWithRequest', {event})
+                  return true
+                }}
                 injectedJavaScriptBeforeContentLoaded={get(
                   this,
                   'state.connector.content',
@@ -203,6 +206,13 @@ class LauncherView extends Component {
    * @param {Object} event
    */
   onWorkerMessage(event) {
+    if (event.nativeEvent && event.nativeEvent.data) {
+      const msg = JSON.parse(event.nativeEvent.data)
+      if (msg.message === 'NEW_WORKER_INITIALIZING') {
+        this.onWorkerWillReload(event)
+        return
+      }
+    }
     if (this.launcher) {
       this.launcher.onWorkerMessage(event)
     }
@@ -212,11 +222,18 @@ class LauncherView extends Component {
    *
    * @param {Object} event
    */
-  onWorkerWillReload(event) {
-    if (this.launcher && this.workerWebview) {
-      return this.launcher.onWorkerWillReload(event)
-    } else {
-      return true
+  onWorkerWillReload(event = {}) {
+    try {
+      console.log('onWorkerWillReload', {event})
+      if (this.launcher && this.workerWebview) {
+        this.setState({workerReady: false})
+        const result = this.launcher.onWorkerWillReload(event)
+
+        return result
+      }
+    } catch (e) {
+      console.log('Caught error in onWorkerWillReload', e.message)
+      throw e
     }
   }
 }

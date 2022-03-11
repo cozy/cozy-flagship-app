@@ -13,6 +13,8 @@ const m = 60 * s
 const DEFAULT_LOGIN_TIMEOUT = 5 * m
 const DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT = 30 * s
 
+sendContentScriptReadyEvent()
+
 export default class ContentScript {
   /**
    * Init the bridge communication with the launcher.
@@ -374,4 +376,11 @@ export default class ContentScript {
    * @returns {Object} : Connector execution result. TBD
    */
   async fetch({context}) {}
+}
+
+function sendContentScriptReadyEvent() {
+  console.log('Sending NEW_WORKER_INITIALIZING event')
+  window.ReactNativeWebView.postMessage(
+    JSON.stringify({message: 'NEW_WORKER_INITIALIZING'}),
+  )
 }
