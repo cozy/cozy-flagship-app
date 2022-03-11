@@ -316,7 +316,7 @@ class EdfContentScript extends ContentScript {
 
     const myDocumentsLinkSelector = "a.accessPage[href*='mes-documents.html']"
     const contractDisplayedSelector = '.contract-icon'
-    await this.waitForElementInWorker()
+    await this.waitForElementInWorker(myDocumentsLinkSelector)
     await this.clickAndWait(myDocumentsLinkSelector, contractDisplayedSelector)
     const attestationData = await ky
       .get(
