@@ -168,6 +168,7 @@ class ReactNativeLauncher extends Launcher {
     log.info('restarting worker', event)
 
     try {
+      await this.worker.close()
       await this.worker.init({
         exposedMethodsNames: this.workerMethodNames,
         listenedEventsNames: this.workerListenedEventsNames,
