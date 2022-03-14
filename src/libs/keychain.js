@@ -51,13 +51,16 @@ function unlockKeychain(reason) {
  */
 export async function saveCredential(account) {
   lockKeychain("saveCredential: You can't save while the keychain is locked")
-  const passwords = await getDecodedGenericPasswords()
-  const newJSON = addItem(
-    {scope: CREDENTIALS_SCOPE, key: account._id, value: account},
-    passwords,
-  )
-  await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
-  unlockKeychain('saveCredential is done')
+  try {
+    const passwords = await getDecodedGenericPasswords()
+    const newJSON = addItem(
+      {scope: CREDENTIALS_SCOPE, key: account._id, value: account},
+      passwords,
+    )
+    await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
+  } finally {
+    unlockKeychain('saveCredential is done')
+  }
 }
 /**
  *
@@ -80,13 +83,16 @@ export async function removeCredential(account) {
   lockKeychain(
     "removeCredential: You can't remove while the keychain is locked",
   )
-  const passwords = await getDecodedGenericPasswords()
-  const newJSON = removeItem(
-    {scope: CREDENTIALS_SCOPE, key: account._id},
-    passwords,
-  )
-  await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
-  unlockKeychain('removeCredential is done')
+  try {
+    const passwords = await getDecodedGenericPasswords()
+    const newJSON = removeItem(
+      {scope: CREDENTIALS_SCOPE, key: account._id},
+      passwords,
+    )
+    await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
+  } finally {
+    unlockKeychain('removeCredential is done')
+  }
 }
 /**
  *
@@ -97,10 +103,13 @@ export async function saveVaultInformation(key, value) {
   lockKeychain(
     "saveVaultInformation: You can't save while the keychain is locked",
   )
-  const passwords = await getDecodedGenericPasswords()
-  const newJSON = addItem({scope: VAULT_SCOPE, key, value}, passwords)
-  await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
-  unlockKeychain('saveVaultInformation is done')
+  try {
+    const passwords = await getDecodedGenericPasswords()
+    const newJSON = addItem({scope: VAULT_SCOPE, key, value}, passwords)
+    await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
+  } finally {
+    unlockKeychain('saveVaultInformation is done')
+  }
 }
 /**
  *
@@ -123,10 +132,13 @@ export async function removeVaultInformation(key) {
   lockKeychain(
     "removeVaultInformation: You can't remove while the keychain is locked",
   )
-  const passwords = await getDecodedGenericPasswords()
-  const newJSON = removeItem({scope: VAULT_SCOPE, key: key}, passwords)
-  await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
-  unlockKeychain('removeVaultInformation is done')
+  try {
+    const passwords = await getDecodedGenericPasswords()
+    const newJSON = removeItem({scope: VAULT_SCOPE, key: key}, passwords)
+    await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
+  } finally {
+    unlockKeychain('removeVaultInformation is done')
+  }
 }
 
 export async function deleteKeychain() {
