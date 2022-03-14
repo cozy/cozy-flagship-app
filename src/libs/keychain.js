@@ -123,7 +123,6 @@ export async function removeVaultInformation(key) {
   lockKeychain(
     "removeVaultInformation: You can't remove while the keychain is locked",
   )
-  isLocked = true
   const passwords = await getDecodedGenericPasswords()
   const newJSON = removeItem({scope: VAULT_SCOPE, key: key}, passwords)
   await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
