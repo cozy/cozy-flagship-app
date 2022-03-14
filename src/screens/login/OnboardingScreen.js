@@ -10,6 +10,7 @@ import Minilog from '@cozy/minilog'
 
 import {callOnboardingInitClient} from '../../libs/client'
 import {consumeRouteParameter} from '../../libs/functions/routeHelpers'
+import {saveVaultInformation} from '../../libs/keychain'
 
 import {routes} from '../../constants/routes'
 
@@ -66,13 +67,14 @@ export const OnboardingScreen = ({setClient, route, navigation}) => {
     [state, setState],
   )
 
-  const saveLoginData = loginData => {
-    // TODO: Save login data in local storage
+  const saveLoginData = async loginData => {
+    await saveVaultInformation('passwordHash', loginData.passwordHash)
+    await saveVaultInformation('key', loginData.key)
+    await saveVaultInformation('privateKey', loginData.privateKey)
+    await saveVaultInformation('publicKey', loginData.publicKey)
   }
 
   const setLoginData = loginData => {
-    saveLoginData()
-
     setState({
       ...state,
       step: OAUTH_SUMMARY_STEP,
@@ -112,6 +114,7 @@ export const OnboardingScreen = ({setClient, route, navigation}) => {
       registerToken,
     })
 
+    await saveLoginData(loginData)
     setClient(client)
   }
 
