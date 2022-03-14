@@ -19,6 +19,7 @@ import {
   STATE_2FA_NEEDED,
   STATE_INVALID_PASSWORD,
 } from '../../libs/client'
+import {saveVaultInformation} from '../../libs/keychain'
 
 const log = Minilog('LoginScreen')
 
@@ -72,13 +73,14 @@ export const LoginScreen = ({setClient}) => {
     })
   }
 
-  const saveLoginData = loginData => {
-    // TODO: Save login data in local storage
+  const saveLoginData = async loginData => {
+    await saveVaultInformation('passwordHash', loginData.passwordHash)
+    await saveVaultInformation('key', loginData.key)
+    await saveVaultInformation('privateKey', loginData.privateKey)
+    await saveVaultInformation('publicKey', loginData.publicKey)
   }
 
   const setLoginData = loginData => {
-    saveLoginData()
-
     setState({
       ...state,
       step: LOADING_STEP,
@@ -110,6 +112,7 @@ export const LoginScreen = ({setClient}) => {
           twoFactorToken: result.twoFactorToken,
         })
       } else {
+        await saveLoginData(loginData)
         setClient(result.client)
       }
     } catch (error) {
@@ -138,6 +141,7 @@ export const LoginScreen = ({setClient}) => {
           twoFactorToken: result.twoFactorToken,
         })
       } else {
+        await saveLoginData(loginData)
         setClient(result.client)
       }
     } catch (error) {
