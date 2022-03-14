@@ -28,7 +28,7 @@ class LauncherView extends Component {
     this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
     this.onStopExecution = this.onStopExecution.bind(this)
-    this.onWorkerWillReload = debounce(this.onWorkerWillReload, 1000).bind(this)
+    this.onWorkerWillReload = debounce(this.onWorkerWillReload.bind(this), 1000).bind(this)
     this.pilotWebView = null
     this.workerWebview = null
     this.state = {
@@ -80,9 +80,6 @@ class LauncherView extends Component {
     const initConnectorError = await this.initConnector()
 
     this.launcher.on('SET_WORKER_STATE', options => {
-      if (this.state.worker.url !== options.url) {
-        this.onWorkerWillReload(options)
-      }
       this.setState({worker: options})
     })
 
@@ -118,6 +115,10 @@ class LauncherView extends Component {
       this.state.worker.visible || DEBUG
         ? styles.workerVisible
         : styles.workerHidden
+
+    const workerUrl = this.state.worker.url
+    console.log('PILOT URL -- ', get(this, 'state.connector.manifest.vendor_link'))
+    console.log('WORKER URL -- ', workerUrl)
     return (
       <>
         {this.state.connector ? (
@@ -132,6 +133,8 @@ class LauncherView extends Component {
                 source={{
                   uri: get(this, 'state.connector.manifest.vendor_link'),
                 }}
+                useWebKit={true}
+                javaScriptEnabled={true}
                 userAgent={this.state.userAgent}
                 sharedCookiesEnabled={true}
                 onMessage={this.onPilotMessage}
@@ -149,19 +152,17 @@ class LauncherView extends Component {
                 originWhitelist={['*']}
                 userAgent={this.state.userAgent}
                 source={{
-                  uri: this.state.worker.url,
+                  uri: workerUrl,
                 }}
+                useWebKit={true}
+                javaScriptEnabled={true}
                 sharedCookiesEnabled={true}
                 onMessage={this.onWorkerMessage}
                 onError={this.onWorkerError}
-                onShouldStartLoadWithRequest={
-                  // this property can cause the contentScript not to be loaded properly.
-                  // Sometimes on android and all the time on iOS
-                  // we only detect page reload when we know contentscript is ready
-                  // this can cause problems when a page load can be caused by javascript on load
-                  // but let's try this now, to see if it is more stable
-                  this.state.workerReady ? this.onWorkerWillReload : undefined
-                }
+                onShouldStartLoadWithRequest={(event) => {
+                  console.log('onShouldStartLoadWithRequest', {event})
+                  return true
+                }}
                 injectedJavaScriptBeforeContentLoaded={get(
                   this,
                   'state.connector.content',
@@ -210,6 +211,25 @@ class LauncherView extends Component {
    * @param {Object} event
    */
   onWorkerMessage(event) {
+    // console.log('RECEIVED EVENT', {event})
+    if (event.nativeEvent && event.nativeEvent.data) {
+      const msg = JSON.parse(event.nativeEvent.data)
+      // console.log('NEW_WORKER_INIT', msg)
+      if (msg.message === 'NEW_WORKER_INITIALIZATINO') {
+        // console.log('RELOAD AFTER NEW_WORKER_INITIALIZATINO')
+
+        // this property can cause the contentScript not to be loaded properly.
+        // Sometimes on android and all the time on iOS
+        // we only detect page reload when we know contentscript is ready
+        // this can cause problems when a page load can be caused by javascript on load
+        // but let's try this now, to see if it is more stable
+        if (this.state.workerReady) {
+          this.onWorkerWillReload(event)
+        }
+        return
+      }
+    }
+    // tryConsole(event, log, 'worker')
     if (this.launcher) {
       this.launcher.onWorkerMessage(event)
     }
@@ -219,12 +239,18 @@ class LauncherView extends Component {
    *
    * @param {Object} event
    */
-  onWorkerWillReload(event) {
-    if (this.launcher && this.workerWebview) {
-      this.setState({workerReady: false})
-      return this.launcher.onWorkerWillReload(event)
-    } else {
-      return true
+  onWorkerWillReload(event = {}) {
+    try {
+      console.log('onWorkerWillReload', {event})
+      if (this.launcher && this.workerWebview) {
+        this.setState({workerReady: false})
+        const result = this.launcher.onWorkerWillReload(event)
+
+        return result
+      }
+    } catch (e) {
+      console.log('CATCHA', e.message)
+      throw e
     }
   }
 }

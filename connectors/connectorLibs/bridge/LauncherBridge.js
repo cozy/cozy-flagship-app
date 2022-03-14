@@ -17,10 +17,13 @@ export default class LauncherBridge extends Bridge {
   }
 
   async init({exposedMethods = {}} = {}) {
+    console.log('<<<<<< INIT LauncherBridge1')
     const messenger = new ReactNativeWebviewMessenger({
       localWindow: this.localWindow,
     })
+    console.log('<<<<<< INIT LauncherBridge2')
     this.connection = await ChildHandshake(messenger, exposedMethods)
+    console.log('<<<<<< INIT LauncherBridge3')
     this.localHandle = this.connection.localHandle()
     this.remoteHandle = this.connection.remoteHandle()
   }

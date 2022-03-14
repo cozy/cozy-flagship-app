@@ -12,6 +12,8 @@ const BASE_URL = 'https://particulier.edf.fr'
 const DEFAULT_PAGE_URL =
   BASE_URL + '/fr/accueil/espace-client/tableau-de-bord.html'
 
+console.log('HELLO FROM EDF SCRIPT')
+window.ReactNativeWebView.postMessage(JSON.stringify({message: "NEW_WORKER_INITIALIZATINO"}))
 class EdfContentScript extends ContentScript {
   /////////
   //PILOT//
@@ -317,6 +319,7 @@ class EdfContentScript extends ContentScript {
     const myDocumentsLinkSelector = "a.accessPage[href*='mes-documents.html']"
     const contractDisplayedSelector = '.contract-icon'
     await this.waitForElementInWorker()
+    await this.waitForElementInWorker(myDocumentsLinkSelector)
     await this.clickAndWait(myDocumentsLinkSelector, contractDisplayedSelector)
     const attestationData = await ky
       .get(
