@@ -56,6 +56,8 @@ export default class ContentScript {
       this.log(
         'window.beforeunload detected with previous url : ' + document.location,
       )
+
+    this.bridge.emit('workerReady')
   }
 
   /**
