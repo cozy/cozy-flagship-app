@@ -78,6 +78,7 @@ export const LoginScreen = ({setClient}) => {
     await saveVaultInformation('key', loginData.key)
     await saveVaultInformation('privateKey', loginData.privateKey)
     await saveVaultInformation('publicKey', loginData.publicKey)
+    await saveVaultInformation('masterKey', loginData.masterKey)
   }
 
   const setLoginData = loginData => {
