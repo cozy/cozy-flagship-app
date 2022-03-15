@@ -9,16 +9,17 @@ export const computePassFunctionDeclaration = `
       iterations
     } = passData
 
-    let hashed, masterKey
+    let hashed, masterKey, protectedKey
 
     window.password
       .hash(pass, salt, iterations)
       .then((result) => {
         hashed = result.hashed
+        masterKey = result.masterKey
         return window.password.makeEncKey(result.masterKey)
       })
       .then((key) => {
-        masterKey = key.cipherString
+        protectedKey = key.cipherString
         return window.password.makeKeyPair(key.key)
       })
       .then((pair) => {
@@ -27,7 +28,7 @@ export const computePassFunctionDeclaration = `
           messageId: messageId,
           param: {
             iterations,
-            key: masterKey,
+            key: protectedKey,
             publicKey: pair.publicKey,
             privateKey: pair.privateKey,
             passwordHash: hashed,

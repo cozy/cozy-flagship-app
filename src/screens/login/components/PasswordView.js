@@ -35,7 +35,8 @@ const doHashPassword = async (passwordData, fqdn, kdfIterations) => {
       iterations: kdfIterations,
     })
 
-    const {iterations, key, publicKey, privateKey, passwordHash} = result.param
+    const {passwordHash, iterations, key, publicKey, privateKey, masterKey} =
+      result.param
 
     const loginData = {
       passwordHash,
@@ -43,6 +44,7 @@ const doHashPassword = async (passwordData, fqdn, kdfIterations) => {
       key,
       publicKey,
       privateKey,
+      masterKey,
     }
 
     return loginData
