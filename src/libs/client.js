@@ -85,3 +85,71 @@ export const callInitClient = async uri => {
   await saveClient(client)
   return client
 }
+
+/**
+ * Onboard the Cozy instance by specifying its password and encryption keys
+ *
+ * @param {object} param
+ * @param {LoginData} param.loginData - login data containing hashed password and encryption keys
+ * @param {string} param.instance - the Cozy instance used to create the client
+ * @param {string} param.registerToken - the registerToken from the onboarding link that should be used to log in the stack
+ * @returns {CozyClient} The created and authenticated CozyClient for the newly onboarded Cozy instance
+ */
+export const callOnboardingInitClient = async ({
+  loginData,
+  instance,
+  registerToken,
+}) => {
+  const client = await createClient(instance)
+  const stackClient = client.getStackClient()
+
+  await client.certifyFlagship()
+
+  const {passwordHash, hint, iterations, key, publicKey, privateKey} = loginData
+
+  const token = await stackClient.setPassphraseFlagship({
+    registerToken,
+    passwordHash,
+    hint,
+    iterations,
+    key,
+    publicKey,
+    privateKey,
+  })
+
+  stackClient.setToken(token)
+
+  await client.login()
+  await saveClient(client)
+  return client
+}
+
+/**
+ * Create a CozyClient for the given Cozy instance and register it
+ *
+ * @param {string} instance - the Cozy instance used to create the client
+ * @returns {CozyClient} - The created and registered CozyClient
+ */
+const createClient = async instance => {
+  const options = {
+    scope: ['*'],
+    oauth: {
+      redirectURI: strings.COZY_SCHEME,
+      softwareID: 'amiral',
+      clientKind: 'mobile',
+      clientName: 'Amiral',
+      shouldRequireFlagshipPermissions: true,
+      certificationConfig: {
+        androidSafetyNetApiKey: apiKeys.androidSafetyNetApiKey,
+      },
+    },
+  }
+
+  const client = new CozyClient(options)
+
+  const stackClient = client.getStackClient()
+  stackClient.setUri(instance)
+  await stackClient.register(instance)
+
+  return client
+}
