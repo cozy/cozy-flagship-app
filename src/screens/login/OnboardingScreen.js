@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useState} from 'react'
 
 import {ErrorView} from './components/ErrorView'
+import {LoadingView} from './components/LoadingView'
 import {OnboardingPasswordView} from './components/OnboardingPasswordView'
 
 import {OnboardingConfigView} from './components/debug/OnboardingConfigView'
-import {OAuthSummaryView} from './components/debug/OAuthSummaryView'
 
 import Minilog from '@cozy/minilog'
 
@@ -18,9 +18,9 @@ const log = Minilog('OnboardingScreen')
 
 Minilog.enable()
 
+const LOADING_STEP = 'LOADING_STEP'
 const ONBOARDING_STEP = 'ONBOARDING_STEP'
 const PASSWORD_STEP = 'PASSWORD_STEP'
-const OAUTH_SUMMARY_STEP = 'OAUTH_SUMMARY_STEP'
 const ERROR_STEP = 'ERROR_STEP'
 
 export const OnboardingScreen = ({setClient, route, navigation}) => {
@@ -31,6 +31,12 @@ export const OnboardingScreen = ({setClient, route, navigation}) => {
   useEffect(() => {
     log.debug(`Enter state ${state.step}`)
   }, [state])
+
+  useEffect(() => {
+    if (state.loginData) {
+      startOAuth()
+    }
+  }, [state.loginData, startOAuth])
 
   useEffect(() => {
     const registerToken = consumeRouteParameter(
@@ -67,18 +73,18 @@ export const OnboardingScreen = ({setClient, route, navigation}) => {
     [state, setState],
   )
 
-  const saveLoginData = async loginData => {
+  const saveLoginData = useCallback(async loginData => {
     await saveVaultInformation('passwordHash', loginData.passwordHash)
     await saveVaultInformation('key', loginData.key)
     await saveVaultInformation('privateKey', loginData.privateKey)
     await saveVaultInformation('publicKey', loginData.publicKey)
     await saveVaultInformation('masterKey', loginData.masterKey)
-  }
+  }, [])
 
   const setLoginData = loginData => {
     setState({
       ...state,
-      step: OAUTH_SUMMARY_STEP,
+      step: LOADING_STEP,
       loginData: loginData,
     })
   }
@@ -93,31 +99,38 @@ export const OnboardingScreen = ({setClient, route, navigation}) => {
     navigation.navigate(routes.authenticate)
   }
 
-  const setError = (errorMessage, error) => {
-    setState({
-      ...state,
-      step: ERROR_STEP,
-      errorMessage: errorMessage,
-      error: error,
-      previousStep: state.step,
-    })
-  }
+  const setError = useCallback(
+    (errorMessage, error) => {
+      setState({
+        ...state,
+        step: ERROR_STEP,
+        errorMessage: errorMessage,
+        error: error,
+        previousStep: state.step,
+      })
+    },
+    [state],
+  )
 
-  const startOAuth = async () => {
-    const {loginData, onboardingData} = state
+  const startOAuth = useCallback(async () => {
+    try {
+      const {loginData, onboardingData} = state
 
-    const {instance, fqdn, registerToken} = onboardingData
+      const {instance, fqdn, registerToken} = onboardingData
 
-    const client = await callOnboardingInitClient({
-      loginData,
-      instance,
-      fqdn,
-      registerToken,
-    })
+      const client = await callOnboardingInitClient({
+        loginData,
+        instance,
+        fqdn,
+        registerToken,
+      })
 
-    await saveLoginData(loginData)
-    setClient(client)
-  }
+      await saveLoginData(loginData)
+      setClient(client)
+    } catch (error) {
+      setError(error.message, error)
+    }
+  }, [saveLoginData, setClient, setError, state])
 
   if (state.step === ONBOARDING_STEP) {
     return (
@@ -147,15 +160,8 @@ export const OnboardingScreen = ({setClient, route, navigation}) => {
     )
   }
 
-  if (state.step === OAUTH_SUMMARY_STEP) {
-    return (
-      <OAuthSummaryView
-        loginData={state.loginData}
-        startOauth={startOauth}
-        cancelLogin={cancelLogin}
-        cancelOnboarding={cancelOnboarding}
-      />
-    )
+  if (state.step === LOADING_STEP) {
+    return <LoadingView message={state.loadingMessage} />
   }
 
   if (state.step === ERROR_STEP) {
