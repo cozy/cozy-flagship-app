@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 
 import Minilog from '@cozy/minilog'
 
 import {ClouderyView} from './components/ClouderyView'
 import {ErrorView} from './components/ErrorView'
+import {LoadingView} from './components/LoadingView'
 import {PasswordView} from './components/PasswordView'
 import {
   TwoFactorAuthenticationView,
   TwoFactorAuthenticationWrongCodeView,
 } from './components/TwoFactorAuthenticationView'
-import {OAuthSummaryView} from './components/debug/OAuthSummaryView'
 
 import {
   callInitClient,
@@ -20,9 +20,9 @@ import {
 
 const log = Minilog('LoginScreen')
 
+const LOADING_STEP = 'LOADING_STEP'
 const CLOUDERY_STEP = 'CLOUDERY_STEP'
 const PASSWORD_STEP = 'PASSWORD_STEP'
-const OAUTH_SUMMARY_STEP = 'OAUTH_SUMMARY_STEP'
 const TWO_FACTOR_AUTHENTICATION_STEP = 'TWO_FACTOR_AUTHENTICATION_STEP'
 const TWO_FACTOR_AUTHENTICATION_ERROR_STEP =
   'TWO_FACTOR_AUTHENTICATION_ERROR_STEP'
@@ -36,6 +36,12 @@ export const LoginScreen = ({setClient}) => {
   useEffect(() => {
     log.debug(`Enter state ${state.step}`)
   }, [state])
+
+  useEffect(() => {
+    if (state.loginData) {
+      startOAuth()
+    }
+  }, [state.loginData, startOAuth])
 
   const setInstanceData = ({instance, fqdn}) => {
     setState({
@@ -60,12 +66,12 @@ export const LoginScreen = ({setClient}) => {
 
     setState({
       ...state,
-      step: OAUTH_SUMMARY_STEP,
+      step: LOADING_STEP,
       loginData: loginData,
     })
   }
 
-  const startOAuth = async () => {
+  const startOAuth = useCallback(async () => {
     try {
       const {loginData, instance} = state
 
@@ -93,7 +99,7 @@ export const LoginScreen = ({setClient}) => {
     } catch (error) {
       setError(error.message, error)
     }
-  }
+  }, [setClient, setError, state])
 
   const continueOAuth = async twoFactorCode => {
     try {
@@ -130,15 +136,18 @@ export const LoginScreen = ({setClient}) => {
     })
   }
 
-  const setError = (errorMessage, error) => {
-    setState({
-      ...state,
-      step: ERROR_STEP,
-      errorMessage: errorMessage,
-      error: error,
-      previousStep: state.step,
-    })
-  }
+  const setError = useCallback(
+    (errorMessage, error) => {
+      setState({
+        ...state,
+        step: ERROR_STEP,
+        errorMessage: errorMessage,
+        error: error,
+        previousStep: state.step,
+      })
+    },
+    [state],
+  )
 
   if (state.step === CLOUDERY_STEP) {
     return <ClouderyView setInstanceData={setInstanceData} />
@@ -159,16 +168,6 @@ export const LoginScreen = ({setClient}) => {
     )
   }
 
-  if (state.step === OAUTH_SUMMARY_STEP) {
-    return (
-      <OAuthSummaryView
-        loginData={state.loginData}
-        startOauth={startOauth}
-        cancelLogin={cancelLogin}
-      />
-    )
-  }
-
   if (state.step === TWO_FACTOR_AUTHENTICATION_STEP) {
     return (
       <TwoFactorAuthenticationView
@@ -185,6 +184,10 @@ export const LoginScreen = ({setClient}) => {
         cancel={cancelLogin}
       />
     )
+  }
+
+  if (state.step === LOADING_STEP) {
+    return <LoadingView message={state.loadingMessage} />
   }
 
   if (state.step === ERROR_STEP) {
