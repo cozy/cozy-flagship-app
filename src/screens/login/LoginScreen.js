@@ -55,6 +55,10 @@ export const LoginScreen = ({setClient}) => {
         client,
       })
 
+      // we do not want to await for flagship certification in order to make the UI more responsive
+      // so do not add `await` keyword here
+      client.certifyFlagship()
+
       setState({
         step: PASSWORD_STEP,
         fqdn: fqdn,
