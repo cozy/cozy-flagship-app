@@ -19,7 +19,7 @@ public class MainActivity extends ReactActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    boolean isDarkMode = false;
+    boolean isDarkMode = true;
     ImmersiveBars.changeBarColors(this, isDarkMode);
     super.onCreate(savedInstanceState);
     RNBootSplash.init(R.drawable.bootsplash, MainActivity.this);

@@ -1,57 +1,67 @@
 import React, {useEffect} from 'react'
-import {View} from 'react-native'
-import {changeBarColors} from 'react-native-immersive-bars'
+import {StatusBar, View} from 'react-native'
 import {useState} from 'react'
 
-import CozyWebView from '../../components/webviews/CozyWebView'
-import {Values} from '../../constants/values'
-import {navBarColorEvent} from '../../libs/intents/setNavBarColor'
 import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
-import {statusBarColorEvent} from '../../libs/intents/setStatusBarColor'
+import {flagshipUI, setFlagshipUI} from '../../libs/intents/setFlagshipUI'
+import CozyWebView from '../../components/webviews/CozyWebView'
+import {innerBottomOverlay} from './CozyAppScreen.styles'
 
 export const CozyAppScreen = ({route, navigation}) => {
-  const [statusBarColor, setStatusBarColor] = useState(
-    Values.DEFAULT_STATUSBAR_COLOR,
-  )
-  const [navBarColor, setNavBarColor] = useState(Values.DEFAULT_NAVBAR_COLOR)
+  const [UIState, setUIState] = useState({})
+  const {bottomBackground, bottomOverlay, topBackground, topTheme, topOverlay} =
+    UIState
 
   useEffect(() => {
-    changeBarColors(false)
-
-    statusBarColorEvent.on('change', color => {
-      setStatusBarColor(color)
-    })
-
-    navBarColorEvent.on('change', color => {
-      setNavBarColor(color)
+    flagshipUI.on('change', state => {
+      setUIState({...UIState, ...state})
     })
 
     return () => {
-      statusBarColorEvent.removeAllListeners()
-      navBarColorEvent.removeAllListeners()
+      flagshipUI.removeAllListeners()
     }
+  }, [UIState])
+
+  useEffect(() => {
+    setFlagshipUI({
+      bottomBackground: 'white',
+      bottomTheme: 'dark',
+      bottomOverlay: 'transparent',
+      topBackground: 'white',
+      topTheme: 'dark',
+      topOverlay: 'transparent',
+    })
   }, [])
 
   return (
     <>
+      <StatusBar translucent backgroundColor={topOverlay} barStyle={topTheme} />
       <View
         style={{
           height: statusBarHeight,
-          backgroundColor: statusBarColor,
+          backgroundColor: topBackground,
         }}
       />
+
       <CozyWebView
         source={{uri: route.params.href}}
         navigation={navigation}
         route={route}
         logId="AppScreen"
       />
+
       <View
         style={{
           height: navbarHeight,
-          backgroundColor: navBarColor,
-        }}
-      />
+          backgroundColor: bottomBackground,
+        }}>
+        <View
+          style={{
+            backgroundColor: bottomOverlay,
+            ...innerBottomOverlay,
+          }}
+        />
+      </View>
     </>
   )
 }
