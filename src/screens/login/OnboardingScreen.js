@@ -9,6 +9,9 @@ import {OAuthSummaryView} from './components/debug/OAuthSummaryView'
 import Minilog from '@cozy/minilog'
 
 import {callOnboardingInitClient} from '../../libs/client'
+import {consumeRouteParameter} from '../../libs/functions/routeHelpers'
+
+import {routes} from '../../constants/routes'
 
 const log = Minilog('OnboardingScreen')
 
@@ -19,7 +22,7 @@ const PASSWORD_STEP = 'PASSWORD_STEP'
 const OAUTH_SUMMARY_STEP = 'OAUTH_SUMMARY_STEP'
 const ERROR_STEP = 'ERROR_STEP'
 
-export const OnboardingScreen = ({setClient}) => {
+export const OnboardingScreen = ({setClient, route, navigation}) => {
   const [state, setState] = useState({
     step: ONBOARDING_STEP,
   })
@@ -28,13 +31,40 @@ export const OnboardingScreen = ({setClient}) => {
     log.debug(`Enter state ${state.step}`)
   }, [state])
 
-  const setOnboardingData = onboardingData => {
-    setState({
-      ...state,
-      step: PASSWORD_STEP,
-      onboardingData: onboardingData,
-    })
-  }
+  useEffect(() => {
+    const registerToken = consumeRouteParameter(
+      'registerToken',
+      route,
+      navigation,
+    )
+    const fqdn = consumeRouteParameter('fqdn', route, navigation)
+
+    if (registerToken && fqdn) {
+      // fqdn string should never contain the protocol, but we may want to enforce it
+      // when local debuging as this configuration uses `http` only
+      const url =
+        fqdn.startsWith('http://') || fqdn.startsWith('https://')
+          ? new URL(fqdn)
+          : new URL(`https://${fqdn}`)
+
+      setOnboardingData({
+        fqdn: url.host,
+        instance: url.origin,
+        registerToken: registerToken,
+      })
+    }
+  }, [navigation, route, setOnboardingData])
+
+  const setOnboardingData = useCallback(
+    onboardingData => {
+      setState({
+        ...state,
+        step: PASSWORD_STEP,
+        onboardingData: onboardingData,
+      })
+    },
+    [state, setState],
+  )
 
   const saveLoginData = loginData => {
     // TODO: Save login data in local storage
@@ -54,6 +84,10 @@ export const OnboardingScreen = ({setClient}) => {
     setState({
       step: ONBOARDING_STEP,
     })
+  }
+
+  const cancelOnboarding = () => {
+    navigation.navigate(routes.authenticate)
   }
 
   const setError = (errorMessage, error) => {
