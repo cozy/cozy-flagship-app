@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
 import {get} from 'lodash'
-import {changeBarColors} from 'react-native-immersive-bars'
 
 import {useClient, generateWebLink} from 'cozy-client'
 import {useNativeIntent} from 'cozy-intent'
@@ -45,10 +44,6 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
 
     return unsubscribe
   }, [navigation, route, uri])
-
-  useEffect(() => {
-    changeBarColors(true)
-  }, [])
 
   useEffect(() => {
     const deepLink = consumeRouteParameter('href', route, navigation)

@@ -1,10 +1,19 @@
 import React, {useEffect, useState} from 'react'
-import {StyleSheet, View} from 'react-native'
+import {StatusBar, StyleSheet, View} from 'react-native'
 
 import HomeView from './components/HomeView'
 import LauncherView from '../connectors/LauncherView'
 import DebugView from '../connectors/DebugView'
-import {changeBarColors} from 'react-native-immersive-bars'
+import {setFlagshipUI} from '../../libs/intents/setFlagshipUI'
+
+const resetUIState = () => {
+  setFlagshipUI({
+    topTheme: 'light',
+    bottomTheme: 'light',
+  })
+
+  StatusBar?.setBackgroundColor('transparent')
+}
 
 export const HomeScreen = ({route, navigation}) => {
   const [debug] = useState(false)
@@ -13,10 +22,7 @@ export const HomeScreen = ({route, navigation}) => {
   })
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      changeBarColors(true)
-    })
-
+    const unsubscribe = navigation.addListener('focus', resetUIState)
     return unsubscribe
   }, [navigation])
 

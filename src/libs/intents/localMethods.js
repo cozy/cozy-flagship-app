@@ -1,9 +1,10 @@
 import * as RootNavigation from '../RootNavigation'
 import {clearClient} from '../client'
-import {openApp} from '../functions/openApp'
-import {resetSessionToken} from '../functions/session'
 import {deleteKeychain} from '../keychain'
 import {hideSplashScreen} from '../services/SplashScreenService'
+import {openApp} from '../functions/openApp'
+import {resetSessionToken} from '../functions/session'
+import {setFlagshipUI} from './setFlagshipUI'
 
 export const asyncLogout = async () => {
   await clearClient()
@@ -19,13 +20,13 @@ const logout = () => {
 }
 
 const backToHome = () => {
-  changeBarColors(true)
   RootNavigation.navigate('home')
 }
 
 export const localMethods = {
   backToHome,
+  hideSplashScreen,
   logout,
   openApp: (href, app) => openApp(RootNavigation, href, app),
-  hideSplashScreen,
+  setFlagshipUI,
 }
