@@ -10,6 +10,7 @@ import {NativeIntentProvider} from 'cozy-intent'
 import * as RootNavigation from './libs/RootNavigation.js'
 import {HomeScreen} from './screens/home/HomeScreen'
 import {LoginScreen} from './screens/login/LoginScreen'
+import {OnboardingScreen} from './screens/login/OnboardingScreen'
 import {CozyAppScreen} from './screens/cozy-app/CozyAppScreen'
 import {SplashScreenProvider} from './providers/SplashScreenProvider'
 import {lightTheme} from './theme'
@@ -50,7 +51,13 @@ const App = () => {
       />
 
       <Stack.Screen name={routes.authenticate}>
-        {() => <LoginScreen setClient={setClient} />}
+        {params => <LoginScreen setClient={setClient} {...params} />}
+      </Stack.Screen>
+
+      <Stack.Screen
+        name={routes.onboarding}
+        initialParams={initialScreen.params}>
+        {params => <OnboardingScreen setClient={setClient} {...params} />}
       </Stack.Screen>
     </Stack.Navigator>
   )
