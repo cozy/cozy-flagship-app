@@ -6,7 +6,7 @@
  */
 
 /**
- * @typedef {string} CryptoMethodName
+ * @typedef {('computePass')} CryptoMethodName
  */
 
 /**
