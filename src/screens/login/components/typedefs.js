@@ -27,6 +27,29 @@
  */
 
 /**
+ * @typedef {('STATE_CONNECTED'|'STATE_2FA_NEEDED'|'STATE_INVALID_PASSWORD')} CozyClientCreationState
+ */
+
+/**
+ * @typedef {object} CozyClientCreationContext
+ * @property {CozyClient} client - The CozyClient instance
+ * @property {CozyClientCreationState} state - The state of the CozyClient instance
+ * @property {string} twoFactorToken - Token used for the 2FA workflow
+ */
+
+/**
+ * @typedef {object} TwoFactorAuthenticationData
+ * @property {string} token - Token used for the 2FA workflow
+ * @property {string} passcode - Code entered by the user
+ */
+
+/**
+ * @typedef {object} SessionCodeResult
+ * @property {string} [session_code] - The session code, when defined it means that the query succeeded
+ * @property {string} [twoFactorToken] - The 2FA token, when defined it means that the user needs to pass the 2FA step
+ */
+
+/**
  * Set the login data.
  * @callback setLoginDataCallback
  * @param {LoginData} loginData

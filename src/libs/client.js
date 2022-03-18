@@ -4,6 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import apiKeys from '../api-keys.json'
 import strings from '../strings.json'
 
+export const STATE_CONNECTED = 'STATE_CONNECTED'
+export const STATE_2FA_NEEDED = 'STATE_2FA_NEEDED'
+
 /**
  * Clears the storage key related to client authentication
  */
@@ -71,7 +74,7 @@ export const initClient = async (uri, options) => {
  * @param {object} param
  * @param {LoginData} param.loginData - login data containing hashed password and encryption keys
  * @param {string} param.instance - the Cozy instance used to create the client
- * @returns {CozyClient} The CozyClient for the Cozy instance
+ * @returns {CozyClientCreationContext} The CozyClient for the Cozy instance with its corresponding state (i.e: connected, waiting for 2FA, invalid password etc)
  */
 export const callInitClient = async ({loginData, instance}) => {
   const client = await createClient(instance)
@@ -79,6 +82,26 @@ export const callInitClient = async ({loginData, instance}) => {
   return await connectClient({
     loginData,
     client,
+  })
+}
+
+/**
+ * Continue the OAuth connection for the given Cozy instance when `callInitClient` has been called but returned a 2FA_NEEDED state
+ *
+ * @param {object} param
+ * @param {LoginData} param.loginData - login data containing hashed password and encryption keys
+ * @param {CozyClient} param.client - an optional CozyClient instance that can be used for the authentication. If not provided a new CozyClient will be created
+ * @returns {CozyClientCreationContext} The CozyClient for the Cozy instance with its corresponding state (i.e: connected, waiting for 2FA, invalid password etc)
+ */
+export const call2FAInitClient = async ({
+  loginData,
+  client,
+  twoFactorAuthenticationData,
+}) => {
+  return await connectClient({
+    loginData,
+    client,
+    twoFactorAuthenticationData,
   })
 }
 
@@ -156,16 +179,29 @@ const createClient = async instance => {
  * @param {object} param
  * @param {LoginData} param.loginData - login data containing hashed password and encryption keys
  * @param {CozyClient} param.client - the CozyClient instance that will be authenticated through OAuth
- * @returns {CozyClient} The authenticated CozyClient
+ * @param {TwoFactorAuthenticationData} param.twoFactorAuthenticationData - the 2FA data containing a token and a passcode
+ * @returns {CozyClientCreationContext} The CozyClient with its corresponding state (i.e: connected, waiting for 2FA, invalid password etc)
  */
 const connectClient = async ({
   loginData,
   client,
+  twoFactorAuthenticationData = undefined,
 }) => {
   const sessionCodeResult = await fetchSessionCode({
     client,
     loginData,
+    twoFactorAuthenticationData,
   })
+
+  const need2FA = sessionCodeResult.twoFactorToken !== undefined
+
+  if (need2FA) {
+    return {
+      client,
+      state: STATE_2FA_NEEDED,
+      twoFactorToken: sessionCodeResult.twoFactorToken,
+    }
+  }
 
   const sessionCode = sessionCodeResult.session_code
 
@@ -174,27 +210,50 @@ const connectClient = async ({
   await client.login()
   await saveClient(client)
 
-  return client
+  return {
+    client: client,
+    state: STATE_CONNECTED,
+  }
 }
 
 /**
  * Fetch the session code from cozy-stack
  *
+ * Errors are handled to detect when 2FA is needed
+ *
  * @param {object} param
  * @param {object} param.client
  * @param {object} param.loginData
- * @returns {string} The query result with session_code
+ * @param {object} [param.twoFactorAuthenticationData]
+ * @returns {SessionCodeResult} The query result with session_code, or 2FA token
  * @throws
  */
 const fetchSessionCode = async ({
   client,
   loginData,
+  twoFactorAuthenticationData = undefined,
 }) => {
   const stackClient = client.getStackClient()
 
-  const sessionCodeResult = await stackClient.fetchSessionCodeWithPassword({
-    passwordHash: loginData.passwordHash,
-  })
+  try {
+    const sessionCodeResult = await stackClient.fetchSessionCodeWithPassword({
+      passwordHash: loginData.passwordHash,
+      twoFactorToken: twoFactorAuthenticationData
+        ? twoFactorAuthenticationData.token
+        : undefined,
+      twoFactorPasscode: twoFactorAuthenticationData
+        ? twoFactorAuthenticationData.passcode
+        : undefined,
+    })
 
-  return sessionCodeResult
+    return sessionCodeResult
+  } catch (e) {
+    if (e.status === 403 && e.reason && e.reason.two_factor_token) {
+      return {
+        twoFactorToken: e.reason.two_factor_token,
+      }
+    } else {
+      throw e
+    }
+  }
 }
