@@ -1,13 +1,18 @@
+import {windowPasswordObjectDeclaration} from './jsFunctions/jsPasswordHelpers'
+import {computePassFunctionDeclaration} from './jsFunctions/jsComputePass'
 import {
   postMessageFunctionDeclaration,
   listenMessageFunctionDeclaration,
 } from './jsFunctions/jsMessaging'
 
 const jsCode = `
+  ${windowPasswordObjectDeclaration}
+  ${computePassFunctionDeclaration}
   ${postMessageFunctionDeclaration}
   ${listenMessageFunctionDeclaration}
 
   const messagingFunctions = {
+    computePass
   }
 `
 
