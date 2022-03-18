@@ -74,7 +74,13 @@ export const LoginScreen = ({setClient}) => {
         instance,
       })
 
-     if (result.state === STATE_2FA_NEEDED) {
+      if (result.state === STATE_INVALID_PASSWORD) {
+        setState({
+          ...state,
+          step: PASSWORD_STEP,
+          errorMessage: 'Invalid password',
+        })
+      } else if (result.state === STATE_2FA_NEEDED) {
         setState({
           ...state,
           step: TWO_FACTOR_AUTHENTICATION_STEP,
@@ -144,6 +150,7 @@ export const LoginScreen = ({setClient}) => {
         fqdn={state.fqdn}
         setKeys={setLoginData}
         setError={setError}
+        errorMessage={state.errorMessage}
         cancelStep={{
           callback: cancelLogin,
           title: 'Cancel OAuth',

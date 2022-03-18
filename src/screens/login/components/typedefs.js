@@ -47,6 +47,7 @@
  * @typedef {object} SessionCodeResult
  * @property {string} [session_code] - The session code, when defined it means that the query succeeded
  * @property {string} [twoFactorToken] - The 2FA token, when defined it means that the user needs to pass the 2FA step
+ * @property {boolean} [invalidPassword] - Boolean that, when defined, indicates if the stack returned an invalid password error
  */
 
 /**
