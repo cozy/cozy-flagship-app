@@ -1,10 +1,13 @@
 import {Linking} from 'react-native'
 import {useEffect, useState} from 'react'
+import Minilog from '@cozy/minilog'
 
 import {getClient} from '../libs/client'
 import {navigate} from '../libs/RootNavigation'
 import {routes} from '../constants/routes'
 import {useSplashScreen} from './useSplashScreen'
+
+const log = Minilog('useAppBootstrap')
 
 const parseOnboardingURL = url => {
   try {
@@ -24,7 +27,10 @@ const parseOnboardingURL = url => {
       registerToken,
       fqdn,
     }
-  } catch {
+  } catch (error) {
+    log.error(
+      `Something went wrong while trying to parse onboarding URL data: ${error.message}`
+    )
     return undefined
   }
 }
@@ -46,7 +52,10 @@ const parseFallbackURL = url => {
       root: isHome || !fallback ? routes.stack : routes.cozyapp,
       isHome,
     }
-  } catch {
+  } catch (error) {
+    log.error(
+      `Something went wrong while trying to parse fallback URL data: ${error.message}`
+    )
     return defaultParse
   }
 }
