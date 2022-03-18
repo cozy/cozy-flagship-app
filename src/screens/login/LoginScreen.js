@@ -14,6 +14,8 @@ import {
 import {
   callInitClient,
   call2FAInitClient,
+  createClient,
+  fetchKdfIterations,
   STATE_2FA_NEEDED,
   STATE_INVALID_PASSWORD,
 } from '../../libs/client'
@@ -43,12 +45,25 @@ export const LoginScreen = ({setClient}) => {
     }
   }, [state.loginData, startOAuth])
 
-  const setInstanceData = ({instance, fqdn}) => {
-    setState({
-      step: PASSWORD_STEP,
-      fqdn: fqdn,
-      instance: instance,
-    })
+  const setInstanceData = async ({instance, fqdn}) => {
+    try {
+      const client = await createClient(instance)
+
+      const kdfIterations = await fetchKdfIterations({
+        instance,
+        client,
+      })
+
+      setState({
+        step: PASSWORD_STEP,
+        fqdn: fqdn,
+        instance: instance,
+        kdfIterations: kdfIterations,
+        client: client,
+      })
+    } catch (error) {
+      setError(error.message, error)
+    }
   }
 
   const cancelLogin = () => {
@@ -73,11 +88,12 @@ export const LoginScreen = ({setClient}) => {
 
   const startOAuth = useCallback(async () => {
     try {
-      const {loginData, instance} = state
+      const {loginData, instance, client} = state
 
       const result = await callInitClient({
         loginData,
         instance,
+        client,
       })
 
       if (result.state === STATE_INVALID_PASSWORD) {
@@ -157,6 +173,7 @@ export const LoginScreen = ({setClient}) => {
     return (
       <PasswordView
         fqdn={state.fqdn}
+        kdfIterations={state.kdfIterations}
         setKeys={setLoginData}
         setError={setError}
         errorMessage={state.errorMessage}
