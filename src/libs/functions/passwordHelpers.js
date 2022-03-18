@@ -34,14 +34,12 @@ export const doHashPassword = async (
 
     const salt = getSaltForInstance(fqdn)
 
-    const result = await queryResultToCrypto('computePass', {
-      pass: password,
-      salt: salt,
-      iterations: kdfIterations,
-    })
-
     const {passwordHash, iterations, key, publicKey, privateKey, masterKey} =
-      result.param
+      await queryResultToCrypto('computePass', {
+        pass: password,
+        salt: salt,
+        iterations: kdfIterations,
+      })
 
     const loginData = {
       passwordHash,

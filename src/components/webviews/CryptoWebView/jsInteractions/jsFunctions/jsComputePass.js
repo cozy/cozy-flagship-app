@@ -43,7 +43,7 @@ export const computePassFunctionDeclaration = `
           message: 'answer___computePAss',
           messageId: messageId,
           param: {
-            result: 'something_went_wrong'
+            error: 'Something went wrong while computing PKCE keys: ' + err.message
           }
         })
 

@@ -220,8 +220,7 @@ const connectClient = async ({
 
   const sessionCode = sessionCodeResult.session_code
 
-  const pkceResult = await createPKCE()
-  const {codeVerifier, codeChallenge} = pkceResult.param
+  const {codeVerifier, codeChallenge} = await createPKCE()
 
   await client.authorize({
     sessionCode: sessionCode,
