@@ -31,6 +31,8 @@ const TWO_FACTOR_AUTHENTICATION_ERROR_STEP =
   'TWO_FACTOR_AUTHENTICATION_ERROR_STEP'
 const ERROR_STEP = 'ERROR_STEP'
 
+const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
+
 export const LoginScreen = ({setClient}) => {
   const [state, setState] = useState({
     step: CLOUDERY_STEP,
@@ -113,7 +115,11 @@ export const LoginScreen = ({setClient}) => {
         setClient(result.client)
       }
     } catch (error) {
-      setError(error.message, error)
+      if (error === OAUTH_USER_CANCELED_ERROR) {
+        cancelLogin()
+      } else {
+        setError(error.message, error)
+      }
     }
   }, [setClient, setError, state])
 
