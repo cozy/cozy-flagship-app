@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react'
 
 import {ErrorView} from './components/ErrorView'
-import {PasswordView} from './components/PasswordView'
+import {OnboardingPasswordView} from './components/OnboardingPasswordView'
 
 import {OnboardingConfigView} from './components/debug/OnboardingConfigView'
 import {OAuthSummaryView} from './components/debug/OAuthSummaryView'
@@ -130,7 +130,7 @@ export const OnboardingScreen = ({setClient, route, navigation}) => {
   if (state.step === PASSWORD_STEP) {
     const {fqdn} = state.onboardingData
     return (
-      <PasswordView
+      <OnboardingPasswordView
         fqdn={fqdn}
         setKeys={setLoginData}
         setError={setError}

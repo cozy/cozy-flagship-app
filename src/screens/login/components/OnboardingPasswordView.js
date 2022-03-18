@@ -4,7 +4,7 @@ import Minilog from '@cozy/minilog'
 
 import {queryResultToCrypto} from '../../../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
 
-const log = Minilog('PasswordView')
+const log = Minilog('OnboardingPasswordView')
 
 const ITERATION_NUMBER = 100_000
 
@@ -25,7 +25,7 @@ const getSaltForInstance = instance => {
 const doHashPassword = async (passwordData, fqdn, kdfIterations) => {
   log.debug('Start hashing password')
   try {
-    const {password} = passwordData
+    const {password, hint} = passwordData
 
     const salt = getSaltForInstance(fqdn)
 
@@ -39,6 +39,7 @@ const doHashPassword = async (passwordData, fqdn, kdfIterations) => {
 
     const loginData = {
       passwordHash,
+      hint,
       iterations,
       key,
       publicKey,
@@ -53,7 +54,7 @@ const doHashPassword = async (passwordData, fqdn, kdfIterations) => {
 }
 
 /**
- * Show a password form that asks the user their password
+ * Show a password form that asks the user their password and hint
  * When the user validate their password, the password and the salt are sent back to parent
  * by calling `setPasswordData`
  *
@@ -64,10 +65,12 @@ const doHashPassword = async (passwordData, fqdn, kdfIterations) => {
  */
 const PasswordForm = ({setPasswordData, fqdn}) => {
   const [password, onChangePassword] = useState('')
+  const [hint, onChangeHint] = useState('')
 
   const onLogin = async () => {
     setPasswordData({
       password,
+      hint,
     })
   }
 
@@ -78,6 +81,9 @@ const PasswordForm = ({setPasswordData, fqdn}) => {
 
       <Text>Password</Text>
       <TextInput onChangeText={onChangePassword} value={password} />
+
+      <Text>Hint</Text>
+      <TextInput onChangeText={onChangeHint} value={hint} />
 
       <Button onPress={onLogin} title="Login" accessibilityLabel="Login" />
     </>
@@ -98,9 +104,9 @@ const PasswordForm = ({setPasswordData, fqdn}) => {
  * @param {ButtonInfo} [props.cancelAll]
  * @returns {import('react').ComponentClass}
  */
-export const PasswordView = ({
+export const OnboardingPasswordView = ({
   fqdn,
-  kdfIterations,
+  kdfIterations = ITERATION_NUMBER,
   setKeys,
   setError,
   cancelStep,
