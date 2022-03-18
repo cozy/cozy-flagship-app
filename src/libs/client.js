@@ -77,10 +77,15 @@ export const initClient = async (uri, options) => {
  * @param {object} param
  * @param {LoginData} param.loginData - login data containing hashed password and encryption keys
  * @param {string} param.instance - the Cozy instance used to create the client
+ * @param {CozyClient} [param.client] - an optional CozyClient instance that can be used for the authentication. If not provided a new CozyClient will be created
  * @returns {CozyClientCreationContext} The CozyClient for the Cozy instance with its corresponding state (i.e: connected, waiting for 2FA, invalid password etc)
  */
-export const callInitClient = async ({loginData, instance}) => {
-  const client = await createClient(instance)
+export const callInitClient = async ({
+  loginData,
+  instance,
+  client: clientParam,
+}) => {
+  const client = clientParam || (await createClient(instance))
 
   return await connectClient({
     loginData,
@@ -152,7 +157,7 @@ export const callOnboardingInitClient = async ({
  * @param {string} instance - the Cozy instance used to create the client
  * @returns {CozyClient} - The created and registered CozyClient
  */
-const createClient = async instance => {
+export const createClient = async instance => {
   const options = {
     scope: ['*'],
     oauth: {
@@ -290,4 +295,31 @@ const fetchSessionCode = async ({
       throw e
     }
   }
+}
+
+/**
+ * Retrieve the number of KDF iterations that should be applied to the user's password
+ * in order to derivate encryption keys
+ *
+ * @param {object} param
+ * @param {string} param.instance - the Cozy instance to generate the user's email
+ * @param {CozyClient} param.client - CozyClient instance
+ * @returns {number} The number of KDF iterations that should be applied to the user's password
+ * @throws
+ */
+export const fetchKdfIterations = async ({instance, client}) => {
+  const stackClient = client.getStackClient()
+
+  const domain = instance.split(':')[0]
+  const email = `me@${domain}`
+
+  const result = await stackClient.fetchJSON(
+    'POST',
+    '/bitwarden/api/accounts/prelogin',
+    {
+      email,
+    },
+  )
+
+  return result.KdfIterations
 }

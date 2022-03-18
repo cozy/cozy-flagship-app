@@ -19,9 +19,10 @@ const getSaltForInstance = instance => {
  * Hash password data by calling CryptioWebView cryptography methods
  * @param {PasswordData} passwordData - the password data to hash
  * @param {string} instance - the Cozy instance used to generate the salt
+ * @param {number} kdfIterations - the number of KDF iterations to be used for hashing the password
  * @returns {LoginData} login data containing hashed password and encryption keys
  */
-const doHashPassword = async (passwordData, fqdn) => {
+const doHashPassword = async (passwordData, fqdn, kdfIterations) => {
   log.debug('Start hashing password')
   try {
     const {password, hint} = passwordData
@@ -31,7 +32,7 @@ const doHashPassword = async (passwordData, fqdn) => {
     const result = await queryResultToCrypto('computePass', {
       pass: password,
       salt: salt,
-      iterations: ITERATION_NUMBER,
+      iterations: kdfIterations,
     })
 
     const {iterations, key, publicKey, privateKey, passwordHash} = result.param
@@ -105,6 +106,7 @@ const PasswordForm = ({setPasswordData, fqdn}) => {
  */
 export const PasswordView = ({
   fqdn,
+  kdfIterations,
   setKeys,
   setError,
   cancelStep,
@@ -115,7 +117,7 @@ export const PasswordView = ({
 
   useEffect(() => {
     if (passwordData) {
-      doHashPassword(passwordData, fqdn)
+      doHashPassword(passwordData, fqdn, kdfIterations)
         .then(result => {
           setKeys(result)
         })
@@ -123,7 +125,7 @@ export const PasswordView = ({
           setError('Impossible to hash the password', error)
         })
     }
-  }, [passwordData, fqdn, setKeys, setError])
+  }, [passwordData, fqdn, setKeys, setError, kdfIterations])
 
   return (
     <View>
