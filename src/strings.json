@@ -1,5 +1,6 @@
 {
   "loginUri": "https://manager.cozycloud.cc/v2/cozy/login?redirect=https://cozydrive",
+  "onboardingUri": "https://staging-manager.cozycloud.cc/v2/cozy/onboard?redirect=cozy://onboarding?flagship=true",
   "home": "home",
   "fqdn": "fqdn",
   "emptyString": "",
