@@ -65,25 +65,21 @@ export const initClient = async (uri, options) => {
   return client
 }
 
-export const callInitClient = async uri => {
-  // Your IDE might tell you the following 'await' has no effect, this seems to be a mistake
-  const client = await initClient(uri, {
-    scope: [
-      '*',
-    ],
-    oauth: {
-      redirectURI: strings.COZY_SCHEME,
-      softwareID: 'amiral',
-      clientKind: 'mobile',
-      clientName: 'Amiral',
-      shouldRequireFlagshipPermissions: true,
-      certificationConfig: {
-        androidSafetyNetApiKey: apiKeys.androidSafetyNetApiKey,
-      },
-    },
+/**
+ * Create the OAuth connection for the given Cozy instance
+ *
+ * @param {object} param
+ * @param {LoginData} param.loginData - login data containing hashed password and encryption keys
+ * @param {string} param.instance - the Cozy instance used to create the client
+ * @returns {CozyClient} The CozyClient for the Cozy instance
+ */
+export const callInitClient = async ({loginData, instance}) => {
+  const client = await createClient(instance)
+
+  return await connectClient({
+    loginData,
+    client,
   })
-  await saveClient(client)
-  return client
 }
 
 /**
@@ -152,4 +148,53 @@ const createClient = async instance => {
   await stackClient.register(instance)
 
   return client
+}
+
+/**
+ * Process the OAuth dance for the given CozyClient
+ *
+ * @param {object} param
+ * @param {LoginData} param.loginData - login data containing hashed password and encryption keys
+ * @param {CozyClient} param.client - the CozyClient instance that will be authenticated through OAuth
+ * @returns {CozyClient} The authenticated CozyClient
+ */
+const connectClient = async ({
+  loginData,
+  client,
+}) => {
+  const sessionCodeResult = await fetchSessionCode({
+    client,
+    loginData,
+  })
+
+  const sessionCode = sessionCodeResult.session_code
+
+  await client.authorize(undefined, sessionCode)
+
+  await client.login()
+  await saveClient(client)
+
+  return client
+}
+
+/**
+ * Fetch the session code from cozy-stack
+ *
+ * @param {object} param
+ * @param {object} param.client
+ * @param {object} param.loginData
+ * @returns {string} The query result with session_code
+ * @throws
+ */
+const fetchSessionCode = async ({
+  client,
+  loginData,
+}) => {
+  const stackClient = client.getStackClient()
+
+  const sessionCodeResult = await stackClient.fetchSessionCodeWithPassword({
+    passwordHash: loginData.passwordHash,
+  })
+
+  return sessionCodeResult
 }
