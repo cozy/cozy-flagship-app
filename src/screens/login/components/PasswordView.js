@@ -109,6 +109,7 @@ export const PasswordView = ({
   setError,
   cancelStep,
   cancelAll = undefined,
+  errorMessage,
 }) => {
   const [passwordData, setPasswordData] = useState()
 
@@ -127,6 +128,7 @@ export const PasswordView = ({
   return (
     <View>
       <PasswordForm setPasswordData={setPasswordData} fqdn={fqdn} />
+      {errorMessage && <Text>{errorMessage}</Text>}
       <View style={{marginTop: 20}}>
         <Button
           onPress={() => cancelStep.callback()}

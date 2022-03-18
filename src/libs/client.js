@@ -6,6 +6,7 @@ import strings from '../strings.json'
 
 export const STATE_CONNECTED = 'STATE_CONNECTED'
 export const STATE_2FA_NEEDED = 'STATE_2FA_NEEDED'
+export const STATE_INVALID_PASSWORD = 'STATE_INVALID_PASSWORD'
 
 /**
  * Clears the storage key related to client authentication
@@ -193,6 +194,13 @@ const connectClient = async ({
     twoFactorAuthenticationData,
   })
 
+  if (sessionCodeResult.invalidPassword) {
+    return {
+      client,
+      state: STATE_INVALID_PASSWORD,
+    }
+  }
+
   const need2FA = sessionCodeResult.twoFactorToken !== undefined
 
   if (need2FA) {
@@ -219,13 +227,13 @@ const connectClient = async ({
 /**
  * Fetch the session code from cozy-stack
  *
- * Errors are handled to detect when 2FA is needed
+ * Errors are handled to detect when 2FA is needed and when password is invalid
  *
  * @param {object} param
  * @param {object} param.client
  * @param {object} param.loginData
  * @param {object} [param.twoFactorAuthenticationData]
- * @returns {SessionCodeResult} The query result with session_code, or 2FA token
+ * @returns {SessionCodeResult} The query result with session_code, or 2FA token, or invalid password error
  * @throws
  */
 const fetchSessionCode = async ({
@@ -251,6 +259,10 @@ const fetchSessionCode = async ({
     if (e.status === 403 && e.reason && e.reason.two_factor_token) {
       return {
         twoFactorToken: e.reason.two_factor_token,
+      }
+    } else if (e.status === 401) {
+      return {
+        invalidPassword: true,
       }
     } else {
       throw e
