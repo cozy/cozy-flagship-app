@@ -15,6 +15,12 @@
  */
 
 /**
+ * @typedef {object} InstanceData
+ * @property {string} instance - The Cozy's url
+ * @property {string} fqdn - The Cozy's fqdn
+ */
+
+/**
  * @typedef {object} ButtonInfo
  * @property {Function} callback - Function to call when the button is clicked
  * @property {string} title - Title of the button
@@ -30,6 +36,12 @@
  * Set the password data.
  * @callback setPasswordData
  * @param {PasswordData} passwordData
+ */
+
+/**
+ * Set the instance data.
+ * @callback setInstanceData
+ * @param {InstanceData} instanceData
  */
 
 /**
