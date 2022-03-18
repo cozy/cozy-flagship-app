@@ -19,14 +19,14 @@ import {Alert, Linking, Platform} from 'react-native'
  * Apps mobile information that can be used as a fallback if the Cozy
  * still has an old version of the app which doesn't describe its mobile
  * info on the manifest.webapp
- * 
+ *
  * This object is used for retro-compatibility support and may be deleted
  * in the future
- * 
+ *
  * If a new schema is inserted into this array or if a new app describe its
  * schema in its manifest.webapp, then AndroidManifest.xml and Info.plist
  * should be updated with the scheme permission
- * 
+ *
  * @type {Array.<AppManifestMobileInfo>}
  */
 const slugFallbacks = {
@@ -34,11 +34,6 @@ const slugFallbacks = {
     schema: 'cozypass://',
     id_playstore: 'io.cozy.pass',
     id_appstore: 'cozy-pass/id1502262449',
-  },
-  banks: {
-    schema: 'cozybanks://',
-    id_playstore: 'io.cozy.banks.mobile',
-    id_appstore: 'cozy-banks/id1349814380',
   },
 }
 
