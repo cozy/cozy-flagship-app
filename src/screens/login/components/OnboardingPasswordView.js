@@ -1,57 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {Button, View, Text, TextInput} from 'react-native'
-import Minilog from '@cozy/minilog'
 
-import {queryResultToCrypto} from '../../../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
-
-const log = Minilog('OnboardingPasswordView')
-
-const ITERATION_NUMBER = 100_000
-
-const getSaltForInstance = instance => {
-  const domain = instance.split(':')[0]
-  const salt = `me@${domain}`
-
-  return salt
-}
-
-/**
- * Hash password data by calling CryptioWebView cryptography methods
- * @param {PasswordData} passwordData - the password data to hash
- * @param {string} instance - the Cozy instance used to generate the salt
- * @param {number} kdfIterations - the number of KDF iterations to be used for hashing the password
- * @returns {LoginData} login data containing hashed password and encryption keys
- */
-const doHashPassword = async (passwordData, fqdn, kdfIterations) => {
-  log.debug('Start hashing password')
-  try {
-    const {password, hint} = passwordData
-
-    const salt = getSaltForInstance(fqdn)
-
-    const result = await queryResultToCrypto('computePass', {
-      pass: password,
-      salt: salt,
-      iterations: kdfIterations,
-    })
-
-    const {iterations, key, publicKey, privateKey, passwordHash} = result.param
-
-    const loginData = {
-      passwordHash,
-      hint,
-      iterations,
-      key,
-      publicKey,
-      privateKey,
-    }
-
-    return loginData
-  } catch (e) {
-    log.error('Error while requesting cryptography result:', e)
-    throw e
-  }
-}
+import {doHashPassword} from '../../../libs/functions/passwordHelpers'
 
 /**
  * Show a password form that asks the user their password and hint
@@ -106,7 +56,7 @@ const PasswordForm = ({setPasswordData, fqdn}) => {
  */
 export const OnboardingPasswordView = ({
   fqdn,
-  kdfIterations = ITERATION_NUMBER,
+  kdfIterations,
   setKeys,
   setError,
   cancelStep,
