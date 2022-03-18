@@ -1,6 +1,7 @@
 import Minilog from '@cozy/minilog'
 
 import {queryResultToCrypto} from '../../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
+import {saveVaultInformation} from '../keychain'
 
 const log = Minilog('passwordHelpers')
 
@@ -57,4 +58,24 @@ export const doHashPassword = async (
     log.error('Error while requesting cryptography result:', e.message)
     throw e
   }
+}
+
+/**
+ * Save the user's encryption keys into local keychain
+ *
+ * @param {LoginData} loginData - login data containing hashed password and encryption keys
+ */
+export const saveLoginData = async ({
+  passwordHash,
+  key,
+  privateKey,
+  publicKey,
+  masterKey,
+}) => {
+  // Those must be called sequentially. Otherwise the keychain would throw
+  await saveVaultInformation('passwordHash', passwordHash)
+  await saveVaultInformation('key', key)
+  await saveVaultInformation('privateKey', privateKey)
+  await saveVaultInformation('publicKey', publicKey)
+  await saveVaultInformation('masterKey', masterKey)
 }

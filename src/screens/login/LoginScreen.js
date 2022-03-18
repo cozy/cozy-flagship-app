@@ -19,7 +19,7 @@ import {
   STATE_2FA_NEEDED,
   STATE_INVALID_PASSWORD,
 } from '../../libs/client'
-import {saveVaultInformation} from '../../libs/keychain'
+import {saveLoginData} from '../../libs/functions/passwordHelpers'
 
 const log = Minilog('LoginScreen')
 
@@ -75,14 +75,6 @@ export const LoginScreen = ({setClient}) => {
     setState({
       step: CLOUDERY_STEP,
     })
-  }
-
-  const saveLoginData = async loginData => {
-    await saveVaultInformation('passwordHash', loginData.passwordHash)
-    await saveVaultInformation('key', loginData.key)
-    await saveVaultInformation('privateKey', loginData.privateKey)
-    await saveVaultInformation('publicKey', loginData.publicKey)
-    await saveVaultInformation('masterKey', loginData.masterKey)
   }
 
   const setLoginData = loginData => {

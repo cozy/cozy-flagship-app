@@ -9,8 +9,8 @@ import {OnboardingConfigView} from './components/debug/OnboardingConfigView'
 import Minilog from '@cozy/minilog'
 
 import {callOnboardingInitClient} from '../../libs/client'
+import {saveLoginData} from '../../libs/functions/passwordHelpers'
 import {consumeRouteParameter} from '../../libs/functions/routeHelpers'
-import {saveVaultInformation} from '../../libs/keychain'
 
 import {routes} from '../../constants/routes'
 
@@ -73,14 +73,6 @@ export const OnboardingScreen = ({setClient, route, navigation}) => {
     [state, setState],
   )
 
-  const saveLoginData = useCallback(async loginData => {
-    await saveVaultInformation('passwordHash', loginData.passwordHash)
-    await saveVaultInformation('key', loginData.key)
-    await saveVaultInformation('privateKey', loginData.privateKey)
-    await saveVaultInformation('publicKey', loginData.publicKey)
-    await saveVaultInformation('masterKey', loginData.masterKey)
-  }, [])
-
   const setLoginData = loginData => {
     setState({
       ...state,
@@ -130,7 +122,7 @@ export const OnboardingScreen = ({setClient, route, navigation}) => {
     } catch (error) {
       setError(error.message, error)
     }
-  }, [saveLoginData, setClient, setError, state])
+  }, [setClient, setError, state])
 
   if (state.step === ONBOARDING_STEP) {
     return (
