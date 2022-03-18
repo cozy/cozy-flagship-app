@@ -1,6 +1,8 @@
 import CozyClient from 'cozy-client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
+import {queryResultToCrypto} from '../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
+
 import apiKeys from '../api-keys.json'
 import strings from '../strings.json'
 
@@ -213,7 +215,16 @@ const connectClient = async ({
 
   const sessionCode = sessionCodeResult.session_code
 
-  await client.authorize(undefined, sessionCode)
+  const pkceResult = await createPKCE()
+  const {codeVerifier, codeChallenge} = pkceResult.param
+
+  await client.authorize({
+    sessionCode: sessionCode,
+    pkceCodes: {
+      codeVerifier,
+      codeChallenge,
+    },
+  })
 
   await client.login()
   await saveClient(client)
@@ -222,6 +233,17 @@ const connectClient = async ({
     client: client,
     state: STATE_CONNECTED,
   }
+}
+
+/**
+ * Create and return a couple of PKCE keys
+ * To make the PKCE creation possible, a CryptoWebView must be present in the ReactNative component tree
+ *
+ * @returns {object} message result from the CryptoWebView's `computePKCE` method
+ * throws
+ */
+const createPKCE = async () => {
+  return await queryResultToCrypto('computePKCE')
 }
 
 /**
