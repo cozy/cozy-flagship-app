@@ -8,3 +8,4 @@
 
 ## 🔧 Tech
 
+* Add dependabot configuration
