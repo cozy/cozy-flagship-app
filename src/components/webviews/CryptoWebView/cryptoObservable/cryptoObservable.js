@@ -60,7 +60,13 @@ export const queryResultToCrypto = (methodName, param) => {
 
     subscribeAnswer(messageId, result => {
       clearTimeout(errorTimeout)
-      resolve(result)
+
+      if (result.error) {
+        console.log('REJECTION')
+        reject(result.error)
+      } else {
+        resolve(result)
+      }
     })
 
     subscribers.forEach(listener => {
@@ -74,14 +80,12 @@ export const queryResultToCrypto = (methodName, param) => {
  * @param {CryptoMessage} answer
  */
 export const sendAnswer = answer => {
-  log.debug(`receive answer: ${JSON.stringify(answer)}`)
-
-  const {messageId} = answer
+  const {messageId, param} = answer
 
   const subscriber = answerSubscribers.find(({id}) => id === messageId)
 
   if (subscriber) {
-    subscriber.callback(answer)
+    subscriber.callback(param)
 
     unsubscribeAnswer(messageId)
   }

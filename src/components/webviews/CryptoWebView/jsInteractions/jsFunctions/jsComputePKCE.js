@@ -55,8 +55,16 @@ export const computePKCEFunctionDeclaration = `
       })
 
       postMessage(payloadResult)
-    } catch (e) {
-      console.error(e)
+    } catch (error) {
+      const payloadResult = JSON.stringify({
+        message: 'answer___computePKCE',
+        messageId: messageId,
+        param: {
+          error: 'Something went wrong while computing PKCE keys: ' + error.message
+        }
+      })
+
+      postMessage(payloadResult)
     }
   }
 `
