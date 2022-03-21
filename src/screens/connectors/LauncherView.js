@@ -11,6 +11,9 @@ import ReactNativeLauncher from '../../libs/ReactNativeLauncher'
 import debounce from 'lodash/debounce'
 import {withClient} from 'cozy-client'
 import {get} from 'lodash'
+import Minilog from '@cozy/minilog'
+
+const log = Minilog('LauncherView')
 
 const DEBUG = false
 
@@ -27,10 +30,7 @@ class LauncherView extends Component {
     this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
     this.onStopExecution = this.onStopExecution.bind(this)
-    this.onWorkerWillReload = debounce(
-      this.onWorkerWillReload.bind(this),
-      1000,
-    ).bind(this)
+    this.onWorkerWillReload = debounce(this.onWorkerWillReload.bind(this), 1000)
     this.pilotWebView = null
     this.workerWebview = null
     this.state = {
@@ -158,10 +158,6 @@ class LauncherView extends Component {
                 sharedCookiesEnabled={true}
                 onMessage={this.onWorkerMessage}
                 onError={this.onWorkerError}
-                onShouldStartLoadWithRequest={event => {
-                  console.log('onShouldStartLoadWithRequest', {event})
-                  return true
-                }}
                 injectedJavaScriptBeforeContentLoaded={get(
                   this,
                   'state.connector.content',
@@ -184,7 +180,7 @@ class LauncherView extends Component {
    * @param {Object} event
    */
   onWorkerError(event) {
-    console.error('worker error event', event)
+    log.error('worker error event', event)
   }
   /**
    * When an error is detected in the pilot webview
@@ -213,11 +209,6 @@ class LauncherView extends Component {
     if (event.nativeEvent && event.nativeEvent.data) {
       const msg = JSON.parse(event.nativeEvent.data)
       if (msg.message === 'NEW_WORKER_INITIALIZING') {
-        // this property can cause the contentScript not to be loaded properly.
-        // Sometimes on android and all the time on iOS
-        // we only detect page reload when we know contentscript is ready
-        // this can cause problems when a page load can be caused by javascript on load
-        // but let's try this now, to see if it is more stable
         if (this.state.workerReady) {
           this.onWorkerWillReload(event)
         }
@@ -231,16 +222,13 @@ class LauncherView extends Component {
   /**
    * Detection of a page reload in the worker webview
    *
-   * @param {Object} event
+   * @param {Object} [event={}]
    */
   onWorkerWillReload(event = {}) {
     try {
-      console.log('onWorkerWillReload', {event})
       if (this.launcher && this.workerWebview) {
         this.setState({workerReady: false})
-        const result = this.launcher.onWorkerWillReload(event)
-
-        return result
+        return this.launcher.onWorkerWillReload(event)
       }
     } catch (e) {
       console.log('Caught error in onWorkerWillReload', e.message)

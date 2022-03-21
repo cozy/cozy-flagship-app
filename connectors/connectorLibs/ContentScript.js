@@ -381,7 +381,6 @@ export default class ContentScript {
 }
 
 function sendContentScriptReadyEvent() {
-  console.log('Sending NEW_WORKER_INITIALIZING event')
   if (get(window, 'ReactNativeWebView.postMessage')) {
     window.ReactNativeWebView.postMessage(
       JSON.stringify({message: 'NEW_WORKER_INITIALIZING'}),
