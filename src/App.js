@@ -17,6 +17,8 @@ import {localMethods} from './libs/intents/localMethods'
 import {useAppBootstrap} from './hooks/useAppBootstrap.js'
 import {routes} from './constants/routes.js'
 
+import {CryptoWebView} from './components/webviews/CryptoWebView/CryptoWebView'
+
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
 
@@ -82,6 +84,7 @@ const WrappedApp = () => (
     <NativeIntentProvider localMethods={localMethods}>
       <PaperProvider theme={lightTheme}>
         <SplashScreenProvider>
+          <CryptoWebView />
           <App />
         </SplashScreenProvider>
       </PaperProvider>
