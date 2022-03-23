@@ -109,7 +109,7 @@ const openConnectorInHome = (navigation, connector) => {
  * @param {AppManifest} app - The app information
  * @returns {Promise}
  */
-export const openApp = (navigation, href, app) => {
+export const openApp = (navigation, href, app, iconParams) => {
   if (app?.type === 'konnector') {
     openConnectorInHome(navigation, app)
     return
@@ -127,5 +127,8 @@ export const openApp = (navigation, href, app) => {
     }
   }
 
-  return navigation.navigate('cozyapp', {href})
+  return navigation.navigate('cozyapp', {
+    href,
+    iconParams: JSON.parse(iconParams),
+  })
 }

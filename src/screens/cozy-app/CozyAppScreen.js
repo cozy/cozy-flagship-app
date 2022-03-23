@@ -1,16 +1,17 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {StatusBar, View} from 'react-native'
-import {useState} from 'react'
 
-import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
-import {flagshipUI, setFlagshipUI} from '../../libs/intents/setFlagshipUI'
 import CozyWebView from '../../components/webviews/CozyWebView'
-import {innerBottomOverlay} from './CozyAppScreen.styles'
+import {Animation} from './CozyAppScreen.Animation'
+import {flagshipUI, setFlagshipUI} from '../../libs/intents/setFlagshipUI'
+import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
+import {styles} from './CozyAppScreen.styles'
 
 export const CozyAppScreen = ({route, navigation}) => {
   const [UIState, setUIState] = useState({})
   const {bottomBackground, bottomOverlay, topBackground, topTheme, topOverlay} =
     UIState
+  const [isReady, setReady] = useState(false)
 
   useEffect(() => {
     flagshipUI.on('change', state => {
@@ -23,42 +24,50 @@ export const CozyAppScreen = ({route, navigation}) => {
   }, [UIState])
 
   useEffect(() => {
-    setFlagshipUI({
-      bottomBackground: 'white',
-      bottomTheme: 'dark',
-      bottomOverlay: 'transparent',
-      topBackground: 'white',
-      topTheme: 'dark',
-      topOverlay: 'transparent',
-    })
-  }, [])
+    isReady &&
+      setFlagshipUI({
+        bottomBackground: 'white',
+        bottomTheme: 'dark',
+        bottomOverlay: 'transparent',
+        topBackground: 'white',
+        topTheme: 'dark',
+        topOverlay: 'transparent',
+      })
+  }, [isReady])
 
   return (
     <>
       <StatusBar translucent backgroundColor={topOverlay} barStyle={topTheme} />
       <View
         style={{
-          height: statusBarHeight,
+          height: isReady ? statusBarHeight : styles.immersiveHeight,
           backgroundColor: topBackground,
         }}
       />
 
-      <CozyWebView
-        source={{uri: route.params.href}}
-        navigation={navigation}
-        route={route}
-        logId="AppScreen"
-      />
+      <View style={styles.mainView}>
+        {route.params.iconParams && (
+          <Animation onFinished={setReady} params={route.params.iconParams} />
+        )}
+
+        <CozyWebView
+          style={{...styles[isReady ? 'ready' : 'notReady']}}
+          source={{uri: route.params.href}}
+          navigation={navigation}
+          route={route}
+          logId="AppScreen"
+        />
+      </View>
 
       <View
         style={{
-          height: navbarHeight,
+          height: isReady ? navbarHeight : styles.immersiveHeight,
           backgroundColor: bottomBackground,
         }}>
         <View
           style={{
             backgroundColor: bottomOverlay,
-            ...innerBottomOverlay,
+            ...styles.innerBottomOverlay,
           }}
         />
       </View>
