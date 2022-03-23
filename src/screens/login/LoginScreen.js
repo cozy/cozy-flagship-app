@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react'
+import {StyleSheet, View} from 'react-native'
 
 import Minilog from '@cozy/minilog'
 
@@ -19,6 +20,7 @@ import {
   STATE_2FA_NEEDED,
   STATE_INVALID_PASSWORD,
 } from '../../libs/client'
+import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
 import {saveLoginData} from '../../libs/functions/passwordHelpers'
 
 const log = Minilog('LoginScreen')
@@ -33,7 +35,7 @@ const ERROR_STEP = 'ERROR_STEP'
 
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
-export const LoginScreen = ({setClient}) => {
+const LoginSteps = ({setClient}) => {
   const [state, setState] = useState({
     step: CLOUDERY_STEP,
   })
@@ -227,3 +229,20 @@ export const LoginScreen = ({setClient}) => {
     )
   }
 }
+
+export const LoginScreen = ({setClient}) => {
+  return (
+    <View style={styles.view}>
+      <View style={{height: statusBarHeight}} />
+      <LoginSteps setClient={setClient} />
+      <View style={{height: navbarHeight}} />
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+    backgroundColor: '#297ef2',
+  },
+})
