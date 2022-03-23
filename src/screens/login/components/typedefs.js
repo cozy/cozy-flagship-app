@@ -51,6 +51,12 @@
  */
 
 /**
+ * @typedef {object} CozyPublicData
+ * @property {string} name - The user's name as configured in the Cozy's settings
+ * @property {string} kdfIterations - The number of KDF iterations that should be applied to the user's password in order to derivate encryption keys
+ */
+
+/**
  * Set the login data.
  * @callback setLoginDataCallback
  * @param {LoginData} loginData

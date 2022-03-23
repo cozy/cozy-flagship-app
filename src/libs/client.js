@@ -297,28 +297,23 @@ const fetchSessionCode = async ({
 }
 
 /**
- * Retrieve the number of KDF iterations that should be applied to the user's password
+ * Retrieve the public data from the Cozy's instance
+ *
+ * This includes:
+ * - user name needed for the password view
+ * - the number of KDF iterations that should be applied to the user's password
  * in order to derivate encryption keys
  *
- * @param {object} param
- * @param {string} param.instance - the Cozy instance to generate the user's email
- * @param {CozyClient} param.client - CozyClient instance
- * @returns {number} The number of KDF iterations that should be applied to the user's password
- * @throws
+ * @param {CozyClient} client - CozyClient instance
+ * @returns {CozyPublicData}
  */
-export const fetchKdfIterations = async ({instance, client}) => {
+export const fetchPublicData = async client => {
   const stackClient = client.getStackClient()
 
-  const domain = instance.split(':')[0]
-  const email = `me@${domain}`
+  const result = await stackClient.fetchJSON('GET', '/public/prelogin')
 
-  const result = await stackClient.fetchJSON(
-    'POST',
-    '/bitwarden/api/accounts/prelogin',
-    {
-      email,
-    },
-  )
-
-  return result.KdfIterations
+  return {
+    kdfIterations: result.KdfIterations,
+    name: result.name,
+  }
 }
