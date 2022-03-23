@@ -82,11 +82,11 @@ const LoginSteps = ({setClient}) => {
   }
 
   const setLoginData = loginData => {
-    setState({
-      ...state,
+    setState(oldState => ({
+      ...oldState,
       step: LOADING_STEP,
       loginData: loginData,
-    })
+    }))
   }
 
   const startOAuth = useCallback(async () => {
@@ -100,18 +100,18 @@ const LoginSteps = ({setClient}) => {
       })
 
       if (result.state === STATE_INVALID_PASSWORD) {
-        setState({
-          ...state,
+        setState(oldState => ({
+          ...oldState,
           step: PASSWORD_STEP,
           errorMessage: 'Invalid password',
-        })
+        }))
       } else if (result.state === STATE_2FA_NEEDED) {
-        setState({
-          ...state,
+        setState(oldState => ({
+          ...oldState,
           step: TWO_FACTOR_AUTHENTICATION_STEP,
           client: result.client,
           twoFactorToken: result.twoFactorToken,
-        })
+        }))
       } else {
         await saveLoginData(loginData)
         setClient(result.client)
@@ -139,12 +139,12 @@ const LoginSteps = ({setClient}) => {
       })
 
       if (result.state === STATE_2FA_NEEDED) {
-        setState({
-          ...state,
+        setState(oldState => ({
+          ...oldState,
           step: TWO_FACTOR_AUTHENTICATION_ERROR_STEP,
           client: result.client,
           twoFactorToken: result.twoFactorToken,
-        })
+        }))
       } else {
         await saveLoginData(loginData)
         setClient(result.client)
@@ -163,13 +163,13 @@ const LoginSteps = ({setClient}) => {
 
   const setError = useCallback(
     (errorMessage, error) => {
-      setState({
-        ...state,
+      setState(oldState => ({
+        ...oldState,
         step: ERROR_STEP,
         errorMessage: errorMessage,
         error: error,
         previousStep: state.step,
-      })
+      }))
     },
     [state],
   )
