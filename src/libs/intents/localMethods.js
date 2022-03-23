@@ -27,6 +27,7 @@ export const localMethods = {
   backToHome,
   hideSplashScreen,
   logout,
-  openApp: (href, app) => openApp(RootNavigation, href, app),
+  openApp: (href, app, iconParams) =>
+    openApp(RootNavigation, href, app, iconParams),
   setFlagshipUI,
 }

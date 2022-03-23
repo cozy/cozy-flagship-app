@@ -65,13 +65,13 @@ const App = () => {
   const RootNavigator = () => (
     <Root.Navigator
       initialRouteName={initialScreen.root}
-      mode="modal"
       screenOptions={{headerShown: false}}>
       <Root.Screen name={routes.stack} component={StackNavigator} />
 
       <Root.Screen
         name={routes.cozyapp}
         component={CozyAppScreen}
+        options={{presentation: 'transparentModal', animationEnabled: false}}
         {...(initialRoute.root ? {initialParams: initialRoute.root} : {})}
       />
     </Root.Navigator>
