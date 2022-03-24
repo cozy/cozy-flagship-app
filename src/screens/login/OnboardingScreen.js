@@ -136,20 +136,14 @@ const OnboardingSteps = ({setClient, route, navigation}) => {
   }
 
   if (state.step === PASSWORD_STEP) {
-    const {fqdn} = state.onboardingData
+    const {fqdn, instance} = state.onboardingData
     return (
       <OnboardingPasswordView
         fqdn={fqdn}
+        instance={instance}
+        goBack={cancelOnboarding}
         setKeys={setLoginData}
         setError={setError}
-        cancelStep={{
-          callback: cancelLogin,
-          title: 'Cancel OAuth',
-        }}
-        cancelAll={{
-          callback: cancelOnboarding,
-          title: 'Cancel Onboarding',
-        }}
       />
     )
   }
