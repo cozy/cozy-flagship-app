@@ -6,6 +6,7 @@ import {loginJs} from './js/jsLogin'
 import {cirrusJs} from '../common/js/jsCirrus'
 import {passwordHelperJs} from './js/jsPasswordHelper'
 import {passwordVisibilityJs} from './js/jsPasswordVisibility'
+import {readonlyJs} from '../common/js/jsReadonly'
 
 import {cirrusCss} from '../common/css/cssCirrus'
 import {fontsCss} from '../common/css/cssFonts'
@@ -143,6 +144,7 @@ export const getHtml = (
           return false
         }
       })
+      ${readonlyJs(['login-submit', 'password'])}
     </script>
   </body>
 </html>

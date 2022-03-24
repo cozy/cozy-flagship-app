@@ -55,6 +55,13 @@ const LoginSteps = ({setClient}) => {
     }
   }, [state.sessionCode, state.waitForTransition, authorize])
 
+  const setStepReadonly = isReadOnly => {
+    setState(oldState => ({
+      ...oldState,
+      stepReadonly: isReadOnly,
+    }))
+  }
+
   const setInstanceData = async ({instance, fqdn}) => {
     try {
       const client = await createClient(instance)
@@ -67,6 +74,7 @@ const LoginSteps = ({setClient}) => {
 
       setState({
         step: PASSWORD_STEP,
+        stepReadonly: false,
         waitForTransition: true,
         requestTransitionStart: false,
         fqdn: fqdn,
@@ -84,6 +92,7 @@ const LoginSteps = ({setClient}) => {
     setState(oldState => ({
       ...oldState,
       step: PASSWORD_STEP,
+      stepReadonly: false,
       waitForTransition: false,
       requestTransitionStart: false,
       loginData: undefined,
@@ -120,6 +129,7 @@ const LoginSteps = ({setClient}) => {
         setState(oldState => ({
           ...oldState,
           step: PASSWORD_STEP,
+          stepReadonly: false,
           loginData: undefined,
           waitForTransition: false,
           errorMessage: 'Invalid password',
@@ -128,6 +138,7 @@ const LoginSteps = ({setClient}) => {
         setState(oldState => ({
           ...oldState,
           step: TWO_FACTOR_AUTHENTICATION_STEP,
+          stepReadonly: false,
           client: result.client,
           twoFactorToken: result.twoFactorToken,
         }))
@@ -163,6 +174,7 @@ const LoginSteps = ({setClient}) => {
           setState(oldState => ({
             ...oldState,
             step: TWO_FACTOR_AUTHENTICATION_STEP,
+            stepReadonly: false,
             client: result.client,
             twoFactorToken: result.twoFactorToken,
             errorMessage2FA:
@@ -257,6 +269,8 @@ const LoginSteps = ({setClient}) => {
           setError={setError}
           errorMessage={state.errorMessage}
           goBack={cancelLogin}
+          readonly={state.stepReadonly}
+          setReadonly={setStepReadonly}
         />
         {state.waitForTransition && (
           <TransitionToPasswordView
@@ -276,6 +290,8 @@ const LoginSteps = ({setClient}) => {
         setTwoFactorCode={continueOAuth}
         goBack={cancelOauth}
         errorMessage={state.errorMessage2FA}
+        readonly={state.stepReadonly}
+        setReadonly={setStepReadonly}
       />
     )
   }

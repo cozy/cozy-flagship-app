@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Linking, View, StyleSheet} from 'react-native'
 import {WebView} from 'react-native-webview'
 
@@ -26,7 +26,9 @@ const openForgotPasswordLink = instance => {
  * @param {string} props.instance - The Cozy's url
  * @param {string} props.name - The user's name as configured in the Cozy's settings
  * @param {Function} props.requestTransitionStart - Function to call when the component is ready to be displayed and the app should transition to it
+ * @param {boolean} props.readonly - Specify if the form should be readonly
  * @param {setPasswordData} props.setPasswordData - Function to call to set the user's password
+ * @param {setReadonly} props.setReadonly - Trigger change on the readonly state
  * @returns {import('react').ComponentClass}
  */
 const PasswordForm = ({
@@ -36,9 +38,24 @@ const PasswordForm = ({
   instance,
   name,
   requestTransitionStart,
+  readonly,
   setPasswordData,
+  setReadonly,
 }) => {
   const [loading, setLoading] = useState(true)
+  const webviewRef = useRef()
+
+  useEffect(() => {
+    if (webviewRef) {
+      const payload = JSON.stringify({
+        message: 'setReadonly',
+        param: readonly,
+      })
+
+      const webView = webviewRef.current
+      webView.postMessage(payload)
+    }
+  }, [webviewRef, readonly])
 
   const html = getHtml(name, fqdn, instance, errorMessage)
 
@@ -48,6 +65,7 @@ const PasswordForm = ({
   }
 
   const setPassword = passphrase => {
+    setReadonly(true)
     setPasswordData({
       password: passphrase,
     })
@@ -72,6 +90,7 @@ const PasswordForm = ({
   return (
     <View style={styles.view}>
       <WebView
+        ref={webviewRef}
         javaScriptEnabled={true}
         onMessage={processMessage}
         originWhitelist={['*']}
@@ -95,9 +114,11 @@ const PasswordForm = ({
  * @param {string} props.instance - The Cozy's url
  * @param {number} [props.kdfIterations] - The number of KDF iterations to be used for hashing the password
  * @param {string} props.name - The user's name as configured in the Cozy's settings
+ * @param {boolean} props.readonly - Specify if the form should be readonly
  * @param {Function} props.requestTransitionStart - Function to call when the component is ready to be displayed and the app should transition to it
  * @param {setLoginDataCallback} props.setKeys - Function to call to set the user's password and encryption keys
  * @param {setErrorCallback} props.setError - Function to call when an error is thrown by the component
+ * @param {setReadonly} props.setReadonly - Trigger change on the readonly state
  * @returns {import('react').ComponentClass}
  */
 export const PasswordView = ({
@@ -107,9 +128,11 @@ export const PasswordView = ({
   instance,
   kdfIterations,
   name,
+  readonly,
   requestTransitionStart,
   setKeys,
   setError,
+  setReadonly,
 }) => {
   const [passwordData, setPasswordData] = useState()
 
@@ -135,6 +158,8 @@ export const PasswordView = ({
       name={name}
       requestTransitionStart={requestTransitionStart}
       setPasswordData={setPasswordData}
+      readonly={readonly}
+      setReadonly={setReadonly}
     />
   )
 }
