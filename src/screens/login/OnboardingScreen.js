@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react'
+import {StyleSheet, View} from 'react-native'
 
 import {ErrorView} from './components/ErrorView'
 import {LoadingView} from './components/LoadingView'
@@ -9,6 +10,7 @@ import {OnboardingConfigView} from './components/debug/OnboardingConfigView'
 import Minilog from '@cozy/minilog'
 
 import {callOnboardingInitClient} from '../../libs/client'
+import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
 import {saveLoginData} from '../../libs/functions/passwordHelpers'
 import {consumeRouteParameter} from '../../libs/functions/routeHelpers'
 
@@ -23,7 +25,7 @@ const ONBOARDING_STEP = 'ONBOARDING_STEP'
 const PASSWORD_STEP = 'PASSWORD_STEP'
 const ERROR_STEP = 'ERROR_STEP'
 
-export const OnboardingScreen = ({setClient, route, navigation}) => {
+const OnboardingSteps = ({setClient, route, navigation}) => {
   const [state, setState] = useState({
     step: ONBOARDING_STEP,
   })
@@ -169,3 +171,24 @@ export const OnboardingScreen = ({setClient, route, navigation}) => {
     )
   }
 }
+
+export const OnboardingScreen = ({setClient, route, navigation}) => {
+  return (
+    <View style={styles.view}>
+      <View style={{height: statusBarHeight}} />
+      <OnboardingSteps
+        setClient={setClient}
+        route={route}
+        navigation={navigation}
+      />
+      <View style={{height: navbarHeight}} />
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+    backgroundColor: '#297ef2',
+  },
+})
