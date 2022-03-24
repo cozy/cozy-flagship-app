@@ -52,9 +52,7 @@ export const ClouderyView = ({setInstanceData}) => {
         })
         return false
       }
-
-      setUri(request.url)
-      return false
+      return true
     }
 
     return true
