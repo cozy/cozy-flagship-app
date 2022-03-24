@@ -1,50 +1,65 @@
 import React, {useState} from 'react'
-import {Button, View, Text, TextInput} from 'react-native'
+import {View, StyleSheet} from 'react-native'
+import {WebView} from 'react-native-webview'
 
+import {getHtml} from './assets/TwoFactorAuthentication/htmlTwoFactorAuthentication'
+
+/**
+ * Show a 2FA form that asks the user for their 2FA code received my email/authenticator
+ *
+ * @param {object} props
+ * @param {string} props.errorMessage - Error message to display if defined
+ * @param {Function} props.goBack - Function to call when the back button is clicked
+ * @param {string} props.instance - The Cozy's url
+ * @param {setTwoFactorCode} props.setTwoFactorCode - Function to call to set the user's 2FA code
+ * @returns {import('react').ComponentClass}
+ */
 export const TwoFactorAuthenticationView = ({
+  errorMessage,
+  goBack,
+  instance,
   setTwoFactorCode,
-  cancelLogin,
 }) => {
-  const [twoFactorCode, onChangeTwoFactorCode] = useState('')
+  const [loading, setLoading] = useState(true)
 
-  const onValidateTwoFactorCode = () => {
-    setTwoFactorCode(twoFactorCode)
+  const html = getHtml(instance, errorMessage)
+
+  const processMessage = event => {
+    if (event.nativeEvent && event.nativeEvent.data) {
+      const message = JSON.parse(event.nativeEvent.data)
+      if (message.message === 'setTwoFactorAuthenticationCode') {
+        setTwoFactorCode(message.twoFactorAuthenticationCode)
+      } else if (message.message === 'backButton') {
+        goBack()
+      } else if (message.message === 'loaded') {
+        setLoading(false)
+      }
+    }
   }
 
   return (
-    <View>
-      <Text>2FA</Text>
-      <TextInput onChangeText={onChangeTwoFactorCode} />
-
-      <View style={{marginTop: 20}}>
-        <Button
-          onPress={onValidateTwoFactorCode}
-          title="Validate"
-          accessibilityLabel="Validate"
-        />
-      </View>
-      <View style={{marginTop: 20}}>
-        <Button
-          onPress={cancelLogin}
-          title="Cancel OAuth"
-          accessibilityLabel="Cancel OAuth"
-        />
-      </View>
+    <View style={styles.view}>
+      <WebView
+        javaScriptEnabled={true}
+        onMessage={processMessage}
+        originWhitelist={['*']}
+        source={{html}}
+      />
+      {loading && <View style={styles.loadingOverlay} />}
     </View>
   )
 }
 
-export const TwoFactorAuthenticationWrongCodeView = ({retry, cancel}) => {
-  return (
-    <View>
-      <Text>You entered the wrong code</Text>
-
-      <View style={{marginTop: 20}}>
-        <Button onPress={retry} title="Retry" accessibilityLabel="Retry" />
-      </View>
-      <View style={{marginTop: 20}}>
-        <Button onPress={cancel} title="Cancel" accessibilityLabel="Cancel" />
-      </View>
-    </View>
-  )
-}
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#297ef2',
+  },
+})

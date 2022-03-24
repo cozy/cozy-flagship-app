@@ -8,10 +8,7 @@ import {ErrorView} from './components/ErrorView'
 import {LoadingView} from './components/LoadingView'
 import {PasswordView} from './components/PasswordView'
 import {TransitionToPasswordView} from './components/transitions/TransitionToPasswordView'
-import {
-  TwoFactorAuthenticationView,
-  TwoFactorAuthenticationWrongCodeView,
-} from './components/TwoFactorAuthenticationView'
+import {TwoFactorAuthenticationView} from './components/TwoFactorAuthenticationView'
 
 import {
   callInitClient,
@@ -30,8 +27,6 @@ const LOADING_STEP = 'LOADING_STEP'
 const CLOUDERY_STEP = 'CLOUDERY_STEP'
 const PASSWORD_STEP = 'PASSWORD_STEP'
 const TWO_FACTOR_AUTHENTICATION_STEP = 'TWO_FACTOR_AUTHENTICATION_STEP'
-const TWO_FACTOR_AUTHENTICATION_ERROR_STEP =
-  'TWO_FACTOR_AUTHENTICATION_ERROR_STEP'
 const ERROR_STEP = 'ERROR_STEP'
 
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
@@ -75,6 +70,19 @@ const LoginSteps = ({setClient}) => {
       setError(error.message, error)
     }
   }
+
+  const cancelOauth = useCallback(() => {
+    setState(oldState => ({
+      ...oldState,
+      step: PASSWORD_STEP,
+      waitForTransition: false,
+      requestTransitionStart: false,
+      loginData: undefined,
+      sessionCode: undefined,
+      errorMessage: undefined,
+      errorMessage2FA: undefined,
+    }))
+  }, [])
 
   const cancelLogin = useCallback(() => {
     setState({
@@ -144,9 +152,11 @@ const LoginSteps = ({setClient}) => {
       if (result.state === STATE_2FA_NEEDED) {
         setState(oldState => ({
           ...oldState,
-          step: TWO_FACTOR_AUTHENTICATION_ERROR_STEP,
+          step: TWO_FACTOR_AUTHENTICATION_STEP,
           client: result.client,
           twoFactorToken: result.twoFactorToken,
+          errorMessage2FA:
+            "Le code que vous avez entré n'est pas correct, merci de réessayer.",
         }))
       } else {
         await saveLoginData(loginData)
@@ -155,13 +165,6 @@ const LoginSteps = ({setClient}) => {
     } catch (error) {
       setError(error.message, error)
     }
-  }
-
-  const retryTwoFactorAuthentication = () => {
-    setState({
-      ...state,
-      step: TWO_FACTOR_AUTHENTICATION_STEP,
-    })
   }
 
   const setError = useCallback(
@@ -225,17 +228,10 @@ const LoginSteps = ({setClient}) => {
   if (state.step === TWO_FACTOR_AUTHENTICATION_STEP) {
     return (
       <TwoFactorAuthenticationView
+        instance={state.instance}
         setTwoFactorCode={continueOAuth}
-        cancelLogin={cancelLogin}
-      />
-    )
-  }
-
-  if (state.step === TWO_FACTOR_AUTHENTICATION_ERROR_STEP) {
-    return (
-      <TwoFactorAuthenticationWrongCodeView
-        retry={retryTwoFactorAuthentication}
-        cancel={cancelLogin}
+        goBack={cancelOauth}
+        errorMessage={state.errorMessage2FA}
       />
     )
   }
