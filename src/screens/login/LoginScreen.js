@@ -22,6 +22,7 @@ import {
 } from '../../libs/client'
 import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
 import {saveLoginData} from '../../libs/functions/passwordHelpers'
+import {useSplashScreen} from '../../hooks/useSplashScreen'
 
 import strings from '../../strings.json'
 
@@ -37,6 +38,7 @@ const ERROR_STEP = 'ERROR_STEP'
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
 const LoginSteps = ({setClient}) => {
+  const {showSplashScreen} = useSplashScreen()
   const [state, setState] = useState({
     step: CLOUDERY_STEP,
   })
@@ -206,6 +208,7 @@ const LoginSteps = ({setClient}) => {
         client,
       })
 
+      showSplashScreen()
       await saveLoginData(loginData)
       setClient(result.client)
     } catch (error) {
