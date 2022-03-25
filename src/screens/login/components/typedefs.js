@@ -57,6 +57,16 @@
  */
 
 /**
+ * @typedef {object} TransitionPasswordAvatarPosition
+ * @property {number} top - The avatar's top position relative to the HTML view
+ * @property {number} left - The avatar's left position relative to the HTML view
+ * @property {number} height - The avatar's height
+ * @property {number} width - The avatar's width
+ * @property {number} boxHeight - The avatar's height, considering image margins and borders
+ * @property {number} boxWidth - The avatar's width, considering image margins and borders
+ */
+
+/**
  * Set the login data.
  * @callback setLoginDataCallback
  * @param {LoginData} loginData
