@@ -7,6 +7,7 @@ import apiKeys from '../api-keys.json'
 import strings from '../strings.json'
 
 export const STATE_CONNECTED = 'STATE_CONNECTED'
+export const STATE_AUTHORIZE_NEEDED = 'STATE_AUTHORIZE_NEEDED'
 export const STATE_2FA_NEEDED = 'STATE_2FA_NEEDED'
 export const STATE_INVALID_PASSWORD = 'STATE_INVALID_PASSWORD'
 
@@ -220,6 +221,14 @@ const connectClient = async ({
 
   const sessionCode = sessionCodeResult.session_code
 
+  return {
+    client: client,
+    sessionCode: sessionCode,
+    state: STATE_AUTHORIZE_NEEDED,
+  }
+}
+
+export const authorizeClient = async ({client, sessionCode}) => {
   const {codeVerifier, codeChallenge} = await createPKCE()
 
   await client.authorize({
