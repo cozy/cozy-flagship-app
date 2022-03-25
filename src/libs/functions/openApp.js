@@ -129,6 +129,7 @@ export const openApp = (navigation, href, app, iconParams) => {
 
   return navigation.navigate('cozyapp', {
     href,
-    iconParams: JSON.parse(iconParams),
+    iconParams: iconParams && JSON.parse(iconParams),
+    slug: app?.slug,
   })
 }
