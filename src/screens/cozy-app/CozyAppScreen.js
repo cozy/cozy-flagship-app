@@ -24,6 +24,8 @@ export const CozyAppScreen = ({route, navigation}) => {
   }, [UIState])
 
   useEffect(() => {
+    !route.params.iconParams && setReady(true)
+
     isReady &&
       setFlagshipUI({
         bottomBackground: 'white',
@@ -33,7 +35,7 @@ export const CozyAppScreen = ({route, navigation}) => {
         topTheme: 'dark',
         topOverlay: 'transparent',
       })
-  }, [isReady])
+  }, [isReady, route.params.iconParams])
 
   return (
     <>
@@ -47,7 +49,11 @@ export const CozyAppScreen = ({route, navigation}) => {
 
       <View style={styles.mainView}>
         {route.params.iconParams && (
-          <Animation onFinished={setReady} params={route.params.iconParams} />
+          <Animation
+            onFinished={setReady}
+            params={route.params.iconParams}
+            slug={route.params.slug}
+          />
         )}
 
         <CozyWebView

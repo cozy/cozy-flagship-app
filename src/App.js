@@ -71,7 +71,10 @@ const App = () => {
       <Root.Screen
         name={routes.cozyapp}
         component={CozyAppScreen}
-        options={{presentation: 'transparentModal', animationEnabled: false}}
+        options={{
+          presentation: 'transparentModal',
+          animationEnabled: false,
+        }}
         {...(initialRoute.root ? {initialParams: initialRoute.root} : {})}
       />
     </Root.Navigator>

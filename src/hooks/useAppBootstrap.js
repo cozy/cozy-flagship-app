@@ -6,6 +6,11 @@ import {getClient} from '../libs/client'
 import {navigate} from '../libs/RootNavigation'
 import {routes} from '../constants/routes'
 import {useSplashScreen} from './useSplashScreen'
+import {
+  attemptFetchIcons,
+  getPersistentIconTable,
+  iconTablePostBootstrap,
+} from '../libs/functions/iconTable'
 
 const log = Minilog('useAppBootstrap')
 
@@ -29,7 +34,7 @@ const parseOnboardingURL = url => {
     }
   } catch (error) {
     log.error(
-      `Something went wrong while trying to parse onboarding URL data: ${error.message}`
+      `Something went wrong while trying to parse onboarding URL data: ${error.message}`,
     )
     return undefined
   }
@@ -54,7 +59,7 @@ const parseFallbackURL = url => {
     }
   } catch (error) {
     log.error(
-      `Something went wrong while trying to parse fallback URL data: ${error.message}`
+      `Something went wrong while trying to parse fallback URL data: ${error.message}`,
     )
     return defaultParse
   }
@@ -66,6 +71,7 @@ export const useAppBootstrap = () => {
   const [initialScreen, setInitialScreen] = useState('fetching')
   const [isLoading, setIsLoading] = useState(true)
   const {hideSplashScreen} = useSplashScreen()
+  const [appIcons, setAppIcons] = useState('fetching')
 
   // Handling client init
   useEffect(() => {
@@ -162,6 +168,23 @@ export const useAppBootstrap = () => {
       subscription.remove()
     }
   }, [isLoading])
+
+  useEffect(() => {
+    const asyncCore = async () => {
+      const persistentTable = await getPersistentIconTable()
+
+      if (persistentTable) {
+        return setAppIcons(persistentTable)
+      }
+
+      const fetchedTable = await attemptFetchIcons(client)
+
+      iconTablePostBootstrap(fetchedTable)
+      setAppIcons(fetchedTable)
+    }
+
+    appIcons === 'fetching' && client && asyncCore()
+  }, [appIcons, client])
 
   return {
     client,

@@ -42,6 +42,8 @@ describe('openApp', () => {
 
       expect(navigation.navigate).toHaveBeenCalledWith('cozyapp', {
         href: 'https://appurl',
+        iconParams: undefined,
+        slug: 'some_app_with_no_native_equivalent',
       })
     })
   })
