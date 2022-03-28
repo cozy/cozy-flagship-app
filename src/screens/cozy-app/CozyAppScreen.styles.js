@@ -6,7 +6,7 @@ export const styles = {
   notReady: {
     opacity: 0,
   },
-  innerBottomOverlay: {
+  innerOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,

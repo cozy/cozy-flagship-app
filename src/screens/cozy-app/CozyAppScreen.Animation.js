@@ -30,7 +30,7 @@ const getScaleInput = params => ({
   y: params.height / screenHeight,
 })
 
-export const Animation = ({onFinished, params, slug}) => {
+export const Animation = ({onFirstHalf, onFinished, params, slug}) => {
   const [iconTable, setIconTable] = useState()
   const animateOpacity = useRef(new Animated.Value(1)).current
   const animateTranslate = useRef(
@@ -78,14 +78,16 @@ export const Animation = ({onFinished, params, slug}) => {
         duration: config.duration,
         useNativeDriver: config.driver,
       }),
-    ]).start(({finished}) => {
-      onFinished(finished)
+    ]).start(() => {
+      onFirstHalf(true)
 
       Animated.timing(animateFadeOut, {
         toValue: 0,
         duration: config.duration,
         useNativeDriver: config.driver,
-      }).start()
+      }).start(() => {
+        onFinished(true)
+      })
     })
   }, [
     animateFadeOut,
@@ -93,6 +95,7 @@ export const Animation = ({onFinished, params, slug}) => {
     animateScale,
     animateTranslate,
     onFinished,
+    onFirstHalf,
   ])
 
   return iconTable ? (
