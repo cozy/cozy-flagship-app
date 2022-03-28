@@ -8,11 +8,13 @@ import {ErrorView} from './components/ErrorView'
 import {LoadingView} from './components/LoadingView'
 import {PasswordView} from './components/PasswordView'
 import {TransitionToPasswordView} from './components/transitions/TransitionToPasswordView'
+import {TransitionToAuthorizeView} from './components/transitions/TransitionToAuthorizeView'
 import {TwoFactorAuthenticationView} from './components/TwoFactorAuthenticationView'
 
 import {
   callInitClient,
   call2FAInitClient,
+  authorizeClient,
   createClient,
   fetchPublicData,
   STATE_2FA_NEEDED,
@@ -29,6 +31,7 @@ const LOADING_STEP = 'LOADING_STEP'
 const CLOUDERY_STEP = 'CLOUDERY_STEP'
 const PASSWORD_STEP = 'PASSWORD_STEP'
 const TWO_FACTOR_AUTHENTICATION_STEP = 'TWO_FACTOR_AUTHENTICATION_STEP'
+const AUTHORIZE_TRANSITION_STEP = 'AUTHORIZE_TRANSITION_STEP'
 const ERROR_STEP = 'ERROR_STEP'
 
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
@@ -43,10 +46,16 @@ const LoginSteps = ({setClient}) => {
   }, [state])
 
   useEffect(() => {
-    if (state.loginData) {
+    if (state.loginData && state.step === PASSWORD_STEP) {
       startOAuth()
     }
-  }, [state.loginData, startOAuth])
+  }, [state.loginData, state.step, startOAuth])
+
+  useEffect(() => {
+    if (state.sessionCode && !state.waitForTransition) {
+      authorize()
+    }
+  }, [state.sessionCode, state.waitForTransition, authorize])
 
   const setInstanceData = async ({instance, fqdn}) => {
     try {
@@ -95,7 +104,6 @@ const LoginSteps = ({setClient}) => {
   const setLoginData = loginData => {
     setState(oldState => ({
       ...oldState,
-      step: LOADING_STEP,
       loginData: loginData,
     }))
   }
@@ -126,47 +134,76 @@ const LoginSteps = ({setClient}) => {
           twoFactorToken: result.twoFactorToken,
         }))
       } else {
-        await saveLoginData(loginData)
-        setClient(result.client)
-      }
-    } catch (error) {
-      if (error === OAUTH_USER_CANCELED_ERROR) {
-        cancelLogin()
-      } else {
-        setError(error.message, error)
-      }
-    }
-  }, [setClient, setError, state])
-
-  const continueOAuth = async twoFactorCode => {
-    try {
-      const {loginData, client, twoFactorToken} = state
-
-      const result = await call2FAInitClient({
-        loginData,
-        client,
-        twoFactorAuthenticationData: {
-          token: twoFactorToken,
-          passcode: twoFactorCode,
-        },
-      })
-
-      if (result.state === STATE_2FA_NEEDED) {
         setState(oldState => ({
           ...oldState,
-          step: TWO_FACTOR_AUTHENTICATION_STEP,
+          step: AUTHORIZE_TRANSITION_STEP,
+          waitForTransition: true,
           client: result.client,
-          twoFactorToken: result.twoFactorToken,
-          errorMessage2FA: strings.errors.wrong2FA,
+          sessionCode: result.sessionCode,
         }))
-      } else {
-        await saveLoginData(loginData)
-        setClient(result.client)
       }
     } catch (error) {
       setError(error.message, error)
     }
-  }
+  }, [setError, state])
+
+  const continueOAuth = useCallback(
+    async twoFactorCode => {
+      try {
+        const {loginData, client, twoFactorToken} = state
+
+        const result = await call2FAInitClient({
+          loginData,
+          client,
+          twoFactorAuthenticationData: {
+            token: twoFactorToken,
+            passcode: twoFactorCode,
+          },
+        })
+
+        if (result.state === STATE_2FA_NEEDED) {
+          setState(oldState => ({
+            ...oldState,
+            step: TWO_FACTOR_AUTHENTICATION_STEP,
+            client: result.client,
+            twoFactorToken: result.twoFactorToken,
+            errorMessage2FA: strings.errors.wrong2FA,
+          }))
+        } else {
+          setState(oldState => ({
+            ...oldState,
+            step: AUTHORIZE_TRANSITION_STEP,
+            waitForTransition: true,
+            client: result.client,
+            sessionCode: result.sessionCode,
+          }))
+        }
+      } catch (error) {
+        setError(error.message, error)
+      }
+    },
+    [setError, state],
+  )
+
+  const authorize = useCallback(async () => {
+    try {
+      const {client, loginData, sessionCode} = state
+
+      const result = await authorizeClient({
+        sessionCode,
+        client,
+      })
+
+      await saveLoginData(loginData)
+      setClient(result.client)
+    } catch (error) {
+      if (error === OAUTH_USER_CANCELED_ERROR) {
+        cancelOauth()
+      } else {
+        setError(error.message, error)
+      }
+    }
+  }, [cancelOauth, setClient, setError, state])
 
   const setError = useCallback(
     (errorMessage, error) => {
@@ -196,6 +233,13 @@ const LoginSteps = ({setClient}) => {
       waitForTransition: false,
     }))
   }
+
+  const setTransitionToAuthorizeEnded = useCallback(() => {
+    setState(oldState => ({
+      ...oldState,
+      waitForTransition: false,
+    }))
+  }, [])
 
   if (state.step === CLOUDERY_STEP) {
     return <ClouderyView setInstanceData={setInstanceData} />
@@ -233,6 +277,14 @@ const LoginSteps = ({setClient}) => {
         setTwoFactorCode={continueOAuth}
         goBack={cancelOauth}
         errorMessage={state.errorMessage2FA}
+      />
+    )
+  }
+
+  if (state.step === AUTHORIZE_TRANSITION_STEP) {
+    return (
+      <TransitionToAuthorizeView
+        setTransitionEnded={setTransitionToAuthorizeEnded}
       />
     )
   }
