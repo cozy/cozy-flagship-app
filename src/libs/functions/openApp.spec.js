@@ -2,6 +2,11 @@ import RN from 'react-native'
 
 import {openApp} from './openApp'
 
+jest.mock('../dimensions', () => ({
+  screenHeight: 732,
+  screenWidth: 412,
+}))
+
 jest.mock('react-native', () => ({
   Alert: {
     alert: jest.fn(),
@@ -30,6 +35,12 @@ describe('openApp', () => {
 
       expect(navigation.navigate).toHaveBeenCalledWith('cozyapp', {
         href: 'https://appurl',
+        iconParams: {
+          height: 32,
+          width: 32,
+          x: 190,
+          y: 350,
+        },
       })
     })
   })
@@ -42,7 +53,12 @@ describe('openApp', () => {
 
       expect(navigation.navigate).toHaveBeenCalledWith('cozyapp', {
         href: 'https://appurl',
-        iconParams: undefined,
+        iconParams: {
+          height: 32,
+          width: 32,
+          x: 190,
+          y: 350,
+        },
         slug: 'some_app_with_no_native_equivalent',
       })
     })

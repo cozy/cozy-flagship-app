@@ -1,4 +1,5 @@
 import {Alert, Linking, Platform} from 'react-native'
+import {screenHeight, screenWidth} from '../dimensions'
 
 /**
  * App's mobile information. Used to describe the app scheme and its store urls
@@ -129,7 +130,12 @@ export const openApp = (navigation, href, app, iconParams) => {
 
   return navigation.navigate('cozyapp', {
     href,
-    iconParams: iconParams && JSON.parse(iconParams),
+    iconParams: (iconParams && JSON.parse(iconParams)) || {
+      x: screenWidth * 0.5 - 32 * 0.5,
+      y: screenHeight * 0.5 - 32 * 0.5,
+      width: 32,
+      height: 32,
+    },
     slug: app?.slug,
   })
 }
