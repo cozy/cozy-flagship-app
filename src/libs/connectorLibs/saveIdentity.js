@@ -21,34 +21,44 @@ const log = Minilog('saveIdentity')
  * ```
  */
 
-const saveIdentity = async (contact, accountIdentifier, options) => {
-  log.debug('saving user identity', accountIdentifier)
+const saveIdentity = async (
+  contactOrIdentity,
+  accountIdentifier,
+  options = {},
+) => {
   if (accountIdentifier == null) {
     log.warn("Can't set identity as no accountIdentifier was provided")
     return
   }
-  if (contact == null) {
-    log.warn("Can't set identity as no contact was provided")
+
+  if (contactOrIdentity == null) {
+    log.warn("Can't set identity as no identity was provided")
     return
   }
-  // Format contact if needed
-  if (contact.phone) {
-    contact.phone = formatPhone(contact.phone)
-  }
-  if (contact.address) {
-    contact.address = formatAddress(contact.address)
-  }
 
-  const identity = {
-    identifier: accountIdentifier,
-    contact,
+  // we suppose here that an identity always contains at least some contact information
+  const isIdentity = contactOrIdentity.contact
+  if (!isIdentity) {
+    log.warn(
+      'passing a io.cozy.contacts object is deprected, please pass a full identity object',
+    )
+  }
+  const identity = isIdentity ? contactOrIdentity : {contact: contactOrIdentity}
+  identity.identifier = accountIdentifier
+
+  // Format contact if needed
+  if (identity.contact.phone) {
+    identity.contact.phone = formatPhone(identity.contact.phone)
+  }
+  if (identity.contact.address) {
+    identity.contact.address = formatAddress(identity.contact.address)
   }
 
   await updateOrCreate(
     [identity],
     'io.cozy.identities',
     ['identifier', 'cozyMetadata.createdByApp'],
-    options,
+    {...options, sourceAccountIdentifier: accountIdentifier},
   )
   return
 }
