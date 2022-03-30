@@ -15,15 +15,11 @@
   "errors": {
     "cozyClientMismatch": "Could not validate redirect url, Cozy Client mismatch",
     "domainMismatch": "Could not validate redirect url, domain mismatch",
-    "iconTableFetchFailure": "Could not fetch iconTable from the stack.",
-    "iconTableFullFailure": "Could not get any iconTable at all for this session. Fallback icon will be used for openApp animations",
-    "protocolMismatch": "Could not validate redirect url, protocol mismatch"
-  },
-  "infos": {
-    "iconTableGetFailure": "Could not get iconTable from persistent storage. Will try to fetch it from the stack."
-  },
-  "warnings": {
-    "iconTableSetFailure": "Could not save iconTable to persistent storage."
+    "protocolMismatch": "Could not validate redirect url, protocol mismatch",
+    "clearPersistentIconTable": "Could not clear icon cache. Saved cache might be corrupted.",
+    "setPersistentIconTable": "Could not set icon cache. Cache to save might be corrupted.",
+    "attemptFetchApps": "Failed to fetch apps registry, recovering by returning undefined.",
+    "attemptFetchIcons": "Failed to fetch icons XML data. No icon will be available until next boot."
   },
   "APPS_ICONS": "APPS_ICONS"
 }

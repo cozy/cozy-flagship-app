@@ -1,12 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef} from 'react'
 import {Animated} from 'react-native'
 import {SvgXml} from 'react-native-svg'
 
 import {screenHeight, screenWidth} from '../../libs/dimensions'
-import {
-  getPersistentIconTable,
-  iconFallback,
-} from '../../libs/functions/iconTable'
+import {iconTable, iconFallback} from '../../libs/functions/iconTable'
 import {styles} from './CozyAppScreen.styles'
 
 const config = {
@@ -31,7 +28,6 @@ const getScaleInput = params => ({
 })
 
 export const Animation = ({onFirstHalf, onFinished, params, slug}) => {
-  const [iconTable, setIconTable] = useState()
   const animateOpacity = useRef(new Animated.Value(1)).current
   const animateTranslate = useRef(
     new Animated.ValueXY(getTranslateInput(params)),
@@ -44,7 +40,7 @@ export const Animation = ({onFirstHalf, onFinished, params, slug}) => {
     render() {
       return (
         <SvgXml
-          xml={iconTable[slug] || iconFallback}
+          xml={iconTable[slug]?.xml || iconFallback}
           width={config.width}
           height={config.height}
         />
@@ -52,14 +48,6 @@ export const Animation = ({onFirstHalf, onFinished, params, slug}) => {
     }
   }
   const Icon = Animated.createAnimatedComponent(SVG)
-
-  useEffect(() => {
-    const asyncCore = async () => {
-      setIconTable(await getPersistentIconTable())
-    }
-
-    !iconTable && asyncCore()
-  }, [iconTable])
 
   useEffect(() => {
     Animated.parallel([
@@ -98,7 +86,7 @@ export const Animation = ({onFirstHalf, onFinished, params, slug}) => {
     onFirstHalf,
   ])
 
-  return iconTable ? (
+  return (
     <Animated.View
       pointerEvents="box-none"
       style={[
@@ -115,5 +103,5 @@ export const Animation = ({onFirstHalf, onFinished, params, slug}) => {
       ]}>
       <Icon style={{opacity: animateOpacity}} />
     </Animated.View>
-  ) : null
+  )
 }
