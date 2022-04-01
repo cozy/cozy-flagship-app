@@ -134,7 +134,7 @@ const LoginSteps = ({setClient}) => {
           stepReadonly: false,
           loginData: undefined,
           waitForTransition: false,
-          errorMessage: 'Invalid password',
+          errorMessage: strings.errors.invalidPassword,
         }))
       } else if (result.state === STATE_2FA_NEEDED) {
         setState(oldState => ({
