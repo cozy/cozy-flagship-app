@@ -20,7 +20,8 @@
     "setPersistentIconTable": "Could not set icon cache. Cache to save might be corrupted.",
     "attemptFetchApps": "Failed to fetch apps registry, recovering by returning undefined.",
     "attemptFetchIcons": "Failed to fetch icons XML data. No icon will be available until next boot.",
-    "wrong2FA": "Le code que vous avez entré n'est pas correct, merci de réessayer."
+    "wrong2FA": "Le code que vous avez entré n'est pas correct, merci de réessayer.",
+    "invalidPassword": "Les identifiants que vous avez saisis sont incorrects, veuillez ré-essayer."
   },
   "APPS_ICONS": "APPS_ICONS"
 }
