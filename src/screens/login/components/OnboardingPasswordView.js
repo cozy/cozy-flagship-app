@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {View, StyleSheet} from 'react-native'
 import {WebView} from 'react-native-webview'
 
@@ -16,7 +16,9 @@ import {getHtml} from './assets/OnboardingPasswordView/htmlOnboardingPasswordInj
  * @param {string} props.fqdn - The Cozy's fqdn
  * @param {Function} props.goBack - Function to call when the back button is clicked
  * @param {string} props.instance - The Cozy's url
+ * @param {boolean} props.readonly - Specify if the form should be readonly
  * @param {setPasswordData} props.setPasswordData - Function to call to set the user's password
+ * @param {setReadonly} props.setReadonly - Trigger change on the readonly state
  * @returns {import('react').ComponentClass}
  */
 const PasswordForm = ({
@@ -24,13 +26,29 @@ const PasswordForm = ({
   fqdn,
   instance,
   goBack,
+  readonly,
   setPasswordData,
+  setReadonly,
 }) => {
   const [loading, setLoading] = useState(true)
+  const webviewRef = useRef()
+
+  useEffect(() => {
+    if (webviewRef) {
+      const payload = JSON.stringify({
+        message: 'setReadonly',
+        param: readonly,
+      })
+
+      const webView = webviewRef.current
+      webView.postMessage(payload)
+    }
+  }, [webviewRef, readonly])
 
   const html = getHtml(instance, errorMessage)
 
   const setPassword = (passphrase, hint) => {
+    setReadonly(true)
     setPasswordData({
       password: passphrase,
       hint: hint,
@@ -54,6 +72,7 @@ const PasswordForm = ({
   return (
     <View style={styles.view}>
       <WebView
+        ref={webviewRef}
         javaScriptEnabled={true}
         onMessage={processMessage}
         originWhitelist={['*']}
@@ -76,8 +95,10 @@ const PasswordForm = ({
  * @param {Function} props.goBack - Function to call when the back button is clicked
  * @param {string} props.instance - The Cozy's url
  * @param {number} [props.kdfIterations] - The number of KDF iterations to be used for hashing the password
+ * @param {boolean} props.readonly - Specify if the form should be readonly
  * @param {setErrorCallback} props.setError - Function to call when an error is thrown by the component
  * @param {setLoginDataCallback} props.setKeys - Function to call to set the user's password and encryption keys
+ * @param {setReadonly} props.setReadonly - Trigger change on the readonly state
  * @returns {import('react').ComponentClass}
  */
 export const OnboardingPasswordView = ({
@@ -86,8 +107,10 @@ export const OnboardingPasswordView = ({
   goBack,
   instance,
   kdfIterations,
+  readonly,
   setError,
   setKeys,
+  setReadonly,
 }) => {
   const [passwordData, setPasswordData] = useState()
 
@@ -111,6 +134,8 @@ export const OnboardingPasswordView = ({
       goBack={goBack}
       instance={instance}
       setPasswordData={setPasswordData}
+      readonly={readonly}
+      setReadonly={setReadonly}
     />
   )
 }

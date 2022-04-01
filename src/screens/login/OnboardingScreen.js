@@ -64,11 +64,19 @@ const OnboardingSteps = ({setClient, route, navigation}) => {
     }
   }, [navigation, route, setOnboardingData])
 
+  const setStepReadonly = isReadOnly => {
+    setState(oldState => ({
+      ...oldState,
+      stepReadonly: isReadOnly,
+    }))
+  }
+
   const setOnboardingData = useCallback(
     onboardingData => {
       setState({
         ...state,
         step: PASSWORD_STEP,
+        stepReadonly: false,
         onboardingData: onboardingData,
       })
     },
@@ -144,6 +152,8 @@ const OnboardingSteps = ({setClient, route, navigation}) => {
         goBack={cancelOnboarding}
         setKeys={setLoginData}
         setError={setError}
+        readonly={state.stepReadonly}
+        setReadonly={setStepReadonly}
       />
     )
   }
