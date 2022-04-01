@@ -7,6 +7,7 @@ import {passwordStrengthJs} from './js/jsPasswordStrength'
 import {cirrusJs} from '../common/js/jsCirrus'
 import {passwordHelperJs} from '../PasswordView/js/jsPasswordHelper'
 import {passwordVisibilityJs} from '../PasswordView/js/jsPasswordVisibility'
+import {readonlyJs} from '../common/js/jsReadonly'
 
 import {cirrusCss} from '../common/css/cssCirrus'
 import {fontsCss} from '../common/css/cssFonts'
@@ -116,6 +117,7 @@ export const getHtml = (instance, credentialsErrorMsg = undefined) => `
           return false
         }
       })
+      ${readonlyJs(['login-submit', 'password-field', 'hint-field'])}
     </script>
   </body>
 </html>

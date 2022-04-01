@@ -67,6 +67,12 @@
  */
 
 /**
+ * Set the readonly state.
+ * @callback setReadonly
+ * @param {boolean} isReadOnly
+ */
+
+/**
  * Set the login data.
  * @callback setLoginDataCallback
  * @param {LoginData} loginData

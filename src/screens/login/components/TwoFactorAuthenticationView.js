@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {View, StyleSheet} from 'react-native'
 import {WebView} from 'react-native-webview'
 
@@ -11,6 +11,8 @@ import {getHtml} from './assets/TwoFactorAuthentication/htmlTwoFactorAuthenticat
  * @param {string} [props.errorMessage] - Error message to display if defined
  * @param {Function} props.goBack - Function to call when the back button is clicked
  * @param {string} props.instance - The Cozy's url
+ * @param {boolean} props.readonly - Specify if the form should be readonly
+ * @param {setReadonly} props.setReadonly - Trigger change on the readonly state
  * @param {setTwoFactorCode} props.setTwoFactorCode - Function to call to set the user's 2FA code
  * @returns {import('react').ComponentClass}
  */
@@ -18,9 +20,24 @@ export const TwoFactorAuthenticationView = ({
   errorMessage,
   goBack,
   instance,
+  readonly,
+  setReadonly,
   setTwoFactorCode,
 }) => {
   const [loading, setLoading] = useState(true)
+  const webviewRef = useRef()
+
+  useEffect(() => {
+    if (webviewRef) {
+      const payload = JSON.stringify({
+        message: 'setReadonly',
+        param: readonly,
+      })
+
+      const webView = webviewRef.current
+      webView.postMessage(payload)
+    }
+  }, [webviewRef, readonly])
 
   const html = getHtml(instance, errorMessage)
 
@@ -28,6 +45,7 @@ export const TwoFactorAuthenticationView = ({
     if (event.nativeEvent && event.nativeEvent.data) {
       const message = JSON.parse(event.nativeEvent.data)
       if (message.message === 'setTwoFactorAuthenticationCode') {
+        setReadonly(true)
         setTwoFactorCode(message.twoFactorAuthenticationCode)
       } else if (message.message === 'backButton') {
         goBack()
@@ -40,6 +58,7 @@ export const TwoFactorAuthenticationView = ({
   return (
     <View style={styles.view}>
       <WebView
+        ref={webviewRef}
         javaScriptEnabled={true}
         onMessage={processMessage}
         originWhitelist={['*']}

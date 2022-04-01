@@ -4,6 +4,7 @@
 
 import {twoFactorAuthenticationJs} from './js/jsTwoFactorAuthentication'
 import {cirrusJs} from '../common/js/jsCirrus'
+import {readonlyJs} from '../common/js/jsReadonly'
 
 import {cirrusCss} from '../common/css/cssCirrus'
 import {fontsCss} from '../common/css/cssFonts'
@@ -84,6 +85,7 @@ export const getHtml = (instance, credentialsErrorMsg = undefined) => `
           return false
         }
       })
+      ${readonlyJs(['two-factor-submit', 'two-factor-passcode'])}
     </script>
   </body>
 </html>
