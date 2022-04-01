@@ -16,7 +16,7 @@ import {
   callInitClient,
   call2FAInitClient,
   createClient,
-  fetchKdfIterations,
+  fetchPublicData,
   STATE_2FA_NEEDED,
   STATE_INVALID_PASSWORD,
 } from '../../libs/client'
@@ -54,10 +54,7 @@ const LoginSteps = ({setClient}) => {
     try {
       const client = await createClient(instance)
 
-      const kdfIterations = await fetchKdfIterations({
-        instance,
-        client,
-      })
+      const {kdfIterations, name} = await fetchPublicData(client)
 
       // we do not want to await for flagship certification in order to make the UI more responsive
       // so do not add `await` keyword here
@@ -67,6 +64,7 @@ const LoginSteps = ({setClient}) => {
         step: PASSWORD_STEP,
         fqdn: fqdn,
         instance: instance,
+        name: name,
         kdfIterations: kdfIterations,
         client: client,
       })
