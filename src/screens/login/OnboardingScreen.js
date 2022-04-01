@@ -11,7 +11,7 @@ import Minilog from '@cozy/minilog'
 
 import {callOnboardingInitClient} from '../../libs/client'
 import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
-import {saveLoginData} from '../../libs/functions/passwordHelpers'
+import {resetKeychainAndSaveLoginData} from '../../libs/functions/passwordHelpers'
 import {consumeRouteParameter} from '../../libs/functions/routeHelpers'
 
 import {routes} from '../../constants/routes'
@@ -127,7 +127,7 @@ const OnboardingSteps = ({setClient, route, navigation}) => {
         registerToken,
       })
 
-      await saveLoginData(loginData)
+      await resetKeychainAndSaveLoginData(loginData)
       setClient(client)
     } catch (error) {
       setError(error.message, error)

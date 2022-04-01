@@ -21,7 +21,7 @@ import {
   STATE_INVALID_PASSWORD,
 } from '../../libs/client'
 import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
-import {saveLoginData} from '../../libs/functions/passwordHelpers'
+import {resetKeychainAndSaveLoginData} from '../../libs/functions/passwordHelpers'
 import {useSplashScreen} from '../../hooks/useSplashScreen'
 
 import strings from '../../strings.json'
@@ -209,7 +209,7 @@ const LoginSteps = ({setClient}) => {
       })
 
       showSplashScreen()
-      await saveLoginData(loginData)
+      await resetKeychainAndSaveLoginData(loginData)
       setClient(result.client)
     } catch (error) {
       if (error === OAUTH_USER_CANCELED_ERROR) {
