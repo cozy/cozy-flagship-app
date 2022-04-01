@@ -7,6 +7,7 @@ import {ClouderyView} from './components/ClouderyView'
 import {ErrorView} from './components/ErrorView'
 import {LoadingView} from './components/LoadingView'
 import {PasswordView} from './components/PasswordView'
+import {TransitionToPasswordView} from './components/transitions/TransitionToPasswordView'
 import {
   TwoFactorAuthenticationView,
   TwoFactorAuthenticationWrongCodeView,
@@ -62,6 +63,8 @@ const LoginSteps = ({setClient}) => {
 
       setState({
         step: PASSWORD_STEP,
+        waitForTransition: true,
+        requestTransitionStart: false,
         fqdn: fqdn,
         instance: instance,
         name: name,
@@ -73,11 +76,11 @@ const LoginSteps = ({setClient}) => {
     }
   }
 
-  const cancelLogin = () => {
+  const cancelLogin = useCallback(() => {
     setState({
       step: CLOUDERY_STEP,
     })
-  }
+  }, [])
 
   const setLoginData = loginData => {
     setState(oldState => ({
@@ -101,6 +104,8 @@ const LoginSteps = ({setClient}) => {
         setState(oldState => ({
           ...oldState,
           step: PASSWORD_STEP,
+          loginData: undefined,
+          waitForTransition: false,
           errorMessage: 'Invalid password',
         }))
       } else if (result.state === STATE_2FA_NEEDED) {
@@ -172,23 +177,48 @@ const LoginSteps = ({setClient}) => {
     [state],
   )
 
+  const startTransitionToPassword = avatarPosition => {
+    setState(oldState => ({
+      ...oldState,
+      requestTransitionStart: true,
+      passwordAvatarPosition: avatarPosition,
+    }))
+  }
+
+  const endTransitionToPassword = () => {
+    setState(oldState => ({
+      ...oldState,
+      requestTransitionStart: false,
+      waitForTransition: false,
+    }))
+  }
+
   if (state.step === CLOUDERY_STEP) {
     return <ClouderyView setInstanceData={setInstanceData} />
   }
 
   if (state.step === PASSWORD_STEP) {
     return (
-      <PasswordView
-        fqdn={state.fqdn}
-        kdfIterations={state.kdfIterations}
-        setKeys={setLoginData}
-        setError={setError}
-        errorMessage={state.errorMessage}
-        cancelStep={{
-          callback: cancelLogin,
-          title: 'Cancel OAuth',
-        }}
-      />
+      <>
+        <PasswordView
+          instance={state.instance}
+          fqdn={state.fqdn}
+          kdfIterations={state.kdfIterations}
+          name={state.name}
+          requestTransitionStart={startTransitionToPassword}
+          setKeys={setLoginData}
+          setError={setError}
+          errorMessage={state.errorMessage}
+          goBack={cancelLogin}
+        />
+        {state.waitForTransition && (
+          <TransitionToPasswordView
+            setTransitionEnded={endTransitionToPassword}
+            requestTransitionStart={state.requestTransitionStart}
+            passwordAvatarPosition={state.passwordAvatarPosition}
+          />
+        )}
+      </>
     )
   }
 
