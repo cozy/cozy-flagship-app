@@ -85,6 +85,12 @@
  */
 
 /**
+ * Set the 2FA code.
+ * @callback setTwoFactorCode
+ * @param {string} twoFactorCode
+ */
+
+/**
  * Set error.
  * @callback setErrorCallback
  * @param {object} error
