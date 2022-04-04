@@ -44,7 +44,7 @@
     "react-native-bootsplash": "3.2.3",
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "1.10.3",
-    "react-native-google-safetynet": "npm:cozy-react-native-google-safetynet@^1.0.0",
+    "react-native-google-safetynet": "npm:cozy-react-native-google-safetynet@^1.0.1",
     "react-native-immersive-bars": "^1.0.4",
     "react-native-inappbrowser-reborn": "^3.5.1",
     "react-native-ios11-devicecheck": "https://github.com/cozy/react-native-devicecheck#app-attest-v0.1",
