@@ -20,6 +20,7 @@ const CozyWebView = ({
   source,
   trackWebviewInnerUri,
   route,
+  injectedJavaScriptBeforeContentLoaded,
   ...rest
 }) => {
   const [ref, setRef] = useState('')
@@ -59,6 +60,8 @@ const CozyWebView = ({
       ${jsLogInterception}
 
       ${jsCSSclassInjection(route.name)}
+
+      ${injectedJavaScriptBeforeContentLoaded}
 
       return true;
     })();

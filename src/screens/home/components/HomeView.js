@@ -7,6 +7,14 @@ import {useNativeIntent} from 'cozy-intent'
 import {useSession} from '../../../hooks/useSession'
 import CozyWebView from '../../../components/webviews/CozyWebView'
 import {consumeRouteParameter} from '../../../libs/functions/routeHelpers'
+import {statusBarHeight, navbarHeight} from '../../../libs/dimensions'
+
+const injectedJavaScriptBeforeContentLoaded = () => `
+  window.addEventListener('load', (event) => {
+    window.document.body.style.setProperty('--flagship-top-height', '${statusBarHeight}px');
+    window.document.body.style.setProperty('--flagship-bottom-height', '${navbarHeight}px');
+  });
+`
 
 const HomeView = ({route, navigation, setLauncherContext}) => {
   const client = useClient()
@@ -86,11 +94,12 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
 
   return uri ? (
     <CozyWebView
-      source={{uri: uri}}
+      source={{uri}}
       trackWebviewInnerUri={handleTrackWebviewInnerUri}
       navigation={navigation}
       route={route}
       logId="HomeView"
+      injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded()}
       onMessage={async m => {
         const data = get(m, 'nativeEvent.data')
 

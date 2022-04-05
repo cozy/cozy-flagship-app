@@ -7,6 +7,16 @@ import {flagshipUI, setFlagshipUI} from '../../libs/intents/setFlagshipUI'
 import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
 import {styles} from './CozyAppScreen.styles'
 
+const firstHalfUI = () =>
+  setFlagshipUI({
+    bottomBackground: 'white',
+    bottomTheme: 'dark',
+    bottomOverlay: 'transparent',
+    topBackground: 'white',
+    topTheme: 'dark',
+    topOverlay: 'transparent',
+  })
+
 export const CozyAppScreen = ({route, navigation}) => {
   const [UIState, setUIState] = useState({})
   const {bottomBackground, bottomOverlay, topBackground, topTheme, topOverlay} =
@@ -27,15 +37,7 @@ export const CozyAppScreen = ({route, navigation}) => {
   useEffect(() => {
     !route.params.iconParams && setReady(true)
 
-    isFirstHalf &&
-      setFlagshipUI({
-        bottomBackground: 'white',
-        bottomTheme: 'dark',
-        bottomOverlay: 'transparent',
-        topBackground: 'white',
-        topTheme: 'dark',
-        topOverlay: 'transparent',
-      })
+    isFirstHalf && firstHalfUI()
   }, [isFirstHalf, route.params.iconParams])
 
   return (
