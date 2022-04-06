@@ -11,6 +11,7 @@ import {
   convertWaterHeatingSystem,
   convertConsumption,
   convertBakingTypes,
+  getEnergyTypeFromContract,
 } from './utils'
 
 const log = Minilog('ContentScript')
@@ -164,10 +165,7 @@ class EdfContentScript extends ContentScript {
     for (const key in contracts.details) {
       const detail = contracts.details[key]
       const energyProviders = detail.contracts.map(c => {
-        const energyType =
-          get(c, 'subscribeOffer.energy') === 'ELECTRICITE'
-            ? 'electricity'
-            : 'gas'
+        const energyType = getEnergyTypeFromContract(c)
         const mappedContract = {
           vendor: 'edfclientside',
           contract_number: c.number,
