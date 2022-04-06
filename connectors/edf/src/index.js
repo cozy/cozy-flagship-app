@@ -4,6 +4,14 @@ import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import {format} from 'date-fns'
 import waitFor from 'p-wait-for'
+import {
+  convertResidenceType,
+  convertHousingType,
+  convertHeatingSystem,
+  convertWaterHeatingSystem,
+  convertConsumption,
+  convertBakingTypes,
+} from './utils'
 
 const log = Minilog('ContentScript')
 Minilog.enable()
@@ -111,112 +119,6 @@ class EdfContentScript extends ContentScript {
     await this.saveIdentity({contact, housing})
   }
 
-  convertResidenceType(residenceType) {
-    const residenceTypeMap = {
-      Principale: 'primary',
-      Secondaire: 'secondary',
-    }
-    const result = residenceTypeMap[residenceType]
-
-    if (!result) {
-      log.warn('unknown residence type : ' + residenceType)
-    }
-    return result
-  }
-
-  convertHousingType(housingType) {
-    const housingTypeMap = {
-      Appartement: 'appartment',
-      Maison: 'house',
-    }
-    const result = housingTypeMap[housingType]
-
-    if (!result) {
-      log.warn('unknown housing type : ' + housingType)
-    }
-    return result
-  }
-
-  convertHeatingSystem(heatingSystem) {
-    const heatingSystemMap = {
-      Collectif: 'collective',
-      Electricite: 'electric',
-      Gaz: 'gaz',
-      Fioul: 'fuel',
-      Solaire: 'solar',
-      Bois: 'wood',
-      Charbon: 'coal',
-      Propane: 'propane',
-      Autre: 'other',
-    }
-    const result = heatingSystemMap[heatingSystem]
-
-    if (!result) {
-      log.warn('unknown heating system : ' + heatingSystem)
-    }
-
-    return result
-  }
-
-  convertBakingTypes(bakingTypes) {
-    const result = Object.keys(bakingTypes).reduce(
-      (memo, e) =>
-        bakingTypes[e]
-          ? [...memo, {type: e.slice(0, -6), number: bakingTypes[e]}]
-          : memo,
-      [],
-    )
-    return result
-  }
-
-  convertWaterHeatingSystem(waterHeatingSystem) {
-    const waterHeatingSystemMap = {
-      Collectif: 'collective',
-      Electricite: 'electric',
-      Gaz: 'gaz',
-      Fioul: 'fuel',
-      Solaire: 'solar',
-      Bois: 'wood',
-      Charbon: 'coal',
-      Propane: 'propane',
-      Autre: 'other',
-    }
-    const result = waterHeatingSystemMap[waterHeatingSystem]
-
-    if (!result) {
-      log.warn('unknown water heating system : ' + waterHeatingSystem)
-    }
-
-    return result
-  }
-
-  convertConsumption(yearlyData = [], monthlyData = []) {
-    const monthsIndexByYear = monthlyData.reduce((memo, d) => {
-      const [year, month] = d.month.split('-')
-      const intYear = parseInt(year, 10)
-      const intMonth = parseInt(month, 10)
-      if (!memo[intYear]) {
-        memo[intYear] = []
-      }
-      memo[intYear].push({
-        month: intMonth,
-        consumptionkWh: d.consumption.energy,
-      })
-      return memo
-    }, {})
-
-    const result = []
-    for (const data of yearlyData) {
-      const yearResult = {
-        year: parseInt(data.year, 10),
-        consumptionkWh: data.consumption.energy,
-        months: monthsIndexByYear[data.year],
-      }
-      result.push(yearResult)
-    }
-    return result
-  }
-
   async fetchHousing(contracts, echeancierResult = {}, context) {
     const consoLinkSelector = "[data-label='ma_conso']"
     const continueLinkSelector = "a[href='https://equilibre.edf.fr/comprendre']"
@@ -235,24 +137,24 @@ class EdfContentScript extends ContentScript {
     this.runInWorker('waitForSessionStorage')
 
     const {
-      constructionDate,
-      equipment,
-      heatingSystem,
-      housingType,
-      lifeStyle,
-      surfaceInSqMeter,
-      residenceType,
+      constructionDate = {},
+      equipment = {},
+      heatingSystem = {},
+      housingType = {},
+      lifeStyle = {},
+      surfaceInSqMeter = {},
+      residenceType = {},
     } = await this.runInWorker('getHomeProfile')
 
     const contractElec = await this.runInWorker('getContractElec')
 
     const rawConsumptions = await this.runInWorker('getConsumptions')
     const consumptions = {
-      electricity: this.convertConsumption(
+      electricity: convertConsumption(
         get(rawConsumptions, 'elec.yearlyElecEnergies'),
         get(rawConsumptions, 'elec.monthlyElecEnergies'),
       ),
-      gas: this.convertConsumption(
+      gas: convertConsumption(
         get(rawConsumptions, 'gas.yearlyGasEnergies'),
         get(rawConsumptions, 'gas.monthlyGasEnergies'),
       ),
@@ -261,7 +163,7 @@ class EdfContentScript extends ContentScript {
     const result = []
     for (const key in contracts.details) {
       const detail = contracts.details[key]
-      const energyProviders = detail.contracts.map((c) => {
+      const energyProviders = detail.contracts.map(c => {
         const energyType =
           get(c, 'subscribeOffer.energy') === 'ELECTRICITE'
             ? 'electricity'
@@ -291,17 +193,17 @@ class EdfContentScript extends ContentScript {
       })
       const housing = {
         construction_year: constructionDate,
-        residence_type: this.convertResidenceType(residenceType),
-        housing_type: this.convertHousingType(housingType),
+        residence_type: convertResidenceType(residenceType),
+        housing_type: convertHousingType(housingType),
         residents_number: lifeStyle.noOfOccupants,
         living_space_m2: surfaceInSqMeter,
-        heating_system: this.convertHeatingSystem(
+        heating_system: convertHeatingSystem(
           heatingSystem.principalHeatingSystemType,
         ),
-        water_heating_system: this.convertWaterHeatingSystem(
-          equipment.sanitoryHotWater.sanitoryHotWaterType,
+        water_heating_system: convertWaterHeatingSystem(
+          get(equipment, 'sanitoryHotWater.sanitoryHotWaterType'),
         ),
-        baking_types: this.convertBakingTypes(equipment.cookingEquipment),
+        baking_types: convertBakingTypes(equipment.cookingEquipment),
         address: detail.adress,
         energy_providers: energyProviders,
       }
@@ -347,8 +249,8 @@ class EdfContentScript extends ContentScript {
     if (isMonthly) {
       const startDate = new Date(get(result, 'paymentSchedule.startDate'))
       const bills = result.paymentSchedule.deadlines
-        .filter((bill) => bill.payment === 'EFFECTUE')
-        .map((bill) => ({
+        .filter(bill => bill.payment === 'EFFECTUE')
+        .map(bill => ({
           vendor: 'EDF',
           contractNumber,
           startDate,
@@ -396,7 +298,7 @@ class EdfContentScript extends ContentScript {
       )}_EDF_echancier.pdf`
 
       await this.saveBills(
-        bills.map((bill) => ({
+        bills.map(bill => ({
           ...bill,
           filename,
           fileurl,
@@ -772,7 +674,7 @@ class EdfContentScript extends ContentScript {
 
   getConsumptions() {
     const result = {}
-    const elecConsumptionKey = Object.keys(window.sessionStorage).find((k) =>
+    const elecConsumptionKey = Object.keys(window.sessionStorage).find(k =>
       k.includes('datacache:monthly-elec-consumptions'),
     )
     if (elecConsumptionKey) {
@@ -781,7 +683,7 @@ class EdfContentScript extends ContentScript {
       ).value.data
     }
 
-    const gasConsumptionKey = Object.keys(window.sessionStorage).find((k) =>
+    const gasConsumptionKey = Object.keys(window.sessionStorage).find(k =>
       k.includes('datacache:monthly-gas-consumptions'),
     )
     if (gasConsumptionKey) {
@@ -807,6 +709,6 @@ connector
       'waitForSessionStorage',
     ],
   })
-  .catch((err) => {
+  .catch(err => {
     console.warn(err)
   })
