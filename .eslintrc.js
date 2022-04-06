@@ -3,5 +3,11 @@ module.exports = {
   extends: '@react-native-community',
   rules: {
     semi: [2, 'never'],
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
   },
 }
