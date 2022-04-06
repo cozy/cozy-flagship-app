@@ -1,4 +1,5 @@
 import Minilog from '@cozy/minilog'
+import get from 'lodash/get'
 
 const log = Minilog('Utils')
 
@@ -106,4 +107,10 @@ export function convertConsumption(yearlyData = [], monthlyData = []) {
     result.push(yearResult)
   }
   return result
+}
+
+export function getEnergyTypeFromContract(contract) {
+  return get(contract, 'subscribeOffer.energy') === 'ELECTRICITE'
+    ? 'electricity'
+    : 'gas'
 }
