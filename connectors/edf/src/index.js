@@ -112,44 +112,29 @@ class EdfContentScript extends ContentScript {
     await this.fetchAttestations(contracts, context)
     await this.fetchBillsForAllContracts(contracts, context)
     const echeancierResult = await this.fetchEcheancierBills(contracts, context)
-    const housing = await this.fetchHousing(
+    const housing = this.formatHousing(
       contracts,
       echeancierResult,
-      context,
+      await this.fetchHousing(),
     )
     await this.saveIdentity({contact, housing})
   }
 
-  async fetchHousing(contracts, echeancierResult = {}, context) {
-    const consoLinkSelector = "[data-label='ma_conso']"
-    const continueLinkSelector = "a[href='https://equilibre.edf.fr/comprendre']"
-    const notConnectedSelector = 'div.session-expired-message button'
-    await this.clickAndWait(consoLinkSelector, continueLinkSelector)
-    await this.runInWorker('click', continueLinkSelector)
-    await Promise.race([
-      this.waitForElementInWorker(notConnectedSelector),
-      this.waitForElementInWorker('.header-logo'),
-    ])
-
-    const isConnected = await this.runInWorker('checkConnected')
-    if (!isConnected) {
-      await this.runInWorker('click', notConnectedSelector)
-    }
-    this.runInWorker('waitForSessionStorage')
-
-    const {
-      constructionDate = {},
-      equipment = {},
-      heatingSystem = {},
-      housingType = {},
-      lifeStyle = {},
-      surfaceInSqMeter = {},
-      residenceType = {},
-    } = await this.runInWorker('getHomeProfile')
-
-    const contractElec = await this.runInWorker('getContractElec')
-
-    const rawConsumptions = await this.runInWorker('getConsumptions')
+  async formatHousing(
+    contracts,
+    echeancierResult,
+    {
+      constructionDate,
+      equipment,
+      heatingSystem,
+      housingType,
+      lifeStyle,
+      surfaceInSqMeter,
+      residenceType,
+      contractElec,
+      rawConsumptions,
+    },
+  ) {
     const consumptions = {
       electricity: convertConsumption(
         get(rawConsumptions, 'elec.yearlyElecEnergies'),
@@ -209,6 +194,50 @@ class EdfContentScript extends ContentScript {
     }
 
     return result
+  }
+
+  async fetchHousing() {
+    const consoLinkSelector = "[data-label='ma_conso']"
+    const continueLinkSelector = "a[href='https://equilibre.edf.fr/comprendre']"
+    const notConnectedSelector = 'div.session-expired-message button'
+    await this.clickAndWait(consoLinkSelector, continueLinkSelector)
+    await this.runInWorker('click', continueLinkSelector)
+    await Promise.race([
+      this.waitForElementInWorker(notConnectedSelector),
+      this.waitForElementInWorker('.header-logo'),
+    ])
+
+    const isConnected = await this.runInWorker('checkConnected')
+    if (!isConnected) {
+      await this.runInWorker('click', notConnectedSelector)
+    }
+    this.runInWorker('waitForSessionStorage')
+
+    const {
+      constructionDate = {},
+      equipment = {},
+      heatingSystem = {},
+      housingType = {},
+      lifeStyle = {},
+      surfaceInSqMeter = {},
+      residenceType = {},
+    } = await this.runInWorker('getHomeProfile')
+
+    const contractElec = await this.runInWorker('getContractElec')
+
+    const rawConsumptions = await this.runInWorker('getConsumptions')
+
+    return {
+      constructionDate,
+      equipment,
+      heatingSystem,
+      housingType,
+      lifeStyle,
+      surfaceInSqMeter,
+      residenceType,
+      contractElec,
+      rawConsumptions,
+    }
   }
 
   async fetchEcheancierBills(contracts, context) {
