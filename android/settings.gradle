@@ -1,4 +1,6 @@
 rootProject.name = 'CozyReactNative'
+include ':@cheungpat_react-native-http-bridge'
+project(':@cheungpat_react-native-http-bridge').projectDir = new File(rootProject.projectDir, '../node_modules/@cheungpat/react-native-http-bridge/android')
 include ':react-native-fs'
 project(':react-native-fs').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fs/android')
 include ':@fengweichong_react-native-gzip'

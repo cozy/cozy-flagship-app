@@ -29,7 +29,9 @@ const isOnboardPage = requestUrl => {
  * @returns {import('react').ComponentClass}
  */
 export const ClouderyView = ({setInstanceData}) => {
-  const [uri, setUri] = useState(strings.loginUri)
+  // const [uri, setUri] = useState(strings.loginUri)
+  const [uri, setUri] = useState('http://localhost:8080/users')
+  // const [uri, setUri] = useState('http://127.0.0.1:8080')
 
   const handleNavigation = request => {
     if (request.loading) {

@@ -19,6 +19,8 @@ target 'CozyReactNative' do
 
   pod 'RNIOS11DeviceCheck', :path => '../node_modules/react-native-ios11-devicecheck/ios'
 
+  pod 'react-native-http-bridge', :path => '../node_modules/@cheungpat/react-native-http-bridge'
+
   target 'CozyReactNativeTests' do
     inherit! :complete
     # Pods for testing
