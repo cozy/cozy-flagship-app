@@ -97,7 +97,7 @@ export default class Launcher {
     const {account} = this.getStartContext()
     const existingCredentials = await this.getCredentials()
     if (existingCredentials) {
-      await removeCredential()
+      await this.removeCredentials()
     }
     await saveCredential(account)
   }
