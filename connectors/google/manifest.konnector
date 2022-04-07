@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "name": "Google Takeout",
+  "type": "konnector",
+  "language": "node",
+  "clientSide": true,
+  "icon": "icon.svg",
+  "slug": "google-takeout",
+  "source": "git@github.com:konnectors/cozy-konnector-template.git",
+  "editor": "Cozy",
+  "vendor_link": "https://www.google.com",
+  "categories": [
+    "online_services"
+  ],
+  "fields": { }
+}
