@@ -1,0 +1,19 @@
+{
+  "name": "google-takeout",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@cozy/minilog": "^1.0.0",
+    "date-fns": "^2.21.1"
+  },
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch"
+  },
+  "devDependencies": {
+    "hook-shell-script-webpack-plugin": "^0.1.3",
+    "webpack": "^4",
+    "webpack-cli": "^3"
+  }
+}
