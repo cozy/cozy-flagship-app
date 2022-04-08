@@ -6,6 +6,8 @@ import {doHashPassword} from '../../../libs/functions/passwordHelpers'
 
 import {getHtml} from './assets/PasswordView/htmlPasswordInjection'
 
+import {getColors} from '../../../theme/colors'
+
 const openForgotPasswordLink = instance => {
   const url = new URL(instance)
 
@@ -44,6 +46,7 @@ const PasswordForm = ({
 }) => {
   const [loading, setLoading] = useState(true)
   const webviewRef = useRef()
+  const colors = getColors()
 
   useEffect(() => {
     if (webviewRef) {
@@ -96,7 +99,16 @@ const PasswordForm = ({
         originWhitelist={['*']}
         source={{html}}
       />
-      {loading && <View style={styles.loadingOverlay} />}
+      {loading && (
+        <View
+          style={[
+            styles.loadingOverlay,
+            {
+              backgroundColor: colors.primaryColor,
+            },
+          ]}
+        />
+      )}
     </View>
   )
 }
@@ -174,6 +186,5 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#297ef2',
   },
 })

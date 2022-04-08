@@ -4,6 +4,8 @@ import {Animated, Dimensions, Easing, StyleSheet, View} from 'react-native'
 import {statusBarHeight} from '../../../../libs/dimensions'
 import {CozyIcon} from './transitions-icons/CozyIcon'
 
+import {getColors} from '../../../../theme/colors'
+
 const webViewTopToNativeTop = top => top + statusBarHeight
 
 /**
@@ -23,6 +25,8 @@ export const TransitionToPasswordView = ({
   requestTransitionStart,
   setTransitionEnded,
 }) => {
+  const colors = getColors()
+
   const animationDelayInSecond = 200
   const animationDurationInSecond = 400
   const fadeOutDurationInSecond = 200
@@ -107,6 +111,7 @@ export const TransitionToPasswordView = ({
           styles.background,
           {
             opacity: animatedOpactity,
+            backgroundColor: colors.primaryColor,
           },
         ]}
       />
@@ -126,7 +131,7 @@ export const TransitionToPasswordView = ({
           },
         ]}>
         <View style={[styles.avatarContainer]}>
-          <CozyIcon color="#FFFFFF" />
+          <CozyIcon color={colors.paperBackgroundColor} />
         </View>
       </Animated.View>
     </Animated.View>
@@ -147,7 +152,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#297ef2',
   },
   avatar: {
     position: 'absolute',
