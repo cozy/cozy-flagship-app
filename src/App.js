@@ -19,6 +19,7 @@ import {useAppBootstrap} from './hooks/useAppBootstrap.js'
 import {routes} from './constants/routes.js'
 
 import {CryptoWebView} from './components/webviews/CryptoWebView/CryptoWebView'
+import {useHttpServer} from './http-server/useHttpServer'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -35,6 +36,8 @@ if (!global.atob) {
 const App = () => {
   const {client, setClient, initialScreen, initialRoute, isLoading} =
     useAppBootstrap()
+
+  useHttpServer()
 
   if (isLoading) {
     return null
