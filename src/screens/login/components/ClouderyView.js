@@ -1,7 +1,9 @@
 import React, {useState} from 'react'
+import {StyleSheet, View} from 'react-native'
 import {WebView} from 'react-native-webview'
 
 import strings from '../../../strings.json'
+import {getColors} from '../../../theme/colors'
 import {getUriFromRequest} from '../../../libs/functions/getUriFromRequest'
 
 const isLoginPage = requestUrl => {
@@ -30,6 +32,8 @@ const isOnboardPage = requestUrl => {
  */
 export const ClouderyView = ({setInstanceData}) => {
   const [uri, setUri] = useState(strings.loginUri)
+  const [loading, setLoading] = useState(true)
+  const colors = getColors()
 
   const handleNavigation = request => {
     if (request.loading) {
@@ -58,9 +62,35 @@ export const ClouderyView = ({setInstanceData}) => {
   }
 
   return (
-    <WebView
-      source={{uri: uri}}
-      onShouldStartLoadWithRequest={handleNavigation}
-    />
+    <View style={styles.view}>
+      <WebView
+        source={{uri: uri}}
+        onShouldStartLoadWithRequest={handleNavigation}
+        onLoadEnd={() => setLoading(false)}
+      />
+      {loading && (
+        <View
+          style={[
+            styles.loadingOverlay,
+            {
+              backgroundColor: colors.primaryColor,
+            },
+          ]}
+        />
+      )}
+    </View>
   )
 }
+
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+})
