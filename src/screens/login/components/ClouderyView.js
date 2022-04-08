@@ -30,7 +30,7 @@ const isOnboardPage = requestUrl => {
  */
 export const ClouderyView = ({setInstanceData}) => {
   // const [uri, setUri] = useState(strings.loginUri)
-  const [uri, setUri] = useState('http://localhost:5757/')
+  const [uri, setUri] = useState('http://app.localhost:5757/')
   const [show, setShow] = useState(false)
 
   useEffect(() => {

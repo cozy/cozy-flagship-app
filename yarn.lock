@@ -2516,6 +2516,10 @@
     deepmerge "^3.2.0"
     hoist-non-react-statics "^3.3.0"
 
+"@cheungpat/react-native-http-bridge@https://github.com/cheungpat/react-native-http-bridge.git":
+  version "0.7.0-alpha.1"
+  resolved "https://github.com/cheungpat/react-native-http-bridge.git#2a3cbf8303ac5539bf0202855d99dee93205d2a2"
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"
