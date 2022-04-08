@@ -45,6 +45,15 @@ class GoogleContentScript extends ContentScript {
     }
   }
 
+  findAbortExportButton() {
+    const labels = ['Abort export', "Annuler l'exportation"]
+    const selector = 'button > span'
+    const button = Array.from(document.querySelectorAll(selector)).find(elem =>
+      labels.includes(elem.innerHTML),
+    )
+    return button
+  }
+
   findNextButton() {
     const labels = ['Étape suivante', 'Next step']
     let button = null
@@ -90,28 +99,34 @@ class GoogleContentScript extends ContentScript {
   }
 
   async triggerExport() {
-    this.checkUncheckedCheckBoxes()
-    this.log('checked unchecked checkboxes')
-    const nextButton = this.findNextButton()
-    if (!nextButton) {
-      this.log('ERROR Could not find next button')
+    const abortExportButton = this.findAbortExportButton()
+    if (!abortExportButton) {
+      this.checkUncheckedCheckBoxes()
+      this.log('checked unchecked checkboxes')
+      const nextButton = this.findNextButton()
+      if (!nextButton) {
+        this.log('ERROR Could not find next button')
+        return
+      }
+      nextButton.click()
+      this.log('clicked next button')
+
+      const createButton = this.findCreateButton()
+      if (!createButton) {
+        this.log('ERROR Could not find create button')
+        return
+      }
+      createButton.click()
+      this.log('clicked create button')
+
+      await sleep(5)
+      window.location.reload()
+
+      return true
+    } else {
+      this.log('An export is already in progress')
       return
     }
-    nextButton.click()
-    this.log('clicked next button')
-
-    const createButton = this.findCreateButton()
-    if (!createButton) {
-      this.log('ERROR Could not find create button')
-      return
-    }
-    createButton.click()
-    this.log('clicked create button')
-
-    await sleep(5)
-    window.location.reload()
-
-    return true
   }
 }
 
