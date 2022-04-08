@@ -4,15 +4,7 @@ import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import {format} from 'date-fns'
 import waitFor from 'p-wait-for'
-import {
-  convertResidenceType,
-  convertHousingType,
-  convertHeatingSystem,
-  convertWaterHeatingSystem,
-  convertConsumption,
-  convertBakingTypes,
-  getEnergyTypeFromContract,
-} from './utils'
+import {formatHousing} from './utils'
 
 const log = Minilog('ContentScript')
 Minilog.enable()
@@ -112,88 +104,12 @@ class EdfContentScript extends ContentScript {
     await this.fetchAttestations(contracts, context)
     await this.fetchBillsForAllContracts(contracts, context)
     const echeancierResult = await this.fetchEcheancierBills(contracts, context)
-    const housing = this.formatHousing(
+    const housing = formatHousing(
       contracts,
       echeancierResult,
       await this.fetchHousing(),
     )
     await this.saveIdentity({contact, housing})
-  }
-
-  async formatHousing(
-    contracts,
-    echeancierResult,
-    {
-      constructionDate,
-      equipment,
-      heatingSystem,
-      housingType,
-      lifeStyle,
-      surfaceInSqMeter,
-      residenceType,
-      contractElec,
-      rawConsumptions,
-    },
-  ) {
-    const consumptions = {
-      electricity: convertConsumption(
-        get(rawConsumptions, 'elec.yearlyElecEnergies'),
-        get(rawConsumptions, 'elec.monthlyElecEnergies'),
-      ),
-      gas: convertConsumption(
-        get(rawConsumptions, 'gas.yearlyGasEnergies'),
-        get(rawConsumptions, 'gas.monthlyGasEnergies'),
-      ),
-    }
-
-    const result = []
-    for (const key in contracts.details) {
-      const detail = contracts.details[key]
-      const energyProviders = detail.contracts.map(c => {
-        const energyType = getEnergyTypeFromContract(c)
-        const mappedContract = {
-          vendor: 'edfclientside',
-          contract_number: c.number,
-          energy_type: energyType,
-          contract_type: get(c, 'subscribeOffer.offerName'),
-          powerkVA: parseInt(
-            get(contractElec, 'supplyContractParameters.SUBSCRIBED_POWER'),
-            10,
-          ),
-          [energyType + '_consumptions']: consumptions[energyType],
-          charging_type: echeancierResult.isMonthly ? 'monthly' : 'yearly',
-        }
-
-        // even if the api does not show it, real pdl number for gas is pce_number
-        const pdlKeyMap = {
-          electricity: 'pdl_number',
-          gas: 'pce_number',
-        }
-        return {
-          ...mappedContract,
-          [pdlKeyMap[energyType]]: c.pdlnumber,
-        }
-      })
-      const housing = {
-        construction_year: constructionDate,
-        residence_type: convertResidenceType(residenceType),
-        housing_type: convertHousingType(housingType),
-        residents_number: lifeStyle.noOfOccupants,
-        living_space_m2: surfaceInSqMeter,
-        heating_system: convertHeatingSystem(
-          heatingSystem.principalHeatingSystemType,
-        ),
-        water_heating_system: convertWaterHeatingSystem(
-          get(equipment, 'sanitoryHotWater.sanitoryHotWaterType'),
-        ),
-        baking_types: convertBakingTypes(equipment.cookingEquipment),
-        address: detail.adress,
-        energy_providers: energyProviders,
-      }
-      result.push(housing)
-    }
-
-    return result
   }
 
   async fetchHousing() {
