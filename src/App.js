@@ -1,4 +1,5 @@
 import React from 'react'
+import {StyleSheet, View} from 'react-native'
 import {decode, encode} from 'base-64'
 import {NavigationContainer} from '@react-navigation/native'
 import {createStackNavigator} from '@react-navigation/stack'
@@ -14,6 +15,7 @@ import {OnboardingScreen} from './screens/login/OnboardingScreen'
 import {CozyAppScreen} from './screens/cozy-app/CozyAppScreen'
 import {SplashScreenProvider} from './providers/SplashScreenProvider'
 import {lightTheme} from './theme'
+import {getColors} from './theme/colors'
 import {localMethods} from './libs/intents/localMethods'
 import {useAppBootstrap} from './hooks/useAppBootstrap.js'
 import {routes} from './constants/routes.js'
@@ -89,17 +91,35 @@ const App = () => {
   )
 }
 
-const WrappedApp = () => (
-  <NavigationContainer ref={RootNavigation.navigationRef}>
-    <NativeIntentProvider localMethods={localMethods}>
-      <PaperProvider theme={lightTheme}>
-        <SplashScreenProvider>
-          <CryptoWebView />
-          <App />
-        </SplashScreenProvider>
-      </PaperProvider>
-    </NativeIntentProvider>
-  </NavigationContainer>
-)
+const WrappedApp = () => {
+  const colors = getColors()
+
+  return (
+    <NavigationContainer ref={RootNavigation.navigationRef}>
+      <NativeIntentProvider localMethods={localMethods}>
+        <PaperProvider theme={lightTheme}>
+          <SplashScreenProvider>
+            <View
+              style={[
+                styles.view,
+                {
+                  backgroundColor: colors.primaryColor,
+                }
+              ]}>
+              <CryptoWebView />
+              <App />
+            </View>
+          </SplashScreenProvider>
+        </PaperProvider>
+      </NativeIntentProvider>
+    </NavigationContainer>
+  )
+}
+
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+  },
+})
 
 export default WrappedApp
