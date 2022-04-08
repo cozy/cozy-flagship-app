@@ -25,6 +25,7 @@ import {resetKeychainAndSaveLoginData} from '../../libs/functions/passwordHelper
 import {useSplashScreen} from '../../hooks/useSplashScreen'
 
 import strings from '../../strings.json'
+import {getColors} from '../../theme/colors'
 
 const log = Minilog('LoginScreen')
 
@@ -327,8 +328,16 @@ const LoginSteps = ({setClient}) => {
 }
 
 export const LoginScreen = ({setClient}) => {
+  const colors = getColors()
+
   return (
-    <View style={styles.view}>
+    <View
+      style={[
+        styles.view,
+        {
+          backgroundColor: colors.primaryColor,
+        },
+      ]}>
       <View style={{height: statusBarHeight}} />
       <LoginSteps setClient={setClient} />
       <View style={{height: navbarHeight}} />
@@ -339,6 +348,5 @@ export const LoginScreen = ({setClient}) => {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
-    backgroundColor: '#297ef2',
   },
 })

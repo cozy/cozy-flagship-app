@@ -4,6 +4,8 @@ import {WebView} from 'react-native-webview'
 
 import {getHtml} from './assets/TwoFactorAuthentication/htmlTwoFactorAuthentication'
 
+import {getColors} from '../../../theme/colors'
+
 /**
  * Show a 2FA form that asks the user for their 2FA code received by email/authenticator
  *
@@ -26,6 +28,8 @@ export const TwoFactorAuthenticationView = ({
 }) => {
   const [loading, setLoading] = useState(true)
   const webviewRef = useRef()
+
+  const colors = getColors()
 
   useEffect(() => {
     if (webviewRef) {
@@ -64,7 +68,16 @@ export const TwoFactorAuthenticationView = ({
         originWhitelist={['*']}
         source={{html}}
       />
-      {loading && <View style={styles.loadingOverlay} />}
+      {loading && (
+        <View
+          style={[
+            styles.loadingOverlay,
+            {
+              backgroundColor: colors.primaryColor,
+            },
+          ]}
+        />
+      )}
     </View>
   )
 }
@@ -79,6 +92,5 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#297ef2',
   },
 })
