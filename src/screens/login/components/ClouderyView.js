@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {WebView} from 'react-native-webview'
 
 import strings from '../../../strings.json'
@@ -26,41 +26,53 @@ const isOnboardPage = requestUrl => {
  *
  * @param {object} props
  * @param {setInstanceData} props.setInstanceData
- * @returns {import('react').ComponentClass}
+ * @returns {import("react").ComponentClass}
  */
 export const ClouderyView = ({setInstanceData}) => {
-  const [uri, setUri] = useState(strings.loginUri)
+  // const [uri, setUri] = useState(strings.loginUri)
+  const [uri, setUri] = useState('http://localhost:5757/')
+  const [show, setShow] = useState(false)
 
-  const handleNavigation = request => {
-    if (request.loading) {
-      if (isLoginPage(request.url) && request.url !== strings.loginUri) {
-        setUri(strings.loginUri)
-        return false
-      }
+  useEffect(() => {
+    console.log('♻️ use effect')
+    setTimeout(() => {
+      console.log('♻️ set timeout')
+      setShow(true)
+    }, 5000)
+  }, [])
 
-      if (isOnboardPage(request.url) && request.url !== strings.onboardingUri) {
-        setUri(strings.onboardingUri)
-        return false
-      }
-
-      const instance = getUriFromRequest(request)
-      if (instance) {
-        const fqdn = new URL(instance).host
-        setInstanceData({
-          instance,
-          fqdn,
-        })
-        return false
-      }
-    }
-
-    return true
-  }
+  // const handleNavigation = request => {
+  //   if (request.loading) {
+  //     if (isLoginPage(request.url) && request.url !== strings.loginUri) {
+  //       setUri(strings.loginUri)
+  //       return false
+  //     }
+  //
+  //     if (isOnboardPage(request.url) && request.url !== strings.onboardingUri) {
+  //       setUri(strings.onboardingUri)
+  //       return false
+  //     }
+  //
+  //     const instance = getUriFromRequest(request)
+  //     if (instance) {
+  //       const fqdn = new URL(instance).host
+  //       setInstanceData({
+  //         instance,
+  //         fqdn,
+  //       })
+  //       return false
+  //     }
+  //   }
+  //
+  //   return true
+  // }
 
   return (
-    <WebView
-      source={{uri: uri}}
-      onShouldStartLoadWithRequest={handleNavigation}
-    />
+    show && (
+      <WebView
+        source={{uri: uri}}
+        // onShouldStartLoadWithRequest={handleNavigation}
+      />
+    )
   )
 }
