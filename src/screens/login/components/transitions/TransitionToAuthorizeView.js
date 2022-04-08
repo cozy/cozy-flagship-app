@@ -2,6 +2,8 @@ import React, {useCallback, useEffect, useRef, useState} from 'react'
 import {Animated, Dimensions, Easing, StyleSheet, View} from 'react-native'
 import {CozyIcon} from './transitions-icons/CozyIcon'
 
+import {getColors} from '../../../../theme/colors'
+
 /**
  * Display a transition that should come before displaying the Authorize view
  *
@@ -10,6 +12,8 @@ import {CozyIcon} from './transitions-icons/CozyIcon'
  * @returns {import('react').ComponentClass}
  */
 export const TransitionToAuthorizeView = ({setTransitionEnded}) => {
+  const colors = getColors()
+
   const animationDelayInSecond = 400
   const animationDurationInSecond = 200
 
@@ -69,7 +73,13 @@ export const TransitionToAuthorizeView = ({setTransitionEnded}) => {
   }, [animatedOpactity, animatedScale, targetScale])
 
   return (
-    <Animated.View style={styles.background}>
+    <Animated.View
+      style={[
+        styles.background,
+        {
+          backgroundColor: colors.primaryColor,
+        },
+      ]}>
       <Animated.View
         style={[
           styles.cozyLogo,
@@ -82,7 +92,7 @@ export const TransitionToAuthorizeView = ({setTransitionEnded}) => {
           },
         ]}>
         <View style={[styles.avatarContainer]}>
-          <CozyIcon color="#FFFFFF" />
+          <CozyIcon color={colors.paperBackgroundColor} />
         </View>
       </Animated.View>
       <Animated.View
@@ -90,6 +100,7 @@ export const TransitionToAuthorizeView = ({setTransitionEnded}) => {
           styles.foreground,
           {
             opacity: animatedOpactity,
+            backgroundColor: colors.paperBackgroundColor,
           },
         ]}
       />
@@ -104,7 +115,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#297ef2',
   },
   foreground: {
     position: 'absolute',
@@ -112,7 +122,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#FFFFFF',
   },
   cozyLogo: {
     position: 'absolute',

@@ -16,6 +16,8 @@ import {consumeRouteParameter} from '../../libs/functions/routeHelpers'
 
 import {routes} from '../../constants/routes'
 
+import {getColors} from '../../theme/colors'
+
 const log = Minilog('OnboardingScreen')
 
 Minilog.enable()
@@ -193,6 +195,6 @@ export const OnboardingScreen = ({setClient, route, navigation}) => {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
-    backgroundColor: '#297ef2',
+    backgroundColor: getColors().primaryColor,
   },
 })
