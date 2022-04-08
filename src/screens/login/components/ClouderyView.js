@@ -45,7 +45,8 @@ export const ClouderyView = ({setInstanceData}) => {
 
       const instance = getUriFromRequest(request)
       if (instance) {
-        const fqdn = new URL(instance).host
+        const normalizedInstance = instance.toLowerCase()
+        const fqdn = new URL(normalizedInstance).host
         setInstanceData({
           instance,
           fqdn,
