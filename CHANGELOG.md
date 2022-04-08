@@ -9,3 +9,4 @@
 ## 🔧 Tech
 
 * Add dependabot configuration
+* Move android Main files inside correct path for react-native link usage
