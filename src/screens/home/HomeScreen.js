@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {StatusBar, StyleSheet, View} from 'react-native'
+import {Platform, StatusBar, StyleSheet, View} from 'react-native'
 
 import HomeView from './components/HomeView'
 import LauncherView from '../connectors/LauncherView'
@@ -11,8 +11,7 @@ const resetUIState = () => {
     topTheme: 'light',
     bottomTheme: 'light',
   })
-
-  StatusBar?.setBackgroundColor('transparent')
+  Platform.OS !== 'ios' && StatusBar?.setBackgroundColor('transparent')
 }
 
 export const HomeScreen = ({route, navigation}) => {
