@@ -135,7 +135,7 @@ export const callOnboardingInitClient = async ({
 
   const {passwordHash, hint, iterations, key, publicKey, privateKey} = loginData
 
-  const token = await stackClient.setPassphraseFlagship({
+  const result = await stackClient.setPassphraseFlagship({
     registerToken,
     passwordHash,
     hint,
@@ -145,7 +145,20 @@ export const callOnboardingInitClient = async ({
     privateKey,
   })
 
-  stackClient.setToken(token)
+  if (result.access_token) {
+    stackClient.setToken(result)
+  } else if (result.session_code) {
+    const {session_code} = result
+    const {codeVerifier, codeChallenge} = await createPKCE()
+
+    await client.authorize({
+      sessionCode: session_code,
+      pkceCodes: {
+        codeVerifier,
+        codeChallenge,
+      },
+    })
+  }
 
   await client.login()
   await saveClient(client)
