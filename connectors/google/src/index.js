@@ -76,21 +76,19 @@ class GoogleContentScript extends ContentScript {
   }
 
   async fetch() {
-    await this.setWorkerState({visible: true, url: BASE_URL})
+    await this.setWorkerState({url: BASE_URL})
     const checkBoxSelector = 'input[type=checkbox]'
     this.log('waiting for checkboxes')
     await this.waitForElementInWorker(checkBoxSelector)
     this.log('found checkboxes')
 
     await this.runInWorker('triggerExport')
-    await sleep(10)
   }
 
   //////////
   //WORKER//
   //////////
   async checkAuthenticated() {
-    // return false
     const result =
       document.location.href.includes('https://takeout.google.com') &&
       document.location.href !== FIRST_LOAD_URL
@@ -121,6 +119,10 @@ class GoogleContentScript extends ContentScript {
 
       await sleep(5)
       window.location.reload()
+      const newAbortExportButton = this.findAbortExportButton()
+      if (!newAbortExportButton) {
+        this.log('ERROR Could not find abort button')
+      }
 
       return true
     } else {
