@@ -2,6 +2,7 @@ import {useLayoutEffect} from 'react'
 import StaticServer from 'react-native-static-server'
 // import {loadHomeBuild} from './loadHomeBuild'
 import RNFS from 'react-native-fs'
+import {Platform} from 'react-native'
 
 export const useHttpServer = () => {
   // create a path you want to write to
@@ -9,10 +10,14 @@ export const useHttpServer = () => {
   // const correctSourcePath = RNFS.DocumentDirectoryPath
   const iosSourcePath =
     '/Users/recontact/Library/Developer/CoreSimulator/Devices/A4624548-5C2D-4861-82FB-E3351028B1B6/data/Containers/Data/Application/FE3BDCFF-A01E-4C6F-8D55-DEEAA339B4E0/Documents'
-  const path = iosSourcePath + '/cozy-' + slug + '/build'
+  const isIOS = Platform.OS === 'ios'
+  let iosPath = iosSourcePath + '/cozy-' + slug + '/build'
+  let androidPath = 'file:///android_asset' + '/cozy/cozy-' + slug + '/build'
+  const path = isIOS ? iosPath : androidPath
   const port = 5757
 
   useLayoutEffect(() => {
+    // TROUBLESHOOTING: 💡logout from homepage
     let server = new StaticServer(port, path, {
       localOnly: true,
       keepAlive: false,
