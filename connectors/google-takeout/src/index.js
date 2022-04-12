@@ -7,6 +7,8 @@ Minilog.enable()
 const BASE_URL = 'https://takeout.google.com'
 const FIRST_LOAD_URL = 'https://takeout.google.com?firstload'
 
+const DEFAULT_SOURCE_ACCOUNT_IDENTIFIER = 'google-takeout'
+
 class GoogleContentScript extends ContentScript {
   /////////
   //PILOT//
@@ -22,13 +24,29 @@ class GoogleContentScript extends ContentScript {
     log.debug('waitForUserAuthentication start')
     await this.setWorkerState({visible: true, url: BASE_URL})
     await this.runInWorkerUntilTrue({method: 'waitForAuthenticated'})
-    await this.setWorkerState({visible: false})
+    await this.setWorkerState({visible: false, url: BASE_URL})
   }
 
   async getUserDataFromWebsite() {
+    // I think that if we cannot find the user mail, this should not be an connector execution
+    // error
     return {
-      sourceAccountIdentifier: 'default google source account identifier',
+      sourceAccountIdentifier:
+        (await this.runInWorker('getUserMail')) ||
+        DEFAULT_SOURCE_ACCOUNT_IDENTIFIER,
     }
+  }
+
+  async getUserMail() {
+    // Only unique way I found to get the user email
+    const result = document
+      .querySelector("a[href*='https://accounts.google.com']")
+      .getAttribute('aria-label')
+      .match(/\((.*)\)/)
+    if (result) {
+      return result[1]
+    }
+    return false
   }
 
   checkUncheckedCheckBoxes() {
@@ -133,7 +151,7 @@ class GoogleContentScript extends ContentScript {
 const connector = new GoogleContentScript()
 connector
   .init({
-    additionalExposedMethodsNames: ['triggerExport'],
+    additionalExposedMethodsNames: ['triggerExport', 'getUserMail'],
   })
   .catch(err => {
     console.warn(err)
