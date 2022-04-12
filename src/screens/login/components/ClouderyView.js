@@ -1,10 +1,11 @@
-import React, {useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {StyleSheet, View} from 'react-native'
 import {WebView} from 'react-native-webview'
 
 import strings from '../../../strings.json'
 import {getColors} from '../../../theme/colors'
 import {getUriFromRequest} from '../../../libs/functions/getUriFromRequest'
+import {setFocusOnWebviewField} from '../../../libs/functions/keyboardHelper'
 
 const isLoginPage = requestUrl => {
   const url = new URL(requestUrl)
@@ -33,6 +34,7 @@ const isOnboardPage = requestUrl => {
 export const ClouderyView = ({setInstanceData}) => {
   const [uri, setUri] = useState(strings.loginUri)
   const [loading, setLoading] = useState(true)
+  const webviewRef = useRef()
   const colors = getColors()
 
   const handleNavigation = request => {
@@ -62,10 +64,17 @@ export const ClouderyView = ({setInstanceData}) => {
     return true
   }
 
+  useEffect(() => {
+    if (webviewRef && !loading) {
+      setFocusOnWebviewField(webviewRef.current, 'slug')
+    }
+  }, [loading, webviewRef])
+
   return (
     <View style={styles.view}>
       <WebView
         source={{uri: uri}}
+        ref={webviewRef}
         onShouldStartLoadWithRequest={handleNavigation}
         onLoadEnd={() => setLoading(false)}
       />
