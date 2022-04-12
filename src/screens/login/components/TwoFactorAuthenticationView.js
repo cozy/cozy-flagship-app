@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {View, StyleSheet} from 'react-native'
+import {KeyboardAvoidingView, Platform, View, StyleSheet} from 'react-native'
 import {WebView} from 'react-native-webview'
 
 import {getHtml} from './assets/TwoFactorAuthentication/htmlTwoFactorAuthentication'
@@ -67,8 +67,10 @@ export const TwoFactorAuthenticationView = ({
     }
   }
 
+  const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
+
   return (
-    <View style={styles.view}>
+    <Wrapper style={styles.view} behavior="height">
       <WebView
         ref={webviewRef}
         javaScriptEnabled={true}
@@ -86,7 +88,7 @@ export const TwoFactorAuthenticationView = ({
           ]}
         />
       )}
-    </View>
+    </Wrapper>
   )
 }
 
