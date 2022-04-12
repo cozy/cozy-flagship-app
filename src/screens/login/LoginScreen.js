@@ -276,6 +276,7 @@ const LoginSteps = ({setClient}) => {
           goBack={cancelLogin}
           readonly={state.stepReadonly}
           setReadonly={setStepReadonly}
+          waitForTransition={state.waitForTransition}
         />
         {state.waitForTransition && (
           <TransitionToPasswordView
