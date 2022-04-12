@@ -3,6 +3,7 @@ import {Linking, View, StyleSheet} from 'react-native'
 import {WebView} from 'react-native-webview'
 
 import {doHashPassword} from '../../../libs/functions/passwordHelpers'
+import {setFocusOnWebviewField} from '../../../libs/functions/keyboardHelper'
 
 import {getHtml} from './assets/PasswordView/htmlPasswordInjection'
 
@@ -43,6 +44,7 @@ const PasswordForm = ({
   readonly,
   setPasswordData,
   setReadonly,
+  waitForTransition,
 }) => {
   const [loading, setLoading] = useState(true)
   const webviewRef = useRef()
@@ -59,6 +61,12 @@ const PasswordForm = ({
       webView.postMessage(payload)
     }
   }, [webviewRef, readonly])
+
+  useEffect(() => {
+    if (webviewRef && !loading && !waitForTransition) {
+      setFocusOnWebviewField(webviewRef.current, 'password')
+    }
+  }, [loading, waitForTransition, webviewRef])
 
   const html = getHtml(name, fqdn, instance, errorMessage)
 
@@ -145,6 +153,7 @@ export const PasswordView = ({
   setKeys,
   setError,
   setReadonly,
+  waitForTransition,
 }) => {
   const [passwordData, setPasswordData] = useState()
 
@@ -172,6 +181,7 @@ export const PasswordView = ({
       setPasswordData={setPasswordData}
       readonly={readonly}
       setReadonly={setReadonly}
+      waitForTransition={waitForTransition}
     />
   )
 }
