@@ -45,12 +45,8 @@ class GoogleContentScript extends ContentScript {
   }
 
   findAbortExportButton() {
-    const labels = ['Cancel export', "Annuler l'exportation"]
-    const selector = 'button > span'
-    const button = Array.from(document.querySelectorAll(selector)).find(elem =>
-      labels.includes(elem.innerHTML),
-    )
-    return button
+    const inProgress = document.querySelectorAll('[data-in-progress=true]')
+    return inProgress
   }
 
   findNextButton() {
