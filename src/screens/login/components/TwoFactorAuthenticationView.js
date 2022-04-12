@@ -6,6 +6,8 @@ import {getHtml} from './assets/TwoFactorAuthentication/htmlTwoFactorAuthenticat
 
 import {getColors} from '../../../theme/colors'
 
+import {setFocusOnWebviewField} from '../../../libs/functions/keyboardHelper'
+
 /**
  * Show a 2FA form that asks the user for their 2FA code received by email/authenticator
  *
@@ -42,6 +44,12 @@ export const TwoFactorAuthenticationView = ({
       webView.postMessage(payload)
     }
   }, [webviewRef, readonly])
+
+  useEffect(() => {
+    if (webviewRef && !loading) {
+      setFocusOnWebviewField(webviewRef.current, 'two-factor-passcode')
+    }
+  }, [loading, webviewRef])
 
   const html = getHtml(instance, errorMessage)
 
