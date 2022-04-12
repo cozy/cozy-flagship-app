@@ -62,9 +62,9 @@ class GoogleContentScript extends ContentScript {
     }
   }
 
-  findAbortExportButton() {
-    const inProgress = document.querySelectorAll('[data-in-progress=true]')
-    return inProgress
+  findExportInProgress() {
+    const inProgress = document.querySelector('[data-in-progress=true]')
+    return Boolean(inProgress)
   }
 
   findNextButton() {
@@ -113,8 +113,8 @@ class GoogleContentScript extends ContentScript {
   }
 
   async triggerExport() {
-    const abortExportButton = this.findAbortExportButton()
-    if (!abortExportButton) {
+    const isInProgress = this.findExportInProgress()
+    if (!isInProgress) {
       this.checkUncheckedCheckBoxes()
       this.log('checked unchecked checkboxes')
       const nextButton = this.findNextButton()
@@ -135,8 +135,7 @@ class GoogleContentScript extends ContentScript {
 
       await sleep(5)
       window.location.reload()
-      const newAbortExportButton = this.findAbortExportButton()
-      if (!newAbortExportButton) {
+      if (!this.findExportInProgress()) {
         this.log('ERROR Could not find abort button')
         return 'VENDOR_DOWN'
       }
