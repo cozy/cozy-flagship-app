@@ -1,18 +1,21 @@
-import React, {useState, useEffect} from 'react'
-import {WebView} from 'react-native-webview'
 import Minilog from '@cozy/minilog'
-import {useNativeIntent} from 'cozy-intent'
-import {useSession} from '../../hooks/useSession.js'
+import React, {useCallback, useState, useEffect} from 'react'
+import {BackHandler} from 'react-native'
+import {WebView} from 'react-native-webview'
+import {useIsFocused} from '@react-navigation/native'
 
+import {useNativeIntent} from 'cozy-intent'
+
+import {jsCSSclassInjection} from './jsInteractions/jsCSSclassInjection'
 import {jsCozyGlobal} from './jsInteractions/jsCozyInjection'
 import {jsLogInterception, tryConsole} from './jsInteractions/jsLogInterception'
-import {jsCSSclassInjection} from './jsInteractions/jsCSSclassInjection'
+import {useSession} from '../../hooks/useSession.js'
 
 const log = Minilog('CozyWebView')
 
 Minilog.enable()
 
-const CozyWebView = ({
+export const CozyWebView = ({
   navigation,
   onShouldStartLoadWithRequest,
   onMessage: parentOnMessage,
@@ -23,12 +26,12 @@ const CozyWebView = ({
   injectedJavaScriptBeforeContentLoaded,
   ...rest
 }) => {
-  const [ref, setRef] = useState('')
+  const [webviewRef, setWebviewRef] = useState()
   const [uri, setUri] = useState()
   const nativeIntent = useNativeIntent()
   const {shouldInterceptAuth, handleInterceptAuth, consumeSessionToken} =
     useSession()
-
+  const isFocused = useIsFocused()
   /**
    * First render: no uri
    * Second render: use uri from props
@@ -39,19 +42,37 @@ const CozyWebView = ({
     setUri(source.uri)
   }, [source.uri])
 
+  const [canGoBack, setCanGoBack] = useState(false)
+
+  const handleBackPress = useCallback(() => {
+    if (!canGoBack || !isFocused) {
+      return false
+    }
+
+    webviewRef.goBack()
+    return true
+  }, [canGoBack, isFocused, webviewRef])
+
   useEffect(() => {
-    if (ref) {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackpress', handleBackPress)
+  }, [handleBackPress])
+
+  useEffect(() => {
+    if (webviewRef) {
       log.info(`[Native ${logId}] registerWebview`)
-      nativeIntent.registerWebview(ref)
+      nativeIntent.registerWebview(webviewRef)
     }
 
     return () => {
-      if (ref) {
+      if (webviewRef) {
         log.info(`[Native ${logId}] unregisterWebview`)
-        nativeIntent.unregisterWebview(ref)
+        nativeIntent.unregisterWebview(webviewRef)
       }
     }
-  }, [nativeIntent, ref, logId])
+  }, [nativeIntent, webviewRef, logId])
 
   const run = `
     (function() {
@@ -70,12 +91,16 @@ const CozyWebView = ({
   return uri ? (
     <WebView
       {...rest}
+      onNavigationStateChange={event => {
+        setCanGoBack(event.canGoBack)
+      }}
       source={{uri}}
       injectedJavaScriptBeforeContentLoaded={run}
       originWhitelist={['*']}
       useWebKit={true}
       javaScriptEnabled={true}
-      ref={ref => setRef(ref)}
+      ref={ref => setWebviewRef(ref)}
+      TEST_ONLY_setRef={setWebviewRef}
       decelerationRate="normal" // https://github.com/react-native-webview/react-native-webview/issues/1070
       onShouldStartLoadWithRequest={initialRequest => {
         if (shouldInterceptAuth(initialRequest.url)) {
