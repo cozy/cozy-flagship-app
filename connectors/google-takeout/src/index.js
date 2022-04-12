@@ -14,7 +14,6 @@ class GoogleContentScript extends ContentScript {
   async ensureAuthenticated() {
     await this.goto(BASE_URL)
 
-    // TODO check if authenticated
     await this.waitForUserAuthentication()
     return true
   }
