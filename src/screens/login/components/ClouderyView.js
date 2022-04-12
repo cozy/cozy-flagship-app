@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {StyleSheet, View} from 'react-native'
+import {KeyboardAvoidingView, Platform, StyleSheet, View} from 'react-native'
 import {WebView} from 'react-native-webview'
 
 import strings from '../../../strings.json'
@@ -70,8 +70,10 @@ export const ClouderyView = ({setInstanceData}) => {
     }
   }, [loading, webviewRef])
 
+  const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
+
   return (
-    <View style={styles.view}>
+    <Wrapper style={styles.view} behavior="height">
       <WebView
         source={{uri: uri}}
         ref={webviewRef}
@@ -88,7 +90,7 @@ export const ClouderyView = ({setInstanceData}) => {
           ]}
         />
       )}
-    </View>
+    </Wrapper>
   )
 }
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Linking, View, StyleSheet} from 'react-native'
+import {KeyboardAvoidingView, Linking, Platform, View, StyleSheet} from 'react-native'
 import {WebView} from 'react-native-webview'
 
 import {doHashPassword} from '../../../libs/functions/passwordHelpers'
@@ -98,8 +98,10 @@ const PasswordForm = ({
     }
   }
 
+  const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
+
   return (
-    <View style={styles.view}>
+    <Wrapper style={styles.view} behavior="height">
       <WebView
         ref={webviewRef}
         javaScriptEnabled={true}
@@ -117,7 +119,7 @@ const PasswordForm = ({
           ]}
         />
       )}
-    </View>
+    </Wrapper>
   )
 }
 
