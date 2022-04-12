@@ -77,7 +77,10 @@ class GoogleContentScript extends ContentScript {
     await this.waitForElementInWorker(checkBoxSelector)
     this.log('found checkboxes')
 
-    await this.runInWorker('triggerExport')
+    const status = await this.runInWorker('triggerExport')
+    if (status) {
+      throw new Error(status)
+    }
   }
 
   //////////
@@ -99,7 +102,7 @@ class GoogleContentScript extends ContentScript {
       const nextButton = this.findNextButton()
       if (!nextButton) {
         this.log('ERROR Could not find next button')
-        return
+        return 'VENDOR_DOWN'
       }
       nextButton.click()
       this.log('clicked next button')
@@ -107,7 +110,7 @@ class GoogleContentScript extends ContentScript {
       const createButton = this.findCreateButton()
       if (!createButton) {
         this.log('ERROR Could not find create button')
-        return
+        return 'VENDOR_DOWN'
       }
       createButton.click()
       this.log('clicked create button')
@@ -117,9 +120,9 @@ class GoogleContentScript extends ContentScript {
       const newAbortExportButton = this.findAbortExportButton()
       if (!newAbortExportButton) {
         this.log('ERROR Could not find abort button')
+        return 'VENDOR_DOWN'
       }
-
-      return true
+      return
     } else {
       this.log('An export is already in progress')
       return
