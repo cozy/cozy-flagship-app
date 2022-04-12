@@ -61,13 +61,13 @@ export const CozyWebView = ({
   }, [handleBackPress])
 
   useEffect(() => {
-    if (webviewRef) {
+    if (webviewRef && nativeIntent) {
       log.info(`[Native ${logId}] registerWebview`)
       nativeIntent.registerWebview(webviewRef)
     }
 
     return () => {
-      if (webviewRef) {
+      if (webviewRef && nativeIntent) {
         log.info(`[Native ${logId}] unregisterWebview`)
         nativeIntent.unregisterWebview(webviewRef)
       }
