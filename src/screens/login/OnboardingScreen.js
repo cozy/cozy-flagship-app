@@ -27,6 +27,8 @@ const ONBOARDING_STEP = 'ONBOARDING_STEP'
 const PASSWORD_STEP = 'PASSWORD_STEP'
 const ERROR_STEP = 'ERROR_STEP'
 
+const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
+
 const OnboardingSteps = ({setClient, route, navigation}) => {
   const [state, setState] = useState({
     step: ONBOARDING_STEP,
@@ -132,7 +134,11 @@ const OnboardingSteps = ({setClient, route, navigation}) => {
       await resetKeychainAndSaveLoginData(loginData)
       setClient(client)
     } catch (error) {
-      setError(error.message, error)
+      if (error === OAUTH_USER_CANCELED_ERROR) {
+        cancelOnboarding()
+      } else {
+        setError(error.message, error)
+      }
     }
   }, [setClient, setError, state])
 
