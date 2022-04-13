@@ -9,8 +9,6 @@
     "web:test": "react-app-rewired test --env=jsdom",
     "prebuild":"yarn prebuild:android && yarn prebuild:ios",
     "prebuild:ios": "copyfiles ../cozy-home/build/** /Users/recontact/Library/Developer/CoreSimulator/Devices/A4624548-5C2D-4861-82FB-E3351028B1B6/data/Containers/Data/Application/FE3BDCFF-A01E-4C6F-8D55-DEEAA339B4E0/Documents/home",
-
-    "pierre": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
     "prebuild:android": "mkdirp /Users/recontact/projects/cozy/cozy-react-native/android/app/src/main/assets/cozy/cozy-home && copyfiles ../cozy-home/build/** /Users/recontact/projects/cozy/cozy-react-native/android/app/src/main/assets/cozy/cozy-home",
     "build": "react-app-rewired build",
     "build:android:debug": "./scripts/build-debug-offline-apk.sh",
