@@ -5,13 +5,14 @@ import {definePaths} from './definePaths'
 import {Platform} from 'react-native'
 
 export const useHttpServer = () => {
+  console.log('👩🏾‍🎤 useHttpServer')
   const isIOS = Platform.OS === 'ios'
   const port = 5757
   const {iosPath, androidPath} = definePaths(isIOS)
   const path = isIOS ? iosPath : androidPath
-  console.log('🚀 path', path)
 
   useLayoutEffect(() => {
+    console.log('🚀 path', path)
     // TROUBLESHOOTING: 💡logout from homepage
     console.log('👩🏾‍🎤 useLayoutEffect')
     const server = new StaticServer(port, path, {
