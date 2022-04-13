@@ -1,15 +1,12 @@
 import {useLayoutEffect} from 'react'
 import StaticServer from 'react-native-static-server'
-import {prepareAndroidAssets} from './copyAllFilesFromBundleAssets'
+import {prepareAssets} from './copyAllFilesFromBundleAssets'
 import {definePaths} from './definePaths'
-import {Platform} from 'react-native'
 
 export const useHttpServer = () => {
   console.log('👩🏾‍🎤 useHttpServer')
-  const isIOS = Platform.OS === 'ios'
   const port = 5757
-  const {iosPath, androidPath} = definePaths(isIOS)
-  const path = isIOS ? iosPath : androidPath
+  const path = definePaths()
 
   useLayoutEffect(() => {
     console.log('🚀 path', path)
@@ -21,9 +18,7 @@ export const useHttpServer = () => {
     })
 
     const startingHttpServer = async () => {
-      !isIOS && console.log('🚀 Copy android bundle assets')
-      !isIOS && (await prepareAndroidAssets(androidPath))
-
+      await prepareAssets(path)
       console.log('🚀 Starting server')
       return server.start()
     }
@@ -36,5 +31,5 @@ export const useHttpServer = () => {
       console.log('❌ stopping server')
       server.stop()
     }
-  }, [androidPath, isIOS, path, port])
+  }, [path, port])
 }

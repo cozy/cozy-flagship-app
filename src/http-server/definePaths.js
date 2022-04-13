@@ -7,9 +7,5 @@ import RNFS from 'react-native-fs'
 export const definePaths = () => {
   const slug = 'home'
   const appName = '/cozy-' + slug
-
-  return {
-    iosPath: RNFS.DocumentDirectoryPath + appName + '/build',
-    androidPath: RNFS.DocumentDirectoryPath + appName,
-  }
+  return RNFS.DocumentDirectoryPath + appName
 }
