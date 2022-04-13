@@ -1,11 +1,13 @@
 import RNFS from 'react-native-fs'
 
-// create a path you want to write to
+/**
+ * Define iOS path and android path used by http server
+ * @returns {{iosPath: string, androidPath: string}}
+ */
 export const definePaths = () => {
   const slug = 'home'
   const appName = '/cozy-' + slug
 
-  // const correctSourcePath = RNFS.DocumentDirectoryPath
   const iosSourcePath =
     '/Users/recontact/Library/Developer/CoreSimulator/Devices/A4624548-5C2D-4861-82FB-E3351028B1B6/data/Containers/Data/Application/FE3BDCFF-A01E-4C6F-8D55-DEEAA339B4E0/Documents'
   // ios: /Users/recontact/Library/Developer/CoreSimulator/Devices/A4624548-5C2D-4861-82FB-E3351028B1B6/data/Containers/Data/Application/FE3BDCFF-A01E-4C6F-8D55-DEEAA339B4E0/Documents

@@ -121,15 +121,15 @@ RCT_EXPORT_METHOD(start: (NSString *)port
                 response = [GCDWebServerFileResponse responseWithFile:indexPath];
 
                 // First I want to read this response in the index.html
-                NSData* dataFromIndexHTML = [response readData:nil];
-                NSLog(@"🐬🏆🏆🏆🏆🏆🏆🏆 1. dataFromIndexHTML");
+                // NSData* dataFromIndexHTML = [response readData:nil];
+                // NSLog(@"🐬🏆🏆🏆🏆🏆🏆🏆 1. dataFromIndexHTML");
 
                 // Second I want to update  and save this NSData file
                 // some snippets https://cocoadev.github.io/NSDataAndResourceForksCode/
 
                 // 2a) trying to make a NSMutableData
-                NSMutableData* mutableDataFromIndexHtml = [dataFromIndexHTML.mutableCopy(with:)];
-                NSLog(@"🐬🏆🏆🏆🏆🏆🏆🏆 2. mutableDataFromIndexHtml");
+               // NSMutableData* mutableDataFromIndexHtml = [dataFromIndexHTML.mutableCopy(with:)];
+               // NSLog(@"🐬🏆🏆🏆🏆🏆🏆🏆 2. mutableDataFromIndexHtml");
 
                 // 2b) need to update the index.html by adding "coucou"
 

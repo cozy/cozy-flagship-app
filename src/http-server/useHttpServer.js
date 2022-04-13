@@ -20,7 +20,7 @@ export const useHttpServer = () => {
     })
 
     const startingHttpServer = async () => {
-      console.log('🚀 Copy android bundle assets')
+      !isIOS && console.log('🚀 Copy android bundle assets')
       !isIOS && (await prepareAndroidAssets(androidPath))
 
       console.log('🚀 Starting server')
