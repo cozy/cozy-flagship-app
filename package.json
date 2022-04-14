@@ -82,7 +82,7 @@
     "jest": "^27.5.1",
     "metro-react-native-babel-preset": "^0.66.2",
     "react-app-rewired": "2.1.8",
-    "react-native-svg-transformer": "0.14.3",
+    "react-native-svg-transformer": "1.0.0",
     "react-test-renderer": "17.0.2",
     "url-loader": "4.1.1",
     "webpack": "5.47.0",
