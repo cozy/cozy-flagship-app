@@ -1,3 +1,18 @@
 language: node_js
+
 node_js:
   - 16
+
+cache:
+  yarn: true
+  directories:
+    - node_modules
+
+stages:
+ - lint
+
+jobs:
+  include:
+    - name: Lint
+      stage: lint
+      script: yarn lint
