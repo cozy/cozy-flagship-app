@@ -104,7 +104,7 @@ const WrappedApp = () => {
                 styles.view,
                 {
                   backgroundColor: colors.primaryColor,
-                }
+                },
               ]}>
               <CryptoWebView />
               <App />

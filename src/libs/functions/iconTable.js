@@ -1,8 +1,11 @@
 /* eslint-disable no-bitwise */
 import AsyncStorage from '@react-native-async-storage/async-storage'
+
 import Minilog from '@cozy/minilog'
+
 import strings from '../../strings.json'
 import iconFallbackJson from '../../assets/iconFallback.json'
+
 const log = Minilog('Icon Table')
 Minilog.enable()
 
@@ -28,14 +31,11 @@ const hasNewerVersion = (cachedSemver, fetchedSemver) => {
 }
 
 const attemptFetchApps = async client => {
-  let apps
-
   try {
-    apps = await client.getStackClient().fetchJSON('GET', '/apps/')
+    return await client.getStackClient().fetchJSON('GET', '/apps/')
   } catch (error) {
     log.error(strings.errors.attemptFetchApps, error)
-  } finally {
-    return apps
+    return undefined
   }
 }
 

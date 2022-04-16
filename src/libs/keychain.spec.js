@@ -1,5 +1,3 @@
-const mockSetGenericPassword = jest.fn().mockResolvedValue([])
-const mockGetGenericPassword = jest.fn().mockResolvedValue([])
 jest.mock('react-native-keychain')
 
 import * as Keychain from 'react-native-keychain'
@@ -7,12 +5,9 @@ import * as Keychain from 'react-native-keychain'
 import {
   saveCredential,
   getCredential,
-  removeCredential,
   GLOBAL_KEY,
-  VAULT_SCOPE,
   saveVaultInformation,
   getVaultInformation,
-  CREDENTIALS_SCOPE,
   removeVaultInformation,
 } from './keychain'
 

@@ -198,7 +198,7 @@ class LauncherView extends Component {
    * @param {Object} event
    */
   onPilotError(event) {
-    console.error('error event', event)
+    log.error('error event', event)
   }
   /**
    * Postmessage relay from the pilot to  the launcher
@@ -241,7 +241,7 @@ class LauncherView extends Component {
         return this.launcher.onWorkerWillReload(event)
       }
     } catch (e) {
-      console.log('Caught error in onWorkerWillReload', e.message)
+      log.error('Caught error in onWorkerWillReload', e.message)
       throw e
     }
   }

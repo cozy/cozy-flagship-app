@@ -6326,6 +6326,14 @@ cozy-logger@^1.6.0:
     chalk "^2.4.2"
     json-stringify-safe "5.0.1"
 
+cozy-logger@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/cozy-logger/-/cozy-logger-1.9.0.tgz#e3a2323d9a2945ca10da5c318ff2f63544a54415"
+  integrity sha512-x/iFwFuNTbG4lwgeKPv6HtdixY+CcJm47sRd2za09aS1zZMHnN3HX7fFgoSSgEqFhpnIO/PpP2pVqJ4orSCp0g==
+  dependencies:
+    chalk "^2.4.2"
+    json-stringify-safe "5.0.1"
+
 cozy-stack-client@^27.21.0:
   version "27.21.0"
   resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-27.21.0.tgz#2796e5092fc4d69d69a789eede2fb3a21be915bd"

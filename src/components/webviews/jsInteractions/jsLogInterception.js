@@ -1,3 +1,5 @@
+import log from 'cozy-logger'
+
 export const jsLogInterception = `
   const originalJsConsole = console;
   const consoleLog = (type, log) => {
@@ -26,6 +28,6 @@ export const tryConsole = (payload, logger, logId) => {
       }
     }
   } catch (e) {
-    log.error(e)
+    log('error', e)
   }
 }

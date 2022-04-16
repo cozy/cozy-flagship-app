@@ -1,5 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {KeyboardAvoidingView, Linking, Platform, View, StyleSheet} from 'react-native'
+import {
+  KeyboardAvoidingView,
+  Linking,
+  Platform,
+  View,
+  StyleSheet,
+} from 'react-native'
 import {WebView} from 'react-native-webview'
 
 import {doHashPassword} from '../../../libs/functions/passwordHelpers'
@@ -164,7 +170,7 @@ export const PasswordView = ({
       doHashPassword(passwordData, fqdn, kdfIterations)
         .then(result => {
           setPasswordData(undefined)
-          setKeys(result)
+          return setKeys(result)
         })
         .catch(error => {
           setError('Impossible to hash the password', error)

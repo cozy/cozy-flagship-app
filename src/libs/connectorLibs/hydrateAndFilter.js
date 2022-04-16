@@ -65,9 +65,9 @@ const hydrateAndFilter = async (documents = [], doctype, options = {}) => {
   const keys = options.keys ? options.keys : ['_id']
   const store = {}
 
-  const createHash = (item) => {
+  const createHash = item => {
     return keys
-      .map((key) => {
+      .map(key => {
         let result = get(item, key)
         if (key === 'date') {
           result = new Date(result)
@@ -87,8 +87,8 @@ const hydrateAndFilter = async (documents = [], doctype, options = {}) => {
     return result
   }
 
-  const populateStore = (currentStore) => (dbitems) => {
-    dbitems.forEach((dbitem) => {
+  const populateStore = currentStore => dbitems => {
+    dbitems.forEach(dbitem => {
       currentStore[createHash(dbitem)] = dbitem
     })
   }
@@ -100,8 +100,8 @@ const hydrateAndFilter = async (documents = [], doctype, options = {}) => {
   // can already be in the database but not already matched
   // to an operation) since the linking operation need the _id
   // of the document
-  const hydrateExistingEntries = (currentStore) => () => {
-    documents.forEach((document) => {
+  const hydrateExistingEntries = currentStore => () => {
+    documents.forEach(document => {
       const key = createHash(document)
       if (currentStore[key]) {
         document._id = currentStore[key]._id
@@ -115,13 +115,13 @@ const hydrateAndFilter = async (documents = [], doctype, options = {}) => {
   }
 
   const defaultShouldSave = () => true
-  const defaultShouldUpdate = (existing) => false
+  const defaultShouldUpdate = existing => false
 
-  const filterEntries = (currentStore) => async () => {
+  const filterEntries = currentStore => async () => {
     // Filter out items according to shouldSave / shouldUpdate.
     // Both can be passed as option or can be part of the entry.
     return uniqBy(
-      documents.filter((entry) => {
+      documents.filter(entry => {
         const shouldSave =
           entry.shouldSave || options.shouldSave || defaultShouldSave
         const shouldUpdate =
@@ -133,11 +133,11 @@ const hydrateAndFilter = async (documents = [], doctype, options = {}) => {
           return suitableCall(shouldSave, entry)
         }
       }),
-      (entry) => (entry && entry._id) || entry,
+      entry => (entry && entry._id) || entry,
     )
   }
 
-  const formatOutput = (entries) => {
+  const formatOutput = entries => {
     log.debug(`${entries.length} items after hydrateAndFilter`)
     return entries
   }
@@ -146,7 +146,7 @@ const hydrateAndFilter = async (documents = [], doctype, options = {}) => {
     .then(populateStore(store))
     .then(hydrateExistingEntries(store))
     .then(filterEntries(store))
-    .then((entries) => entries.filter(Boolean)) // Filter out wrong entries
+    .then(entries => entries.filter(Boolean)) // Filter out wrong entries
     .then(formatOutput)
 }
 

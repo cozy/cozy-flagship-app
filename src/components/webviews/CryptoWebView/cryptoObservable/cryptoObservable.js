@@ -62,7 +62,7 @@ export const queryResultToCrypto = (methodName, param) => {
       clearTimeout(errorTimeout)
 
       if (result.error) {
-        console.log('REJECTION')
+        log.error('REJECTION')
         reject(result.error)
       } else {
         resolve(result)
