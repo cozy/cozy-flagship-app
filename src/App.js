@@ -19,8 +19,8 @@ import { getColors } from './theme/colors'
 import { localMethods } from './libs/intents/localMethods'
 import { useAppBootstrap } from './hooks/useAppBootstrap.js'
 import { routes } from './constants/routes.js'
-
 import { CryptoWebView } from './components/webviews/CryptoWebView/CryptoWebView'
+import { withSentry } from './Sentry'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -126,4 +126,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default WrappedApp
+export default withSentry(WrappedApp)

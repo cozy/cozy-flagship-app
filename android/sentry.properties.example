@@ -1,0 +1,4 @@
+defaults.url=url
+defaults.org=org
+defaults.project=project
+auth.token=token
