@@ -1,7 +1,8 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react'
 import {Animated, Dimensions, Easing, StyleSheet, View} from 'react-native'
-import {CozyIcon} from './transitions-icons/CozyIcon'
+import log from 'cozy-logger'
 
+import {CozyIcon} from './transitions-icons/CozyIcon'
 import {getColors} from '../../../../theme/colors'
 
 /**
@@ -33,9 +34,9 @@ export const TransitionToAuthorizeView = ({setTransitionEnded}) => {
 
   useEffect(() => {
     if (!started) {
-      doTransition().then(() => {
-        setTransitionEnded()
-      })
+      doTransition()
+        .then(setTransitionEnded)
+        .catch(reason => log('error', reason.message))
     }
   }, [doTransition, started, setTransitionEnded])
 

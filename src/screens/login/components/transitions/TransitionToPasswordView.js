@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect, useRef} from 'react'
 import {Animated, Dimensions, Easing, StyleSheet, View} from 'react-native'
 
+import log from 'cozy-logger'
+
 import {statusBarHeight} from '../../../../libs/dimensions'
 import {CozyIcon} from './transitions-icons/CozyIcon'
 
@@ -43,9 +45,9 @@ export const TransitionToPasswordView = ({
 
   useEffect(() => {
     if (requestTransitionStart) {
-      transitionToFinal(passwordAvatarPosition).then(() => {
-        setTransitionEnded()
-      })
+      transitionToFinal(passwordAvatarPosition)
+        .then(setTransitionEnded)
+        .catch(reason => log('error', reason.message))
     }
   }, [
     passwordAvatarPosition,

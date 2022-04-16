@@ -54,7 +54,7 @@ export const getClient = async () => {
   client.getStackClient().setOAuthOptions(oauthOptions)
   await client.login({
     uri,
-    token
+    token,
   })
   return client
 }
@@ -332,7 +332,10 @@ const fetchSessionCode = async ({
 export const fetchPublicData = async client => {
   const stackClient = client.getStackClient()
 
-  const {KdfIterations: kdfIterations, name} = await stackClient.fetchJSON('GET', '/public/prelogin')
+  const {KdfIterations: kdfIterations, name} = await stackClient.fetchJSON(
+    'GET',
+    '/public/prelogin',
+  )
 
   return {
     kdfIterations,

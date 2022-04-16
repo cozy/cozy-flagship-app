@@ -140,7 +140,7 @@ export const OnboardingPasswordView = ({
       doHashPassword(passwordData, fqdn, kdfIterations)
         .then(result => {
           setPasswordData(undefined)
-          setKeys(result)
+          return setKeys(result)
         })
         .catch(error => {
           setError('Impossible to hash the password', error)

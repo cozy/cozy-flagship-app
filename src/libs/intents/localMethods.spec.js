@@ -5,6 +5,7 @@ import strings from '../../strings.json'
 import {localMethods, asyncLogout} from './localMethods'
 jest.mock('react-native-keychain')
 
+// eslint-disable-next-line no-import-assign
 RootNavigation.navigate = jest.fn()
 
 test('logout should handle AsyncStorage and Navigation', async () => {

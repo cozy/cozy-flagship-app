@@ -23,7 +23,7 @@ const requiredAttributes = {
 const saveBills = async (inputEntries, inputOptions = {}) => {
   // Cloning input arguments since both entries and options are expected
   // to be modified by functions called inside saveBills.
-  const entries = _.cloneDeepWith(inputEntries, (value) => {
+  const entries = _.cloneDeepWith(inputEntries, value => {
     // do not try to clone streams https://github.com/konnectors/libs/issues/682
     if (value && value.readable) {
       return value
@@ -89,10 +89,10 @@ const saveBills = async (inputEntries, inputOptions = {}) => {
   // }
 
   tempEntries = tempEntries
-    .filter((entry) => !entry.__ignore)
+    .filter(entry => !entry.__ignore)
     // we do not save bills without associated file anymore
-    .filter((entry) => entry.fileDocument)
-    .map((entry) => {
+    .filter(entry => entry.fileDocument)
+    .map(entry => {
       entry.currency = convertCurrency(entry.currency)
       entry.invoice = `io.cozy.files:${entry.fileDocument._id}`
       delete entry.fileDocument
@@ -160,16 +160,14 @@ function manageContractsData(tempEntries, options) {
     // Add contractId to deduplication keys
     addContractIdToDeduplication(options)
     // Add contract data to bills
-    newEntries = newEntries.map((entry) =>
-      addContractsDataToBill(entry, options),
-    )
+    newEntries = newEntries.map(entry => addContractsDataToBill(entry, options))
 
     // if contractId passed by bill attribute
   } else if (billsHaveContractId(newEntries)) {
     // Add contractId to deduplication keys
     addContractIdToDeduplication(options)
 
-    newEntries = newEntries.map((entry) => mergeContractsDataInBill(entry))
+    newEntries = newEntries.map(entry => mergeContractsDataInBill(entry))
     // manageContractsDataPassedByAttribute(newEntries, options
   }
   return newEntries

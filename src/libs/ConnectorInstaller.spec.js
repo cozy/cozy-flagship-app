@@ -50,6 +50,7 @@ describe('ConnectorInstaller', () => {
     })
     it('should extract registry source url from any possible registry source ', async () => {
       client.stackClient.fetchJSON.mockResolvedValue({})
+      // eslint-disable-next-line no-global-assign
       fetch = jest.fn()
       const registryTestSuite = [
         ['registry://template', '/registry/template/stable/latest'],
@@ -104,7 +105,7 @@ describe('ConnectorInstaller', () => {
   describe('ensureConnectorIsInstalled', () => {
     it('should download and extract connector archive from github with github source', async () => {
       RNFS.downloadFile.mockResolvedValue({
-        promise: new Promise.resolve({statusCode: 200}),
+        promise: Promise.resolve({statusCode: 200}),
       })
       RNFS.readDir.mockResolvedValue([
         {
@@ -165,7 +166,7 @@ describe('ConnectorInstaller', () => {
     })
     it('should raise an error when there is a network error', async () => {
       RNFS.downloadFile.mockResolvedValue({
-        promise: new Promise.resolve({statusCode: 404}),
+        promise: Promise.resolve({statusCode: 404}),
       })
       await expect(
         ensureConnectorIsInstalled({

@@ -13,23 +13,25 @@ const mockNativeIntent = {
 
 jest.mock('react-native/Libraries/Utilities/BackHandler', () => MockBackHandler)
 
-jest.mock('react-native-webview', () => ({
-  WebView: ({onNavigationStateChange, navObject, TEST_ONLY_setRef}) => {
-    const {useEffect} = require('react')
+const WebView = ({onNavigationStateChange, navObject, TEST_ONLY_setRef}) => {
+  const {useEffect} = require('react')
 
-    useEffect(() => {
-      if (navObject) {
-        onNavigationStateChange(navObject)
-      }
-    }, [onNavigationStateChange, navObject])
+  useEffect(() => {
+    if (navObject) {
+      onNavigationStateChange(navObject)
+    }
+  }, [onNavigationStateChange, navObject])
 
-    useEffect(() => {
-      TEST_ONLY_setRef({goBack: mockGoBack})
-    }, [TEST_ONLY_setRef])
+  useEffect(() => {
+    TEST_ONLY_setRef({goBack: mockGoBack})
+  }, [TEST_ONLY_setRef])
 
-    return <div>WebView</div>
-  },
-}))
+  return <div>WebView</div>
+}
+
+jest.mock('react-native-webview', () => {
+  WebView
+})
 
 jest.mock('cozy-intent', () => ({
   useNativeIntent: () => mockNativeIntent,

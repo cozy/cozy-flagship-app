@@ -70,13 +70,15 @@ export const useAppBootstrap = () => {
 
   // Handling client init
   useEffect(() => {
-    getClient().then(clientResult => {
-      if (clientResult) {
-        setClient(clientResult)
-      } else {
-        setClient(undefined)
-      }
-    })
+    getClient()
+      .then(clientResult => {
+        if (clientResult) {
+          return setClient(clientResult)
+        } else {
+          return setClient(undefined)
+        }
+      })
+      .catch(() => setClient(undefined))
   }, [])
 
   // Handling initial URL init

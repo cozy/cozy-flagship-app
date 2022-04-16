@@ -149,6 +149,7 @@ class ReactNativeLauncher extends Launcher {
           })
         })
         log.debug(`calling ${method} on worker`)
+        // eslint-disable-next-line promise/catch-or-return
         this.worker.call(method, ...args).then(resolve)
       })
     } catch (err) {
@@ -252,7 +253,7 @@ class ReactNativeLauncher extends Launcher {
   /**
    * Called when the worker is ready to be called
    */
-   workerReady() {
+  workerReady() {
     this.emit('WORKER_READY')
   }
 

@@ -187,7 +187,7 @@ const downloadAndExtractArchive = async ({url, localPath}) => {
   log.debug(unZipRes, 'unZipRes')
   await RNFS.unlink(archiveLocalPath)
 
-  const firstDirectory = (await RNFS.readDir(localPath + '/unzip')).find((f) =>
+  const firstDirectory = (await RNFS.readDir(localPath + '/unzip')).find(f =>
     f.isDirectory(),
   )
 
@@ -216,7 +216,7 @@ const cleanConnectorDirectory = async ({connectorLocalPath}) => {
  * @param {String} source - github repository source, formatted as git://github.com/konnectors/cozy-konnector-template.git#build-debug
  * @returns {String} - github archive url like https://github.com/konnectors/cozy-konnector-template/archive/refs/heads/build-debug.tar.gz
  */
-export const extractGithubSourceUrl = (source) => {
+export const extractGithubSourceUrl = source => {
   const matches = source.match(/^git:\/\/(.*)\.git(#.*)?$/)
   if (!matches) {
     throw new Error(`extractGithubUrl: Could not install ${source}`)
@@ -246,7 +246,7 @@ export const extractRegistrySourceUrl = async ({source, client}) => {
   const registryUrlPart = matches[1]
   const splittedPath = registryUrlPart.split('/')
 
-  const isVersion = (strVersion) => strVersion.match(/^\d/)
+  const isVersion = strVersion => strVersion.match(/^\d/)
   const registryParams = {}
   if (splittedPath.length === 3) {
     // slug/channel/versionOrLatest

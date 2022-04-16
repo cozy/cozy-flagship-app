@@ -24,7 +24,7 @@ const updateOrCreate = async (
   const client = options.client
   const existings = await client.queryAll(Q(doctype))
   for (const entry of entries) {
-    const toUpdate = existings.find((doc) =>
+    const toUpdate = existings.find(doc =>
       matchingAttributes.reduce(
         (isMatching, matchingAttribute) =>
           isMatching &&
