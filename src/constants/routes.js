@@ -3,5 +3,5 @@ export const routes = {
   cozyapp: 'cozyapp',
   authenticate: 'authenticate',
   onboarding: 'onboarding',
-  stack: 'stack',
+  stack: 'stack'
 }

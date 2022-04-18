@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react'
-import {get} from 'lodash'
+import React, { useEffect, useState } from 'react'
+import { get } from 'lodash'
 
-import {useClient, generateWebLink} from 'cozy-client'
-import {useNativeIntent} from 'cozy-intent'
+import { useClient, generateWebLink } from 'cozy-client'
+import { useNativeIntent } from 'cozy-intent'
 
-import {useSession} from '../../../hooks/useSession'
+import { useSession } from '../../../hooks/useSession'
 import CozyWebView from '../../../components/webviews/CozyWebView'
-import {consumeRouteParameter} from '../../../libs/functions/routeHelpers'
-import {statusBarHeight, navbarHeight} from '../../../libs/dimensions'
+import { consumeRouteParameter } from '../../../libs/functions/routeHelpers'
+import { statusBarHeight, navbarHeight } from '../../../libs/dimensions'
 
 const injectedJavaScriptBeforeContentLoaded = () => `
   window.addEventListener('load', (event) => {
@@ -16,7 +16,7 @@ const injectedJavaScriptBeforeContentLoaded = () => `
   });
 `
 
-const HomeView = ({route, navigation, setLauncherContext}) => {
+const HomeView = ({ route, navigation, setLauncherContext }) => {
   const client = useClient()
   const [uri, setUri] = useState('')
   const [trackedWebviewInnerUri, setTrackedWebviewInnerUri] = useState('')
@@ -37,7 +37,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
         const konnectorParam = consumeRouteParameter(
           'konnector',
           route,
-          navigation,
+          navigation
         )
 
         if (konnectorParam) {
@@ -60,7 +60,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
       return setUri(deepLink)
     }
 
-    const {shouldCreateSession, handleCreateSession, consumeSessionToken} =
+    const { shouldCreateSession, handleCreateSession, consumeSessionToken } =
       session
 
     const getHomeUri = async () => {
@@ -68,7 +68,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
         cozyUrl: client.getStackClient().uri,
         pathname: '/',
         slug: 'home',
-        subDomainType: session.subDomainType,
+        subDomainType: session.subDomainType
       })
 
       if (await shouldCreateSession(webLink)) {
@@ -94,7 +94,7 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
 
   return uri ? (
     <CozyWebView
-      source={{uri}}
+      source={{ uri }}
       trackWebviewInnerUri={handleTrackWebviewInnerUri}
       navigation={navigation}
       route={route}
@@ -104,10 +104,10 @@ const HomeView = ({route, navigation, setLauncherContext}) => {
         const data = get(m, 'nativeEvent.data')
 
         if (data) {
-          const {message, value} = JSON.parse(data)
+          const { message, value } = JSON.parse(data)
 
           if (message === 'startLauncher') {
-            setLauncherContext({state: 'launch', value})
+            setLauncherContext({ state: 'launch', value })
           }
         }
       }}

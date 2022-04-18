@@ -1,15 +1,15 @@
-/***********************************************************************/
+/************************************************************************/
 /* This code should reflect cozy-stack/assets/templates/twofactor.html */
-/***********************************************************************/
+/************************************************************************/
 
-import {twoFactorAuthenticationJs} from './js/jsTwoFactorAuthentication'
-import {cirrusJs} from '../common/js/jsCirrus'
-import {readonlyJs} from '../common/js/jsReadonly'
+import { twoFactorAuthenticationJs } from './js/jsTwoFactorAuthentication'
+import { cirrusJs } from '../common/js/jsCirrus'
+import { readonlyJs } from '../common/js/jsReadonly'
 
-import {cirrusCss} from '../common/css/cssCirrus'
-import {fontsCss} from '../common/css/cssFonts'
-import {cozyBsCss} from '../common/css/cssCozyBs'
-import {themeCss} from '../common/css/cssTheme'
+import { cirrusCss } from '../common/css/cssCirrus'
+import { fontsCss } from '../common/css/cssFonts'
+import { cozyBsCss } from '../common/css/cssCozyBs'
+import { themeCss } from '../common/css/cssTheme'
 
 const strBackButton = "Revenir à l'écran précédent"
 const strLoginTwoFactorTitle = 'Authentification en 2 étapes'

@@ -1,6 +1,6 @@
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
-import {Q} from 'cozy-client'
+import { Q } from 'cozy-client'
 const log = Minilog('updateOrCreate')
 
 /**
@@ -19,7 +19,7 @@ const updateOrCreate = async (
   entries = [],
   doctype,
   matchingAttributes = [],
-  options = {},
+  options = {}
 ) => {
   const client = options.client
   const existings = await client.queryAll(Q(doctype))
@@ -29,21 +29,21 @@ const updateOrCreate = async (
         (isMatching, matchingAttribute) =>
           isMatching &&
           get(doc, matchingAttribute) === get(entry, matchingAttribute),
-        true,
-      ),
+        true
+      )
     )
     if (toUpdate) {
       log.debug('updating', toUpdate)
-      const {data: result} = await client.save({
+      const { data: result } = await client.save({
         ...entry,
         _id: toUpdate._id,
         _rev: toUpdate._rev,
-        _type: doctype,
+        _type: doctype
       })
       return result
     } else {
       log.debug('creating', entry)
-      const {data: result} = await client.save({...entry, _type: doctype})
+      const { data: result } = await client.save({ ...entry, _type: doctype })
       return result
     }
   }

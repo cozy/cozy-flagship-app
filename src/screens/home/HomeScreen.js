@@ -1,23 +1,23 @@
-import React, {useEffect, useState} from 'react'
-import {Platform, StatusBar, StyleSheet, View} from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Platform, StatusBar, StyleSheet, View } from 'react-native'
 
 import HomeView from './components/HomeView'
 import LauncherView from '../connectors/LauncherView'
 import DebugView from '../connectors/DebugView'
-import {setFlagshipUI} from '../../libs/intents/setFlagshipUI'
+import { setFlagshipUI } from '../../libs/intents/setFlagshipUI'
 
 const resetUIState = () => {
   setFlagshipUI({
     topTheme: 'light',
-    bottomTheme: 'light',
+    bottomTheme: 'light'
   })
   Platform.OS !== 'ios' && StatusBar?.setBackgroundColor('transparent')
 }
 
-export const HomeScreen = ({route, navigation}) => {
+export const HomeScreen = ({ route, navigation }) => {
   const [debug] = useState(false)
   const [launcherContext, setLauncherContext] = useState({
-    state: 'default',
+    state: 'default'
   })
 
   useEffect(() => {
@@ -47,6 +47,6 @@ export const HomeScreen = ({route, navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-  },
+    justifyContent: 'center'
+  }
 })

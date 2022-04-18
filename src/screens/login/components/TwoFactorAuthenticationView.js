@@ -1,12 +1,12 @@
-import React, {useEffect, useRef, useState} from 'react'
-import {KeyboardAvoidingView, Platform, View, StyleSheet} from 'react-native'
-import {WebView} from 'react-native-webview'
+import React, { useEffect, useRef, useState } from 'react'
+import { KeyboardAvoidingView, Platform, View, StyleSheet } from 'react-native'
+import { WebView } from 'react-native-webview'
 
-import {getHtml} from './assets/TwoFactorAuthentication/htmlTwoFactorAuthentication'
+import { getHtml } from './assets/TwoFactorAuthentication/htmlTwoFactorAuthentication'
 
-import {getColors} from '../../../theme/colors'
+import { getColors } from '../../../theme/colors'
 
-import {setFocusOnWebviewField} from '../../../libs/functions/keyboardHelper'
+import { setFocusOnWebviewField } from '../../../libs/functions/keyboardHelper'
 
 /**
  * Show a 2FA form that asks the user for their 2FA code received by email/authenticator
@@ -26,7 +26,7 @@ export const TwoFactorAuthenticationView = ({
   instance,
   readonly,
   setReadonly,
-  setTwoFactorCode,
+  setTwoFactorCode
 }) => {
   const [loading, setLoading] = useState(true)
   const webviewRef = useRef()
@@ -37,7 +37,7 @@ export const TwoFactorAuthenticationView = ({
     if (webviewRef) {
       const payload = JSON.stringify({
         message: 'setReadonly',
-        param: readonly,
+        param: readonly
       })
 
       const webView = webviewRef.current
@@ -76,15 +76,15 @@ export const TwoFactorAuthenticationView = ({
         javaScriptEnabled={true}
         onMessage={processMessage}
         originWhitelist={['*']}
-        source={{html}}
+        source={{ html }}
       />
       {loading && (
         <View
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: colors.primaryColor,
-            },
+              backgroundColor: colors.primaryColor
+            }
           ]}
         />
       )}
@@ -94,13 +94,13 @@ export const TwoFactorAuthenticationView = ({
 
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
+    flex: 1
   },
   loadingOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-  },
+    bottom: 0
+  }
 })

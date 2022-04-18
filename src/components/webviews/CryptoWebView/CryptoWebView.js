@@ -1,13 +1,13 @@
-import React, {useEffect, useRef} from 'react'
-import {View} from 'react-native'
-import {WebView} from 'react-native-webview'
+import React, { useEffect, useRef } from 'react'
+import { View } from 'react-native'
+import { WebView } from 'react-native-webview'
 
 import {
   subscribeToCrypto,
   unsubscribeFromCrypto,
-  sendAnswer,
+  sendAnswer
 } from './cryptoObservable/cryptoObservable'
-import {html} from './jsInteractions/jsCryptoInjection'
+import { html } from './jsInteractions/jsCryptoInjection'
 
 export const CryptoWebView = () => {
   const webviewRef = useRef()
@@ -16,7 +16,7 @@ export const CryptoWebView = () => {
     const payload = JSON.stringify({
       message: message,
       messageId: messageId,
-      param: param,
+      param: param
     })
 
     const webView = webviewRef.current
@@ -37,13 +37,13 @@ export const CryptoWebView = () => {
   }, [webviewRef])
 
   return (
-    <View style={{height: 0}}>
+    <View style={{ height: 0 }}>
       <WebView
         ref={webviewRef}
         javaScriptEnabled={true}
         onMessage={processAnswer}
         originWhitelist={['*']}
-        source={{html, baseUrl: 'https://localhost'}}
+        source={{ html, baseUrl: 'https://localhost' }}
       />
     </View>
   )

@@ -1,8 +1,8 @@
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import omit from 'lodash/omit'
-import {Client} from 'cozy-client-js'
-import {Q} from 'cozy-client'
+import { Client } from 'cozy-client-js'
+import { Q } from 'cozy-client'
 import retry from 'bluebird-retry'
 
 let cozy
@@ -37,8 +37,8 @@ const saveFiles = async (entries, folderPath, options = {}) => {
     validateFile: options.validateFile || defaultValidateFile,
     sourceAccountOptions: {
       sourceAccount: options.sourceAccount,
-      sourceAccountIdentifier: options.sourceAccountIdentifier,
-    },
+      sourceAccountIdentifier: options.sourceAccountIdentifier
+    }
   }
 
   if (options.validateFileContent) {
@@ -57,20 +57,20 @@ const saveFiles = async (entries, folderPath, options = {}) => {
   const savedEntries = []
   for (let entry of entries) {
     ;['filename', 'shouldReplaceName'].forEach(key =>
-      addValOrFnResult(entry, key, options),
+      addValOrFnResult(entry, key, options)
     )
     if (entry.filestream && !entry.filename) {
       log.warn(
-        'Missing filename property for for filestream entry, entry is ignored',
+        'Missing filename property for for filestream entry, entry is ignored'
       )
       return
     }
     if (canBeSaved(entry)) {
       const resultFolderPath = await getOrCreateDestinationPath(
         entry,
-        saveOptions,
+        saveOptions
       )
-      entry = await saveEntry(entry, {...saveOptions, resultFolderPath})
+      entry = await saveEntry(entry, { ...saveOptions, resultFolderPath })
       if (entry && entry._cozy_file_to_create) {
         savedFiles++
         delete entry._cozy_file_to_create
@@ -82,7 +82,7 @@ const saveFiles = async (entries, folderPath, options = {}) => {
   log.info(
     `Created ${savedFiles} files for ${
       savedEntries ? savedEntries.length : 'n'
-    } entries`,
+    } entries`
   )
   return savedEntries
 }
@@ -103,7 +103,7 @@ const saveEntry = async function (entry, options) {
 
   if (shouldReplace && file) {
     method = 'updateById'
-    log.debug(`Will replace ${getFilePath({options, file})}...`)
+    log.debug(`Will replace ${getFilePath({ options, file })}...`)
   }
 
   try {
@@ -113,19 +113,19 @@ const saveEntry = async function (entry, options) {
       log.debug(
         `File ${getFilePath({
           options,
-          entry,
-        })} does not exist yet or is not valid`,
+          entry
+        })} does not exist yet or is not valid`
       )
       entry._cozy_file_to_create = true
       file = await retry(createFile, {
         interval: 1000,
         throw_original: true,
         max_tries: options.retry,
-        args: [entry, options, method, file ? file._id : undefined],
+        args: [entry, options, method, file ? file._id : undefined]
       }).catch(err => {
         if (err.message === 'BAD_DOWNLOADED_FILE') {
           log.warn(
-            `Could not download file after ${options.retry} tries removing the file`,
+            `Could not download file after ${options.retry} tries removing the file`
           )
         } else {
           log.warn('unknown file download error: ' + err.message)
@@ -150,7 +150,7 @@ const saveEntry = async function (entry, options) {
     log.warn(
       `Error caught while trying to save the file ${
         entry.fileurl ? entry.fileurl : entry.filename
-      }`,
+      }`
     )
   }
   return entry
@@ -160,24 +160,24 @@ function noMetadataDeduplicationWarning(options) {
   const fileIdAttributes = options.fileIdAttributes
   if (!fileIdAttributes) {
     log.warn(
-      'No deduplication key is defined, file deduplication will be based on file path',
+      'No deduplication key is defined, file deduplication will be based on file path'
     )
   }
 
   const slug = get(options, 'manifest.slug')
   if (!slug) {
     log.warn(
-      'No slug is defined for the current connector, file deduplication will be based on file path',
+      'No slug is defined for the current connector, file deduplication will be based on file path'
     )
   }
 
   const sourceAccountIdentifier = get(
     options,
-    'sourceAccountOptions.sourceAccountIdentifier',
+    'sourceAccountOptions.sourceAccountIdentifier'
   )
   if (!sourceAccountIdentifier) {
     log.warn(
-      'No sourceAccountIdentifier is defined in options, file deduplication will be based on file path',
+      'No sourceAccountIdentifier is defined in options, file deduplication will be based on file path'
     )
   }
 }
@@ -187,7 +187,7 @@ async function getFileIfExists(entry, options) {
   const slug = options.manifest.slug
   const sourceAccountIdentifier = get(
     options,
-    'sourceAccountOptions.sourceAccountIdentifier',
+    'sourceAccountOptions.sourceAccountIdentifier'
   )
 
   const isReadyForFileMetadata =
@@ -197,7 +197,7 @@ async function getFileIfExists(entry, options) {
       entry,
       fileIdAttributes,
       sourceAccountIdentifier,
-      slug,
+      slug
     )
     if (!file) {
       // no file with correct metadata, maybe the corresponding file already exist in the default
@@ -215,29 +215,29 @@ async function getFileFromMetaData(
   entry,
   fileIdAttributes,
   sourceAccountIdentifier,
-  slug,
+  slug
 ) {
   log.debug(
-    `Checking existence of ${calculateFileKey(entry, fileIdAttributes)}`,
+    `Checking existence of ${calculateFileKey(entry, fileIdAttributes)}`
   )
-  const {data: files} = await client.queryAll(
+  const { data: files } = await client.queryAll(
     Q('io.cozy.files')
       .where({
         metadata: {
-          fileIdAttributes: calculateFileKey(entry, fileIdAttributes),
+          fileIdAttributes: calculateFileKey(entry, fileIdAttributes)
         },
         trashed: false,
         cozyMetadata: {
           sourceAccountIdentifier,
-          createdByApp: slug,
-        },
+          createdByApp: slug
+        }
       })
       .indexFields([
         'metadata.fileIdAttributes',
         'trashed',
         'cozyMetadata.sourceAccountIdentifier',
-        'cozyMetadata.createdByApp',
-      ]),
+        'cozyMetadata.createdByApp'
+      ])
   )
 
   if (files && files[0]) {
@@ -245,8 +245,8 @@ async function getFileFromMetaData(
       log.warn(
         `Found ${files.length} files corresponding to ${calculateFileKey(
           entry,
-          fileIdAttributes,
-        )}`,
+          fileIdAttributes
+        )}`
       )
     }
     return files[0]
@@ -258,8 +258,8 @@ async function getFileFromMetaData(
 
 async function getFileFromPath(entry, options) {
   try {
-    log.debug(`Checking existence of ${getFilePath({entry, options})}`)
-    const result = await cozy.files.statByPath(getFilePath({entry, options}))
+    log.debug(`Checking existence of ${getFilePath({ entry, options })}`)
+    const result = await cozy.files.statByPath(getFilePath({ entry, options }))
     return result
   } catch (err) {
     log.debug(err.message)
@@ -271,7 +271,7 @@ async function createFile(entry, options, method, fileId) {
   const folder = await cozy.files.statByPath(options.folderPath)
   let createFileOptions = {
     name: getFileName(entry),
-    dirID: folder._id,
+    dirID: folder._id
   }
   if (options.contentType) {
     createFileOptions.contentType = options.contentType
@@ -279,7 +279,7 @@ async function createFile(entry, options, method, fileId) {
   createFileOptions = {
     ...createFileOptions,
     ...entry.fileAttributes,
-    ...options.sourceAccountOptions,
+    ...options.sourceAccountOptions
   }
 
   if (options.fileIdAttributes) {
@@ -288,9 +288,9 @@ async function createFile(entry, options, method, fileId) {
       ...{
         metadata: {
           ...createFileOptions.metadata,
-          fileIdAttributes: calculateFileKey(entry, options.fileIdAttributes),
-        },
-      },
+          fileIdAttributes: calculateFileKey(entry, options.fileIdAttributes)
+        }
+      }
     }
   }
 
@@ -304,7 +304,7 @@ async function createFile(entry, options, method, fileId) {
     fileDocument = await cozy.files.updateById(
       fileId,
       toCreate,
-      createFileOptions,
+      createFileOptions
     )
   }
 
@@ -342,11 +342,11 @@ const defaultShouldReplaceFile = (file, entry, options) => {
   const entryHasMetadata = !!get(entry, 'fileAttributes.metadata')
   const hasSourceAccountIdentifierOption = !!get(
     options,
-    'sourceAccountOptions.sourceAccountIdentifier',
+    'sourceAccountOptions.sourceAccountIdentifier'
   )
   const fileHasSourceAccountIdentifier = !!getAttribute(
     file,
-    'cozyMetadata.sourceAccountIdentifier',
+    'cozyMetadata.sourceAccountIdentifier'
   )
   const result =
     (fileHasNoMetadata && entryHasMetadata) ||
@@ -374,7 +374,7 @@ const defaultShouldReplaceFile = (file, entry, options) => {
 const shouldReplaceFile = async function (file, entry, options) {
   const isValid = !options.validateFile || (await options.validateFile(file))
   if (!isValid) {
-    log.warn(`${getFileName({file, options})} is invalid`)
+    log.warn(`${getFileName({ file, options })} is invalid`)
     throw new Error('BAD_DOWNLOADED_FILE')
   }
   const shouldReplaceFileFn =
@@ -426,7 +426,7 @@ function logFileStream(fileStream) {
 
   if (fileStream && fileStream.constructor && fileStream.constructor.name) {
     log.debug(
-      `The fileStream attribute is an instance of ${fileStream.constructor.name}`,
+      `The fileStream attribute is an instance of ${fileStream.constructor.name}`
     )
   } else {
     log.debug(`The fileStream attribute is a ${typeof fileStream}`)
@@ -487,7 +487,7 @@ function attachFileToEntry(entry, fileDocument) {
   return entry
 }
 
-function getFilePath({file, entry, options}) {
+function getFilePath({ file, entry, options }) {
   const folderPath = options.folderPath
   if (file) {
     return folderPath + '/' + getAttribute(file, 'name')
@@ -511,9 +511,9 @@ async function getOrCreateDestinationPath(entry, saveOptions) {
 }
 
 function initCozyClientJs(cozyClient) {
-  const {uri} = cozyClient.stackClient
+  const { uri } = cozyClient.stackClient
   return new Client({
     cozyURL: uri,
-    token: cozyClient.stackClient.getAccessToken(),
+    token: cozyClient.stackClient.getAccessToken()
   })
 }

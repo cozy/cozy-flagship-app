@@ -1,27 +1,27 @@
 import RN from 'react-native'
 
-import {openApp} from './openApp'
+import { openApp } from './openApp'
 
 jest.mock('../dimensions', () => ({
   screenHeight: 732,
-  screenWidth: 412,
+  screenWidth: 412
 }))
 
 jest.mock('react-native', () => ({
   Alert: {
-    alert: jest.fn(),
+    alert: jest.fn()
   },
   Linking: {
     canOpenURL: jest.fn(),
-    openURL: jest.fn(),
+    openURL: jest.fn()
   },
   Platform: {
-    OS: 'ios',
-  },
+    OS: 'ios'
+  }
 }))
 
 const navigation = {
-  navigate: jest.fn(),
+  navigate: jest.fn()
 }
 
 describe('openApp', () => {
@@ -39,8 +39,8 @@ describe('openApp', () => {
           height: 32,
           width: 32,
           x: 190,
-          y: 350,
-        },
+          y: 350
+        }
       })
     })
   })
@@ -48,7 +48,7 @@ describe('openApp', () => {
   describe('with app manifest but no mobile info nor slug fallback', () => {
     it('should open href', async () => {
       await openApp(navigation, 'https://appurl', {
-        slug: 'some_app_with_no_native_equivalent',
+        slug: 'some_app_with_no_native_equivalent'
       })
 
       expect(navigation.navigate).toHaveBeenCalledWith('cozyapp', {
@@ -57,9 +57,9 @@ describe('openApp', () => {
           height: 32,
           width: 32,
           x: 190,
-          y: 350,
+          y: 350
         },
-        slug: 'some_app_with_no_native_equivalent',
+        slug: 'some_app_with_no_native_equivalent'
       })
     })
   })
@@ -72,8 +72,8 @@ describe('openApp', () => {
         mobile: {
           schema: 'cozypass://',
           id_playstore: 'io.cozy.pass',
-          id_appstore: 'cozy-pass/id1502262449',
-        },
+          id_appstore: 'cozy-pass/id1502262449'
+        }
       })
 
       expect(RN.Linking.canOpenURL).toHaveBeenCalledWith('cozypass://')
@@ -93,13 +93,13 @@ describe('openApp', () => {
         mobile: {
           schema: 'cozypass://',
           id_playstore: 'io.cozy.pass',
-          id_appstore: 'cozy-pass/id1502262449',
-        },
+          id_appstore: 'cozy-pass/id1502262449'
+        }
       })
 
       expect(RN.Linking.canOpenURL).toHaveBeenCalledWith('cozypass://')
       expect(RN.Linking.openURL).toHaveBeenCalledWith(
-        'itms-apps://apps.apple.com/id/app/cozy-pass/id1502262449?l=id',
+        'itms-apps://apps.apple.com/id/app/cozy-pass/id1502262449?l=id'
       )
     })
 
@@ -116,13 +116,13 @@ describe('openApp', () => {
         mobile: {
           schema: 'cozypass://',
           id_playstore: 'io.cozy.pass',
-          id_appstore: 'cozy-pass/id1502262449',
-        },
+          id_appstore: 'cozy-pass/id1502262449'
+        }
       })
 
       expect(RN.Linking.canOpenURL).toHaveBeenCalledWith('cozypass://')
       expect(RN.Linking.openURL).toHaveBeenCalledWith(
-        'https://play.google.com/store/apps/details?id=io.cozy.pass',
+        'https://play.google.com/store/apps/details?id=io.cozy.pass'
       )
     })
   })
@@ -132,7 +132,7 @@ describe('openApp', () => {
       RN.Linking.canOpenURL.mockResolvedValue(true)
 
       await openApp(navigation, 'https://appurl', {
-        slug: 'passwords',
+        slug: 'passwords'
       })
 
       expect(RN.Linking.canOpenURL).toHaveBeenCalledWith('cozypass://')
@@ -149,12 +149,12 @@ describe('openApp', () => {
       })
 
       await openApp(navigation, 'https://appurl', {
-        slug: 'passwords',
+        slug: 'passwords'
       })
 
       expect(RN.Linking.canOpenURL).toHaveBeenCalledWith('cozypass://')
       expect(RN.Linking.openURL).toHaveBeenCalledWith(
-        'itms-apps://apps.apple.com/id/app/cozy-pass/id1502262449?l=id',
+        'itms-apps://apps.apple.com/id/app/cozy-pass/id1502262449?l=id'
       )
     })
 
@@ -168,12 +168,12 @@ describe('openApp', () => {
       })
 
       await openApp(navigation, 'https://appurl', {
-        slug: 'passwords',
+        slug: 'passwords'
       })
 
       expect(RN.Linking.canOpenURL).toHaveBeenCalledWith('cozypass://')
       expect(RN.Linking.openURL).toHaveBeenCalledWith(
-        'https://play.google.com/store/apps/details?id=io.cozy.pass',
+        'https://play.google.com/store/apps/details?id=io.cozy.pass'
       )
     })
   })
@@ -187,8 +187,8 @@ describe('openApp', () => {
         mobile: {
           schema: 'cozypassoverride://',
           id_playstore: 'io.cozy.pass.override',
-          id_appstore: 'cozy-pass-override/id1502262449',
-        },
+          id_appstore: 'cozy-pass-override/id1502262449'
+        }
       })
 
       expect(RN.Linking.canOpenURL).toHaveBeenCalledWith('cozypassoverride://')

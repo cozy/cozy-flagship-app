@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from 'react'
-import {Button} from 'react-native'
-import {WebView} from 'react-native-webview'
+import React, { useState, useEffect } from 'react'
+import { Button } from 'react-native'
+import { WebView } from 'react-native-webview'
 import log from 'cozy-logger'
 import {
   getConnectorsFiles,
-  cleanConnectorsFiles,
+  cleanConnectorsFiles
 } from '../../libs/ConnectorInstaller'
 
 const DebugView = props => {
@@ -42,7 +42,7 @@ const DebugView = props => {
   }, [content])
   return (
     <>
-      <WebView source={{html: content}} />
+      <WebView source={{ html: content }} />
       <Button title="Clean" onPress={onPress} />
     </>
   )

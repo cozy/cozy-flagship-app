@@ -1,9 +1,9 @@
-/****************************************************************/
+/*****************************************************************/
 /* This code should reflect cozy-stack/assets/styles/cirrus.css */
 /*                                                              */
 /* Used SVG image should be converted to base 64 using          */
 /* https://base64.guru/converter/decode/image/svg               */
-/****************************************************************/
+/*****************************************************************/
 
 export const cirrusCss = `
 /* Buttons */

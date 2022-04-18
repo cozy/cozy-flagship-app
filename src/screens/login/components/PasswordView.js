@@ -1,19 +1,19 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   KeyboardAvoidingView,
   Linking,
   Platform,
   View,
-  StyleSheet,
+  StyleSheet
 } from 'react-native'
-import {WebView} from 'react-native-webview'
+import { WebView } from 'react-native-webview'
 
-import {doHashPassword} from '../../../libs/functions/passwordHelpers'
-import {setFocusOnWebviewField} from '../../../libs/functions/keyboardHelper'
+import { doHashPassword } from '../../../libs/functions/passwordHelpers'
+import { setFocusOnWebviewField } from '../../../libs/functions/keyboardHelper'
 
-import {getHtml} from './assets/PasswordView/htmlPasswordInjection'
+import { getHtml } from './assets/PasswordView/htmlPasswordInjection'
 
-import {getColors} from '../../../theme/colors'
+import { getColors } from '../../../theme/colors'
 
 const openForgotPasswordLink = instance => {
   const url = new URL(instance)
@@ -50,7 +50,7 @@ const PasswordForm = ({
   readonly,
   setPasswordData,
   setReadonly,
-  waitForTransition,
+  waitForTransition
 }) => {
   const [loading, setLoading] = useState(true)
   const webviewRef = useRef()
@@ -60,7 +60,7 @@ const PasswordForm = ({
     if (webviewRef) {
       const payload = JSON.stringify({
         message: 'setReadonly',
-        param: readonly,
+        param: readonly
       })
 
       const webView = webviewRef.current
@@ -84,7 +84,7 @@ const PasswordForm = ({
   const setPassword = passphrase => {
     setReadonly(true)
     setPasswordData({
-      password: passphrase,
+      password: passphrase
     })
   }
 
@@ -113,15 +113,15 @@ const PasswordForm = ({
         javaScriptEnabled={true}
         onMessage={processMessage}
         originWhitelist={['*']}
-        source={{html}}
+        source={{ html }}
       />
       {loading && (
         <View
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: colors.primaryColor,
-            },
+              backgroundColor: colors.primaryColor
+            }
           ]}
         />
       )}
@@ -161,7 +161,7 @@ export const PasswordView = ({
   setKeys,
   setError,
   setReadonly,
-  waitForTransition,
+  waitForTransition
 }) => {
   const [passwordData, setPasswordData] = useState()
 
@@ -196,13 +196,13 @@ export const PasswordView = ({
 
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
+    flex: 1
   },
   loadingOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-  },
+    bottom: 0
+  }
 })

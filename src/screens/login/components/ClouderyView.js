@@ -1,11 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react'
-import {KeyboardAvoidingView, Platform, StyleSheet, View} from 'react-native'
-import {WebView} from 'react-native-webview'
+import React, { useEffect, useRef, useState } from 'react'
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
+import { WebView } from 'react-native-webview'
 
 import strings from '../../../strings.json'
-import {getColors} from '../../../theme/colors'
-import {getUriFromRequest} from '../../../libs/functions/getUriFromRequest'
-import {setFocusOnWebviewField} from '../../../libs/functions/keyboardHelper'
+import { getColors } from '../../../theme/colors'
+import { getUriFromRequest } from '../../../libs/functions/getUriFromRequest'
+import { setFocusOnWebviewField } from '../../../libs/functions/keyboardHelper'
 
 const isLoginPage = requestUrl => {
   const url = new URL(requestUrl)
@@ -31,7 +31,7 @@ const isOnboardPage = requestUrl => {
  * @param {setInstanceData} props.setInstanceData
  * @returns {import('react').ComponentClass}
  */
-export const ClouderyView = ({setInstanceData}) => {
+export const ClouderyView = ({ setInstanceData }) => {
   const [uri, setUri] = useState(strings.loginUri)
   const [loading, setLoading] = useState(true)
   const webviewRef = useRef()
@@ -55,7 +55,7 @@ export const ClouderyView = ({setInstanceData}) => {
         const fqdn = new URL(normalizedInstance).host
         setInstanceData({
           instance,
-          fqdn,
+          fqdn
         })
         return false
       }
@@ -75,7 +75,7 @@ export const ClouderyView = ({setInstanceData}) => {
   return (
     <Wrapper style={styles.view} behavior="height">
       <WebView
-        source={{uri: uri}}
+        source={{ uri: uri }}
         ref={webviewRef}
         onShouldStartLoadWithRequest={handleNavigation}
         onLoadEnd={() => setLoading(false)}
@@ -85,8 +85,8 @@ export const ClouderyView = ({setInstanceData}) => {
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: colors.primaryColor,
-            },
+              backgroundColor: colors.primaryColor
+            }
           ]}
         />
       )}
@@ -96,13 +96,13 @@ export const ClouderyView = ({setInstanceData}) => {
 
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
+    flex: 1
   },
   loadingOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-  },
+    bottom: 0
+  }
 })

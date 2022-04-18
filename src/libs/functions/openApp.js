@@ -1,5 +1,5 @@
-import {Alert, Linking, Platform} from 'react-native'
-import {screenHeight, screenWidth} from '../dimensions'
+import { Alert, Linking, Platform } from 'react-native'
+import { screenHeight, screenWidth } from '../dimensions'
 
 /**
  * App's mobile information. Used to describe the app scheme and its store urls
@@ -34,8 +34,8 @@ const slugFallbacks = {
   passwords: {
     schema: 'cozypass://',
     id_playstore: 'io.cozy.pass',
-    id_appstore: 'cozy-pass/id1502262449',
-  },
+    id_appstore: 'cozy-pass/id1502262449'
+  }
 }
 
 /**
@@ -70,17 +70,17 @@ const openAppNative = async appNativeData => {
           {
             text: 'Cancel', // TODO: Translate
             onPress: resolve,
-            style: 'cancel',
+            style: 'cancel'
           },
           {
             text: `Open the ${storeName}`, // TODO: Translate
-            onPress: () => Linking.openURL(storeUrl).then(resolve),
-          },
+            onPress: () => Linking.openURL(storeUrl).then(resolve)
+          }
         ],
         {
           cancelable: true,
-          onDismiss: resolve,
-        },
+          onDismiss: resolve
+        }
       )
     })
   }
@@ -92,13 +92,13 @@ const openAppNative = async appNativeData => {
  * @param {AppManifest} connector - The connector information
  */
 const openConnectorInHome = (navigation, connector) => {
-  const {slug} = connector
+  const { slug } = connector
 
   navigation.navigate({
     name: 'home',
     params: {
-      konnector: slug,
-    },
+      konnector: slug
+    }
   })
 }
 
@@ -134,8 +134,8 @@ export const openApp = (navigation, href, app, iconParams) => {
       x: screenWidth * 0.5 - 32 * 0.5,
       y: screenHeight * 0.5 - 32 * 0.5,
       width: 32,
-      height: 32,
+      height: 32
     },
-    slug: app?.slug,
+    slug: app?.slug
   })
 }

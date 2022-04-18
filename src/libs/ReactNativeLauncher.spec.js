@@ -8,29 +8,29 @@ jest.mock('@fengweichong/react-native-gzip', () => {
 import ReactNativeLauncher from './ReactNativeLauncher'
 
 const fixtures = {
-  job: {_id: 'normal_job_id'},
-  account: {_id: 'normal_account_id'},
+  job: { _id: 'normal_job_id' },
+  account: { _id: 'normal_account_id' },
   trigger: {
     _id: 'normal_trigger_id',
-    message: {folder_to_save: 'normalfolderid'},
-  },
+    message: { folder_to_save: 'normalfolderid' }
+  }
 }
 
 describe('ReactNativeLauncher', () => {
   const launcher = new ReactNativeLauncher()
   launcher.pilot = {
-    call: jest.fn(),
+    call: jest.fn()
   }
   launcher.worker = {
-    call: jest.fn(),
+    call: jest.fn()
   }
   const updateAttributes = jest.fn()
   const client = {
     save: jest.fn(),
     query: jest.fn(),
     collection: () => ({
-      updateAttributes,
-    }),
+      updateAttributes
+    })
   }
 
   beforeEach(() => {
@@ -47,48 +47,48 @@ describe('ReactNativeLauncher', () => {
         client,
         job: fixtures.job,
         account: fixtures.account,
-        trigger: fixtures.trigger,
+        trigger: fixtures.trigger
       })
-      client.query.mockResolvedValue({data: fixtures.account})
+      client.query.mockResolvedValue({ data: fixtures.account })
       launcher.pilot.call
         .mockResolvedValueOnce(true)
         .mockResolvedValueOnce(true)
         .mockResolvedValueOnce({
-          sourceAccountIdentifier: 'testsourceaccountidentifier',
+          sourceAccountIdentifier: 'testsourceaccountidentifier'
         })
       await launcher.start()
       expect(client.save).toHaveBeenNthCalledWith(1, {
         _id: 'normal_account_id',
-        state: 'LOGIN_SUCCESS',
+        state: 'LOGIN_SUCCESS'
       })
       expect(client.save).toHaveBeenNthCalledWith(2, {
         _id: 'normal_account_id',
         auth: {
-          accountName: 'testsourceaccountidentifier',
-        },
+          accountName: 'testsourceaccountidentifier'
+        }
       })
       expect(client.save).toHaveBeenNthCalledWith(3, {
         _id: 'normal_job_id',
         attributes: {
-          state: 'done',
-        },
+          state: 'done'
+        }
       })
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(
         1,
         'setContentScriptType',
-        'pilot',
+        'pilot'
       )
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(
         2,
-        'ensureAuthenticated',
+        'ensureAuthenticated'
       )
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(
         3,
-        'getUserDataFromWebsite',
+        'getUserDataFromWebsite'
       )
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(4, 'fetch', [])
       expect(updateAttributes).toHaveBeenNthCalledWith(1, 'normalfolderid', {
-        name: 'testsourceaccountidentifier',
+        name: 'testsourceaccountidentifier'
       })
     })
     it('should update job with error message on error', async () => {
@@ -96,17 +96,17 @@ describe('ReactNativeLauncher', () => {
         client,
         job: fixtures.job,
         account: fixtures.account,
-        trigger: fixtures.trigger,
+        trigger: fixtures.trigger
       })
-      client.query.mockResolvedValue({data: fixtures.account})
+      client.query.mockResolvedValue({ data: fixtures.account })
       launcher.pilot.call.mockRejectedValue(new Error('test error message'))
       await launcher.start()
       expect(client.save).toHaveBeenNthCalledWith(1, {
         _id: 'normal_job_id',
         attributes: {
           state: 'errored',
-          error: 'test error message',
-        },
+          error: 'test error message'
+        }
       })
     })
   })

@@ -1,7 +1,7 @@
 import React from 'react'
-import {View, Text} from 'react-native'
+import { View, Text } from 'react-native'
 
-export const LoadingView = ({message}) => {
+export const LoadingView = ({ message }) => {
   return (
     <View>
       <Text>LOADING</Text>

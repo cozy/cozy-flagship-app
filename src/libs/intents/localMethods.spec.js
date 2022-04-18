@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import * as RootNavigation from '../RootNavigation.js'
 import strings from '../../strings.json'
-import {localMethods, asyncLogout} from './localMethods'
+import { localMethods, asyncLogout } from './localMethods'
 jest.mock('react-native-keychain')
 
 // eslint-disable-next-line no-import-assign

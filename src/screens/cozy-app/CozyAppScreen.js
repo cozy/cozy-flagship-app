@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react'
-import {StatusBar, View} from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { StatusBar, View } from 'react-native'
 
 import CozyWebView from '../../components/webviews/CozyWebView'
-import {Animation} from './CozyAppScreen.Animation'
-import {flagshipUI, setFlagshipUI} from '../../libs/intents/setFlagshipUI'
-import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
-import {styles} from './CozyAppScreen.styles'
+import { Animation } from './CozyAppScreen.Animation'
+import { flagshipUI, setFlagshipUI } from '../../libs/intents/setFlagshipUI'
+import { navbarHeight, statusBarHeight } from '../../libs/dimensions'
+import { styles } from './CozyAppScreen.styles'
 
 const firstHalfUI = () =>
   setFlagshipUI({
@@ -14,19 +14,24 @@ const firstHalfUI = () =>
     bottomOverlay: 'transparent',
     topBackground: 'white',
     topTheme: 'dark',
-    topOverlay: 'transparent',
+    topOverlay: 'transparent'
   })
 
-export const CozyAppScreen = ({route, navigation}) => {
+export const CozyAppScreen = ({ route, navigation }) => {
   const [UIState, setUIState] = useState({})
-  const {bottomBackground, bottomOverlay, topBackground, topTheme, topOverlay} =
-    UIState
+  const {
+    bottomBackground,
+    bottomOverlay,
+    topBackground,
+    topTheme,
+    topOverlay
+  } = UIState
   const [isReady, setReady] = useState(false)
   const [isFirstHalf, setFirstHalf] = useState(false)
 
   useEffect(() => {
     flagshipUI.on('change', state => {
-      setUIState({...UIState, ...state})
+      setUIState({ ...UIState, ...state })
     })
 
     return () => {
@@ -47,12 +52,13 @@ export const CozyAppScreen = ({route, navigation}) => {
       <View
         style={{
           height: isFirstHalf ? statusBarHeight : styles.immersiveHeight,
-          backgroundColor: topBackground,
-        }}>
+          backgroundColor: topBackground
+        }}
+      >
         <View
           style={{
             backgroundColor: topOverlay,
-            ...styles.innerOverlay,
+            ...styles.innerOverlay
           }}
         />
       </View>
@@ -68,8 +74,8 @@ export const CozyAppScreen = ({route, navigation}) => {
         )}
 
         <CozyWebView
-          style={{...styles[isFirstHalf ? 'ready' : 'notReady']}}
-          source={{uri: route.params.href}}
+          style={{ ...styles[isFirstHalf ? 'ready' : 'notReady'] }}
+          source={{ uri: route.params.href }}
           navigation={navigation}
           route={route}
           logId="AppScreen"
@@ -79,12 +85,13 @@ export const CozyAppScreen = ({route, navigation}) => {
       <View
         style={{
           height: isFirstHalf ? navbarHeight : styles.immersiveHeight,
-          backgroundColor: bottomBackground,
-        }}>
+          backgroundColor: bottomBackground
+        }}
+      >
         <View
           style={{
             backgroundColor: bottomOverlay,
-            ...styles.innerOverlay,
+            ...styles.innerOverlay
           }}
         />
       </View>

@@ -1,5 +1,5 @@
-import {ParentHandshake} from 'post-me'
-import {Bridge} from './bridgeInterfaces'
+import { ParentHandshake } from 'post-me'
+import { Bridge } from './bridgeInterfaces'
 import ReactNativeLauncherMessenger from './ReactNativeLauncherMessenger'
 
 const DEBUG_BRIDGE = true
@@ -8,7 +8,7 @@ const DEBUG_BRIDGE = true
  * Bridge to the contentScript object via post-me
  */
 export default class ContentScriptBridge extends Bridge {
-  constructor({label}) {
+  constructor({ label }) {
     super()
     this.label = label
   }
@@ -18,7 +18,7 @@ export default class ContentScriptBridge extends Bridge {
     exposedMethodsNames = [],
     listenedEventsNames = [],
     webViewRef,
-    debug = DEBUG_BRIDGE,
+    debug = DEBUG_BRIDGE
   } = {}) {
     if (root) {
       this.root = root
@@ -31,14 +31,14 @@ export default class ContentScriptBridge extends Bridge {
     this.messenger = new ReactNativeLauncherMessenger({
       webViewRef: this.webViewRef,
       debug,
-      label: this.label,
+      label: this.label
     })
 
     this.connection = await ParentHandshake(
       this.messenger,
       this.bindExposedMethods(this.root, exposedMethodsNames),
       50,
-      100,
+      100
     )
 
     this.localHandle = this.connection.localHandle()

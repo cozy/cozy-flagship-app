@@ -39,21 +39,21 @@ const attemptFetchApps = async client => {
   }
 }
 
-const attemptCacheUpdate = async ({apps, cache, client}) => {
+const attemptCacheUpdate = async ({ apps, cache, client }) => {
   try {
     const slugsToUpdate = apps.data.reduce(
-      (acc, {attributes: {slug, version}}) => {
+      (acc, { attributes: { slug, version } }) => {
         if (!cache[slug] || hasNewerVersion(cache[slug].version, version)) {
-          return [...acc, {attributes: {slug, version}}]
+          return [...acc, { attributes: { slug, version } }]
         }
 
         return acc
       },
-      [],
+      []
     )
 
     if (slugsToUpdate.length > 0) {
-      await attemptFetchIcons({data: slugsToUpdate}, client, cache)
+      await attemptFetchIcons({ data: slugsToUpdate }, client, cache)
     } else {
       setIconTable(cache)
     }
@@ -66,21 +66,21 @@ const attemptCacheUpdate = async ({apps, cache, client}) => {
 const attemptFetchIcons = async (apps, client, cache = {}) => {
   try {
     const apiTable = await apps.data.reduce(
-      async (acc, {attributes: {slug, version}}) => {
+      async (acc, { attributes: { slug, version } }) => {
         try {
           const xml = await client
             .getStackClient()
             .fetchJSON('GET', `/registry/${slug}/icon`)
 
-          return [...(await acc), [slug, {version, xml}]]
+          return [...(await acc), [slug, { version, xml }]]
         } catch {
           return await acc
         }
       },
-      [],
+      []
     )
 
-    setPersistentIconTable({...cache, ...Object.fromEntries(apiTable)})
+    setPersistentIconTable({ ...cache, ...Object.fromEntries(apiTable) })
   } catch (error) {
     log.error(strings.errors.attemptFetchIcons, error)
   }
@@ -125,6 +125,6 @@ export const manageIconCache = async client => {
   }
 
   cache
-    ? await attemptCacheUpdate({apps, cache, client})
+    ? await attemptCacheUpdate({ apps, cache, client })
     : await attemptFetchIcons(apps, client)
 }

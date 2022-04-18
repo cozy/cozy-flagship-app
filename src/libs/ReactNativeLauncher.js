@@ -19,7 +19,7 @@ class ReactNativeLauncher extends Launcher {
     this.workerListenedEventsNames = ['log', 'workerEvent', 'workerReady']
   }
 
-  async init({bridgeOptions, contentScript}) {
+  async init({ bridgeOptions, contentScript }) {
     log.debug('bridges init start')
     const promises = [
       this.initPilotContentScriptBridge({
@@ -33,33 +33,36 @@ class ReactNativeLauncher extends Launcher {
           'saveIdentity',
           'setUserAgent',
           'getCredentials',
-          'saveCredentials',
+          'saveCredentials'
         ],
-        listenedEventsNames: ['log'],
+        listenedEventsNames: ['log']
       }),
       this.initWorkerContentScriptBridge({
         webViewRef: bridgeOptions.workerWebview,
         contentScript,
         exposedMethodsNames: this.workerMethodNames,
-        listenedEventsNames: this.workerListenedEventsNames,
-      }),
+        listenedEventsNames: this.workerListenedEventsNames
+      })
     ]
     await Promise.all(promises)
     log.debug('bridges init done')
   }
 
-  async ensureConnectorIsInstalled({connector, client}) {
-    await ConnectorInstaller.ensureConnectorIsInstalled({...connector, client})
+  async ensureConnectorIsInstalled({ connector, client }) {
+    await ConnectorInstaller.ensureConnectorIsInstalled({
+      ...connector,
+      client
+    })
     const content = await ConnectorInstaller.getContentScript(connector)
     const manifest = await ConnectorInstaller.getManifest(connector)
-    return {content, manifest}
+    return { content, manifest }
   }
 
-  async stop({message} = {}) {
+  async stop({ message } = {}) {
     if (message) {
       await this.updateJobResult({
         state: 'errored',
-        error: message,
+        error: message
       })
     } else {
       await this.updateJobResult()
@@ -67,7 +70,7 @@ class ReactNativeLauncher extends Launcher {
     this.close()
   }
 
-  async start({initConnectorError} = {}) {
+  async start({ initConnectorError } = {}) {
     try {
       if (initConnectorError) {
         log.info('Got initConnectorError ' + initConnectorError.message)
@@ -91,7 +94,7 @@ class ReactNativeLauncher extends Launcher {
       await this.stop()
     } catch (err) {
       log.error(err, 'start error')
-      await this.stop({message: err.message})
+      await this.stop({ message: err.message })
     }
     this.emit('CONNECTOR_EXECUTION_END')
   }
@@ -173,7 +176,7 @@ class ReactNativeLauncher extends Launcher {
       await this.worker.init({
         exposedMethodsNames: this.workerMethodNames,
         listenedEventsNames: this.workerListenedEventsNames,
-        label: 'worker',
+        label: 'worker'
       })
       await this.worker.call('setContentScriptType', 'worker')
     } catch (err) {
@@ -194,18 +197,18 @@ class ReactNativeLauncher extends Launcher {
   async initPilotContentScriptBridge({
     webViewRef,
     exposedMethodsNames,
-    listenedEventsNames,
+    listenedEventsNames
   }) {
     // the bridge must be exposed before the call to the ContentScriptBridge.init function or else the init sequence won't work
     // since the init sequence needs an already working bridge
-    this.pilot = new ContentScriptBridge({label: 'pilot'})
+    this.pilot = new ContentScriptBridge({ label: 'pilot' })
     try {
       await this.pilot.init({
         root: this,
         exposedMethodsNames,
         listenedEventsNames,
         webViewRef,
-        label: 'pilot',
+        label: 'pilot'
       })
     } catch (err) {
       throw new Error(`Init error in pilot: ${err.message}`)
@@ -223,18 +226,18 @@ class ReactNativeLauncher extends Launcher {
   async initWorkerContentScriptBridge({
     webViewRef,
     exposedMethodsNames,
-    listenedEventsNames,
+    listenedEventsNames
   }) {
     // the bridge must be exposed before the call to the ContentScriptBridge.init function or else the init sequence won't work
     // since the init sequence needs an already working bridge
-    this.worker = new ContentScriptBridge({label: 'worker'})
+    this.worker = new ContentScriptBridge({ label: 'worker' })
     try {
       await this.worker.init({
         root: this,
         exposedMethodsNames,
         listenedEventsNames,
         webViewRef,
-        label: 'worker',
+        label: 'worker'
       })
     } catch (err) {
       throw new Error(`Init error in worker: ${err.message}`)

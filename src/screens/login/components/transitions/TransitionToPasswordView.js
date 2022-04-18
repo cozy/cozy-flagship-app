@@ -1,12 +1,12 @@
-import React, {useCallback, useEffect, useRef} from 'react'
-import {Animated, Dimensions, Easing, StyleSheet, View} from 'react-native'
+import React, { useCallback, useEffect, useRef } from 'react'
+import { Animated, Dimensions, Easing, StyleSheet, View } from 'react-native'
 
 import log from 'cozy-logger'
 
-import {statusBarHeight} from '../../../../libs/dimensions'
-import {CozyIcon} from './transitions-icons/CozyIcon'
+import { statusBarHeight } from '../../../../libs/dimensions'
+import { CozyIcon } from './transitions-icons/CozyIcon'
 
-import {getColors} from '../../../../theme/colors'
+import { getColors } from '../../../../theme/colors'
 
 const webViewTopToNativeTop = top => top + statusBarHeight
 
@@ -25,7 +25,7 @@ const webViewTopToNativeTop = top => top + statusBarHeight
 export const TransitionToPasswordView = ({
   passwordAvatarPosition,
   requestTransitionStart,
-  setTransitionEnded,
+  setTransitionEnded
 }) => {
   const colors = getColors()
 
@@ -53,13 +53,13 @@ export const TransitionToPasswordView = ({
     passwordAvatarPosition,
     requestTransitionStart,
     setTransitionEnded,
-    transitionToFinal,
+    transitionToFinal
   ])
 
   const transitionToFinal = useCallback(
     targetPosition => {
       return new Promise((resolve, reject) => {
-        let {boxHeight, top, height} = targetPosition
+        let { boxHeight, top, height } = targetPosition
 
         const targetScale = height / initialHeight
 
@@ -74,36 +74,36 @@ export const TransitionToPasswordView = ({
           toValue: targetTranslateY,
           duration: animationDurationInSecond,
           easing: Easing.bezier(0.7, -0.4, 0.4, 1.4),
-          useNativeDriver: true,
+          useNativeDriver: true
         })
 
         const scaleAnimation = Animated.timing(animatedScale, {
           toValue: targetScale,
           duration: animationDurationInSecond,
           easing: Easing.bezier(0.7, -0.4, 0.4, 1.4),
-          useNativeDriver: true,
+          useNativeDriver: true
         })
 
         const opacityAnimation = Animated.timing(animatedOpactity, {
           toValue: targetBackgroundOpacity,
           duration: fadeOutDurationInSecond,
-          useNativeDriver: true,
+          useNativeDriver: true
         })
 
         const sequence = [
           Animated.delay(animationDelayInSecond),
           Animated.parallel([translateAnimation, scaleAnimation]),
-          opacityAnimation,
+          opacityAnimation
         ]
 
-        Animated.sequence(sequence).start(({finished}) => {
+        Animated.sequence(sequence).start(({ finished }) => {
           if (finished) {
             resolve()
           }
         })
       })
     },
-    [animatedOpactity, animatedScale, animatedTranslateY, initialTop],
+    [animatedOpactity, animatedScale, animatedTranslateY, initialTop]
   )
 
   return (
@@ -113,8 +113,8 @@ export const TransitionToPasswordView = ({
           styles.background,
           {
             opacity: animatedOpactity,
-            backgroundColor: colors.primaryColor,
-          },
+            backgroundColor: colors.primaryColor
+          }
         ]}
       />
       <Animated.View
@@ -126,12 +126,13 @@ export const TransitionToPasswordView = ({
             height: initialHeight,
             width: initialWidth,
             transform: [
-              {translateY: animatedTranslateY},
-              {scaleX: animatedScale},
-              {scaleY: animatedScale},
-            ],
-          },
-        ]}>
+              { translateY: animatedTranslateY },
+              { scaleX: animatedScale },
+              { scaleY: animatedScale }
+            ]
+          }
+        ]}
+      >
         <View style={[styles.avatarContainer]}>
           <CozyIcon color={colors.paperBackgroundColor} />
         </View>
@@ -146,19 +147,19 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 0
   },
   background: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 0
   },
   avatar: {
-    position: 'absolute',
+    position: 'absolute'
   },
   avatarContainer: {
-    padding: 30,
-  },
+    padding: 30
+  }
 })

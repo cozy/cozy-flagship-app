@@ -1,7 +1,7 @@
 import Minilog from '@cozy/minilog'
 
-import {queryResultToCrypto} from '../../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
-import {deleteKeychain, saveVaultInformation} from '../keychain'
+import { queryResultToCrypto } from '../../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
+import { deleteKeychain, saveVaultInformation } from '../keychain'
 
 const log = Minilog('passwordHelpers')
 
@@ -26,19 +26,19 @@ const getSaltForInstance = instance => {
 export const doHashPassword = async (
   passwordData,
   fqdn,
-  kdfIterations = DEFAULT_ITERATION_NUMBER,
+  kdfIterations = DEFAULT_ITERATION_NUMBER
 ) => {
   log.debug('Start hashing password')
   try {
-    const {password, hint} = passwordData
+    const { password, hint } = passwordData
 
     const salt = getSaltForInstance(fqdn)
 
-    const {passwordHash, iterations, key, publicKey, privateKey, masterKey} =
+    const { passwordHash, iterations, key, publicKey, privateKey, masterKey } =
       await queryResultToCrypto('computePass', {
         pass: password,
         salt: salt,
-        iterations: kdfIterations,
+        iterations: kdfIterations
       })
 
     const loginData = {
@@ -48,7 +48,7 @@ export const doHashPassword = async (
       key,
       publicKey,
       privateKey,
-      masterKey,
+      masterKey
     }
 
     return loginData
@@ -68,7 +68,7 @@ export const resetKeychainAndSaveLoginData = async ({
   key,
   privateKey,
   publicKey,
-  masterKey,
+  masterKey
 }) => {
   // Those must be called sequentially. Otherwise the keychain would throw
   await deleteKeychain()

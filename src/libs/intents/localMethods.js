@@ -1,10 +1,10 @@
 import * as RootNavigation from '../RootNavigation'
-import {clearClient} from '../client'
-import {deleteKeychain} from '../keychain'
-import {hideSplashScreen} from '../services/SplashScreenService'
-import {openApp} from '../functions/openApp'
-import {resetSessionToken} from '../functions/session'
-import {setFlagshipUI} from './setFlagshipUI'
+import { clearClient } from '../client'
+import { deleteKeychain } from '../keychain'
+import { hideSplashScreen } from '../services/SplashScreenService'
+import { openApp } from '../functions/openApp'
+import { resetSessionToken } from '../functions/session'
+import { setFlagshipUI } from './setFlagshipUI'
 
 export const asyncLogout = async () => {
   await clearClient()
@@ -29,5 +29,5 @@ export const localMethods = {
   logout,
   openApp: (href, app, iconParams) =>
     openApp(RootNavigation, href, app, iconParams),
-  setFlagshipUI,
+  setFlagshipUI
 }

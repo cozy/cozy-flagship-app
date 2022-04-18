@@ -1,6 +1,6 @@
 import get from 'lodash/get'
 import uniqBy from 'lodash/uniqBy'
-import {Q} from 'cozy-client'
+import { Q } from 'cozy-client'
 import Minilog from '@cozy/minilog'
 const log = Minilog('hydrateAndFilter')
 
@@ -133,7 +133,7 @@ const hydrateAndFilter = async (documents = [], doctype, options = {}) => {
           return suitableCall(shouldSave, entry)
         }
       }),
-      entry => (entry && entry._id) || entry,
+      entry => (entry && entry._id) || entry
     )
   }
 

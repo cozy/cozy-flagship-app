@@ -1,15 +1,15 @@
-import React, {useCallback, useEffect, useState} from 'react'
-import {StyleSheet, View} from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 
 import Minilog from '@cozy/minilog'
 
-import {ClouderyView} from './components/ClouderyView'
-import {ErrorView} from './components/ErrorView'
-import {LoadingView} from './components/LoadingView'
-import {PasswordView} from './components/PasswordView'
-import {TransitionToPasswordView} from './components/transitions/TransitionToPasswordView'
-import {TransitionToAuthorizeView} from './components/transitions/TransitionToAuthorizeView'
-import {TwoFactorAuthenticationView} from './components/TwoFactorAuthenticationView'
+import { ClouderyView } from './components/ClouderyView'
+import { ErrorView } from './components/ErrorView'
+import { LoadingView } from './components/LoadingView'
+import { PasswordView } from './components/PasswordView'
+import { TransitionToPasswordView } from './components/transitions/TransitionToPasswordView'
+import { TransitionToAuthorizeView } from './components/transitions/TransitionToAuthorizeView'
+import { TwoFactorAuthenticationView } from './components/TwoFactorAuthenticationView'
 
 import {
   callInitClient,
@@ -18,14 +18,14 @@ import {
   createClient,
   fetchPublicData,
   STATE_2FA_NEEDED,
-  STATE_INVALID_PASSWORD,
+  STATE_INVALID_PASSWORD
 } from '../../libs/client'
-import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
-import {resetKeychainAndSaveLoginData} from '../../libs/functions/passwordHelpers'
-import {useSplashScreen} from '../../hooks/useSplashScreen'
+import { navbarHeight, statusBarHeight } from '../../libs/dimensions'
+import { resetKeychainAndSaveLoginData } from '../../libs/functions/passwordHelpers'
+import { useSplashScreen } from '../../hooks/useSplashScreen'
 
 import strings from '../../strings.json'
-import {getColors} from '../../theme/colors'
+import { getColors } from '../../theme/colors'
 
 const log = Minilog('LoginScreen')
 
@@ -38,10 +38,10 @@ const ERROR_STEP = 'ERROR_STEP'
 
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
-const LoginSteps = ({setClient}) => {
-  const {showSplashScreen} = useSplashScreen()
+const LoginSteps = ({ setClient }) => {
+  const { showSplashScreen } = useSplashScreen()
   const [state, setState] = useState({
-    step: CLOUDERY_STEP,
+    step: CLOUDERY_STEP
   })
 
   useEffect(() => {
@@ -63,15 +63,15 @@ const LoginSteps = ({setClient}) => {
   const setStepReadonly = isReadOnly => {
     setState(oldState => ({
       ...oldState,
-      stepReadonly: isReadOnly,
+      stepReadonly: isReadOnly
     }))
   }
 
-  const setInstanceData = async ({instance, fqdn}) => {
+  const setInstanceData = async ({ instance, fqdn }) => {
     try {
       const client = await createClient(instance)
 
-      const {kdfIterations, name} = await fetchPublicData(client)
+      const { kdfIterations, name } = await fetchPublicData(client)
 
       // we do not want to await for flagship certification in order to make the UI more responsive
       // so do not add `await` keyword here
@@ -86,7 +86,7 @@ const LoginSteps = ({setClient}) => {
         instance: instance,
         name: name,
         kdfIterations: kdfIterations,
-        client: client,
+        client: client
       })
     } catch (error) {
       setError(error.message, error)
@@ -103,31 +103,31 @@ const LoginSteps = ({setClient}) => {
       loginData: undefined,
       sessionCode: undefined,
       errorMessage: undefined,
-      errorMessage2FA: undefined,
+      errorMessage2FA: undefined
     }))
   }, [])
 
   const cancelLogin = useCallback(() => {
     setState({
-      step: CLOUDERY_STEP,
+      step: CLOUDERY_STEP
     })
   }, [])
 
   const setLoginData = loginData => {
     setState(oldState => ({
       ...oldState,
-      loginData: loginData,
+      loginData: loginData
     }))
   }
 
   const startOAuth = useCallback(async () => {
     try {
-      const {loginData, instance, client} = state
+      const { loginData, instance, client } = state
 
       const result = await callInitClient({
         loginData,
         instance,
-        client,
+        client
       })
 
       if (result.state === STATE_INVALID_PASSWORD) {
@@ -137,7 +137,7 @@ const LoginSteps = ({setClient}) => {
           stepReadonly: false,
           loginData: undefined,
           waitForTransition: false,
-          errorMessage: strings.errors.invalidPassword,
+          errorMessage: strings.errors.invalidPassword
         }))
       } else if (result.state === STATE_2FA_NEEDED) {
         setState(oldState => ({
@@ -145,7 +145,7 @@ const LoginSteps = ({setClient}) => {
           step: TWO_FACTOR_AUTHENTICATION_STEP,
           stepReadonly: false,
           client: result.client,
-          twoFactorToken: result.twoFactorToken,
+          twoFactorToken: result.twoFactorToken
         }))
       } else {
         setState(oldState => ({
@@ -153,7 +153,7 @@ const LoginSteps = ({setClient}) => {
           step: AUTHORIZE_TRANSITION_STEP,
           waitForTransition: true,
           client: result.client,
-          sessionCode: result.sessionCode,
+          sessionCode: result.sessionCode
         }))
       }
     } catch (error) {
@@ -164,15 +164,15 @@ const LoginSteps = ({setClient}) => {
   const continueOAuth = useCallback(
     async twoFactorCode => {
       try {
-        const {loginData, client, twoFactorToken} = state
+        const { loginData, client, twoFactorToken } = state
 
         const result = await call2FAInitClient({
           loginData,
           client,
           twoFactorAuthenticationData: {
             token: twoFactorToken,
-            passcode: twoFactorCode,
-          },
+            passcode: twoFactorCode
+          }
         })
 
         if (result.state === STATE_2FA_NEEDED) {
@@ -182,7 +182,7 @@ const LoginSteps = ({setClient}) => {
             stepReadonly: false,
             client: result.client,
             twoFactorToken: result.twoFactorToken,
-            errorMessage2FA: strings.errors.wrong2FA,
+            errorMessage2FA: strings.errors.wrong2FA
           }))
         } else {
           setState(oldState => ({
@@ -190,23 +190,23 @@ const LoginSteps = ({setClient}) => {
             step: AUTHORIZE_TRANSITION_STEP,
             waitForTransition: true,
             client: result.client,
-            sessionCode: result.sessionCode,
+            sessionCode: result.sessionCode
           }))
         }
       } catch (error) {
         setError(error.message, error)
       }
     },
-    [setError, state],
+    [setError, state]
   )
 
   const authorize = useCallback(async () => {
     try {
-      const {client, loginData, sessionCode} = state
+      const { client, loginData, sessionCode } = state
 
       const result = await authorizeClient({
         sessionCode,
-        client,
+        client
       })
 
       showSplashScreen()
@@ -228,17 +228,17 @@ const LoginSteps = ({setClient}) => {
         step: ERROR_STEP,
         errorMessage: errorMessage,
         error: error,
-        previousStep: state.step,
+        previousStep: state.step
       }))
     },
-    [state],
+    [state]
   )
 
   const startTransitionToPassword = avatarPosition => {
     setState(oldState => ({
       ...oldState,
       requestTransitionStart: true,
-      passwordAvatarPosition: avatarPosition,
+      passwordAvatarPosition: avatarPosition
     }))
   }
 
@@ -246,14 +246,14 @@ const LoginSteps = ({setClient}) => {
     setState(oldState => ({
       ...oldState,
       requestTransitionStart: false,
-      waitForTransition: false,
+      waitForTransition: false
     }))
   }
 
   const setTransitionToAuthorizeEnded = useCallback(() => {
     setState(oldState => ({
       ...oldState,
-      waitForTransition: false,
+      waitForTransition: false
     }))
   }, [])
 
@@ -321,14 +321,14 @@ const LoginSteps = ({setClient}) => {
         error={state.error}
         button={{
           callback: cancelLogin,
-          title: 'Restart login',
+          title: 'Restart login'
         }}
       />
     )
   }
 }
 
-export const LoginScreen = ({setClient}) => {
+export const LoginScreen = ({ setClient }) => {
   const colors = getColors()
 
   return (
@@ -336,18 +336,19 @@ export const LoginScreen = ({setClient}) => {
       style={[
         styles.view,
         {
-          backgroundColor: colors.primaryColor,
-        },
-      ]}>
-      <View style={{height: statusBarHeight}} />
+          backgroundColor: colors.primaryColor
+        }
+      ]}
+    >
+      <View style={{ height: statusBarHeight }} />
       <LoginSteps setClient={setClient} />
-      <View style={{height: navbarHeight}} />
+      <View style={{ height: navbarHeight }} />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
-  },
+    flex: 1
+  }
 })

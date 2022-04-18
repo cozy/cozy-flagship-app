@@ -1,4 +1,4 @@
-import {get} from 'lodash'
+import { get } from 'lodash'
 
 /**
  * Retrieve the specified route parameter and remove it from the navigation state
@@ -11,7 +11,7 @@ export const consumeRouteParameter = (paramName, route, navigation) => {
   const param = get(route, `params.${paramName}`)
 
   if (param !== undefined) {
-    navigation.setParams({[paramName]: undefined})
+    navigation.setParams({ [paramName]: undefined })
   }
 
   return param

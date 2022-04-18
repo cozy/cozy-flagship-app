@@ -36,7 +36,7 @@ export const tryConsole = (payload, logger, logId) => {
       return
     }
 
-    const {type, log: msg} = dataPayload.data
+    const { type, log: msg } = dataPayload.data
 
     if (msg[0] === 'webview-service') {
       // eslint-disable-next-line no-console

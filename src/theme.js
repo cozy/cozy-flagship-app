@@ -1,4 +1,4 @@
-import {DefaultTheme} from 'react-native-paper'
+import { DefaultTheme } from 'react-native-paper'
 
 export const lightTheme = {
   ...DefaultTheme,
@@ -7,8 +7,8 @@ export const lightTheme = {
   colors: {
     ...DefaultTheme.colors,
     primary: '#297EF2',
-    accent: 'yellow',
-  },
+    accent: 'yellow'
+  }
 }
 export const darkTheme = {
   ...DefaultTheme,
@@ -17,6 +17,6 @@ export const darkTheme = {
   colors: {
     ...DefaultTheme.colors,
     primary: 'white',
-    accent: 'yellow',
-  },
+    accent: 'yellow'
+  }
 }

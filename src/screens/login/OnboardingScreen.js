@@ -1,22 +1,22 @@
-import React, {useCallback, useEffect, useState} from 'react'
-import {StyleSheet, View} from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 
-import {ErrorView} from './components/ErrorView'
-import {LoadingView} from './components/LoadingView'
-import {OnboardingPasswordView} from './components/OnboardingPasswordView'
+import { ErrorView } from './components/ErrorView'
+import { LoadingView } from './components/LoadingView'
+import { OnboardingPasswordView } from './components/OnboardingPasswordView'
 
-import {OnboardingConfigView} from './components/debug/OnboardingConfigView'
+import { OnboardingConfigView } from './components/debug/OnboardingConfigView'
 
 import Minilog from '@cozy/minilog'
 
-import {callOnboardingInitClient} from '../../libs/client'
-import {navbarHeight, statusBarHeight} from '../../libs/dimensions'
-import {resetKeychainAndSaveLoginData} from '../../libs/functions/passwordHelpers'
-import {consumeRouteParameter} from '../../libs/functions/routeHelpers'
+import { callOnboardingInitClient } from '../../libs/client'
+import { navbarHeight, statusBarHeight } from '../../libs/dimensions'
+import { resetKeychainAndSaveLoginData } from '../../libs/functions/passwordHelpers'
+import { consumeRouteParameter } from '../../libs/functions/routeHelpers'
 
-import {routes} from '../../constants/routes'
+import { routes } from '../../constants/routes'
 
-import {getColors} from '../../theme/colors'
+import { getColors } from '../../theme/colors'
 
 const log = Minilog('OnboardingScreen')
 
@@ -29,9 +29,9 @@ const ERROR_STEP = 'ERROR_STEP'
 
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
-const OnboardingSteps = ({setClient, route, navigation}) => {
+const OnboardingSteps = ({ setClient, route, navigation }) => {
   const [state, setState] = useState({
-    step: ONBOARDING_STEP,
+    step: ONBOARDING_STEP
   })
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const OnboardingSteps = ({setClient, route, navigation}) => {
     const registerToken = consumeRouteParameter(
       'registerToken',
       route,
-      navigation,
+      navigation
     )
     const fqdn = consumeRouteParameter('fqdn', route, navigation)
 
@@ -63,7 +63,7 @@ const OnboardingSteps = ({setClient, route, navigation}) => {
       setOnboardingData({
         fqdn: url.host,
         instance: url.origin,
-        registerToken: registerToken,
+        registerToken: registerToken
       })
     }
   }, [navigation, route, setOnboardingData])
@@ -71,7 +71,7 @@ const OnboardingSteps = ({setClient, route, navigation}) => {
   const setStepReadonly = isReadOnly => {
     setState(oldState => ({
       ...oldState,
-      stepReadonly: isReadOnly,
+      stepReadonly: isReadOnly
     }))
   }
 
@@ -81,23 +81,23 @@ const OnboardingSteps = ({setClient, route, navigation}) => {
         ...state,
         step: PASSWORD_STEP,
         stepReadonly: false,
-        onboardingData: onboardingData,
+        onboardingData: onboardingData
       })
     },
-    [state, setState],
+    [state, setState]
   )
 
   const setLoginData = loginData => {
     setState({
       ...state,
       step: LOADING_STEP,
-      loginData: loginData,
+      loginData: loginData
     })
   }
 
   const cancelLogin = () => {
     setState({
-      step: ONBOARDING_STEP,
+      step: ONBOARDING_STEP
     })
   }
 
@@ -112,23 +112,23 @@ const OnboardingSteps = ({setClient, route, navigation}) => {
         step: ERROR_STEP,
         errorMessage: errorMessage,
         error: error,
-        previousStep: state.step,
+        previousStep: state.step
       })
     },
-    [state],
+    [state]
   )
 
   const startOAuth = useCallback(async () => {
     try {
-      const {loginData, onboardingData} = state
+      const { loginData, onboardingData } = state
 
-      const {instance, fqdn, registerToken} = onboardingData
+      const { instance, fqdn, registerToken } = onboardingData
 
       const client = await callOnboardingInitClient({
         loginData,
         instance,
         fqdn,
-        registerToken,
+        registerToken
       })
 
       await resetKeychainAndSaveLoginData(loginData)
@@ -152,7 +152,7 @@ const OnboardingSteps = ({setClient, route, navigation}) => {
   }
 
   if (state.step === PASSWORD_STEP) {
-    const {fqdn, instance} = state.onboardingData
+    const { fqdn, instance } = state.onboardingData
     return (
       <OnboardingPasswordView
         fqdn={fqdn}
@@ -177,23 +177,23 @@ const OnboardingSteps = ({setClient, route, navigation}) => {
         error={state.error}
         button={{
           callback: cancelLogin,
-          title: 'Cancel OAuth',
+          title: 'Cancel OAuth'
         }}
       />
     )
   }
 }
 
-export const OnboardingScreen = ({setClient, route, navigation}) => {
+export const OnboardingScreen = ({ setClient, route, navigation }) => {
   return (
     <View style={styles.view}>
-      <View style={{height: statusBarHeight}} />
+      <View style={{ height: statusBarHeight }} />
       <OnboardingSteps
         setClient={setClient}
         route={route}
         navigation={navigation}
       />
-      <View style={{height: navbarHeight}} />
+      <View style={{ height: navbarHeight }} />
     </View>
   )
 }
@@ -201,6 +201,6 @@ export const OnboardingScreen = ({setClient, route, navigation}) => {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
-    backgroundColor: getColors().primaryColor,
-  },
+    backgroundColor: getColors().primaryColor
+  }
 })

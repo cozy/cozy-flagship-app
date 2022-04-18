@@ -1,15 +1,18 @@
 import Minilog from '@cozy/minilog'
-import React, {useCallback, useState, useEffect} from 'react'
-import {BackHandler} from 'react-native'
-import {WebView} from 'react-native-webview'
-import {useIsFocused} from '@react-navigation/native'
+import React, { useCallback, useState, useEffect } from 'react'
+import { BackHandler } from 'react-native'
+import { WebView } from 'react-native-webview'
+import { useIsFocused } from '@react-navigation/native'
 
-import {useNativeIntent} from 'cozy-intent'
+import { useNativeIntent } from 'cozy-intent'
 
-import {jsCSSclassInjection} from './jsInteractions/jsCSSclassInjection'
-import {jsCozyGlobal} from './jsInteractions/jsCozyInjection'
-import {jsLogInterception, tryConsole} from './jsInteractions/jsLogInterception'
-import {useSession} from '../../hooks/useSession.js'
+import { jsCSSclassInjection } from './jsInteractions/jsCSSclassInjection'
+import { jsCozyGlobal } from './jsInteractions/jsCozyInjection'
+import {
+  jsLogInterception,
+  tryConsole
+} from './jsInteractions/jsLogInterception'
+import { useSession } from '../../hooks/useSession.js'
 
 const log = Minilog('CozyWebView')
 
@@ -29,7 +32,7 @@ export const CozyWebView = ({
   const [webviewRef, setWebviewRef] = useState()
   const [uri, setUri] = useState()
   const nativeIntent = useNativeIntent()
-  const {shouldInterceptAuth, handleInterceptAuth, consumeSessionToken} =
+  const { shouldInterceptAuth, handleInterceptAuth, consumeSessionToken } =
     useSession()
   const isFocused = useIsFocused()
   /**
@@ -94,7 +97,7 @@ export const CozyWebView = ({
       onNavigationStateChange={event => {
         setCanGoBack(event.canGoBack)
       }}
-      source={{uri}}
+      source={{ uri }}
       injectedJavaScriptBeforeContentLoaded={run}
       originWhitelist={['*']}
       useWebKit={true}
@@ -116,7 +119,7 @@ export const CozyWebView = ({
           return true
         }
       }}
-      onLoad={({nativeEvent}) => {
+      onLoad={({ nativeEvent }) => {
         if (trackWebviewInnerUri) {
           trackWebviewInnerUri(nativeEvent.url)
         }
