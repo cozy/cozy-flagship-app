@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import Minilog from '@cozy/minilog'
-import {generateWebLink} from 'cozy-client'
+import { generateWebLink } from 'cozy-client'
 
 const log = Minilog('SessionScript')
 Minilog.enable()
@@ -32,7 +32,7 @@ const validateRedirect = async (client, subDomainType, uri) => {
     cozyUrl: client.getStackClient().uri,
     pathname: '/',
     slug: 'slug',
-    subDomainType,
+    subDomainType
   })
 
   const modelURL = new URL(webLink)
@@ -63,7 +63,7 @@ const validateRedirect = async (client, subDomainType, uri) => {
 }
 
 const fetchSessionCode = async client => {
-  const {session_code} = await client.getStackClient().fetchSessionCode()
+  const { session_code } = await client.getStackClient().fetchSessionCode()
 
   return session_code
 }
@@ -77,7 +77,7 @@ const wrapUrl = async (client, uri) => {
 const shouldCreateSession = async () => {
   try {
     const sessionCreatedFlag = await AsyncStorage.getItem(
-      strings.SESSION_CREATED_FLAG,
+      strings.SESSION_CREATED_FLAG
     )
 
     return !sessionCreatedFlag
@@ -114,8 +114,8 @@ const makeSessionAPI = (client, subDomainType) => ({
   resetSessionToken,
   shouldCreateSession,
   shouldInterceptAuth: shouldInterceptAuth(client),
-  subDomainType,
+  subDomainType
 })
 
 // Exposed API
-export {makeSessionAPI, resetSessionToken}
+export { makeSessionAPI, resetSessionToken }

@@ -1,13 +1,13 @@
-import React, {useEffect, useRef, useState} from 'react'
-import {KeyboardAvoidingView, Platform, View, StyleSheet} from 'react-native'
-import {WebView} from 'react-native-webview'
+import React, { useEffect, useRef, useState } from 'react'
+import { KeyboardAvoidingView, Platform, View, StyleSheet } from 'react-native'
+import { WebView } from 'react-native-webview'
 
-import {doHashPassword} from '../../../libs/functions/passwordHelpers'
-import {setFocusOnWebviewField} from '../../../libs/functions/keyboardHelper'
+import { doHashPassword } from '../../../libs/functions/passwordHelpers'
+import { setFocusOnWebviewField } from '../../../libs/functions/keyboardHelper'
 
-import {getHtml} from './assets/OnboardingPasswordView/htmlOnboardingPasswordInjection'
+import { getHtml } from './assets/OnboardingPasswordView/htmlOnboardingPasswordInjection'
 
-import {getColors} from '../../../theme/colors'
+import { getColors } from '../../../theme/colors'
 
 /**
  * Show a password form that asks the user their password and hint
@@ -31,7 +31,7 @@ const PasswordForm = ({
   goBack,
   readonly,
   setPasswordData,
-  setReadonly,
+  setReadonly
 }) => {
   const [loading, setLoading] = useState(true)
   const webviewRef = useRef()
@@ -41,7 +41,7 @@ const PasswordForm = ({
     if (webviewRef) {
       const payload = JSON.stringify({
         message: 'setReadonly',
-        param: readonly,
+        param: readonly
       })
 
       const webView = webviewRef.current
@@ -61,7 +61,7 @@ const PasswordForm = ({
     setReadonly(true)
     setPasswordData({
       password: passphrase,
-      hint: hint,
+      hint: hint
     })
   }
 
@@ -88,15 +88,15 @@ const PasswordForm = ({
         javaScriptEnabled={true}
         onMessage={processMessage}
         originWhitelist={['*']}
-        source={{html}}
+        source={{ html }}
       />
       {loading && (
         <View
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: colors.primaryColor,
-            },
+              backgroundColor: colors.primaryColor
+            }
           ]}
         />
       )}
@@ -131,7 +131,7 @@ export const OnboardingPasswordView = ({
   readonly,
   setError,
   setKeys,
-  setReadonly,
+  setReadonly
 }) => {
   const [passwordData, setPasswordData] = useState()
 
@@ -163,13 +163,13 @@ export const OnboardingPasswordView = ({
 
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
+    flex: 1
   },
   loadingOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-  },
+    bottom: 0
+  }
 })

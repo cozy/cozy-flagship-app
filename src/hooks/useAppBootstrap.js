@@ -1,12 +1,12 @@
-import {Linking} from 'react-native'
-import {useEffect, useState} from 'react'
+import { Linking } from 'react-native'
+import { useEffect, useState } from 'react'
 import Minilog from '@cozy/minilog'
 
-import {getClient} from '../libs/client'
-import {navigate} from '../libs/RootNavigation'
-import {routes} from '../constants/routes'
-import {useSplashScreen} from './useSplashScreen'
-import {manageIconCache} from '../libs/functions/iconTable'
+import { getClient } from '../libs/client'
+import { navigate } from '../libs/RootNavigation'
+import { routes } from '../constants/routes'
+import { useSplashScreen } from './useSplashScreen'
+import { manageIconCache } from '../libs/functions/iconTable'
 
 const log = Minilog('useAppBootstrap')
 
@@ -26,18 +26,18 @@ const parseOnboardingURL = url => {
 
     return {
       registerToken,
-      fqdn,
+      fqdn
     }
   } catch (error) {
     log.error(
-      `Something went wrong while trying to parse onboarding URL data: ${error.message}`,
+      `Something went wrong while trying to parse onboarding URL data: ${error.message}`
     )
     return undefined
   }
 }
 
 const parseFallbackURL = url => {
-  const defaultParse = {fallback: undefined, root: routes.stack}
+  const defaultParse = { fallback: undefined, root: routes.stack }
 
   if (url === null) {
     return defaultParse
@@ -51,11 +51,11 @@ const parseFallbackURL = url => {
     return {
       fallback: fallback ? fallback : undefined,
       root: isHome || !fallback ? routes.stack : routes.cozyapp,
-      isHome,
+      isHome
     }
   } catch (error) {
     log.error(
-      `Something went wrong while trying to parse fallback URL data: ${error.message}`,
+      `Something went wrong while trying to parse fallback URL data: ${error.message}`
     )
     return defaultParse
   }
@@ -66,7 +66,7 @@ export const useAppBootstrap = () => {
   const [initialRoute, setInitialRoute] = useState('fetching')
   const [initialScreen, setInitialScreen] = useState('fetching')
   const [isLoading, setIsLoading] = useState(true)
-  const {hideSplashScreen} = useSplashScreen()
+  const { hideSplashScreen } = useSplashScreen()
 
   // Handling client init
   useEffect(() => {
@@ -94,33 +94,33 @@ export const useAppBootstrap = () => {
 
           const onboardingParams = parseOnboardingURL(onboardingUrl)
           if (onboardingParams) {
-            const {registerToken, fqdn} = onboardingParams
+            const { registerToken, fqdn } = onboardingParams
 
-            setInitialRoute({stack: undefined, root: undefined})
+            setInitialRoute({ stack: undefined, root: undefined })
             return setInitialScreen({
               stack: routes.onboarding,
               root: routes.nested,
               params: {
                 registerToken,
-                fqdn,
-              },
+                fqdn
+              }
             })
           } else {
-            setInitialRoute({stack: undefined, root: undefined})
+            setInitialRoute({ stack: undefined, root: undefined })
 
             return setInitialScreen({
               stack: routes.authenticate,
-              root: routes.stack,
+              root: routes.stack
             })
           }
         } else {
           const payload = await Linking.getInitialURL()
-          const {fallback, root, isHome} = parseFallbackURL(payload)
+          const { fallback, root, isHome } = parseFallbackURL(payload)
 
-          setInitialScreen({stack: routes.home, root})
+          setInitialScreen({ stack: routes.home, root })
           setInitialRoute({
             stack: isHome ? fallback : undefined,
-            root: !isHome ? fallback : undefined,
+            root: !isHome ? fallback : undefined
           })
         }
       }
@@ -147,7 +147,7 @@ export const useAppBootstrap = () => {
 
     client && manageIconCache(client)
 
-    const subscription = Linking.addEventListener('url', ({url}) => {
+    const subscription = Linking.addEventListener('url', ({ url }) => {
       const onboardingParams = parseOnboardingURL(url)
 
       if (onboardingParams) {
@@ -155,10 +155,10 @@ export const useAppBootstrap = () => {
         return
       }
 
-      const {fallback: href, isHome} = parseFallbackURL(url)
+      const { fallback: href, isHome } = parseFallbackURL(url)
 
       if (href) {
-        navigate(isHome ? routes.home : routes.cozyapp, {href})
+        navigate(isHome ? routes.home : routes.cozyapp, { href })
         return
       }
     })
@@ -173,6 +173,6 @@ export const useAppBootstrap = () => {
     initialRoute,
     initialScreen,
     isLoading,
-    setClient,
+    setClient
   }
 }

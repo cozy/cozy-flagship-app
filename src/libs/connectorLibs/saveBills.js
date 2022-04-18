@@ -8,7 +8,7 @@ const DOCTYPE = 'io.cozy.bills'
 const requiredAttributes = {
   // date: 'isDate',
   amount: 'isNumber',
-  vendor: 'isString',
+  vendor: 'isString'
 }
 
 /**
@@ -128,14 +128,14 @@ function checkRequiredAttributes(entries) {
     for (let attr in requiredAttributes) {
       if (entry[attr] == null) {
         throw new Error(
-          `saveBills: an entry is missing the required ${attr} attribute`,
+          `saveBills: an entry is missing the required ${attr} attribute`
         )
       }
       const checkFunction = requiredAttributes[attr]
       const isExpectedType = _(entry[attr])[checkFunction]()
       if (isExpectedType === false) {
         throw new Error(
-          `saveBills: an entry has a ${attr} which does not respect ${checkFunction}`,
+          `saveBills: an entry has a ${attr} which does not respect ${checkFunction}`
         )
       }
     }

@@ -1,7 +1,7 @@
 import CozyClient from 'cozy-client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import {queryResultToCrypto} from '../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
+import { queryResultToCrypto } from '../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
 
 import apiKeys from '../api-keys.json'
 import strings from '../strings.json'
@@ -24,11 +24,11 @@ export const clearClient = () => {
  * @param {CozyClient} client : client instance
  */
 export const saveClient = async client => {
-  const {uri, oauthOptions, token} = client.getStackClient()
+  const { uri, oauthOptions, token } = client.getStackClient()
   const state = JSON.stringify({
     oauthOptions,
     token,
-    uri,
+    uri
   })
 
   return AsyncStorage.setItem(strings.OAUTH_STORAGE_KEY, state)
@@ -45,16 +45,16 @@ export const getClient = async () => {
     return false
   }
   const state = JSON.parse(val)
-  const {uri, oauthOptions, token} = state
+  const { uri, oauthOptions, token } = state
   const client = new CozyClient({
     uri,
-    oauth: {token},
-    oauthOptions,
+    oauth: { token },
+    oauthOptions
   })
   client.getStackClient().setOAuthOptions(oauthOptions)
   await client.login({
     uri,
-    token,
+    token
   })
   return client
 }
@@ -84,13 +84,13 @@ export const initClient = async (uri, options) => {
 export const callInitClient = async ({
   loginData,
   instance,
-  client: clientParam,
+  client: clientParam
 }) => {
   const client = clientParam || (await createClient(instance))
 
   return await connectClient({
     loginData,
-    client,
+    client
   })
 }
 
@@ -105,12 +105,12 @@ export const callInitClient = async ({
 export const call2FAInitClient = async ({
   loginData,
   client,
-  twoFactorAuthenticationData,
+  twoFactorAuthenticationData
 }) => {
   return await connectClient({
     loginData,
     client,
-    twoFactorAuthenticationData,
+    twoFactorAuthenticationData
   })
 }
 
@@ -126,14 +126,15 @@ export const call2FAInitClient = async ({
 export const callOnboardingInitClient = async ({
   loginData,
   instance,
-  registerToken,
+  registerToken
 }) => {
   const client = await createClient(instance)
   const stackClient = client.getStackClient()
 
   await client.certifyFlagship()
 
-  const {passwordHash, hint, iterations, key, publicKey, privateKey} = loginData
+  const { passwordHash, hint, iterations, key, publicKey, privateKey } =
+    loginData
 
   const result = await stackClient.setPassphraseFlagship({
     registerToken,
@@ -142,21 +143,21 @@ export const callOnboardingInitClient = async ({
     iterations,
     key,
     publicKey,
-    privateKey,
+    privateKey
   })
 
   if (result.access_token) {
     stackClient.setToken(result)
   } else if (result.session_code) {
-    const {session_code} = result
-    const {codeVerifier, codeChallenge} = await createPKCE()
+    const { session_code } = result
+    const { codeVerifier, codeChallenge } = await createPKCE()
 
     await client.authorize({
       sessionCode: session_code,
       pkceCodes: {
         codeVerifier,
-        codeChallenge,
-      },
+        codeChallenge
+      }
     })
   }
 
@@ -181,9 +182,9 @@ export const createClient = async instance => {
       clientName: 'Amiral',
       shouldRequireFlagshipPermissions: true,
       certificationConfig: {
-        androidSafetyNetApiKey: apiKeys.androidSafetyNetApiKey,
-      },
-    },
+        androidSafetyNetApiKey: apiKeys.androidSafetyNetApiKey
+      }
+    }
   }
 
   const client = new CozyClient(options)
@@ -207,18 +208,18 @@ export const createClient = async instance => {
 const connectClient = async ({
   loginData,
   client,
-  twoFactorAuthenticationData = undefined,
+  twoFactorAuthenticationData = undefined
 }) => {
   const sessionCodeResult = await fetchSessionCode({
     client,
     loginData,
-    twoFactorAuthenticationData,
+    twoFactorAuthenticationData
   })
 
   if (sessionCodeResult.invalidPassword) {
     return {
       client,
-      state: STATE_INVALID_PASSWORD,
+      state: STATE_INVALID_PASSWORD
     }
   }
 
@@ -228,7 +229,7 @@ const connectClient = async ({
     return {
       client,
       state: STATE_2FA_NEEDED,
-      twoFactorToken: sessionCodeResult.twoFactorToken,
+      twoFactorToken: sessionCodeResult.twoFactorToken
     }
   }
 
@@ -237,19 +238,19 @@ const connectClient = async ({
   return {
     client: client,
     sessionCode: sessionCode,
-    state: STATE_AUTHORIZE_NEEDED,
+    state: STATE_AUTHORIZE_NEEDED
   }
 }
 
-export const authorizeClient = async ({client, sessionCode}) => {
-  const {codeVerifier, codeChallenge} = await createPKCE()
+export const authorizeClient = async ({ client, sessionCode }) => {
+  const { codeVerifier, codeChallenge } = await createPKCE()
 
   await client.authorize({
     sessionCode: sessionCode,
     pkceCodes: {
       codeVerifier,
-      codeChallenge,
-    },
+      codeChallenge
+    }
   })
 
   await client.login()
@@ -257,7 +258,7 @@ export const authorizeClient = async ({client, sessionCode}) => {
 
   return {
     client: client,
-    state: STATE_CONNECTED,
+    state: STATE_CONNECTED
   }
 }
 
@@ -287,7 +288,7 @@ const createPKCE = async () => {
 const fetchSessionCode = async ({
   client,
   loginData,
-  twoFactorAuthenticationData = undefined,
+  twoFactorAuthenticationData = undefined
 }) => {
   const stackClient = client.getStackClient()
 
@@ -299,18 +300,18 @@ const fetchSessionCode = async ({
         : undefined,
       twoFactorPasscode: twoFactorAuthenticationData
         ? twoFactorAuthenticationData.passcode
-        : undefined,
+        : undefined
     })
 
     return sessionCodeResult
   } catch (e) {
     if (e.status === 403 && e.reason && e.reason.two_factor_token) {
       return {
-        twoFactorToken: e.reason.two_factor_token,
+        twoFactorToken: e.reason.two_factor_token
       }
     } else if (e.status === 401) {
       return {
-        invalidPassword: true,
+        invalidPassword: true
       }
     } else {
       throw e
@@ -332,13 +333,13 @@ const fetchSessionCode = async ({
 export const fetchPublicData = async client => {
   const stackClient = client.getStackClient()
 
-  const {KdfIterations: kdfIterations, name} = await stackClient.fetchJSON(
+  const { KdfIterations: kdfIterations, name } = await stackClient.fetchJSON(
     'GET',
-    '/public/prelogin',
+    '/public/prelogin'
   )
 
   return {
     kdfIterations,
-    name,
+    name
   }
 }

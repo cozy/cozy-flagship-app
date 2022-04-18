@@ -1,7 +1,10 @@
-import React, {useState} from 'react'
-import {Button, View, Text, TextInput} from 'react-native'
+import React, { useState } from 'react'
+import { Button, View, Text, TextInput } from 'react-native'
 
-export const OnboardingConfigView = ({setOnboardingData, cancelOnboarding}) => {
+export const OnboardingConfigView = ({
+  setOnboardingData,
+  cancelOnboarding
+}) => {
   const [onboardingLink, onChangeOnboardingLink] = useState('')
 
   const submit = () => {
@@ -14,7 +17,7 @@ export const OnboardingConfigView = ({setOnboardingData, cancelOnboarding}) => {
     setOnboardingData({
       instance,
       fqdn,
-      registerToken,
+      registerToken
     })
   }
 
@@ -23,10 +26,10 @@ export const OnboardingConfigView = ({setOnboardingData, cancelOnboarding}) => {
       <Text>Onboarding Link</Text>
       <TextInput onChangeText={onChangeOnboardingLink} value={onboardingLink} />
 
-      <View style={{marginTop: 20}}>
+      <View style={{ marginTop: 20 }}>
         <Button onPress={submit} title="Start OAuth" />
       </View>
-      <View style={{marginTop: 20}}>
+      <View style={{ marginTop: 20 }}>
         <Button onPress={() => cancelOnboarding()} title="Cancel Onboarding" />
       </View>
     </>

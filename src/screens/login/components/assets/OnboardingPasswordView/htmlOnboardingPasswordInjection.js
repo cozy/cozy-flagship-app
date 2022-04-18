@@ -1,18 +1,18 @@
-/*******************************************************************/
+/********************************************************************/
 /* This code should reflect cozy-stack/assets/templates/login.html */
-/*******************************************************************/
+/********************************************************************/
 
-import {newPasswordJs} from './js/jsNewPassword'
-import {passwordStrengthJs} from './js/jsPasswordStrength'
-import {cirrusJs} from '../common/js/jsCirrus'
-import {passwordHelperJs} from '../PasswordView/js/jsPasswordHelper'
-import {passwordVisibilityJs} from '../PasswordView/js/jsPasswordVisibility'
-import {readonlyJs} from '../common/js/jsReadonly'
+import { newPasswordJs } from './js/jsNewPassword'
+import { passwordStrengthJs } from './js/jsPasswordStrength'
+import { cirrusJs } from '../common/js/jsCirrus'
+import { passwordHelperJs } from '../PasswordView/js/jsPasswordHelper'
+import { passwordVisibilityJs } from '../PasswordView/js/jsPasswordVisibility'
+import { readonlyJs } from '../common/js/jsReadonly'
 
-import {cirrusCss} from '../common/css/cssCirrus'
-import {fontsCss} from '../common/css/cssFonts'
-import {cozyBsCss} from '../common/css/cssCozyBs'
-import {themeCss} from '../common/css/cssTheme'
+import { cirrusCss } from '../common/css/cssCirrus'
+import { fontsCss } from '../common/css/cssFonts'
+import { cozyBsCss } from '../common/css/cssCozyBs'
+import { themeCss } from '../common/css/cssTheme'
 
 const strBackButton = "Revenir à l'écran précédent"
 const strTitle = 'Choisir un nouveau mot de passe'

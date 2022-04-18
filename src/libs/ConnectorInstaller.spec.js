@@ -6,15 +6,15 @@ jest.mock('react-native-fs', () => ({
   moveFile: jest.fn(),
   readFile: jest.fn(),
   writeFile: jest.fn(),
-  DocumentDirectoryPath: '/app',
+  DocumentDirectoryPath: '/app'
 }))
-jest.mock('@fengweichong/react-native-gzip', () => ({unGzipTar: jest.fn()}))
+jest.mock('@fengweichong/react-native-gzip', () => ({ unGzipTar: jest.fn() }))
 import {
   extractGithubSourceUrl,
   extractRegistrySourceUrl,
   ensureConnectorIsInstalled,
   getContentScript,
-  getManifest,
+  getManifest
 } from './ConnectorInstaller'
 import RNFS from 'react-native-fs'
 import Gzip from '@fengweichong/react-native-gzip'
@@ -22,8 +22,8 @@ import Gzip from '@fengweichong/react-native-gzip'
 describe('ConnectorInstaller', () => {
   const client = {
     stackClient: {
-      fetchJSON: jest.fn(),
-    },
+      fetchJSON: jest.fn()
+    }
   }
 
   beforeEach(() => {
@@ -33,19 +33,19 @@ describe('ConnectorInstaller', () => {
   describe('extractRegistrySourceUrl', () => {
     it('should extract registry source url from a registry stable source', async () => {
       client.stackClient.fetchJSON.mockResolvedValue({
-        url: 'https://apps-registry.cozycloud.cc/registry/template/1.0.0/tarball/xxx.tar.gz',
+        url: 'https://apps-registry.cozycloud.cc/registry/template/1.0.0/tarball/xxx.tar.gz'
       })
       expect(
         await extractRegistrySourceUrl({
           source: 'registry://template/stable',
-          client,
-        }),
+          client
+        })
       ).toEqual(
-        'https://apps-registry.cozycloud.cc/registry/template/1.0.0/tarball/xxx.tar.gz',
+        'https://apps-registry.cozycloud.cc/registry/template/1.0.0/tarball/xxx.tar.gz'
       )
       expect(client.stackClient.fetchJSON).toHaveBeenCalledWith(
         'GET',
-        '/registry/template/stable/latest',
+        '/registry/template/stable/latest'
       )
     })
     it('should extract registry source url from any possible registry source ', async () => {
@@ -57,21 +57,21 @@ describe('ConnectorInstaller', () => {
         ['registry://template/beta', '/registry/template/beta/latest'],
         ['registry://template/dev/latest', '/registry/template/dev/latest'],
         ['registry://template/stable/1.0.1', '/registry/template/1.0.1'],
-        ['registry://template/1.0.2', '/registry/template/1.0.2'],
+        ['registry://template/1.0.2', '/registry/template/1.0.2']
       ]
 
       for (const [i, [source, url]] of registryTestSuite.entries()) {
-        await extractRegistrySourceUrl({source, client})
+        await extractRegistrySourceUrl({ source, client })
         expect(client.stackClient.fetchJSON).toHaveBeenNthCalledWith(
           i + 1,
           'GET',
-          url,
+          url
         )
       }
     })
     it('should throw when not a registry source', async () => {
       await expect(
-        extractRegistrySourceUrl({source: 'wrong url', client}),
+        extractRegistrySourceUrl({ source: 'wrong url', client })
       ).rejects.toThrow('extractRegistrySourceUrl: Could not install wrong url')
     })
   })
@@ -79,74 +79,74 @@ describe('ConnectorInstaller', () => {
     it('should extract github source url from a source without branch to master branch', () => {
       expect(
         extractGithubSourceUrl(
-          'git://github.com/konnectors/cozy-konnector-template.git',
-        ),
+          'git://github.com/konnectors/cozy-konnector-template.git'
+        )
       ).toEqual(
-        'https://github.com/konnectors/cozy-konnector-template/archive/refs/heads/master.tar.gz',
+        'https://github.com/konnectors/cozy-konnector-template/archive/refs/heads/master.tar.gz'
       )
     })
     it('should extract github source url from a source with branch', () => {
       expect(
         extractGithubSourceUrl(
-          'git://github.com/konnectors/cozy-konnector-template.git#test',
-        ),
+          'git://github.com/konnectors/cozy-konnector-template.git#test'
+        )
       ).toEqual(
-        'https://github.com/konnectors/cozy-konnector-template/archive/refs/heads/test.tar.gz',
+        'https://github.com/konnectors/cozy-konnector-template/archive/refs/heads/test.tar.gz'
       )
     })
     it('should throw when not a github source', () => {
       expect(() =>
-        extractGithubSourceUrl('registry://template/stable'),
+        extractGithubSourceUrl('registry://template/stable')
       ).toThrow(
-        'extractGithubUrl: Could not install registry://template/stable',
+        'extractGithubUrl: Could not install registry://template/stable'
       )
     })
   })
   describe('ensureConnectorIsInstalled', () => {
     it('should download and extract connector archive from github with github source', async () => {
       RNFS.downloadFile.mockResolvedValue({
-        promise: Promise.resolve({statusCode: 200}),
+        promise: Promise.resolve({ statusCode: 200 })
       })
       RNFS.readDir.mockResolvedValue([
         {
           name: 'template',
           path: '/app/connectors/template/unzip',
-          isDirectory: () => true,
-        },
+          isDirectory: () => true
+        }
       ])
       RNFS.readFile.mockResolvedValue('script content')
       await ensureConnectorIsInstalled({
         slug: 'template',
-        source: 'git://github.com/konnectors/cozy-konnector-template.git',
+        source: 'git://github.com/konnectors/cozy-konnector-template.git'
       })
       expect(RNFS.mkdir).toHaveBeenCalledWith('/app/connectors/template')
       expect(RNFS.downloadFile).toHaveBeenCalledWith({
         fromUrl:
           'https://github.com/konnectors/cozy-konnector-template/archive/refs/heads/master.tar.gz',
-        toFile: '/app/connectors/template/master.tar.gz',
+        toFile: '/app/connectors/template/master.tar.gz'
       })
       expect(Gzip.unGzipTar).toHaveBeenCalledWith(
         '/app/connectors/template/master.tar.gz',
         '/app/connectors/template/unzip',
-        true,
+        true
       )
       expect(RNFS.unlink).toHaveBeenNthCalledWith(
         1,
-        '/app/connectors/template/master.tar.gz',
+        '/app/connectors/template/master.tar.gz'
       )
       expect(RNFS.moveFile).toHaveBeenNthCalledWith(
         1,
         '/app/connectors/template/unzip/manifest.konnector',
-        '/app/connectors/template/manifest.konnector',
+        '/app/connectors/template/manifest.konnector'
       )
       expect(RNFS.moveFile).toHaveBeenNthCalledWith(
         2,
         '/app/connectors/template/unzip/webviewScript.js',
-        '/app/connectors/template/webviewScript.js',
+        '/app/connectors/template/webviewScript.js'
       )
       expect(RNFS.unlink).toHaveBeenNthCalledWith(
         2,
-        '/app/connectors/template/unzip',
+        '/app/connectors/template/unzip'
       )
     })
     it('should not install a new version if the expected version is already installed', async () => {
@@ -156,7 +156,7 @@ describe('ConnectorInstaller', () => {
       await ensureConnectorIsInstalled({
         slug: 'template',
         source: 'git://github.com/konnectors/cozy-konnector-template.git',
-        version: '1.0.0',
+        version: '1.0.0'
       })
       expect(RNFS.mkdir).toHaveBeenCalledWith('/app/connectors/template')
       expect(RNFS.downloadFile).not.toHaveBeenCalled()
@@ -166,13 +166,13 @@ describe('ConnectorInstaller', () => {
     })
     it('should raise an error when there is a network error', async () => {
       RNFS.downloadFile.mockResolvedValue({
-        promise: Promise.resolve({statusCode: 404}),
+        promise: Promise.resolve({ statusCode: 404 })
       })
       await expect(
         ensureConnectorIsInstalled({
           slug: 'template',
-          source: 'git://github.com/konnectors/cozy-konnector-template.git',
-        }),
+          source: 'git://github.com/konnectors/cozy-konnector-template.git'
+        })
       ).rejects.toThrow('CLIENT_CONNECTOR_INSTALL_ERROR')
     })
     it('should raise an error when there is a file system error', async () => {
@@ -180,18 +180,18 @@ describe('ConnectorInstaller', () => {
       await expect(
         ensureConnectorIsInstalled({
           slug: 'template',
-          source: 'git://github.com/konnectors/cozy-konnector-template.git',
-        }),
+          source: 'git://github.com/konnectors/cozy-konnector-template.git'
+        })
       ).rejects.toThrow('CLIENT_CONNECTOR_INSTALL_ERROR')
     })
   })
   describe('getContentScript', () => {
     it('should get content script content from local fs', async () => {
       RNFS.readFile.mockResolvedValueOnce('local script content')
-      const content = await getContentScript({slug: 'sncf'})
+      const content = await getContentScript({ slug: 'sncf' })
       expect(RNFS.readFile).toHaveBeenNthCalledWith(
         1,
-        '/app/connectors/sncf/webviewScript.js',
+        '/app/connectors/sncf/webviewScript.js'
       )
       expect(content).toEqual('local script content')
     })
@@ -199,12 +199,12 @@ describe('ConnectorInstaller', () => {
   describe('getManifest', () => {
     it('should get the connector manifest from the local fs', async () => {
       RNFS.readFile.mockResolvedValue('{"slug": "sncf"}')
-      const manifest = await getManifest({slug: 'sncf'})
+      const manifest = await getManifest({ slug: 'sncf' })
       expect(RNFS.readFile).toHaveBeenNthCalledWith(
         1,
-        '/app/connectors/sncf/manifest.konnector',
+        '/app/connectors/sncf/manifest.konnector'
       )
-      expect(manifest).toEqual({slug: 'sncf'})
+      expect(manifest).toEqual({ slug: 'sncf' })
     })
   })
 })

@@ -8,18 +8,18 @@ import {
   GLOBAL_KEY,
   saveVaultInformation,
   getVaultInformation,
-  removeVaultInformation,
+  removeVaultInformation
 } from './keychain'
 
 const account = {
   _id: '1',
   name: 'toto',
-  password: 'tata',
+  password: 'tata'
 }
 const account2 = {
   _id: '2',
   name: 'foo',
-  password: 'bar',
+  password: 'bar'
 }
 describe('keychain test suite', () => {
   beforeEach(() => {
@@ -36,10 +36,10 @@ describe('keychain test suite', () => {
         password: JSON.stringify({
           CSC_ACCOUNTS: {
             1: {
-              ...account,
-            },
-          },
-        }),
+              ...account
+            }
+          }
+        })
       })
       const cred2 = await getCredential(account)
       expect(cred2).toEqual(account)
@@ -51,13 +51,13 @@ describe('keychain test suite', () => {
         password: JSON.stringify({
           CSC_ACCOUNTS: {
             1: {
-              ...account,
+              ...account
             },
             2: {
-              ...account2,
-            },
-          },
-        }),
+              ...account2
+            }
+          }
+        })
       })
       const cred2 = await getCredential(account2)
       expect(cred2).toEqual(account2)
@@ -71,10 +71,10 @@ describe('keychain test suite', () => {
         JSON.stringify({
           CSC_ACCOUNTS: {
             1: {
-              ...account,
-            },
-          },
-        }),
+              ...account
+            }
+          }
+        })
       )
     })
 
@@ -84,10 +84,10 @@ describe('keychain test suite', () => {
         password: JSON.stringify({
           CSC_ACCOUNTS: {
             1: {
-              ...account,
-            },
-          },
-        }),
+              ...account
+            }
+          }
+        })
       })
       await saveCredential(account2)
       expect(Keychain.setGenericPassword).toHaveBeenCalledWith(
@@ -95,13 +95,13 @@ describe('keychain test suite', () => {
         JSON.stringify({
           CSC_ACCOUNTS: {
             1: {
-              ...account,
+              ...account
             },
             2: {
-              ...account2,
-            },
-          },
-        }),
+              ...account2
+            }
+          }
+        })
       )
     })
   })
@@ -113,8 +113,8 @@ describe('keychain test suite', () => {
       expect(Keychain.setGenericPassword).toHaveBeenCalledWith(
         GLOBAL_KEY,
         JSON.stringify({
-          VAULT: {key: 'value'},
-        }),
+          VAULT: { key: 'value' }
+        })
       )
     })
 
@@ -122,15 +122,15 @@ describe('keychain test suite', () => {
       jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
         username: GLOBAL_KEY,
         password: JSON.stringify({
-          VAULT: {key: 'value'},
-        }),
+          VAULT: { key: 'value' }
+        })
       })
       await saveVaultInformation('key2', 'value2')
       expect(Keychain.setGenericPassword).toHaveBeenCalledWith(
         GLOBAL_KEY,
         JSON.stringify({
-          VAULT: {key: 'value', key2: 'value2'},
-        }),
+          VAULT: { key: 'value', key2: 'value2' }
+        })
       )
     })
     it('should return null if we try to access empty vault', async () => {
@@ -143,8 +143,8 @@ describe('keychain test suite', () => {
       jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
         username: GLOBAL_KEY,
         password: JSON.stringify({
-          VAULT: {key: 'value'},
-        }),
+          VAULT: { key: 'value' }
+        })
       })
       const vaultInfo = await getVaultInformation('key')
       expect(vaultInfo).toBe('value')
@@ -154,15 +154,15 @@ describe('keychain test suite', () => {
       jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
         username: GLOBAL_KEY,
         password: JSON.stringify({
-          VAULT: {key: 'value'},
-        }),
+          VAULT: { key: 'value' }
+        })
       })
       await removeVaultInformation('key')
       expect(Keychain.setGenericPassword).toHaveBeenCalledWith(
         GLOBAL_KEY,
         JSON.stringify({
-          VAULT: {},
-        }),
+          VAULT: {}
+        })
       )
     })
   })

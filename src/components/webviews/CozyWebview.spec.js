@@ -1,20 +1,20 @@
 import MockBackHandler from 'react-native/Libraries/Utilities/__mocks__/BackHandler'
 import React from 'react'
-import {render} from '@testing-library/react-native'
+import { render } from '@testing-library/react-native'
 
-import {CozyWebView} from './CozyWebView'
+import { CozyWebView } from './CozyWebView'
 
 const mockGoBack = jest.fn()
 const mockUseIsFocused = jest.fn()
 const mockNativeIntent = {
   registerWebview: jest.fn(),
-  unregisterWebview: jest.fn(),
+  unregisterWebview: jest.fn()
 }
 
 jest.mock('react-native/Libraries/Utilities/BackHandler', () => MockBackHandler)
 
-const WebView = ({onNavigationStateChange, navObject, TEST_ONLY_setRef}) => {
-  const {useEffect} = require('react')
+const WebView = ({ onNavigationStateChange, navObject, TEST_ONLY_setRef }) => {
+  const { useEffect } = require('react')
 
   useEffect(() => {
     if (navObject) {
@@ -23,7 +23,7 @@ const WebView = ({onNavigationStateChange, navObject, TEST_ONLY_setRef}) => {
   }, [onNavigationStateChange, navObject])
 
   useEffect(() => {
-    TEST_ONLY_setRef({goBack: mockGoBack})
+    TEST_ONLY_setRef({ goBack: mockGoBack })
   }, [TEST_ONLY_setRef])
 
   return <div>WebView</div>
@@ -34,19 +34,19 @@ jest.mock('react-native-webview', () => {
 })
 
 jest.mock('cozy-intent', () => ({
-  useNativeIntent: () => mockNativeIntent,
+  useNativeIntent: () => mockNativeIntent
 }))
 
 jest.mock('@react-navigation/native', () => ({
-  useIsFocused: () => mockUseIsFocused(),
+  useIsFocused: () => mockUseIsFocused()
 }))
 
 jest.mock('../../hooks/useSession.js', () => ({
   useSession: () => ({
     shouldInterceptAuth: false,
     handleInterceptAuth: jest.fn(),
-    consumeSessionToken: jest.fn(),
-  }),
+    consumeSessionToken: jest.fn()
+  })
 }))
 
 afterEach(() => {
@@ -55,12 +55,12 @@ afterEach(() => {
 
 it('handles onFocus scenario', () => {
   mockUseIsFocused.mockReturnValue(true)
-  const {update} = render(
+  const { update } = render(
     <CozyWebView
-      source={{uri: 'home'}}
-      route={{name: 'home'}}
-      navObject={{canGoBack: false}}
-    />,
+      source={{ uri: 'home' }}
+      route={{ name: 'home' }}
+      navObject={{ canGoBack: false }}
+    />
   )
 
   MockBackHandler.mockPressBack()
@@ -70,10 +70,10 @@ it('handles onFocus scenario', () => {
 
   update(
     <CozyWebView
-      source={{uri: 'home'}}
-      route={{name: 'home'}}
-      navObject={{canGoBack: true}}
-    />,
+      source={{ uri: 'home' }}
+      route={{ name: 'home' }}
+      navObject={{ canGoBack: true }}
+    />
   )
 
   MockBackHandler.mockPressBack()
@@ -86,12 +86,12 @@ it('handles onFocus scenario', () => {
 it('handles onFocus inversed', () => {
   mockUseIsFocused.mockReturnValue(true)
 
-  const {update} = render(
+  const { update } = render(
     <CozyWebView
-      source={{uri: 'home'}}
-      route={{name: 'home'}}
-      navObject={{canGoBack: true}}
-    />,
+      source={{ uri: 'home' }}
+      route={{ name: 'home' }}
+      navObject={{ canGoBack: true }}
+    />
   )
 
   MockBackHandler.mockPressBack()
@@ -101,10 +101,10 @@ it('handles onFocus inversed', () => {
 
   update(
     <CozyWebView
-      source={{uri: 'home'}}
-      route={{name: 'home'}}
-      navObject={{canGoBack: false}}
-    />,
+      source={{ uri: 'home' }}
+      route={{ name: 'home' }}
+      navObject={{ canGoBack: false }}
+    />
   )
 
   MockBackHandler.mockPressBack()
@@ -116,12 +116,12 @@ it('handles onFocus inversed', () => {
 it('handles notFocus scenario', () => {
   mockUseIsFocused.mockReturnValue(false)
 
-  const {update} = render(
+  const { update } = render(
     <CozyWebView
-      source={{uri: 'home'}}
-      route={{name: 'home'}}
-      navObject={{canGoBack: false}}
-    />,
+      source={{ uri: 'home' }}
+      route={{ name: 'home' }}
+      navObject={{ canGoBack: false }}
+    />
   )
 
   MockBackHandler.mockPressBack()
@@ -131,10 +131,10 @@ it('handles notFocus scenario', () => {
 
   update(
     <CozyWebView
-      source={{uri: 'home'}}
-      route={{name: 'home'}}
-      navObject={{canGoBack: true}}
-    />,
+      source={{ uri: 'home' }}
+      route={{ name: 'home' }}
+      navObject={{ canGoBack: true }}
+    />
   )
 
   MockBackHandler.mockPressBack()
@@ -146,12 +146,12 @@ it('handles notFocus scenario', () => {
 it('handles notFocus scenario inversed', () => {
   mockUseIsFocused.mockReturnValue(false)
 
-  const {update} = render(
+  const { update } = render(
     <CozyWebView
-      source={{uri: 'home'}}
-      route={{name: 'home'}}
-      navObject={{canGoBack: true}}
-    />,
+      source={{ uri: 'home' }}
+      route={{ name: 'home' }}
+      navObject={{ canGoBack: true }}
+    />
   )
 
   MockBackHandler.mockPressBack()
@@ -161,10 +161,10 @@ it('handles notFocus scenario inversed', () => {
 
   update(
     <CozyWebView
-      source={{uri: 'home'}}
-      route={{name: 'home'}}
-      navObject={{canGoBack: false}}
-    />,
+      source={{ uri: 'home' }}
+      route={{ name: 'home' }}
+      navObject={{ canGoBack: false }}
+    />
   )
 
   MockBackHandler.mockPressBack()

@@ -1,7 +1,7 @@
 import * as Keychain from 'react-native-keychain'
 
 import Minilog from '@cozy/minilog'
-import {AccountsDoctype} from 'cozy-client/dist/types.js' // eslint-disable-line no-unused-vars
+import { AccountsDoctype } from 'cozy-client/dist/types.js' // eslint-disable-line no-unused-vars
 
 const log = Minilog('Keychain')
 
@@ -54,8 +54,8 @@ export async function saveCredential(account) {
   try {
     const passwords = await getDecodedGenericPasswords()
     const newJSON = addItem(
-      {scope: CREDENTIALS_SCOPE, key: account._id, value: account},
-      passwords,
+      { scope: CREDENTIALS_SCOPE, key: account._id, value: account },
+      passwords
     )
     await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
   } finally {
@@ -81,13 +81,13 @@ export async function getCredential(account) {
  */
 export async function removeCredential(account) {
   lockKeychain(
-    "removeCredential: You can't remove while the keychain is locked",
+    "removeCredential: You can't remove while the keychain is locked"
   )
   try {
     const passwords = await getDecodedGenericPasswords()
     const newJSON = removeItem(
-      {scope: CREDENTIALS_SCOPE, key: account._id},
-      passwords,
+      { scope: CREDENTIALS_SCOPE, key: account._id },
+      passwords
     )
     await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
   } finally {
@@ -101,11 +101,11 @@ export async function removeCredential(account) {
  */
 export async function saveVaultInformation(key, value) {
   lockKeychain(
-    "saveVaultInformation: You can't save while the keychain is locked",
+    "saveVaultInformation: You can't save while the keychain is locked"
   )
   try {
     const passwords = await getDecodedGenericPasswords()
-    const newJSON = addItem({scope: VAULT_SCOPE, key, value}, passwords)
+    const newJSON = addItem({ scope: VAULT_SCOPE, key, value }, passwords)
     await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
   } finally {
     unlockKeychain('saveVaultInformation is done')
@@ -130,11 +130,11 @@ export async function getVaultInformation(key) {
  */
 export async function removeVaultInformation(key) {
   lockKeychain(
-    "removeVaultInformation: You can't remove while the keychain is locked",
+    "removeVaultInformation: You can't remove while the keychain is locked"
   )
   try {
     const passwords = await getDecodedGenericPasswords()
-    const newJSON = removeItem({scope: VAULT_SCOPE, key: key}, passwords)
+    const newJSON = removeItem({ scope: VAULT_SCOPE, key: key }, passwords)
     await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
   } finally {
     unlockKeychain('removeVaultInformation is done')
@@ -145,31 +145,31 @@ export async function deleteKeychain() {
   await Keychain.resetGenericPassword()
 }
 
-function addItem({scope, key, value}, existingJSON = {}) {
-  const clonedJSON = {...existingJSON}
+function addItem({ scope, key, value }, existingJSON = {}) {
+  const clonedJSON = { ...existingJSON }
 
   if (!clonedJSON[scope]) {
     clonedJSON[scope] = {}
   }
   if (clonedJSON[scope][key]) {
     throw new Error(
-      `${key} is already saved in ${scope}. You can't add it again.`,
+      `${key} is already saved in ${scope}. You can't add it again.`
     )
   }
   clonedJSON[scope][key] = value
   return clonedJSON
 }
 
-function removeItem({scope, key}, existingJSON = {}) {
-  const clonedJSON = {...existingJSON}
+function removeItem({ scope, key }, existingJSON = {}) {
+  const clonedJSON = { ...existingJSON }
   if (!clonedJSON[scope]) {
     throw new Error(
-      `removeItem: can't remove ${key} from ${scope} since ${scope} doesn't exist`,
+      `removeItem: can't remove ${key} from ${scope} since ${scope} doesn't exist`
     )
   }
   if (!clonedJSON[scope][key]) {
     throw new Error(
-      `removeItem: can't remove ${key} from ${scope}. ${key} is not there.`,
+      `removeItem: can't remove ${key} from ${scope}. ${key} is not there.`
     )
   }
   delete clonedJSON[scope][key]

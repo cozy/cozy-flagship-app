@@ -1,11 +1,11 @@
-import {MessengerInterface} from './bridgeInterfaces'
+import { MessengerInterface } from './bridgeInterfaces'
 import Minilog from '@cozy/minilog'
 
 /**
  * post-me messenger implementation for the react native launcher
  */
 export default class ReactNativeLauncherMessenger extends MessengerInterface {
-  constructor({webViewRef, debug, label}) {
+  constructor({ webViewRef, debug, label }) {
     super()
     this.webViewRef = webViewRef
     this.debug = debug
@@ -40,6 +40,6 @@ export default class ReactNativeLauncherMessenger extends MessengerInterface {
     if (this.debug) {
       this.log.debug('⬅️ received message', data)
     }
-    this.listener({data})
+    this.listener({ data })
   }
 }

@@ -1,9 +1,9 @@
-import {windowPasswordObjectDeclaration} from './jsFunctions/jsPasswordHelpers'
-import {computePassFunctionDeclaration} from './jsFunctions/jsComputePass'
-import {computePKCEFunctionDeclaration} from './jsFunctions/jsComputePKCE'
+import { windowPasswordObjectDeclaration } from './jsFunctions/jsPasswordHelpers'
+import { computePassFunctionDeclaration } from './jsFunctions/jsComputePass'
+import { computePKCEFunctionDeclaration } from './jsFunctions/jsComputePKCE'
 import {
   postMessageFunctionDeclaration,
-  listenMessageFunctionDeclaration,
+  listenMessageFunctionDeclaration
 } from './jsFunctions/jsMessaging'
 
 const jsCode = `

@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import {createMockClient} from 'cozy-client/dist/mock'
+import { createMockClient } from 'cozy-client/dist/mock'
 
-import {makeSessionAPI} from './session'
+import { makeSessionAPI } from './session'
 
 import strings from '../../strings.json'
 
@@ -12,8 +12,8 @@ const client = createMockClient({})
 const subdomain = 'nested'
 
 client.getStackClient = jest.fn(() => ({
-  fetchSessionCode: () => Promise.resolve({session_code}),
-  uri,
+  fetchSessionCode: () => Promise.resolve({ session_code }),
+  uri
 }))
 
 const {
@@ -22,7 +22,7 @@ const {
   shouldInterceptAuth,
   handleInterceptAuth,
   consumeSessionToken,
-  resetSessionToken,
+  resetSessionToken
 } = makeSessionAPI(client, subdomain)
 
 describe('shouldCreateSession', () => {
@@ -40,13 +40,13 @@ describe('shouldCreateSession', () => {
 describe('handleCreateSession', () => {
   it('returns an url with an appended session code', async () => {
     expect(await handleCreateSession(new URL(uri))).toBe(
-      `${uri}/?session_code=${session_code}`,
+      `${uri}/?session_code=${session_code}`
     )
   })
 
   it('does not delete already existing query strings', async () => {
     expect(await handleCreateSession(new URL(`${uri}/?foo=bar`))).toBe(
-      `${uri}/?foo=bar&session_code=${session_code}`,
+      `${uri}/?foo=bar&session_code=${session_code}`
     )
   })
 })
@@ -58,7 +58,7 @@ describe('shouldInterceptAuth', () => {
 
   it('returns true if a redirect is detected', () => {
     expect(
-      shouldInterceptAuth(`${uri}/auth/login?redirect=http://bar.foo`),
+      shouldInterceptAuth(`${uri}/auth/login?redirect=http://bar.foo`)
     ).toBe(true)
   })
 })
@@ -66,23 +66,23 @@ describe('shouldInterceptAuth', () => {
 describe('handleInterceptAuth', () => {
   it('throws with invalid URL as redirect', async () => {
     await expect(
-      async () => await handleInterceptAuth(`${uri}/auth/login?redirect=bar`),
+      async () => await handleInterceptAuth(`${uri}/auth/login?redirect=bar`)
     ).rejects.toThrow()
   })
 
   it('throws with empty redirect', async () => {
     await expect(
-      async () => await handleInterceptAuth(`${uri}/auth/login?redirect=`),
+      async () => await handleInterceptAuth(`${uri}/auth/login?redirect=`)
     ).rejects.toThrow()
   })
 
   it('returns redirect value with existing params and appended params', async () => {
     expect(
       await handleInterceptAuth(
-        `${uri}/auth/login?redirect=http://home.cozy.10-0-2-2.nip.io/?foo=bar`,
-      ),
+        `${uri}/auth/login?redirect=http://home.cozy.10-0-2-2.nip.io/?foo=bar`
+      )
     ).toBe(
-      `http://home.cozy.10-0-2-2.nip.io/?foo=bar&session_code=${session_code}`,
+      `http://home.cozy.10-0-2-2.nip.io/?foo=bar&session_code=${session_code}`
     )
   })
 
@@ -90,8 +90,8 @@ describe('handleInterceptAuth', () => {
     await expect(
       async () =>
         await handleInterceptAuth(
-          `${uri}/auth/login?redirect=http%3A%2F%2Fhackerman.cozy-home.10-0-2-2.nip.io.hack%2F#/whatever`,
-        ),
+          `${uri}/auth/login?redirect=http%3A%2F%2Fhackerman.cozy-home.10-0-2-2.nip.io.hack%2F#/whatever`
+        )
     ).rejects.toThrow()
   })
 
@@ -99,24 +99,24 @@ describe('handleInterceptAuth', () => {
     await expect(
       async () =>
         await makeSessionAPI(client, 'flat').handleInterceptAuth(
-          `${uri}/auth/login?redirect=http%3A%2F%2Fhackerman.home.cozy.10-0-2-2.nip.io.hack%2F#/whatever`,
-        ),
+          `${uri}/auth/login?redirect=http%3A%2F%2Fhackerman.home.cozy.10-0-2-2.nip.io.hack%2F#/whatever`
+        )
     ).rejects.toThrow()
   })
 
   it('returns a secured url', async () => {
     expect(
       await handleInterceptAuth(
-        `${uri}/auth/login?redirect=http%3A%2F%2Fhome.cozy.10-0-2-2.nip.io%2F#/whatever`,
-      ),
+        `${uri}/auth/login?redirect=http%3A%2F%2Fhome.cozy.10-0-2-2.nip.io%2F#/whatever`
+      )
     ).toBe('http://home.cozy.10-0-2-2.nip.io/?session_code=123#/whatever')
   })
 
   it('returns a secured url with flat subdomain', async () => {
     expect(
       await makeSessionAPI(client, 'flat').handleInterceptAuth(
-        `${uri}/auth/login?redirect=http%3A%2F%2Fcozy-home.10-0-2-2.nip.io%2F#/whatever`,
-      ),
+        `${uri}/auth/login?redirect=http%3A%2F%2Fcozy-home.10-0-2-2.nip.io%2F#/whatever`
+      )
     ).toBe('http://cozy-home.10-0-2-2.nip.io/?session_code=123#/whatever')
   })
 })
@@ -125,7 +125,7 @@ describe('consumeSessionToken', () => {
   it('stores a value in the asyncStorage', async () => {
     await consumeSessionToken()
     expect(
-      await AsyncStorage.getItem(strings.SESSION_CREATED_FLAG),
+      await AsyncStorage.getItem(strings.SESSION_CREATED_FLAG)
     ).toBeTruthy()
   })
 })

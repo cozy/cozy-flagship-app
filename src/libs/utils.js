@@ -20,5 +20,5 @@ export const dataURItoArrayBuffer = dataURI => {
   for (let i = 0; i < byteString.length; i++) {
     ia[i] = byteString.charCodeAt(i)
   }
-  return {contentType, arrayBuffer}
+  return { contentType, arrayBuffer }
 }

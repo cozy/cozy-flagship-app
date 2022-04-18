@@ -1,6 +1,6 @@
 import React from 'react'
-import {Animated} from 'react-native'
-import {SvgXml} from 'react-native-svg'
+import { Animated } from 'react-native'
+import { SvgXml } from 'react-native-svg'
 
 const xml = `
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

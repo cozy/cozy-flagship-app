@@ -1,11 +1,11 @@
-import {Q, models} from 'cozy-client'
+import { Q, models } from 'cozy-client'
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import set from 'lodash/set'
 
-import {saveFiles, saveBills, saveIdentity} from './connectorLibs'
-import {saveCredential, getCredential, removeCredential} from './keychain'
-import {dataURItoArrayBuffer} from './utils'
+import { saveFiles, saveBills, saveIdentity } from './connectorLibs'
+import { saveCredential, getCredential, removeCredential } from './keychain'
+import { dataURItoArrayBuffer } from './utils'
 
 const log = Minilog('Launcher')
 
@@ -23,7 +23,7 @@ export default class Launcher {
    *
    * @return {Bridge}
    */
-  async init({bridgeOptions, contentScript}) {}
+  async init({ bridgeOptions, contentScript }) {}
 
   /**
    * Start the connector execution
@@ -76,14 +76,14 @@ export default class Launcher {
    *
    * @returns {JobDocument}
    */
-  async updateJobResult({state = 'done', error} = {}) {
-    const {job, client} = this.getStartContext()
+  async updateJobResult({ state = 'done', error } = {}) {
+    const { job, client } = this.getStartContext()
     return await client.save({
       ...job,
       attributes: {
         ...job.attributes,
-        ...{state, error},
-      },
+        ...{ state, error }
+      }
     })
   }
 
@@ -94,7 +94,7 @@ export default class Launcher {
    * @returns {Promise<null>}
    */
   async saveCredentials(credentials) {
-    const {account} = this.getStartContext()
+    const { account } = this.getStartContext()
     const existingCredentials = await this.getCredentials()
     if (existingCredentials) {
       await this.removeCredentials()
@@ -108,7 +108,7 @@ export default class Launcher {
    * @returns {Promise<null>}
    */
   async removeCredentials() {
-    const {account} = this.getStartContext()
+    const { account } = this.getStartContext()
     await removeCredential(account)
   }
 
@@ -118,7 +118,7 @@ export default class Launcher {
    * @returns {Promise<null|Object>}
    */
   async getCredentials() {
-    const {account} = this.getStartContext()
+    const { account } = this.getStartContext()
     const encAccount = await getCredential(account)
     return encAccount ? encAccount.auth : null
   }
@@ -127,13 +127,13 @@ export default class Launcher {
    * Updates the account to send the LOGIN_SUCCESS message to harvest
    */
   async sendLoginSuccess() {
-    const {account, client} = this.getStartContext()
+    const { account, client } = this.getStartContext()
     const updatedAccount = await client.query(
-      Q('io.cozy.accounts').getById(account._id),
+      Q('io.cozy.accounts').getById(account._id)
     )
     await client.save({
       ...updatedAccount.data,
-      state: 'LOGIN_SUCCESS',
+      state: 'LOGIN_SUCCESS'
     })
   }
 
@@ -141,33 +141,33 @@ export default class Launcher {
    * Ensure that the account and the destination folder get the name corresponding to sourceAccountIdentifier
    */
   async ensureAccountNameAndFolder() {
-    const {trigger, account, client} = this.getStartContext()
+    const { trigger, account, client } = this.getStartContext()
 
     const firstRun = !get(account, 'auth.accountName')
     if (!firstRun) {
       return
     }
 
-    const {sourceAccountIdentifier} = this.getUserData()
+    const { sourceAccountIdentifier } = this.getUserData()
     const folderId = trigger.message.folder_to_save
 
     log.info('This is the first run for this account')
     const updatedAccount = await client.query(
-      Q('io.cozy.accounts').getById(account._id),
+      Q('io.cozy.accounts').getById(account._id)
     )
     const newAccount = await client.save({
       ...updatedAccount.data,
-      auth: {accountName: sourceAccountIdentifier},
+      auth: { accountName: sourceAccountIdentifier }
     })
     log.debug(newAccount, 'resulting account')
 
     try {
       await client
         .collection('io.cozy.files')
-        .updateAttributes(folderId, {name: sourceAccountIdentifier})
+        .updateAttributes(folderId, { name: sourceAccountIdentifier })
     } catch (err) {
       log.warn(
-        `Could not rename the destination folder ${folderId} to ${sourceAccountIdentifier}. ${err.message}`,
+        `Could not rename the destination folder ${folderId} to ${sourceAccountIdentifier}. ${err.message}`
       )
     }
   }
@@ -180,7 +180,7 @@ export default class Launcher {
    * @returns {String} Folder path
    */
   async getFolderPath(folderId) {
-    const {client} = this.getStartContext()
+    const { client } = this.getStartContext()
     const result = await client.query(Q('io.cozy.files').getById(folderId))
     return result.data.path
   }
@@ -193,14 +193,14 @@ export default class Launcher {
    */
   async saveBills(entries, options) {
     log.debug(entries, 'saveBills entries')
-    const {client, job, manifest} = this.getStartContext()
-    const {sourceAccountIdentifier} = this.getUserData()
+    const { client, job, manifest } = this.getStartContext()
+    const { sourceAccountIdentifier } = this.getUserData()
     const result = await saveBills(entries, {
       ...options,
       client,
       manifest,
       sourceAccount: job.message.account,
-      sourceAccountIdentifier,
+      sourceAccountIdentifier
     })
     return result
   }
@@ -220,10 +220,10 @@ export default class Launcher {
    * @param {Object} contact : contact object
    */
   async saveIdentity(contact) {
-    const {client} = this.getStartContext()
+    const { client } = this.getStartContext()
     log.debug(contact, 'saveIdentity contact')
-    const {sourceAccountIdentifier} = this.getUserData()
-    await saveIdentity(contact, sourceAccountIdentifier, {client})
+    const { sourceAccountIdentifier } = this.getUserData()
+    await saveIdentity(contact, sourceAccountIdentifier, { client })
   }
 
   /**
@@ -234,8 +234,8 @@ export default class Launcher {
    */
   async saveFiles(entries, options) {
     log.debug(entries, 'saveFiles entries')
-    const {client, trigger, job, manifest} = this.getStartContext()
-    const {sourceAccountIdentifier} = this.getUserData()
+    const { client, trigger, job, manifest } = this.getStartContext()
+    const { sourceAccountIdentifier } = this.getUserData()
     for (const entry of entries) {
       if (entry.dataUri) {
         entry.filestream = dataURItoArrayBuffer(entry.dataUri).arrayBuffer
@@ -245,7 +245,7 @@ export default class Launcher {
         set(
           entry,
           'fileAttributes.metadata.qualification',
-          models.document.Qualification.getByLabel(options.qualificationLabel),
+          models.document.Qualification.getByLabel(options.qualificationLabel)
         )
       }
     }
@@ -258,8 +258,8 @@ export default class Launcher {
         client,
         manifest,
         sourceAccount: job.message.account,
-        sourceAccountIdentifier,
-      },
+        sourceAccountIdentifier
+      }
     )
     log.info(result, 'saveFiles result')
 
@@ -274,22 +274,22 @@ export default class Launcher {
    * @param {String} options.slug: connector slug
    * @returns {Object}
    */
-  async getPilotContext({sourceAccountIdentifier, slug}) {
-    const {client} = this.getStartContext()
+  async getPilotContext({ sourceAccountIdentifier, slug }) {
+    const { client } = this.getStartContext()
     const result = await client.queryAll(
       Q('io.cozy.files')
         .where({
           trashed: false,
           cozyMetadata: {
             sourceAccountIdentifier,
-            createdByApp: slug,
-          },
+            createdByApp: slug
+          }
         })
         .indexFields([
           'trashed',
           'cozyMetadata.sourceAccountIdentifier',
-          'cozyMetadata.createdByApp',
-        ]),
+          'cozyMetadata.createdByApp'
+        ])
     )
 
     return result

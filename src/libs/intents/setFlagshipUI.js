@@ -1,11 +1,11 @@
-import {changeBarColors} from 'react-native-immersive-bars'
-import {EventEmitter} from 'events'
+import { changeBarColors } from 'react-native-immersive-bars'
+import { EventEmitter } from 'events'
 
 import Minilog from '@cozy/minilog'
 
 const log = Minilog('SET_FLAGSHIP_UI')
 
-const handleSideEffects = ({bottomTheme, ...parsedIntent}) => {
+const handleSideEffects = ({ bottomTheme, ...parsedIntent }) => {
   const shouldCallBarApi = bottomTheme === 'light' || bottomTheme === 'dark'
 
   shouldCallBarApi && changeBarColors(bottomTheme === 'light')
@@ -30,10 +30,10 @@ export const setFlagshipUI = intent => {
             ? 'light-content'
             : intent.topTheme === 'dark'
             ? 'dark-content'
-            : undefined,
+            : undefined
       })
         .filter(([_k, v]) => v)
-        .map(([k, v]) => [k, v.trim()]),
-    ),
+        .map(([k, v]) => [k, v.trim()])
+    )
   )
 }

@@ -22,7 +22,7 @@ export const subscribeToCrypto = callback => {
   subscribers = [...subscribers, callback]
 
   log.debug(
-    `subscribed... ${subscribers.length} callback(s) are now subscribed`,
+    `subscribed... ${subscribers.length} callback(s) are now subscribed`
   )
 }
 
@@ -38,7 +38,7 @@ export const unsubscribeFromCrypto = callbackToRemove => {
   subscribers = subscribers.filter(listener => callbackToRemove !== listener)
 
   log.debug(
-    `unsubscribed... ${subscribers.length} callback(s) are now subscribed`,
+    `unsubscribed... ${subscribers.length} callback(s) are now subscribed`
   )
 }
 
@@ -80,9 +80,9 @@ export const queryResultToCrypto = (methodName, param) => {
  * @param {CryptoMessage} answer
  */
 export const sendAnswer = answer => {
-  const {messageId, param} = answer
+  const { messageId, param } = answer
 
-  const subscriber = answerSubscribers.find(({id}) => id === messageId)
+  const subscriber = answerSubscribers.find(({ id }) => id === messageId)
 
   if (subscriber) {
     subscriber.callback(param)
@@ -94,17 +94,17 @@ export const sendAnswer = answer => {
 const subscribeAnswer = (messageId, callback) => {
   answerSubscribers.push({
     id: messageId,
-    callback: callback,
+    callback: callback
   })
 
   log.debug(
-    `registered answer... ${answerSubscribers.length} answer(s) are now subscribed`,
+    `registered answer... ${answerSubscribers.length} answer(s) are now subscribed`
   )
 }
 
 const unsubscribeAnswer = messageId => {
-  answerSubscribers = answerSubscribers.filter(({id}) => id !== messageId)
+  answerSubscribers = answerSubscribers.filter(({ id }) => id !== messageId)
   log.debug(
-    `cleared answer... ${answerSubscribers.length} answer(s) are now subscribed`,
+    `cleared answer... ${answerSubscribers.length} answer(s) are now subscribed`
   )
 }

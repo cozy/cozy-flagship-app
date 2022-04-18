@@ -1,4 +1,4 @@
-import {Platform} from 'react-native'
+import { Platform } from 'react-native'
 
 const androidMessageListener = `
 window.document.addEventListener('message', function (e) {

@@ -10,7 +10,7 @@ const CREDENTIALS_KEY = 'credentials'
  * @param {LauncherStartContext} context
  * @returns {Promise<Object>}
  */
-export async function saveCredentials(credentials, {client, account}) {
+export async function saveCredentials(credentials, { client, account }) {
   account[CREDENTIALS_KEY] = credentials
   try {
     await client.save(account)
@@ -27,6 +27,6 @@ export async function saveCredentials(credentials, {client, account}) {
  * @param {LauncherStartContext} context
  * @returns {Promise<Object>}
  */
-export async function getCredentials({account}) {
+export async function getCredentials({ account }) {
   return account[CREDENTIALS_KEY]
 }

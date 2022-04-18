@@ -1,26 +1,26 @@
 import React from 'react'
-import {StyleSheet, View} from 'react-native'
-import {decode, encode} from 'base-64'
-import {NavigationContainer} from '@react-navigation/native'
-import {createStackNavigator} from '@react-navigation/stack'
-import {Provider as PaperProvider} from 'react-native-paper'
+import { StyleSheet, View } from 'react-native'
+import { decode, encode } from 'base-64'
+import { NavigationContainer } from '@react-navigation/native'
+import { createStackNavigator } from '@react-navigation/stack'
+import { Provider as PaperProvider } from 'react-native-paper'
 
-import {CozyProvider} from 'cozy-client'
-import {NativeIntentProvider} from 'cozy-intent'
+import { CozyProvider } from 'cozy-client'
+import { NativeIntentProvider } from 'cozy-intent'
 
 import * as RootNavigation from './libs/RootNavigation.js'
-import {HomeScreen} from './screens/home/HomeScreen'
-import {LoginScreen} from './screens/login/LoginScreen'
-import {OnboardingScreen} from './screens/login/OnboardingScreen'
-import {CozyAppScreen} from './screens/cozy-app/CozyAppScreen'
-import {SplashScreenProvider} from './providers/SplashScreenProvider'
-import {lightTheme} from './theme'
-import {getColors} from './theme/colors'
-import {localMethods} from './libs/intents/localMethods'
-import {useAppBootstrap} from './hooks/useAppBootstrap.js'
-import {routes} from './constants/routes.js'
+import { HomeScreen } from './screens/home/HomeScreen'
+import { LoginScreen } from './screens/login/LoginScreen'
+import { OnboardingScreen } from './screens/login/OnboardingScreen'
+import { CozyAppScreen } from './screens/cozy-app/CozyAppScreen'
+import { SplashScreenProvider } from './providers/SplashScreenProvider'
+import { lightTheme } from './theme'
+import { getColors } from './theme/colors'
+import { localMethods } from './libs/intents/localMethods'
+import { useAppBootstrap } from './hooks/useAppBootstrap.js'
+import { routes } from './constants/routes.js'
 
-import {CryptoWebView} from './components/webviews/CryptoWebView/CryptoWebView'
+import { CryptoWebView } from './components/webviews/CryptoWebView/CryptoWebView'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -35,7 +35,7 @@ if (!global.atob) {
 }
 
 const App = () => {
-  const {client, setClient, initialScreen, initialRoute, isLoading} =
+  const { client, setClient, initialScreen, initialRoute, isLoading } =
     useAppBootstrap()
 
   if (isLoading) {
@@ -45,11 +45,12 @@ const App = () => {
   const StackNavigator = () => (
     <Stack.Navigator
       initialRouteName={client ? routes.home : initialScreen.stack}
-      screenOptions={{headerShown: false}}>
+      screenOptions={{ headerShown: false }}
+    >
       <Stack.Screen
         name={routes.home}
         component={HomeScreen}
-        {...(initialRoute.stack ? {initialParams: initialRoute.stack} : {})}
+        {...(initialRoute.stack ? { initialParams: initialRoute.stack } : {})}
       />
 
       <Stack.Screen name={routes.authenticate}>
@@ -58,7 +59,8 @@ const App = () => {
 
       <Stack.Screen
         name={routes.onboarding}
-        initialParams={initialScreen.params}>
+        initialParams={initialScreen.params}
+      >
         {params => <OnboardingScreen setClient={setClient} {...params} />}
       </Stack.Screen>
     </Stack.Navigator>
@@ -67,7 +69,8 @@ const App = () => {
   const RootNavigator = () => (
     <Root.Navigator
       initialRouteName={initialScreen.root}
-      screenOptions={{headerShown: false}}>
+      screenOptions={{ headerShown: false }}
+    >
       <Root.Screen name={routes.stack} component={StackNavigator} />
 
       <Root.Screen
@@ -75,9 +78,9 @@ const App = () => {
         component={CozyAppScreen}
         options={{
           presentation: 'transparentModal',
-          animationEnabled: false,
+          animationEnabled: false
         }}
-        {...(initialRoute.root ? {initialParams: initialRoute.root} : {})}
+        {...(initialRoute.root ? { initialParams: initialRoute.root } : {})}
       />
     </Root.Navigator>
   )
@@ -103,9 +106,10 @@ const WrappedApp = () => {
               style={[
                 styles.view,
                 {
-                  backgroundColor: colors.primaryColor,
-                },
-              ]}>
+                  backgroundColor: colors.primaryColor
+                }
+              ]}
+            >
               <CryptoWebView />
               <App />
             </View>
@@ -118,8 +122,8 @@ const WrappedApp = () => {
 
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
-  },
+    flex: 1
+  }
 })
 
 export default WrappedApp

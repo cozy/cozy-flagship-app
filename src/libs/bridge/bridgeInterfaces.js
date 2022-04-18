@@ -19,7 +19,7 @@ export class Bridge {
    * @param  {Object} options.webViewRef                  : Reference to the webview obect containing the content script
    * @return {PostMeConnection} : the resulting post-me connection
    */
-  async init({exposedMethods}) {}
+  async init({ exposedMethods }) {}
 
   /**
    * Shortcut to remoteHandle.call method

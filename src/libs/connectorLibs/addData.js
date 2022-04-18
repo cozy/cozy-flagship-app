@@ -16,7 +16,7 @@ const addData = async (entries, doctype, options = {}) => {
   const result = []
   for (const entry of entries) {
     log.debug('Adding entry', entry)
-    const doc = await client.save({...entry, _type: doctype})
+    const doc = await client.save({ ...entry, _type: doctype })
     const dbEntry = doc.data
     entry._id = dbEntry._id
     result.push(dbEntry)
