@@ -1,6 +1,8 @@
 import * as Sentry from '@sentry/react-native'
+import { CaptureConsole } from '@sentry/integrations'
 
-import {version} from '../package.json'
+import { version } from '../package.json'
+import { isBuildMode } from './libs/utils'
 
 // Sentry Data Source Name
 // A DSN tells a Sentry SDK where to send events so the events are associated with the correct project.
@@ -11,12 +13,18 @@ const SentryDsn =
 // Available custom tags as enum-like object.
 export const SentryTags = {
   Version: 'cozy-version',
-  Instance: 'cozy-instance',
+  Instance: 'cozy-instance'
 }
 
 // Runtime initialisation.
 Sentry.init({
   dsn: SentryDsn,
+  enabled: isBuildMode(),
+  integrations: [
+    new CaptureConsole({
+      levels: ['error', 'warn']
+    })
+  ]
 })
 
 // Runtime default configuration.
@@ -26,5 +34,3 @@ Sentry.setTag(SentryTags.Version, version)
 export const withSentry = Sentry.wrap
 
 export const setSentryTag = (tag, value) => Sentry.setTag(tag, value)
-
-export const unsetSentryTag = tag => Sentry.setTag(tag, '')
