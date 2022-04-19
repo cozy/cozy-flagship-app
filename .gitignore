@@ -1,7 +1,8 @@
-token.json
-src/api-keys.json
 .vscode
+coverage/
+src/api-keys.json
 storage/
+token.json
 
 connectors/*/dist
 
