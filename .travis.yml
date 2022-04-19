@@ -10,9 +10,13 @@ cache:
 
 stages:
  - lint
+ - test
 
 jobs:
   include:
     - name: Lint
       stage: lint
       script: yarn lint
+    - name: Test
+      stage: test
+      script: yarn test

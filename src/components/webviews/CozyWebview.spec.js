@@ -29,9 +29,9 @@ const WebView = ({ onNavigationStateChange, navObject, TEST_ONLY_setRef }) => {
   return <div>WebView</div>
 }
 
-jest.mock('react-native-webview', () => {
+jest.mock('react-native-webview', () => ({
   WebView
-})
+}))
 
 jest.mock('cozy-intent', () => ({
   useNativeIntent: () => mockNativeIntent
