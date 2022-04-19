@@ -14,6 +14,11 @@ const homeLink = `https://links.mycozy.cloud/home/folder/1?fallback=${initialURL
 const appLink = `https://links.mycozy.cloud/drive/folder/1?fallback=${initialURL}`
 const invalidLink = 'https://foo.com'
 
+jest.mock('../Sentry', () => ({
+  SentryTags: {},
+  setSentryTag: jest.fn()
+}))
+
 jest.mock('../libs/RootNavigation.js', () => ({
   navigate: jest.fn()
 }))

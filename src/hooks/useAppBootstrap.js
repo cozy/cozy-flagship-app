@@ -1,12 +1,13 @@
+import Minilog from '@cozy/minilog'
 import { Linking } from 'react-native'
 import { useEffect, useState } from 'react'
-import Minilog from '@cozy/minilog'
 
+import { SentryTags, setSentryTag } from '../Sentry'
 import { getClient } from '../libs/client'
+import { manageIconCache } from '../libs/functions/iconTable'
 import { navigate } from '../libs/RootNavigation'
 import { routes } from '../constants/routes'
 import { useSplashScreen } from './useSplashScreen'
-import { manageIconCache } from '../libs/functions/iconTable'
 
 const log = Minilog('useAppBootstrap')
 
@@ -146,6 +147,7 @@ export const useAppBootstrap = () => {
     }
 
     client && manageIconCache(client)
+    client && setSentryTag(SentryTags.Instance, client.stackClient?.uri)
 
     const subscription = Linking.addEventListener('url', ({ url }) => {
       const onboardingParams = parseOnboardingURL(url)

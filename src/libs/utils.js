@@ -22,3 +22,13 @@ export const dataURItoArrayBuffer = dataURI => {
   }
   return { contentType, arrayBuffer }
 }
+
+export const isDevMode = () => {
+  try {
+    return !!__DEV__
+  } catch {
+    return false
+  }
+}
+
+export const isBuildMode = () => !isDevMode()
