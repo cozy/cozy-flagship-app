@@ -14,9 +14,9 @@ export const CryptoWebView = () => {
 
   const processMessage = (message, messageId, param) => {
     const payload = JSON.stringify({
-      message: message,
-      messageId: messageId,
-      param: param
+      message,
+      messageId,
+      param
     })
 
     const webView = webviewRef.current
@@ -24,8 +24,8 @@ export const CryptoWebView = () => {
   }
 
   const processAnswer = event => {
-    const answer = JSON.parse(event.nativeEvent.data)
-    sendAnswer(answer)
+    const webviewAnswer = JSON.parse(event.nativeEvent.data)
+    sendAnswer(webviewAnswer)
   }
 
   useEffect(() => {
