@@ -38,6 +38,13 @@ describe('CryptoWebview', () => {
     jest.resetAllMocks()
   })
 
+  it('should render', () => {
+    // When
+    const { toJSON } = render(<CryptoWebView />)
+    // Then
+    expect(toJSON()).toMatchSnapshot()
+  })
+
   it('should subscribeToCrypto on mount', () => {
     // When
     render(<CryptoWebView />)

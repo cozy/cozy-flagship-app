@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CryptoWebview should render 1`] = `
+<View
+  style={
+    Object {
+      "height": 0,
+    }
+  }
+>
+  <div>
+    WebView
+  </div>
+</View>
+`;
