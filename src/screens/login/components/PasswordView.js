@@ -74,7 +74,19 @@ const PasswordForm = ({
     }
   }, [loading, waitForTransition, webviewRef])
 
-  const html = getHtml(name, fqdn, instance, errorMessage)
+  useEffect(() => {
+    if (webviewRef && errorMessage) {
+      const payload = JSON.stringify({
+        message: 'setErrorMessage',
+        param: errorMessage
+      })
+
+      const webView = webviewRef.current
+      webView.postMessage(payload)
+    }
+  }, [webviewRef, errorMessage])
+
+  const html = getHtml(name, fqdn, instance)
 
   const setLoaded = avatarPosition => {
     setLoading(false)
