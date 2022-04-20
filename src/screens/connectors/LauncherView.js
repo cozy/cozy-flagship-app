@@ -8,6 +8,7 @@ import googleConnector from '../../../connectors/google-takeout/dist/webviewScri
 // import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
 import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
 import edfConnector from '../../../connectors/edf/dist/webviewScript'
+import soshConnector from '../../../connectors/sosh/dist/webviewScript'
 import ReactNativeLauncher from '../../libs/ReactNativeLauncher'
 import debounce from 'lodash/debounce'
 import { withClient } from 'cozy-client'
@@ -24,7 +25,8 @@ const embeddedConnectors = {
   // amazon: amazonConnector,
   template: templateConnector,
   // sncf: sncfConnector,
-  blablacar: blablacarConnector
+  blablacar: blablacarConnector,
+  sosh: soshConnector
 }
 class LauncherView extends Component {
   constructor(props) {
