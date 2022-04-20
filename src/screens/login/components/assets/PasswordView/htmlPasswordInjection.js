@@ -29,7 +29,7 @@ const locale = 'fr'
  * @param {string} title - The title of the page - for example the user's name as configured in the Cozy's settings
  * @param {string} fqdn - The subtitle of the page - for example the Cozy's fqdn
  * @param {string} instance - The Cozy's url, used to get avatar and fonts css
- * @returns {Element} HTML of Password injection to inject inside Webview
+ * @returns {Element} HTML of Password form to inject inside Webview
  */
 export const getHtml = (title, fqdn, instance) => {
   const avatarUrl = new URL(instance)
