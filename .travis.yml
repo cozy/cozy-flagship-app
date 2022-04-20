@@ -19,4 +19,4 @@ jobs:
       script: yarn lint
     - name: Test
       stage: test
-      script: yarn test
+      script: yarn test --coverage
