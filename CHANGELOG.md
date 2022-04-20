@@ -5,6 +5,7 @@
 
 ## 🐛 Bug Fixes
 
+* Don't reset password on bad password
 
 ## 🔧 Tech
 
