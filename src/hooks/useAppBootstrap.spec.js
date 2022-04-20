@@ -53,10 +53,7 @@ afterEach(() => {
   Linking.getInitialURL.mockRestore()
   mockHideSplashScreen.mockClear()
   navigate.mockClear()
-})
-
-afterAll(() => {
-  expect(mockRemove).toHaveBeenCalledTimes(11)
+  expect(mockRemove).toHaveBeenCalledTimes(1)
 })
 
 it('Should handle NO client NO initial URL', async () => {

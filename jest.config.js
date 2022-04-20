@@ -1,4 +1,5 @@
 const config = {
+  clearMocks: true,
   setupFiles: ['<rootDir>/__tests__/jestSetupFile.js'],
   preset: 'react-native',
   transformIgnorePatterns: [

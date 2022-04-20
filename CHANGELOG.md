@@ -8,6 +8,7 @@
 
 ## 🔧 Tech
 
+* Clear automatically all mocks after each tests
 * Add dependabot configuration
 * Move android Main files inside correct path for react-native link usage
 * Remove unused library @react-native-community/masked-view
