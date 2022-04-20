@@ -33,14 +33,6 @@ describe('ReactNativeLauncher', () => {
     })
   }
 
-  beforeEach(() => {
-    client.save.mockReset()
-    client.query.mockReset()
-    launcher.pilot.call.mockReset()
-    launcher.worker.call.mockReset()
-    updateAttributes.mockReset()
-  })
-
   describe('start', () => {
     it('should work normaly in nominal case', async () => {
       launcher.setStartContext({

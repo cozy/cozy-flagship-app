@@ -7,11 +7,6 @@ jest.mock('react-native-immersive-bars', () => ({
   changeBarColors: jest.fn().mockImplementation(v => mockChangeBarColors(v))
 }))
 
-afterEach(() => {
-  mockChangeBarColors.mockClear()
-  mockOnChange.mockClear()
-})
-
 it('should parse topTheme light', () => {
   flagshipUI.on('change', mockOnChange)
 

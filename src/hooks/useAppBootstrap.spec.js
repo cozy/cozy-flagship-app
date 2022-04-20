@@ -50,9 +50,6 @@ jest.mock('react-native', () => {
 })
 
 afterEach(() => {
-  Linking.getInitialURL.mockRestore()
-  mockHideSplashScreen.mockClear()
-  navigate.mockClear()
   expect(mockRemove).toHaveBeenCalledTimes(1)
 })
 
