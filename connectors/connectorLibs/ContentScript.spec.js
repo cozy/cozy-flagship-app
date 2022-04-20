@@ -7,13 +7,10 @@ describe('ContentScript', () => {
     contentScript.runInWorker = jest.fn()
     contentScript.tocall = jest.fn()
 
-    beforeEach(() => {
-      contentScript.runInWorker.mockReset()
-    })
     it('should resolve with result of the specified method returns truthy value', async () => {
       contentScript.runInWorker.mockResolvedValueOnce('result')
       const result = await contentScript.runInWorkerUntilTrue({
-        method: 'tocall',
+        method: 'tocall'
       })
       expect(result).toEqual('result')
     })
@@ -23,7 +20,7 @@ describe('ContentScript', () => {
         .mockResolvedValueOnce(false)
         .mockResolvedValueOnce('result last')
       const result = await contentScript.runInWorkerUntilTrue({
-        method: 'tocall',
+        method: 'tocall'
       })
       expect(result).toEqual('result last')
     })
@@ -31,7 +28,7 @@ describe('ContentScript', () => {
     it('should reject when timeout is expired', async () => {
       contentScript.runInWorker.mockResolvedValue(false)
       await expect(
-        contentScript.runInWorkerUntilTrue({method: 'tocall', timeout: 1}),
+        contentScript.runInWorkerUntilTrue({ method: 'tocall', timeout: 1 })
       ).rejects.toThrow('Timeout error')
     })
   })
