@@ -1,5 +1,4 @@
-import log from 'cozy-logger'
-
+/* eslint-disable no-console */
 export const jsLogInterception = `
   const originalJsConsole = console
   const consoleLog = (type, log) => {
@@ -26,24 +25,18 @@ export const jsLogInterception = `
 
 export const tryConsole = (payload, logger, logId) => {
   try {
-    const dataPayload = JSON.parse(payload.nativeEvent.data)
+    const { data: rawData } = payload.nativeEvent
 
-    if (
-      !(dataPayload === null || dataPayload === undefined
-        ? undefined
-        : dataPayload.data)
-    ) {
-      return
-    }
+    const dataPayload = JSON.parse(rawData)
 
-    const { type, log: msg } = dataPayload.data
+    if (!dataPayload.data || dataPayload.type !== 'Console') return
 
-    if (msg[0] === 'webview-service') {
-      // eslint-disable-next-line no-console
-      return console.debug(...msg)
-    }
-    logger[type](`[Console ${logId}]`, ...msg.map(v => JSON.stringify(v)))
+    const { type, log } = dataPayload.data
+
+    if (rawData.includes('@post-me')) return console.debug(...log)
+
+    logger[type](`[Console ${logId}]`, ...log)
   } catch (e) {
-    log('error', e)
+    console.error('error', e)
   }
 }
