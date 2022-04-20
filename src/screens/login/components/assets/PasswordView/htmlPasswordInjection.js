@@ -6,6 +6,7 @@ import { loginJs } from './js/jsLogin'
 import { cirrusJs } from '../common/js/jsCirrus'
 import { passwordHelperJs } from './js/jsPasswordHelper'
 import { passwordVisibilityJs } from './js/jsPasswordVisibility'
+import { handleErrorMessage } from './js/jsHandleErrorMessage'
 import { readonlyJs } from '../common/js/jsReadonly'
 
 import { cirrusCss } from '../common/css/cssCirrus'
@@ -20,24 +21,17 @@ const strPasswordShow = 'Afficher le mot de passe'
 const strForgotPassword = "J'ai oublié mon mot de passe"
 const strSubmit = 'SE CONNECTER'
 
-const getCredentialsErrorJs = credentialsErrorMsg =>
-  credentialsErrorMsg
-    ? `
-      <script>
-        const loginField = document.getElementById('login-field')
-        window.showError(loginField, '${credentialsErrorMsg}')
-      </script>
-    `
-    : ''
-
 const locale = 'fr'
 
-export const getHtml = (
-  title,
-  fqdn,
-  instance,
-  credentialsErrorMsg = undefined
-) => {
+/**
+ * Generate password specific HTML to provide to webview
+ *
+ * @param {string} title - The title of the page - for example the user's name as configured in the Cozy's settings
+ * @param {string} fqdn - The subtitle of the page - for example the Cozy's fqdn
+ * @param {string} instance - The Cozy's url, used to get avatar and fonts css
+ * @returns {Element} HTML of Password injection to inject inside Webview
+ */
+export const getHtml = (title, fqdn, instance) => {
   const avatarUrl = new URL(instance)
   avatarUrl.pathname = 'public/avatar'
 
@@ -100,7 +94,6 @@ export const getHtml = (
     <script>${passwordHelperJs}</script>
     <script>${passwordVisibilityJs}</script>
     <script>${loginJs}</script>
-    ${getCredentialsErrorJs(credentialsErrorMsg)}
     <script>
       function sendLoadedEvent() {
         setTimeout(() => {
@@ -108,7 +101,7 @@ export const getHtml = (
           const avatarPosition = avatarImg.getBoundingClientRect()
           const height = avatarImg.clientHeight
           const width = avatarImg.clientWidth
-          
+
           postMessage(JSON.stringify({
             message: 'loaded',
             avatarPosition: {
@@ -151,6 +144,8 @@ export const getHtml = (
           return false
         }
       })
+
+      ${handleErrorMessage()}
       ${readonlyJs(['login-submit', 'password'])}
     </script>
   </body>
