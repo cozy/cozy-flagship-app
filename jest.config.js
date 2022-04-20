@@ -4,7 +4,6 @@ const config = {
   transformIgnorePatterns: [
     'node_modules/(?!((jest-)?react-native(-.*)?|@react-native(-community)?)/)'
   ],
-  collectCoverage: true,
   collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}']
 }
 
