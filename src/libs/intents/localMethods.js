@@ -5,6 +5,7 @@ import { hideSplashScreen } from '../services/SplashScreenService'
 import { openApp } from '../functions/openApp'
 import { resetSessionToken } from '../functions/session'
 import { setFlagshipUI } from './setFlagshipUI'
+import { isDevMode } from '../utils'
 
 export const asyncLogout = async () => {
   await clearClient()
@@ -21,6 +22,14 @@ const logout = () => {
 
 const backToHome = () => {
   RootNavigation.navigate('home')
+}
+
+export const internalMethods = {
+  setFlagshipUI: intent =>
+    setFlagshipUI(
+      intent,
+      isDevMode() && internalMethods.setFlagshipUI.caller.name
+    )
 }
 
 export const localMethods = {

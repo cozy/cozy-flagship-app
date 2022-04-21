@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { Platform, StatusBar, StyleSheet, View } from 'react-native'
 
+import DebugView from '../connectors/DebugView'
 import HomeView from './components/HomeView'
 import LauncherView from '../connectors/LauncherView'
-import DebugView from '../connectors/DebugView'
-import { setFlagshipUI } from '../../libs/intents/setFlagshipUI'
+import { internalMethods } from '../../libs/intents/localMethods'
 
 const resetUIState = () => {
-  setFlagshipUI({
+  internalMethods.setFlagshipUI({
     topTheme: 'light',
     bottomTheme: 'light'
   })
+
   Platform.OS !== 'ios' && StatusBar?.setBackgroundColor('transparent')
 }
 

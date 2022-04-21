@@ -3,12 +3,13 @@ import { StatusBar, View } from 'react-native'
 
 import CozyWebView from '../../components/webviews/CozyWebView'
 import { Animation } from './CozyAppScreen.Animation'
-import { flagshipUI, setFlagshipUI } from '../../libs/intents/setFlagshipUI'
+import { flagshipUI } from '../../libs/intents/setFlagshipUI'
 import { navbarHeight, statusBarHeight } from '../../libs/dimensions'
 import { styles } from './CozyAppScreen.styles'
+import { internalMethods } from '../../libs/intents/localMethods'
 
 const firstHalfUI = () =>
-  setFlagshipUI({
+  internalMethods.setFlagshipUI({
     bottomBackground: 'white',
     bottomTheme: 'dark',
     bottomOverlay: 'transparent',
