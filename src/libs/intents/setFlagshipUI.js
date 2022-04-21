@@ -13,13 +13,12 @@ const handleSideEffects = ({ bottomTheme, ...parsedIntent }) => {
   flagshipUI.emit('change', parsedIntent)
 }
 
-const handleLogging = (fn, intent) =>
-  fn?.caller?.name && log.info(`by ${fn.caller.name}()`, intent)
+const handleLogging = (intent, name) => name && log.info(`by ${name}()`, intent)
 
 export const flagshipUI = new EventEmitter()
 
-export const setFlagshipUI = intent => {
-  handleLogging(setFlagshipUI, intent)
+export const setFlagshipUI = (intent, callerName) => {
+  callerName && handleLogging(intent, callerName)
 
   return handleSideEffects(
     Object.fromEntries(
