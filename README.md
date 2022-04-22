@@ -15,7 +15,9 @@ In order to configure it, first you have to decrypt the `cozy-react-native/sentr
 Once this is done, you should now have a decrypted file resembling `android/sentry.properties.example`.
 
 ### Installing the configuration
-You simply have to copy paste the content of the decrypted file into both `android/sentry.properties.example` and `ios/sentry.properties.example` and then rename them as `sentry.properties` (mandatory name).
+
+Extract the content of `cozy-react-native/sentry.properties` from the password-store-team repository into
+`android/sentry.properties` and `ios/sentry.properties` file.
 
 ## Run the React Native App
 
