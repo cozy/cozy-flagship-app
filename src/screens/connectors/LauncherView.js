@@ -17,7 +17,7 @@ import Minilog from '@cozy/minilog'
 
 const log = Minilog('LauncherView')
 
-const DEBUG = false
+const DEBUG = true
 
 const embeddedConnectors = {
   edf: edfConnector,
