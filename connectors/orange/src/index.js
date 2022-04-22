@@ -20,9 +20,20 @@ class OrangeContentScript extends ContentScript {
   /////////
   async ensureAuthenticated() {
     await this.goto(DEFAULT_PAGE_URL)
-
-    await this.waitForUserAuthentication()
-    return true
+    log.debug('waiting for any authentication confirmation or login form...')
+    await Promise.race([
+      this.runInWorkerUntilTrue({method: 'waitForAuthenticated'}),
+      this.waitForElementInWorker('[data-e2e="e2e-ident-button"]'),
+    ])
+    this.log('After Race')
+    if (await this.runInWorker('checkAuthenticated')) {
+      this.log('Authenticated')
+      return true
+    } else {
+      await this.waitForUserAuthentication()
+      log.debug('Not authenticated')
+      return true
+    }
   }
 
   async waitForUserAuthentication() {
@@ -32,26 +43,15 @@ class OrangeContentScript extends ContentScript {
     await this.setWorkerState({visible: false, url: DEFAULT_PAGE_URL})
   }
 
-  // async getUserDataFromWebsite() {
-  //   // I think that if we cannot find the user mail, this should not be an connector execution
-  //   // error
-  //   return {
-  //     sourceAccountIdentifier:
-  //       (await this.runInWorker('getUserMail')) ||
-  //       DEFAULT_SOURCE_ACCOUNT_IDENTIFIER,
-  //   }
-  // }
-
-  // async getUserMail() {
-  //   const result = document
-  //     .querySelector("a[href*='https://accounts.google.com']")
-  //     .getAttribute('aria-label')
-  //     .match(/\((.*)\)/)
-  //   if (result) {
-  //     return result[1]
-  //   }
-  //   return false
-  // }
+  async getUserDataFromWebsite() {
+    // I think that if we cannot find the user mail, this should not be an connector execution
+    // error
+    return {
+      sourceAccountIdentifier:
+        (await this.runInWorker('getUserMail')) ||
+        DEFAULT_SOURCE_ACCOUNT_IDENTIFIER,
+    }
+  }
 
   // async fetch(context) {
   //   log.debug('fetch start')
@@ -76,23 +76,28 @@ class OrangeContentScript extends ContentScript {
     if (
       document.location.href.includes(
         'https://espace-client.orange.fr/page-accueil',
-      ) && document.querySelector('[class="is-mobile is-logged"]')
-        ? true
-        : false
+      ) &&
+      document.querySelector('[class="is-mobile is-logged"]')
     ) {
-      await sleep(10)
       return true
     }
     // If Sosh page is detected
     if (
       document.location.href.includes(
         'https://espace-client.orange.fr/accueil',
-      ) && document.querySelector('[id="oecs__connecte-se-deconnecter"]')
-        ? true
-        : false
+      ) &&
+      document.querySelector('[id="oecs__connecte-se-deconnecter"]')
     ) {
-      await sleep(10)
       return true
+    }
+    return false
+  }
+  async getUserMail() {
+    const result = document.querySelector(
+      '.oecs__zone-footer-button-mail',
+    ).innerHTML
+    if (result) {
+      return result
     }
     return false
   }
@@ -102,7 +107,7 @@ const connector = new OrangeContentScript()
 connector
   .init({
     additionalExposedMethodsNames: [
-      //      'waitForLoginForm',
+      'getUserMail',
       //      'checkOtpNeeded',
     ],
   })
@@ -110,8 +115,8 @@ connector
     console.warn(err)
   })
 
-function sleep(delay) {
-  return new Promise(resolve => {
-    setTimeout(resolve, delay * 1000)
-  })
-}
+// function sleep(delay) {
+//   return new Promise(resolve => {
+//     setTimeout(resolve, delay * 1000)
+//   })
+// }
