@@ -54,7 +54,7 @@ export const ClouderyView = ({ setInstanceData }) => {
         const normalizedInstance = instance.toLowerCase()
         const fqdn = new URL(normalizedInstance).host
         setInstanceData({
-          instance,
+          instance: normalizedInstance,
           fqdn
         })
         return false
