@@ -1,12 +1,11 @@
-import Minilog from '@cozy/minilog'
 import React, { useCallback, useState, useEffect } from 'react'
 import { BackHandler } from 'react-native'
 import { WebView } from 'react-native-webview'
 import { useIsFocused } from '@react-navigation/native'
 
+import Minilog from '@cozy/minilog'
 import { useNativeIntent } from 'cozy-intent'
 
-import { jsCSSclassInjection } from './jsInteractions/jsCSSclassInjection'
 import { jsCozyGlobal } from './jsInteractions/jsCozyInjection'
 import {
   jsLogInterception,
@@ -79,11 +78,9 @@ export const CozyWebView = ({
 
   const run = `
     (function() {
-      ${jsCozyGlobal}
+      ${jsCozyGlobal(route.name)}
 
       ${jsLogInterception}
-
-      ${jsCSSclassInjection(route.name)}
 
       ${injectedJavaScriptBeforeContentLoaded}
 
