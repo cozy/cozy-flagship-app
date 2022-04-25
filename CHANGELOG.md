@@ -1,3 +1,9 @@
+# 0.0.7
+
+## 🔧 Tech
+
+* Ensure installation run on each platform
+
 # 0.0.1
 
 ## ✨ Features

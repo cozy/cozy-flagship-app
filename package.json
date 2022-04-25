@@ -12,6 +12,7 @@
     "ios": "react-native run-ios",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "pre-commit": "yarn lint",
+    "prepare": "cd ios && pod install",
     "start": "react-native start",
     "test": "jest connectors/**/* src/**/*",
     "token": "node scripts/token.js",
