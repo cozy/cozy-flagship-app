@@ -4,6 +4,7 @@ import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import {format} from 'date-fns'
 import waitFor from 'p-wait-for'
+import {SingleEntryPlugin} from 'webpack'
 
 const log = Minilog('ContentScript')
 Minilog.enable()
@@ -53,20 +54,23 @@ class OrangeContentScript extends ContentScript {
     }
   }
 
-  // async fetch(context) {
-  //   log.debug('fetch start')
-  //   const contact = await this.fetchContact()
-  //   const contracts = await this.fetchContracts()
-  //   await this.fetchAttestations(contracts, context)
-  //   await this.fetchBillsForAllContracts(contracts, context)
-  //   const echeancierResult = await this.fetchEcheancierBills(contracts, context)
-  //   const housing = this.formatHousing(
-  //     contracts,
-  //     echeancierResult,
-  //     await this.fetchHousing(),
-  //   )
-  //   await this.saveIdentity({contact, housing})
-  // }
+  async fetch(context) {
+    log.debug('fetch start')
+    // const contact = await this.fetchContact()
+    const contracts = await this.fetchBills()
+    this.log('contracts founded')
+    this.log(contracts)
+    // await this.fetchAttestations(contracts, context)
+    // await this.fetchBillsForAllContracts(contracts, context)
+    // const echeancierResult = await this.fetchEcheancierBills(contracts, context)
+    // const housing = this.formatHousing(
+    //   contracts,
+    //   echeancierResult,
+    //   await this.fetchHousing(),
+    // )
+    // await this.saveIdentity({contact, housing})
+    // await this.saveBills()
+  }
 
   //////////
   //WORKER//
@@ -93,6 +97,7 @@ class OrangeContentScript extends ContentScript {
     return false
   }
   async getUserMail() {
+    // For Sosh page
     const result = document.querySelector(
       '.oecs__zone-footer-button-mail',
     ).innerHTML
@@ -101,22 +106,37 @@ class OrangeContentScript extends ContentScript {
     }
     return false
   }
+
+  async fetchBills() {
+    // this.waitForElementInWorker('[class="ob1-link-icon ml-1 py-1"]')
+    // sleep(3000)
+    this.log('fetching bills')
+    const parsedElem = document.querySelectorAll(
+      '[class="ob1-link-icon ml-1 py-1"]',
+    )
+
+    this.log(parsedElem)
+    // const billPageRef = document.body.match(/facture-paiement\/([0-9]*)/g)
+    // this.log(billPageRef)
+    // const billsPage = await ky
+    //   .get(
+    //     `https://espace-client.orange.fr/ecd_wp/facture/v2.0/billsAndPaymentInfos/users/current/contracts/${billPageRef}`,
+    //   )
+    //   .json()
+  }
 }
 
 const connector = new OrangeContentScript()
 connector
   .init({
-    additionalExposedMethodsNames: [
-      'getUserMail',
-      //      'checkOtpNeeded',
-    ],
+    additionalExposedMethodsNames: ['getUserMail', 'fetchBills'],
   })
   .catch(err => {
     console.warn(err)
   })
 
-// function sleep(delay) {
-//   return new Promise(resolve => {
-//     setTimeout(resolve, delay * 1000)
-//   })
-// }
+function sleep(delay) {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay * 1000)
+  })
+}
