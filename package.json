@@ -44,7 +44,7 @@
     "react-dom": "17.0.2",
     "react-native": "0.66.4",
     "react-native-bootsplash": "3.2.3",
-    "react-native-fs": "^2.18.0",
+    "react-native-fs": "^2.19.0",
     "react-native-gesture-handler": "1.10.3",
     "react-native-google-safetynet": "npm:cozy-react-native-google-safetynet@^1.0.1",
     "react-native-immersive-bars": "^1.0.4",
