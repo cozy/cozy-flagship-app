@@ -18,7 +18,7 @@ export const TransitionToAuthorizeView = ({ setTransitionEnded }) => {
   const animationDelayInSecond = 400
   const animationDurationInSecond = 200
 
-  // we suppose the diplayed Cozy logo is a square
+  // we suppose the displayed Cozy logo is a square
   const initialSize = 200
   const targetSize = Dimensions.get('window').height * 2
 
@@ -28,7 +28,7 @@ export const TransitionToAuthorizeView = ({ setTransitionEnded }) => {
   const targetScale = initialSize / targetSize
 
   const animatedScale = useRef(new Animated.Value(targetScale)).current
-  const animatedOpactity = useRef(new Animated.Value(0)).current
+  const animatedOpacity = useRef(new Animated.Value(0)).current
 
   const [started, setStarted] = useState(false)
 
@@ -45,9 +45,9 @@ export const TransitionToAuthorizeView = ({ setTransitionEnded }) => {
       setStarted(true)
 
       animatedScale.setValue(targetScale)
-      animatedOpactity.setValue(0)
+      animatedOpacity.setValue(0)
 
-      const opacityAnimation = Animated.timing(animatedOpactity, {
+      const opacityAnimation = Animated.timing(animatedOpacity, {
         toValue: 1,
         duration: animationDurationInSecond,
         easing: Easing.ease,
@@ -71,7 +71,7 @@ export const TransitionToAuthorizeView = ({ setTransitionEnded }) => {
         }
       })
     })
-  }, [animatedOpactity, animatedScale, targetScale])
+  }, [animatedOpacity, animatedScale, targetScale])
 
   return (
     <Animated.View
@@ -102,7 +102,7 @@ export const TransitionToAuthorizeView = ({ setTransitionEnded }) => {
         style={[
           styles.foreground,
           {
-            opacity: animatedOpactity,
+            opacity: animatedOpacity,
             backgroundColor: colors.paperBackgroundColor
           }
         ]}

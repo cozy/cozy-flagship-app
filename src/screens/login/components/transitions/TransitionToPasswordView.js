@@ -41,7 +41,7 @@ export const TransitionToPasswordView = ({
 
   const animatedTranslateY = useRef(new Animated.Value(0)).current
   const animatedScale = useRef(new Animated.Value(1)).current
-  const animatedOpactity = useRef(new Animated.Value(1)).current
+  const animatedOpacity = useRef(new Animated.Value(1)).current
 
   useEffect(() => {
     if (requestTransitionStart) {
@@ -84,7 +84,7 @@ export const TransitionToPasswordView = ({
           useNativeDriver: true
         })
 
-        const opacityAnimation = Animated.timing(animatedOpactity, {
+        const opacityAnimation = Animated.timing(animatedOpacity, {
           toValue: targetBackgroundOpacity,
           duration: fadeOutDurationInSecond,
           useNativeDriver: true
@@ -103,7 +103,7 @@ export const TransitionToPasswordView = ({
         })
       })
     },
-    [animatedOpactity, animatedScale, animatedTranslateY, initialTop]
+    [animatedOpacity, animatedScale, animatedTranslateY, initialTop]
   )
 
   return (
@@ -112,7 +112,7 @@ export const TransitionToPasswordView = ({
         style={[
           styles.background,
           {
-            opacity: animatedOpactity,
+            opacity: animatedOpacity,
             backgroundColor: colors.primaryColor
           }
         ]}
