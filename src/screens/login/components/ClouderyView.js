@@ -7,6 +7,8 @@ import { getColors } from '../../../theme/colors'
 import { getUriFromRequest } from '../../../libs/functions/getUriFromRequest'
 import { setFocusOnWebviewField } from '../../../libs/functions/keyboardHelper'
 
+import { jsCozyGlobal } from '../../../components/webviews/jsInteractions/jsCozyInjection'
+import { jsLogInterception } from '../../../components/webviews/jsInteractions/jsLogInterception'
 const isLoginPage = requestUrl => {
   const url = new URL(requestUrl)
 
@@ -18,6 +20,16 @@ const isOnboardPage = requestUrl => {
 
   return url.pathname === '/v2/cozy/onboard'
 }
+
+const run = `
+    (function() {
+      ${jsCozyGlobal()}
+
+      ${jsLogInterception}
+
+      return true;
+    })();
+  `
 
 /**
  * Displays the Cloudery web page where the user can specify their Cozy instance
@@ -79,6 +91,7 @@ export const ClouderyView = ({ setInstanceData }) => {
         ref={webviewRef}
         onShouldStartLoadWithRequest={handleNavigation}
         onLoadEnd={() => setLoading(false)}
+        injectedJavaScriptBeforeContentLoaded={run}
       />
       {loading && (
         <View
