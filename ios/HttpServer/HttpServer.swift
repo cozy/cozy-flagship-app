@@ -61,7 +61,7 @@ class HttpServer: NSObject {
     let basePath = "/"
     let directoryPath = self.www_root
     let indexFilename = "index.html"
-    let cacheAge: UInt = 3600
+    let cacheAge: UInt = 0
     let allowRangeRequests = true
 
     webServer.addHandler { requestMethod, requestURL, requestHeaders, urlPath, urlQuery in
