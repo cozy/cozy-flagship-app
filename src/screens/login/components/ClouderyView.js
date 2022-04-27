@@ -92,6 +92,9 @@ export const ClouderyView = ({ setInstanceData }) => {
         onShouldStartLoadWithRequest={handleNavigation}
         onLoadEnd={() => setLoading(false)}
         injectedJavaScriptBeforeContentLoaded={run}
+        style={{
+          backgroundColor: colors.primaryColor
+        }}
       />
       {loading && (
         <View
