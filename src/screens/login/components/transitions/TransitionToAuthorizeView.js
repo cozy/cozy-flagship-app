@@ -20,7 +20,7 @@ export const TransitionToAuthorizeView = ({ setTransitionEnded }) => {
 
   // we suppose the diplayed Cozy logo is a square
   const initialSize = 200
-  const targetSize = 1600
+  const targetSize = Dimensions.get('window').height * 2
 
   const targetTop = Dimensions.get('window').height / 2 - targetSize / 2
   const targetLeft = Dimensions.get('window').width / 2 - targetSize / 2
