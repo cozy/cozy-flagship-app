@@ -2,6 +2,7 @@
 
 ## ✨ Features
 
+* show/hide InApp Browser on cozy-intent call
 
 ## 🐛 Bug Fixes
 

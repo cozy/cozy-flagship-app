@@ -6,6 +6,7 @@ import { openApp } from '../functions/openApp'
 import { resetSessionToken } from '../functions/session'
 import { setFlagshipUI } from './setFlagshipUI'
 import { isDevMode } from '../utils'
+import { showInAppBrowser, closeInAppBrowser } from './InAppBrowser'
 
 export const asyncLogout = async () => {
   await clearClient()
@@ -38,5 +39,7 @@ export const localMethods = {
   logout,
   openApp: (href, app, iconParams) =>
     openApp(RootNavigation, href, app, iconParams),
-  setFlagshipUI
+  setFlagshipUI,
+  showInAppBrowser,
+  closeInAppBrowser
 }
