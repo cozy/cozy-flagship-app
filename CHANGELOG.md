@@ -5,6 +5,7 @@
 
 ## 🐛 Bug Fixes
 
+* Prevent crash during the animated transition after login
 
 ## 🔧 Tech
 
