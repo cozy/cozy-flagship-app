@@ -27,6 +27,8 @@ jobs:
       env:
         - JOB_NAME=IOS
       script:
+        - yes Y | gem uninstall cocoapods -aIx
+        - gem install cocoapods -v 1.10.1
         - npm install -g yarn
         - yarn --frozen-lockfile
         - cd ios && pod install --deployment
