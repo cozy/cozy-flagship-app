@@ -9,14 +9,24 @@ cache:
     - node_modules
 
 stages:
- - lint
  - test
 
 jobs:
   include:
     - name: Lint
-      stage: lint
+      stage: test
       script: yarn lint
     - name: Test
       stage: test
       script: yarn test --coverage
+    - name: "Pod install check"
+      stage: test
+      os: osx
+      language: objective-c
+      osx_image: xcode13.3
+      env:
+        - JOB_NAME=IOS
+      script:
+        - npm install -g yarn
+        - yarn --frozen-lockfile
+        - cd ios && pod install --deployment
