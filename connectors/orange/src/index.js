@@ -1,10 +1,19 @@
 import ContentScript from '../../connectorLibs/ContentScript'
 import {kyScraper as ky} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
-import get from 'lodash/get'
-import {format} from 'date-fns'
-import waitFor from 'p-wait-for'
-import {SingleEntryPlugin} from 'webpack'
+// import get from 'lodash/get'
+// import {format} from 'date-fns'
+// import waitFor from 'p-wait-for'
+
+const apiKy = ky.extend({
+  hooks: {
+    beforeRequest: [
+      request => {
+        request.headers.set('X-Orange-Caller-Id', 'ECQ')
+      },
+    ],
+  },
+})
 
 const log = Minilog('ContentScript')
 Minilog.enable()
@@ -56,12 +65,27 @@ class OrangeContentScript extends ContentScript {
 
   async fetch(context) {
     log.debug('fetch start')
-    // const contact = await this.fetchContact()
-    const contracts = await this.fetchBills()
-    this.log('contracts founded')
-    this.log(contracts)
-    // await this.fetchAttestations(contracts, context)
-    // await this.fetchBillsForAllContracts(contracts, context)
+    await this.waitForElementInWorker('a[class="ob1-link-icon ml-1 py-1"]')
+    const clientRef = await this.runInWorker('findClientRef')
+    if (clientRef) {
+      this.log('clientRef founded')
+      await this.setWorkerState({
+        visible: false,
+        url: `https://espace-client.orange.fr/facture-paiement/${clientRef}`,
+      })
+      await this.waitForElementInWorker('[data-e2e="bp-tile-historic"]')
+      await this.setWorkerState({
+        visible: false,
+        url: `https://espace-client.orange.fr/facture-paiement/${clientRef}/historique-des-factures`,
+      })
+      await this.waitForElementInWorker(
+        '[aria-labelledby="bp-billsHistoryTitle"]',
+      )
+      const pdfButton = this.runInWorker('tryClickOnePdf')
+    }
+    // await this.runInWorker('fetchBills', clientRef)
+
+    // await this.findClientRefForAllContracts(contracts, context)
     // const echeancierResult = await this.fetchEcheancierBills(contracts, context)
     // const housing = this.formatHousing(
     //   contracts,
@@ -70,6 +94,15 @@ class OrangeContentScript extends ContentScript {
     // )
     // await this.saveIdentity({contact, housing})
     // await this.saveBills()
+  }
+
+  findPdfButton() {
+    this.log('Starting findPdfButton')
+    const button = Array.from(
+      document.querySelectorAll('a[class="icon-pdf-file bp-downloadIcon"]'),
+    )
+    log.debug(button[0])
+    return button[0]
   }
 
   //////////
@@ -107,36 +140,75 @@ class OrangeContentScript extends ContentScript {
     return false
   }
 
-  async fetchBills() {
-    // this.waitForElementInWorker('[class="ob1-link-icon ml-1 py-1"]')
-    // sleep(3000)
-    this.log('fetching bills')
-    const parsedElem = document.querySelectorAll(
-      '[class="ob1-link-icon ml-1 py-1"]',
-    )
+  async findClientRef() {
+    let parsedElem
+    let clientRef
+    if (document.querySelector('a[class="ob1-link-icon ml-1 py-1"]')) {
+      this.log('Elements founded')
+      parsedElem = document
+        .querySelectorAll('a[class="ob1-link-icon ml-1 py-1"]')[1]
+        .getAttribute('href')
 
-    this.log(parsedElem)
-    // const billPageRef = document.body.match(/facture-paiement\/([0-9]*)/g)
-    // this.log(billPageRef)
-    // const billsPage = await ky
-    //   .get(
-    //     `https://espace-client.orange.fr/ecd_wp/facture/v2.0/billsAndPaymentInfos/users/current/contracts/${billPageRef}`,
-    //   )
-    //   .json()
+      this.log(parsedElem)
+      const clientRefArray = parsedElem.match(/([0-9]*)/g)
+      this.log(clientRefArray.length)
+
+      for (let i = 0; i < clientRefArray.length; i++) {
+        this.log('Get in loop')
+
+        const testedIndex = clientRefArray.pop()
+        this.log('This is length of testIndex')
+        this.log(testedIndex)
+        if (testedIndex.length === 0) {
+          this.log('No clientRef founded')
+          this.log(testedIndex.length)
+        } else {
+          this.log('clientRef founded')
+          clientRef = testedIndex
+          break
+        }
+      }
+      this.log('this is clientRef')
+      return clientRef
+    }
+  }
+
+  async tryClickOnePdf() {
+    const button = this.findPdfButton()
+    if (button.length === 0) {
+      this.log('ERROR Could not find pdf button')
+      return 'VENDOR_DOWN'
+    }
+    button.click()
+  }
+
+  async fetchBills(clientRef) {
+    this.log('Fetching Bills')
+    const billsPage = await apiKy
+      .get(
+        `https://espace-client.orange.fr/ecd_wp/facture/v2.0/billsAndPaymentInfos/users/current/contracts/${clientRef}`,
+      )
+      .json()
+    log.debug(billsPage)
   }
 }
 
 const connector = new OrangeContentScript()
 connector
   .init({
-    additionalExposedMethodsNames: ['getUserMail', 'fetchBills'],
+    additionalExposedMethodsNames: [
+      'getUserMail',
+      'findClientRef',
+      'fetchBills',
+      'tryClickOnePdf',
+    ],
   })
   .catch(err => {
     console.warn(err)
   })
 
-function sleep(delay) {
-  return new Promise(resolve => {
-    setTimeout(resolve, delay * 1000)
-  })
-}
+// function sleep(delay) {
+//   return new Promise(resolve => {
+//     setTimeout(resolve, delay * 1000)
+//   })
+// }
