@@ -32,25 +32,27 @@ jobs:
         - npm install -g yarn
         - yarn --frozen-lockfile
         - cd ios && pod install --deployment
-      cache:
-        - cocoapods
-    - name: "Android build"
-      stage: build
-      os: linux
-      language: android
-      jdk: oraclejdk8
-      sudo: required
-      android:
-        components:
-          - platform-tools
-          - tools
-          - build-tools-26.0.3
-          - android-21
-          - android-26
-          - sys-img-armeabi-v7a-android-21
-          - extra-android-m2repository
-          - extra-google-m2repository
-          - extra-google-google_play_services
-      env:
-        - JOB_NAME=ANDROID
-      script: .travis/ci.sh
+      cache: cocoapods
+      podfile: ios/Podfile
+#    - name: "Android build"
+#      stage: build
+#      os: linux
+#      language: android
+#      jdk: oraclejdk8
+#      sudo: required
+#      android:
+#        components:
+#          - platform-tools
+#          - tools
+#          - build-tools-26.0.3
+#          - android-21
+#          - android-26
+#          - sys-img-armeabi-v7a-android-21
+#          - extra-android-m2repository
+#          - extra-google-m2repository
+#          - extra-google-google_play_services
+#      env:
+#        - JOB_NAME=ANDROID
+#      script: .travis/ci.sh
+    - name: "Connector builds"
+      script: echo 0

@@ -24,7 +24,7 @@ Before creating the release bundle, always do the following:
     - `npx react-native run-android --variant=release`
 - The generated AAB (Android App Bundle) is in `android/app/build/outputs/bundle/release/app-release.aab`
 
-# Release on Apple AppStore (iOS)
+# Release on Apple Store (iOS)
 
 - Execute `cd ios && pod install`
 - Open `ios/CozyReactNative.xcworkspace` in XCode
