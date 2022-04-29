@@ -9,7 +9,9 @@ cache:
     - node_modules
 
 stages:
+ - install # to be removed
  - test
+ - build
 
 jobs:
   include:
@@ -20,15 +22,35 @@ jobs:
       stage: test
       script: yarn test --coverage
     - name: "Pod install check"
-      stage: test
+      stage: install
       os: osx
       language: objective-c
       osx_image: xcode13.3
       env:
         - JOB_NAME=IOS
       script:
-        - yes Y | gem uninstall cocoapods -aIx
-        - gem install cocoapods -v 1.10.1
         - npm install -g yarn
         - yarn --frozen-lockfile
         - cd ios && pod install --deployment
+      cache:
+        - cocoapods
+    - name: "Android build"
+      stage: build
+      os: linux
+      language: android
+      jdk: oraclejdk8
+      sudo: required
+      android:
+        components:
+          - platform-tools
+          - tools
+          - build-tools-26.0.3
+          - android-21
+          - android-26
+          - sys-img-armeabi-v7a-android-21
+          - extra-android-m2repository
+          - extra-google-m2repository
+          - extra-google-google_play_services
+      env:
+        - JOB_NAME=ANDROID
+      script: .travis/ci.sh
