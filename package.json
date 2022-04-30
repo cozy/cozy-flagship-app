@@ -79,7 +79,7 @@
     "babel-loader": "8.2.2",
     "babel-plugin-module-resolver": "4.1.0",
     "babel-plugin-optional-require": "0.3.1",
-    "babel-plugin-react-native-web": "0.17.1",
+    "babel-plugin-react-native-web": "0.17.7",
     "eslint": "^8.13.0",
     "eslint-config-cozy-app": "^4.0.1",
     "eslint-plugin-react-hooks": "^4.4.0",
