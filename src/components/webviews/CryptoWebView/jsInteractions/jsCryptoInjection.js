@@ -27,6 +27,7 @@ export const html = `
       <div id="main"></div>
       <script language='javascript'>
         ${jsCode}
+        window.crypto.subtle.digest("SHA-256")
       </script>
     </body>
   </html>
