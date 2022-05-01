@@ -21,6 +21,7 @@ import { useAppBootstrap } from './hooks/useAppBootstrap.js'
 import { routes } from './constants/routes.js'
 import { CryptoWebView } from './components/webviews/CryptoWebView/CryptoWebView'
 import { withSentry } from './Sentry'
+import { ErrorScreen } from './screens/error/ErrorScreen.jsx'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -72,6 +73,12 @@ const App = () => {
       screenOptions={{ headerShown: false }}
     >
       <Root.Screen name={routes.stack} component={StackNavigator} />
+
+      <Root.Screen
+        name={routes.error}
+        component={ErrorScreen}
+        options={{ type: initialRoute.root }}
+      />
 
       <Root.Screen
         name={routes.cozyapp}

@@ -2,13 +2,18 @@ import React, { useEffect, useRef, useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
 import { WebView } from 'react-native-webview'
 
+import Minilog from '@cozy/minilog'
+
 import strings from '../../../strings.json'
 import { getColors } from '../../../theme/colors'
 import { getUriFromRequest } from '../../../libs/functions/getUriFromRequest'
 import { setFocusOnWebviewField } from '../../../libs/functions/keyboardHelper'
-
+import { NetService } from '../../../libs/services/NetService'
 import { jsCozyGlobal } from '../../../components/webviews/jsInteractions/jsCozyInjection'
 import { jsLogInterception } from '../../../components/webviews/jsInteractions/jsLogInterception'
+
+const log = Minilog('ClouderyView')
+
 const isLoginPage = requestUrl => {
   const url = new URL(requestUrl)
 
@@ -50,6 +55,10 @@ export const ClouderyView = ({ setInstanceData }) => {
   const colors = getColors()
 
   const handleNavigation = request => {
+    NetService.isOffline()
+      .then(isOffline => isOffline && NetService.handleOffline())
+      .catch(error => log.error(error))
+
     if (request.loading) {
       if (isLoginPage(request.url) && request.url !== strings.loginUri) {
         setUri(strings.loginUri)

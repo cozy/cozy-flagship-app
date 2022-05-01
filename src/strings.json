@@ -23,5 +23,8 @@
     "wrong2FA": "Le code que vous avez entré n'est pas correct, merci de réessayer.",
     "invalidPassword": "Les identifiants que vous avez saisis sont incorrects, veuillez ré-essayer."
   },
+  "errorScreens": {
+    "offline": "offline"
+  },
   "APPS_ICONS": "APPS_ICONS"
 }
