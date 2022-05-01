@@ -2,8 +2,10 @@ import Minilog from '@cozy/minilog'
 import { Linking } from 'react-native'
 import { useEffect, useState } from 'react'
 
+import strings from '../strings.json'
 import { SentryTags, setSentryTag } from '../Sentry'
 import { getClient } from '../libs/client'
+import { NetService } from '../libs/services/NetService'
 import { manageIconCache } from '../libs/functions/iconTable'
 import { navigate } from '../libs/RootNavigation'
 import { routes } from '../constants/routes'
@@ -93,11 +95,27 @@ export const useAppBootstrap = () => {
         if (!client) {
           const onboardingUrl = await Linking.getInitialURL()
 
+          if (await NetService.isOffline()) {
+            NetService.toggleNetWatcher()
+
+            setInitialRoute({
+              stack: undefined,
+              root: strings.errorScreens.offline
+            })
+
+            return setInitialScreen({
+              stack: routes.authenticate,
+              root: routes.error
+            })
+          }
+
           const onboardingParams = parseOnboardingURL(onboardingUrl)
+
           if (onboardingParams) {
             const { registerToken, fqdn } = onboardingParams
 
             setInitialRoute({ stack: undefined, root: undefined })
+
             return setInitialScreen({
               stack: routes.onboarding,
               root: routes.nested,
