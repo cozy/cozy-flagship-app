@@ -355,7 +355,7 @@ public class CozySimpleWebServer extends NanoHTTPD {
     return response;
   }
 
-  private Response respond(Map<String, String> headers, IHTTPSession session, String uri) {
+  public Response respond(Map<String, String> headers, IHTTPSession session, String uri) {
     // First let's handle CORS OPTION query
     Response r;
     if (cors != null && Method.OPTIONS.equals(session.getMethod())) {
