@@ -1,17 +1,18 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { BackHandler } from 'react-native'
-import { WebView } from 'react-native-webview'
 import { useIsFocused } from '@react-navigation/native'
 
 import Minilog from '@cozy/minilog'
 import { useNativeIntent } from 'cozy-intent'
 
-import { jsCozyGlobal } from './jsInteractions/jsCozyInjection'
+import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
 import {
   jsLogInterception,
   tryConsole
-} from './jsInteractions/jsLogInterception'
-import { useSession } from '../../hooks/useSession.js'
+} from '/components/webviews/jsInteractions/jsLogInterception'
+import { jsOnbeforeunload } from '/components/webviews/jsInteractions/jsOnbeforeunload'
+import { useSession } from '/hooks/useSession'
+import ReloadInterceptorWebView from '/components/webviews/ReloadInterceptorWebView'
 
 const log = Minilog('CozyWebView')
 
@@ -26,6 +27,9 @@ export const CozyWebView = ({
   injectedJavaScriptBeforeContentLoaded,
   ...rest
 }) => {
+  // To test interception, uncomment this block
+  // const [timestamp, setTimestamp] = useState(Date.now())
+  const [, setTimestamp] = useState(Date.now())
   const [webviewRef, setWebviewRef] = useState()
   const [uri, setUri] = useState()
   const nativeIntent = useNativeIntent()
@@ -36,7 +40,7 @@ export const CozyWebView = ({
    * First render: no uri
    * Second render: use uri from props
    * We're doing this to handle the cases were uri was modified by the handleInterceptAuth() function
-   * On subsequent renders, if the uri props ever change, it will overrides the session_code uri created by handleInterceptAuth()
+   * On subsequent renders, if the uri props ever change, it will override the session_code uri created by handleInterceptAuth()
    */
   useEffect(() => {
     setUri(source.uri)
@@ -82,17 +86,27 @@ export const CozyWebView = ({
 
       ${injectedJavaScriptBeforeContentLoaded}
 
+      ${jsOnbeforeunload}
+
       return true;
     })();
   `
 
   return uri ? (
-    <WebView
+    <ReloadInterceptorWebView
       {...rest}
       onNavigationStateChange={event => {
         setCanGoBack(event.canGoBack)
       }}
-      source={{ uri }}
+      source={{
+        // To test interception, uncomment this block
+        //         html: `<html><body>
+        // <button onclick="window.location.reload()" style="margin: 80px; font-size: 40px;">Reload()</button>
+        // <!--rendered at ${timestamp} -->
+        // </body></html>`,
+        //         baseUrl: uri,
+        uri
+      }}
       injectedJavaScriptBeforeContentLoaded={run}
       originWhitelist={['*']}
       useWebKit={true}
@@ -128,6 +142,8 @@ export const CozyWebView = ({
           parentOnMessage(m)
         }
       }}
+      triggerWebViewReload={() => setTimestamp(Date.now())}
+      targetUri={uri}
     />
   ) : null
 }
