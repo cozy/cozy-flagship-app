@@ -1,6 +1,6 @@
 {
   "name": "cozy-react-native",
-  "version": "0.0.5",
+  "version": "0.0.8",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
