@@ -1,14 +1,30 @@
+# 0.0.9
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+
 # 0.0.8
 
 ## ✨ Features
 
-* show/hide InApp Browser on cozy-intent call
+* show/hide InApp Browser on cozy-intent call ([PR #179](https://github.com/cozy/cozy-pass-mobile/pull/179))
 
 ## 🐛 Bug Fixes
 
-* Prevent crash during the animated transition after login
+* Force the instance to be lowercase after validating ClouderyView ([PR #169](https://github.com/cozy/cozy-pass-mobile/pull/169))
+* Prevent crash during the animated transition after login ([PR #178](https://github.com/cozy/cozy-pass-mobile/pull/178))
+* Disable zoom on weviews ([PR #176](https://github.com/cozy/cozy-pass-mobile/pull/176))
+* Set a background color to ClouderyWebview ([PR #176](https://github.com/cozy/cozy-pass-mobile/pull/176))
+* Fix possible cases of failed handshake preventing webview apps to communicate with the native code ([PR #168](https://github.com/cozy/cozy-pass-mobile/pull/168))
 
 ## 🔧 Tech
+* Improve webview env injection ([PR #167](https://github.com/cozy/cozy-pass-mobile/pull/167))
 
 
 # 0.0.7
