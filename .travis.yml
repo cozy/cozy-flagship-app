@@ -39,7 +39,11 @@ jobs:
         - yarn --frozen-lockfile
       script:
         - cd ios && pod install --deployment
-      cache: cocoapods
+      cache:
+        cocoapods: true
+        yarn: true
+        directories:
+          - node_modules
       podfile: ios/Podfile
 #    - name: "Android build"
 #      stage: build
