@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button, View, Text, TextInput } from 'react-native'
+import { styles } from './CozyAppScreen.styles'
 
 export const OnboardingConfigView = ({
   setOnboardingData,
@@ -26,10 +27,10 @@ export const OnboardingConfigView = ({
       <Text>Onboarding Link</Text>
       <TextInput onChangeText={onChangeOnboardingLink} value={onboardingLink} />
 
-      <View style={{ marginTop: 20 }}>
+      <View style={styles.viewButton}>
         <Button onPress={submit} title="Start OAuth" />
       </View>
-      <View style={{ marginTop: 20 }}>
+      <View style={styles.viewButton}>
         <Button onPress={() => cancelOnboarding()} title="Cancel Onboarding" />
       </View>
     </>

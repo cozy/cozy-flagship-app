@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, View, Text } from 'react-native'
+import { styles } from './OAuthSummaryView.styles'
 
 export const OAuthSummaryView = ({
   loginData,
@@ -9,13 +10,13 @@ export const OAuthSummaryView = ({
 }) => {
   return (
     <View>
-      <Text style={{ maxHeight: 300 }}>{JSON.stringify(loginData)}</Text>
+      <Text style={styles.loginDataText}>{JSON.stringify(loginData)}</Text>
       <Button onPress={() => startOAuth()} title="Start OAuth" />
-      <View style={{ marginTop: 20 }}>
+      <View style={styles.viewButton}>
         <Button onPress={() => cancelLogin()} title="Cancel OAuth" />
       </View>
       {cancelOnboarding && (
-        <View style={{ marginTop: 20 }}>
+        <View style={styles.viewButton}>
           <Button
             onPress={() => cancelOnboarding()}
             title="Cancel Onboarding"

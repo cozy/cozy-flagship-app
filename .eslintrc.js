@@ -11,6 +11,7 @@ module.exports = {
         trailingComma: 'none'
       }
     ],
+    'react-native/no-inline-styles': 'error',
     'spaced-comment': ['error', 'always', { block: { exceptions: ['*'] } }]
   }
 }

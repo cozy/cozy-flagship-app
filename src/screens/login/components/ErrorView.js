@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button, View, Text } from 'react-native'
+import { styles } from './ErrorView.styles'
 
 /**
  * Display an error to the user
@@ -22,13 +23,13 @@ export const ErrorView = ({ errorMessage, error, button }) => {
       <Text>{errorMessage}</Text>
 
       {error && (
-        <View style={{ marginTop: 20 }}>
+        <View style={styles.errorView}>
           <Button onPress={toggleDetails} title="Show details" />
           {showDetails && <Text>{JSON.stringify(error)}</Text>}
         </View>
       )}
 
-      <View style={{ marginTop: 20 }}>
+      <View style={styles.titleView}>
         <Button onPress={button.callback} title={button.title} />
       </View>
     </View>

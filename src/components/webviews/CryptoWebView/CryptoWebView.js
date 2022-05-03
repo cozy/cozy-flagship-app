@@ -8,6 +8,7 @@ import {
   sendAnswer
 } from './cryptoObservable/cryptoObservable'
 import { html } from './jsInteractions/jsCryptoInjection'
+import { styles } from './CryptoWebView.styles'
 
 export const CryptoWebView = () => {
   const webviewRef = useRef()
@@ -37,7 +38,7 @@ export const CryptoWebView = () => {
   }, [webviewRef])
 
   return (
-    <View style={{ height: 0 }}>
+    <View style={styles.cryptoView}>
       <WebView
         ref={webviewRef}
         javaScriptEnabled={true}
