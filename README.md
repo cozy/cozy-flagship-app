@@ -161,4 +161,4 @@ Read the Sentry configuration paragraph above.
 
 2. Application blocked on the Splashscreen
 
-Start the last version of `cozy-home`, and try again
+Verify that the Cozy you are login into is using the last version of `cozy-home`, and try again
