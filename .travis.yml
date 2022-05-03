@@ -31,7 +31,7 @@ jobs:
       script:
         - npm install -g yarn
         - yarn --frozen-lockfile
-        - cd ios && pod install --deployment
+        # - cd ios && pod install --deployment
       cache: cocoapods
       podfile: ios/Podfile
 #    - name: "Android build"
