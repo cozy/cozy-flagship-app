@@ -55,4 +55,6 @@ jobs:
 #        - JOB_NAME=ANDROID
 #      script: .travis/ci.sh
     - name: "Connector builds"
-      script: echo 0
+      script:
+        - yarn install:connectors:all
+        - yarn build:connectors:all
