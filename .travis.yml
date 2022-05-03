@@ -28,10 +28,11 @@ jobs:
       osx_image: xcode13.3
       env:
         - JOB_NAME=IOS
-      script:
+      before_install:
         - npm install -g yarn
         - yarn --frozen-lockfile
-        # - cd ios && pod install --deployment
+      script:
+        - cd ios && pod install --deployment
       cache: cocoapods
       podfile: ios/Podfile
 #    - name: "Android build"
