@@ -7,6 +7,12 @@ cache:
   yarn: true
   directories:
     - node_modules
+    - connectors/amazon/node_modules
+    - connectors/blablacar/node_modules
+    - connectors/edf/node_modules
+    - connectors/googl-takeout/node_modules
+    - connectors/sncf/node_modules
+    - connectors/template/node_modules
 
 stages:
  - install # to be removed
@@ -59,3 +65,4 @@ jobs:
       script:
         - yarn install:connectors:all
         - yarn build:connectors:all
+      stage: build
