@@ -152,3 +152,13 @@ a. Run Android app on emulator
 
 6. To connect, use `http://cozy.192-168-1-102.nip.io:8080` if `192.168.1.102` is your ifconfig and after creating a nip.io URL from it.
    a. When using a nip.io URL, you must create a `cozy-stack` instance with the same FQDN (ex: `cozy.192-168-1-102.nip.io:8080`)
+
+#### Current errors
+
+1. XCode: `error: An organization slug is required`
+
+Read the Sentry configuration paragraph above.
+
+2. Application blocked on the Splashscreen
+
+Start the last version of `cozy-home`, and try again
