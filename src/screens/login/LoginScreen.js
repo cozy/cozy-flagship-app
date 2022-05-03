@@ -69,7 +69,7 @@ const LoginSteps = ({ setClient }) => {
   }
 
   const setInstanceData = async ({ instance, fqdn }) => {
-    if (await NetService.isOffline()) await NetService.handleOffline()
+    if (await NetService.isOffline()) NetService.handleOffline()
 
     try {
       const client = await createClient(instance)
@@ -124,7 +124,7 @@ const LoginSteps = ({ setClient }) => {
   }
 
   const startOAuth = useCallback(async () => {
-    if (await NetService.isOffline()) await NetService.handleOffline()
+    if (await NetService.isOffline()) NetService.handleOffline()
 
     try {
       const { loginData, instance, client } = state
@@ -168,7 +168,7 @@ const LoginSteps = ({ setClient }) => {
 
   const continueOAuth = useCallback(
     async twoFactorCode => {
-      if (await NetService.isOffline()) await NetService.handleOffline()
+      if (await NetService.isOffline()) NetService.handleOffline()
 
       try {
         const { loginData, client, twoFactorToken } = state
@@ -208,7 +208,7 @@ const LoginSteps = ({ setClient }) => {
   )
 
   const authorize = useCallback(async () => {
-    if (await NetService.isOffline()) await NetService.handleOffline()
+    if (await NetService.isOffline()) NetService.handleOffline()
 
     try {
       const { client, loginData, sessionCode } = state

@@ -1,10 +1,11 @@
 import NetInfo from '@react-native-community/netinfo'
 
-import strings from '../../strings.json'
+import strings from '/strings.json'
 import { NetService, _netInfoChangeHandler } from './NetService'
-import { routes } from '../../constants/routes'
+import { routes } from '/constants/routes'
 
 const mockReset = jest.fn()
+const callbackRoute = 'foo'
 
 jest.mock('../RootNavigation', () => ({
   reset: (...args) => mockReset(...args)
@@ -41,7 +42,7 @@ it('handles isOffline false', async () => {
 it('handles offline redirection', async () => {
   NetInfo.fetch.mockReturnValue({ isConnected: false })
 
-  await NetService.handleOffline()
+  NetService.handleOffline()
 
   expect(mockReset).toHaveBeenNthCalledWith(1, routes.error, {
     type: strings.errorScreens.offline
@@ -54,15 +55,38 @@ it('handle toggleNetWatcher', () => {
   NetService.toggleNetWatcher()
   NetService.toggleNetWatcher()
   NetService.toggleNetWatcher()
-  NetService.toggleNetWatcher(true)
+  NetService.toggleNetWatcher({ shouldUnsub: true })
   NetService.toggleNetWatcher()
   NetService.toggleNetWatcher()
   NetService.toggleNetWatcher()
   NetService.toggleNetWatcher()
-  NetService.toggleNetWatcher(true)
+  NetService.toggleNetWatcher({ shouldUnsub: true })
 
-  expect(NetInfo.addEventListener).toHaveBeenCalledTimes(2)
-  expect(cleanup).toHaveBeenCalledTimes(2)
+  expect(NetInfo.addEventListener).toHaveBeenNthCalledWith(
+    2,
+    expect.any(Function)
+  )
+  expect(cleanup).toHaveBeenNthCalledWith(2, expect.any(Function))
+})
+
+it('handle toggleNetWatcher with route', () => {
+  const cleanup = NetInfo.addEventListener
+
+  NetService.toggleNetWatcher({ callbackRoute })
+  NetService.toggleNetWatcher({ callbackRoute })
+  NetService.toggleNetWatcher({ callbackRoute })
+  NetService.toggleNetWatcher({ shouldUnsub: true, callbackRoute })
+  NetService.toggleNetWatcher({ callbackRoute })
+  NetService.toggleNetWatcher({ callbackRoute })
+  NetService.toggleNetWatcher({ callbackRoute })
+  NetService.toggleNetWatcher({ callbackRoute })
+  NetService.toggleNetWatcher({ shouldUnsub: true, callbackRoute })
+
+  expect(NetInfo.addEventListener).toHaveBeenNthCalledWith(
+    2,
+    expect.any(Function)
+  )
+  expect(cleanup).toHaveBeenNthCalledWith(2, expect.any(Function))
 })
 
 it('handles state callback', () => {
@@ -80,6 +104,25 @@ it('handles state callback on offline', () => {
 it('handles state callback on error', () => {
   const brokenState = undefined
   _netInfoChangeHandler(brokenState)
+
+  expect(mockReset).not.toHaveBeenCalled()
+})
+
+it('handles state callback with route', () => {
+  _netInfoChangeHandler({ isConnected: true }, callbackRoute)
+
+  expect(mockReset).toHaveBeenNthCalledWith(1, callbackRoute)
+})
+
+it('handles state callback on offline with route', () => {
+  _netInfoChangeHandler({ isConnected: false }, callbackRoute)
+
+  expect(mockReset).not.toHaveBeenCalled()
+})
+
+it('handles state callback on error with route', () => {
+  const brokenState = undefined
+  _netInfoChangeHandler(brokenState, callbackRoute)
 
   expect(mockReset).not.toHaveBeenCalled()
 })

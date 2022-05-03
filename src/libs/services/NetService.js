@@ -2,15 +2,15 @@ import NetInfo from '@react-native-community/netinfo'
 
 import Minilog from '@cozy/minilog'
 
-import { reset } from '../RootNavigation'
-import { routes } from '../../constants/routes'
-import strings from '../../strings.json'
+import strings from '/strings.json'
+import { reset } from '/libs/RootNavigation'
+import { routes } from '/constants/routes'
 
 const log = Minilog('NetService')
 
-export const _netInfoChangeHandler = state => {
+export const _netInfoChangeHandler = (state, callbackRoute = routes.stack) => {
   try {
-    state.isConnected && reset(routes.stack)
+    state.isConnected && reset(callbackRoute)
   } catch (error) {
     log.debug(error)
   }
@@ -19,10 +19,12 @@ export const _netInfoChangeHandler = state => {
 const makeNetWatcher = () => {
   let unsubscribe
 
-  return (shouldUnsub = false) => {
+  return ({ shouldUnsub, callbackRoute } = {}) => {
     if (!unsubscribe) {
       log.debug('Adding NetInfo listener')
-      unsubscribe = NetInfo.addEventListener(_netInfoChangeHandler)
+      unsubscribe = NetInfo.addEventListener(state =>
+        _netInfoChangeHandler(state, callbackRoute)
+      )
     }
 
     if (shouldUnsub) {
