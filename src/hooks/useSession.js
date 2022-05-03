@@ -3,8 +3,8 @@ import { useEffect, useMemo, useState } from 'react'
 
 import Minilog from '@cozy/minilog'
 
-import { NetService } from '/libs/services/NetService'
 import { makeSessionAPI } from '/libs/functions/session'
+import { NetService } from '/libs/services/NetService'
 import { routes } from '/constants/routes'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 
