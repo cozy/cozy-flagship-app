@@ -10,6 +10,7 @@
 
 ## 🔧 Tech
 
+* Run iOS installation on CI
 
 # 0.0.7
 
