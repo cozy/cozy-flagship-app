@@ -146,7 +146,6 @@ class LauncherView extends Component {
             <View style={workerStyle}>
               <View style={styles.headerStyle}>
                 <TouchableOpacity
-                  style={styles.ImageIconStyle}
                   activeOpacity={0.5}
                   onPress={this.onStopExecution}
                 >
