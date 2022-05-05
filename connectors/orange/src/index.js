@@ -24,10 +24,27 @@ const LOGIN_URL =
 const DEFAULT_PAGE_URL = BASE_URL + '/accueil'
 const DEFAULT_SOURCE_ACCOUNT_IDENTIFIER = 'orange'
 
+var proxied = window.XMLHttpRequest.prototype.open
+window.XMLHttpRequest.prototype.open = function () {
+  if (arguments[1].includes('/users/current/contracts')) {
+    var originalResponse = this
+
+    originalResponse.addEventListener('readystatechange', function (event) {
+      console.log('event', event)
+      if (originalResponse.readyState === 4) {
+        console.log('response', originalResponse.responseText)
+      }
+    })
+    return proxied.apply(this, [].slice.call(arguments))
+  }
+  return proxied.apply(this, [].slice.call(arguments))
+}
+
 class OrangeContentScript extends ContentScript {
   /////////
   //PILOT//
   /////////
+
   async ensureAuthenticated() {
     await this.goto(DEFAULT_PAGE_URL)
     log.debug('waiting for any authentication confirmation or login form...')
@@ -81,7 +98,20 @@ class OrangeContentScript extends ContentScript {
       await this.waitForElementInWorker(
         '[aria-labelledby="bp-billsHistoryTitle"]',
       )
-      const pdfButton = this.runInWorker('tryClickOnePdf')
+
+      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes
+      await this.waitForElementInWorker(
+        '[aria-labelledby="bp-billsHistoryyyTitle"]',
+      )
+
+      const pdfButton = this.runInWorker('tryClickOnePdf').addEventListener(
+        'click',
+        function (event) {
+          if (event.ctrlKey) {
+            event.preventDefault()
+          }
+        },
+      )
     }
     // await this.runInWorker('fetchBills', clientRef)
 
@@ -206,6 +236,8 @@ connector
   .catch(err => {
     console.warn(err)
   })
+
+// Used for debug purposes only
 
 // function sleep(delay) {
 //   return new Promise(resolve => {
