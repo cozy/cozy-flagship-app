@@ -18,8 +18,6 @@ const log = Minilog('CozyWebView')
 Minilog.enable()
 
 export const CozyWebView = ({
-  navigation,
-  onShouldStartLoadWithRequest,
   onMessage: parentOnMessage,
   logId = '',
   source,

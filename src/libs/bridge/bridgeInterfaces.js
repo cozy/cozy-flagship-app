@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  * @typedef PostMeConnection
  * @property {function} localHandle  : get handle to the local end of the connection

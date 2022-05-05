@@ -1,6 +1,10 @@
 module.exports = {
   extends: ['@react-native-community', 'cozy-app/react'],
   rules: {
+    'no-unused-vars': [
+      'error',
+      { vars: 'all', args: 'after-used', ignoreRestSiblings: false }
+    ],
     'prettier/prettier': [
       'error',
       {

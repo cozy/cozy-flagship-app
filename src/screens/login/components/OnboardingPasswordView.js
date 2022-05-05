@@ -26,7 +26,6 @@ import { getColors } from '../../../theme/colors'
  */
 const PasswordForm = ({
   errorMessage,
-  fqdn,
   instance,
   goBack,
   readonly,

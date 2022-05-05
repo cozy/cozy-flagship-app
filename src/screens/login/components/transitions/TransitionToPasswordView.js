@@ -58,7 +58,7 @@ export const TransitionToPasswordView = ({
 
   const transitionToFinal = useCallback(
     targetPosition => {
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         let { boxHeight, top, height } = targetPosition
 
         const targetScale = height / initialHeight
