@@ -52,6 +52,7 @@ class LauncherView extends Component {
 
   async initConnector() {
     const {client, launcherContext} = this.props
+    console.log(launcherContext)
     let result = null
     let connector = embeddedConnectors[launcherContext.job.message.konnector]
     if (!connector) {

@@ -1,5 +1,5 @@
 import ContentScript from '../../connectorLibs/ContentScript'
-import {kyScraper as ky} from '../../connectorLibs/utils'
+import {kyScraper as ky, blobToBase64} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
 // import get from 'lodash/get'
 // import {format} from 'date-fns'
@@ -23,6 +23,7 @@ const LOGIN_URL =
   'https://login.orange.fr/?service=nextecare&return_url=https%3A%2F%2Fespace-client.orange.fr%2Fpage-accueil#/password'
 const DEFAULT_PAGE_URL = BASE_URL + '/accueil'
 const DEFAULT_SOURCE_ACCOUNT_IDENTIFIER = 'orange'
+let bills = []
 
 var proxied = window.XMLHttpRequest.prototype.open
 window.XMLHttpRequest.prototype.open = function () {
@@ -36,6 +37,18 @@ window.XMLHttpRequest.prototype.open = function () {
       }
     })
     return proxied.apply(this, [].slice.call(arguments))
+  }
+  if (arguments[1].includes('facture/v1.0/pdf?billDate')) {
+    var originalResponse = this
+    originalResponse.addEventListener('readystatechange', function (event) {
+      console.log('event', event)
+      if (originalResponse.readyState === 4) {
+        console.log('response', originalResponse)
+        const billContent = blobToBase64(originalResponse.response)
+        bills.push(billContent)
+        console.log('bills', bills)
+      }
+    })
   }
   return proxied.apply(this, [].slice.call(arguments))
 }
@@ -99,21 +112,20 @@ class OrangeContentScript extends ContentScript {
         '[aria-labelledby="bp-billsHistoryTitle"]',
       )
 
-      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes
-      await this.waitForElementInWorker(
-        '[aria-labelledby="bp-billsHistoryyyTitle"]',
-      )
-
-      const pdfButton = this.runInWorker('tryClickOnePdf').addEventListener(
-        'click',
-        function (event) {
-          if (event.ctrlKey) {
-            event.preventDefault()
-          }
-        },
-      )
+      const pdfButtons = await this.runInWorker('tryClickOnePdf')
+      this.log('Get Out with pdfButtons')
+      this.log(this.store)
+      // await this.saveFiles([this.store.bills], {
+      //   context,
+      //   fileIdAttributes: ['vendorRef'],
+      //   contentType: 'application/pdf',
+      // })
     }
-    // await this.runInWorker('fetchBills', clientRef)
+
+    // Putting a falsy selector allows you to stay on the wanted page for debugging purposes
+    await this.waitForElementInWorker(
+      '[aria-labelledby="bp-billsHistoryyyTitle"]',
+    )
 
     // await this.findClientRefForAllContracts(contracts, context)
     // const echeancierResult = await this.fetchEcheancierBills(contracts, context)
@@ -126,13 +138,13 @@ class OrangeContentScript extends ContentScript {
     // await this.saveBills()
   }
 
-  findPdfButton() {
-    this.log('Starting findPdfButton')
-    const button = Array.from(
+  findPdfButtons() {
+    this.log('Starting findPdfButtons')
+    const buttons = Array.from(
       document.querySelectorAll('a[class="icon-pdf-file bp-downloadIcon"]'),
     )
-    log.debug(button[0])
-    return button[0]
+    log.debug(buttons[0])
+    return buttons
   }
 
   //////////
@@ -204,12 +216,28 @@ class OrangeContentScript extends ContentScript {
   }
 
   async tryClickOnePdf() {
-    const button = this.findPdfButton()
-    if (button.length === 0) {
+    log.debug('Get in tryClickOnePdf')
+    const buttons = this.findPdfButtons()
+    if (buttons[0].length === 0) {
       this.log('ERROR Could not find pdf button')
       return 'VENDOR_DOWN'
+    } else {
+      log.debug(buttons)
+      buttons[0].click()
+
+      log.debug('click clicked')
     }
-    button.click()
+    log.debug('sending to pilot')
+    const blobArray = []
+    for (let bill of bills) {
+      const blob = await bill
+      console.log('blob', blob)
+      blobArray.push(blob)
+    }
+    await this.sendToPilot({
+      blobArray,
+    })
+    return true
   }
 
   async fetchBills(clientRef) {
@@ -239,8 +267,8 @@ connector
 
 // Used for debug purposes only
 
-// function sleep(delay) {
-//   return new Promise(resolve => {
-//     setTimeout(resolve, delay * 1000)
-//   })
-// }
+function sleep(delay) {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay * 1000)
+  })
+}
