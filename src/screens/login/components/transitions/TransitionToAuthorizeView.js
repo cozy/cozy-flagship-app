@@ -32,14 +32,6 @@ export const TransitionToAuthorizeView = ({ setTransitionEnded }) => {
 
   const [started, setStarted] = useState(false)
 
-  useEffect(() => {
-    if (!started) {
-      doTransition()
-        .then(setTransitionEnded)
-        .catch(reason => log('error', reason.message))
-    }
-  }, [doTransition, started, setTransitionEnded])
-
   const doTransition = useCallback(() => {
     return new Promise(resolve => {
       setStarted(true)
@@ -72,6 +64,14 @@ export const TransitionToAuthorizeView = ({ setTransitionEnded }) => {
       })
     })
   }, [animatedOpacity, animatedScale, targetScale])
+
+  useEffect(() => {
+    if (!started) {
+      doTransition()
+        .then(setTransitionEnded)
+        .catch(reason => log('error', reason.message))
+    }
+  }, [doTransition, started, setTransitionEnded])
 
   return (
     <Animated.View
