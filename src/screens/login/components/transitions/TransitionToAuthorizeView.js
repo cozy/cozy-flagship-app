@@ -1,5 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Animated, Dimensions, Easing, StyleSheet, View } from 'react-native'
+import {
+  Animated,
+  Dimensions,
+  Easing,
+  Platform,
+  StyleSheet,
+  View
+} from 'react-native'
 import log from 'cozy-logger'
 
 import { CozyIcon } from './transitions-icons/CozyIcon'
@@ -19,13 +26,13 @@ export const TransitionToAuthorizeView = ({ setTransitionEnded }) => {
   const animationDurationInSecond = 200
 
   // we suppose the displayed Cozy logo is a square
-  const initialSize = 200
-  const targetSize = Dimensions.get('window').width
-
+  const targetSize =
+    Platform.OS === 'ios' ? 1600 : Dimensions.get('window').width
   const targetTop = Dimensions.get('window').height / 2 - targetSize / 2
   const targetLeft = Dimensions.get('window').width / 2 - targetSize / 2
 
-  const targetScale = initialSize / targetSize
+  const initialSize = 200
+  const targetScale = Platform.OS === 'ios' ? initialSize / targetSize : 1 / 4
 
   const animatedScale = useRef(new Animated.Value(targetScale)).current
   const animatedOpacity = useRef(new Animated.Value(0)).current
