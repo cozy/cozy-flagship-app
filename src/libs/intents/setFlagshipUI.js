@@ -31,7 +31,7 @@ export const setFlagshipUI = (intent, callerName) => {
             ? 'dark-content'
             : undefined
       })
-        .filter(([_k, v]) => v)
+        .filter(([, v]) => v)
         .map(([k, v]) => [k, v.trim()])
     )
   )

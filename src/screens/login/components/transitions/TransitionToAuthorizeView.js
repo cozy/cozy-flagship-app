@@ -41,7 +41,7 @@ export const TransitionToAuthorizeView = ({ setTransitionEnded }) => {
   }, [doTransition, started, setTransitionEnded])
 
   const doTransition = useCallback(() => {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       setStarted(true)
 
       animatedScale.setValue(targetScale)

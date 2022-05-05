@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Q, models } from 'cozy-client'
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'

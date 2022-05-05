@@ -7,7 +7,7 @@ import {
   cleanConnectorsFiles
 } from '../../libs/ConnectorInstaller'
 
-const DebugView = props => {
+const DebugView = () => {
   const [content, setContent] = useState('<h1>loading...</h1>')
 
   const onPress = async () => {
