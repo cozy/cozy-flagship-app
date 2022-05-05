@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, View, Text, TextInput } from 'react-native'
-import { styles } from './CozyAppScreen.styles'
+import { styles } from './OnboardingConfigView.styles'
 
 export const OnboardingConfigView = ({
   setOnboardingData,
