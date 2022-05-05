@@ -1,5 +1,5 @@
 import * as RootNavigation from '../RootNavigation'
-import { clearClient } from '../client'
+import { clearClient, getClient } from '../client'
 import { deleteKeychain } from '../keychain'
 import { hideSplashScreen } from '../services/SplashScreenService'
 import { openApp } from '../functions/openApp'
@@ -25,6 +25,23 @@ const backToHome = () => {
   RootNavigation.navigate('home')
 }
 
+/**
+ * Get a session code from the current cozy-client instance
+ *
+ * @returns {String}
+ * @throws
+ */
+const fetchSessionCode = async () => {
+  const client = await getClient()
+  const sessionCodeResult = await client.getStackClient().fetchSessionCode()
+
+  if (sessionCodeResult.session_code) {
+    return sessionCodeResult.session_code
+  }
+
+  throw new Error(JSON.stringify(sessionCodeResult))
+}
+
 export const internalMethods = {
   setFlagshipUI: intent =>
     setFlagshipUI(
@@ -41,5 +58,6 @@ export const localMethods = {
     openApp(RootNavigation, href, app, iconParams),
   setFlagshipUI,
   showInAppBrowser,
-  closeInAppBrowser
+  closeInAppBrowser,
+  fetchSessionCode
 }

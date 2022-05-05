@@ -25,8 +25,9 @@
 * Fix possible cases of failed handshake preventing webview apps to communicate with the native code ([PR #168](https://github.com/cozy/cozy-pass-mobile/pull/168))
 
 ## 🔧 Tech
-
 * Improve webview env injection ([PR #167](https://github.com/cozy/cozy-pass-mobile/pull/167))
+* Run iOS installation on CI
+* Expose fetchSessionCode method to cozy-intent
 
 # 0.0.7
 
