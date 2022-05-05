@@ -1,4 +1,6 @@
-export const styles = {
+import { StyleSheet } from 'react-native'
+
+export const styles = StyleSheet.create({
   ready: {
     backgroundColor: 'white',
     opacity: 1
@@ -33,4 +35,4 @@ export const styles = {
     opacity: 1
   },
   immersiveHeight: 0
-}
+})
