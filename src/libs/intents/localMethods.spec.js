@@ -7,6 +7,14 @@ import { localMethods, asyncLogout } from './localMethods'
 
 jest.mock('react-native-keychain')
 jest.mock('../RootNavigation.js')
+jest.mock('../client', () => {
+  return {
+    __esModule: true,
+    ...jest.requireActual('../client'),
+    getClient: jest.fn()
+  }
+})
+import { getClient } from '../client'
 
 describe('asyncLogout', () => {
   beforeEach(() => {
@@ -40,4 +48,32 @@ describe('backToHome', () => {
 
     expect(RootNavigation.navigate).toHaveBeenCalledWith('home')
   })
+})
+
+test('fetchSessionCode should return only a session code', async () => {
+  const fetchSessionCode = jest.fn()
+  getClient.mockResolvedValue({ getStackClient: () => ({ fetchSessionCode }) })
+
+  fetchSessionCode.mockResolvedValue({
+    session_code: 'test_session_code'
+  })
+
+  const result = await localMethods.fetchSessionCode()
+
+  expect(fetchSessionCode).toHaveBeenCalledTimes(1)
+  expect(result).toEqual('test_session_code')
+})
+
+test('fetchSessionCode should throw if no session code is returned', async () => {
+  const fetchSessionCode = jest.fn()
+  getClient.mockResolvedValue({ getStackClient: () => ({ fetchSessionCode }) })
+
+  fetchSessionCode.mockResolvedValue({
+    twoFactorToken: 'token'
+  })
+
+  await expect(localMethods.fetchSessionCode()).rejects.toThrowError(
+    JSON.stringify({ twoFactorToken: 'token' })
+  )
+  expect(fetchSessionCode).toHaveBeenCalledTimes(1)
 })
