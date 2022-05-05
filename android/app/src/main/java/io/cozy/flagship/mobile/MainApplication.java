@@ -16,6 +16,7 @@ import android.webkit.WebView;
 import com.rnfs.RNFSPackage;
 
 import io.cozy.flagship.mobile.keyboard.KeyboardPackage;
+import io.cozy.flagship.mobile.httpserver.HttpServerPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -34,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
           // packages.add(new MyReactNativePackage());
           // packages.add(new RNFSPackage());
           packages.add(new KeyboardPackage());
+          packages.add(new HttpServerPackage());
           return packages;
         }
 
