@@ -4,13 +4,16 @@ import { WebView } from 'react-native-webview'
 
 import Minilog from '@cozy/minilog'
 
-import strings from '../../../strings.json'
+import strings from '/strings.json'
 import { getColors } from '../../../theme/colors'
 import { getUriFromRequest } from '../../../libs/functions/getUriFromRequest'
 import { setFocusOnWebviewField } from '../../../libs/functions/keyboardHelper'
 import { NetService } from '../../../libs/services/NetService'
 import { jsCozyGlobal } from '../../../components/webviews/jsInteractions/jsCozyInjection'
 import { jsLogInterception } from '../../../components/webviews/jsInteractions/jsLogInterception'
+import { navigate } from '/libs/RootNavigation'
+import { routes } from '/constants/routes'
+import { rootCozyUrl } from 'cozy-client'
 
 const log = Minilog('ClouderyView')
 
@@ -51,10 +54,13 @@ const run = `
 export const ClouderyView = ({ setInstanceData }) => {
   const [uri, setUri] = useState(strings.loginUri)
   const [loading, setLoading] = useState(true)
+  const [checkInstanceData, setCheckInstanceData] = useState()
   const webviewRef = useRef()
   const colors = getColors()
 
   const handleNavigation = request => {
+    const instance = getUriFromRequest(request)
+
     NetService.isOffline()
       .then(isOffline => isOffline && NetService.handleOffline())
       .catch(error => log.error(error))
@@ -70,11 +76,10 @@ export const ClouderyView = ({ setInstanceData }) => {
         return false
       }
 
-      const instance = getUriFromRequest(request)
       if (instance) {
         const normalizedInstance = instance.toLowerCase()
         const fqdn = new URL(normalizedInstance).host
-        setInstanceData({
+        setCheckInstanceData({
           instance: normalizedInstance,
           fqdn
         })
@@ -84,6 +89,20 @@ export const ClouderyView = ({ setInstanceData }) => {
 
     return true
   }
+
+  useEffect(() => {
+    const asyncCore = async () => {
+      try {
+        await rootCozyUrl(new URL(checkInstanceData.instance))
+
+        setInstanceData({ ...checkInstanceData })
+      } catch {
+        navigate(routes.error, { type: strings.errorScreens.cozyNotFound })
+      }
+    }
+
+    checkInstanceData && asyncCore()
+  }, [checkInstanceData, setInstanceData])
 
   useEffect(() => {
     if (webviewRef && !loading) {
