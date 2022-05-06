@@ -1,14 +1,29 @@
-# 0.0.9
+# 0.0.10
 
 ## ✨ Features
 
-* Intercept redirection/reloading and refresh only WebView ([PR #187](https://github.com/cozy/cozy-react-native/pull/187))
 
 ## 🐛 Bug Fixes
 
 
 ## 🔧 Tech
 
+
+# 0.0.9
+
+## ✨ Features
+
+* The app now displays an Offline screen when no connection is available ([PR #180](https://github.com/cozy/cozy-pass-mobile/pull/180) and [PR #189](https://github.com/cozy/cozy-pass-mobile/pull/189))
+* Intercept redirection/reloading and refresh only WebView ([PR #187](https://github.com/cozy/cozy-react-native/pull/187))
+* The app now displays a NotFound screen when the entered Cozy url is not valid ([PR #197](https://github.com/cozy/cozy-react-native/pull/197))
+
+## 🐛 Bug Fixes
+
+* Prevent crash during the animated transition after login ([PR #205](https://github.com/cozy/cozy-pass-mobile/pull/205))
+
+## 🔧 Tech
+
+* Fix Android's Back button listener that would produce a memory leak ([PR #196](https://github.com/cozy/cozy-pass-mobile/pull/196))
 
 # 0.0.8
 
