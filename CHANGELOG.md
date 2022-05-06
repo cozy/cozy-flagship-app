@@ -2,6 +2,7 @@
 
 ## ✨ Features
 
+* Intercept redirection/reloading and refresh only WebView ([PR #187](https://github.com/cozy/cozy-react-native/pull/187))
 
 ## 🐛 Bug Fixes
 
@@ -14,7 +15,6 @@
 ## ✨ Features
 
 * show/hide InApp Browser on cozy-intent call ([PR #179](https://github.com/cozy/cozy-pass-mobile/pull/179))
-* Intercept redirection/reloading and refresh only WebView ([PR #187](https://github.com/cozy/cozy-react-native/pull/187))
 
 ## 🐛 Bug Fixes
 
@@ -27,7 +27,6 @@
 ## 🔧 Tech
 
 * Improve webview env injection ([PR #167](https://github.com/cozy/cozy-pass-mobile/pull/167))
-* Run iOS installation on CI
 
 # 0.0.7
 
