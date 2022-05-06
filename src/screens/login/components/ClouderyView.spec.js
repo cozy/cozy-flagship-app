@@ -6,6 +6,10 @@ import { ClouderyView } from './ClouderyView'
 
 const mockGetNextUrl = jest.fn()
 
+jest.mock('cozy-client', () => ({
+  rootCozyUrl: jest.fn()
+}))
+
 jest.mock('react-native-webview', () => {
   const React = require('react')
   class WebView extends React.Component {
@@ -34,13 +38,13 @@ describe('ClouderyView', () => {
   })
 
   describe('on handleNavigation', () => {
-    it('should convert instance and FQDN to lowercase', async () => {
-      // Given
-      const props = {
-        setInstanceData: jest.fn()
-      }
+    // Given
+    const props = {
+      setInstanceData: jest.fn()
+    }
 
-      const { getByTestId } = await render(<ClouderyView {...props} />)
+    it('should convert instance and FQDN to lowercase', () => {
+      const { getByTestId } = render(<ClouderyView {...props} />)
 
       const button = getByTestId('triggerStartLoadWithRequest')
 
@@ -48,8 +52,11 @@ describe('ClouderyView', () => {
       mockGetNextUrl.mockReturnValueOnce(
         'https://loginflagship?fqdn=SOMEINSTANCE.MYCOZY.CLOUD'
       )
-      fireEvent.press(button)
 
+      fireEvent.press(button)
+    })
+
+    afterAll(() => {
       // Then
       expect(props.setInstanceData).toHaveBeenCalledTimes(1)
       expect(props.setInstanceData).toHaveBeenCalledWith({

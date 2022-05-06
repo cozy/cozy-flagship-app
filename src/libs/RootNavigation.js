@@ -11,6 +11,8 @@ export const navigationRef = createNavigationContainerRef()
 
 const isReady = () => navigationRef.isReady()
 
+export const goBack = () => navigationRef.goBack()
+
 export const navigate = (name, params) => {
   try {
     if (isReady()) return navigationRef.navigate(name, params)

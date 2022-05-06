@@ -1,8 +1,0 @@
-{
-  "screens": {
-    "offline": {
-      "title": "Pas de connexion internet",
-      "body": "Vérifier votre connexion internet pour accéder à votre Cozy."
-    }
-  }
-}

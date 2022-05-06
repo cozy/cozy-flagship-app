@@ -24,6 +24,7 @@
     "invalidPassword": "Les identifiants que vous avez saisis sont incorrects, veuillez ré-essayer."
   },
   "errorScreens": {
+    "cozyNotFound": "cozyNotFound",
     "offline": "offline"
   },
   "APPS_ICONS": "APPS_ICONS"
