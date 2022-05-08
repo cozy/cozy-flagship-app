@@ -71,6 +71,9 @@ PODS:
     - FlipperKit/Core
     - FlipperKit/FlipperKitNetworkPlugin
   - fmt (6.2.1)
+  - GCDWebServer (3.5.4):
+    - GCDWebServer/Core (= 3.5.4)
+  - GCDWebServer/Core (3.5.4)
   - glog (0.3.5)
   - libevent (2.1.12)
   - NVHTarGzip (1.0.1)
@@ -445,6 +448,7 @@ DEPENDENCIES:
   - FlipperKit/FlipperKitReactPlugin (= 0.99.0)
   - FlipperKit/FlipperKitUserDefaultsPlugin (= 0.99.0)
   - FlipperKit/SKIOSNetworkPlugin (= 0.99.0)
+  - GCDWebServer (~> 3.0)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
@@ -504,6 +508,7 @@ SPEC REPOS:
     - Flipper-RSocket
     - FlipperKit
     - fmt
+    - GCDWebServer
     - libevent
     - NVHTarGzip
     - OpenSSL-Universal
@@ -622,6 +627,7 @@ SPEC CHECKSUMS:
   Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
   FlipperKit: d8d346844eca5d9120c17d441a2f38596e8ed2b9
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
+  GCDWebServer: 2c156a56c8226e2d5c0c3f208a3621ccffbe3ce4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   NVHTarGzip: 74cc227b902e5725900d37eb6d79b57e93005a73
@@ -674,6 +680,6 @@ SPEC CHECKSUMS:
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 5e420fe2cf436d9c3bc3c1ebc6e7ea5e14d700c6
+PODFILE CHECKSUM: 6090fd6ebe65fb2e19d80296deab33044d8647aa
 
 COCOAPODS: 1.10.1
