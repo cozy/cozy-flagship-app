@@ -6,14 +6,14 @@ import { OnboardingPasswordView } from './components/OnboardingPasswordView'
 
 import Minilog from '@cozy/minilog'
 
-import { callOnboardingInitClient } from '../../libs/client'
-import { navbarHeight, statusBarHeight } from '../../libs/dimensions'
-import { resetKeychainAndSaveLoginData } from '../../libs/functions/passwordHelpers'
-import { consumeRouteParameter } from '../../libs/functions/routeHelpers'
+import { callOnboardingInitClient } from '/libs/client'
+import { navbarHeight, statusBarHeight } from '/libs/dimensions'
+import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
+import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 
-import { routes } from '../../constants/routes'
+import { routes } from '/constants/routes'
 
-import { getColors } from '../../theme/colors'
+import { getColors } from '/theme/colors'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 
 const log = Minilog('OnboardingScreen')
