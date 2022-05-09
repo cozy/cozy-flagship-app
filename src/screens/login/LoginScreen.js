@@ -5,7 +5,6 @@ import Minilog from '@cozy/minilog'
 
 import { ClouderyView } from './components/ClouderyView'
 import { ErrorView } from './components/ErrorView'
-import { LoadingView } from './components/LoadingView'
 import { PasswordView } from './components/PasswordView'
 import { TransitionToPasswordView } from './components/transitions/TransitionToPasswordView'
 import { TransitionToAuthorizeView } from './components/transitions/TransitionToAuthorizeView'
@@ -320,7 +319,8 @@ const LoginSteps = ({ setClient }) => {
   }
 
   if (state.step === LOADING_STEP) {
-    return <LoadingView message={state.loadingMessage} />
+    showSplashScreen()
+    return null
   }
 
   if (state.step === ERROR_STEP) {
