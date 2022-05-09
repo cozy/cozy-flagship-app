@@ -26,6 +26,9 @@ jest.mock('react-native-webview', () => {
         }
       })
     }
+    componentDidMount() {
+      this.props.onLoadEnd()
+    }
     render() {
       return <div>WebView</div>
     }
