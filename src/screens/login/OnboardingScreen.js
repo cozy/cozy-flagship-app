@@ -2,10 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 
 import { ErrorView } from './components/ErrorView'
-import { LoadingView } from './components/LoadingView'
 import { OnboardingPasswordView } from './components/OnboardingPasswordView'
-
-import { OnboardingConfigView } from './components/debug/OnboardingConfigView'
 
 import Minilog from '@cozy/minilog'
 
@@ -17,6 +14,7 @@ import { consumeRouteParameter } from '../../libs/functions/routeHelpers'
 import { routes } from '../../constants/routes'
 
 import { getColors } from '../../theme/colors'
+import { useSplashScreen } from '/hooks/useSplashScreen'
 
 const log = Minilog('OnboardingScreen')
 
@@ -33,6 +31,7 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
   const [state, setState] = useState({
     step: ONBOARDING_STEP
   })
+  const { showSplashScreen } = useSplashScreen()
 
   useEffect(() => {
     log.debug(`Enter state ${state.step}`)
@@ -143,12 +142,7 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
   }, [setClient, setError, state])
 
   if (state.step === ONBOARDING_STEP) {
-    return (
-      <OnboardingConfigView
-        setOnboardingData={setOnboardingData}
-        cancelOnboarding={cancelOnboarding}
-      />
-    )
+    return null
   }
 
   if (state.step === PASSWORD_STEP) {
@@ -167,7 +161,8 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
   }
 
   if (state.step === LOADING_STEP) {
-    return <LoadingView message={state.loadingMessage} />
+    showSplashScreen()
+    return null
   }
 
   if (state.step === ERROR_STEP) {

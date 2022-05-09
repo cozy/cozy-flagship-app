@@ -5,6 +5,7 @@
 
 ## 🐛 Bug Fixes
 
+* display splash screen during loading steps  ([PR #214](https://github.com/cozy/cozy-pass-mobile/pull/214))
 
 ## 🔧 Tech
 
