@@ -18,14 +18,14 @@ import {
   fetchPublicData,
   STATE_2FA_NEEDED,
   STATE_INVALID_PASSWORD
-} from '../../libs/client'
-import { navbarHeight, statusBarHeight } from '../../libs/dimensions'
-import { resetKeychainAndSaveLoginData } from '../../libs/functions/passwordHelpers'
-import { useSplashScreen } from '../../hooks/useSplashScreen'
+} from '/libs/client'
+import { navbarHeight, statusBarHeight } from '/libs/dimensions'
+import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
+import { useSplashScreen } from '/hooks/useSplashScreen'
 
 import strings from '../../strings.json'
-import { getColors } from '../../theme/colors'
-import { NetService } from '../../libs/services/NetService'
+import { getColors } from '/theme/colors'
+import { NetService } from '/libs/services/NetService'
 
 const log = Minilog('LoginScreen')
 
