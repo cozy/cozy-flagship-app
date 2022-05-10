@@ -21,7 +21,6 @@ const log = Minilog('OnboardingScreen')
 Minilog.enable()
 
 const LOADING_STEP = 'LOADING_STEP'
-const ONBOARDING_STEP = 'ONBOARDING_STEP'
 const PASSWORD_STEP = 'PASSWORD_STEP'
 const ERROR_STEP = 'ERROR_STEP'
 
@@ -29,9 +28,9 @@ const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
 const OnboardingSteps = ({ setClient, route, navigation }) => {
   const [state, setState] = useState({
-    step: ONBOARDING_STEP
+    step: LOADING_STEP
   })
-  const { showSplashScreen } = useSplashScreen()
+  const { showSplashScreen, hideSplashScreen } = useSplashScreen()
 
   useEffect(() => {
     log.debug(`Enter state ${state.step}`)
@@ -53,7 +52,7 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
 
     if (registerToken && fqdn) {
       // fqdn string should never contain the protocol, but we may want to enforce it
-      // when local debuging as this configuration uses `http` only
+      // when local debugging as this configuration uses `http` only
       const url =
         fqdn.startsWith('http://') || fqdn.startsWith('https://')
           ? new URL(fqdn)
@@ -96,7 +95,7 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
 
   const cancelLogin = () => {
     setState({
-      step: ONBOARDING_STEP
+      step: LOADING_STEP
     })
   }
 
@@ -141,11 +140,8 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
     }
   }, [setClient, setError, state])
 
-  if (state.step === ONBOARDING_STEP) {
-    return null
-  }
-
   if (state.step === PASSWORD_STEP) {
+    hideSplashScreen()
     const { fqdn, instance } = state.onboardingData
     return (
       <OnboardingPasswordView
@@ -166,6 +162,7 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
   }
 
   if (state.step === ERROR_STEP) {
+    hideSplashScreen()
     return (
       <ErrorView
         errorMessage={state.errorMessage}
