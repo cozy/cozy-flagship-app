@@ -319,7 +319,6 @@ const LoginSteps = ({ setClient }) => {
   }
 
   if (state.step === LOADING_STEP) {
-    showSplashScreen()
     return null
   }
 
