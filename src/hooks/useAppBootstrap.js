@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 
 import strings from '../strings.json'
 import { SentryTags, setSentryTag } from '../Sentry'
-import { getClient } from '../libs/client'
 import { NetService } from '../libs/services/NetService'
 import { manageIconCache } from '../libs/functions/iconTable'
 import { navigate } from '../libs/RootNavigation'
@@ -64,25 +63,15 @@ const parseFallbackURL = url => {
   }
 }
 
-export const useAppBootstrap = () => {
-  const [client, setClient] = useState(null)
+export const useAppBootstrap = (client, setClient) => {
   const [initialRoute, setInitialRoute] = useState('fetching')
   const [initialScreen, setInitialScreen] = useState('fetching')
   const [isLoading, setIsLoading] = useState(true)
   const { hideSplashScreen } = useSplashScreen()
 
-  // Handling client init
-  useEffect(() => {
-    getClient()
-      .then(clientResult => {
-        if (clientResult) {
-          return setClient(clientResult)
-        } else {
-          return setClient(undefined)
-        }
-      })
-      .catch(() => setClient(undefined))
-  }, [])
+  console.log('initialRoute', initialRoute)
+  console.log('initialScreen', initialScreen)
+  console.log('client', client)
 
   // Handling initial URL init
   useEffect(() => {

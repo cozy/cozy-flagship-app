@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { decode, encode } from 'base-64'
 import { NavigationContainer } from '@react-navigation/native'
@@ -8,6 +8,7 @@ import { Provider as PaperProvider } from 'react-native-paper'
 import { CozyProvider } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
 
+import { getClient } from './libs/client'
 import * as RootNavigation from './libs/RootNavigation.js'
 import { HomeScreen } from './screens/home/HomeScreen'
 import { LoginScreen } from './screens/login/LoginScreen'
@@ -35,9 +36,12 @@ if (!global.atob) {
   global.atob = decode
 }
 
-const App = () => {
-  const { client, setClient, initialScreen, initialRoute, isLoading } =
-    useAppBootstrap()
+const App = ({ client, setClient }) => {
+  console.log('client begin App', client)
+  const { initialScreen, initialRoute, isLoading } = useAppBootstrap(
+    client,
+    setClient
+  )
 
   if (isLoading) {
     return null
@@ -92,39 +96,64 @@ const App = () => {
     </Root.Navigator>
   )
 
-  return client ? (
-    <CozyProvider client={client}>
-      <RootNavigator />
-    </CozyProvider>
-  ) : (
-    <RootNavigator />
-  )
+  return <RootNavigator />
 }
 
 const WrappedApp = () => {
   const colors = getColors()
+  const [client, setClient] = useState(null)
 
-  return (
-    <NavigationContainer ref={RootNavigation.navigationRef}>
-      <NativeIntentProvider localMethods={localMethods}>
-        <PaperProvider theme={lightTheme}>
-          <SplashScreenProvider>
-            <View
-              style={[
-                styles.view,
-                {
-                  backgroundColor: colors.primaryColor
-                }
-              ]}
-            >
-              <CryptoWebView />
-              <App />
-            </View>
-          </SplashScreenProvider>
-        </PaperProvider>
-      </NativeIntentProvider>
-    </NavigationContainer>
-  )
+  console.log('client wrappedApp', client)
+
+  // Handling client init
+  useEffect(() => {
+    getClient()
+      .then(clientResult => {
+        if (clientResult) {
+          return setClient(clientResult)
+        } else {
+          return setClient(undefined)
+        }
+      })
+      .catch(() => setClient(undefined))
+  }, [])
+
+  const Nav = ({ client }) => {
+    console.log('client Nav', client)
+    return (
+      <NavigationContainer ref={RootNavigation.navigationRef}>
+        <NativeIntentProvider localMethods={localMethods}>
+          <PaperProvider theme={lightTheme}>
+            <SplashScreenProvider>
+              <View
+                style={[
+                  styles.view,
+                  {
+                    backgroundColor: colors.primaryColor
+                  }
+                ]}
+              >
+                <CryptoWebView />
+                <App setClient={setClient} />
+              </View>
+            </SplashScreenProvider>
+          </PaperProvider>
+        </NativeIntentProvider>
+      </NavigationContainer>
+    )
+  }
+
+  if (client) {
+    console.log('got client')
+    return (
+      <CozyProvider client={client}>
+        <Nav />
+      </CozyProvider>
+    )
+  } else {
+    console.log('got no client')
+    return <Nav />
+  }
 }
 
 const styles = StyleSheet.create({
