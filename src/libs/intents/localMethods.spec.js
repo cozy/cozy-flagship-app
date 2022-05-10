@@ -52,13 +52,13 @@ describe('backToHome', () => {
 
 test('fetchSessionCode should return only a session code', async () => {
   const fetchSessionCode = jest.fn()
-  getClient.mockResolvedValue({ getStackClient: () => ({ fetchSessionCode }) })
 
   fetchSessionCode.mockResolvedValue({
     session_code: 'test_session_code'
   })
+  const client = { getStackClient: () => ({ fetchSessionCode }) }
 
-  const result = await localMethods.fetchSessionCode()
+  const result = await localMethods(client).fetchSessionCode()
 
   expect(fetchSessionCode).toHaveBeenCalledTimes(1)
   expect(result).toEqual('test_session_code')
@@ -66,13 +66,13 @@ test('fetchSessionCode should return only a session code', async () => {
 
 test('fetchSessionCode should throw if no session code is returned', async () => {
   const fetchSessionCode = jest.fn()
-  getClient.mockResolvedValue({ getStackClient: () => ({ fetchSessionCode }) })
+  const client = { getStackClient: () => ({ fetchSessionCode }) }
 
   fetchSessionCode.mockResolvedValue({
     twoFactorToken: 'token'
   })
 
-  await expect(localMethods.fetchSessionCode()).rejects.toThrowError(
+  await expect(localMethods(client).fetchSessionCode()).rejects.toThrowError(
     JSON.stringify({ twoFactorToken: 'token' })
   )
   expect(fetchSessionCode).toHaveBeenCalledTimes(1)
