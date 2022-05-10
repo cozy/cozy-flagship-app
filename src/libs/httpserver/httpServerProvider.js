@@ -8,6 +8,7 @@ import React, {
 import Minilog from '@cozy/minilog'
 import { getServerBaseFolder } from './httpPaths'
 import HttpServer from './HttpServer'
+import { setCookie } from './httpCookieManager'
 import { fillIndexWithData, getIndexForFqdnAndSlug } from './indexGenerator'
 import { fetchAppDataForSlug } from './indexDataFetcher'
 
@@ -65,6 +66,7 @@ export const HttpServerProvider = props => {
 
     const { cookie, templateValues } = await fetchAppDataForSlug(slug, client)
 
+    await setCookie(cookie, client)
     const rawHtml = await getIndexForFqdnAndSlug(fqdn, slug)
     const computedHtml = fillIndexWithData({
       fqdn,
