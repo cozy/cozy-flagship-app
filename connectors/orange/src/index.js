@@ -5,16 +5,6 @@ import Minilog from '@cozy/minilog'
 // import {format} from 'date-fns'
 // import waitFor from 'p-wait-for'
 
-const apiKy = ky.extend({
-  hooks: {
-    beforeRequest: [
-      request => {
-        request.headers.set('X-Orange-Caller-Id', 'ECQ')
-      },
-    ],
-  },
-})
-
 const log = Minilog('ContentScript')
 Minilog.enable()
 
@@ -24,6 +14,8 @@ const LOGIN_URL =
 const DEFAULT_PAGE_URL = BASE_URL + '/accueil'
 const DEFAULT_SOURCE_ACCOUNT_IDENTIFIER = 'orange'
 let bills = []
+let promises = []
+let promisesToConvertBlobToBase64 = []
 
 var proxied = window.XMLHttpRequest.prototype.open
 window.XMLHttpRequest.prototype.open = function () {
@@ -33,20 +25,24 @@ window.XMLHttpRequest.prototype.open = function () {
     originalResponse.addEventListener('readystatechange', function (event) {
       console.log('event', event)
       if (originalResponse.readyState === 4) {
-        console.log('response', originalResponse.responseText)
+        console.log('response', originalResponse.responseText.split(','))
       }
     })
     return proxied.apply(this, [].slice.call(arguments))
   }
-  if (arguments[1].includes('facture/v1.0/pdf?billDate')) {
+  if (
+    arguments[1].includes('facture/v1.0/pdf?billDate') ||
+    arguments[1].includes('ecd_wp/facture/historicPDF?')
+  ) {
     var originalResponse = this
+    promises.push(originalResponse)
     originalResponse.addEventListener('readystatechange', function (event) {
-      console.log('event', event)
+      // console.log('event', event)
       if (originalResponse.readyState === 4) {
-        console.log('response', originalResponse)
-        const billContent = blobToBase64(originalResponse.response)
-        bills.push(billContent)
-        console.log('bills', bills)
+        promisesToConvertBlobToBase64.push(
+          blobToBase64(originalResponse.response),
+        )
+        return originalResponse
       }
     })
   }
@@ -95,6 +91,7 @@ class OrangeContentScript extends ContentScript {
 
   async fetch(context) {
     log.debug('fetch start')
+    log.debug('context', context)
     await this.waitForElementInWorker('a[class="ob1-link-icon ml-1 py-1"]')
     const clientRef = await this.runInWorker('findClientRef')
     if (clientRef) {
@@ -112,14 +109,23 @@ class OrangeContentScript extends ContentScript {
         '[aria-labelledby="bp-billsHistoryTitle"]',
       )
 
-      const pdfButtons = await this.runInWorker('tryClickOnePdf')
+      await this.runInWorker('tryClickOnePdf')
       this.log('Get Out with pdfButtons')
-      this.log(this.store)
-      // await this.saveFiles([this.store.bills], {
-      //   context,
-      //   fileIdAttributes: ['vendorRef'],
-      //   contentType: 'application/pdf',
-      // })
+      console.log('This is the store', this.store)
+      this.store.dataUri = []
+      for (let i = 0; i < this.store.resolvedBase64.length; i++) {
+        this.store.dataUri.push({
+          filename: `test${i}.pdf`,
+          dataUri: this.store.resolvedBase64[i],
+        })
+      }
+
+      const result = await this.saveFiles(this.store.dataUri, {
+        context,
+        fileIdAttributes: ['filename'],
+        contentType: 'application/pdf',
+      })
+      // this.log(result)
     }
 
     // Putting a falsy selector allows you to stay on the wanted page for debugging purposes
@@ -136,6 +142,7 @@ class OrangeContentScript extends ContentScript {
     // )
     // await this.saveIdentity({contact, housing})
     // await this.saveBills()
+    // }
   }
 
   findPdfButtons() {
@@ -143,7 +150,15 @@ class OrangeContentScript extends ContentScript {
     const buttons = Array.from(
       document.querySelectorAll('a[class="icon-pdf-file bp-downloadIcon"]'),
     )
-    log.debug(buttons[0])
+    console.log('buttons in findPdfButtons', buttons)
+    return buttons
+  }
+
+  findMoreBillsButton() {
+    this.log('Starting findMoreBillsButton')
+    const buttons = Array.from(
+      document.querySelectorAll('[data-e2e="bh-more-bills"]'),
+    )
     return buttons
   }
 
@@ -217,37 +232,50 @@ class OrangeContentScript extends ContentScript {
 
   async tryClickOnePdf() {
     log.debug('Get in tryClickOnePdf')
-    const buttons = this.findPdfButtons()
+    const moreBillsButton = this.findMoreBillsButton()
+    if (moreBillsButton.length !== 0) {
+      console.log('moreBillsButton founded,clicking on it')
+      moreBillsButton[0].click()
+      console.log('moreBillsButton clicked')
+      await sleep(5)
+      // if (buttons.length < 13) {
+      //   console.log('buttons length is smaller than 13: ', buttons.length)
+      //   buttons = this.findPdfButtons()
+      // }
+    }
+    let buttons = this.findPdfButtons()
     if (buttons[0].length === 0) {
       this.log('ERROR Could not find pdf button')
       return 'VENDOR_DOWN'
     } else {
-      log.debug(buttons)
-      buttons[0].click()
-
-      log.debug('click clicked')
+      console.log('buttons length is: ', buttons.length)
+      for (const button of buttons) {
+        console.log('will click')
+        button.click()
+        log.debug('button clicked')
+        sleep(2)
+      }
     }
-    log.debug('sending to pilot')
-    const blobArray = []
-    for (let bill of bills) {
-      const blob = await bill
-      console.log('blob', blob)
-      blobArray.push(blob)
-    }
+    console.log('awaiting promises')
+    const resolvedPromises = await Promise.all(promises)
+      .then(result => {
+        console.log('Promises received from promises', result)
+      })
+      .catch(err => {
+        console.log('Failed to get promises', err)
+      })
+    await sleep(15)
+    const resolvedBase64 = await Promise.all(promisesToConvertBlobToBase64)
+    console.log('Promises received from promiseToConvert', resolvedBase64)
+    log.debug('Sending to pilot')
     await this.sendToPilot({
-      blobArray,
+      resolvedBase64,
     })
     return true
   }
 
   async fetchBills(clientRef) {
     this.log('Fetching Bills')
-    const billsPage = await apiKy
-      .get(
-        `https://espace-client.orange.fr/ecd_wp/facture/v2.0/billsAndPaymentInfos/users/current/contracts/${clientRef}`,
-      )
-      .json()
-    log.debug(billsPage)
   }
 }
 
@@ -266,7 +294,6 @@ connector
   })
 
 // Used for debug purposes only
-
 function sleep(delay) {
   return new Promise(resolve => {
     setTimeout(resolve, delay * 1000)
