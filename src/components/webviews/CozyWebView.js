@@ -14,6 +14,7 @@ import { jsOnbeforeunload } from '/components/webviews/jsInteractions/jsOnbefore
 import { useSession } from '/hooks/useSession'
 import ReloadInterceptorWebView from '/components/webviews/ReloadInterceptorWebView'
 import { getHostname } from '/libs/functions/getHostname'
+import { useIsSecureProtocol } from '../../hooks/useIsSecureProtocol'
 
 const log = Minilog('CozyWebView')
 
@@ -28,6 +29,7 @@ export const CozyWebView = ({
   injectedJavaScriptBeforeContentLoaded,
   ...rest
 }) => {
+  const isSecureProtocol = useIsSecureProtocol()
   // To test interception, uncomment this block
   // const [timestamp, setTimestamp] = useState(Date.now())
   const [, setTimestamp] = useState(Date.now())
@@ -77,7 +79,7 @@ export const CozyWebView = ({
 
   const run = `
     (function() {
-      ${jsCozyGlobal(route.name)}
+      ${jsCozyGlobal(route.name, isSecureProtocol)}
 
       ${jsLogInterception}
 

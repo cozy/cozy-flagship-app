@@ -4,6 +4,10 @@ import { render } from '@testing-library/react-native'
 
 import { CozyWebView } from './CozyWebView'
 
+import { useIsSecureProtocol } from '../../hooks/useIsSecureProtocol'
+
+jest.mock('../../hooks/useIsSecureProtocol')
+
 const mockGoBack = jest.fn()
 const mockUseIsFocused = jest.fn()
 const mockNativeIntent = {
@@ -48,6 +52,10 @@ jest.mock('../../hooks/useSession.js', () => ({
     consumeSessionToken: jest.fn()
   })
 }))
+
+beforeEach(() => {
+  useIsSecureProtocol.mockReturnValue(true)
+})
 
 afterEach(() => {
   jest.clearAllMocks()

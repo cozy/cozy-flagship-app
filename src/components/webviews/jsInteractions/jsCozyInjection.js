@@ -15,12 +15,13 @@ const makeMetadata = routeName =>
     version
   })
 
-export const jsCozyGlobal = routeName => `
+export const jsCozyGlobal = (routeName, isSecureProtocol) => `
   if (!window.cozy) window.cozy = {}
 
   window.cozy.isFlagshipApp = true
   window.cozy.ClientConnectorLauncher = 'react-native'
   window.cozy.flagship = ${makeMetadata(routeName)}
+  window.cozy.isSecureProtocol = ${isSecureProtocol || 'false'}
 
   window.addEventListener('load', event => {
     window.document.body.classList.add(
