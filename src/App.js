@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { decode, encode } from 'base-64'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Provider as PaperProvider } from 'react-native-paper'
 
-import { CozyProvider } from 'cozy-client'
+import { CozyProvider, useClient } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
 
+import { getClient } from './libs/client'
 import * as RootNavigation from './libs/RootNavigation.js'
 import { HomeScreen } from './screens/home/HomeScreen'
 import { LoginScreen } from './screens/login/LoginScreen'
@@ -36,9 +37,12 @@ if (!global.atob) {
   global.atob = decode
 }
 
-const App = () => {
-  const { client, setClient, initialScreen, initialRoute, isLoading } =
-    useAppBootstrap()
+const App = ({ setClient }) => {
+  const client = useClient()
+  const { initialScreen, initialRoute, isLoading } = useAppBootstrap(
+    client,
+    setClient
+  )
 
   if (isLoading) {
     return null
@@ -95,21 +99,29 @@ const App = () => {
     </Root.Navigator>
   )
 
-  return client ? (
-    <CozyProvider client={client}>
-      <RootNavigator />
-    </CozyProvider>
-  ) : (
-    <RootNavigator />
-  )
+  return <RootNavigator />
 }
 
 const WrappedApp = () => {
   const colors = getColors()
+  const [client, setClient] = useState(null)
 
-  return (
+  // Handling client init
+  useEffect(() => {
+    getClient()
+      .then(clientResult => {
+        if (clientResult) {
+          return setClient(clientResult)
+        } else {
+          return setClient(undefined)
+        }
+      })
+      .catch(() => setClient(undefined))
+  }, [])
+
+  const Nav = () => (
     <NavigationContainer ref={RootNavigation.navigationRef}>
-      <NativeIntentProvider localMethods={localMethods}>
+      <NativeIntentProvider localMethods={localMethods(client)}>
         <PaperProvider theme={lightTheme}>
           <SplashScreenProvider>
             <View
@@ -121,12 +133,20 @@ const WrappedApp = () => {
               ]}
             >
               <CryptoWebView />
-              <App />
+              <App setClient={setClient} />
             </View>
           </SplashScreenProvider>
         </PaperProvider>
       </NativeIntentProvider>
     </NavigationContainer>
+  )
+
+  return client ? (
+    <CozyProvider client={client}>
+      <Nav />
+    </CozyProvider>
+  ) : (
+    <Nav />
   )
 }
 

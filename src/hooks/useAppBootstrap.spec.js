@@ -1,7 +1,6 @@
 import { Linking } from 'react-native'
 import { act, renderHook } from '@testing-library/react-hooks'
 
-import { getClient } from '../libs/client'
 import { navigate } from '../libs/RootNavigation'
 import { routes } from '../constants/routes'
 import { useAppBootstrap } from './useAppBootstrap'
@@ -25,10 +24,6 @@ jest.mock('../libs/RootNavigation.js', () => ({
 
 jest.mock('./useSplashScreen', () => ({
   useSplashScreen: () => ({ hideSplashScreen: mockHideSplashScreen })
-}))
-
-jest.mock('../libs/client', () => ({
-  getClient: jest.fn().mockResolvedValue(undefined)
 }))
 
 jest.mock('react-native', () => {
@@ -90,8 +85,7 @@ it('Should handle NO client NO initial URL', async () => {
       stack: undefined,
       root: undefined
     },
-    isLoading: false,
-    setClient: expect.anything()
+    isLoading: false
   })
 
   expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
@@ -114,8 +108,7 @@ it('Should handle NO client WITH initial URL as HOME', async () => {
       stack: undefined,
       root: undefined
     },
-    isLoading: false,
-    setClient: expect.anything()
+    isLoading: false
   })
 })
 
@@ -136,8 +129,7 @@ it('Should handle NO client WITH initial URL as APP', async () => {
       stack: undefined,
       root: undefined
     },
-    isLoading: false,
-    setClient: expect.anything()
+    isLoading: false
   })
 
   expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
@@ -160,17 +152,16 @@ it('Should handle NO client WITH initial URL as INVALID', async () => {
       stack: undefined,
       root: undefined
     },
-    isLoading: false,
-    setClient: expect.anything()
+    isLoading: false
   })
 
   expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
 })
 
 it('Should handle WITH client NO initial URL', async () => {
-  getClient.mockResolvedValueOnce(mockClient)
-
-  const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
+  const { result, waitForValueToChange } = renderHook(() =>
+    useAppBootstrap(mockClient)
+  )
 
   await waitForValueToChange(() => result.current.isLoading)
 
@@ -184,16 +175,16 @@ it('Should handle WITH client NO initial URL', async () => {
       stack: undefined,
       root: undefined
     },
-    isLoading: false,
-    setClient: expect.anything()
+    isLoading: false
   })
 })
 
 it('Should handle WITH client WITH initial URL as HOME', async () => {
   Linking.getInitialURL.mockResolvedValueOnce(homeLink)
-  getClient.mockResolvedValueOnce(mockClient)
 
-  const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
+  const { result, waitForValueToChange } = renderHook(() =>
+    useAppBootstrap(mockClient)
+  )
 
   await waitForValueToChange(() => result.current.isLoading)
 
@@ -207,16 +198,16 @@ it('Should handle WITH client WITH initial URL as HOME', async () => {
       stack: initialURL,
       root: undefined
     },
-    isLoading: false,
-    setClient: expect.anything()
+    isLoading: false
   })
 })
 
 it('Should handle WITH client WITH initial URL as APP LINK', async () => {
   Linking.getInitialURL.mockResolvedValueOnce(appLink)
-  getClient.mockResolvedValueOnce(mockClient)
 
-  const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
+  const { result, waitForValueToChange } = renderHook(() =>
+    useAppBootstrap(mockClient)
+  )
 
   await waitForValueToChange(() => result.current.isLoading)
 
@@ -230,16 +221,16 @@ it('Should handle WITH client WITH initial URL as APP LINK', async () => {
       stack: undefined,
       root: initialURL
     },
-    isLoading: false,
-    setClient: expect.anything()
+    isLoading: false
   })
 })
 
 it('Should handle WITH client WITH initial URL as INVALID', async () => {
   Linking.getInitialURL.mockResolvedValueOnce(invalidLink)
-  getClient.mockResolvedValueOnce(mockClient)
 
-  const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
+  const { result, waitForValueToChange } = renderHook(() =>
+    useAppBootstrap(mockClient)
+  )
 
   await waitForValueToChange(() => result.current.isLoading)
 
@@ -253,15 +244,14 @@ it('Should handle WITH client WITH initial URL as INVALID', async () => {
       stack: undefined,
       root: undefined
     },
-    isLoading: false,
-    setClient: expect.anything()
+    isLoading: false
   })
 })
 
 it('Should handle WITH lifecycle URL as HOME', async () => {
-  getClient.mockResolvedValueOnce(mockClient)
-
-  const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
+  const { result, waitForValueToChange } = renderHook(() =>
+    useAppBootstrap(mockClient)
+  )
 
   await waitForValueToChange(() => result.current.isLoading)
 
@@ -275,8 +265,7 @@ it('Should handle WITH lifecycle URL as HOME', async () => {
       stack: undefined,
       root: undefined
     },
-    isLoading: false,
-    setClient: expect.anything()
+    isLoading: false
   })
 
   act(() => {
@@ -287,9 +276,9 @@ it('Should handle WITH lifecycle URL as HOME', async () => {
 })
 
 it('Should handle WITH lifecycle URL as APP LINK', async () => {
-  getClient.mockResolvedValueOnce(mockClient)
-
-  const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
+  const { result, waitForValueToChange } = renderHook(() =>
+    useAppBootstrap(mockClient)
+  )
 
   await waitForValueToChange(() => result.current.isLoading)
 
@@ -303,8 +292,7 @@ it('Should handle WITH lifecycle URL as APP LINK', async () => {
       stack: undefined,
       root: undefined
     },
-    isLoading: false,
-    setClient: expect.anything()
+    isLoading: false
   })
 
   act(() => {
@@ -317,9 +305,9 @@ it('Should handle WITH lifecycle URL as APP LINK', async () => {
 })
 
 it('Should handle WITH lifecycle URL as INVALID', async () => {
-  getClient.mockResolvedValueOnce(mockClient)
-
-  const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
+  const { result, waitForValueToChange } = renderHook(() =>
+    useAppBootstrap(mockClient)
+  )
 
   await waitForValueToChange(() => result.current.isLoading)
 
@@ -333,8 +321,7 @@ it('Should handle WITH lifecycle URL as INVALID', async () => {
       stack: undefined,
       root: undefined
     },
-    isLoading: false,
-    setClient: expect.anything()
+    isLoading: false
   })
 
   act(() => {
