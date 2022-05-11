@@ -1,17 +1,18 @@
 {
-  "loginUri": "https://manager.cozycloud.cc/v2/cozy/login?redirect=https://loginflagship",
-  "onboardingUri": "https://staging-manager.cozycloud.cc/v2/cozy/onboard?redirect=cozy://onboarding?flagship=true",
-  "home": "home",
-  "fqdn": "fqdn",
-  "emptyString": "",
-  "defaultHttpScheme": "https://",
-  "SESSION_CREATED_FLAG": "SESSION_CREATED_FLAG",
-  "SESSION_CODE": "session_code",
-  "REDIRECT": "redirect",
-  "authLogin": "/auth/login?redirect=",
-  "errorAppendParamsFail": "Could not handle url, it is neither a valid URL string nor a string",
-  "OAUTH_STORAGE_KEY": "@cozy_AmiralAppOAuthConfig",
   "COZY_SCHEME": "cozy://",
+  "OAUTH_STORAGE_KEY": "@cozy_AmiralAppOAuthConfig",
+  "REDIRECT": "redirect",
+  "SESSION_CODE": "session_code",
+  "SESSION_CREATED_FLAG": "SESSION_CREATED_FLAG",
+  "appTouched": "appTouched",
+  "authLogin": "/auth/login?redirect=",
+  "defaultHttpScheme": "https://",
+  "emptyString": "",
+  "errorAppendParamsFail": "Could not handle url, it is neither a valid URL string nor a string",
+  "errorScreens": {
+    "cozyNotFound": "cozyNotFound",
+    "offline": "offline"
+  },
   "errors": {
     "cozyClientMismatch": "Could not validate redirect url, Cozy Client mismatch",
     "domainMismatch": "Could not validate redirect url, domain mismatch",
@@ -23,9 +24,8 @@
     "wrong2FA": "Le code que vous avez entré n'est pas correct, merci de réessayer.",
     "invalidPassword": "Les identifiants que vous avez saisis sont incorrects, veuillez ré-essayer."
   },
-  "errorScreens": {
-    "cozyNotFound": "cozyNotFound",
-    "offline": "offline"
-  },
-  "APPS_ICONS": "APPS_ICONS"
+  "fqdn": "fqdn",
+  "home": "home",
+  "loginUri": "https://manager.cozycloud.cc/v2/cozy/login?redirect=https://loginflagship",
+  "onboardingUri": "https://staging-manager.cozycloud.cc/v2/cozy/onboard?redirect=cozy://onboarding?flagship=true"
 }
