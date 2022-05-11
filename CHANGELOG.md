@@ -44,7 +44,6 @@
 
 ## 🔧 Tech
 * Improve webview env injection ([PR #167](https://github.com/cozy/cozy-pass-mobile/pull/167))
-* Run iOS installation on CI
 * Expose fetchSessionCode method to cozy-intent
 
 # 0.0.7

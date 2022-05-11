@@ -63,8 +63,7 @@ it('Should handle welcome page', async () => {
       stack: undefined,
       root: undefined
     },
-    isLoading: false,
-    setClient: expect.anything()
+    isLoading: false
   })
 
   expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
