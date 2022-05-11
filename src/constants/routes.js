@@ -4,5 +4,6 @@ export const routes = {
   error: 'error',
   home: 'home',
   onboarding: 'onboarding',
-  stack: 'stack'
+  stack: 'stack',
+  welcome: 'welcome'
 }

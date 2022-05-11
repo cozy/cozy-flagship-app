@@ -73,15 +73,15 @@ export const useAppBootstrap = () => {
 
   // Handling client init
   useEffect(() => {
-    getClient()
-      .then(clientResult => {
-        if (clientResult) {
-          return setClient(clientResult)
-        } else {
-          return setClient(undefined)
-        }
-      })
-      .catch(() => setClient(undefined))
+    const asyncCore = async () => {
+      try {
+        setClient((await getClient()) || undefined)
+      } catch {
+        setClient(undefined)
+      }
+    }
+
+    asyncCore()
   }, [])
 
   // Handling initial URL init
@@ -128,7 +128,7 @@ export const useAppBootstrap = () => {
             setInitialRoute({ stack: undefined, root: undefined })
 
             return setInitialScreen({
-              stack: routes.authenticate,
+              stack: routes.welcome,
               root: routes.stack
             })
           }

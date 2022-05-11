@@ -6,7 +6,7 @@ import { generateWebLink } from 'cozy-client'
 const log = Minilog('SessionScript')
 Minilog.enable()
 
-import strings from '../../strings.json'
+import strings from '/strings.json'
 
 const _throw = message => {
   throw new Error(message)
@@ -116,6 +116,5 @@ const makeSessionAPI = (client, subDomainType) => ({
   shouldInterceptAuth: shouldInterceptAuth(client),
   subDomainType
 })
-
 // Exposed API
 export { makeSessionAPI, resetSessionToken }

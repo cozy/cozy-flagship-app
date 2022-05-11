@@ -3,13 +3,18 @@
     "contactUs": "Un problème, une suggestion ? Contactez-nous à"
   },
   "screens": {
+    "cozyNotFound": {
+      "title": "L'adresse de ce Cozy n'existe pas.",
+      "body": "Nous n'avons trouvé aucun Cozy à cette adresse. Il s'agit peut-être d'une erreur de frappe. Pour le savoir, vérifiez l'adresse de votre Cozy dans l'e-mail que nous vous avons envoyé au moment de sa création."
+    },
     "offline": {
       "title": "Pas de connexion internet",
       "body": "Vérifier votre connexion internet pour accéder à votre Cozy."
     },
-    "cozyNotFound": {
-      "title": "L'adresse de ce Cozy n'existe pas.",
-      "body": "Nous n'avons trouvé aucun Cozy à cette adresse. Il s'agit peut-être d'une erreur de frappe. Pour le savoir, vérifiez l'adresse de votre Cozy dans l'e-mail que nous vous avons envoyé au moment de sa création."
+    "welcome": {
+      "title": "Bienvenue sur Cozy",
+      "body": "Le domicile numérique pour réunir toutes vos données",
+      "button": "C'est parti"
     }
   }
 }

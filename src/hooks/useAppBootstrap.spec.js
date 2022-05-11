@@ -53,6 +53,28 @@ afterEach(() => {
   expect(mockRemove).toHaveBeenCalledTimes(1)
 })
 
+it('Should handle welcome page', async () => {
+  const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
+
+  await waitForValueToChange(() => result.current.isLoading)
+
+  expect(result.current).toStrictEqual({
+    client: undefined,
+    initialScreen: {
+      stack: routes.welcome,
+      root: routes.stack
+    },
+    initialRoute: {
+      stack: undefined,
+      root: undefined
+    },
+    isLoading: false,
+    setClient: expect.anything()
+  })
+
+  expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
+})
+
 it('Should handle NO client NO initial URL', async () => {
   const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
 
@@ -61,7 +83,7 @@ it('Should handle NO client NO initial URL', async () => {
   expect(result.current).toStrictEqual({
     client: undefined,
     initialScreen: {
-      stack: routes.authenticate,
+      stack: routes.welcome,
       root: routes.stack
     },
     initialRoute: {
@@ -85,7 +107,7 @@ it('Should handle NO client WITH initial URL as HOME', async () => {
   expect(result.current).toStrictEqual({
     client: undefined,
     initialScreen: {
-      stack: routes.authenticate,
+      stack: routes.welcome,
       root: routes.stack
     },
     initialRoute: {
@@ -107,7 +129,7 @@ it('Should handle NO client WITH initial URL as APP', async () => {
   expect(result.current).toStrictEqual({
     client: undefined,
     initialScreen: {
-      stack: routes.authenticate,
+      stack: routes.welcome,
       root: routes.stack
     },
     initialRoute: {
@@ -131,7 +153,7 @@ it('Should handle NO client WITH initial URL as INVALID', async () => {
   expect(result.current).toStrictEqual({
     client: undefined,
     initialScreen: {
-      stack: routes.authenticate,
+      stack: routes.welcome,
       root: routes.stack
     },
     initialRoute: {

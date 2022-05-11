@@ -22,6 +22,7 @@ import { routes } from './constants/routes.js'
 import { CryptoWebView } from './components/webviews/CryptoWebView/CryptoWebView'
 import { withSentry } from './Sentry'
 import { ErrorScreen } from './screens/error/ErrorScreen.jsx'
+import { WelcomeScreen } from './screens/welcome/WelcomeScreen'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -64,6 +65,8 @@ const App = () => {
       >
         {params => <OnboardingScreen setClient={setClient} {...params} />}
       </Stack.Screen>
+
+      <Stack.Screen component={WelcomeScreen} name={routes.welcome} />
     </Stack.Navigator>
   )
 
