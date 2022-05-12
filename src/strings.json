@@ -1,4 +1,5 @@
 {
+  "APPS_ICONS": "APPS_ICONS",
   "COZY_SCHEME": "cozy://",
   "OAUTH_STORAGE_KEY": "@cozy_AmiralAppOAuthConfig",
   "REDIRECT": "redirect",
