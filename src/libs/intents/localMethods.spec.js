@@ -1,25 +1,43 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as Keychain from 'react-native-keychain'
 
 import * as RootNavigation from '../RootNavigation.js'
 import strings from '../../strings.json'
 import { localMethods, asyncLogout } from './localMethods'
+
 jest.mock('react-native-keychain')
+jest.mock('../RootNavigation.js')
 
-// eslint-disable-next-line no-import-assign
-RootNavigation.navigate = jest.fn()
+describe('asyncLogout', () => {
+  beforeEach(() => {
+    AsyncStorage.setItem(strings.OAUTH_STORAGE_KEY, '1')
+    AsyncStorage.setItem(strings.SESSION_CREATED_FLAG, '1')
+  })
 
-test('logout should handle AsyncStorage and Navigation', async () => {
-  await AsyncStorage.setItem(strings.OAUTH_STORAGE_KEY, '1')
-  await AsyncStorage.setItem(strings.SESSION_CREATED_FLAG, '1')
+  it('should remove session and oauth storage from AsyncStorage', async () => {
+    await asyncLogout()
 
-  await asyncLogout()
-  expect(await AsyncStorage.getItem(strings.OAUTH_STORAGE_KEY)).toBeFalsy()
-  expect(await AsyncStorage.getItem(strings.SESSION_CREATED_FLAG)).toBeFalsy()
-  expect(RootNavigation.navigate).toHaveBeenCalledWith('authenticate')
+    expect(await AsyncStorage.getItem(strings.OAUTH_STORAGE_KEY)).toBeNull()
+    expect(await AsyncStorage.getItem(strings.SESSION_CREATED_FLAG)).toBeNull()
+  })
+
+  it('should delete keychain', async () => {
+    await asyncLogout()
+
+    expect(Keychain.resetGenericPassword).toHaveBeenCalledWith()
+  })
+
+  it('should handle Navigate to authenticate page and prevent go back', async () => {
+    await asyncLogout()
+
+    expect(RootNavigation.reset).toHaveBeenCalledWith('authenticate')
+  })
 })
 
-test('backToHome should handle Navigation', async () => {
-  localMethods.backToHome()
+describe('backToHome', () => {
+  it('should handle Navigation', async () => {
+    localMethods.backToHome()
 
-  expect(RootNavigation.navigate).toHaveBeenCalledWith('home')
+    expect(RootNavigation.navigate).toHaveBeenCalledWith('home')
+  })
 })
