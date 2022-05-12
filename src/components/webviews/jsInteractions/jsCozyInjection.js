@@ -1,14 +1,14 @@
 import { Platform } from 'react-native'
 
 import { version } from '../../../../package.json'
-import { statusBarHeight, navbarHeight } from '../../../libs/dimensions'
+import { statusBarHeight, getNavbarHeight } from '../../../libs/dimensions'
 
 const immersiveRoutes = ['home']
 
 const makeMetadata = routeName =>
   JSON.stringify({
     immersive: immersiveRoutes.includes(routeName),
-    navbarHeight,
+    navbarHeight: getNavbarHeight(),
     platform: Platform,
     routeName,
     statusBarHeight,

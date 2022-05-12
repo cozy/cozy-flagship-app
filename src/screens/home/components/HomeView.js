@@ -7,12 +7,12 @@ import { useNativeIntent } from 'cozy-intent'
 import { useSession } from '../../../hooks/useSession'
 import CozyWebView from '../../../components/webviews/CozyWebView'
 import { consumeRouteParameter } from '../../../libs/functions/routeHelpers'
-import { statusBarHeight, navbarHeight } from '../../../libs/dimensions'
+import { statusBarHeight, getNavbarHeight } from '../../../libs/dimensions'
 
 const injectedJavaScriptBeforeContentLoaded = () => `
   window.addEventListener('load', (event) => {
     window.document.body.style.setProperty('--flagship-top-height', '${statusBarHeight}px');
-    window.document.body.style.setProperty('--flagship-bottom-height', '${navbarHeight}px');
+    window.document.body.style.setProperty('--flagship-bottom-height', '${getNavbarHeight()}px');
   });
 `
 

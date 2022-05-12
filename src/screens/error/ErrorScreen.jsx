@@ -21,7 +21,9 @@ const handleMessage = ({ nativeEvent: { data } }) =>
     eventId => data?.includes(eventId) && handlers[eventId]()
   )
 
-const makeSource = route => ({ html: HTML[route?.params?.type] ?? OfflinePage })
+const makeSource = route => ({
+  html: HTML[route?.params?.type]?.() ?? OfflinePage
+})
 
 export const ErrorScreen = ({ route }) => (
   <WebView onMessage={handleMessage} source={makeSource(route)} />

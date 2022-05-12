@@ -19,7 +19,7 @@ import {
   STATE_2FA_NEEDED,
   STATE_INVALID_PASSWORD
 } from '/libs/client'
-import { navbarHeight, statusBarHeight } from '/libs/dimensions'
+import { getNavbarHeight, statusBarHeight } from '/libs/dimensions'
 import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 
@@ -350,7 +350,7 @@ export const LoginScreen = ({ setClient }) => {
     >
       <View style={{ height: statusBarHeight }} />
       <LoginSteps setClient={setClient} />
-      <View style={{ height: navbarHeight }} />
+      <View style={{ height: getNavbarHeight() }} />
     </View>
   )
 }

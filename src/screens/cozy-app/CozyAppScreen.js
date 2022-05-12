@@ -4,7 +4,7 @@ import { StatusBar, View } from 'react-native'
 import CozyWebView from '../../components/webviews/CozyWebView'
 import { Animation } from './CozyAppScreen.Animation'
 import { flagshipUI } from '../../libs/intents/setFlagshipUI'
-import { navbarHeight, statusBarHeight } from '../../libs/dimensions'
+import { getNavbarHeight, statusBarHeight } from '../../libs/dimensions'
 import { styles } from './CozyAppScreen.styles'
 import { internalMethods } from '../../libs/intents/localMethods'
 
@@ -85,7 +85,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
 
       <View
         style={{
-          height: isFirstHalf ? navbarHeight : styles.immersiveHeight,
+          height: isFirstHalf ? getNavbarHeight() : styles.immersiveHeight,
           backgroundColor: bottomBackground
         }}
       >

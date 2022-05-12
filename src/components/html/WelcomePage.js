@@ -1,5 +1,4 @@
 import { translation } from '/locales'
-import { makeHTML } from '/components/makeHTML'
 
 const body = `
   <div class="d-flex flex-grow-1 flex-column justify-content-center text-center">
@@ -21,4 +20,4 @@ const body = `
   </button>
 `
 
-export const WelcomePage = makeHTML({ body })
+export const WelcomePage = body

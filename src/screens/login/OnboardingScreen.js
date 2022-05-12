@@ -7,7 +7,7 @@ import { OnboardingPasswordView } from './components/OnboardingPasswordView'
 import Minilog from '@cozy/minilog'
 
 import { callOnboardingInitClient } from '/libs/client'
-import { navbarHeight, statusBarHeight } from '/libs/dimensions'
+import { getNavbarHeight, statusBarHeight } from '/libs/dimensions'
 import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 
@@ -185,7 +185,7 @@ export const OnboardingScreen = ({ setClient, route, navigation }) => {
         route={route}
         navigation={navigation}
       />
-      <View style={{ height: navbarHeight }} />
+      <View style={{ height: getNavbarHeight() }} />
     </View>
   )
 }
