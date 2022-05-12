@@ -1,7 +1,7 @@
 import { cirrusCss } from '/screens/login/components/assets/common/css/cssCirrus'
 import { cozyBsCss } from '/screens/login/components/assets/common/css/cssCozyBs'
 import { fontsCss } from '/screens/login/components/assets/common/css/cssFonts'
-import { navbarHeight, statusBarHeight } from '/libs/dimensions'
+import { getNavbarHeight, statusBarHeight } from '/libs/dimensions'
 import { themeCss } from '/screens/login/components/assets/common/css/cssTheme'
 import { translation } from '/locales'
 
@@ -30,7 +30,7 @@ export const makeErrorPage = ({ icon, title, body, footer, header }) => `
       <style type="text/css">${cirrusCss}</style>
     </head>
 
-    <body class="theme-inverted" style="padding-top: ${statusBarHeight}px; padding-bottom: ${navbarHeight}px;">
+    <body class="theme-inverted" style="padding-top: ${statusBarHeight}px; padding-bottom: ${getNavbarHeight()}px;">
       <main class="wrapper">
         <header class="wrapper-top d-flex flex-row align-items-center">${
           header ? headerTemplate : ''
