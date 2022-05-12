@@ -12,7 +12,7 @@ export const asyncLogout = async () => {
   await clearClient()
   await resetSessionToken()
   await deleteKeychain()
-  RootNavigation.navigate('authenticate')
+  RootNavigation.reset('authenticate')
 }
 
 // Since logout is used from localMethods

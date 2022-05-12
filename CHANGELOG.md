@@ -7,6 +7,7 @@
 
 * Intercept clicks on mailto:, tel:, maps:, geo:, sms: to prevent error  ([PR #180](https://github.com/cozy/cozy-pass-mobile/pull/180) and [PR #213](https://github.com/cozy/cozy-pass-mobile/pull/213))
 * Display splash screen during loading steps  ([PR #214](https://github.com/cozy/cozy-pass-mobile/pull/214))
+* Prevent GoBack after logout  ([PR #218](https://github.com/cozy/cozy-pass-mobile/pull/218))
 
 ## 🔧 Tech
 
