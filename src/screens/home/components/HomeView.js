@@ -4,10 +4,11 @@ import { get } from 'lodash'
 import { useClient, generateWebLink } from 'cozy-client'
 import { useNativeIntent } from 'cozy-intent'
 
-import { useSession } from '../../../hooks/useSession'
-import CozyWebView from '../../../components/webviews/CozyWebView'
-import { consumeRouteParameter } from '../../../libs/functions/routeHelpers'
-import { statusBarHeight, getNavbarHeight } from '../../../libs/dimensions'
+import CozyWebView from '/components/webviews/CozyWebView'
+import { consumeRouteParameter } from '/libs/functions/routeHelpers'
+import { resetUIState } from '/libs/intents/setFlagshipUI'
+import { statusBarHeight, getNavbarHeight } from '/libs/dimensions'
+import { useSession } from '/hooks/useSession'
 
 const injectedJavaScriptBeforeContentLoaded = () => `
   window.addEventListener('load', (event) => {
@@ -66,6 +67,7 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
     const getHomeUri = async () => {
       const webLink = generateWebLink({
         cozyUrl: client.getStackClient().uri,
+        hash: 'connected',
         pathname: '/',
         slug: 'home',
         subDomainType: session.subDomainType
@@ -91,6 +93,11 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
       setTrackedWebviewInnerUri(webviewInneruri)
     }
   }
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => resetUIState(uri))
+    return unsubscribe
+  }, [navigation, uri])
 
   return uri ? (
     <CozyWebView

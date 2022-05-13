@@ -1,7 +1,11 @@
-import { changeBarColors } from 'react-native-immersive-bars'
 import { EventEmitter } from 'events'
+import { Platform, StatusBar } from 'react-native'
+import { changeBarColors } from 'react-native-immersive-bars'
 
 import Minilog from '@cozy/minilog'
+
+import { internalMethods } from '/libs/intents/localMethods'
+import { urlHasConnectorOpen } from '/libs/functions/urlHasConnector'
 
 const log = Minilog('SET_FLAGSHIP_UI')
 
@@ -14,6 +18,18 @@ const handleSideEffects = ({ bottomTheme, ...parsedIntent }) => {
 }
 
 const handleLogging = (intent, name) => log.info(`by ${name}`, intent)
+
+export const resetUIState = uri => {
+  const bottomTheme = urlHasConnectorOpen(uri)
+    ? 'dark-content'
+    : 'light-content'
+
+  StatusBar.setBarStyle(bottomTheme)
+
+  internalMethods.setFlagshipUI({ bottomTheme })
+
+  Platform.OS !== 'ios' && StatusBar?.setBackgroundColor('transparent')
+}
 
 export const flagshipUI = new EventEmitter()
 

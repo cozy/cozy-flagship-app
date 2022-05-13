@@ -13,6 +13,7 @@ import {
 import { jsOnbeforeunload } from '/components/webviews/jsInteractions/jsOnbeforeunload'
 import { useSession } from '/hooks/useSession'
 import ReloadInterceptorWebView from '/components/webviews/ReloadInterceptorWebView'
+import { getHostname } from '/libs/functions/getHostname'
 
 const log = Minilog('CozyWebView')
 
@@ -32,6 +33,7 @@ export const CozyWebView = ({
   const [, setTimestamp] = useState(Date.now())
   const [webviewRef, setWebviewRef] = useState()
   const [uri, setUri] = useState()
+  const [innerUri, setInnerUri] = useState()
   const nativeIntent = useNativeIntent()
   const { shouldInterceptAuth, handleInterceptAuth, consumeSessionToken } =
     useSession()
@@ -65,18 +67,13 @@ export const CozyWebView = ({
   }, [handleBackPress])
 
   useEffect(() => {
-    if (webviewRef && nativeIntent) {
-      log.info(`[Native ${logId}] registerWebview`)
-      nativeIntent.registerWebview(webviewRef)
-    }
+    innerUri &&
+      webviewRef &&
+      nativeIntent?.registerWebview(innerUri, webviewRef)
 
-    return () => {
-      if (webviewRef && nativeIntent) {
-        log.info(`[Native ${logId}] unregisterWebview`)
-        nativeIntent.unregisterWebview(webviewRef)
-      }
-    }
-  }, [nativeIntent, webviewRef, logId])
+    return () =>
+      innerUri && webviewRef && nativeIntent?.unregisterWebview(innerUri)
+  }, [innerUri, nativeIntent, webviewRef])
 
   const run = `
     (function() {
@@ -96,6 +93,8 @@ export const CozyWebView = ({
     <ReloadInterceptorWebView
       {...rest}
       onNavigationStateChange={event => {
+        const isValidUri = getHostname(event)
+        isValidUri && setInnerUri(isValidUri)
         setCanGoBack(event.canGoBack)
       }}
       source={{
