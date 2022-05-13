@@ -82,7 +82,7 @@
     "babel-plugin-react-native-web": "0.17.7",
     "eslint": "^8.13.0",
     "eslint-config-cozy-app": "^4.0.1",
-    "eslint-plugin-react-hooks": "^4.4.0",
+    "eslint-plugin-react-hooks": "^4.5.0",
     "file-loader": "6.2.0",
     "jest": "^27.5.1",
     "metro-react-native-babel-preset": "^0.66.2",
