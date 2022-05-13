@@ -23,6 +23,8 @@ Extract the content of `cozy-react-native/sentry.properties` from the password-s
 
 ### First time
 
+Note: Before running the app, please copy `cozy-home` files locally first. See [How to install cozy-home in local assets](docs/how-to-install-home.md)
+
 ```bash
 # Download Dependencies
 $ yarn
