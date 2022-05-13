@@ -273,6 +273,8 @@ PODS:
   - React-jsinspector (0.66.4)
   - React-logger (0.66.4):
     - glog
+  - react-native-android-navbar-height (0.1.0):
+    - React-Core
   - react-native-cookies (6.0.7):
     - React-Core
   - react-native-gzip (2.0.0):
@@ -451,6 +453,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-android-navbar-height (from `../node_modules/react-native-android-navbar-height`)
   - "react-native-cookies (from `../node_modules/@react-native-cookies/cookies`)"
   - "react-native-gzip (from `../node_modules/@fengweichong/react-native-gzip`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -535,6 +538,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-android-navbar-height:
+    :path: "../node_modules/react-native-android-navbar-height"
   react-native-cookies:
     :path: "../node_modules/@react-native-cookies/cookies"
   react-native-gzip:
@@ -626,6 +631,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 94ce921e1d8ce7023366873ec371f3441383b396
   React-jsinspector: d0374f7509d407d2264168b6d0fad0b54e300b85
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
+  react-native-android-navbar-height: bff52dac6312be20b4b90f1ff14b0444f3bbbbc4
   react-native-cookies: 6004d512ffc6f2c498c5b70cda0bc040350c0585
   react-native-gzip: 5ffb84bf191c7cd135338eca748317bc466d41a1
   react-native-netinfo: 3671b091c4843fda5e153612866ef4024b8f5d62
