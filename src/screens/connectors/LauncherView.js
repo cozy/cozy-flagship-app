@@ -84,7 +84,7 @@ class LauncherView extends Component {
     const initConnectorError = await this.initConnector()
 
     this.launcher.on('SET_WORKER_STATE', options => {
-      this.setState({ worker: options })
+      this.setState({ worker: { ...this.state.worker, options } })
     })
 
     this.launcher.on('SET_USER_AGENT', userAgent => {
