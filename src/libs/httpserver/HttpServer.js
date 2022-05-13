@@ -14,6 +14,7 @@ class HttpServer {
 
     this.started = false
     this._origin = undefined
+    this.securityKey = ''
     this._handleAppStateChangeFn = this._handleAppStateChange.bind(this)
   }
 
@@ -34,10 +35,15 @@ class HttpServer {
       this.root,
       this.localOnly,
       this.keepAlive
-    ).then(origin => {
-      this._origin = origin
-      return origin
-    })
+    )
+      .then(async origin => {
+        await NativeHttpServer.setSecurityKey(this.securityKey)
+        return origin
+      })
+      .then(origin => {
+        this._origin = origin
+        return origin
+      })
   }
 
   stop() {
@@ -84,6 +90,7 @@ class HttpServer {
   }
 
   setSecurityKey(key) {
+    this.securityKey = key
     return NativeHttpServer.setSecurityKey(key)
   }
 }
