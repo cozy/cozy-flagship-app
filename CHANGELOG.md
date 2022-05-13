@@ -1,16 +1,33 @@
-# 0.0.10
+# 0.0.11
 
 ## ✨ Features
 
 
 ## 🐛 Bug Fixes
 
-* Intercept clicks on mailto:, tel:, maps:, geo:, sms: to prevent error  ([PR #180](https://github.com/cozy/cozy-pass-mobile/pull/180) and [PR #213](https://github.com/cozy/cozy-pass-mobile/pull/213))
-* Display splash screen during loading steps  ([PR #214](https://github.com/cozy/cozy-pass-mobile/pull/214))
-* Prevent GoBack after logout  ([PR #218](https://github.com/cozy/cozy-pass-mobile/pull/218))
 
 ## 🔧 Tech
 
+
+# 0.0.10
+
+## ✨ Features
+
+* Add a Welcome page ([PR #209](https://github.com/cozy/cozy-pass-mobile/pull/209) and [PR #217](https://github.com/cozy/cozy-pass-mobile/pull/217))
+
+## 🐛 Bug Fixes
+
+* Intercept clicks on mailto:, tel:, maps:, geo:, sms: to prevent error  ([PR #180](https://github.com/cozy/cozy-pass-mobile/pull/180) and [PR #213](https://github.com/cozy/cozy-pass-mobile/pull/213))
+* Improve Post-me stability when browsing between cozy-apps ([PR #212](https://github.com/cozy/cozy-pass-mobile/pull/212))
+* Display splash screen during loading steps  ([PR #214](https://github.com/cozy/cozy-pass-mobile/pull/214))
+* Fix Navbar height calculation ([PR #215](https://github.com/cozy/cozy-pass-mobile/pull/215))
+* Prevent GoBack after logout  ([PR #218](https://github.com/cozy/cozy-pass-mobile/pull/218))
+* Add a safe area on login, onboarding and error screens ([PR #223](https://github.com/cozy/cozy-pass-mobile/pull/223))
+* Redirect to the correct screen when the device retrieves Internet connection ([PR #224](https://github.com/cozy/cozy-pass-mobile/pull/224))
+
+## 🔧 Tech
+
+* Add JSX support in Jest configuration ([PR #210](https://github.com/cozy/cozy-pass-mobile/pull/210))
 
 # 0.0.9
 
