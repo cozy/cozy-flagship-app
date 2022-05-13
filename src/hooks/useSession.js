@@ -22,7 +22,7 @@ export const useSession = () => {
       .then(isConnected => {
         if (isConnected) return
 
-        NetService.toggleNetWatcher({ callbackRoute: routes.home })
+        NetService.toggleNetWatcher({ callbackRoute: routes.stack })
         NetService.handleOffline()
         return hideSplashScreen()
       })
