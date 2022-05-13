@@ -29,7 +29,7 @@ export const internalMethods = {
   setFlagshipUI: intent =>
     setFlagshipUI(
       intent,
-      isDevMode() && internalMethods.setFlagshipUI.caller.name
+      isDevMode() && internalMethods.setFlagshipUI.caller?.name
     )
 }
 
