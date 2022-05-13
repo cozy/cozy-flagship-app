@@ -1,7 +1,8 @@
-import ContentScript from './ContentScript'
+import ContentScript, { PILOT_TYPE } from './ContentScript'
 
 describe('ContentScript', () => {
   const contentScript = new ContentScript()
+  contentScript.setContentScriptType(PILOT_TYPE)
 
   describe('runInWorkerUntilTrue', () => {
     contentScript.runInWorker = jest.fn()

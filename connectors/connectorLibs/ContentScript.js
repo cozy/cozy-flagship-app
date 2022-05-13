@@ -3,7 +3,7 @@ import waitFor from 'p-wait-for'
 import Minilog from '@cozy/minilog'
 
 import LauncherBridge from './bridge/LauncherBridge'
-import {kyScraper as ky, blobToBase64} from './utils'
+import { kyScraper as ky, blobToBase64 } from './utils'
 
 const log = Minilog('ContentScript class')
 
@@ -12,6 +12,9 @@ const m = 60 * s
 
 const DEFAULT_LOGIN_TIMEOUT = 5 * m
 const DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT = 30 * s
+
+export const PILOT_TYPE = 'pilot'
+export const WORKER_TYPE = 'worker'
 
 sendContentScriptReadyEvent()
 
@@ -24,7 +27,7 @@ export default class ContentScript {
    * content script to expose expose. To make it callable via the worker
    */
   async init(options = {}) {
-    this.bridge = new LauncherBridge({localWindow: window})
+    this.bridge = new LauncherBridge({ localWindow: window })
     const exposedMethodsNames = [
       'setContentScriptType',
       'ensureAuthenticated',
@@ -35,13 +38,13 @@ export default class ContentScript {
       'fetch',
       'click',
       'fillText',
-      'storeFromWorker',
+      'storeFromWorker'
     ]
 
     if (options.additionalExposedMethodsNames) {
       exposedMethodsNames.push.apply(
         exposedMethodsNames,
-        options.additionalExposedMethodsNames,
+        options.additionalExposedMethodsNames
       )
     }
 
@@ -51,10 +54,10 @@ export default class ContentScript {
     for (const method of exposedMethodsNames) {
       exposedMethods[method] = this[method].bind(this)
     }
-    await this.bridge.init({exposedMethods})
+    await this.bridge.init({ exposedMethods })
     window.onbeforeunload = () =>
       this.log(
-        'window.beforeunload detected with previous url : ' + document.location,
+        'window.beforeunload detected with previous url : ' + document.location
       )
 
     this.bridge.emit('workerReady')
@@ -78,9 +81,10 @@ export default class ContentScript {
    * @throws {Exception}: TimeoutError from p-wait-for package if timeout expired
    */
   async waitForAuthenticated() {
+    this.onlyIn(WORKER_TYPE, 'waitForAuthenticated')
     await waitFor(this.checkAuthenticated.bind(this), {
       interval: 1000,
-      timeout: DEFAULT_LOGIN_TIMEOUT,
+      timeout: DEFAULT_LOGIN_TIMEOUT
     })
     return true
   }
@@ -91,6 +95,7 @@ export default class ContentScript {
    * @param {String} method : name of the method to run
    */
   async runInWorker(method, ...args) {
+    this.onlyIn(PILOT_TYPE, 'runInWorker')
     return this.bridge.call('runInWorker', method, ...args)
   }
 
@@ -104,7 +109,8 @@ export default class ContentScript {
    * @return {Promise<Boolean>} - true
    * @throws {Exception} - if timeout expired
    */
-  async runInWorkerUntilTrue({method, timeout = Infinity, args = []}) {
+  async runInWorkerUntilTrue({ method, timeout = Infinity, args = [] }) {
+    this.onlyIn(PILOT_TYPE, 'runInWorkerUntilTrue')
     log.debug('runInWorkerUntilTrue', method)
     let result = false
     const start = Date.now()
@@ -127,9 +133,10 @@ export default class ContentScript {
    * @param {String} selector - css selector we are waiting for
    */
   async waitForElementInWorker(selector) {
+    this.onlyIn(PILOT_TYPE, 'waitForElementInWorker')
     await this.runInWorkerUntilTrue({
       method: 'waitForElementNoReload',
-      args: [selector],
+      args: [selector]
     })
   }
 
@@ -140,24 +147,27 @@ export default class ContentScript {
    * @returns Boolean
    */
   async waitForElementNoReload(selector) {
+    this.onlyIn(WORKER_TYPE, 'waitForElementNoReload')
     log.debug('waitForElementNoReload', selector)
     await waitFor(() => Boolean(document.querySelector(selector)), {
-      timeout: DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT,
+      timeout: DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT
     })
     return true
   }
 
   async click(selector) {
+    this.onlyIn(WORKER_TYPE, 'click')
     const elem = document.querySelector(selector)
     if (!elem) {
       throw new Error(
-        `click: No DOM element is matched with the ${selector} selector`,
+        `click: No DOM element is matched with the ${selector} selector`
       )
     }
     elem.click()
   }
 
   async clickAndWait(elementToClick, elementToWait) {
+    this.onlyIn(WORKER_TYPE, 'clickAndWait')
     log.debug('clicking ' + elementToClick)
     await this.runInWorker('click', elementToClick)
     log.debug('waiting for ' + elementToWait)
@@ -166,16 +176,17 @@ export default class ContentScript {
   }
 
   async fillText(selector, text) {
+    this.onlyIn(WORKER_TYPE, 'fillText')
     const elem = document.querySelector(selector)
     if (!elem) {
       throw new Error(
-        `fillText: No DOM element is matched with the ${selector} selector`,
+        `fillText: No DOM element is matched with the ${selector} selector`
       )
     }
     elem.focus()
     elem.value = text
-    elem.dispatchEvent(new Event('input', {bubbles: true}))
-    elem.dispatchEvent(new Event('change', {bubbles: true}))
+    elem.dispatchEvent(new Event('input', { bubbles: true }))
+    elem.dispatchEvent(new Event('change', { bubbles: true }))
   }
 
   /**
@@ -188,6 +199,7 @@ export default class ContentScript {
    * @param {Object} options : saveFiles options
    */
   async saveFiles(entries, options) {
+    this.onlyIn(PILOT_TYPE, 'saveFiles')
     log.debug(entries, 'saveFiles input entries')
     const context = options.context
     log.debug(context, 'saveFiles input context')
@@ -216,6 +228,7 @@ export default class ContentScript {
    * @param {Object} options : saveFiles options
    */
   async saveBills(entries, options) {
+    this.onlyIn(PILOT_TYPE, 'saveBills')
     const files = await this.saveFiles(entries, options)
     return await this.bridge.call('saveBills', files, options)
   }
@@ -224,6 +237,7 @@ export default class ContentScript {
    * Bridge to the getCredentials method from the launcher.
    */
   async getCredentials() {
+    this.onlyIn(PILOT_TYPE, 'getCredentials')
     return await this.bridge.call('getCredentials')
   }
 
@@ -233,6 +247,7 @@ export default class ContentScript {
    * @param {Object} credentials
    */
   async saveCredentials(credentials) {
+    this.onlyIn(PILOT_TYPE, 'saveCredentials')
     return await this.bridge.call('saveCredentials', credentials)
   }
 
@@ -242,6 +257,7 @@ export default class ContentScript {
    * @param {Object} identity
    */
   async saveIdentity(identity) {
+    this.onlyIn(PILOT_TYPE, 'saveIdentity')
     return await this.bridge.call('saveIdentity', identity)
   }
 
@@ -257,13 +273,13 @@ export default class ContentScript {
     if (options.fileIdAttributes) {
       const contextFilesIndex = this.createContextFilesIndex(
         options.context,
-        options.fileIdAttributes,
+        options.fileIdAttributes
       )
       return files.filter(
         file =>
           contextFilesIndex[
             this.calculateFileKey(file, options.fileIdAttributes)
-          ] === undefined,
+          ] === undefined
       )
     } else {
       return files
@@ -316,6 +332,7 @@ export default class ContentScript {
    * @param {SetWorkerStateOptions} options
    */
   async setWorkerState(options = {}) {
+    this.onlyIn(PILOT_TYPE, 'setWorkerState')
     await this.bridge.call('setWorkerState', options)
   }
 
@@ -325,7 +342,8 @@ export default class ContentScript {
    * @param {string} : the url
    */
   async goto(url) {
-    await this.setWorkerState({url})
+    this.onlyIn(PILOT_TYPE, 'goto')
+    await this.setWorkerState({ url })
   }
 
   /**
@@ -354,6 +372,7 @@ export default class ContentScript {
    * @param {Object} : any object with data to store
    */
   async sendToPilot(obj) {
+    this.onlyIn(WORKER_TYPE, 'sendToPilot')
     return this.bridge.call('sendToPilot', obj)
   }
 
@@ -370,6 +389,12 @@ export default class ContentScript {
     Object.assign(this.store, obj)
   }
 
+  onlyIn(csType, method) {
+    if (this.contentScriptType !== csType) {
+      throw new Error(`Use ${method} only from the ${csType}`)
+    }
+  }
+
   /**
    * Main function, fetches all connector data and save it to the cozy
    *
@@ -377,13 +402,13 @@ export default class ContentScript {
    * connector execution by not fetching data we already have.
    * @returns {Object} : Connector execution result. TBD
    */
-  async fetch({context}) {}
+  async fetch({ context }) {}
 }
 
 function sendContentScriptReadyEvent() {
   if (get(window, 'ReactNativeWebView.postMessage')) {
     window.ReactNativeWebView.postMessage(
-      JSON.stringify({message: 'NEW_WORKER_INITIALIZING'}),
+      JSON.stringify({ message: 'NEW_WORKER_INITIALIZING' })
     )
   } else {
     console.error('No window.ReactNativeWebView.postMessage available')
