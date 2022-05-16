@@ -17,6 +17,7 @@ import com.rnfs.RNFSPackage;
 
 import io.cozy.flagship.mobile.keyboard.KeyboardPackage;
 import io.cozy.flagship.mobile.httpserver.HttpServerPackage;
+import io.cozy.flagship.mobile.webview.WebViewPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -36,6 +37,7 @@ public class MainApplication extends Application implements ReactApplication {
           // packages.add(new RNFSPackage());
           packages.add(new KeyboardPackage());
           packages.add(new HttpServerPackage());
+          packages.add(new WebViewPackage());
           return packages;
         }
 

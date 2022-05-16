@@ -171,3 +171,7 @@ Read the Sentry configuration paragraph above.
 2. Application blocked on the Splashscreen
 
 Verify that the Cozy you are login into is using the last version of `cozy-home`, and try again
+
+3. Error on app `Tried to register two views with the same name RCTIndexInjectionWebView`
+
+This may happen after development's HotReload occurs. When encountered just restart the app. This should not happen on production.
