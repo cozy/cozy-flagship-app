@@ -1,11 +1,7 @@
 import { useClient, useQuery, Q, isQueryLoading } from 'cozy-client'
 import { useEffect, useMemo, useState } from 'react'
 
-import Minilog from '@cozy/minilog'
-
 import { makeSessionAPI } from '/libs/functions/session'
-import { NetService } from '/libs/services/NetService'
-import { routes } from '/constants/routes'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 
 export const useSession = () => {
@@ -18,16 +14,6 @@ export const useSession = () => {
   )
 
   useEffect(() => {
-    NetService.isConnected()
-      .then(isConnected => {
-        if (isConnected) return
-
-        NetService.toggleNetWatcher({ callbackRoute: routes.stack })
-        NetService.handleOffline()
-        return hideSplashScreen()
-      })
-      .catch(reason => Minilog('useSession').error(reason))
-
     !isQueryLoading(query) &&
       setSubdomainType(
         data && data.attributes && data.attributes.flat_subdomains
