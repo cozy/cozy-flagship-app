@@ -5,6 +5,7 @@ import Minilog from '@cozy/minilog'
 import strings from '/strings.json'
 import { reset } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
+import { showSplashScreen } from './SplashScreenService'
 
 const log = Minilog('NetService')
 
@@ -22,9 +23,10 @@ const makeNetWatcher = () => {
   return ({ shouldUnsub, callbackRoute } = {}) => {
     if (!unsubscribe) {
       log.debug('Adding NetInfo listener')
-      unsubscribe = NetInfo.addEventListener(state =>
+      unsubscribe = NetInfo.addEventListener(state => {
+        callbackRoute === routes.stack && showSplashScreen()
         _netInfoChangeHandler(state, callbackRoute)
-      )
+      })
     }
 
     if (shouldUnsub) {

@@ -13,6 +13,10 @@ const homeLink = `https://links.mycozy.cloud/home/folder/1?fallback=${initialURL
 const appLink = `https://links.mycozy.cloud/drive/folder/1?fallback=${initialURL}`
 const invalidLink = 'https://foo.com'
 
+jest.mock('react-native-bootsplash', () => ({
+  show: jest.fn()
+}))
+
 jest.mock('../Sentry', () => ({
   SentryTags: {},
   setSentryTag: jest.fn()

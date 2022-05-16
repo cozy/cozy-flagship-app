@@ -3,8 +3,8 @@ import { Linking } from 'react-native'
 import { useEffect, useState } from 'react'
 
 import strings from '../strings.json'
-import { SentryTags, setSentryTag } from '../Sentry'
 import { NetService } from '../libs/services/NetService'
+import { SentryTags, setSentryTag } from '../Sentry'
 import { manageIconCache } from '../libs/functions/iconTable'
 import { navigate } from '../libs/RootNavigation'
 import { routes } from '../constants/routes'
@@ -115,16 +115,28 @@ export const useAppBootstrap = client => {
       } else {
         const payload = await Linking.getInitialURL()
         const { fallback, root, isHome } = parseFallbackURL(payload)
-        setInitialScreen({ stack: routes.home, root })
+        const isConnected = await NetService.isConnected()
+
+        setInitialScreen({
+          stack: routes.home,
+          root: isConnected ? root : routes.error
+        })
+
         setInitialRoute({
           stack: isHome ? fallback : undefined,
           root: !isHome ? fallback : undefined
         })
+
+        if (!isConnected) {
+          NetService.handleOffline()
+          NetService.toggleNetWatcher({ callbackRoute: routes.stack })
+          hideSplashScreen()
+        }
       }
     }
 
     initialRoute === 'fetching' && initialScreen === 'fetching' && doAsync()
-  }, [initialRoute, initialScreen, client])
+  }, [initialRoute, initialScreen, client, hideSplashScreen])
 
   // Handling app readiness
   useEffect(() => {
