@@ -39,6 +39,17 @@ const run = `
     })();
   `
 
+const handleError = async webviewErrorEvent => {
+  try {
+    const isOffline = await NetService.isOffline()
+    isOffline && NetService.handleOffline()
+  } catch (error) {
+    log.error(error)
+  } finally {
+    log.error(webviewErrorEvent)
+  }
+}
+
 /**
  * Displays the Cloudery web page where the user can specify their Cozy instance
  *
@@ -60,10 +71,6 @@ export const ClouderyView = ({ setInstanceData }) => {
 
   const handleNavigation = request => {
     const instance = getUriFromRequest(request)
-
-    NetService.isOffline()
-      .then(isOffline => isOffline && NetService.handleOffline())
-      .catch(error => log.error(error))
 
     if (request.loading) {
       if (isLoginPage(request.url) && request.url !== strings.loginUri) {
@@ -123,6 +130,7 @@ export const ClouderyView = ({ setInstanceData }) => {
         style={{
           backgroundColor: colors.primaryColor
         }}
+        onError={handleError}
       />
       {loading && (
         <View
