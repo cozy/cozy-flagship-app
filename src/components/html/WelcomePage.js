@@ -15,7 +15,7 @@ const body = `
     <div>${translation.screens.welcome.body}</div>
   </div>
 
-  <button class="btn btn-primary" onclick="(() => window.ReactNativeWebView.postMessage('onContinue'))()">
+  <button class="btn btn-primary my-3" onclick="(() => window.ReactNativeWebView.postMessage('onContinue'))()">
     ${translation.screens.welcome.button}
   </button>
 `
