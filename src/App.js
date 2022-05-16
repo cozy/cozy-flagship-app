@@ -10,6 +10,7 @@ import { NativeIntentProvider } from 'cozy-intent'
 
 import { getClient } from './libs/client'
 import * as RootNavigation from './libs/RootNavigation.js'
+import { HttpServerProvider } from './libs/httpserver/httpServerProvider'
 import { HomeScreen } from './screens/home/HomeScreen'
 import { LoginScreen } from './screens/login/LoginScreen'
 import { OnboardingScreen } from './screens/login/OnboardingScreen'
@@ -132,7 +133,9 @@ const WrappedApp = () => {
               ]}
             >
               <CryptoWebView />
-              <App setClient={setClient} />
+              <HttpServerProvider>
+                <App setClient={setClient} />
+              </HttpServerProvider>
             </View>
           </SplashScreenProvider>
         </PaperProvider>
