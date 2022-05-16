@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import { Platform } from 'react-native'
 import { get } from 'lodash'
 
 import { useClient, generateWebLink } from 'cozy-client'
 import { useNativeIntent } from 'cozy-intent'
 
 import CozyWebView from '/components/webviews/CozyWebView'
+import { IndexInjectionWebviewComponent } from '../../../components/webviews/webViewComponents/IndexInjectionWebviewComponent'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { statusBarHeight, getNavbarHeight } from '/libs/dimensions'
@@ -28,6 +30,40 @@ const getHttpUnsecureUrl = uri => {
   }
 
   return uri
+}
+
+/**
+ * Retrieve the WebView's configuration for the current platform
+ *
+ * Android is not compatible with html/baseUrl injection as history would be broken
+ *
+ * So html/baseUrl injection is done only on iOS
+ *
+ * Instead, Android version is based on native WebView's ability to intercept queries
+ * and override the result. In this case we should use uri instead of html/baseUrl and
+ * declare a nativeConfig with IndexInjectionWebviewComponent
+ *
+ * @param {string} uri - the webView's URI
+ * @param {string} html - the HTML to inject as index.html
+ * @returns source and nativeConfig props to be set on the WebView
+ */
+const getPlaformSpecificConfig = (uri, html) => {
+  const httpUnsecureUrl = getHttpUnsecureUrl(uri)
+
+  const source =
+    Platform.OS === 'ios'
+      ? { html, baseUrl: httpUnsecureUrl.toString() }
+      : { uri }
+
+  const nativeConfig =
+    Platform.OS === 'ios'
+      ? undefined
+      : { component: IndexInjectionWebviewComponent }
+
+  return {
+    source,
+    nativeConfig
+  }
 }
 
 const HomeView = ({ route, navigation, setLauncherContext }) => {
@@ -130,11 +166,13 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
     return unsubscribe
   }, [navigation, uri])
 
-  let httpUnsecureUrl = getHttpUnsecureUrl(uri)
+  const { source, nativeConfig } = getPlaformSpecificConfig(uri, html)
 
-  return httpUnsecureUrl && html ? (
+  return source && html ? (
     <CozyWebView
-      source={{ html, baseUrl: httpUnsecureUrl.toString() }}
+      source={source}
+      nativeConfig={nativeConfig}
+      injectedIndex={html}
       trackWebviewInnerUri={handleTrackWebviewInnerUri}
       navigation={navigation}
       route={route}
