@@ -71,66 +71,59 @@ export const useAppBootstrap = client => {
 
   // Handling initial URL init
   useEffect(() => {
-    if (
-      client !== null &&
-      initialRoute === 'fetching' &&
-      initialScreen === 'fetching'
-    ) {
-      const doAsync = async () => {
-        if (!client) {
-          const onboardingUrl = await Linking.getInitialURL()
+    const doAsync = async () => {
+      if (!client) {
+        const onboardingUrl = await Linking.getInitialURL()
 
-          if (await NetService.isOffline()) {
-            NetService.toggleNetWatcher()
+        if (await NetService.isOffline()) {
+          NetService.toggleNetWatcher()
 
-            setInitialRoute({
-              stack: undefined,
-              root: strings.errorScreens.offline
-            })
-
-            return setInitialScreen({
-              stack: routes.authenticate,
-              root: routes.error
-            })
-          }
-
-          const onboardingParams = parseOnboardingURL(onboardingUrl)
-
-          if (onboardingParams) {
-            const { registerToken, fqdn } = onboardingParams
-
-            setInitialRoute({ stack: undefined, root: undefined })
-
-            return setInitialScreen({
-              stack: routes.onboarding,
-              root: routes.nested,
-              params: {
-                registerToken,
-                fqdn
-              }
-            })
-          } else {
-            setInitialRoute({ stack: undefined, root: undefined })
-
-            return setInitialScreen({
-              stack: routes.welcome,
-              root: routes.stack
-            })
-          }
-        } else {
-          const payload = await Linking.getInitialURL()
-          const { fallback, root, isHome } = parseFallbackURL(payload)
-
-          setInitialScreen({ stack: routes.home, root })
           setInitialRoute({
-            stack: isHome ? fallback : undefined,
-            root: !isHome ? fallback : undefined
+            stack: undefined,
+            root: strings.errorScreens.offline
+          })
+
+          return setInitialScreen({
+            stack: routes.authenticate,
+            root: routes.error
           })
         }
-      }
 
-      doAsync()
+        const onboardingParams = parseOnboardingURL(onboardingUrl)
+
+        if (onboardingParams) {
+          const { registerToken, fqdn } = onboardingParams
+
+          setInitialRoute({ stack: undefined, root: undefined })
+
+          return setInitialScreen({
+            stack: routes.onboarding,
+            root: routes.nested,
+            params: {
+              registerToken,
+              fqdn
+            }
+          })
+        } else {
+          setInitialRoute({ stack: undefined, root: undefined })
+
+          return setInitialScreen({
+            stack: routes.welcome,
+            root: routes.stack
+          })
+        }
+      } else {
+        const payload = await Linking.getInitialURL()
+        const { fallback, root, isHome } = parseFallbackURL(payload)
+        setInitialScreen({ stack: routes.home, root })
+        setInitialRoute({
+          stack: isHome ? fallback : undefined,
+          root: !isHome ? fallback : undefined
+        })
+      }
     }
+
+    initialRoute === 'fetching' && initialScreen === 'fetching' && doAsync()
   }, [initialRoute, initialScreen, client])
 
   // Handling app readiness
