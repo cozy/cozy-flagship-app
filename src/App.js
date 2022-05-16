@@ -108,14 +108,14 @@ const WrappedApp = () => {
 
   // Handling client init
   useEffect(() => {
-    const asyncCore = async () => {
+    const handleClientInit = async () => {
       try {
         setClient((await getClient()) || undefined)
       } catch {
         setClient(undefined)
       }
     }
-    asyncCore()
+    handleClientInit()
   }, [])
 
   const Nav = () => (

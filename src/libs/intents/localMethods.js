@@ -31,17 +31,24 @@ const backToHome = () => {
  *
  * @param {CozyClient} client - current CozyClient instance
  *
- * @returns {Function}
+ * @returns {Function|null}
+ * @throws error containing invalid session code result
  */
 const fetchSessionCodeWithClient = client => {
   return async function fetchSessionCode() {
+    if (!client) {
+      return null
+    }
     const sessionCodeResult = await client.getStackClient().fetchSessionCode()
 
     if (sessionCodeResult.session_code) {
       return sessionCodeResult.session_code
     }
 
-    throw new Error("session code result should contain a session_code", JSON.stringify(sessionCodeResult))
+    throw new Error(
+      'session code result should contain a session_code ' +
+        JSON.stringify(sessionCodeResult)
+    )
   }
 }
 
