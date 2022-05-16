@@ -41,7 +41,7 @@ const fetchSessionCodeWithClient = client => {
       return sessionCodeResult.session_code
     }
 
-    throw new Error(JSON.stringify(sessionCodeResult))
+    throw new Error("session code result should contain a session_code", JSON.stringify(sessionCodeResult))
   }
 }
 
