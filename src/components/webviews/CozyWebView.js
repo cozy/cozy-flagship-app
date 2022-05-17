@@ -47,8 +47,8 @@ export const CozyWebView = ({
    * On subsequent renders, if the uri props ever change, it will override the session_code uri created by handleInterceptAuth()
    */
   useEffect(() => {
-    setUri(source.uri)
-  }, [source.uri])
+    setUri(source.uri || source.baseUrl)
+  }, [source.uri, source.baseUrl])
 
   const [canGoBack, setCanGoBack] = useState(false)
 
@@ -91,6 +91,8 @@ export const CozyWebView = ({
     })();
   `
 
+  const webviewSource = source.html ? source : { uri }
+
   return uri ? (
     <ReloadInterceptorWebView
       {...rest}
@@ -99,15 +101,7 @@ export const CozyWebView = ({
         isValidUri && setInnerUri(isValidUri)
         setCanGoBack(event.canGoBack)
       }}
-      source={{
-        // To test interception, uncomment this block
-        //         html: `<html><body>
-        // <button onclick="window.location.reload()" style="margin: 80px; font-size: 40px;">Reload()</button>
-        // <!--rendered at ${timestamp} -->
-        // </body></html>`,
-        //         baseUrl: uri,
-        uri
-      }}
+      source={webviewSource}
       injectedJavaScriptBeforeContentLoaded={run}
       originWhitelist={['http://*', 'https://*', 'intent://*']}
       useWebKit={true}

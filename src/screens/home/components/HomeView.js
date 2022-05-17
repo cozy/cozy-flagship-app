@@ -10,6 +10,8 @@ import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { statusBarHeight, getNavbarHeight } from '/libs/dimensions'
 import { useSession } from '/hooks/useSession'
 
+import { useHttpServerContext } from '../../../libs/httpserver/httpServerProvider'
+
 const injectedJavaScriptBeforeContentLoaded = () => `
   window.addEventListener('load', (event) => {
     window.document.body.style.setProperty('--flagship-top-height', '${statusBarHeight}px');
@@ -17,12 +19,25 @@ const injectedJavaScriptBeforeContentLoaded = () => `
   });
 `
 
+const getHttpUnsecureUrl = uri => {
+  if (uri) {
+    let httpUnsecureUrl = new URL(uri)
+    httpUnsecureUrl.protocol = 'http:'
+
+    return httpUnsecureUrl
+  }
+
+  return uri
+}
+
 const HomeView = ({ route, navigation, setLauncherContext }) => {
   const client = useClient()
   const [uri, setUri] = useState('')
+  const [html, setHtml] = useState(undefined)
   const [trackedWebviewInnerUri, setTrackedWebviewInnerUri] = useState('')
   const nativeIntent = useNativeIntent()
   const session = useSession()
+  const httpServerContext = useHttpServerContext()
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
@@ -88,6 +103,22 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
     }
   }, [uri, client, route, nativeIntent, navigation, session])
 
+  // Load injected index.html
+  useEffect(() => {
+    if (httpServerContext.isRunning()) {
+      const initHtmlContent = async () => {
+        const htmlContent = await httpServerContext.getIndexHtmlForSlug(
+          'home',
+          client
+        )
+
+        setHtml(htmlContent)
+      }
+
+      initHtmlContent()
+    }
+  }, [client, httpServerContext])
+
   const handleTrackWebviewInnerUri = webviewInneruri => {
     if (webviewInneruri !== trackedWebviewInnerUri) {
       setTrackedWebviewInnerUri(webviewInneruri)
@@ -99,9 +130,11 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
     return unsubscribe
   }, [navigation, uri])
 
-  return uri ? (
+  let httpUnsecureUrl = getHttpUnsecureUrl(uri)
+
+  return httpUnsecureUrl && html ? (
     <CozyWebView
-      source={{ uri }}
+      source={{ html, baseUrl: httpUnsecureUrl.toString() }}
       trackWebviewInnerUri={handleTrackWebviewInnerUri}
       navigation={navigation}
       route={route}
