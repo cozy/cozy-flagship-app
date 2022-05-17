@@ -189,23 +189,22 @@ export default class ContentScript {
    */
   async saveFiles(entries, options) {
     log.debug(entries, 'saveFiles input entries')
-    log.debug(options)
     const context = options.context
     log.debug(context, 'saveFiles input context')
 
-    // const filteredEntries = this.filterOutExistingFiles(entries, options)
-    // for (const entry of filteredEntries) {
-    //   if (entry.fileurl) {
-    //     entry.blob = await ky.get(entry.fileurl).blob()
-    //     delete entry.fileurl
-    //   }
-    //   if (entry.blob) {
-    //     // TODO paralelize
-    //     entry.dataUri = await blobToBase64(entry.blob)
-    //     delete entry.blob
-    //   }
-    // }
-    // return await this.bridge.call('saveFiles', entries, options)
+    const filteredEntries = this.filterOutExistingFiles(entries, options)
+    for (const entry of filteredEntries) {
+      if (entry.fileurl) {
+        entry.blob = await ky.get(entry.fileurl).blob()
+        delete entry.fileurl
+      }
+      if (entry.blob) {
+        // TODO paralelize
+        entry.dataUri = await blobToBase64(entry.blob)
+        delete entry.blob
+      }
+    }
+    return await this.bridge.call('saveFiles', entries, options)
   }
 
   /**

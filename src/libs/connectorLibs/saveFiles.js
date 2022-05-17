@@ -51,12 +51,12 @@ const saveFiles = async (entries, folderPath, options = {}) => {
 
   noMetadataDeduplicationWarning(saveOptions)
 
-  const canBeSaved = (entry) => entry.filestream
+  const canBeSaved = entry => entry.filestream
 
   let savedFiles = 0
   const savedEntries = []
   for (let entry of entries) {
-    ;['filename', 'shouldReplaceName'].forEach((key) =>
+    ['filename', 'shouldReplaceName'].forEach(key =>
       addValOrFnResult(entry, key, options),
     )
     if (entry.filestream && !entry.filename) {
@@ -122,7 +122,7 @@ const saveEntry = async function (entry, options) {
         throw_original: true,
         max_tries: options.retry,
         args: [entry, options, method, file ? file._id : undefined],
-      }).catch((err) => {
+      }).catch(err => {
         if (err.message === 'BAD_DOWNLOADED_FILE') {
           log.warn(
             `Could not download file after ${options.retry} tries removing the file`,
@@ -327,7 +327,7 @@ async function createFile(entry, options, method, fileId) {
 }
 
 const defaultShouldReplaceFile = (file, entry, options) => {
-  const shouldForceMetadataAttr = (attr) => {
+  const shouldForceMetadataAttr = attr => {
     const result =
       !getAttribute(file, `metadata.${attr}`) &&
       get(entry, `fileAttributes.metadata.${attr}`)
@@ -458,7 +458,7 @@ function getValOrFnResult(val, ...args) {
 function calculateFileKey(entry, fileIdAttributes) {
   return fileIdAttributes
     .sort()
-    .map((key) => get(entry, key))
+    .map(key => get(entry, key))
     .join('####')
 }
 

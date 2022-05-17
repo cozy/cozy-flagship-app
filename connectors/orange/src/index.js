@@ -1,21 +1,20 @@
 import ContentScript from '../../connectorLibs/ContentScript'
-import {kyScraper as ky, blobToBase64} from '../../connectorLibs/utils'
+import {blobToBase64} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
-// import get from 'lodash/get'
-// import {format} from 'date-fns'
-// import waitFor from 'p-wait-for'
 
 const log = Minilog('ContentScript')
 Minilog.enable()
 
 const BASE_URL = 'https://espace-client.orange.fr'
-const LOGIN_URL =
-  'https://login.orange.fr/?service=nextecare&return_url=https%3A%2F%2Fespace-client.orange.fr%2Fpage-accueil#/password'
 const DEFAULT_PAGE_URL = BASE_URL + '/accueil'
 const DEFAULT_SOURCE_ACCOUNT_IDENTIFIER = 'orange'
-let bills = []
-let promises = []
-let promisesToConvertBlobToBase64 = []
+
+let recentBills = []
+let oldBills = []
+let recentPromisesToConvertBlobToBase64 = []
+let oldPromisesToConvertBlobToBase64 = []
+let recentXhrUrls = []
+let oldXhrUrls = []
 
 var proxied = window.XMLHttpRequest.prototype.open
 window.XMLHttpRequest.prototype.open = function () {
@@ -23,25 +22,46 @@ window.XMLHttpRequest.prototype.open = function () {
     var originalResponse = this
 
     originalResponse.addEventListener('readystatechange', function (event) {
-      console.log('event', event)
       if (originalResponse.readyState === 4) {
-        console.log('response', originalResponse.responseText.split(','))
+        const jsonBills = JSON.parse(originalResponse.responseText)
+        recentBills.push(jsonBills)
       }
     })
     return proxied.apply(this, [].slice.call(arguments))
   }
-  if (
-    arguments[1].includes('facture/v1.0/pdf?billDate') ||
-    arguments[1].includes('ecd_wp/facture/historicPDF?')
-  ) {
+  if (arguments[1].includes('/facture/historicBills?')) {
     var originalResponse = this
-    promises.push(originalResponse)
+
     originalResponse.addEventListener('readystatechange', function (event) {
-      // console.log('event', event)
       if (originalResponse.readyState === 4) {
-        promisesToConvertBlobToBase64.push(
+        const jsonBills = JSON.parse(originalResponse.responseText)
+        oldBills.push(jsonBills)
+      }
+    })
+    return proxied.apply(this, [].slice.call(arguments))
+  }
+  if (arguments[1].includes('facture/v1.0/pdf?billDate')) {
+    var originalResponse = this
+    originalResponse.addEventListener('readystatechange', function (event) {
+      if (originalResponse.readyState === 4) {
+        recentPromisesToConvertBlobToBase64.push(
           blobToBase64(originalResponse.response),
         )
+        recentXhrUrls.push(originalResponse.__zone_symbol__xhrURL)
+
+        return originalResponse
+      }
+    })
+  }
+  if (arguments[1].includes('ecd_wp/facture/historicPDF?')) {
+    var originalResponse = this
+    originalResponse.addEventListener('readystatechange', function (event) {
+      if (originalResponse.readyState === 4) {
+        oldPromisesToConvertBlobToBase64.push(
+          blobToBase64(originalResponse.response),
+        )
+        oldXhrUrls.push(originalResponse.__zone_symbol__xhrURL)
+
         return originalResponse
       }
     })
@@ -67,7 +87,7 @@ class OrangeContentScript extends ContentScript {
       return true
     } else {
       await this.waitForUserAuthentication()
-      log.debug('Not authenticated')
+      this.log('Not authenticated')
       return true
     }
   }
@@ -91,7 +111,6 @@ class OrangeContentScript extends ContentScript {
 
   async fetch(context) {
     log.debug('fetch start')
-    log.debug('context', context)
     await this.waitForElementInWorker('a[class="ob1-link-icon ml-1 py-1"]')
     const clientRef = await this.runInWorker('findClientRef')
     if (clientRef) {
@@ -109,40 +128,58 @@ class OrangeContentScript extends ContentScript {
         '[aria-labelledby="bp-billsHistoryTitle"]',
       )
 
-      await this.runInWorker('tryClickOnePdf')
-      this.log('Get Out with pdfButtons')
-      console.log('This is the store', this.store)
+      await this.runInWorker('clickOnPdf')
+      this.log('pdfButtons founded and clicked')
       this.store.dataUri = []
+
       for (let i = 0; i < this.store.resolvedBase64.length; i++) {
+        let dateArray = this.store.resolvedBase64[i].href.match(
+          /([0-9]{4})-([0-9]{2})-([0-9]{2})/g,
+        )
+        this.store.resolvedBase64[i].date = dateArray[0]
+        const index = this.store.allBills.findIndex(function (bill) {
+          return bill.date === dateArray[0]
+        })
         this.store.dataUri.push({
-          filename: `test${i}.pdf`,
-          dataUri: this.store.resolvedBase64[i],
+          vendor: 'sosh.fr',
+          date: this.store.allBills[index].date,
+          amount: this.store.allBills[index].amount / 100,
+          recurrence: 'monthly',
+          vendorRef: this.store.allBills[index].id
+            ? this.store.allBills[index].id
+            : this.store.allBills[index].tecId,
+          filename: `facture_${this.store.allBills[index].date}_sosh_${
+            this.store.allBills[index].amount / 100
+          }€.pdf`,
+          dataUri: this.store.resolvedBase64[i].uri,
+          fileAttributes: {
+            metadata: {
+              invoiceNumber: this.store.allBills[index].id
+                ? this.store.allBills[index].id
+                : this.store.allBills[index].tecId,
+              contentAuthor: 'sosh',
+              datetime: this.store.allBills[index].date,
+              datetimeLabel: 'startDate',
+              isSubscription: true,
+              startDate: this.store.allBills[index].date,
+              carbonCopy: true,
+            },
+          },
         })
       }
 
-      const result = await this.saveFiles(this.store.dataUri, {
+      await this.saveBills(this.store.dataUri, {
         context,
         fileIdAttributes: ['filename'],
         contentType: 'application/pdf',
+        qualificationLabel: 'isp_invoice',
       })
-      // this.log(result)
     }
 
     // Putting a falsy selector allows you to stay on the wanted page for debugging purposes
-    await this.waitForElementInWorker(
-      '[aria-labelledby="bp-billsHistoryyyTitle"]',
-    )
-
-    // await this.findClientRefForAllContracts(contracts, context)
-    // const echeancierResult = await this.fetchEcheancierBills(contracts, context)
-    // const housing = this.formatHousing(
-    //   contracts,
-    //   echeancierResult,
-    //   await this.fetchHousing(),
+    // await this.waitForElementInWorker(
+    //   '[aria-labelledby="bp-billsHistoryyyTitle"]',
     // )
-    // await this.saveIdentity({contact, housing})
-    // await this.saveBills()
-    // }
   }
 
   findPdfButtons() {
@@ -150,7 +187,6 @@ class OrangeContentScript extends ContentScript {
     const buttons = Array.from(
       document.querySelectorAll('a[class="icon-pdf-file bp-downloadIcon"]'),
     )
-    console.log('buttons in findPdfButtons', buttons)
     return buttons
   }
 
@@ -230,52 +266,52 @@ class OrangeContentScript extends ContentScript {
     }
   }
 
-  async tryClickOnePdf() {
-    log.debug('Get in tryClickOnePdf')
+  async clickOnPdf() {
+    log.debug('Get in clickOnPdf')
     const moreBillsButton = this.findMoreBillsButton()
     if (moreBillsButton.length !== 0) {
-      console.log('moreBillsButton founded,clicking on it')
+      this.log('moreBillsButton founded,clicking on it')
       moreBillsButton[0].click()
-      console.log('moreBillsButton clicked')
+      this.log('moreBillsButton clicked')
       await sleep(5)
-      // if (buttons.length < 13) {
-      //   console.log('buttons length is smaller than 13: ', buttons.length)
-      //   buttons = this.findPdfButtons()
-      // }
     }
     let buttons = this.findPdfButtons()
     if (buttons[0].length === 0) {
       this.log('ERROR Could not find pdf button')
       return 'VENDOR_DOWN'
     } else {
-      console.log('buttons length is: ', buttons.length)
       for (const button of buttons) {
-        console.log('will click')
+        this.log('will click one pdf')
         button.click()
-        log.debug('button clicked')
-        sleep(2)
+        this.log('pdfButton clicked')
+        sleep(3)
       }
     }
-    console.log('awaiting promises')
-    const resolvedPromises = await Promise.all(promises)
-      .then(result => {
-        console.log('Promises received from promises', result)
-      })
-      .catch(err => {
-        console.log('Failed to get promises', err)
-      })
     await sleep(15)
-    const resolvedBase64 = await Promise.all(promisesToConvertBlobToBase64)
-    console.log('Promises received from promiseToConvert', resolvedBase64)
+    let resolvedBase64 = []
+    this.log('Awaiting promises')
+    const recentToBase64 = await Promise.all(
+      recentPromisesToConvertBlobToBase64,
+    )
+    const oldToBase64 = await Promise.all(oldPromisesToConvertBlobToBase64)
+    this.log('Processing promises')
+    const promisesToBase64 = recentToBase64.concat(oldToBase64)
+    const xhrUrls = recentXhrUrls.concat(oldXhrUrls)
+    for (let i = 0; i < promisesToBase64.length; i++) {
+      resolvedBase64.push({
+        uri: promisesToBase64[i],
+        href: xhrUrls[i],
+      })
+    }
+    const recentBillsToAdd = recentBills[0].billsHistory.billList
+    const oldBillsToAdd = oldBills[0].oldBills
+    let allBills = recentBillsToAdd.concat(oldBillsToAdd)
     log.debug('Sending to pilot')
     await this.sendToPilot({
       resolvedBase64,
+      allBills,
     })
     return true
-  }
-
-  async fetchBills(clientRef) {
-    this.log('Fetching Bills')
   }
 }
 
@@ -285,8 +321,7 @@ connector
     additionalExposedMethodsNames: [
       'getUserMail',
       'findClientRef',
-      'fetchBills',
-      'tryClickOnePdf',
+      'clickOnPdf',
     ],
   })
   .catch(err => {

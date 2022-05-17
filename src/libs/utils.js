@@ -10,7 +10,7 @@
  * @param {String} dataURI - data URI string containing content type and base64 encoded data
  * @returns {ArrayBufferWithContentType}
  */
-export const dataURItoArrayBuffer = (dataURI) => {
+export const dataURItoArrayBuffer = dataURI => {
   const [contentType, base64String] = dataURI
     .match(/^data:(.*);base64,(.*)$/)
     .slice(1)

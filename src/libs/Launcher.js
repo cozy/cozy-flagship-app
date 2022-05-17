@@ -233,11 +233,8 @@ export default class Launcher {
    * @returns {Array} list of saved files
    */
   async saveFiles(entries, options) {
-    log.debug(entries, 'saveFiles entries')
     const {client, trigger, job, manifest} = this.getStartContext()
     const {sourceAccountIdentifier} = this.getUserData()
-    this.log(sourceAccountIdentifier)
-    this.log(trigger)
     for (const entry of entries) {
       if (entry.dataUri) {
         entry.filestream = dataURItoArrayBuffer(entry.dataUri).arrayBuffer
