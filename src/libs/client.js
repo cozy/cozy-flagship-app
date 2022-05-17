@@ -343,3 +343,11 @@ export const fetchPublicData = async client => {
     name
   }
 }
+
+export const fetchCozyDataForSlug = async (slug, client) => {
+  const stackClient = client.getStackClient()
+
+  const result = await stackClient.fetchJSON('GET', `/apps/${slug}/open`)
+
+  return result
+}
