@@ -7,8 +7,24 @@
 
 import Foundation
 
+class UrlParts {
+  public var SecurityKey:String
+  public var ResourcePath:String
+
+  init(securityKey:String, resourcePath:String) {
+    self.SecurityKey = securityKey
+    self.ResourcePath = resourcePath
+  }
+}
+
+enum UrlPartsError: Error {
+  case InvalidPartCount
+  case InvalidSecurityKey
+}
+
 @objc(HttpServer)
 class HttpServer: NSObject {
+  private let SECURITY_KEY_LENGTH:Int = 22
   private var webServer:GCDWebServer
   private var localPath:String = ""
   private var url:String = ""
@@ -16,6 +32,7 @@ class HttpServer: NSObject {
   private var port:NSNumber = 0
   private var localhostOnly:Bool = false
   private var keepAlive:Bool = false
+  private var securityKey:String = ""
 
   override init() {
     webServer = GCDWebServer()
@@ -76,11 +93,17 @@ class HttpServer: NSObject {
       var response: GCDWebServerResponse?
 
       do {
+        let urlParts = try self.getUrlParts(url:request.path)
+        
+        if (urlParts.SecurityKey != self.securityKey) {
+          NSLog("The given security key is not valid")
+          
+          return GCDWebServerResponse(statusCode: GCDWebServerClientErrorHTTPStatusCode.httpStatusCode_BadRequest.rawValue)
+        }
+        
         let filePath = NSURL(fileURLWithPath: directoryPath)
           .appendingPathComponent(
-            GCDWebServerNormalizePath(
-              (request.path as NSString).substring(from:basePath.count)
-            )
+            GCDWebServerNormalizePath(urlParts.ResourcePath)
           )!
 
         let fileType = try filePath.resourceValues(forKeys: [.fileResourceTypeKey]).fileResourceType
@@ -180,9 +203,46 @@ class HttpServer: NSObject {
 
     resolve(isRunning)
   }
+  
+  @objc
+  func setSecurityKey(_ securityKey: String, resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
+    self.securityKey = securityKey
+
+    resolve("")
+  }
 
   @objc
   static func requiresMainQueueSetup() -> Bool {
     return true
+  }
+  
+  private func getUrlParts(url:String) throws -> UrlParts {
+    let securityKeyIndex = 1
+    let pathIndex = 2
+
+    let urlParts = url.components(separatedBy: "/")
+
+    if (urlParts.count <= securityKeyIndex) {
+      throw UrlPartsError.InvalidPartCount
+    }
+
+    let securityKey = urlParts[securityKeyIndex]
+
+    if (!isValidSecurityKey(securityKey: securityKey)) {
+      throw UrlPartsError.InvalidSecurityKey
+    }
+
+    var path = ""
+
+    if (urlParts.count > pathIndex) {
+      let pathParts = urlParts[pathIndex...]
+      path = pathParts.joined(separator: "/")
+    }
+
+    return UrlParts(securityKey:securityKey, resourcePath: path)
+  }
+  
+  private func isValidSecurityKey(securityKey:String) -> Bool {
+    return securityKey.count == SECURITY_KEY_LENGTH
   }
 }

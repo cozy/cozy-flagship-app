@@ -15,6 +15,7 @@ describe('indexGenerator', () => {
         fqdn: 'claude.mycozy.cloud',
         slug: 'home',
         port: 5757,
+        securityKey: 'SOME_SECURITY_KEY',
         indexContent: rawContent,
         indexData: fakeData
       })
@@ -31,12 +32,13 @@ describe('indexGenerator', () => {
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
+          securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
           indexData: fakeData
         })
 
         expect(result).toBe(
-          '<link rel="stylesheet" href="http://localhost:5757/claude.mycozy.cloud/home/embedded/vendors-home.4740287bb69e5ea49e26.0.min.css" />'
+          '<link rel="stylesheet" href="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/vendors-home.4740287bb69e5ea49e26.0.min.css" />'
         )
       })
 
@@ -48,13 +50,14 @@ describe('indexGenerator', () => {
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
+          securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
           indexData: fakeData
         })
 
         expect(result)
-          .toBe(`<link rel="stylesheet" href="http://localhost:5757/claude.mycozy.cloud/home/embedded/vendors-home.4740287bb69e5ea49e26.0.min.css" />
-        <link rel="stylesheet" href="http://localhost:5757/claude.mycozy.cloud/home/embedded/app-home.53f72c970a7c14ef3a0c.min.css" />`)
+          .toBe(`<link rel="stylesheet" href="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/vendors-home.4740287bb69e5ea49e26.0.min.css" />
+        <link rel="stylesheet" href="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/app-home.53f72c970a7c14ef3a0c.min.css" />`)
       })
 
       it('should replace base href to absolute localhost href', async () => {
@@ -65,12 +68,13 @@ describe('indexGenerator', () => {
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
+          securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
           indexData: fakeData
         })
 
         expect(result).toBe(
-          '<link rel="stylesheet" href="http://localhost:5757/claude.mycozy.cloud/home/embedded/vendors-home.4740287bb69e5ea49e26.0.min.css" />'
+          '<link rel="stylesheet" href="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/vendors-home.4740287bb69e5ea49e26.0.min.css" />'
         )
       })
 
@@ -82,13 +86,14 @@ describe('indexGenerator', () => {
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
+          securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
           indexData: fakeData
         })
 
         expect(result)
-          .toBe(`<link rel="stylesheet" href="http://localhost:5757/claude.mycozy.cloud/home/embedded/vendors-home.4740287bb69e5ea49e26.0.min.css" />
-        <link rel="stylesheet" href="http://localhost:5757/claude.mycozy.cloud/home/embedded/app-home.53f72c970a7c14ef3a0c.min.css" />`)
+          .toBe(`<link rel="stylesheet" href="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/vendors-home.4740287bb69e5ea49e26.0.min.css" />
+        <link rel="stylesheet" href="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/app-home.53f72c970a7c14ef3a0c.min.css" />`)
       })
 
       it(`to replace 'href="//{.Domain}' with absolute cozy link`, async () => {
@@ -99,6 +104,7 @@ describe('indexGenerator', () => {
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
+          securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
           indexData: fakeData
         })
@@ -118,12 +124,13 @@ describe('indexGenerator', () => {
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
+          securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
           indexData: fakeData
         })
 
         expect(result).toBe(
-          '<script src="http://localhost:5757/claude.mycozy.cloud/home/embedded/vendors/home.000f5f10d9fca3ceac41.js"></script>'
+          '<script src="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/vendors/home.000f5f10d9fca3ceac41.js"></script>'
         )
       })
 
@@ -135,13 +142,14 @@ describe('indexGenerator', () => {
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
+          securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
           indexData: fakeData
         })
 
         expect(result)
-          .toBe(`<script src="http://localhost:5757/claude.mycozy.cloud/home/embedded/vendors/home.000f5f10d9fca3ceac41.js"></script>
-        <script src="http://localhost:5757/claude.mycozy.cloud/home/embedded/app/home.f6f22f0d747344045d69.js"></script>`)
+          .toBe(`<script src="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/vendors/home.000f5f10d9fca3ceac41.js"></script>
+        <script src="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/app/home.f6f22f0d747344045d69.js"></script>`)
       })
 
       it('should replace base src to absolute localhost src', async () => {
@@ -152,12 +160,13 @@ describe('indexGenerator', () => {
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
+          securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
           indexData: fakeData
         })
 
         expect(result).toBe(
-          '<script src="http://localhost:5757/claude.mycozy.cloud/home/embedded/vendors/home.000f5f10d9fca3ceac41.js"></script>'
+          '<script src="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/vendors/home.000f5f10d9fca3ceac41.js"></script>'
         )
       })
 
@@ -169,13 +178,14 @@ describe('indexGenerator', () => {
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
+          securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
           indexData: fakeData
         })
 
         expect(result)
-          .toBe(`<script src="http://localhost:5757/claude.mycozy.cloud/home/embedded/vendors/home.000f5f10d9fca3ceac41.js"></script>
-        <script src="http://localhost:5757/claude.mycozy.cloud/home/embedded/app/home.f6f22f0d747344045d69.js"></script>`)
+          .toBe(`<script src="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/vendors/home.000f5f10d9fca3ceac41.js"></script>
+        <script src="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/app/home.f6f22f0d747344045d69.js"></script>`)
       })
 
       it(`to replace 'src="//{.Domain}' with absolute cozy link`, async () => {
@@ -186,6 +196,7 @@ describe('indexGenerator', () => {
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
+          securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
           indexData: fakeData
         })
@@ -247,15 +258,15 @@ const expectedContent = `<!DOCTYPE html>
     <meta charset="utf-8" />
     <title>Cozy Home</title>
     <link rel="icon" href="https://URL_TO_FAVICON_ICO">
-    <link rel="manifest" href="http://localhost:5757/claude.mycozy.cloud/home/embedded/manifest.json" crossorigin="use-credentials" />
+    <link rel="manifest" href="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/manifest.json" crossorigin="use-credentials" />
     <meta name="msapplication-TileColor" content="#2b5797" />
     <meta name="theme-color" content="#ffffff" />
     <meta
       name="viewport"
       content="width=device-width,height=device-height,initial-scale=1,viewport-fit=cover"
     />
-    <link rel="stylesheet" href="http://localhost:5757/claude.mycozy.cloud/home/embedded/vendors-home.4740287bb69e5ea49e26.0.min.css" />
-    <link rel="stylesheet" href="http://localhost:5757/claude.mycozy.cloud/home/embedded/app-home.53f72c970a7c14ef3a0c.min.css" />
+    <link rel="stylesheet" href="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/vendors-home.4740287bb69e5ea49e26.0.min.css" />
+    <link rel="stylesheet" href="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/app-home.53f72c970a7c14ef3a0c.min.css" />
     <link rel="stylesheet" href="//claude.mycozy.cloud/assets/fonts/fonts.css" />
     <link rel="stylesheet" type="text/css" href="https://URL_TO_COZY_THEME_CSS"> <script src="https://URL_TO_COZY_CLIENT_JS"></script>
   </head>
@@ -276,8 +287,8 @@ const expectedContent = `<!DOCTYPE html>
       data-cozy-default-wallpaper="https://URL_TO_WALLPAPER"
       data-cozy-flags="SOME_FLAGS"
     >
-      <script src="http://localhost:5757/claude.mycozy.cloud/home/embedded/vendors/home.000f5f10d9fca3ceac41.js"></script>
-      <script src="http://localhost:5757/claude.mycozy.cloud/home/embedded/app/home.f6f22f0d747344045d69.js"></script>
+      <script src="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/vendors/home.000f5f10d9fca3ceac41.js"></script>
+      <script src="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/app/home.f6f22f0d747344045d69.js"></script>
       <script src="//claude.mycozy.cloud/assets/js/piwik.js" async></script>
     </div>
   </body>

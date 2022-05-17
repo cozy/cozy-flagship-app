@@ -23,6 +23,7 @@ export const fillIndexWithData = ({
   fqdn,
   slug,
   port,
+  securityKey,
   indexContent,
   indexData
 }) => {
@@ -30,7 +31,7 @@ export const fillIndexWithData = ({
 
   const basePath = getBaseRelativePathForFqdnAndSlug(fqdn, slug)
 
-  const absoluteUrlBasePath = `http://localhost:${port}${basePath}`
+  const absoluteUrlBasePath = `http://localhost:${port}/${securityKey}${basePath}`
   output = replaceRelativeUrlsWithAbsoluteUrls(output, absoluteUrlBasePath)
   output = replaceProtocolRelativeUrlsWithAbsoluteUrls(
     output,

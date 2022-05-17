@@ -178,6 +178,16 @@ public class HttpServerModule extends ReactContextBaseJavaModule implements Life
     promise.resolve(server != null && server.isAlive());
   }
 
+  @ReactMethod
+  public void setSecurityKey(String securityKey, Promise promise) {
+    if (server != null) {
+      server.setSecurityKey(securityKey);
+      promise.resolve(true);
+    } else {
+      promise.reject("SetSecurityKey error", "Trying to set securityKey on a non running server");
+    }
+  }
+
   /* Shut down the server if app is destroyed or paused */
   @Override
   public void onHostResume() {
