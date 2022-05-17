@@ -12,6 +12,8 @@ import { setCookie } from './httpCookieManager'
 import { fillIndexWithData, getIndexForFqdnAndSlug } from './indexGenerator'
 import { fetchAppDataForSlug } from './indexDataFetcher'
 
+import { queryResultToCrypto } from '../../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
+
 const log = Minilog('HttpServerProvider')
 
 const DEFAULT_PORT = 5757
@@ -25,6 +27,8 @@ export const useHttpServerContext = () => {
 }
 
 export const HttpServerProvider = props => {
+  const [serverSecurityKey, setServerSecurityKey] = useState('')
+
   const port = DEFAULT_PORT
   const path = getServerBaseFolder()
 
@@ -42,8 +46,15 @@ export const HttpServerProvider = props => {
     }
 
     startingHttpServer()
-      .then(url => {
+      .then(async url => {
         log.debug('🚀 Serving at URL', url)
+
+        const { securityKey } = await queryResultToCrypto(
+          'generateHttpServerSecurityKey'
+        )
+
+        server.setSecurityKey(securityKey)
+        setServerSecurityKey(securityKey)
 
         setServerInstance(server)
         return
@@ -72,6 +83,7 @@ export const HttpServerProvider = props => {
       fqdn,
       slug,
       port: serverInstance.port,
+      securityKey: serverSecurityKey,
       indexContent: rawHtml,
       indexData: templateValues
     })
@@ -83,6 +95,7 @@ export const HttpServerProvider = props => {
     <HttpServerContext.Provider
       value={{
         server: serverInstance,
+        securityKey: serverSecurityKey,
         isRunning,
         getIndexHtmlForSlug
       }}

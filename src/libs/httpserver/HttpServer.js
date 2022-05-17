@@ -82,6 +82,10 @@ class HttpServer {
       return this.running
     })
   }
+
+  setSecurityKey(key) {
+    return NativeHttpServer.setSecurityKey(key)
+  }
 }
 
 export default HttpServer
