@@ -57,6 +57,13 @@ $ yarn ios
 $ yarn test
 ```
 
+### Debuging 
+
+Android: To get native log on Android: 
+```bash
+adb logcat --pid=$(adb shell pidof -s io.cozy.flagship.mobile)
+```
+
 ## How to run SNCF Connector
 
 1. Sncf connector
