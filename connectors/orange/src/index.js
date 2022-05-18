@@ -1,9 +1,10 @@
 import ContentScript from '../../connectorLibs/ContentScript'
 import {blobToBase64} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
+import {format} from 'date-fns'
 
 const log = Minilog('ContentScript')
-Minilog.enable()
+Minilog.enable('orangeCCC')
 
 const BASE_URL = 'https://espace-client.orange.fr'
 const DEFAULT_PAGE_URL = BASE_URL + '/accueil'
@@ -16,19 +17,25 @@ let oldPromisesToConvertBlobToBase64 = []
 let recentXhrUrls = []
 let oldXhrUrls = []
 
+// The override here is needed to intercept XHR requests made during the navigation
+// The website respond with an XHR containing a blob when asking for a pdf, so we need to get it and encode it into base64 before giving it to the pilot.
 var proxied = window.XMLHttpRequest.prototype.open
+// Overriding the open() method
 window.XMLHttpRequest.prototype.open = function () {
+  // Intercepting response for recent bills information.
   if (arguments[1].includes('/users/current/contracts')) {
     var originalResponse = this
 
     originalResponse.addEventListener('readystatechange', function (event) {
       if (originalResponse.readyState === 4) {
+        // The response is a unique string, in order to access information parsing into JSON is needed.
         const jsonBills = JSON.parse(originalResponse.responseText)
         recentBills.push(jsonBills)
       }
     })
     return proxied.apply(this, [].slice.call(arguments))
   }
+  // Intercepting response for old bills information.
   if (arguments[1].includes('/facture/historicBills?')) {
     var originalResponse = this
 
@@ -40,19 +47,23 @@ window.XMLHttpRequest.prototype.open = function () {
     })
     return proxied.apply(this, [].slice.call(arguments))
   }
+  // Intercepting response for recent bills blobs.
   if (arguments[1].includes('facture/v1.0/pdf?billDate')) {
     var originalResponse = this
     originalResponse.addEventListener('readystatechange', function (event) {
       if (originalResponse.readyState === 4) {
+        // Pushing in an array the converted to base64 blob and pushing in another array it's href to match the indexes.
         recentPromisesToConvertBlobToBase64.push(
           blobToBase64(originalResponse.response),
         )
         recentXhrUrls.push(originalResponse.__zone_symbol__xhrURL)
 
+        // In every case, always returning the original response untouched
         return originalResponse
       }
     })
   }
+  // Intercepting response for old bills blobs.
   if (arguments[1].includes('ecd_wp/facture/historicPDF?')) {
     var originalResponse = this
     originalResponse.addEventListener('readystatechange', function (event) {
@@ -100,8 +111,6 @@ class OrangeContentScript extends ContentScript {
   }
 
   async getUserDataFromWebsite() {
-    // I think that if we cannot find the user mail, this should not be an connector execution
-    // error
     return {
       sourceAccountIdentifier:
         (await this.runInWorker('getUserMail')) ||
@@ -115,16 +124,12 @@ class OrangeContentScript extends ContentScript {
     const clientRef = await this.runInWorker('findClientRef')
     if (clientRef) {
       this.log('clientRef founded')
-      await this.setWorkerState({
-        visible: false,
-        url: `https://espace-client.orange.fr/facture-paiement/${clientRef}`,
-      })
-      await this.waitForElementInWorker('[data-e2e="bp-tile-historic"]')
-      await this.setWorkerState({
-        visible: false,
-        url: `https://espace-client.orange.fr/facture-paiement/${clientRef}/historique-des-factures`,
-      })
-      await this.waitForElementInWorker(
+      await this.clickAndWait(
+        `a[href="facture-paiement/${clientRef}"]`,
+        '[data-e2e="bp-tile-historic"]',
+      )
+      await this.clickAndWait(
+        '[data-e2e="bp-tile-historic"]',
         '[aria-labelledby="bp-billsHistoryTitle"]',
       )
 
@@ -148,9 +153,11 @@ class OrangeContentScript extends ContentScript {
           vendorRef: this.store.allBills[index].id
             ? this.store.allBills[index].id
             : this.store.allBills[index].tecId,
-          filename: `facture_${this.store.allBills[index].date}_sosh_${
-            this.store.allBills[index].amount / 100
-          }€.pdf`,
+          filename: await getFileName(
+            this.store.allBills[index].date,
+            this.store.allBills[index].amount / 100,
+            this.store.allBills[index].id || this.store.allBills[index].tecId,
+          ),
           dataUri: this.store.resolvedBase64[i].uri,
           fileAttributes: {
             metadata: {
@@ -176,7 +183,7 @@ class OrangeContentScript extends ContentScript {
       })
     }
 
-    // Putting a falsy selector allows you to stay on the wanted page for debugging purposes
+    // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
     // await this.waitForElementInWorker(
     //   '[aria-labelledby="bp-billsHistoryyyTitle"]',
     // )
@@ -237,31 +244,26 @@ class OrangeContentScript extends ContentScript {
     let parsedElem
     let clientRef
     if (document.querySelector('a[class="ob1-link-icon ml-1 py-1"]')) {
-      this.log('Elements founded')
+      this.log('clientRef founded')
       parsedElem = document
         .querySelectorAll('a[class="ob1-link-icon ml-1 py-1"]')[1]
         .getAttribute('href')
 
-      this.log(parsedElem)
       const clientRefArray = parsedElem.match(/([0-9]*)/g)
       this.log(clientRefArray.length)
 
       for (let i = 0; i < clientRefArray.length; i++) {
-        this.log('Get in loop')
+        this.log('Get in clientRef loop')
 
         const testedIndex = clientRefArray.pop()
-        this.log('This is length of testIndex')
-        this.log(testedIndex)
         if (testedIndex.length === 0) {
           this.log('No clientRef founded')
-          this.log(testedIndex.length)
         } else {
           this.log('clientRef founded')
           clientRef = testedIndex
           break
         }
       }
-      this.log('this is clientRef')
       return clientRef
     }
   }
@@ -333,4 +335,15 @@ function sleep(delay) {
   return new Promise(resolve => {
     setTimeout(resolve, delay * 1000)
   })
+}
+
+function getFileName(date, amount, docId) {
+  let noSpacedId
+  console.log(docId)
+  if (docId.match(/ /g)) {
+    noSpacedId = docId.replace(/ /g, '')
+    return `${date}_sosh_${amount}€_${noSpacedId}.pdf`
+  } else {
+    return `${date}_sosh_${amount}€_${docId}.pdf`
+  }
 }

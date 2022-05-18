@@ -363,8 +363,6 @@ export default class ContentScript {
    * @param {Object} : any object with data to store
    */
   async storeFromWorker(obj) {
-    this.log('Store from worker')
-    this.log(obj)
     if (!this.store) {
       this.store = {}
     }
