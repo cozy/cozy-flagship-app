@@ -135,45 +135,93 @@ class OrangeContentScript extends ContentScript {
 
       await this.runInWorker('clickOnPdf')
       this.log('pdfButtons founded and clicked')
+      await this.runInWorkerUntilTrue('checkBillsArray')
+      await this.runInWorker('processingBills')
       this.store.dataUri = []
 
-      for (let i = 0; i < this.store.resolvedBase64.length; i++) {
-        let dateArray = this.store.resolvedBase64[i].href.match(
-          /([0-9]{4})-([0-9]{2})-([0-9]{2})/g,
-        )
-        this.store.resolvedBase64[i].date = dateArray[0]
-        const index = this.store.allBills.findIndex(function (bill) {
-          return bill.date === dateArray[0]
-        })
+      for (let j = 0; j < this.store.this.store.allBills.length; j++) {
+        let oldBillHref
+        if (!this.store.allBills[j].hrefPdf) {
+          oldBillHref = await getHrefPdf(
+            this.store.allBills[j].entityName,
+            this.store.allBills[j].partitionKeyName,
+            this.store.allBills[j].partitionKeyValue,
+            this.store.allBills[j].tecId,
+            this.store.allBills[j].cid,
+          )
+        }
         this.store.dataUri.push({
           vendor: 'sosh.fr',
-          date: this.store.allBills[index].date,
-          amount: this.store.allBills[index].amount / 100,
+          date: this.store.allBills[j].date,
+          amount: this.store.allBills[j].amount / 100,
           recurrence: 'monthly',
-          vendorRef: this.store.allBills[index].id
-            ? this.store.allBills[index].id
-            : this.store.allBills[index].tecId,
+          vendorRef: this.store.allBills[j].id
+            ? this.store.allBills[j].id
+            : this.store.allBills[j].tecId,
           filename: await getFileName(
-            this.store.allBills[index].date,
-            this.store.allBills[index].amount / 100,
-            this.store.allBills[index].id || this.store.allBills[index].tecId,
+            this.store.allBills[j].date,
+            this.store.allBills[j].amount / 100,
+            this.store.allBills[j].id || this.store.allBills[j].tecId,
           ),
-          dataUri: this.store.resolvedBase64[i].uri,
+          fileurl: this.store.allBills[j].hrefPdf || oldBillHref,
           fileAttributes: {
             metadata: {
-              invoiceNumber: this.store.allBills[index].id
-                ? this.store.allBills[index].id
-                : this.store.allBills[index].tecId,
+              invoiceNumber: this.store.allBills[j].id
+                ? this.store.allBills[j].id
+                : this.store.allBills[j].tecId,
               contentAuthor: 'sosh',
-              datetime: this.store.allBills[index].date,
+              datetime: this.store.allBills[j].date,
               datetimeLabel: 'startDate',
               isSubscription: true,
-              startDate: this.store.allBills[index].date,
+              startDate: this.store.allBills[j].date,
               carbonCopy: true,
             },
           },
         })
       }
+
+      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+      await this.waitForElementInWorker(
+        '[aria-labelledby="bp-billsHistoryyyTitle"]',
+      )
+
+      // for (let i = 0; i < this.store.resolvedBase64.length; i++) {
+      //   let dateArray = this.store.resolvedBase64[i].href.match(
+      //     /([0-9]{4})-([0-9]{2})-([0-9]{2})/g,
+      //   )
+      //   this.store.resolvedBase64[i].date = dateArray[0]
+      //   const index = this.store.allBills.findIndex(function (bill) {
+      //     return bill.date === dateArray[0]
+      //   })
+      //   this.store.dataUri.push({
+      //     vendor: 'sosh.fr',
+      //     date: this.store.allBills[index].date,
+      //     amount: this.store.allBills[index].amount / 100,
+      //     recurrence: 'monthly',
+      //     vendorRef: this.store.allBills[index].id
+      //       ? this.store.allBills[index].id
+      //       : this.store.allBills[index].tecId,
+      //     filename: await getFileName(
+      //       this.store.allBills[index].date,
+      //       this.store.allBills[index].amount / 100,
+      //       this.store.allBills[index].id || this.store.allBills[index].tecId,
+      //     ),
+      //     dataUri: this.store.resolvedBase64[i].uri,
+      //     fileAttributes: {
+      //       metadata: {
+      //         invoiceNumber: this.store.allBills[index].id
+      //           ? this.store.allBills[index].id
+      //           : this.store.allBills[index].tecId,
+      //         contentAuthor: 'sosh',
+      //         datetime: this.store.allBills[index].date,
+      //         datetimeLabel: 'startDate',
+      //         isSubscription: true,
+      //         startDate: this.store.allBills[index].date,
+      //         carbonCopy: true,
+      //       },
+      //     },
+      //   })
+      // }
 
       await this.saveBills(this.store.dataUri, {
         context,
@@ -182,11 +230,6 @@ class OrangeContentScript extends ContentScript {
         qualificationLabel: 'isp_invoice',
       })
     }
-
-    // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-    // await this.waitForElementInWorker(
-    //   '[aria-labelledby="bp-billsHistoryyyTitle"]',
-    // )
   }
 
   findPdfButtons() {
@@ -237,6 +280,10 @@ class OrangeContentScript extends ContentScript {
     if (result) {
       return result
     }
+    if (result === null) {
+      this.log('Could not find a user email, using default identifier')
+      return false
+    }
     return false
   }
 
@@ -277,43 +324,62 @@ class OrangeContentScript extends ContentScript {
       this.log('moreBillsButton clicked')
       await sleep(5)
     }
-    let buttons = this.findPdfButtons()
-    if (buttons[0].length === 0) {
-      this.log('ERROR Could not find pdf button')
-      return 'VENDOR_DOWN'
-    } else {
-      for (const button of buttons) {
-        this.log('will click one pdf')
-        button.click()
-        this.log('pdfButton clicked')
-        sleep(3)
-      }
+    // let buttons = this.findPdfButtons()
+    // if (buttons[0].length === 0) {
+    //   this.log('ERROR Could not find pdf button')
+    //   return 'VENDOR_DOWN'
+    // } else {
+    //   for (const button of buttons) {
+    //     this.log('will click one pdf')
+    //     button.click()
+    //     this.log('pdfButton clicked')
+    //   }
+    // }
+    // await sleep(15)
+    // let resolvedBase64 = []
+    // this.log('Awaiting promises')
+    // const recentToBase64 = await Promise.all(
+    //   recentPromisesToConvertBlobToBase64,
+    // )
+    // const oldToBase64 = await Promise.all(oldPromisesToConvertBlobToBase64)
+    // this.log('Processing promises')
+    // const promisesToBase64 = recentToBase64.concat(oldToBase64)
+    // const xhrUrls = recentXhrUrls.concat(oldXhrUrls)
+    // for (let i = 0; i < promisesToBase64.length; i++) {
+    //   resolvedBase64.push({
+    //     uri: promisesToBase64[i],
+    //     href: xhrUrls[i],
+    //   })
+    // }
+    // const recentBillsToAdd = recentBills[0].billsHistory.billList
+    // const oldBillsToAdd = oldBills[0].oldBills
+    // let allBills = recentBillsToAdd.concat(oldBillsToAdd)
+    // log.debug('Sending to pilot')
+    // await this.sendToPilot({
+    //   // resolvedBase64,
+    //   allBills,
+    // })
+    return true
+  }
+
+  async checkBillsArray() {
+    const billsArrayLength =
+      recentBills[0].billsHistory.billList.length + oldBills[0].oldBills.length
+    if (billsArrayLength > 13) {
+      return true
     }
-    await sleep(15)
-    let resolvedBase64 = []
-    this.log('Awaiting promises')
-    const recentToBase64 = await Promise.all(
-      recentPromisesToConvertBlobToBase64,
-    )
-    const oldToBase64 = await Promise.all(oldPromisesToConvertBlobToBase64)
-    this.log('Processing promises')
-    const promisesToBase64 = recentToBase64.concat(oldToBase64)
-    const xhrUrls = recentXhrUrls.concat(oldXhrUrls)
-    for (let i = 0; i < promisesToBase64.length; i++) {
-      resolvedBase64.push({
-        uri: promisesToBase64[i],
-        href: xhrUrls[i],
-      })
-    }
+    return false
+  }
+
+  async processingBills() {
     const recentBillsToAdd = recentBills[0].billsHistory.billList
     const oldBillsToAdd = oldBills[0].oldBills
     let allBills = recentBillsToAdd.concat(oldBillsToAdd)
     log.debug('Sending to pilot')
     await this.sendToPilot({
-      resolvedBase64,
+      // resolvedBase64,
       allBills,
     })
-    return true
   }
 }
 
@@ -324,6 +390,8 @@ connector
       'getUserMail',
       'findClientRef',
       'clickOnPdf',
+      'checkBillsArray',
+      'processingBills',
     ],
   })
   .catch(err => {
@@ -339,11 +407,19 @@ function sleep(delay) {
 
 function getFileName(date, amount, docId) {
   let noSpacedId
-  console.log(docId)
   if (docId.match(/ /g)) {
     noSpacedId = docId.replace(/ /g, '')
     return `${date}_sosh_${amount}€_${noSpacedId}.pdf`
   } else {
     return `${date}_sosh_${amount}€_${docId}.pdf`
   }
+}
+async function getHrefPdf(
+  entityName,
+  partitionKeyName,
+  partitionKeyValue,
+  tecId,
+  cid,
+) {
+  return `https://espace-client.orange.fr/ecd_wp/facture/historicPDF?entityName=${entityName}&partitionKeyName=${partitionKeyName}&partitionKeyValue=${partitionKeyValue}&tecId=${tecId}&cid=${cid}`
 }
