@@ -207,7 +207,8 @@ export default class ContentScript {
     const filteredEntries = this.filterOutExistingFiles(entries, options)
     for (const entry of filteredEntries) {
       if (entry.fileurl) {
-        entry.blob = await ky.get(entry.fileurl).blob()
+        const requestOptions = entry.requestOptions
+        entry.blob = await ky.get(entry.fileurl, requestOptions).blob()
         delete entry.fileurl
       }
       if (entry.blob) {
