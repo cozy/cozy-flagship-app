@@ -135,21 +135,13 @@ class OrangeContentScript extends ContentScript {
 
       await this.runInWorker('clickOnPdf')
       this.log('pdfButtons founded and clicked')
-      await this.runInWorkerUntilTrue('checkBillsArray')
+      await this.runInWorkerUntilTrue({method: 'checkBillsArray'})
       await this.runInWorker('processingBills')
+
       this.store.dataUri = []
 
-      for (let j = 0; j < this.store.this.store.allBills.length; j++) {
-        let oldBillHref
-        if (!this.store.allBills[j].hrefPdf) {
-          oldBillHref = await getHrefPdf(
-            this.store.allBills[j].entityName,
-            this.store.allBills[j].partitionKeyName,
-            this.store.allBills[j].partitionKeyValue,
-            this.store.allBills[j].tecId,
-            this.store.allBills[j].cid,
-          )
-        }
+      for (let j = 0; j < this.store.allBills.length; j++) {
+        console.log(this.store.allBills[j])
         this.store.dataUri.push({
           vendor: 'sosh.fr',
           date: this.store.allBills[j].date,
@@ -158,12 +150,8 @@ class OrangeContentScript extends ContentScript {
           vendorRef: this.store.allBills[j].id
             ? this.store.allBills[j].id
             : this.store.allBills[j].tecId,
-          filename: await getFileName(
-            this.store.allBills[j].date,
-            this.store.allBills[j].amount / 100,
-            this.store.allBills[j].id || this.store.allBills[j].tecId,
-          ),
-          fileurl: this.store.allBills[j].hrefPdf || oldBillHref,
+          filename: await getFileName(this.store.allBills[j]),
+          fileurl: await getUrlPdf(this.store.allBills[j]),
           fileAttributes: {
             metadata: {
               invoiceNumber: this.store.allBills[j].id
@@ -179,11 +167,12 @@ class OrangeContentScript extends ContentScript {
           },
         })
       }
+      console.log(this.store.dataUri)
 
       // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-      await this.waitForElementInWorker(
-        '[aria-labelledby="bp-billsHistoryyyTitle"]',
-      )
+      // await this.waitForElementInWorker(
+      //   '[aria-labelledby="bp-billsHistoryyyTitle"]',
+      // )
 
       // for (let i = 0; i < this.store.resolvedBase64.length; i++) {
       //   let dateArray = this.store.resolvedBase64[i].href.match(
@@ -322,7 +311,7 @@ class OrangeContentScript extends ContentScript {
       this.log('moreBillsButton founded,clicking on it')
       moreBillsButton[0].click()
       this.log('moreBillsButton clicked')
-      await sleep(5)
+      // await sleep(5)
     }
     // let buttons = this.findPdfButtons()
     // if (buttons[0].length === 0) {
@@ -363,11 +352,16 @@ class OrangeContentScript extends ContentScript {
   }
 
   async checkBillsArray() {
+    while (oldBills.length === 0 && oldBills.length < 10) {
+      return false
+    }
     const billsArrayLength =
       recentBills[0].billsHistory.billList.length + oldBills[0].oldBills.length
     if (billsArrayLength > 13) {
+      this.log('Bills array is fullfilled')
       return true
     }
+    this.log('Bills array is not ready yet')
     return false
   }
 
@@ -405,21 +399,18 @@ function sleep(delay) {
   })
 }
 
-function getFileName(date, amount, docId) {
+function getFileName(bill) {
   let noSpacedId
-  if (docId.match(/ /g)) {
-    noSpacedId = docId.replace(/ /g, '')
-    return `${date}_sosh_${amount}€_${noSpacedId}.pdf`
+  if (bill.id) {
+    noSpacedId = bill.id.replace(/ /g, '')
+    return `${bill.date}_sosh_${bill.amount}€_${noSpacedId}.pdf`
   } else {
-    return `${date}_sosh_${amount}€_${docId}.pdf`
+    return `${bill.date}_sosh_${bill.amount}€_${bill.tecId}.pdf`
   }
 }
-async function getHrefPdf(
-  entityName,
-  partitionKeyName,
-  partitionKeyValue,
-  tecId,
-  cid,
-) {
-  return `https://espace-client.orange.fr/ecd_wp/facture/historicPDF?entityName=${entityName}&partitionKeyName=${partitionKeyName}&partitionKeyValue=${partitionKeyValue}&tecId=${tecId}&cid=${cid}`
+async function getUrlPdf(bill) {
+  if (bill.hrefPdf) {
+    return `https://espace-client.orange.fr/ecd_wp/facture/v1.0/pdf${bill.hrefPdf}`
+  }
+  return `https://espace-client.orange.fr/ecd_wp/facture/historicPDF?entityName=${bill.entityName}&partitionKeyName=${bill.partitionKeyName}&partitionKeyValue=${bill.partitionKeyValue}&tecId=${bill.tecId}&cid=${bill.cid}`
 }
