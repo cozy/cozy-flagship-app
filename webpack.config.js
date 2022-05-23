@@ -9,7 +9,7 @@ module.exports = {
   // Path for the output files
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'app.bundle.js',
+    filename: 'app.bundle.js'
   },
 
   // Enable source map support
@@ -33,44 +33,44 @@ module.exports = {
               ['@babel/preset-env'],
               '@babel/preset-react',
               '@babel/preset-flow',
-              '@babel/preset-typescript',
+              '@babel/preset-typescript'
             ],
             plugins: [
               '@babel/plugin-proposal-class-properties',
-              '@babel/plugin-proposal-object-rest-spread',
-            ],
-          },
-        },
+              '@babel/plugin-proposal-object-rest-spread'
+            ]
+          }
+        }
       },
       {
         test: /\.(jpg|png|woff|woff2|eot|ttf)$/,
-        loader: 'file-loader',
+        loader: 'file-loader'
       },
       {
         test: /\.svg$/,
         exclude: /node_modules/,
         use: [
           {
-            loader: '@svgr/webpack',
-          },
-        ],
-      },
-    ],
+            loader: '@svgr/webpack'
+          }
+        ]
+      }
+    ]
   },
 
   resolve: {
     alias: {
-      'react-native$': require.resolve('react-native-web'),
+      'react-native$': require.resolve('react-native-web')
     },
     // If you're working on a multi-platform React Native app, web-specific
     // module implementations should be written in files using the extension
     // `.web.js`.
-    extensions: ['.web.js', '.js'],
+    extensions: ['.web.js', '.js']
   },
 
   // Development server config
   devServer: {
     contentBase: [path.join(__dirname, 'public')],
-    historyApiFallback: true,
-  },
+    historyApiFallback: true
+  }
 }
