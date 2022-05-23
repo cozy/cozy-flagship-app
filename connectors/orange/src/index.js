@@ -1,5 +1,5 @@
 import ContentScript from '../../connectorLibs/ContentScript'
-import {blobToBase64} from '../../connectorLibs/utils'
+import {kyScraper as ky, blobToBase64} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
 import {format} from 'date-fns'
 
@@ -53,11 +53,11 @@ window.XMLHttpRequest.prototype.open = function () {
     originalResponse.addEventListener('readystatechange', function (event) {
       if (originalResponse.readyState === 4) {
         // Pushing in an array the converted to base64 blob and pushing in another array it's href to match the indexes.
+        console.log('originalResponse', originalResponse)
         recentPromisesToConvertBlobToBase64.push(
           blobToBase64(originalResponse.response),
         )
         recentXhrUrls.push(originalResponse.__zone_symbol__xhrURL)
-
         // In every case, always returning the original response untouched
         return originalResponse
       }
@@ -71,6 +71,7 @@ window.XMLHttpRequest.prototype.open = function () {
         oldPromisesToConvertBlobToBase64.push(
           blobToBase64(originalResponse.response),
         )
+
         oldXhrUrls.push(originalResponse.__zone_symbol__xhrURL)
 
         return originalResponse
@@ -78,6 +79,18 @@ window.XMLHttpRequest.prototype.open = function () {
     })
   }
   return proxied.apply(this, [].slice.call(arguments))
+}
+
+var proxiedSender = window.XMLHttpRequest.prototype.send
+// Overriding the open() method
+window.XMLHttpRequest.prototype.send = function () {
+  var originalRequest = this
+  if (
+    originalRequest.__zone_symbol__xhrURL.includes('facture/v1.0/pdf?billDate')
+  ) {
+    console.log('originalRequest', originalRequest)
+  }
+  return proxiedSender.apply(this, arguments)
 }
 
 class OrangeContentScript extends ContentScript {
@@ -141,7 +154,6 @@ class OrangeContentScript extends ContentScript {
       this.store.dataUri = []
 
       for (let j = 0; j < this.store.allBills.length; j++) {
-        console.log(this.store.allBills[j])
         this.store.dataUri.push({
           vendor: 'sosh.fr',
           date: this.store.allBills[j].date,
@@ -165,14 +177,19 @@ class OrangeContentScript extends ContentScript {
               carbonCopy: true,
             },
           },
+          requestOptions: {
+            headers: {
+              'X-Orange-Origin-Id': 'ECQ',
+              'X-Orange-Caller-Id': 'ECQ',
+            },
+          },
         })
       }
-      console.log(this.store.dataUri)
 
       // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-      // await this.waitForElementInWorker(
-      //   '[aria-labelledby="bp-billsHistoryyyTitle"]',
-      // )
+      await this.waitForElementInWorker(
+        '[aria-labelledby="bp-billsHistoryyyTitle"]',
+      )
 
       // for (let i = 0; i < this.store.resolvedBase64.length; i++) {
       //   let dateArray = this.store.resolvedBase64[i].href.match(
@@ -313,17 +330,17 @@ class OrangeContentScript extends ContentScript {
       this.log('moreBillsButton clicked')
       // await sleep(5)
     }
-    // let buttons = this.findPdfButtons()
-    // if (buttons[0].length === 0) {
-    //   this.log('ERROR Could not find pdf button')
-    //   return 'VENDOR_DOWN'
-    // } else {
-    //   for (const button of buttons) {
-    //     this.log('will click one pdf')
-    //     button.click()
-    //     this.log('pdfButton clicked')
-    //   }
-    // }
+    let buttons = this.findPdfButtons()
+    if (buttons[0].length === 0) {
+      this.log('ERROR Could not find pdf button')
+      return 'VENDOR_DOWN'
+    } else {
+      for (const button of buttons) {
+        this.log('will click one pdf')
+        button.click()
+        this.log('pdfButton clicked')
+      }
+    }
     // await sleep(15)
     // let resolvedBase64 = []
     // this.log('Awaiting promises')
