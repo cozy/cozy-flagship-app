@@ -1,25 +1,30 @@
-import { Dimensions } from 'react-native'
+import { Dimensions, Platform } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { getNavigationBarHeight } from 'react-native-android-navbar-height'
 import Minilog from '@cozy/minilog'
 
-const getNavbarHeight = () => navbarHeight
 let navbarHeight = 0
 
-try {
-  ;(async () => {
-    navbarHeight =
-      (await getNavigationBarHeight()) / Dimensions.get('screen').scale
-  })()
-} catch (error) {
-  Minilog('dimensions.js').error(
-    'Failed to compute NavbarHeight, defaulting to 0',
-    error
-  )
+const getNavbarHeight = () => navbarHeight
+const statusBarHeight = getStatusBarHeight()
+const {
+  scale,
+  height: screenHeight,
+  width: screenWidth
+} = Dimensions.get('screen')
+
+const init = async () => {
+  try {
+    if (Platform.OS !== 'android') return
+    navbarHeight = (await getNavigationBarHeight()) / scale
+  } catch (error) {
+    Minilog('libs/dimensions').warn(
+      `Failed to compute NavbarHeight, keeping default value: ${navbarHeight}. Please refer to the error below.\n`,
+      error
+    )
+  }
 }
 
-const screenHeight = Dimensions.get('screen').height
-const screenWidth = Dimensions.get('screen').width
-const statusBarHeight = getStatusBarHeight()
+init()
 
 export { getNavbarHeight, screenHeight, screenWidth, statusBarHeight }
