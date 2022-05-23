@@ -167,7 +167,7 @@ export default class ContentScript {
   }
 
   async clickAndWait(elementToClick, elementToWait) {
-    this.onlyIn(WORKER_TYPE, 'clickAndWait')
+    this.onlyIn(PILOT_TYPE, 'clickAndWait')
     log.debug('clicking ' + elementToClick)
     await this.runInWorker('click', elementToClick)
     log.debug('waiting for ' + elementToWait)
