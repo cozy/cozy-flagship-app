@@ -16,6 +16,7 @@ let recentPromisesToConvertBlobToBase64 = []
 let oldPromisesToConvertBlobToBase64 = []
 let recentXhrUrls = []
 let oldXhrUrls = []
+let numberOfClick = 0
 
 // The override here is needed to intercept XHR requests made during the navigation
 // The website respond with an XHR containing a blob when asking for a pdf, so we need to get it and encode it into base64 before giving it to the pilot.
@@ -132,9 +133,17 @@ class OrangeContentScript extends ContentScript {
         '[data-e2e="bp-tile-historic"]',
         '[aria-labelledby="bp-billsHistoryTitle"]',
       )
-
+      const moreBills = await this.runInWorker('getMoreBillsButton')
+      console.log('moreBills', moreBills)
+      if (moreBills) {
+        await this.clickAndWait(
+          '[data-e2e="bh-more-bills"]',
+          '[aria-labelledby="bp-historicBillsHistoryTitle"]',
+        )
+      }
       await this.runInWorker('clickOnPdf')
       this.log('pdfButtons founded and clicked')
+      await this.runInWorker('processingBills')
       this.store.dataUri = []
 
       for (let i = 0; i < this.store.resolvedBase64.length; i++) {
@@ -200,8 +209,9 @@ class OrangeContentScript extends ContentScript {
   findMoreBillsButton() {
     this.log('Starting findMoreBillsButton')
     const buttons = Array.from(
-      document.querySelectorAll('[data-e2e="bh-more-bills"]'),
+      document.querySelector('[data-e2e="bh-more-bills"]'),
     )
+    this.log('Exiting findMoreBillsButton')
     return buttons
   }
 
@@ -268,15 +278,15 @@ class OrangeContentScript extends ContentScript {
     }
   }
 
+  async getMoreBillsButton() {
+    this.log('Getting in getMoreBillsButton')
+    let moreBillsButton = this.findMoreBillsButton()
+    console.log('moreBillsButton', moreBillsButton)
+    return moreBillsButton
+  }
+
   async clickOnPdf() {
     log.debug('Get in clickOnPdf')
-    const moreBillsButton = this.findMoreBillsButton()
-    if (moreBillsButton.length !== 0) {
-      this.log('moreBillsButton founded,clicking on it')
-      moreBillsButton[0].click()
-      this.log('moreBillsButton clicked')
-      await sleep(5)
-    }
     let buttons = this.findPdfButtons()
     if (buttons[0].length === 0) {
       this.log('ERROR Could not find pdf button')
@@ -286,10 +296,21 @@ class OrangeContentScript extends ContentScript {
         this.log('will click one pdf')
         button.click()
         this.log('pdfButton clicked')
-        sleep(3)
+        numberOfClick = numberOfClick + 1
       }
     }
-    await sleep(15)
+    while (
+      recentPromisesToConvertBlobToBase64.length +
+        oldPromisesToConvertBlobToBase64.length !==
+      numberOfClick
+    ) {
+      this.log('Array of bills is not ready yet.')
+      await sleep(1)
+    }
+    this.log('billsArray ready, processing files')
+  }
+
+  async processingBills() {
     let resolvedBase64 = []
     this.log('Awaiting promises')
     const recentToBase64 = await Promise.all(
@@ -308,12 +329,11 @@ class OrangeContentScript extends ContentScript {
     const recentBillsToAdd = recentBills[0].billsHistory.billList
     const oldBillsToAdd = oldBills[0].oldBills
     let allBills = recentBillsToAdd.concat(oldBillsToAdd)
-    log.debug('Sending to pilot')
+    log.debug('billsArray ready, Sending to pilot')
     await this.sendToPilot({
       resolvedBase64,
       allBills,
     })
-    return true
   }
 }
 
@@ -324,6 +344,8 @@ connector
       'getUserMail',
       'findClientRef',
       'clickOnPdf',
+      'processingBills',
+      'getMoreBillsButton',
     ],
   })
   .catch(err => {
