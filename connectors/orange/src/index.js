@@ -143,7 +143,7 @@ class OrangeContentScript extends ContentScript {
       if (moreBills) {
         const oldBillsRedFrame = await this.runInWorker('checkOldBillsRedFrame')
         if (oldBillsRedFrame !== null) {
-          this.log('Website did not load the bills')
+          this.log('Website did not load the old bills')
           throw new Error('VENDOR_DOWN')
         }
         await this.clickAndWait(
@@ -268,7 +268,6 @@ class OrangeContentScript extends ContentScript {
         return 'UNKNOWN_ERROR'
       }
     }
-    // For Sosh page
     return false
   }
 
@@ -396,23 +395,15 @@ function sleep(delay) {
 }
 
 async function getFileName(date, amount, vendorRef) {
-  let noSpacedId
-  if (vendorRef.match(/ /g)) {
-    noSpacedId = vendorRef.replace(/ /g, '')
-    return `${date}_sosh_${amount}€_${noSpacedId}.pdf`
-  } else {
-    return `${date}_sosh_${amount}€_${vendorRef}.pdf`
-  }
-  // const digestId = await hashVendorRef(vendorRef)
-  // console.log(digestId)
-  // return `${date}_sosh_${amount}€_${digestId}.pdf`
+  const digestId = await hashVendorRef(vendorRef)
+  const shortenedId = digestId.substr(0, 5)
+  return `${date}_sosh_${amount}€_${shortenedId}.pdf`
 }
 
-// async function hashVendorRef(vendorRef) {
-//   // const util = require('util')
-//   // const TextEncoder = new util.TextEncoder()
-//   const encoder = new TextEncoder()
-//   const data = encoder.encode(vendorRef)
-//   const hash = await window.crypto.subtle.digest('SHA-256', data)
-//   return hash
-// }
+async function hashVendorRef(vendorRef) {
+  const msgUint8 = new window.TextEncoder().encode(vendorRef) // encode as (utf-8) Uint8Array
+  const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgUint8) // hash the message
+  const hashArray = Array.from(new Uint8Array(hashBuffer)) // convert buffer to byte array
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('') // convert bytes to hex string
+  return hashHex
+}
