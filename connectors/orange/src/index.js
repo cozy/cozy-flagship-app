@@ -133,14 +133,28 @@ class OrangeContentScript extends ContentScript {
         '[data-e2e="bp-tile-historic"]',
         '[aria-labelledby="bp-billsHistoryTitle"]',
       )
+      const redFrame = await this.runInWorker('checkRedFrame')
+      if (redFrame !== null) {
+        this.log('Website did not load the bills')
+        throw new Error('VENDOR_DOWN')
+      }
       const moreBills = await this.runInWorker('getMoreBillsButton')
       console.log('moreBills', moreBills)
       if (moreBills) {
+        const oldBillsRedFrame = await this.runInWorker('checkOldBillsRedFrame')
+        if (oldBillsRedFrame !== null) {
+          this.log('Website did not load the bills')
+          throw new Error('VENDOR_DOWN')
+        }
         await this.clickAndWait(
           '[data-e2e="bh-more-bills"]',
           '[aria-labelledby="bp-historicBillsHistoryTitle"]',
         )
       }
+      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+      // await this.waitForElementInWorker(
+      //   '[aria-labelledby="bp-billsHistoryyyTitle"]',
+      // )
       await this.runInWorker('clickOnPdf')
       this.log('pdfButtons founded and clicked')
       await this.runInWorker('processingBills')
@@ -191,11 +205,6 @@ class OrangeContentScript extends ContentScript {
         qualificationLabel: 'isp_invoice',
       })
     }
-
-    // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-    // await this.waitForElementInWorker(
-    //   '[aria-labelledby="bp-billsHistoryyyTitle"]',
-    // )
   }
 
   findPdfButtons() {
@@ -240,13 +249,26 @@ class OrangeContentScript extends ContentScript {
     return false
   }
   async getUserMail() {
-    // For Sosh page
-    const result = document.querySelector(
-      '.oecs__zone-footer-button-mail',
-    ).innerHTML
-    if (result) {
-      return result
+    try {
+      const result = document.querySelector(
+        '.oecs__zone-footer-button-maill',
+      ).innerHTML
+      if (result) {
+        return result
+      }
+    } catch (err) {
+      if (
+        err.message === "Cannot read properties of null (reading 'innerHTML')"
+      ) {
+        this.log(`Error message : ${err.message}, trying to reload page`)
+        window.location.reload()
+        this.log('Profil homePage reloaded')
+      } else {
+        this.log('Untreated problem encountered')
+        return 'UNKNOWN_ERROR'
+      }
     }
+    // For Sosh page
     return false
   }
 
@@ -276,6 +298,18 @@ class OrangeContentScript extends ContentScript {
       }
       return clientRef
     }
+  }
+
+  async checkRedFrame() {
+    const redFrame = document.querySelector('.alert-icon icon-error-severe')
+    return redFrame
+  }
+
+  async checkOldBillsRedFrame() {
+    const redFrame = document.querySelector(
+      '.alert-container alert-container-sm alert-danger mb-0',
+    )
+    return redFrame
   }
 
   async getMoreBillsButton() {
@@ -346,6 +380,8 @@ connector
       'clickOnPdf',
       'processingBills',
       'getMoreBillsButton',
+      'checkRedFrame',
+      'checkOldBillsRedFrame',
     ],
   })
   .catch(err => {
@@ -359,13 +395,24 @@ function sleep(delay) {
   })
 }
 
-function getFileName(date, amount, docId) {
+async function getFileName(date, amount, vendorRef) {
   let noSpacedId
-  console.log(docId)
-  if (docId.match(/ /g)) {
-    noSpacedId = docId.replace(/ /g, '')
+  if (vendorRef.match(/ /g)) {
+    noSpacedId = vendorRef.replace(/ /g, '')
     return `${date}_sosh_${amount}€_${noSpacedId}.pdf`
   } else {
-    return `${date}_sosh_${amount}€_${docId}.pdf`
+    return `${date}_sosh_${amount}€_${vendorRef}.pdf`
   }
+  // const digestId = await hashVendorRef(vendorRef)
+  // console.log(digestId)
+  // return `${date}_sosh_${amount}€_${digestId}.pdf`
 }
+
+// async function hashVendorRef(vendorRef) {
+//   // const util = require('util')
+//   // const TextEncoder = new util.TextEncoder()
+//   const encoder = new TextEncoder()
+//   const data = encoder.encode(vendorRef)
+//   const hash = await window.crypto.subtle.digest('SHA-256', data)
+//   return hash
+// }
