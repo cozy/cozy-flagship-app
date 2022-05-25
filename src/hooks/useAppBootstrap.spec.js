@@ -34,6 +34,9 @@ jest.mock('react-native', () => {
   const listeners = []
 
   return {
+    LogBox: {
+      ignoreAllLogs: jest.fn()
+    },
     Linking: {
       addEventListener: jest.fn((event, handler) => {
         listeners.push({ event, handler })

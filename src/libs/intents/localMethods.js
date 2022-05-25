@@ -5,8 +5,9 @@ import { hideSplashScreen } from '../services/SplashScreenService'
 import { openApp } from '../functions/openApp'
 import { resetSessionToken } from '../functions/session'
 import { setFlagshipUI } from './setFlagshipUI'
-import { isDevMode } from '../utils'
+import { EnvService } from '/libs/services/EnvService'
 import { showInAppBrowser, closeInAppBrowser } from './InAppBrowser'
+import strings from '/strings'
 
 export const asyncLogout = async () => {
   await clearClient()
@@ -56,7 +57,8 @@ export const internalMethods = {
   setFlagshipUI: intent =>
     setFlagshipUI(
       intent,
-      isDevMode() && internalMethods.setFlagshipUI.caller?.name
+      EnvService.nameIs(strings.environments.test) &&
+        internalMethods.setFlagshipUI.caller?.name
     )
 }
 

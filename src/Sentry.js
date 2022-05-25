@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/react-native'
 import { CaptureConsole } from '@sentry/integrations'
 
+import { EnvService } from '/libs/services/EnvService'
 import { version } from '../package.json'
-import { isBuildMode } from './libs/utils'
 
 // Sentry Data Source Name
 // A DSN tells a Sentry SDK where to send events so the events are associated with the correct project.
@@ -19,12 +19,9 @@ export const SentryTags = {
 // Runtime initialisation.
 Sentry.init({
   dsn: SentryDsn,
-  enabled: isBuildMode(),
-  integrations: [
-    new CaptureConsole({
-      levels: ['error', 'warn']
-    })
-  ]
+  enabled: EnvService.hasSentryEnabled,
+  environment: EnvService.name,
+  integrations: [new CaptureConsole({ levels: ['error', 'warn'] })]
 })
 
 // Runtime default configuration.

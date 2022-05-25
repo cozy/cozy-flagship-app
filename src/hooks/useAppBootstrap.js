@@ -1,5 +1,5 @@
 import Minilog from '@cozy/minilog'
-import { Linking } from 'react-native'
+import { Linking, LogBox } from 'react-native'
 import { useEffect, useState } from 'react'
 
 import strings from '../strings.json'
@@ -9,6 +9,9 @@ import { manageIconCache } from '../libs/functions/iconTable'
 import { navigate } from '../libs/RootNavigation'
 import { routes } from '../constants/routes'
 import { useSplashScreen } from './useSplashScreen'
+import { localConfig } from '/config/local'
+
+if (localConfig.ignoreLogBox) LogBox.ignoreAllLogs()
 
 const log = Minilog('useAppBootstrap')
 

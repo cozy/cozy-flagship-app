@@ -9,6 +9,10 @@
   "authLogin": "/auth/login?redirect=",
   "defaultHttpScheme": "https://",
   "emptyString": "",
+  "environments": {
+    "production": "production",
+    "test": "test"
+  },
   "errorAppendParamsFail": "Could not handle url, it is neither a valid URL string nor a string",
   "errorScreens": {
     "cozyNotFound": "cozyNotFound",
