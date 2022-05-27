@@ -4,11 +4,11 @@ import Minilog from '@cozy/minilog'
 import {format} from 'date-fns'
 
 const log = Minilog('ContentScript')
-Minilog.enable('orangeCCC')
+Minilog.enable('soshCCC')
 
 const BASE_URL = 'https://espace-client.orange.fr'
 const DEFAULT_PAGE_URL = BASE_URL + '/accueil'
-const DEFAULT_SOURCE_ACCOUNT_IDENTIFIER = 'orange'
+const DEFAULT_SOURCE_ACCOUNT_IDENTIFIER = 'sosh'
 
 let recentBills = []
 let oldBills = []
