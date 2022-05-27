@@ -17,18 +17,6 @@ import { rootCozyUrl } from 'cozy-client'
 
 const log = Minilog('ClouderyView')
 
-const isLoginPage = requestUrl => {
-  const url = new URL(requestUrl)
-
-  return url.pathname === '/v2/cozy/login'
-}
-
-const isOnboardPage = requestUrl => {
-  const url = new URL(requestUrl)
-
-  return url.pathname === '/v2/cozy/onboard'
-}
-
 const run = `
     (function() {
       ${jsCozyGlobal()}
@@ -51,19 +39,21 @@ const handleError = async webviewErrorEvent => {
 }
 
 /**
- * Displays the Cloudery web page where the user can specify their Cozy instance
+ * Displays the Cloudery web page where the user can log to their Cozy instance by specifying
+ * an email or their instance URL
  *
- * If the user clicks on `Continue` then the instance data is returned to parent component
- * through `setInstanceData()`
+ * If the user chooses the email method, then an email is sent to them and they can continue
+ * the onboarding process
  *
- * If the user clicks on `I haven't a Cozy` then the user is redirected to `OnboardingScreen`
+ * If the user chooses the instance URL method, after filling the URL and clicking on `Continue`
+ * then the instance data is returned to parent component through `setInstanceData()`
  *
  * @param {object} props
  * @param {setInstanceData} props.setInstanceData
  * @returns {import('react').ComponentClass}
  */
 export const ClouderyView = ({ setInstanceData }) => {
-  const [uri, setUri] = useState(strings.loginUri)
+  const [uri] = useState(strings.clouderyUri)
   const [loading, setLoading] = useState(true)
   const [checkInstanceData, setCheckInstanceData] = useState()
   const webviewRef = useRef()
@@ -73,16 +63,6 @@ export const ClouderyView = ({ setInstanceData }) => {
     const instance = getUriFromRequest(request)
 
     if (request.loading) {
-      if (isLoginPage(request.url) && request.url !== strings.loginUri) {
-        setUri(strings.loginUri)
-        return false
-      }
-
-      if (isOnboardPage(request.url) && request.url !== strings.onboardingUri) {
-        setUri(strings.onboardingUri)
-        return false
-      }
-
       if (instance) {
         const normalizedInstance = instance.toLowerCase()
         const fqdn = new URL(normalizedInstance).host
@@ -113,7 +93,7 @@ export const ClouderyView = ({ setInstanceData }) => {
 
   useEffect(() => {
     if (webviewRef && !loading) {
-      setFocusOnWebviewField(webviewRef.current, 'slug')
+      setFocusOnWebviewField(webviewRef.current, 'email')
     }
   }, [loading, webviewRef])
 
