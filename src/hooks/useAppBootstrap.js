@@ -22,15 +22,15 @@ const parseOnboardingURL = url => {
     }
 
     const onboardingUrl = new URL(url)
-    const registerToken = onboardingUrl.searchParams.get('registerToken')
+    const onboardUrl = onboardingUrl.searchParams.get('onboard_url')
     const fqdn = onboardingUrl.searchParams.get('fqdn')
 
-    if (!fqdn || !registerToken) {
+    if (!onboardUrl && !fqdn) {
       return undefined
     }
 
     return {
-      registerToken,
+      onboardUrl,
       fqdn
     }
   } catch (error) {
@@ -95,18 +95,29 @@ export const useAppBootstrap = client => {
         const onboardingParams = parseOnboardingURL(onboardingUrl)
 
         if (onboardingParams) {
-          const { registerToken, fqdn } = onboardingParams
+          const { onboardUrl, fqdn } = onboardingParams
 
-          setInitialRoute({ stack: undefined, root: undefined })
+          if (onboardUrl) {
+            setInitialRoute({ stack: undefined, root: undefined })
 
-          return setInitialScreen({
-            stack: routes.onboarding,
-            root: routes.nested,
-            params: {
-              registerToken,
-              fqdn
-            }
-          })
+            return setInitialScreen({
+              stack: routes.instanceCreation,
+              root: routes.nested,
+              params: {
+                onboardUrl
+              }
+            })
+          } else {
+            setInitialRoute({ stack: undefined, root: undefined })
+
+            return setInitialScreen({
+              stack: routes.authenticate,
+              root: routes.nested,
+              params: {
+                fqdn
+              }
+            })
+          }
         } else {
           setInitialRoute({ stack: undefined, root: undefined })
 
@@ -164,8 +175,15 @@ export const useAppBootstrap = client => {
       const onboardingParams = parseOnboardingURL(url)
 
       if (onboardingParams) {
-        navigate(routes.onboarding, onboardingParams)
-        return
+        const { onboardUrl, fqdn } = onboardingParams
+
+        if (onboardUrl) {
+          navigate(routes.instanceCreation, { onboardUrl })
+          return
+        } else {
+          navigate(routes.authenticate, { fqdn })
+          return
+        }
       }
 
       const { fallback: href, isHome } = parseFallbackURL(url)
