@@ -61,7 +61,10 @@ const App = ({ setClient }) => {
         {...(initialRoute.stack ? { initialParams: initialRoute.stack } : {})}
       />
 
-      <Stack.Screen name={routes.authenticate}>
+      <Stack.Screen
+        name={routes.authenticate}
+        initialParams={initialScreen.params}
+      >
         {params => <LoginScreen setClient={setClient} {...params} />}
       </Stack.Screen>
 

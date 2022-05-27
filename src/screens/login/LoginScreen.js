@@ -22,6 +22,7 @@ import {
 } from '/libs/client'
 import { getNavbarHeight, statusBarHeight } from '/libs/dimensions'
 import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
+import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 
 import strings from '../../strings.json'
@@ -39,7 +40,7 @@ const ERROR_STEP = 'ERROR_STEP'
 
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
-const LoginSteps = ({ setClient }) => {
+const LoginSteps = ({ navigation, route, setClient }) => {
   const { showSplashScreen } = useSplashScreen()
   const [state, setState] = useState({
     step: CLOUDERY_STEP
@@ -61,6 +62,26 @@ const LoginSteps = ({ setClient }) => {
     }
   }, [state.sessionCode, state.waitForTransition, authorize])
 
+  useEffect(() => {
+    const fqdn = consumeRouteParameter('fqdn', route, navigation)
+    if (fqdn) {
+      // fqdn string should never contain the protocol, but we may want to enforce it
+      // when local debugging as this configuration uses `http` only
+      const url =
+        fqdn.startsWith('http://') || fqdn.startsWith('https://')
+          ? new URL(fqdn)
+          : new URL(`https://${fqdn}`)
+
+      const normalizedFqdn = url.host.toLowerCase()
+      const normalizedInstance = url.origin.toLowerCase()
+
+      setInstanceData({
+        fqdn: normalizedFqdn,
+        instance: normalizedInstance
+      })
+    }
+  }, [navigation, route, setInstanceData])
+
   const setStepReadonly = isReadOnly => {
     setState(oldState => ({
       ...oldState,
@@ -68,33 +89,36 @@ const LoginSteps = ({ setClient }) => {
     }))
   }
 
-  const setInstanceData = async ({ instance, fqdn }) => {
-    if (await NetService.isOffline()) NetService.handleOffline()
+  const setInstanceData = useCallback(
+    async ({ instance, fqdn }) => {
+      if (await NetService.isOffline()) NetService.handleOffline()
 
-    try {
-      const client = await createClient(instance)
+      try {
+        const client = await createClient(instance)
 
-      const { kdfIterations, name } = await fetchPublicData(client)
+        const { kdfIterations, name } = await fetchPublicData(client)
 
-      // we do not want to await for flagship certification in order to make the UI more responsive
-      // so do not add `await` keyword here
-      client.certifyFlagship()
+        // we do not want to await for flagship certification in order to make the UI more responsive
+        // so do not add `await` keyword here
+        client.certifyFlagship()
 
-      setState({
-        step: PASSWORD_STEP,
-        stepReadonly: false,
-        waitForTransition: true,
-        requestTransitionStart: false,
-        fqdn: fqdn,
-        instance: instance,
-        name: name,
-        kdfIterations: kdfIterations,
-        client: client
-      })
-    } catch (error) {
-      setError(error.message, error)
-    }
-  }
+        setState({
+          step: PASSWORD_STEP,
+          stepReadonly: false,
+          waitForTransition: true,
+          requestTransitionStart: false,
+          fqdn: fqdn,
+          instance: instance,
+          name: name,
+          kdfIterations: kdfIterations,
+          client: client
+        })
+      } catch (error) {
+        setError(error.message, error)
+      }
+    },
+    [setError]
+  )
 
   const cancelOauth = useCallback(() => {
     setState(oldState => ({
@@ -345,7 +369,7 @@ const LoginSteps = ({ setClient }) => {
   }
 }
 
-export const LoginScreen = ({ setClient }) => {
+export const LoginScreen = ({ navigation, route, setClient }) => {
   const colors = getColors()
 
   return (
@@ -358,7 +382,7 @@ export const LoginScreen = ({ setClient }) => {
       ]}
     >
       <View style={{ height: statusBarHeight }} />
-      <LoginSteps setClient={setClient} />
+      <LoginSteps navigation={navigation} route={route} setClient={setClient} />
       <View style={{ height: getNavbarHeight() }} />
     </View>
   )
