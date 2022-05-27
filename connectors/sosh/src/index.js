@@ -17,6 +17,7 @@ let oldPromisesToConvertBlobToBase64 = []
 let recentXhrUrls = []
 let oldXhrUrls = []
 let numberOfClick = 0
+let userInfos = []
 
 // The override here is needed to intercept XHR requests made during the navigation
 // The website respond with an XHR containing a blob when asking for a pdf, so we need to get it and encode it into base64 before giving it to the pilot.
@@ -44,6 +45,18 @@ window.XMLHttpRequest.prototype.open = function () {
       if (originalResponse.readyState === 4) {
         const jsonBills = JSON.parse(originalResponse.responseText)
         oldBills.push(jsonBills)
+      }
+    })
+    return proxied.apply(this, [].slice.call(arguments))
+  }
+  // Intercepting user infomations for Identity object
+  if (arguments[1].includes('erb/portfoliomanager/portfolio?')) {
+    var originalResponse = this
+
+    originalResponse.addEventListener('readystatechange', function (event) {
+      if (originalResponse.readyState === 4) {
+        const jsonInfos = JSON.parse(originalResponse.responseText)
+        userInfos.push(jsonInfos)
       }
     })
     return proxied.apply(this, [].slice.call(arguments))
@@ -89,6 +102,7 @@ class OrangeContentScript extends ContentScript {
   async ensureAuthenticated() {
     await this.goto(DEFAULT_PAGE_URL)
     log.debug('waiting for any authentication confirmation or login form...')
+
     await Promise.race([
       this.runInWorkerUntilTrue({method: 'waitForAuthenticated'}),
       this.waitForElementInWorker('[data-e2e="e2e-ident-button"]'),
@@ -97,11 +111,61 @@ class OrangeContentScript extends ContentScript {
     if (await this.runInWorker('checkAuthenticated')) {
       this.log('Authenticated')
       return true
-    } else {
-      await this.waitForUserAuthentication()
-      this.log('Not authenticated')
-      return true
     }
+    log.debug('Not authenticated')
+
+    let credentials = await this.getCredentials()
+    if (credentials && credentials.email && credentials.password) {
+      try {
+        log.debug('Got credentials, trying autologin')
+        await this.tryAutoLogin(credentials)
+      } catch (err) {
+        log.warn('autoLogin error' + err.message)
+        await this.waitForUserAuthentication()
+      }
+    } else {
+      log.debug('No credentials saved, waiting for user input')
+      await this.waitForUserAuthentication()
+    }
+
+    // if (await this.runInWorker('checkAuthenticated')) {
+    //   this.log('Authenticated')
+    //   return true
+    // } else {
+    //   await this.waitForUserAuthentication()
+    //   this.log('Not authenticated')
+    //   return true
+    // }
+  }
+
+  async tryAutoLogin(credentials) {
+    this.log('autologin start')
+    await this.goto(DEFAULT_PAGE_URL)
+    await Promise.all([
+      this.autoLogin(credentials),
+      this.runInWorkerUntilTrue({method: 'waitForAuthenticated'}),
+    ])
+  }
+
+  async autoLogin(credentials) {
+    this.log('fill email field')
+    const emailInputSelector =
+      'p[data-testid="selected-account-login"] > strong'
+    const passwordInputSelector = '#password-label'
+    const loginButtonSelector = '#btnSubmit'
+    await this.waitForElementInWorker(emailInputSelector)
+    await this.runInWorker('fillText', emailInputSelector, credentials.email)
+
+    this.log('wait for password field')
+    this.waitForElementInWorker(passwordInputSelector)
+
+    log.debug('fill password field')
+    await this.runInWorker(
+      'fillText',
+      passwordInputSelector,
+      credentials.password,
+    )
+    await this.runInWorker('click', loginButtonSelector)
   }
 
   async waitForUserAuthentication() {
@@ -120,10 +184,6 @@ class OrangeContentScript extends ContentScript {
   }
 
   async fetch(context) {
-    // // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-    // await this.waitForElementInWorker(
-    //   '[aria-labelledby="bp-billsHistoryyyTitle"]',
-    // )
     log.debug('fetch start')
     await this.waitForElementInWorker('a[class="ob1-link-icon ml-1 py-1"]')
     const clientRef = await this.runInWorker('findClientRef')
@@ -198,7 +258,15 @@ class OrangeContentScript extends ContentScript {
           },
         })
       }
-
+      await this.saveIdentity({
+        mailAdress: this.store.infosIdentity.mail,
+        city: this.store.infosIdentity.city,
+        phoneNumber: this.store.infosIdentity.phoneNumber,
+      })
+      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+      // await this.waitForElementInWorker(
+      //   '[aria-labelledby="bp-billsHistoryyyTitle"]',
+      // )
       await this.saveBills(this.store.dataUri, {
         context,
         fileIdAttributes: ['filename'],
@@ -364,9 +432,15 @@ class OrangeContentScript extends ContentScript {
     const oldBillsToAdd = oldBills[0].oldBills
     let allBills = recentBillsToAdd.concat(oldBillsToAdd)
     log.debug('billsArray ready, Sending to pilot')
+    const infosIdentity = {
+      city: userInfos[0].contracts[0].contractInstallationArea.city,
+      phoneNumber: userInfos[0].contracts[0].telco.publicNumber,
+      mail: document.querySelector('.oecs__zone-footer-button-mail').innerHTML,
+    }
     await this.sendToPilot({
       resolvedBase64,
       allBills,
+      infosIdentity,
     })
   }
 }
