@@ -1,4 +1,4 @@
-# 0.0.11
+# 0.0.12
 
 ## ✨ Features
 
@@ -8,6 +8,20 @@
 
 ## 🔧 Tech
 
+
+# 0.0.11
+
+## ✨ Features
+
+## 🐛 Bug Fixes
+
+* Fix display on borderless smartphones ([PR #229](https://github.com/cozy/cozy-react-native/pull/229) and [PR #238](https://github.com/cozy/cozy-react-native/pull/238)
+* Improve Offline management ([PR #227](https://github.com/cozy/cozy-react-native/pull/227) and [PR #230](https://github.com/cozy/cozy-react-native/pull/230))
+
+## 🔧 Tech
+
+* Improve Client Side Connectors handling ([PR #225](https://github.com/cozy/cozy-react-native/pull/225), [PR #226](https://github.com/cozy/cozy-react-native/pull/226), [PR #234](https://github.com/cozy/cozy-react-native/pull/234) and [PR #235](https://github.com/cozy/cozy-react-native/pull/235))
+* Update appBoostrap after client changes ([PR #228](https://github.com/cozy/cozy-react-native/pull/228))
 
 # 0.0.10
 
