@@ -8,7 +8,7 @@ import googleConnector from '../../../connectors/google-takeout/dist/webviewScri
 // import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
 import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
 import edfConnector from '../../../connectors/edf/dist/webviewScript'
-import soshConnector from '../../../connectors/sosh/dist/webviewScript'
+import orangeConnector from '../../../connectors/sosh/dist/webviewScript'
 import ReactNativeLauncher from '../../libs/ReactNativeLauncher'
 import debounce from 'lodash/debounce'
 import { withClient } from 'cozy-client'

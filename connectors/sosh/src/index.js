@@ -25,6 +25,7 @@ var proxied = window.XMLHttpRequest.prototype.open
 // Overriding the open() method
 window.XMLHttpRequest.prototype.open = function () {
   // Intercepting response for recent bills information.
+  console.log('toto')
   if (arguments[1].includes('/users/current/contracts')) {
     var originalResponse = this
 
