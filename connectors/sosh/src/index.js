@@ -120,6 +120,10 @@ class OrangeContentScript extends ContentScript {
   }
 
   async fetch(context) {
+    // // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+    // await this.waitForElementInWorker(
+    //   '[aria-labelledby="bp-billsHistoryyyTitle"]',
+    // )
     log.debug('fetch start')
     await this.waitForElementInWorker('a[class="ob1-link-icon ml-1 py-1"]')
     const clientRef = await this.runInWorker('findClientRef')
@@ -151,10 +155,7 @@ class OrangeContentScript extends ContentScript {
           '[aria-labelledby="bp-historicBillsHistoryTitle"]',
         )
       }
-      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-      // await this.waitForElementInWorker(
-      //   '[aria-labelledby="bp-billsHistoryyyTitle"]',
-      // )
+
       await this.runInWorker('clickOnPdf')
       this.log('pdfButtons founded and clicked')
       await this.runInWorker('processingBills')
@@ -251,7 +252,7 @@ class OrangeContentScript extends ContentScript {
   async getUserMail() {
     try {
       const result = document.querySelector(
-        '.oecs__zone-footer-button-maill',
+        '.oecs__zone-footer-button-mail',
       ).innerHTML
       if (result) {
         return result
