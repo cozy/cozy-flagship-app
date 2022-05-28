@@ -17,6 +17,7 @@ import {
   createClient,
   fetchPublicData,
   STATE_2FA_NEEDED,
+  STATE_AUTHORIZE_NEEDED,
   STATE_INVALID_PASSWORD
 } from '/libs/client'
 import { getNavbarHeight, statusBarHeight } from '/libs/dimensions'
@@ -151,7 +152,7 @@ const LoginSteps = ({ setClient }) => {
           client: result.client,
           twoFactorToken: result.twoFactorToken
         }))
-      } else {
+      } else if (result.state === STATE_AUTHORIZE_NEEDED) {
         setState(oldState => ({
           ...oldState,
           step: AUTHORIZE_TRANSITION_STEP,
@@ -159,6 +160,10 @@ const LoginSteps = ({ setClient }) => {
           client: result.client,
           sessionCode: result.sessionCode
         }))
+      } else {
+        showSplashScreen()
+        await resetKeychainAndSaveLoginData(loginData)
+        setClient(result.client)
       }
     } catch (error) {
       setError(error.message, error)
@@ -190,7 +195,7 @@ const LoginSteps = ({ setClient }) => {
             twoFactorToken: result.twoFactorToken,
             errorMessage2FA: strings.errors.wrong2FA
           }))
-        } else {
+        } else if (result.state === STATE_AUTHORIZE_NEEDED) {
           setState(oldState => ({
             ...oldState,
             step: AUTHORIZE_TRANSITION_STEP,
@@ -198,6 +203,10 @@ const LoginSteps = ({ setClient }) => {
             client: result.client,
             sessionCode: result.sessionCode
           }))
+        } else {
+          showSplashScreen()
+          await resetKeychainAndSaveLoginData(loginData)
+          setClient(result.client)
         }
       } catch (error) {
         setError(error.message, error)

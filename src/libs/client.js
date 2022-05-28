@@ -2,6 +2,7 @@ import CozyClient from 'cozy-client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import { queryResultToCrypto } from '../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
+import { loginFlagship } from './clientHelpers/loginFlagship'
 import { normalizeFqdn } from './functions/stringHelpers'
 
 import apiKeys from '../api-keys.json'
@@ -211,35 +212,53 @@ const connectClient = async ({
   client,
   twoFactorAuthenticationData = undefined
 }) => {
-  const sessionCodeResult = await fetchSessionCode({
+  const {
+    two_factor_token: twoFactorToken,
+    session_code: sessionCode,
+    invalidPassword,
+    ...token
+  } = await loginFlagship({
     client,
     loginData,
     twoFactorAuthenticationData
   })
 
-  if (sessionCodeResult.invalidPassword) {
+  if (invalidPassword) {
     return {
       client,
       state: STATE_INVALID_PASSWORD
     }
   }
 
-  const need2FA = sessionCodeResult.twoFactorToken !== undefined
+  const need2FA = twoFactorToken !== undefined
 
   if (need2FA) {
     return {
       client,
       state: STATE_2FA_NEEDED,
-      twoFactorToken: sessionCodeResult.twoFactorToken
+      twoFactorToken: twoFactorToken
     }
   }
 
-  const sessionCode = sessionCodeResult.session_code
+  const needFlagshipVerification = sessionCode !== undefined
+
+  if (needFlagshipVerification) {
+    return {
+      client: client,
+      state: STATE_AUTHORIZE_NEEDED,
+      sessionCode: sessionCode
+    }
+  }
+
+  const stackClient = client.getStackClient()
+  stackClient.setToken(token)
+
+  await client.login()
+  await saveClient(client)
 
   return {
     client: client,
-    sessionCode: sessionCode,
-    state: STATE_AUTHORIZE_NEEDED
+    state: STATE_CONNECTED
   }
 }
 
@@ -272,52 +291,6 @@ export const authorizeClient = async ({ client, sessionCode }) => {
  */
 const createPKCE = async () => {
   return await queryResultToCrypto('computePKCE')
-}
-
-/**
- * Fetch the session code from cozy-stack
- *
- * Errors are handled to detect when 2FA is needed and when password is invalid
- *
- * @param {object} param
- * @param {object} param.client
- * @param {object} param.loginData
- * @param {object} [param.twoFactorAuthenticationData]
- * @returns {SessionCodeResult} The query result with session_code, or 2FA token, or invalid password error
- * @throws
- */
-const fetchSessionCode = async ({
-  client,
-  loginData,
-  twoFactorAuthenticationData = undefined
-}) => {
-  const stackClient = client.getStackClient()
-
-  try {
-    const sessionCodeResult = await stackClient.fetchSessionCodeWithPassword({
-      passwordHash: loginData.passwordHash,
-      twoFactorToken: twoFactorAuthenticationData
-        ? twoFactorAuthenticationData.token
-        : undefined,
-      twoFactorPasscode: twoFactorAuthenticationData
-        ? twoFactorAuthenticationData.passcode
-        : undefined
-    })
-
-    return sessionCodeResult
-  } catch (e) {
-    if (e.status === 403 && e.reason && e.reason.two_factor_token) {
-      return {
-        twoFactorToken: e.reason.two_factor_token
-      }
-    } else if (e.status === 401) {
-      return {
-        invalidPassword: true
-      }
-    } else {
-      throw e
-    }
-  }
 }
 
 /**
