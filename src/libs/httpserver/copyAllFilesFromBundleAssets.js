@@ -63,3 +63,37 @@ export const prepareAssets = async path => {
     await prepareAndroidAssets(path)
   }
 }
+
+const getIOSAssetManifestJSON = async () => {
+  const assetManifestPath = `${RNFS.MainBundlePath}/assets/resources/cozy-home/build/manifest.webapp`
+
+  return await RNFS.readFile(assetManifestPath)
+}
+
+const getAndroidAssetManifestJSON = async () => {
+  const assetManifestPath = 'cozy-home/build/manifest.webapp'
+
+  return await RNFS.readFileAssets(assetManifestPath)
+}
+
+const getAssetManifest = async () => {
+  const isIOS = Platform.OS === 'ios'
+
+  const manifestJSON = isIOS
+    ? await getIOSAssetManifestJSON()
+    : await getAndroidAssetManifestJSON()
+
+  const manifest = JSON.parse(manifestJSON)
+
+  return manifest
+}
+
+export const getAssetVersion = async () => {
+  const manifest = await getAssetManifest()
+
+  const version = manifest.version
+
+  log.debug(`Assets version is ${version}`)
+
+  return version
+}
