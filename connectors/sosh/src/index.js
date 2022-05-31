@@ -176,10 +176,13 @@ class OrangeContentScript extends ContentScript {
   }
 
   async getUserDataFromWebsite() {
+    const sourceAccountId = await this.runInWorker('getUserMail')
+    if (sourceAccountId === 'UNKNOWN_ERROR') {
+      this.log("Couldn't get a sourceAccountIdentifier, using default")
+      return {sourceAccountIdentifier: DEFAULT_SOURCE_ACCOUNT_IDENTIFIER}
+    }
     return {
-      sourceAccountIdentifier:
-        (await this.runInWorker('getUserMail')) ||
-        DEFAULT_SOURCE_ACCOUNT_IDENTIFIER,
+      sourceAccountIdentifier: sourceAccountId,
     }
   }
 
@@ -188,7 +191,7 @@ class OrangeContentScript extends ContentScript {
     await this.waitForElementInWorker('a[class="ob1-link-icon ml-1 py-1"]')
     const clientRef = await this.runInWorker('findClientRef')
     if (clientRef) {
-      this.log('clientRef founded')
+      this.log('clientRef found')
       await this.clickAndWait(
         `a[href="facture-paiement/${clientRef}"]`,
         '[data-e2e="bp-tile-historic"]',
@@ -203,7 +206,6 @@ class OrangeContentScript extends ContentScript {
         throw new Error('VENDOR_DOWN')
       }
       const moreBills = await this.runInWorker('getMoreBillsButton')
-      console.log('moreBills', moreBills)
       if (moreBills) {
         const oldBillsRedFrame = await this.runInWorker('checkOldBillsRedFrame')
         if (oldBillsRedFrame !== null) {
@@ -216,7 +218,7 @@ class OrangeContentScript extends ContentScript {
         )
       }
 
-      await this.runInWorker('clickOnPdf')
+      await this.runInWorker('clickOnPdfs')
       this.log('pdfButtons founded and clicked')
       await this.runInWorker('processingBills')
       this.store.dataUri = []
@@ -265,7 +267,7 @@ class OrangeContentScript extends ContentScript {
       })
       // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
       // await this.waitForElementInWorker(
-      //   '[aria-labelledby="bp-billsHistoryyyTitle"]',
+      //   '[pause]',
       // )
       await this.saveBills(this.store.dataUri, {
         context,
@@ -387,8 +389,8 @@ class OrangeContentScript extends ContentScript {
     return moreBillsButton
   }
 
-  async clickOnPdf() {
-    log.debug('Get in clickOnPdf')
+  async clickOnPdfs() {
+    log.debug('Get in clickOnPdfs')
     let buttons = this.findPdfButtons()
     if (buttons[0].length === 0) {
       this.log('ERROR Could not find pdf button')
@@ -451,7 +453,7 @@ connector
     additionalExposedMethodsNames: [
       'getUserMail',
       'findClientRef',
-      'clickOnPdf',
+      'clickOnPdfs',
       'processingBills',
       'getMoreBillsButton',
       'checkRedFrame',
