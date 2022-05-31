@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { WebView } from 'react-native-webview'
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native'
 // TODO find a proper way to load a connector only when needed
-// import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
+import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
 import templateConnector from '../../../connectors/template/dist/webviewScript'
 import googleConnector from '../../../connectors/google-takeout/dist/webviewScript'
 // import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
@@ -22,7 +22,7 @@ const DEBUG = false
 const embeddedConnectors = {
   edf: edfConnector,
   'google-takeout': googleConnector,
-  // amazon: amazonConnector,
+  amazon: amazonConnector,
   template: templateConnector,
   // sncf: sncfConnector,
   blablacar: blablacarConnector,

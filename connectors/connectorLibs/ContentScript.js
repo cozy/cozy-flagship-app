@@ -38,7 +38,8 @@ export default class ContentScript {
       'fetch',
       'click',
       'fillText',
-      'storeFromWorker'
+      'storeFromWorker',
+      'clickAndWait',
     ]
 
     if (options.additionalExposedMethodsNames) {

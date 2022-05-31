@@ -9,38 +9,84 @@ Minilog.enable()
 
 const baseUrl = 'https://www.amazon.fr'
 const orderUrl = `${baseUrl}/gp/your-account/order-history`
+const vendor = 'amazon'
 
 class AmazonContentScript extends ContentScript {
+
+  //P
   async ensureAuthenticated() {
-    await this.bridge.call('setWorkerState', {
-      url: baseUrl,
-      visible: false,
-    })
-    await this.waitForElementInWorker('#nav-progressive-greeting')
-    const authenticated = await this.runInWorker('checkAuthenticated')
-    if (!authenticated) {
-      await this.showLoginFormAndWaitForAuthentication()
-    }
-    return true
-  }
-
-  async checkAuthenticated() {
-    const result = Boolean(document.querySelector('#nav-greeting-name'))
-    return result
-  }
-
-  async showLoginFormAndWaitForAuthentication() {
-    log.debug('showLoginFormAndWaitForAuthentication start')
+    this.log('Starting ensureAuth')
     await this.bridge.call('setWorkerState', {
       url: baseUrl,
       visible: true,
     })
+    await this.waitForElementInWorker('#nav-progressive-greeting')
+    const authenticated = await this.runInWorker('checkAuthenticated')
+    this.log('Authenticated : '+authenticated)
+    if (!authenticated) {
+      await this.showLoginFormAndWaitForAuthentication()
+      if (this.store && this.store.email) {
+        this.log(JSON.stringify(this.store))
+        await this.saveCredentials(this.store)
+      }
+    }
+    return true
+  }
+
+  //W
+  async checkAuthenticated() {
+    // Get login ID with a listener
+    const loginField = document.querySelector('#ap_email_login')
+    if (loginField) {
+      loginField.addEventListener(
+        'change',
+        this.findAndSendCredentials.bind(this)
+      )
+    }
+
+    const result = Boolean(document.querySelector('#nav-greeting-name'))
+    this.log('Authentification detection : '+result)
+    return result
+  }
+
+  //W
+  findAndSendCredentials(e) {
+    const emailField = document.querySelector('#ap_email_login')
+//    const passwordField = document.querySelector('#password2-password-field')
+    if (emailField /*&& passwordField*/) {
+      this.sendToPilot({
+        email: emailField.value,
+//        password: passwordField.value,
+      })
+    }
+
+    return true
+  }
+
+  //P
+  async showLoginFormAndWaitForAuthentication() {
+    this.log('showLoginFormAndWaitForAuthentication start')
+    await this.bridge.call('setWorkerState', {
+      url: baseUrl,
+      visible: true,
+    }) // TODO test to false if ok
+    await this.waitForElementInWorker('a[id="nav-logobar-greeting"]')
+    await this.clickAndWait(
+      'a[id="nav-logobar-greeting"]',
+      '#ap_email_login'
+    )
+    await this.bridge.call('setWorkerState', {
+      visible: true
+    })
+    this.log('Waiting on login form')
+
     await this.runInWorkerUntilTrue({method: 'waitForAuthenticated'})
     await this.bridge.call('setWorkerState', {
       visible: false,
     })
   }
 
+  //P
   async fetch(context) {
     await this.bridge.call(
       'setUserAgent',
@@ -52,10 +98,11 @@ class AmazonContentScript extends ContentScript {
 
     await this.clickAndWait(
       "a.hmenu-item[href*='order-history']",
-      '#orderFilter',
+      "[name='orderFilter']"
     )
 
     const years = await this.runInWorker('getYears')
+    this.log('Years :' + years)
     for (const year of years) {
       this.log('Saving year ' + year)
       const periodBills = await this.fetchPeriod(year)
@@ -93,6 +140,7 @@ class AmazonContentScript extends ContentScript {
       const details$ = await detailsResp.$()
       const normalInvoice = details$("a[href*='invoice.pdf']")
       if (normalInvoice.length) {
+        bill.vendor = vendor
         bill.fileurl = baseUrl + normalInvoice.attr('href')
         bill.filename = `${format(
           bill.commandDate,
@@ -110,25 +158,31 @@ class AmazonContentScript extends ContentScript {
     return commands
   }
 
-  async getUserName() {
-    return window.$Nav.manager.get('config').firstName
-  }
-
+  //P
   async getUserDataFromWebsite() {
-    // we get the name displayed as "Bonjour <username>" in the default amazon page
-    // to get more detailed profile information, we need to go to "votre comte" > "Connexion et
-    // sécurité" which is begin a new authentication by the user
-    // I don't think it is wise to force the user to log twice
-    const userName = await this.runInWorker('getUserName')
-    return {
-      sourceAccountIdentifier: userName,
+
+    if (this.store && this.store.email) {
+      return {
+        sourceAccountIdentifier: this.store.email
+      }
+    } else {
+      let credentials = await this.getCredentials()
+      if (credentials && credentials.email) {
+        return {
+          sourceAccountIdentifier: credentials.email
+        }
+      } else {
+        //Throw an error. Which One
+        this.log('No credentials found')
+      }
     }
   }
 }
 
 const connector = new AmazonContentScript()
 connector
-  .init({additionalExposedMethodsNames: ['getUserName', 'getYears']})
+  .init({additionalExposedMethodsNames: ['getYears']
+        })
   .catch((err) => {
     console.warn(err)
   })
