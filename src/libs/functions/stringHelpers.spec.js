@@ -1,4 +1,8 @@
-import { escapeSpecialCharacters, replaceAll } from './stringHelpers'
+import {
+  escapeSpecialCharacters,
+  normalizeFqdn,
+  replaceAll
+} from './stringHelpers'
 
 describe('stringHelper', () => {
   describe('escapeSpecialCharacters', () => {
@@ -40,6 +44,14 @@ describe('stringHelper', () => {
       const result = replaceAll('[.*+?^${}()|[]\\', '.*', '_')
 
       expect(result).toBe('[_+?^${}()|[]\\')
+    })
+  })
+
+  describe('normalizeFqdn', () => {
+    it(`should replace all ':' by '_'`, async () => {
+      const result = normalizeFqdn('cozy.tools:8080')
+
+      expect(result).toBe('cozy.tools_8080')
     })
   })
 })

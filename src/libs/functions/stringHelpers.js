@@ -23,3 +23,15 @@ export const replaceAll = (str, find, replace) => {
 
   return str.replace(regex, replace)
 }
+
+/**
+ * Normalize FQDN to make it usable as a folder name
+ *
+ * @param {string} fqdn - FQDN to be normalized
+ * @returns {string} normalized FQDN
+ */
+export const normalizeFqdn = fqdn => {
+  const normalizedFqdn = fqdn.replace(':', '_')
+
+  return normalizedFqdn
+}
