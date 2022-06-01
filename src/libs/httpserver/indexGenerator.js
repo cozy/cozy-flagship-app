@@ -1,20 +1,48 @@
 import RNFS from 'react-native-fs'
+import Minilog from '@cozy/minilog'
 
 import {
   getBaseFolderForFqdnAndSlug,
   getBaseFolderForFqdnAndSlugAndCurrentVersion,
   getBaseRelativePathForFqdnAndSlugAndCurrentVersion
 } from './httpPaths'
-import { prepareAssets } from './copyAllFilesFromBundleAssets'
+import { getAssetVersion, prepareAssets } from './copyAllFilesFromBundleAssets'
+import { setCurrentAppVersionForFqdnAndSlug } from '../cozyAppBundle/cozyAppBundleConfiguration'
 import { replaceAll } from '../functions/stringHelpers'
 
+const log = Minilog('IndexGenerator')
+
+const initLocalBundleIfNotExist = async (fqdn, slug) => {
+  const basePath = await getBaseFolderForFqdnAndSlug(fqdn, slug)
+
+  const embeddedBundlePath = `${basePath}/embedded`
+
+  const manifestPath = `${embeddedBundlePath}/manifest.webapp`
+
+  const embeddedExists = await RNFS.exists(manifestPath)
+
+  if (!embeddedExists) {
+    log.debug(`No local assets found, extrating bundled asset`)
+    await prepareAssets(embeddedBundlePath)
+
+    const version = await getAssetVersion()
+
+    setCurrentAppVersionForFqdnAndSlug({
+      fqdn,
+      slug,
+      version,
+      folder: 'embedded'
+    })
+  }
+}
+
 export const getIndexForFqdnAndSlug = async (fqdn, slug) => {
+  await initLocalBundleIfNotExist(fqdn, slug)
+
   const basePath = await getBaseFolderForFqdnAndSlugAndCurrentVersion(
     fqdn,
     slug
   )
-
-  await prepareAssets(basePath)
 
   const indexPath = basePath + '/index.html'
 

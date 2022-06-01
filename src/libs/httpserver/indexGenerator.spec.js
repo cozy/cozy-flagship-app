@@ -1,12 +1,48 @@
-import { fillIndexWithData } from './indexGenerator'
+import RNFS from 'react-native-fs'
+
+import { fillIndexWithData, getIndexForFqdnAndSlug } from './indexGenerator'
+
+import {
+  getCurrentAppConfigurationForFqdnAndSlug,
+  setCurrentAppVersionForFqdnAndSlug
+} from '../cozyAppBundle/cozyAppBundleConfiguration'
+
+import {
+  getBaseFolderForFqdnAndSlug,
+  getBaseFolderForFqdnAndSlugAndCurrentVersion
+} from './httpPaths'
+
+import { getAssetVersion, prepareAssets } from './copyAllFilesFromBundleAssets'
 
 jest.mock('react-native-fs', () => ({
-  DocumentDirectoryPath: 'SOME_DocumentDirectoryPath'
+  DocumentDirectoryPath: 'SOME_DocumentDirectoryPath',
+  exists: jest.fn(),
+  mkdir: jest.fn(),
+  readFile: jest.fn()
+}))
+
+jest.mock('./copyAllFilesFromBundleAssets', () => ({
+  prepareAssets: jest.fn(),
+  getAssetVersion: jest.fn()
+}))
+
+jest.mock('../cozyAppBundle/cozyAppBundleConfiguration', () => ({
+  getCurrentAppConfigurationForFqdnAndSlug: jest.fn(),
+  setCurrentAppVersionForFqdnAndSlug: jest.fn()
+}))
+
+jest.mock('./httpPaths', () => ({
+  getBaseFolderForFqdnAndSlug: jest.fn(),
+  getBaseFolderForFqdnAndSlugAndCurrentVersion: jest.fn(),
+  getBaseRelativePathForFqdnAndSlugAndCurrentVersion:
+    jest.requireActual('./httpPaths')
+      .getBaseRelativePathForFqdnAndSlugAndCurrentVersion
 }))
 
 describe('indexGenerator', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    getCurrentAppConfigurationForFqdnAndSlug.mockResolvedValue(undefined)
   })
 
   describe('fillIndexWithData', () => {
@@ -205,6 +241,65 @@ describe('indexGenerator', () => {
           '<script src="//claude.mycozy.cloud/vendors/home.000f5f10d9fca3ceac41.js"></script>'
         )
       })
+    })
+  })
+
+  describe('getIndexForFqdnAndSlug', () => {
+    beforeEach(() => {
+      getBaseFolderForFqdnAndSlug.mockResolvedValue('SOME_BASE_PATH')
+      getBaseFolderForFqdnAndSlugAndCurrentVersion.mockResolvedValue(
+        'SOME_BASE_PATH_CURRENT_VERSION'
+      )
+      RNFS.readFile.mockResolvedValue('SOME_FILE_CONTENT')
+      getAssetVersion.mockResolvedValue('1.2.3')
+    })
+
+    it(`should return content from local index.html`, async () => {
+      const fqdn = 'cozy.tools'
+      const slug = 'home'
+
+      RNFS.exists.mockResolvedValue(false)
+
+      const result = await getIndexForFqdnAndSlug(fqdn, slug)
+
+      expect(RNFS.readFile).toHaveBeenCalledWith(
+        'SOME_BASE_PATH_CURRENT_VERSION/index.html'
+      )
+      expect(result).toBe('SOME_FILE_CONTENT')
+    })
+
+    it(`should init local bundle if not existing`, async () => {
+      const fqdn = 'cozy.tools'
+      const slug = 'home'
+
+      RNFS.exists.mockResolvedValue(false)
+
+      const result = await getIndexForFqdnAndSlug(fqdn, slug)
+
+      expect(result).toBe('SOME_FILE_CONTENT')
+      expect(prepareAssets).toHaveBeenCalledWith('SOME_BASE_PATH/embedded')
+      expect(RNFS.exists).toHaveBeenCalledWith(
+        'SOME_BASE_PATH/embedded/manifest.webapp'
+      )
+      expect(setCurrentAppVersionForFqdnAndSlug).toHaveBeenCalledWith({
+        folder: 'embedded',
+        fqdn: 'cozy.tools',
+        slug: 'home',
+        version: '1.2.3'
+      })
+    })
+
+    it(`should not init local bundle if it exists`, async () => {
+      const fqdn = 'cozy.tools'
+      const slug = 'home'
+
+      RNFS.exists.mockResolvedValue(true)
+
+      const result = await getIndexForFqdnAndSlug(fqdn, slug)
+
+      expect(result).toBe('SOME_FILE_CONTENT')
+      expect(prepareAssets).not.toHaveBeenCalled()
+      expect(setCurrentAppVersionForFqdnAndSlug).not.toHaveBeenCalled()
     })
   })
 })
