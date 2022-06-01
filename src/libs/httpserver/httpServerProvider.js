@@ -79,7 +79,7 @@ export const HttpServerProvider = props => {
 
     await setCookie(cookie, client)
     const rawHtml = await getIndexForFqdnAndSlug(fqdn, slug)
-    const computedHtml = fillIndexWithData({
+    const computedHtml = await fillIndexWithData({
       fqdn,
       slug,
       port: serverInstance.port,
