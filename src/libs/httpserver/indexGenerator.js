@@ -2,13 +2,17 @@ import RNFS from 'react-native-fs'
 
 import {
   getBaseFolderForFqdnAndSlug,
-  getBaseRelativePathForFqdnAndSlug
+  getBaseFolderForFqdnAndSlugAndCurrentVersion,
+  getBaseRelativePathForFqdnAndSlugAndCurrentVersion
 } from './httpPaths'
 import { prepareAssets } from './copyAllFilesFromBundleAssets'
 import { replaceAll } from '../functions/stringHelpers'
 
 export const getIndexForFqdnAndSlug = async (fqdn, slug) => {
-  const basePath = getBaseFolderForFqdnAndSlug(fqdn, slug)
+  const basePath = await getBaseFolderForFqdnAndSlugAndCurrentVersion(
+    fqdn,
+    slug
+  )
 
   await prepareAssets(basePath)
 
@@ -19,7 +23,7 @@ export const getIndexForFqdnAndSlug = async (fqdn, slug) => {
   return fileContent
 }
 
-export const fillIndexWithData = ({
+export const fillIndexWithData = async ({
   fqdn,
   slug,
   port,
@@ -29,7 +33,10 @@ export const fillIndexWithData = ({
 }) => {
   let output = indexContent
 
-  const basePath = getBaseRelativePathForFqdnAndSlug(fqdn, slug)
+  const basePath = await getBaseRelativePathForFqdnAndSlugAndCurrentVersion(
+    fqdn,
+    slug
+  )
 
   const absoluteUrlBasePath = `http://localhost:${port}/${securityKey}${basePath}`
   output = replaceRelativeUrlsWithAbsoluteUrls(output, absoluteUrlBasePath)

@@ -11,7 +11,7 @@ describe('indexGenerator', () => {
 
   describe('fillIndexWithData', () => {
     it(`to correctly fill cozy-home's index.html`, async () => {
-      const result = fillIndexWithData({
+      const result = await fillIndexWithData({
         fqdn: 'claude.mycozy.cloud',
         slug: 'home',
         port: 5757,
@@ -28,7 +28,7 @@ describe('indexGenerator', () => {
         const content =
           '<link rel="stylesheet" href="vendors-home.4740287bb69e5ea49e26.0.min.css" />'
 
-        const result = fillIndexWithData({
+        const result = await fillIndexWithData({
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
@@ -46,7 +46,7 @@ describe('indexGenerator', () => {
         const content = `<link rel="stylesheet" href="vendors-home.4740287bb69e5ea49e26.0.min.css" />
         <link rel="stylesheet" href="app-home.53f72c970a7c14ef3a0c.min.css" />`
 
-        const result = fillIndexWithData({
+        const result = await fillIndexWithData({
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
@@ -64,7 +64,7 @@ describe('indexGenerator', () => {
         const content =
           '<link rel="stylesheet" href="/vendors-home.4740287bb69e5ea49e26.0.min.css" />'
 
-        const result = fillIndexWithData({
+        const result = await fillIndexWithData({
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
@@ -82,7 +82,7 @@ describe('indexGenerator', () => {
         const content = `<link rel="stylesheet" href="/vendors-home.4740287bb69e5ea49e26.0.min.css" />
         <link rel="stylesheet" href="/app-home.53f72c970a7c14ef3a0c.min.css" />`
 
-        const result = fillIndexWithData({
+        const result = await fillIndexWithData({
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
@@ -100,7 +100,7 @@ describe('indexGenerator', () => {
         const content =
           '<link rel="stylesheet" href="//{{.Domain}}/vendors-home.4740287bb69e5ea49e26.0.min.css" />'
 
-        const result = fillIndexWithData({
+        const result = await fillIndexWithData({
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
@@ -120,7 +120,7 @@ describe('indexGenerator', () => {
         const content =
           '<script src="vendors/home.000f5f10d9fca3ceac41.js"></script>'
 
-        const result = fillIndexWithData({
+        const result = await fillIndexWithData({
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
@@ -138,7 +138,7 @@ describe('indexGenerator', () => {
         const content = `<script src="vendors/home.000f5f10d9fca3ceac41.js"></script>
         <script src="app/home.f6f22f0d747344045d69.js"></script>`
 
-        const result = fillIndexWithData({
+        const result = await fillIndexWithData({
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
@@ -156,7 +156,7 @@ describe('indexGenerator', () => {
         const content =
           '<script src="/vendors/home.000f5f10d9fca3ceac41.js"></script>'
 
-        const result = fillIndexWithData({
+        const result = await fillIndexWithData({
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
@@ -174,7 +174,7 @@ describe('indexGenerator', () => {
         const content = `<script src="/vendors/home.000f5f10d9fca3ceac41.js"></script>
         <script src="/app/home.f6f22f0d747344045d69.js"></script>`
 
-        const result = fillIndexWithData({
+        const result = await fillIndexWithData({
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
@@ -192,7 +192,7 @@ describe('indexGenerator', () => {
         const content =
           '<script src="//{{.Domain}}/vendors/home.000f5f10d9fca3ceac41.js"></script>'
 
-        const result = fillIndexWithData({
+        const result = await fillIndexWithData({
           fqdn: 'claude.mycozy.cloud',
           slug: 'home',
           port: 5757,
