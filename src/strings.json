@@ -1,5 +1,6 @@
 {
   "APPS_ICONS": "APPS_ICONS",
+  "BUNDLE_STORAGE_KEY": "@cozy_AmiralAppBundleConfig",
   "COZY_SCHEME": "cozy://",
   "OAUTH_STORAGE_KEY": "@cozy_AmiralAppOAuthConfig",
   "REDIRECT": "redirect",
