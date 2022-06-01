@@ -2,6 +2,7 @@ import CozyClient from 'cozy-client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import { queryResultToCrypto } from '../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
+import { normalizeFqdn } from './functions/stringHelpers'
 
 import apiKeys from '../api-keys.json'
 import strings from '../strings.json'
@@ -350,4 +351,30 @@ export const fetchCozyDataForSlug = async (slug, client) => {
   const result = await stackClient.fetchJSON('GET', `/apps/${slug}/open`)
 
   return result
+}
+
+export const getFqdnFromClient = client => {
+  const rootURL = client.getStackClient().uri
+  const { host: fqdn } = new URL(rootURL)
+
+  const normalizedFqdn = normalizeFqdn(fqdn)
+
+  return {
+    fqdn,
+    normalizedFqdn
+  }
+}
+
+export const fetchCozyAppVersion = async (slug, client) => {
+  const stackClient = client.getStackClient()
+
+  const result = await stackClient.fetchJSON('GET', `/apps/${slug}`)
+
+  const version = result?.data?.attributes?.version
+
+  if (!version) {
+    throw new Error(`No version found for app ${slug}`)
+  }
+
+  return version
 }

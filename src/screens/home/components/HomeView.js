@@ -14,6 +14,8 @@ import { useSession } from '/hooks/useSession'
 
 import { useHttpServerContext } from '../../../libs/httpserver/httpServerProvider'
 
+import { updateCozyAppBundleInBackground } from '/libs/cozyAppBundle/cozyAppBundle'
+
 const injectedJavaScriptBeforeContentLoaded = () => `
   window.addEventListener('load', (event) => {
     window.document.body.style.setProperty('--flagship-top-height', '${statusBarHeight}px');
@@ -149,6 +151,11 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
         )
 
         setHtml(htmlContent)
+
+        updateCozyAppBundleInBackground({
+          slug: 'home',
+          client
+        })
       }
 
       initHtmlContent()
