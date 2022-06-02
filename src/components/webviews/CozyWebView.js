@@ -7,9 +7,14 @@ import { useNativeIntent } from 'cozy-intent'
 
 import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
 import {
+  jsEnsureCrypto,
+  tryCrypto
+} from '/components/webviews/jsInteractions/jsEnsureCrypto'
+import {
   jsLogInterception,
   tryConsole
 } from '/components/webviews/jsInteractions/jsLogInterception'
+import { postMessageFunctionDeclaration } from '/components/webviews/CryptoWebView/jsInteractions/jsFunctions/jsMessaging'
 import { jsOnbeforeunload } from '/components/webviews/jsInteractions/jsOnbeforeunload'
 import { useSession } from '/hooks/useSession'
 import ReloadInterceptorWebView from '/components/webviews/ReloadInterceptorWebView'
@@ -77,6 +82,19 @@ export const CozyWebView = ({
       innerUri && webviewRef && nativeIntent?.unregisterWebview(innerUri)
   }, [innerUri, nativeIntent, webviewRef])
 
+  const onAnswer = useCallback(
+    (messageId, response) => {
+      const payload = JSON.stringify({
+        type: 'Crypto',
+        messageId,
+        param: response
+      })
+
+      webviewRef.postMessage(payload)
+    },
+    [webviewRef]
+  )
+
   const run = `
     (function() {
       ${jsCozyGlobal(route.name, isSecureProtocol)}
@@ -86,6 +104,10 @@ export const CozyWebView = ({
       ${injectedJavaScriptBeforeContentLoaded}
 
       ${jsOnbeforeunload}
+
+      ${postMessageFunctionDeclaration}
+
+      ${jsEnsureCrypto}
 
       return true;
     })();
@@ -142,6 +164,7 @@ export const CozyWebView = ({
         }
       }}
       onMessage={async m => {
+        tryCrypto(m, log, logId, onAnswer)
         tryConsole(m, log, logId)
 
         nativeIntent.tryEmit(m)
