@@ -100,7 +100,7 @@ export default class Launcher {
     if (existingCredentials) {
       await this.removeCredentials()
     }
-    await saveCredential(account)
+    await saveCredential({ ...account, auth: credentials })
   }
 
   /**
