@@ -1,6 +1,7 @@
 import { windowPasswordObjectDeclaration } from './jsFunctions/jsPasswordHelpers'
 import { computePassFunctionDeclaration } from './jsFunctions/jsComputePass'
 import { computePKCEFunctionDeclaration } from './jsFunctions/jsComputePKCE'
+import { subtleFunctionDeclaration } from './jsFunctions/jsSubtle'
 import { generateHttpServerSecurityKeyFunctionDeclaration } from './jsFunctions/jsGenerateHttpServerSecurityKey'
 import {
   postMessageFunctionDeclaration,
@@ -12,13 +13,15 @@ const jsCode = `
   ${computePassFunctionDeclaration}
   ${computePKCEFunctionDeclaration}
   ${generateHttpServerSecurityKeyFunctionDeclaration}
+  ${subtleFunctionDeclaration}
   ${postMessageFunctionDeclaration}
   ${listenMessageFunctionDeclaration}
 
   const messagingFunctions = {
     computePass,
     computePKCE,
-    generateHttpServerSecurityKey
+    generateHttpServerSecurityKey,
+    sublteProxy
   }
 `
 
