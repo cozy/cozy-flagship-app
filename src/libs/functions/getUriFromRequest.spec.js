@@ -10,6 +10,12 @@ test('it returns an url with the correct scheme if none provided', () => {
   )
 })
 
+test('it returns a trimmed url if a whitespace url is provided', () => {
+  expect(
+    getUriFromRequest({ url: 'https://cozydrive?fqdn=fo++o.b+++ar.ba+++z+' })
+  ).toBe('https://foo.bar.baz/')
+})
+
 test('it returns an url with the correct scheme if provided', () => {
   expect(
     getUriFromRequest({ url: 'https://cozydrive?fqdn=http://foo.bar.baz' })
