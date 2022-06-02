@@ -114,8 +114,10 @@ class AmazonContentScript extends ContentScript {
     }
   }
 
+  //W
   async getYears() {
-    return Array.from(document.querySelectorAll('#orderFilter option'))
+    return Array
+      .from(document.querySelectorAll("[name='orderFilter'] option"))
       .map((el) => el.value)
       .filter((period) => period.includes('year'))
   }
