@@ -104,7 +104,6 @@ const App = ({ setClient }) => {
 }
 
 const WrappedApp = () => {
-  const [hasCrypto, setHasCrypto] = useState(false)
   const colors = getColors()
   const [client, setClient] = useState(null)
 
@@ -133,12 +132,7 @@ const WrappedApp = () => {
                 }
               ]}
             >
-              <CryptoWebView setHasCrypto={setHasCrypto} />
-              {hasCrypto && (
-                <HttpServerProvider>
-                  <App setClient={setClient} />
-                </HttpServerProvider>
-              )}
+              <App setClient={setClient} />
             </View>
           </SplashScreenProvider>
         </PaperProvider>
@@ -155,10 +149,25 @@ const WrappedApp = () => {
   )
 }
 
+const Wrapper = () => {
+  const [hasCrypto, setHasCrypto] = useState(false)
+
+  return (
+    <>
+      <CryptoWebView setHasCrypto={setHasCrypto} />
+      {hasCrypto && (
+        <HttpServerProvider>
+          <WrappedApp />
+        </HttpServerProvider>
+      )}
+    </>
+  )
+}
+
 const styles = StyleSheet.create({
   view: {
     flex: 1
   }
 })
 
-export default withSentry(WrappedApp)
+export default withSentry(Wrapper)
