@@ -162,8 +162,7 @@ const downloadAndExtractCozyAppVersion = async ({
 
 const extractCozyAppArchive = async (archivePath, destinationPath) => {
   try {
-    const dest = `${destinationPath}/unzip`
-    await RNFS.mkdir(dest)
+    await RNFS.mkdir(destinationPath)
 
     await Gzip.unGzipTar(archivePath, destinationPath, true)
   } catch (err) {
