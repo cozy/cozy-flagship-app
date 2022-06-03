@@ -33,5 +33,6 @@
   "fqdn": "fqdn",
   "home": "home",
   "loginUri": "https://manager.cozycloud.cc/v2/cozy/login?redirect=https://loginflagship",
-  "onboardingUri": "https://staging-manager.cozycloud.cc/v2/cozy/onboard?redirect=cozy://onboarding?flagship=true"
+  "onboardingUri": "https://staging-manager.cozycloud.cc/v2/cozy/onboard?redirect=cozy://onboarding?flagship=true",
+  "registerToken": "registerToken"
 }

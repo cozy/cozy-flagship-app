@@ -101,3 +101,11 @@
  * @callback setErrorCallback
  * @param {object} error
  */
+
+/**
+ * Start the onbaording process with provided FQDN and registerToken.
+ * @callback startOnboarding
+ * @param {object} param
+ * @param {string} param.fqdn
+ * @param {string} param.registerToken
+ */
