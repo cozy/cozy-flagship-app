@@ -37,16 +37,21 @@ const parseCookie = cookieString => {
     throw new Error('Specified cookie does not contain any name=value')
   }
 
-  const cookieDomain = keyValues.Domain
+  let cookieDomain = keyValues.Domain
 
   if (!cookieDomain) {
     throw new Error('Specified cookie does not contain any domain')
   }
 
+  if (!cookieDomain.startsWith('.')) {
+    // iOS requires the domain to starts with a . in order to load it
+    cookieDomain = `.${cookieDomain}`
+  }
+
   return {
     name: keyValues.Name,
     value: keyValues.Value,
-    domain: keyValues.Domain,
+    domain: cookieDomain,
     path: keyValues.Path || '/',
     httpOnly: keyValues.HttpOnly || false
   }

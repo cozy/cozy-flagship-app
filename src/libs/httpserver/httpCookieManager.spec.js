@@ -37,7 +37,7 @@ describe('httpCookieManager', () => {
           name: 'cozysessid',
           value:
             'AAAAAGJ3Ojku0Nzk4YzhlNWQ1ODkTc2tq3IuDMgJZTZhME3MTQ3OT3ODA3YU0MTYwgeWmEE3IsoDkhQcjx0zh-2lpoItEDU8',
-          domain: 'cozy.10-0-2-2.nip.io',
+          domain: '.cozy.10-0-2-2.nip.io',
           path: '/',
           version: '1',
           secure: false,
@@ -63,7 +63,7 @@ describe('httpCookieManager', () => {
         {
           name: 'cozysessid',
           value: 'SOME_VALUE',
-          domain: 'SOME_DOMAIN',
+          domain: '.SOME_DOMAIN',
           path: '/',
           version: '1',
           secure: false,
@@ -89,7 +89,7 @@ describe('httpCookieManager', () => {
         {
           name: 'cozysessid',
           value: 'SOME_VALUE',
-          domain: 'SOME_DOMAIN',
+          domain: '.SOME_DOMAIN',
           path: '/',
           version: '1',
           secure: false,
@@ -115,7 +115,7 @@ describe('httpCookieManager', () => {
         {
           name: 'cozysessid',
           value: 'SOME_VALUE',
-          domain: 'SOME_DOMAIN',
+          domain: '.SOME_DOMAIN',
           path: '/',
           version: '1',
           secure: true,
@@ -141,7 +141,7 @@ describe('httpCookieManager', () => {
         {
           name: 'sess-cozy09200a3b616296ca886afa00ee4b4da5',
           value: 'SOME_VALUE',
-          domain: 'SOME_DOMAIN',
+          domain: '.SOME_DOMAIN',
           path: '/',
           version: '1',
           secure: false,
@@ -167,7 +167,7 @@ describe('httpCookieManager', () => {
         {
           name: 'cozysessid',
           value: 'SOME_VALUE',
-          domain: 'SOME_DOMAIN',
+          domain: '.SOME_DOMAIN',
           path: '/',
           version: '1',
           secure: false,
@@ -193,7 +193,7 @@ describe('httpCookieManager', () => {
         {
           name: 'cozysessid',
           value: 'SOME_VALUE',
-          domain: 'SOME_DOMAIN',
+          domain: '.SOME_DOMAIN',
           path: '/',
           version: '1',
           secure: false,
@@ -219,7 +219,7 @@ describe('httpCookieManager', () => {
         {
           name: 'cozysessid',
           value: 'SOME_VALUE',
-          domain: 'SOME_DOMAIN',
+          domain: '.SOME_DOMAIN',
           path: '/',
           version: '1',
           secure: false,
