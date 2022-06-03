@@ -18,7 +18,7 @@ class AmazonContentScript extends ContentScript {
     this.log('Starting ensureAuth')
     await this.bridge.call('setWorkerState', {
       url: baseUrl,
-      visible: true,
+      visible: false,
     })
     await this.waitForElementInWorker('#nav-progressive-greeting')
     const authenticated = await this.runInWorker('checkAuthenticated')
@@ -68,8 +68,8 @@ class AmazonContentScript extends ContentScript {
     this.log('showLoginFormAndWaitForAuthentication start')
     await this.bridge.call('setWorkerState', {
       url: baseUrl,
-      visible: true,
-    }) // TODO test to false if ok
+      visible: false,
+    })
     await this.waitForElementInWorker('a[id="nav-logobar-greeting"]')
     await this.clickAndWait(
       'a[id="nav-logobar-greeting"]',
