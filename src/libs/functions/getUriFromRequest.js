@@ -3,8 +3,7 @@ import strings from '../../strings.json'
 const abort = 'https://urlwithnofqdn'
 
 // We don't want to throw so if there is no request with url provided, we just pass an invalid url
-// This function is not meant to be exported, it can be seen as a private "method" of getUriFromRequest()
-const validateRequest = request =>
+export const validateRequest = request =>
   !request ? abort : !request.url ? abort : request.url
 
 const validateFqdn = fqdn => fqdn || null
