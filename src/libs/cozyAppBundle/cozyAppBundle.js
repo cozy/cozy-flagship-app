@@ -30,8 +30,14 @@ export const updateCozyAppBundleInBackground = async ({
   client,
   delayInMs = BUNDLE_UPDATE_DELAY_IN_MS
 }) => {
-  setTimeout(() => {
-    updateCozyAppBundle({ slug, client })
+  return setTimeout(async () => {
+    try {
+      return await updateCozyAppBundle({ slug, client })
+    } catch (err) {
+      log.error(
+        `Something went wront while updating ${slug} bundle: ${err.message}`
+      )
+    }
   }, delayInMs)
 }
 
@@ -166,7 +172,7 @@ const extractCozyAppArchive = async (archivePath, destinationPath) => {
 
     await Gzip.unGzipTar(archivePath, destinationPath, true)
   } catch (err) {
-    log.error(`Error whild extracting archive: ${err.message}`)
+    log.error(`Error while extracting archive: ${err.message}`)
     throw err
   }
 }
@@ -198,8 +204,14 @@ const downloadCozyAppArchive = async ({
     }).promise
 
     log.debug(`Donload result is ${JSON.stringify(result)}`)
+
+    const { statusCode } = result
+
+    if (statusCode < 200 || statusCode >= 300) {
+      throw new Error(`Status code: ${statusCode}`)
+    }
   } catch (err) {
-    log.error(`Error whild downloading archive: ${err.message}`)
+    log.error(`Error while downloading archive: ${err.message}`)
     throw err
   }
 }
