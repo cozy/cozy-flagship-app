@@ -27,7 +27,7 @@ const initLocalBundleIfNotExist = async (fqdn, slug) => {
 
     const version = await getAssetVersion()
 
-    setCurrentAppVersionForFqdnAndSlug({
+    await setCurrentAppVersionForFqdnAndSlug({
       fqdn,
       slug,
       version,
