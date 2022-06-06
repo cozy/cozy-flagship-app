@@ -1,4 +1,4 @@
-# 0.0.12
+# 0.0.13
 
 ## ✨ Features
 
@@ -8,6 +8,27 @@
 
 ## 🔧 Tech
 
+
+# 0.0.12
+
+## ✨ Features
+
+* Add Sosh in Client Side Connectors ([PR #247](https://github.com/cozy/cozy-react-native/pull/247))
+* Add Amazon in Client Side Connectors ([PR #243](https://github.com/cozy/cozy-react-native/pull/243))
+* Implement new onboarding screens that allow to onboard from email address ([PR #240](https://github.com/cozy/cozy-react-native/pull/240))
+* Skip authorization screen on Login when the app is certified as genuine CozyFlaghip app ([PR #241](https://github.com/cozy/cozy-react-native/pull/241))
+
+## 🐛 Bug Fixes
+
+* Fix credentials saving on Client Side Connectors ([PR #246](https://github.com/cozy/cozy-react-native/pull/246))
+* Handle unwanted spaces in Cozy URL on Login screen ([PR #244](https://github.com/cozy/cozy-react-native/pull/244))
+
+## 🔧 Tech
+
+* Implement HttpServer to serve local assets for cozy-home ([PR #170](https://github.com/cozy/cozy-react-native/pull/170) and [PR #250](https://github.com/cozy/cozy-react-native/pull/250))
+* Implement update mechanism for local assets ([PR #245](https://github.com/cozy/cozy-react-native/pull/245))
+* Improve setFlagshipUI API ([PR #237](https://github.com/cozy/cozy-react-native/pull/237))
+* Allow on demand Sentry logging ([PR #233](https://github.com/cozy/cozy-react-native/pull/233))
 
 # 0.0.11
 
