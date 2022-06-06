@@ -13,6 +13,10 @@ import { replaceAll } from '../functions/stringHelpers'
 const log = Minilog('IndexGenerator')
 
 const initLocalBundleIfNotExist = async (fqdn, slug) => {
+  if (slug !== 'home') {
+    return
+  }
+
   const basePath = await getBaseFolderForFqdnAndSlug(fqdn, slug)
 
   const embeddedBundlePath = `${basePath}/embedded`
