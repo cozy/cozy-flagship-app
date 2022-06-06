@@ -42,7 +42,7 @@ jest.mock('./httpPaths', () => ({
 describe('indexGenerator', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    getCurrentAppConfigurationForFqdnAndSlug.mockResolvedValue(undefined)
+    getCurrentAppConfigurationForFqdnAndSlug.mockResolvedValue({})
   })
 
   describe('fillIndexWithData', () => {
@@ -300,6 +300,17 @@ describe('indexGenerator', () => {
       expect(result).toBe('SOME_FILE_CONTENT')
       expect(prepareAssets).not.toHaveBeenCalled()
       expect(setCurrentAppVersionForFqdnAndSlug).not.toHaveBeenCalled()
+    })
+
+    it(`should not try to generate index.html if no config is set`, async () => {
+      const fqdn = 'cozy.tools'
+      const slug = 'drive'
+
+      getCurrentAppConfigurationForFqdnAndSlug.mockResolvedValue(undefined)
+
+      const result = await getIndexForFqdnAndSlug(fqdn, slug)
+
+      expect(result).toBe(false)
     })
   })
 })
