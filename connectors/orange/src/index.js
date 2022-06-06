@@ -36,7 +36,6 @@ window.XMLHttpRequest.prototype.open = function () {
     })
     return proxied.apply(this, [].slice.call(arguments))
   }
-  // Intercepting response for old bills information.
   if (arguments[1].includes('/facture/historicBills?')) {
     var originalResponse = this
 
@@ -49,7 +48,7 @@ window.XMLHttpRequest.prototype.open = function () {
     return proxied.apply(this, [].slice.call(arguments))
   }
   // Intercepting user infomations for Identity object
-  if (arguments[1].includes('erb/portfoliomanager/portfolio?')) {
+  if (arguments[1].includes('ecd_wp/portfoliomanager/portfolio?')) {
     var originalResponse = this
 
     originalResponse.addEventListener('readystatechange', function (event) {
@@ -100,7 +99,7 @@ class OrangeContentScript extends ContentScript {
     log.debug('waiting for any authentication confirmation or login form...')
 
     await Promise.race([
-      this.runInWorkerUntilTrue({method: 'waitForAuthenticated'}),
+      this.waitForUserAuthentication(),
       this.waitForElementInWorker('[class="o-ribbon-is-connected"]'),
     ])
     this.log('After Race')
@@ -123,7 +122,7 @@ class OrangeContentScript extends ContentScript {
     return false
   }
 
-  async showLoginFormAndWaitForAuthentication() {
+  async waitForUserAuthentication() {
     log.debug('waitForUserAuthentication start')
     await this.setWorkerState({visible: true, url: DEFAULT_PAGE_URL})
     await this.runInWorkerUntilTrue({method: 'waitForAuthenticated'})
@@ -134,7 +133,6 @@ class OrangeContentScript extends ContentScript {
     this.log('Starting fetch')
     await this.waitForElementInWorker('a[class="ob1-link-icon ml-1 py-1"]')
     const clientRef = await this.runInWorker('findClientRef')
-    console.log(clientRef)
     if (clientRef) {
       this.log('clientRef found')
       await this.clickAndWait(
@@ -169,11 +167,63 @@ class OrangeContentScript extends ContentScript {
       await this.runInWorker('processingBills')
       this.store.dataUri = []
     
-    // // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-      await this.waitForElementInWorker(
-        '[pause]',
-      )
+      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+      // await this.waitForElementInWorker(
+      //   '[pause]',
+      // )
+      for (let i = 0; i < this.store.resolvedBase64.length; i++) {
+        let dateArray = this.store.resolvedBase64[i].href.match(
+          /([0-9]{4})-([0-9]{2})-([0-9]{2})/g,
+        )
+        this.store.resolvedBase64[i].date = dateArray[0]
+        const index = this.store.allBills.findIndex(function (bill) {
+          return bill.date === dateArray[0]
+        })
+        this.store.dataUri.push({
+          vendor: 'sosh.fr',
+          date: this.store.allBills[index].date,
+          amount: this.store.allBills[index].amount / 100,
+          recurrence: 'monthly',
+          vendorRef: this.store.allBills[index].id
+            ? this.store.allBills[index].id
+            : this.store.allBills[index].tecId,
+          filename: await getFileName(
+            this.store.allBills[index].date,
+            this.store.allBills[index].amount / 100,
+            this.store.allBills[index].id || this.store.allBills[index].tecId,
+          ),
+          dataUri: this.store.resolvedBase64[i].uri,
+          fileAttributes: {
+            metadata: {
+              invoiceNumber: this.store.allBills[index].id
+                ? this.store.allBills[index].id
+                : this.store.allBills[index].tecId,
+              contentAuthor: 'sosh',
+              datetime: this.store.allBills[index].date,
+              datetimeLabel: 'startDate',
+              isSubscription: true,
+              startDate: this.store.allBills[index].date,
+              carbonCopy: true,
+            },
+          },
+        })
+      }
+
+      await this.saveIdentity({
+        mailAdress: this.store.infosIdentity.mail,
+        city: this.store.infosIdentity.city,
+        phoneNumber: this.store.infosIdentity.phoneNumber,
+      })
+
+      await this.saveBills(this.store.dataUri, {
+        context,
+        fileIdAttributes: ['filename'],
+        contentType: 'application/pdf',
+        qualificationLabel: 'isp_invoice',
+      })
   }
+
+
 
   findMoreBillsButton() {
     this.log('Starting findMoreBillsButton')
@@ -270,7 +320,6 @@ class OrangeContentScript extends ContentScript {
   async getMoreBillsButton() {
     this.log('Getting in getMoreBillsButton')
     let moreBillsButton = this.findMoreBillsButton()
-    console.log('moreBillsButton', moreBillsButton)
     return moreBillsButton
   }
 
@@ -298,6 +347,38 @@ class OrangeContentScript extends ContentScript {
     }
     this.log('billsArray ready, processing files')
   }
+
+  async processingBills() {
+    let resolvedBase64 = []
+    this.log('Awaiting promises')
+    const recentToBase64 = await Promise.all(
+      recentPromisesToConvertBlobToBase64,
+    )
+    const oldToBase64 = await Promise.all(oldPromisesToConvertBlobToBase64)
+    this.log('Processing promises')
+    const promisesToBase64 = recentToBase64.concat(oldToBase64)
+    const xhrUrls = recentXhrUrls.concat(oldXhrUrls)
+    for (let i = 0; i < promisesToBase64.length; i++) {
+      resolvedBase64.push({
+        uri: promisesToBase64[i],
+        href: xhrUrls[i],
+      })
+    }
+    const recentBillsToAdd = recentBills[0].billsHistory.billList
+    const oldBillsToAdd = oldBills[0].oldBills
+    let allBills = recentBillsToAdd.concat(oldBillsToAdd)
+    log.debug('billsArray ready, Sending to pilot')
+    const infosIdentity = {
+      city: userInfos[0].contracts[0].contractInstallationArea.city,
+      phoneNumber: userInfos[0].contracts[0].telco.publicNumber,
+      mail: document.querySelector('.o-identityLayer-detail').innerHTML,
+    }
+    await this.sendToPilot({
+      resolvedBase64,
+      allBills,
+      infosIdentity,
+    })
+  }
 }
 
 const connector = new OrangeContentScript()
@@ -309,7 +390,8 @@ connector.init({
     'getMoreBillsButton',
     'checkOldBillsRedFrame',
     'clickOnPdfs',
-    // 'processingBills',
+    'processingBills',
+    'waitForUserAuthentication',
   ],
 }).catch((err) => {
   console.warn(err)
@@ -320,4 +402,18 @@ function sleep(delay) {
   return new Promise(resolve => {
     setTimeout(resolve, delay * 1000)
   })
+}
+
+async function getFileName(date, amount, vendorRef) {
+  const digestId = await hashVendorRef(vendorRef)
+  const shortenedId = digestId.substr(0, 5)
+  return `${date}_orange_${amount}€_${shortenedId}.pdf`
+}
+
+async function hashVendorRef(vendorRef) {
+  const msgUint8 = new window.TextEncoder().encode(vendorRef) // encode as (utf-8) Uint8Array
+  const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgUint8) // hash the message
+  const hashArray = Array.from(new Uint8Array(hashBuffer)) // convert buffer to byte array
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('') // convert bytes to hex string
+  return hashHex
 }
