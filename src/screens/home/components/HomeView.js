@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Platform } from 'react-native'
 import { get } from 'lodash'
 
 import { useClient, generateWebLink } from 'cozy-client'
 import { useNativeIntent } from 'cozy-intent'
 
-import CozyWebView from '/components/webviews/CozyWebView'
-import { IndexInjectionWebviewComponent } from '../../../components/webviews/webViewComponents/IndexInjectionWebviewComponent'
+import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { statusBarHeight, getNavbarHeight } from '/libs/dimensions'
 import { useSession } from '/hooks/useSession'
-
-import { useHttpServerContext } from '../../../libs/httpserver/httpServerProvider'
-
-import { updateCozyAppBundleInBackground } from '/libs/cozyAppBundle/cozyAppBundle'
 
 const injectedJavaScriptBeforeContentLoaded = () => `
   window.addEventListener('load', (event) => {
@@ -23,59 +17,12 @@ const injectedJavaScriptBeforeContentLoaded = () => `
   });
 `
 
-const getHttpUnsecureUrl = uri => {
-  if (uri) {
-    let httpUnsecureUrl = new URL(uri)
-    httpUnsecureUrl.protocol = 'http:'
-
-    return httpUnsecureUrl
-  }
-
-  return uri
-}
-
-/**
- * Retrieve the WebView's configuration for the current platform
- *
- * Android is not compatible with html/baseUrl injection as history would be broken
- *
- * So html/baseUrl injection is done only on iOS
- *
- * Instead, Android version is based on native WebView's ability to intercept queries
- * and override the result. In this case we should use uri instead of html/baseUrl and
- * declare a nativeConfig with IndexInjectionWebviewComponent
- *
- * @param {string} uri - the webView's URI
- * @param {string} html - the HTML to inject as index.html
- * @returns source and nativeConfig props to be set on the WebView
- */
-const getPlaformSpecificConfig = (uri, html) => {
-  const httpUnsecureUrl = getHttpUnsecureUrl(uri)
-
-  const source =
-    Platform.OS === 'ios'
-      ? { html, baseUrl: httpUnsecureUrl.toString() }
-      : { uri }
-
-  const nativeConfig =
-    Platform.OS === 'ios'
-      ? undefined
-      : { component: IndexInjectionWebviewComponent }
-
-  return {
-    source,
-    nativeConfig
-  }
-}
-
 const HomeView = ({ route, navigation, setLauncherContext }) => {
   const client = useClient()
   const [uri, setUri] = useState('')
-  const [html, setHtml] = useState(undefined)
   const [trackedWebviewInnerUri, setTrackedWebviewInnerUri] = useState('')
   const nativeIntent = useNativeIntent()
   const session = useSession()
-  const httpServerContext = useHttpServerContext()
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
@@ -143,27 +90,6 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
     }
   }, [uri, client, route, nativeIntent, navigation, session])
 
-  // Load injected index.html
-  useEffect(() => {
-    if (httpServerContext.isRunning()) {
-      const initHtmlContent = async () => {
-        const htmlContent = await httpServerContext.getIndexHtmlForSlug(
-          'home',
-          client
-        )
-
-        setHtml(htmlContent)
-
-        updateCozyAppBundleInBackground({
-          slug: 'home',
-          client
-        })
-      }
-
-      initHtmlContent()
-    }
-  }, [client, httpServerContext])
-
   const handleTrackWebviewInnerUri = webviewInneruri => {
     if (webviewInneruri !== trackedWebviewInnerUri) {
       setTrackedWebviewInnerUri(webviewInneruri)
@@ -175,13 +101,10 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
     return unsubscribe
   }, [navigation, uri])
 
-  const { source, nativeConfig } = getPlaformSpecificConfig(uri, html)
-
-  return source && html ? (
-    <CozyWebView
-      source={source}
-      nativeConfig={nativeConfig}
-      injectedIndex={html}
+  return uri ? (
+    <CozyProxyWebView
+      slug="home"
+      href={uri}
       trackWebviewInnerUri={handleTrackWebviewInnerUri}
       navigation={navigation}
       route={route}
