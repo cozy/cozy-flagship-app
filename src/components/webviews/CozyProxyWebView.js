@@ -10,6 +10,8 @@ import { IndexInjectionWebviewComponent } from '/components/webviews/webViewComp
 
 import { styles } from './CozyProxyWebView.styles'
 
+const NO_INJECTED_HTML = 'NO_INJECTED_HTML'
+
 const getHttpUnsecureUrl = uri => {
   if (uri) {
     let httpUnsecureUrl = new URL(uri)
@@ -38,6 +40,13 @@ const getHttpUnsecureUrl = uri => {
  */
 const getPlaformSpecificConfig = (uri, html) => {
   const httpUnsecureUrl = getHttpUnsecureUrl(uri)
+
+  if (html === NO_INJECTED_HTML) {
+    return {
+      source: { uri },
+      nativeConfig: undefined
+    }
+  }
 
   const source =
     Platform.OS === 'ios'
@@ -68,7 +77,7 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
           client
         )
 
-        setHtml(htmlContent)
+        setHtml(htmlContent || NO_INJECTED_HTML)
 
         updateCozyAppBundleInBackground({
           slug,
@@ -76,7 +85,11 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
         })
       }
 
-      initHtmlContent()
+      if (slug) {
+        initHtmlContent()
+      } else {
+        setHtml(NO_INJECTED_HTML)
+      }
     }
   }, [client, httpServerContext, slug, href])
 

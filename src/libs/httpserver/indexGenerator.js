@@ -7,7 +7,10 @@ import {
   getBaseRelativePathForFqdnAndSlugAndCurrentVersion
 } from './httpPaths'
 import { getAssetVersion, prepareAssets } from './copyAllFilesFromBundleAssets'
-import { setCurrentAppVersionForFqdnAndSlug } from '../cozyAppBundle/cozyAppBundleConfiguration'
+import {
+  getCurrentAppConfigurationForFqdnAndSlug,
+  setCurrentAppVersionForFqdnAndSlug
+} from '../cozyAppBundle/cozyAppBundleConfiguration'
 import { replaceAll } from '../functions/stringHelpers'
 
 const log = Minilog('IndexGenerator')
@@ -42,6 +45,15 @@ const initLocalBundleIfNotExist = async (fqdn, slug) => {
 
 export const getIndexForFqdnAndSlug = async (fqdn, slug) => {
   await initLocalBundleIfNotExist(fqdn, slug)
+
+  const appConfiguration = await getCurrentAppConfigurationForFqdnAndSlug(
+    fqdn,
+    slug
+  )
+
+  if (!appConfiguration) {
+    return false
+  }
 
   const basePath = await getBaseFolderForFqdnAndSlugAndCurrentVersion(
     fqdn,
