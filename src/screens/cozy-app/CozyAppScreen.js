@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StatusBar, View } from 'react-native'
 
-import CozyWebView from '../../components/webviews/CozyWebView'
+import { CozyProxyWebView } from '../../components/webviews/CozyProxyWebView'
 import { Animation } from './CozyAppScreen.Animation'
 import { flagshipUI } from '../../libs/intents/setFlagshipUI'
 import { getNavbarHeight, statusBarHeight } from '../../libs/dimensions'
@@ -74,9 +74,10 @@ export const CozyAppScreen = ({ route, navigation }) => {
           />
         )}
 
-        <CozyWebView
+        <CozyProxyWebView
           style={{ ...styles[isFirstHalf ? 'ready' : 'notReady'] }}
-          source={{ uri: route.params.href }}
+          slug={route.params.slug}
+          href={route.params.href}
           navigation={navigation}
           route={route}
           logId="AppScreen"
