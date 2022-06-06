@@ -1,6 +1,6 @@
 import Gzip from '@fengweichong/react-native-gzip'
 import RNFS from 'react-native-fs'
-import Minilog from '@cozy/minilog'
+import { logger } from '/libs/functions/logger'
 
 import { fetchCozyAppVersion, getFqdnFromClient } from '../client'
 import { getBaseFolderForFqdnAndSlug } from '../httpserver/httpPaths'
@@ -9,7 +9,7 @@ import {
   setCurrentAppVersionForFqdnAndSlug
 } from './cozyAppBundleConfiguration'
 
-const log = Minilog('AppBundle')
+const log = logger('AppBundle')
 
 const BUNDLE_UPDATE_DELAY_IN_MS = 10000
 
