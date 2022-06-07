@@ -107,10 +107,19 @@ class OrangeContentScript extends ContentScript {
       this.log('Authenticated')
       return true
     }
+    
     log.debug('Not authenticated')
   }
 
   async checkAuthenticated() {
+    const loginField = document.querySelector('p[data-testid="selected-account-login"]')
+    if (loginField) {
+       const userCredentials = await this.findAndSendCredentials.bind(this)(loginField)
+       this.log('Sending user credentials to Pilot')
+       this.sendToPilot({
+        userCredentials
+      })
+    }
     if (
       document.location.href.includes(
         'https://espace-client.orange.fr/accueil',
@@ -131,6 +140,11 @@ class OrangeContentScript extends ContentScript {
   
   async fetch(context) {
     this.log('Starting fetch')
+    await this.saveCredentials(this.store.userCredentials)
+    // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+    // await this.waitForElementInWorker(
+    //   '[pause]',
+    // )
     await this.waitForElementInWorker('a[class="ob1-link-icon ml-1 py-1"]')
     const clientRef = await this.runInWorker('findClientRef')
     if (clientRef) {
@@ -167,10 +181,6 @@ class OrangeContentScript extends ContentScript {
       await this.runInWorker('processingBills')
       this.store.dataUri = []
     
-      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-      // await this.waitForElementInWorker(
-      //   '[pause]',
-      // )
       for (let i = 0; i < this.store.resolvedBase64.length; i++) {
         let dateArray = this.store.resolvedBase64[i].href.match(
           /([0-9]{4})-([0-9]{2})-([0-9]{2})/g,
@@ -275,6 +285,19 @@ class OrangeContentScript extends ContentScript {
       }
     }
     return false
+  }
+
+  async findAndSendCredentials(loginField) {
+    this.log('getting in findAndSendCredentials')
+    let userLogin = loginField.innerHTML.replace('<strong>', '').replace('</strong>', '')
+    let divPassword = document.querySelector('#password').value
+    const userCredentials = {
+      email: userLogin,
+      password:divPassword,
+    }
+      
+    return userCredentials
+
   }
 
   async findClientRef() {
