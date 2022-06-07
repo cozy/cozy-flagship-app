@@ -1,4 +1,4 @@
-# 0.0.13
+# 0.0.14
 
 ## ✨ Features
 
@@ -8,6 +8,21 @@
 
 ## 🔧 Tech
 
+
+# 0.0.13
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* Allow unsecure HTTP on Android in order to serve local assets ([PR #253](https://github.com/cozy/cozy-react-native/pull/253))
+
+## 🔧 Tech
+
+* Improve Client Side Connectors template ([PR #236](https://github.com/cozy/cozy-react-native/pull/236))
+* Implement HttpServer to serve local assets for all cozy-apps ([PR #255](https://github.com/cozy/cozy-react-native/pull/255)
+* Improve error handling when downloading local assets ([PR #256](https://github.com/cozy/cozy-react-native/pull/256)
 
 # 0.0.12
 
