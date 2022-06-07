@@ -2,11 +2,9 @@ import { useClient, useQuery, Q, isQueryLoading } from 'cozy-client'
 import { useEffect, useMemo, useState } from 'react'
 
 import { makeSessionAPI } from '/libs/functions/session'
-import { useSplashScreen } from '/hooks/useSplashScreen'
 
 export const useSession = () => {
   const [subdomainType, setSubdomainType] = useState()
-  const { hideSplashScreen } = useSplashScreen()
   const client = useClient()
   const { data, ...query } = useQuery(
     Q('io.cozy.settings').getById('capabilities'),
@@ -20,7 +18,7 @@ export const useSession = () => {
           ? 'flat'
           : 'nested'
       )
-  }, [data, hideSplashScreen, query])
+  }, [data, query])
 
   return useMemo(
     () => makeSessionAPI(client, subdomainType),
