@@ -77,7 +77,7 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
   const session = useSession()
   const httpServerContext = useHttpServerContext()
 
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
       setUri(trackedWebviewInnerUri)
     })
@@ -85,8 +85,10 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
     return unsubscribe
   }, [navigation, uri, trackedWebviewInnerUri])
 
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
+      nativeIntent?.call(uri, 'closeApp')
+
       if (uri) {
         const konnectorParam = consumeRouteParameter(
           'konnector',
@@ -105,7 +107,7 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
     })
 
     return unsubscribe
-  }, [navigation, route, uri])
+  }, [nativeIntent, navigation, route, uri])
 
   useEffect(() => {
     const deepLink = consumeRouteParameter('href', route, navigation)
@@ -185,15 +187,16 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
       route={route}
       logId="HomeView"
       injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded()}
-      onMessage={async m => {
-        const data = get(m, 'nativeEvent.data')
+      onMessage={async event => {
+        const data = get(event, 'nativeEvent.data')
 
         if (data) {
-          const { message, value } = JSON.parse(data)
+          const { methodName, message, value } = JSON.parse(data)
 
-          if (message === 'startLauncher') {
+          if (methodName === 'openApp') nativeIntent?.call(uri, 'openApp')
+
+          if (message === 'startLauncher')
             setLauncherContext({ state: 'launch', value })
-          }
         }
       }}
     />
