@@ -50,7 +50,7 @@ window.XMLHttpRequest.prototype.open = function () {
     return proxied.apply(this, [].slice.call(arguments))
   }
   // Intercepting user infomations for Identity object
-  if (arguments[1].includes('erb/portfoliomanager/portfolio?')) {
+  if (arguments[1].includes('/ecd_wp/portfoliomanager/portfolio?')) {
     var originalResponse = this
 
     originalResponse.addEventListener('readystatechange', function (event) {
