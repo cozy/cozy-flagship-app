@@ -391,7 +391,7 @@ const expectedContent = `<!DOCTYPE html>
       data-cozy-icon-path="icon.svg"
       data-cozy-subdomain-type="flat"
       data-cozy-default-wallpaper="https://URL_TO_WALLPAPER"
-      data-cozy-flags="SOME_FLAGS"
+      data-cozy-flags="{"harvest.datacards.files":true}"
     >
       <script src="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/vendors/home.000f5f10d9fca3ceac41.js"></script>
       <script src="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/app/home.f6f22f0d747344045d69.js"></script>
@@ -417,5 +417,5 @@ const fakeData = {
   IconPath: 'icon.svg',
   SubDomain: 'flat',
   DefaultWallpaper: `https://URL_TO_WALLPAPER`,
-  Flags: 'SOME_FLAGS'
+  Flags: '{"harvest.datacards.files":true}'
 }
