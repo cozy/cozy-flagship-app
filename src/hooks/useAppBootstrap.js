@@ -150,7 +150,7 @@ export const useAppBootstrap = client => {
     }
 
     initialRoute === 'fetching' && initialScreen === 'fetching' && doAsync()
-  }, [initialRoute, initialScreen, client, hideSplashScreen])
+  }, [client, initialRoute, initialScreen, hideSplashScreen])
 
   // Handling app readiness
   useEffect(() => {
