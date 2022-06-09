@@ -116,17 +116,17 @@ const App = ({ setClient }) => {
 
 const WrappedApp = () => {
   const colors = getColors()
-  const [client, setClient] = useState(null)
+  const [client, setClient] = useState(undefined)
 
-  // Handling client init
   useEffect(() => {
     const handleClientInit = async () => {
       try {
-        setClient((await getClient()) || undefined)
+        setClient((await getClient()) || null)
       } catch {
-        setClient(undefined)
+        setClient(null)
       }
     }
+
     handleClientInit()
   }, [])
 
@@ -151,13 +151,16 @@ const WrappedApp = () => {
     </NavigationContainer>
   )
 
-  return client ? (
-    <CozyProvider client={client}>
-      <Nav />
-    </CozyProvider>
-  ) : (
-    <Nav />
-  )
+  if (client === null) return <Nav />
+
+  if (client)
+    return (
+      <CozyProvider client={client}>
+        <Nav />
+      </CozyProvider>
+    )
+
+  return null
 }
 
 const Wrapper = () => {
