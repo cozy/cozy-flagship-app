@@ -84,7 +84,7 @@ class ReactNativeLauncher extends Launcher {
       this.setUserData(await this.pilot.call('getUserDataFromWebsite'))
       await this.ensureAccountNameAndFolder()
 
-      const pilotContext = []
+      const pilotContext = { manifest: this.getStartContext().manifest }
       // FIXME not used at the moment since the fetched file will not have the proper "createdByApp"
       // const pilotContext = await this.getPilotContext({
       //   sourceAccountIdentifier: userData.sourceAccountIdentifier,
