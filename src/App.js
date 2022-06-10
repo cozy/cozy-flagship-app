@@ -4,6 +4,9 @@ import { decode, encode } from 'base-64'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Provider as PaperProvider } from 'react-native-paper'
+import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import RNAsyncStorageFlipper from 'rn-async-storage-flipper'
 
 import { CozyProvider, useClient } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
@@ -165,9 +168,14 @@ const WrappedApp = () => {
 
 const Wrapper = () => {
   const [hasCrypto, setHasCrypto] = useState(false)
-
+  useEffect(() => {
+    if (__DEV__) {
+      RNAsyncStorageFlipper(AsyncStorage)
+    }
+  }, [])
   return (
     <>
+      {__DEV__ && <FlipperAsyncStorage />}
       <CryptoWebView setHasCrypto={setHasCrypto} />
       {hasCrypto && (
         <HttpServerProvider>
