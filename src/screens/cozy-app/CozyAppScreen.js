@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { StatusBar, View } from 'react-native'
+import { StatusBar, View, Platform } from 'react-native'
+
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { CozyProxyWebView } from '../../components/webviews/CozyProxyWebView'
 import { Animation } from './CozyAppScreen.Animation'
@@ -45,6 +47,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
 
     isFirstHalf && firstHalfUI()
   }, [isFirstHalf, route.params.iconParams])
+  const insets = useSafeAreaInsets()
 
   return (
     <>
@@ -86,7 +89,11 @@ export const CozyAppScreen = ({ route, navigation }) => {
 
       <View
         style={{
-          height: isFirstHalf ? getNavbarHeight() : styles.immersiveHeight,
+          height: isFirstHalf
+            ? Platform.OS === 'ios'
+              ? insets.bottom
+              : getNavbarHeight()
+            : styles.immersiveHeight,
           backgroundColor: bottomBackground
         }}
       >
