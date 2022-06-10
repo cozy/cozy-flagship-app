@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
-
+import { StyleSheet, View, Platform } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Minilog from '@cozy/minilog'
 
 import { ClouderyView } from './components/ClouderyView'
@@ -371,7 +371,7 @@ const LoginSteps = ({ navigation, route, setClient }) => {
 
 export const LoginScreen = ({ navigation, route, setClient }) => {
   const colors = getColors()
-
+  const insets = useSafeAreaInsets()
   return (
     <View
       style={[
@@ -383,7 +383,11 @@ export const LoginScreen = ({ navigation, route, setClient }) => {
     >
       <View style={{ height: statusBarHeight }} />
       <LoginSteps navigation={navigation} route={route} setClient={setClient} />
-      <View style={{ height: getNavbarHeight() }} />
+      <View
+        style={{
+          height: Platform.OS === 'ios' ? insets.bottom : getNavbarHeight()
+        }}
+      />
     </View>
   )
 }
