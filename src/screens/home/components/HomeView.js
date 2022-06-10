@@ -9,6 +9,7 @@ import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { statusBarHeight, getNavbarHeight } from '/libs/dimensions'
 import { useSession } from '/hooks/useSession'
+import { setHomeCookie } from '/libs/httpserver/httpCookieManager'
 
 const injectedJavaScriptBeforeContentLoaded = () => `
   window.addEventListener('load', (event) => {
@@ -35,6 +36,8 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       nativeIntent?.call(uri, 'closeApp')
+
+      setHomeCookie?.()
 
       if (uri) {
         const konnectorParam = consumeRouteParameter(
