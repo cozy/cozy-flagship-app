@@ -66,6 +66,14 @@ Android: To get native log on Android:
 adb logcat --pid=$(adb shell pidof -s io.cozy.flagship.mobile)
 ```
 
+Use [flipper](https://fbflipper.com/docs/features/react-native/) to 
+have access to a React Native Debuguer.
+
+To have access to the AsyncStorage content you can install those 
+2 plugins: 
+async-storage and async-storage-advanced (see https://github.com/cozy/cozy-react-native/pull/270
+for more information)
+
 ## How to run SNCF Connector
 
 1. Sncf connector
