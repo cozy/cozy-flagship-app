@@ -1,7 +1,10 @@
 import { flagshipUI, setFlagshipUI } from './setFlagshipUI'
 import { changeBarColors } from 'react-native-immersive-bars'
+import { Platform } from 'react-native'
 
 jest.mock('react-native-immersive-bars')
+
+const defaultOS = Platform.OS
 
 describe('setFlagshipUI', () => {
   let mockOnChange
@@ -60,8 +63,10 @@ describe('setFlagshipUI', () => {
     expect(changeBarColors).not.toHaveBeenCalled()
   })
 
-  it('should parse full objects with bottomTheme special case dark', () => {
+  it('should parse full objects with bottomTheme special case dark, and not call changeBarColors on iOS', () => {
     flagshipUI.on('change', mockOnChange)
+
+    Platform.OS = 'ios'
 
     setFlagshipUI({
       bottomBackground: 'white',
@@ -80,11 +85,13 @@ describe('setFlagshipUI', () => {
       topTheme: 'dark-content'
     })
 
-    expect(changeBarColors).toHaveBeenNthCalledWith(1, false)
+    expect(changeBarColors).not.toHaveBeenCalled()
   })
 
-  it('should emit parse full objects with bottomTheme special case light', () => {
+  it('should emit parse full objects with bottomTheme special case light, and call changeBarColors on Android', () => {
     flagshipUI.on('change', mockOnChange)
+
+    Platform.OS = 'android'
 
     setFlagshipUI({
       bottomBackground: 'white',
@@ -104,5 +111,9 @@ describe('setFlagshipUI', () => {
     })
 
     expect(changeBarColors).toHaveBeenNthCalledWith(1, true)
+  })
+
+  afterAll(() => {
+    Platform.OS = defaultOS
   })
 })
