@@ -26,7 +26,7 @@ export const fetchAppDataForSlug = async (slug, client) => {
 
   let cozyDataString = JSON.stringify(cozyData)
   cozyDataString = replaceAll(cozyDataString, '"', '&#34;')
-  cozyDataAttributes.Flags = cozyDataAttributes.Flags.replaceAll('"', '&#34;')
+  cozyDataAttributes.Flags = replaceAll(cozyDataAttributes.Flags, '"', '&#34;')
 
   return {
     cookie,
