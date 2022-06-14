@@ -57,8 +57,6 @@ const parseCookie = cookieString => {
   }
 }
 
-export let setHomeCookie
-
 /**
  * Set the cookie into the device by using CookieManager
  *
@@ -74,7 +72,7 @@ export let setHomeCookie
  * @param {CozyClient} client - CozyClient instance
  * @returns {Promise<boolean>}
  */
-export const setCookie = async (cookieString, client, slug) => {
+export const setCookie = async (cookieString, client) => {
   const cookie = parseCookie(cookieString)
 
   const appUrl = client.getStackClient().uri
@@ -89,10 +87,6 @@ export const setCookie = async (cookieString, client, slug) => {
     secure: isSecure,
     httpOnly: cookie.httpOnly,
     sameSite: 'None' // This must be force to 'None' so iOS accepts to send it through "html injected" webview
-  }
-
-  if (slug === 'home') {
-    setHomeCookie = () => CookieManager.set(appUrl, stackCookie, true)
   }
 
   return CookieManager.set(appUrl, stackCookie, true)
