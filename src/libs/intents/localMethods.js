@@ -65,7 +65,9 @@ export const internalMethods = {
 export const localMethods = client => {
   return {
     backToHome,
-    hideSplashScreen,
+    hideSplashScreen: () => {
+      setTimeout(() => hideSplashScreen(), 100)
+    },
     logout,
     openApp: (href, app, iconParams) =>
       openApp(RootNavigation, href, app, iconParams),
