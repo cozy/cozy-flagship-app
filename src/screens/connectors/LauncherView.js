@@ -153,7 +153,7 @@ class LauncherView extends Component {
                 >
                   <Image
                     source={require('../../assets/cross.png')}
-                    resizeMode="center"
+                    resizeMode="cover"
                     style={styles.cross}
                   />
                 </TouchableOpacity>
