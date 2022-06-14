@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Platform } from 'react-native'
+
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import Minilog from '@cozy/minilog'
 
@@ -46,7 +48,7 @@ export const CreateInstanceScreen = ({ route, navigation }) => {
       setClouderyUrl(onboardUrl)
     }
   }, [navigation, route, setClouderyUrl])
-
+  const insets = useSafeAreaInsets()
   return (
     <View style={styles.view}>
       <View style={{ height: statusBarHeight }} />
@@ -56,7 +58,11 @@ export const CreateInstanceScreen = ({ route, navigation }) => {
           startOnboarding={startOnboarding}
         />
       )}
-      <View style={{ height: getNavbarHeight() }} />
+      <View
+        style={{
+          height: Platform.OS === 'ios' ? insets.bottom : getNavbarHeight()
+        }}
+      />
     </View>
   )
 }
