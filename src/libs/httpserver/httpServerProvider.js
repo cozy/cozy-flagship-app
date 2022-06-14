@@ -77,7 +77,7 @@ export const HttpServerProvider = props => {
 
     const { cookie, templateValues } = await fetchAppDataForSlug(slug, client)
 
-    await setCookie(cookie, client, slug)
+    await setCookie(cookie, client)
     const rawHtml = await getIndexForFqdnAndSlug(fqdn, slug)
 
     if (!rawHtml) {
