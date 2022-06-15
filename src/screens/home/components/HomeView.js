@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { get } from 'lodash'
+import { useFocusEffect } from '@react-navigation/native'
 
 import { useClient, generateWebLink } from 'cozy-client'
 import { useNativeIntent } from 'cozy-intent'
@@ -24,19 +25,28 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
   const [trackedWebviewInnerUri, setTrackedWebviewInnerUri] = useState('')
   const nativeIntent = useNativeIntent()
   const session = useSession()
+  const didBlurOnce = useRef(false)
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
+      didBlurOnce.current = true
       setUri(trackedWebviewInnerUri)
     })
 
     return unsubscribe
   }, [navigation, uri, trackedWebviewInnerUri])
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      nativeIntent?.call(uri, 'closeApp')
+  useFocusEffect(
+    useCallback(() => {
+      if (didBlurOnce.current) {
+        nativeIntent.call(uri, 'closeApp')
+        resetUIState(uri)
+      }
+    }, [nativeIntent, uri])
+  )
 
+  useFocusEffect(
+    useCallback(() => {
       setHomeCookie?.()
 
       if (uri) {
@@ -54,10 +64,8 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
           setUri(targetUri)
         }
       }
-    })
-
-    return unsubscribe
-  }, [nativeIntent, navigation, route, uri])
+    }, [navigation, route, uri])
+  )
 
   useEffect(() => {
     const deepLink = consumeRouteParameter('href', route, navigation)
@@ -98,11 +106,6 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
       setTrackedWebviewInnerUri(webviewInneruri)
     }
   }
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => resetUIState(uri))
-    return unsubscribe
-  }, [navigation, uri])
 
   return uri ? (
     <CozyProxyWebView
