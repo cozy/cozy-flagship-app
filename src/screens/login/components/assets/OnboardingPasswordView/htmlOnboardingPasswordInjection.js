@@ -15,7 +15,7 @@ import { cozyBsCss } from '../common/css/cssCozyBs'
 import { themeCss } from '../common/css/cssTheme'
 
 const strBackButton = "Revenir à l'écran précédent"
-const strTitle = 'Choisir un nouveau mot de passe'
+const strTitle = 'Choisir un mot de passe'
 const strPasswordField = 'Mot de passe'
 const strPasswordHelp =
   'Utiliser au moins huit caractères avec des lettres, des chiffres et des symboles.'
