@@ -128,6 +128,7 @@ class LauncherView extends Component {
           <>
             <View>
               <WebView
+                mediaPlaybackRequiresUserAction={true}
                 ref={ref => (this.pilotWebView = ref)}
                 originWhitelist={['*']}
                 source={{
@@ -159,6 +160,7 @@ class LauncherView extends Component {
                 </TouchableOpacity>
               </View>
               <WebView
+                mediaPlaybackRequiresUserAction={true}
                 ref={ref => (this.workerWebview = ref)}
                 originWhitelist={['*']}
                 useWebKit={true}
