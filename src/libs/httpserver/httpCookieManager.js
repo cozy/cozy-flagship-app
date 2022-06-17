@@ -1,6 +1,9 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import CookieManager from '@react-native-cookies/cookies'
 
 import { isSecureProtocol } from '../functions/isSecureProtocol'
+
+import strings from '/strings.json'
 
 const isCookieName = key => {
   return key === 'cozysessid' || key.startsWith('sess-')
@@ -89,5 +92,41 @@ export const setCookie = async (cookieString, client) => {
     sameSite: 'None' // This must be force to 'None' so iOS accepts to send it through "html injected" webview
   }
 
+  await setCookieIntoAsyncStorage(client, stackCookie)
+
   return CookieManager.set(appUrl, stackCookie, true)
+}
+
+export const getCookie = async client => {
+  const appUrl = client.getStackClient().uri
+
+  const cookies = await loadCookiesFromAsyncStorage()
+
+  return cookies?.[appUrl]
+}
+
+const setCookieIntoAsyncStorage = async (client, cookie) => {
+  const appUrl = client.getStackClient().uri
+
+  const cookies = await loadCookiesFromAsyncStorage()
+  cookies[appUrl] = cookie
+
+  return saveCookies(cookies)
+}
+
+const loadCookiesFromAsyncStorage = async () => {
+  const state = await AsyncStorage.getItem(strings.COOKIE_STORAGE_KEY)
+
+  if (!state) {
+    return {}
+  }
+
+  const cookies = JSON.parse(state)
+
+  return cookies
+}
+
+const saveCookies = cookies => {
+  const state = JSON.stringify(cookies)
+  return AsyncStorage.setItem(strings.COOKIE_STORAGE_KEY, state)
 }
