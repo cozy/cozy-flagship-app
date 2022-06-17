@@ -8,8 +8,8 @@ import { styles } from './CozyAppScreen.styles'
 
 const config = {
   duration: 300,
-  width: '64%',
-  height: '64%',
+  width: '44%',
+  height: '44%',
   driver: true
 }
 
@@ -26,7 +26,6 @@ const getScaleInput = params => ({
 })
 
 export const Animation = ({ onFirstHalf, onFinished, params, slug }) => {
-  const animateOpacity = useRef(new Animated.Value(1)).current
   const animateTranslate = useRef(
     new Animated.ValueXY(getTranslateInput(params))
   ).current
@@ -58,11 +57,6 @@ export const Animation = ({ onFirstHalf, onFinished, params, slug }) => {
         toValue: { x: 1, y: 1 },
         duration: config.duration,
         useNativeDriver: config.driver
-      }),
-      Animated.timing(animateOpacity, {
-        toValue: 0,
-        duration: config.duration,
-        useNativeDriver: config.driver
       })
     ]).start(() => {
       onFirstHalf(true)
@@ -75,14 +69,7 @@ export const Animation = ({ onFirstHalf, onFinished, params, slug }) => {
         onFinished(true)
       })
     })
-  }, [
-    animateFadeOut,
-    animateOpacity,
-    animateScale,
-    animateTranslate,
-    onFinished,
-    onFirstHalf
-  ])
+  }, [animateFadeOut, animateScale, animateTranslate, onFinished, onFirstHalf])
 
   return (
     <Animated.View
@@ -100,7 +87,7 @@ export const Animation = ({ onFirstHalf, onFinished, params, slug }) => {
         }
       ]}
     >
-      <Icon style={{ opacity: animateOpacity }} />
+      <Icon />
     </Animated.View>
   )
 }
