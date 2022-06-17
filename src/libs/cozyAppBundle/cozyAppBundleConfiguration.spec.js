@@ -7,13 +7,9 @@ import {
 
 import strings from '/strings.json'
 
-jest.mock('@react-native-async-storage/async-storage', () => ({
-  getItem: jest.fn(),
-  setItem: jest.fn()
-}))
-
 describe('cozyAppBundleConfiguration', () => {
   beforeEach(() => {
+    AsyncStorage.clear()
     jest.clearAllMocks()
   })
 
