@@ -11,11 +11,6 @@ jest.mock('@react-native-cookies/cookies', () => ({
   set: jest.fn()
 }))
 
-jest.mock('@react-native-async-storage/async-storage', () => ({
-  getItem: jest.fn(),
-  setItem: jest.fn()
-}))
-
 jest.mock('cozy-client', () => ({
   ...jest.requireActual('cozy-client'),
   useAppsInMaintenance: jest.fn()
@@ -25,6 +20,7 @@ describe('httpCookieManager', () => {
   const client = createMockClient({})
 
   beforeEach(() => {
+    AsyncStorage.clear()
     jest.clearAllMocks()
   })
 
