@@ -318,10 +318,23 @@ export const fetchPublicData = async client => {
   }
 }
 
-export const fetchCozyDataForSlug = async (slug, client) => {
+export const fetchCozyDataForSlug = async (slug, client, cookie) => {
   const stackClient = client.getStackClient()
 
-  const result = await stackClient.fetchJSON('GET', `/apps/${slug}/open`)
+  const headers = cookie
+    ? {
+        headers: {
+          Cookie: `${cookie.name}=${cookie.value}`
+        }
+      }
+    : undefined
+
+  const result = await stackClient.fetchJSON(
+    'GET',
+    `/apps/${slug}/open`,
+    undefined,
+    headers
+  )
 
   return result
 }

@@ -1,11 +1,19 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import CookieManager from '@react-native-cookies/cookies'
 
 import { createMockClient } from 'cozy-client/dist/mock'
 
-import { setCookie } from './httpCookieManager'
+import { getCookie, setCookie } from './httpCookieManager'
+
+import strings from '/strings.json'
 
 jest.mock('@react-native-cookies/cookies', () => ({
   set: jest.fn()
+}))
+
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  getItem: jest.fn(),
+  setItem: jest.fn()
 }))
 
 jest.mock('cozy-client', () => ({
@@ -21,7 +29,7 @@ describe('httpCookieManager', () => {
   })
 
   describe('setCookie', () => {
-    it(`should set cookie from parsted string`, async () => {
+    it(`should set cookie from parsed string`, async () => {
       client.getStackClient = jest.fn(() => ({
         uri: 'http://cozy.10-0-2-2.nip.io'
       }))
@@ -253,5 +261,92 @@ describe('httpCookieManager', () => {
         'Specified cookie does not contain any domain'
       )
     })
+
+    it(`should save cookie into AsyncStorage`, async () => {
+      client.getStackClient = jest.fn(() => ({
+        uri: 'http://cozy.10-0-2-2.nip.io'
+      }))
+
+      const cookieString =
+        'cozysessid=AAAAAGJ3Ojku0Nzk4YzhlNWQ1ODkTc2tq3IuDMgJZTZhME3MTQ3OT3ODA3YU0MTYwgeWmEE3IsoDkhQcjx0zh-2lpoItEDU8; Path=/; Domain=cozy.10-0-2-2.nip.io; HttpOnly; SameSite=None'
+
+      await setCookie(cookieString, client)
+
+      expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+        strings.COOKIE_STORAGE_KEY,
+        JSON.stringify({
+          'http://cozy.10-0-2-2.nip.io': {
+            name: 'cozysessid',
+            value:
+              'AAAAAGJ3Ojku0Nzk4YzhlNWQ1ODkTc2tq3IuDMgJZTZhME3MTQ3OT3ODA3YU0MTYwgeWmEE3IsoDkhQcjx0zh-2lpoItEDU8',
+            domain: '.cozy.10-0-2-2.nip.io',
+            path: '/',
+            version: '1',
+            secure: false,
+            httpOnly: true,
+            sameSite: 'None'
+          }
+        })
+      )
+    })
   })
+  describe('getCookie', () => {
+    it(`should get cookie from AsyncStorage`, async () => {
+      client.getStackClient = jest.fn(() => ({
+        uri: 'http://claude.mycozy.cloud'
+      }))
+
+      AsyncStorage.getItem.mockResolvedValue(MOCK_LOCAl_STORAGE)
+
+      const result = await getCookie(client)
+
+      expect(result).toStrictEqual({
+        name: 'SOME_COOKIE_NAME',
+        value: 'SOME_COOKIE_VALUE',
+        domain: '.SOME_COOKIE_DOMAIN',
+        path: '/',
+        version: '1',
+        secure: false,
+        httpOnly: true,
+        sameSite: 'None'
+      })
+    })
+
+    it(`should get undefined cookie if no correspondig cookie exists in AsyncStorage`, async () => {
+      client.getStackClient = jest.fn(() => ({
+        uri: 'http://not_exsting_domain.mycozy.cloud'
+      }))
+
+      AsyncStorage.getItem.mockResolvedValue(MOCK_LOCAl_STORAGE)
+
+      const result = await getCookie(client)
+
+      expect(result).toBe(undefined)
+    })
+
+    it(`should handle undefined AsyncStorage by returning undefined cookie`, async () => {
+      client.getStackClient = jest.fn(() => ({
+        uri: 'http://not_exsting_domain.mycozy.cloud'
+      }))
+
+      AsyncStorage.getItem.mockResolvedValue(undefined)
+
+      const result = await getCookie(client)
+
+      expect(result).toBe(undefined)
+    })
+  })
+})
+
+const MOCK_LOCAl_STORAGE = JSON.stringify({
+  'http://claude.mycozy.cloud': {
+    name: 'SOME_COOKIE_NAME',
+    value: 'SOME_COOKIE_VALUE',
+    domain: '.SOME_COOKIE_DOMAIN',
+    path: '/',
+    version: '1',
+    secure: false,
+    httpOnly: true,
+    sameSite: 'None'
+  }
 })
