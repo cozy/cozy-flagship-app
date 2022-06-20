@@ -84,7 +84,31 @@ describe('Client', () => {
       expect(result).toStrictEqual({ invalidPassword: true })
     })
 
-    it('should handle 401 result and correlate two_factor_token when 2FA is provided', async () => {
+    it('should handle 401 result and correlate two_factor_token when no 2FA is provided but reason is filled with two_factor_token', async () => {
+      const loginData = {
+        passwordHash: 'SOME_PASSWORD_HASH'
+      }
+
+      stackClient.loginFlagship.mockImplementation(() => {
+        const error = new Error()
+        error.status = 401
+        error.reason = {
+          two_factor_token: 'SOME_2FA_TOKEN'
+        }
+
+        throw error
+      })
+
+      const result = await loginFlagship({
+        client,
+        loginData,
+        undefined
+      })
+
+      expect(result).toStrictEqual({ two_factor_token: 'SOME_2FA_TOKEN' })
+    })
+
+    it('should handle 403 result and correlate two_factor_token when 2FA is provided', async () => {
       const loginData = {
         passwordHash: 'SOME_PASSWORD_HASH'
       }
@@ -96,7 +120,7 @@ describe('Client', () => {
 
       stackClient.loginFlagship.mockImplementation(() => {
         const error = new Error()
-        error.status = 401
+        error.status = 403
 
         throw error
       })
