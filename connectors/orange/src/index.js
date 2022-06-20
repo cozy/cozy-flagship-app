@@ -96,36 +96,59 @@ window.XMLHttpRequest.prototype.open = function () {
 class OrangeContentScript extends ContentScript {
   async ensureAuthenticated() {
     await this.goto(DEFAULT_PAGE_URL)
-    log.debug('waiting for any authentication confirmation or login form...')
-
-    await Promise.race([
-      this.waitForUserAuthentication(),
-      this.waitForElementInWorker('[class="o-ribbon-is-connected"]'),
-    ])
-    this.log('After Race')
-    if (await this.runInWorker('checkAuthenticated')) {
-      this.log('Authenticated')
+    const credentials = await this.getCredentials()
+    await this.waitForElementInWorker('#o-ribbon')
+    if(document.querySelector('div[class="o-ribbon-is-connected"]')){
       return true
     }
+    if (credentials){
+     log.debug('found credentials, processing')
+      await this.waitForElementInWorker('button[class="btn btn-primary"]')
+      await this.clickAndWait('button[class="btn btn-primary"]','p[data-testid="selected-account-login"]')
+      await this.waitForElementInWorker('#o-ribbon')
+      
+      const testEmail = await this.runInWorker('getTestEmail')
+
+      
+      if (credentials.email === testEmail ){
+        log.debug('found credentials, trying to autoLog')
+        await this.tryAutoLogin(credentials, 'half')
+        return true
+      }
+
+      if (credentials.email != testEmail){
+        log.debug('getting in different testEmail conditions')
+        await this.clickAndWait('#changeAccountLink','#undefined-label')
+        await this.clickAndWait('#undefined-label','#login')
+        await this.tryAutoLogin(credentials, 'full')
+        return true
+      }
+    }
     
+    log.debug('no conditions respected, use normal user login')
+    await this.waitForElementInWorker('button[class="btn btn-primary"]')
+    await this.clickAndWait('button[class="btn btn-primary"]','p[data-testid="selected-account-login"]')
+    await this.waitForUserAuthentication()
     log.debug('Not authenticated')
   }
 
   async checkAuthenticated() {
     const loginField = document.querySelector('p[data-testid="selected-account-login"]')
-    if (loginField) {
+    const passwordField = document.querySelector('#password')
+    if (loginField && passwordField) {
        const userCredentials = await this.findAndSendCredentials.bind(this)(loginField)
        this.log('Sending user credentials to Pilot')
        this.sendToPilot({
-        userCredentials
-      })
-    }
-    if (
-      document.location.href.includes(
+         userCredentials
+        })
+      }
+      if (
+        document.location.href.includes(
         'https://espace-client.orange.fr/accueil',
       ) &&
       document.querySelector('[class="o-ribbon-is-connected"]')
     ) {
+      this.log('Check Authenticated succeeded')
       return true
     }
     return false
@@ -137,14 +160,44 @@ class OrangeContentScript extends ContentScript {
     await this.runInWorkerUntilTrue({method: 'waitForAuthenticated'})
     await this.setWorkerState({visible: false, url: DEFAULT_PAGE_URL})
   }
+
+  async tryAutoLogin(credentials, type) {
+      this.log('Trying autologin')
+      await this.goto(DEFAULT_PAGE_URL)
+      await this.autoLogin(credentials, type)
+  }
+  
+  async autoLogin(credentials, type) {
+    this.log('Autologin start')
+    const emailSelector = '#login'
+    const passwordInputSelector = '#password'
+    const loginButton = '#btnSubmit'
+    if (type === 'half'){
+      this.log('wait for password field')
+      await this.waitForElementInWorker(passwordInputSelector)
+      await this.runInWorker('fillingForm', credentials)
+  
+      await this.runInWorker('click', loginButton)
+    }
+
+    await this.waitForElementInWorker(emailSelector)
+    await this.runInWorker('fillingForm', credentials)
+    
+    await this.runInWorker('click', loginButton)
+    
+    this.log('wait for password field')
+    await this.waitForElementInWorker(passwordInputSelector)
+    await this.runInWorker('fillingForm', credentials)
+  
+    await this.runInWorker('click', loginButton)
+  }
   
   async fetch(context) {
     this.log('Starting fetch')
-    await this.saveCredentials(this.store.userCredentials)
-    // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-    // await this.waitForElementInWorker(
-    //   '[pause]',
-    // )
+    if(this.store != undefined){
+      await this.saveCredentials(this.store.userCredentials)
+    }
+    
     await this.waitForElementInWorker('a[class="ob1-link-icon ml-1 py-1"]')
     const clientRef = await this.runInWorker('findClientRef')
     if (clientRef) {
@@ -175,6 +228,11 @@ class OrangeContentScript extends ContentScript {
         )
       }
     }
+
+    // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+      // await this.waitForElementInWorker(
+      //   '[pause]',
+      // )
 
     await this.runInWorker('clickOnPdfs')
       this.log('pdfButtons founded and clicked')
@@ -233,8 +291,6 @@ class OrangeContentScript extends ContentScript {
       })
   }
 
-
-
   findMoreBillsButton() {
     this.log('Starting findMoreBillsButton')
     const buttons = Array.from(
@@ -250,6 +306,19 @@ class OrangeContentScript extends ContentScript {
       document.querySelectorAll('a[class="icon-pdf-file bp-downloadIcon"]'),
     )
     return buttons
+  }
+
+  async fillingForm(credentials) {
+    if(document.querySelector('#login')){
+      this.log('filling email field')
+      document.querySelector('#login').value = credentials.email
+      return
+    }
+    if (document.querySelector('#password')){
+      this.log('filling password field')
+      document.querySelector('#password').value = credentials.password
+      return
+    }
   }
 
   async getUserDataFromWebsite() {
@@ -340,6 +409,17 @@ class OrangeContentScript extends ContentScript {
     return redFrame
   }
 
+  async getTestEmail() {
+    this.log('Getting in getTestEmail')
+    const result = document.querySelector(
+      'p[data-testid="selected-account-login"]',
+    ).innerHTML.replace('<strong>', '').replace('</strong>', '')
+    if (result) {
+      return result
+    }
+    return null
+  }
+
   async getMoreBillsButton() {
     this.log('Getting in getMoreBillsButton')
     let moreBillsButton = this.findMoreBillsButton()
@@ -365,6 +445,11 @@ class OrangeContentScript extends ContentScript {
         oldPromisesToConvertBlobToBase64.length !==
       numberOfClick
     ) {
+      this.log(recentPromisesToConvertBlobToBase64.length +
+        oldPromisesToConvertBlobToBase64.length)
+      this.log(numberOfClick)
+      this.log(recentPromisesToConvertBlobToBase64)
+      this.log(oldPromisesToConvertBlobToBase64)
       this.log('Array of bills is not ready yet.')
       await sleep(1)
     }
@@ -415,6 +500,8 @@ connector.init({
     'clickOnPdfs',
     'processingBills',
     'waitForUserAuthentication',
+    'getTestEmail',
+    'fillingForm',
   ],
 }).catch((err) => {
   console.warn(err)
