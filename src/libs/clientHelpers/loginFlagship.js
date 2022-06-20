@@ -31,14 +31,18 @@ export const loginFlagship = async ({
     return loginResult
   } catch (e) {
     if (e.status === 401) {
-      if (twoFactorAuthenticationData) {
+      if (e?.reason?.two_factor_token) {
         return {
-          two_factor_token: twoFactorAuthenticationData.token
+          two_factor_token: e.reason.two_factor_token
         }
       } else {
         return {
           invalidPassword: true
         }
+      }
+    } else if (e.status === 403 && twoFactorAuthenticationData) {
+      return {
+        two_factor_token: twoFactorAuthenticationData.token
       }
     } else {
       throw e
