@@ -42,6 +42,9 @@
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
           <data android:scheme="cozy" />
+          <data android:scheme="https"
+            android:host="links.mycozy.cloud"
+            android:pathPrefix="/flagship" />
         </intent-filter>
       </activity>
       <activity
