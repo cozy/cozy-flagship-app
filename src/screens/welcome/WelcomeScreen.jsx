@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, StatusBar, Platform } from 'react-native'
+import { StyleSheet, View, Platform } from 'react-native'
 
 import WebView from 'react-native-webview'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -24,7 +24,6 @@ export const WelcomeScreen = () => {
         }
       ]}
     >
-      <StatusBar barStyle="light-content" />
       <WebView
         onMessage={makeHandlers({
           onContinue: () => navigate(routes.authenticate)
