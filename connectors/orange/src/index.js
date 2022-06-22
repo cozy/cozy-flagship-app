@@ -68,6 +68,7 @@ window.XMLHttpRequest.prototype.open = function () {
         recentPromisesToConvertBlobToBase64.push(
           blobToBase64(originalResponse.response),
         )
+        console.log(originalResponse)
         recentXhrUrls.push(originalResponse.__zone_symbol__xhrURL)
 
         // In every case, always returning the original response untouched
@@ -83,6 +84,7 @@ window.XMLHttpRequest.prototype.open = function () {
         oldPromisesToConvertBlobToBase64.push(
           blobToBase64(originalResponse.response),
         )
+        console.log(originalResponse)
         oldXhrUrls.push(originalResponse.__zone_symbol__xhrURL)
 
         return originalResponse
@@ -98,6 +100,10 @@ class OrangeContentScript extends ContentScript {
     await this.goto(DEFAULT_PAGE_URL)
     const credentials = await this.getCredentials()
     await this.waitForElementInWorker('#o-ribbon')
+     // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+    // await this.waitForElementInWorker(
+    //   '[pause]',
+    // )
     if(document.querySelector('div[class="o-ribbon-is-connected"]')){
       return true
     }
@@ -125,7 +131,7 @@ class OrangeContentScript extends ContentScript {
       }
     }
     
-    log.debug('no conditions respected, use normal user login')
+    log.debug('no credentials found, use normal user login')
     await this.waitForElementInWorker('button[class="btn btn-primary"]')
     await this.clickAndWait('button[class="btn btn-primary"]','p[data-testid="selected-account-login"]')
     await this.waitForUserAuthentication()
@@ -178,6 +184,8 @@ class OrangeContentScript extends ContentScript {
       await this.runInWorker('fillingForm', credentials)
   
       await this.runInWorker('click', loginButton)
+      await this.waitForElementInWorker('#o-ribbon')
+      return true
     }
 
     await this.waitForElementInWorker(emailSelector)
@@ -215,89 +223,110 @@ class OrangeContentScript extends ContentScript {
         this.log('Website did not load the bills')
         throw new Error('VENDOR_DOWN')
       }
-      const moreBills = await this.runInWorker('getMoreBillsButton')
-      if (moreBills) {
-        const oldBillsRedFrame = await this.runInWorker('checkOldBillsRedFrame')
-        if (oldBillsRedFrame !== null) {
-          this.log('Website did not load the old bills')
-          throw new Error('VENDOR_DOWN')
-        }
-        await this.clickAndWait(
-          '[data-e2e="bh-more-bills"]',
-          '[aria-labelledby="bp-historicBillsHistoryTitle"]',
-        )
-      }
     }
 
-    // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-      // await this.waitForElementInWorker(
-      //   '[pause]',
-      // )
+    let recentPdfNumber = await this.runInWorker('getPdfNumber')
+    await this.clickAndWait(
+        '[data-e2e="bh-more-bills"]',
+        '[aria-labelledby="bp-historicBillsHistoryTitle"]',
+    )
+    let allPdfNumber = await this.runInWorker('getPdfNumber')
+    let oldPdfNumber = allPdfNumber - recentPdfNumber
 
-    await this.runInWorker('clickOnPdfs')
-      this.log('pdfButtons founded and clicked')
-      await this.runInWorker('processingBills')
-      this.store.dataUri = []
-    
-      for (let i = 0; i < this.store.resolvedBase64.length; i++) {
-        let dateArray = this.store.resolvedBase64[i].href.match(
-          /([0-9]{4})-([0-9]{2})-([0-9]{2})/g,
-        )
-        this.store.resolvedBase64[i].date = dateArray[0]
-        const index = this.store.allBills.findIndex(function (bill) {
-          return bill.date === dateArray[0]
-        })
-        this.store.dataUri.push({
-          vendor: 'sosh.fr',
-          date: this.store.allBills[index].date,
-          amount: this.store.allBills[index].amount / 100,
-          recurrence: 'monthly',
-          vendorRef: this.store.allBills[index].id
-            ? this.store.allBills[index].id
-            : this.store.allBills[index].tecId,
-          filename: await getFileName(
-            this.store.allBills[index].date,
-            this.store.allBills[index].amount / 100,
-            this.store.allBills[index].id || this.store.allBills[index].tecId,
-          ),
-          dataUri: this.store.resolvedBase64[i].uri,
-          fileAttributes: {
-            metadata: {
-              invoiceNumber: this.store.allBills[index].id
-                ? this.store.allBills[index].id
-                : this.store.allBills[index].tecId,
-              contentAuthor: 'sosh',
-              datetime: this.store.allBills[index].date,
-              datetimeLabel: 'startDate',
-              isSubscription: true,
-              startDate: this.store.allBills[index].date,
-              carbonCopy: true,
-            },
+    for (let i = 0; i < recentPdfNumber; i++){
+      await this.runInWorker('waitForRecentPdfClicked', i)
+      await this.clickAndWait(
+        'a[class="h1 menu-subtitle mb-0 pb-1"]',
+        '[data-e2e="bp-tile-historic"]',
+      )
+      await this.clickAndWait(
+      '[data-e2e="bp-tile-historic"]',
+      '[aria-labelledby="bp-billsHistoryTitle"]',
+      )
+      await this.clickAndWait(
+        '[data-e2e="bh-more-bills"]',
+        '[aria-labelledby="bp-historicBillsHistoryTitle"]',
+      )
+    }
+    this.log('recentPdf loop ended')
+    for (let i = 0; i < oldPdfNumber; i++){
+      await this.runInWorker('waitForOldPdfClicked', i)
+      await this.clickAndWait(
+        'a[class="h1 menu-subtitle mb-0 pb-1"]',
+        '[data-e2e="bp-tile-historic"]',
+      )
+      await this.clickAndWait(
+      '[data-e2e="bp-tile-historic"]',
+      '[aria-labelledby="bp-billsHistoryTitle"]',
+      )
+      await this.clickAndWait(
+        '[data-e2e="bh-more-bills"]',
+        '[aria-labelledby="bp-historicBillsHistoryTitle"]',
+      )
+    }
+    this.log('oldPdf loop ended')
+
+    this.log('pdfButtons all clicked')
+    await this.runInWorker('processingBills')
+    this.store.dataUri = []
+  
+    for (let i = 0; i < this.store.resolvedBase64.length; i++) {
+      let dateArray = this.store.resolvedBase64[i].href.match(
+        /([0-9]{4})-([0-9]{2})-([0-9]{2})/g,
+      )
+      this.store.resolvedBase64[i].date = dateArray[0]
+      const index = this.store.allBills.findIndex(function (bill) {
+        return bill.date === dateArray[0]
+      })
+      this.store.dataUri.push({
+        vendor: 'sosh.fr',
+        date: this.store.allBills[index].date,
+        amount: this.store.allBills[index].amount / 100,
+        recurrence: 'monthly',
+        vendorRef: this.store.allBills[index].id
+          ? this.store.allBills[index].id
+          : this.store.allBills[index].tecId,
+        filename: await getFileName(
+          this.store.allBills[index].date,
+          this.store.allBills[index].amount / 100,
+          this.store.allBills[index].id || this.store.allBills[index].tecId,
+        ),
+        dataUri: this.store.resolvedBase64[i].uri,
+        fileAttributes: {
+          metadata: {
+            invoiceNumber: this.store.allBills[index].id
+              ? this.store.allBills[index].id
+              : this.store.allBills[index].tecId,
+            contentAuthor: 'sosh',
+            datetime: this.store.allBills[index].date,
+            datetimeLabel: 'startDate',
+            isSubscription: true,
+            startDate: this.store.allBills[index].date,
+            carbonCopy: true,
           },
-        })
-      }
-
-      await this.saveIdentity({
-        mailAdress: this.store.infosIdentity.mail,
-        city: this.store.infosIdentity.city,
-        phoneNumber: this.store.infosIdentity.phoneNumber,
+        },
       })
+    }
 
-      await this.saveBills(this.store.dataUri, {
-        context,
-        fileIdAttributes: ['filename'],
-        contentType: 'application/pdf',
-        qualificationLabel: 'isp_invoice',
-      })
+    await this.saveIdentity({
+      mailAdress: this.store.infosIdentity.mail,
+      city: this.store.infosIdentity.city,
+      phoneNumber: this.store.infosIdentity.phoneNumber,
+    })
+
+    await this.saveBills(this.store.dataUri, {
+      context,
+      fileIdAttributes: ['filename'],
+      contentType: 'application/pdf',
+      qualificationLabel: 'isp_invoice',
+    })
   }
 
   findMoreBillsButton() {
     this.log('Starting findMoreBillsButton')
-    const buttons = Array.from(
-      document.querySelector('[data-e2e="bh-more-bills"]'),
-    )
+    const button = Array.from(document.querySelector('[data-e2e="bh-more-bills"]'))
     this.log('Exiting findMoreBillsButton')
-    return buttons
+    return button
   }
 
   findPdfButtons() {
@@ -306,6 +335,36 @@ class OrangeContentScript extends ContentScript {
       document.querySelectorAll('a[class="icon-pdf-file bp-downloadIcon"]'),
     )
     return buttons
+  }
+
+  findConsultButton() {
+    this.log('Starting findConsultButtons')
+    const button = document.querySelector('span[data-e2e="bh-link-last-bill"]')
+    return button
+  }
+
+  findBillsHistoricButton() {
+    this.log('Starting findPdfButtons')
+    const button = document.querySelector('[data-e2e="bp-tile-historic"]')
+    return button
+  }
+
+  findPdfNumber(){
+    this.log('Starting findPdfNumber')
+    const buttons = Array.from(
+      document.querySelectorAll('a[class="icon-pdf-file bp-downloadIcon"]'),
+    )
+    return buttons.length
+  }
+
+  waitForRecentPdfClicked(i){
+    let recentPdfs = document.querySelectorAll('[aria-labelledby="bp-billsHistoryTitle"] a[class="icon-pdf-file bp-downloadIcon"]')
+    recentPdfs[i].click()
+  }
+
+  waitForOldPdfClicked(i){
+    let oldPdfs = document.querySelectorAll('[aria-labelledby="bp-historicBillsHistoryTitle"] a[class="icon-pdf-file bp-downloadIcon"]')
+    oldPdfs[i].click()
   }
 
   async fillingForm(credentials) {
@@ -379,7 +438,6 @@ class OrangeContentScript extends ContentScript {
         .getAttribute('href')
 
       const clientRefArray = parsedElem.match(/([0-9]*)/g)
-      this.log(clientRefArray.length)
 
       for (let i = 0; i < clientRefArray.length; i++) {
         this.log('Get in clientRef loop')
@@ -426,34 +484,10 @@ class OrangeContentScript extends ContentScript {
     return moreBillsButton
   }
 
-  async clickOnPdfs() {
-    log.debug('Get in clickOnPdfs')
-    let buttons = this.findPdfButtons()
-    if (buttons[0].length === 0) {
-      this.log('ERROR Could not find pdf button')
-      return 'VENDOR_DOWN'
-    } else {
-      for (const button of buttons) {
-        this.log('will click one pdf')
-        button.click()
-        this.log('pdfButton clicked')
-        numberOfClick = numberOfClick + 1
-      }
-    }
-    while (
-      recentPromisesToConvertBlobToBase64.length +
-        oldPromisesToConvertBlobToBase64.length !==
-      numberOfClick
-    ) {
-      this.log(recentPromisesToConvertBlobToBase64.length +
-        oldPromisesToConvertBlobToBase64.length)
-      this.log(numberOfClick)
-      this.log(recentPromisesToConvertBlobToBase64)
-      this.log(oldPromisesToConvertBlobToBase64)
-      this.log('Array of bills is not ready yet.')
-      await sleep(1)
-    }
-    this.log('billsArray ready, processing files')
+  async getPdfNumber() {
+    this.log('Getting in getPdfNumber')
+    let pdfNumber = this.findPdfNumber()
+    return pdfNumber
   }
 
   async processingBills() {
@@ -497,11 +531,13 @@ connector.init({
     'checkRedFrame',
     'getMoreBillsButton',
     'checkOldBillsRedFrame',
-    'clickOnPdfs',
     'processingBills',
     'waitForUserAuthentication',
     'getTestEmail',
     'fillingForm',
+    'getPdfNumber',
+    'waitForRecentPdfClicked',
+    'waitForOldPdfClicked'
   ],
 }).catch((err) => {
   console.warn(err)
