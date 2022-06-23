@@ -86,7 +86,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
           navigation={navigation}
           route={route}
           logId="AppScreen"
-          onLoadEnd={() => setShouldExit(true)}
+          onLoadEnd={() => setShouldExitAnimation(true)}
         />
       </View>
 
