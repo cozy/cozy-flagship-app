@@ -10,6 +10,7 @@ import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { statusBarHeight, getNavbarHeight } from '/libs/dimensions'
 import { useSession } from '/hooks/useSession'
+import { AppState } from 'react-native'
 
 const injectedJavaScriptBeforeContentLoaded = () => `
   window.addEventListener('load', (event) => {
@@ -25,6 +26,16 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
   const nativeIntent = useNativeIntent()
   const session = useSession()
   const didBlurOnce = useRef(false)
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener(
+      'change',
+      nextAppState =>
+        nextAppState === 'active' && nativeIntent?.call(uri, 'closeApp')
+    )
+
+    return () => subscription.remove()
+  }, [nativeIntent, uri])
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
