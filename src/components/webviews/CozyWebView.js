@@ -158,10 +158,12 @@ export const CozyWebView = ({
           return true
         }
       }}
-      onLoad={({ nativeEvent }) => {
+      onLoad={event => {
         if (trackWebviewInnerUri) {
-          trackWebviewInnerUri(nativeEvent.url)
+          trackWebviewInnerUri(event.nativeEvent.url)
         }
+
+        rest.onLoad?.(event)
       }}
       onMessage={async m => {
         tryCrypto(m, log, logId, onAnswer)

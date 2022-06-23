@@ -31,6 +31,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
   } = UIState
   const [isReady, setReady] = useState(false)
   const [isFirstHalf, setFirstHalf] = useState(false)
+  const [shouldExitAnimation, setShouldExitAnimation] = useState(false)
 
   useEffect(() => {
     flagshipUI.on('change', state => {
@@ -72,6 +73,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
           <Animation
             onFirstHalf={setFirstHalf}
             onFinished={setReady}
+            shouldExit={shouldExitAnimation}
             params={route.params.iconParams}
             slug={route.params.slug}
           />
@@ -84,6 +86,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
           navigation={navigation}
           route={route}
           logId="AppScreen"
+          onLoadEnd={() => setShouldExit(true)}
         />
       </View>
 
