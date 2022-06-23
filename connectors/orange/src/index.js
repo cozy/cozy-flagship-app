@@ -164,6 +164,7 @@ class OrangeContentScript extends ContentScript {
       document.querySelector('[class="o-ribbon-is-connected"]')
     ) {
       this.log('Check Authenticated succeeded')
+
       return true
     }
     return false
@@ -175,7 +176,7 @@ class OrangeContentScript extends ContentScript {
     await this.runInWorkerUntilTrue({method: 'waitForAuthenticated'})
     await this.setWorkerState({visible: false, url: DEFAULT_PAGE_URL})
   }
-
+  
   async tryAutoLogin(credentials, type) {
       this.log('Trying autologin')
       await this.goto(DEFAULT_PAGE_URL)
@@ -376,6 +377,7 @@ class OrangeContentScript extends ContentScript {
       document.querySelector('#password').value = credentials.password
       return
     }
+
   }
 
   async getUserDataFromWebsite() {
