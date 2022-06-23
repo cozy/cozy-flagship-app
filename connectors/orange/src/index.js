@@ -1,7 +1,6 @@
 import ContentScript from '../../connectorLibs/ContentScript'
 import {kyScraper as ky} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
-import format from 'date-fns/format'
 const log = Minilog('ContentScript')
 Minilog.enable('orangeCCC')
 
@@ -13,7 +12,6 @@ let recentPromisesToConvertBlobToBase64 = []
 let oldPromisesToConvertBlobToBase64 = []
 let recentXhrUrls = []
 let oldXhrUrls = []
-let numberOfClick = 0
 let userInfos = []
 
 // The override here is needed to intercept XHR requests made during the navigation
@@ -21,7 +19,7 @@ let userInfos = []
 var proxied = window.XMLHttpRequest.prototype.open
 // Overriding the open() method
 window.XMLHttpRequest.prototype.open = function () {
-  // Intercepting response for recent bills information.
+  // Intercepting response for recent bills informations.
   if (arguments[1].includes('/users/current/contracts')) {
     var originalResponse = this
 
@@ -34,6 +32,7 @@ window.XMLHttpRequest.prototype.open = function () {
     })
     return proxied.apply(this, [].slice.call(arguments))
   }
+  // Intercepting response for old bills informations.
   if (arguments[1].includes('/facture/historicBills?')) {
     var originalResponse = this
 
@@ -66,7 +65,6 @@ window.XMLHttpRequest.prototype.open = function () {
         recentPromisesToConvertBlobToBase64.push(
           blobToBase64(originalResponse.response),
         )
-        console.log(originalResponse)
         recentXhrUrls.push(originalResponse.__zone_symbol__xhrURL)
 
         // In every case, always returning the original response untouched
@@ -82,7 +80,6 @@ window.XMLHttpRequest.prototype.open = function () {
         oldPromisesToConvertBlobToBase64.push(
           blobToBase64(originalResponse.response),
         )
-        console.log(originalResponse)
         oldXhrUrls.push(originalResponse.__zone_symbol__xhrURL)
 
         return originalResponse
@@ -98,28 +95,30 @@ class OrangeContentScript extends ContentScript {
     await this.goto(DEFAULT_PAGE_URL)
     const credentials = await this.getCredentials()
     await this.waitForElementInWorker('#o-ribbon')
-     // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-    // await this.waitForElementInWorker(
-    //   '[pause]',
-    // )
     if(document.querySelector('div[class="o-ribbon-is-connected"]')){
       return true
     }
     if (credentials){
-     log.debug('found credentials, processing')
+      log.debug('found credentials, processing')
       await this.waitForElementInWorker('button[class="btn btn-primary"]')
       await this.clickAndWait('button[class="btn btn-primary"]','p[data-testid="selected-account-login"]')
       await this.waitForElementInWorker('#o-ribbon')
       
       const testEmail = await this.runInWorker('getTestEmail')
-
+      
       
       if (credentials.email === testEmail ){
+        const stayLogButton = await this.runInWorker('getStayLoggedButton')
+        if ( stayLogButton != null) {
+          stayLogButton.click()
+          await this.waitForElementInWorker('div[class="o-ribbon-is-connected"]')
+          return true
+        }
         log.debug('found credentials, trying to autoLog')
         await this.tryAutoLogin(credentials, 'half')
         return true
       }
-
+      
       if (credentials.email != testEmail){
         log.debug('getting in different testEmail conditions')
         await this.clickAndWait('#changeAccountLink','#undefined-label')
@@ -128,12 +127,22 @@ class OrangeContentScript extends ContentScript {
         return true
       }
     }
+    if (!credentials){
+      log.debug('no credentials found, use normal user login')
+      await this.waitForElementInWorker('button[class="btn btn-primary"]')
+      await this.clickAndWait('button[class="btn btn-primary"]','#changeAccountLink')
+      await this.clickAndWait('#changeAccountLink','#undefined-label')
+      await this.clickAndWait('#undefined-label','#login')
+      await this.waitForUserAuthentication()
+      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+      // await this.waitForElementInWorker(
+      //  '[pause]',
+      // )
+      return true
+    }
     
-    log.debug('no credentials found, use normal user login')
-    await this.waitForElementInWorker('button[class="btn btn-primary"]')
-    await this.clickAndWait('button[class="btn btn-primary"]','p[data-testid="selected-account-login"]')
-    await this.waitForUserAuthentication()
     log.debug('Not authenticated')
+    throw new Error('LOGIN_FAILED')
   }
 
   async checkAuthenticated() {
@@ -185,16 +194,12 @@ class OrangeContentScript extends ContentScript {
       await this.waitForElementInWorker('#o-ribbon')
       return true
     }
-
     await this.waitForElementInWorker(emailSelector)
     await this.runInWorker('fillingForm', credentials)
-    
     await this.runInWorker('click', loginButton)
-    
     this.log('wait for password field')
     await this.waitForElementInWorker(passwordInputSelector)
     await this.runInWorker('fillingForm', credentials)
-  
     await this.runInWorker('click', loginButton)
   }
   
@@ -207,7 +212,6 @@ class OrangeContentScript extends ContentScript {
     if(this.store != undefined){
       await this.saveCredentials(this.store.userCredentials)
     }
-    
     await this.waitForElementInWorker('a[class="ob1-link-icon ml-1 py-1"]')
     const clientRef = await this.runInWorker('findClientRef')
     if (clientRef) {
@@ -226,7 +230,6 @@ class OrangeContentScript extends ContentScript {
         throw new Error('VENDOR_DOWN')
       }
     }
-
     let recentPdfNumber = await this.runInWorker('getPdfNumber')
     await this.clickAndWait(
         '[data-e2e="bh-more-bills"]',
@@ -234,7 +237,6 @@ class OrangeContentScript extends ContentScript {
     )
     let allPdfNumber = await this.runInWorker('getPdfNumber')
     let oldPdfNumber = allPdfNumber - recentPdfNumber
-
     for (let i = 0; i < recentPdfNumber; i++){
       await this.runInWorker('waitForRecentPdfClicked', i)
       await this.clickAndWait(
@@ -267,11 +269,9 @@ class OrangeContentScript extends ContentScript {
       )
     }
     this.log('oldPdf loop ended')
-
     this.log('pdfButtons all clicked')
     await this.runInWorker('processingBills')
     this.store.dataUri = []
-  
     for (let i = 0; i < this.store.resolvedBase64.length; i++) {
       let dateArray = this.store.resolvedBase64[i].href.match(
         /([0-9]{4})-([0-9]{2})-([0-9]{2})/g,
@@ -309,13 +309,11 @@ class OrangeContentScript extends ContentScript {
         },
       })
     }
-
     await this.saveIdentity({
       mailAdress: this.store.infosIdentity.mail,
       city: this.store.infosIdentity.city,
       phoneNumber: this.store.infosIdentity.phoneNumber,
     })
-
     await this.saveBills(this.store.dataUri, {
       context,
       fileIdAttributes: ['filename'],
@@ -339,12 +337,6 @@ class OrangeContentScript extends ContentScript {
     return buttons
   }
 
-  findConsultButton() {
-    this.log('Starting findConsultButtons')
-    const button = document.querySelector('span[data-e2e="bh-link-last-bill"]')
-    return button
-  }
-
   findBillsHistoricButton() {
     this.log('Starting findPdfButtons')
     const button = document.querySelector('[data-e2e="bp-tile-historic"]')
@@ -357,6 +349,12 @@ class OrangeContentScript extends ContentScript {
       document.querySelectorAll('a[class="icon-pdf-file bp-downloadIcon"]'),
     )
     return buttons.length
+  }
+
+  findStayLoggedButton(){
+    this.log('Starting findStayLoggedButton')
+    const button = document.querySelector('[data-oevent-label="bouton_rester_identifie"]')
+    return button
   }
 
   waitForRecentPdfClicked(i){
@@ -484,6 +482,12 @@ class OrangeContentScript extends ContentScript {
     return pdfNumber
   }
 
+  async getStayLoggedButton(){
+    this.log('Starting getStayLoggedButton')
+    const button = this.findStayLoggedButton()
+    return button
+  }
+
   async processingBills() {
     let resolvedBase64 = []
     this.log('Awaiting promises')
@@ -531,18 +535,19 @@ connector.init({
     'fillingForm',
     'getPdfNumber',
     'waitForRecentPdfClicked',
-    'waitForOldPdfClicked'
+    'waitForOldPdfClicked',
+    'getStayLoggedButton',
   ],
 }).catch((err) => {
   console.warn(err)
 })
 
 // Used for debug purposes only
-function sleep(delay) {
-  return new Promise(resolve => {
-    setTimeout(resolve, delay * 1000)
-  })
-}
+// function sleep(delay) {
+//   return new Promise(resolve => {
+//     setTimeout(resolve, delay * 1000)
+//   })
+// }
 
 async function getFileName(date, amount, vendorRef) {
   const digestId = await hashVendorRef(vendorRef)
