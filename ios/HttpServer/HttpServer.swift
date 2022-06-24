@@ -78,7 +78,7 @@ class HttpServer: NSObject {
     let basePath = "/"
     let directoryPath = self.www_root
     let indexFilename = "index.html"
-    let cacheAge: UInt = 0
+    let cache1Year: UInt = 31536000
     let allowRangeRequests = true
 
     webServer.addHandler { requestMethod, requestURL, requestHeaders, urlPath, urlQuery in
@@ -125,7 +125,7 @@ class HttpServer: NSObject {
         }
 
         if (response != nil) {
-          response?.cacheControlMaxAge = cacheAge
+          response?.cacheControlMaxAge = cache1Year
           response?.setValue("GET", forAdditionalHeader: "Access-Control-Request-Method")
           response?.setValue("OriginX-Requested-With, Content-Type, Accept, Cache-Control, Range,Access-Control-Allow-Origin", forAdditionalHeader: "Access-Control-Request-Headers")
           response?.setValue("*", forAdditionalHeader: "Access-Control-Allow-Origin")
