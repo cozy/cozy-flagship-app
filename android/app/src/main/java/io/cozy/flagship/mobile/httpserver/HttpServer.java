@@ -27,6 +27,7 @@ public class HttpServer extends CozySimpleWebServer
   private static final String LOGTAG = "WebServer";
 
   private static final int SECURITY_KEY_LENGTH = 22;
+  private static final int CACHE_1_YEAR = 31536000;
   private String securityKey;
 
   public HttpServer(String localAddr, int port, File wwwroot) throws IOException {
@@ -61,7 +62,9 @@ public class HttpServer extends CozySimpleWebServer
 
       String filePath = urlParts.ResourcePath;
 
-      return super.respond(Collections.unmodifiableMap(header), session, filePath);
+      Response response = super.respond(Collections.unmodifiableMap(header), session, filePath);
+      response.addHeader("Cache-Control", "max-age=" + CACHE_1_YEAR + ", public, immutable");
+      return response;
     } catch (Exception e) {
       Log.e(LOGTAG, e.getMessage());
       return newFixedLengthResponse(Response.Status.BAD_REQUEST, NanoHTTPD.MIME_HTML, e.getMessage());
