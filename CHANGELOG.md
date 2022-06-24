@@ -1,4 +1,4 @@
-# 0.0.15
+# 0.0.16
 
 ## ✨ Features
 
@@ -8,6 +8,25 @@
 
 ## 🔧 Tech
 
+
+# 0.0.15
+
+## ✨ Features
+
+* Improve cozy-app opening animation and add a progress bar ([PR #290](https://github.com/cozy/cozy-react-native/pull/290) and [PR #295](https://github.com/cozy/cozy-react-native/pull/295))
+* Enforce portrait mode in the app ([PR #292](https://github.com/cozy/cozy-react-native/pull/292) and [PR #294](https://github.com/cozy/cozy-react-native/pull/294))
+* Improve Android onboarding by using UniversalLink ([PR #286](https://github.com/cozy/cozy-react-native/pull/286))
+
+## 🐛 Bug Fixes
+
+* Improve status bar handling ([PR #291](https://github.com/cozy/cozy-react-native/pull/291))
+* Correctly reset the UI zoom when returning from Cozy Pass ([PR #293](https://github.com/cozy/cozy-react-native/pull/293))
+* Fix 2FA scenario to correctly handle cozy-stack's error codes ([PR #284](https://github.com/cozy/cozy-react-native/pull/284))
+
+## 🔧 Tech
+
+* Add new dev setting for enabling/disabling HttpServer proxy ([PR #289](https://github.com/cozy/cozy-react-native/pull/289))
+* Add cache control on HttpServer responses ([PR #297](https://github.com/cozy/cozy-react-native/pull/297))
 
 # 0.0.14
 
