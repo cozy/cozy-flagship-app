@@ -98,74 +98,96 @@ class SoshContentScript extends ContentScript {
   // ///////
   // PILOT//
   // ///////
-
+  
   async ensureAuthenticated() {
     await this.goto(DEFAULT_PAGE_URL)
-    log.debug('waiting for any authentication confirmation or login form...')
-
+    const credentials = await this.getCredentials()
     await Promise.race([
-      this.runInWorkerUntilTrue({ method: 'waitForAuthenticated' }),
-      this.waitForElementInWorker('[data-e2e="e2e-ident-button"]')
+      this.waitForElementInWorker('#o-ribbon'),
+      this.waitForElementInWorker('#oecs__connecte')
     ])
-    this.log('After Race')
-    if (await this.runInWorker('checkAuthenticated')) {
-      this.log('Authenticated')
+    if(document.querySelector('#oecs__connecte')){
+      this.log('Already connected, continue')
       return true
     }
-    log.debug('Not authenticated')
+    if (document.querySelector('#o-ribbon')){
+      this.log('Login page found, continue')
 
-    let credentials = await this.getCredentials()
-    if (credentials && credentials.email && credentials.password) {
-      try {
-        log.debug('Got credentials, trying autologin')
-        await this.tryAutoLogin(credentials)
-      } catch (err) {
-        log.warn('autoLogin error' + err.message)
-        await this.waitForUserAuthentication()
+      if (credentials){
+        log.debug('found credentials, processing')
+        await this.waitForElementInWorker('button[class="btn btn-primary"]')
+        await this.clickAndWait('button[class="btn btn-primary"]','p[data-testid="selected-account-login"]')
+        await this.waitForElementInWorker('#o-ribbon')
+        
+        const testEmail = await this.runInWorker('getTestEmail')
+        
+        
+        if (credentials.email === testEmail ){
+          const stayLogButton = await this.runInWorker('getStayLoggedButton')
+          if ( stayLogButton != null) {
+            stayLogButton.click()
+            await this.waitForElementInWorker('#oecs__connecte')
+            return true
+          }
+          log.debug('found credentials, trying to autoLog')
+          await this.tryAutoLogin(credentials, 'half')
+          return true
+        }
+        
+        if (credentials.email != testEmail){
+          log.debug('getting in different testEmail conditions')
+          await this.clickAndWait('#changeAccountLink','#undefined-label')
+          await this.clickAndWait('#undefined-label','#login')
+          await this.tryAutoLogin(credentials, 'full')
+          return true
+        }
       }
-    } else {
-      log.debug('No credentials saved, waiting for user input')
-      await this.waitForUserAuthentication()
+      if (!credentials){
+        log.debug('no credentials found, use normal user login')
+        await this.waitForElementInWorker('button[class="btn btn-primary"]')
+        await this.clickAndWait('button[class="btn btn-primary"]','#changeAccountLink')
+        await this.clickAndWait('#changeAccountLink','#undefined-label')
+        await this.clickAndWait('#undefined-label','#login')
+        // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+        // await this.waitForElementInWorker(
+        //  '[pause]',
+        // )
+        await this.waitForUserAuthentication()
+          return true
+        }
     }
-
-    // if (await this.runInWorker('checkAuthenticated')) {
-    //   this.log('Authenticated')
-    //   return true
-    // } else {
-    //   await this.waitForUserAuthentication()
-    //   this.log('Not authenticated')
-    //   return true
-    // }
+    
+    log.debug('Not authenticated')
+    throw new Error('LOGIN_FAILED')
   }
 
-  async tryAutoLogin(credentials) {
-    this.log('autologin start')
+  async tryAutoLogin(credentials, type) {
+    this.log('Trying autologin')
     await this.goto(DEFAULT_PAGE_URL)
-    await Promise.all([
-      this.autoLogin(credentials),
-      this.runInWorkerUntilTrue({ method: 'waitForAuthenticated' })
-    ])
+    await this.autoLogin(credentials, type)
   }
 
-  async autoLogin(credentials) {
-    this.log('fill email field')
-    const emailInputSelector =
-      'p[data-testid="selected-account-login"] > strong'
-    const passwordInputSelector = '#password-label'
-    const loginButtonSelector = '#btnSubmit'
-    await this.waitForElementInWorker(emailInputSelector)
-    await this.runInWorker('fillText', emailInputSelector, credentials.email)
+  async autoLogin(credentials, type) {
+    this.log('Autologin start')
+    const emailSelector = '#login'
+    const passwordInputSelector = '#password'
+    const loginButton = '#btnSubmit'
+    if (type === 'half'){
+      this.log('wait for password field')
+      await this.waitForElementInWorker(passwordInputSelector)
+      await this.runInWorker('fillingForm', credentials)
 
+      await this.runInWorker('click', loginButton)
+      await this.waitForElementInWorker('#o-ribbon')
+      return true
+    }
+    await this.waitForElementInWorker(emailSelector)
+    await this.runInWorker('fillingForm', credentials)
+    await this.runInWorker('click', loginButton)
     this.log('wait for password field')
-    this.waitForElementInWorker(passwordInputSelector)
-
-    log.debug('fill password field')
-    await this.runInWorker(
-      'fillText',
-      passwordInputSelector,
-      credentials.password
-    )
-    await this.runInWorker('click', loginButtonSelector)
+    await this.waitForElementInWorker(passwordInputSelector)
+    await this.runInWorker('fillingForm', credentials)
+    await this.runInWorker('click', loginButton)
   }
 
   async waitForUserAuthentication() {
@@ -188,6 +210,9 @@ class SoshContentScript extends ContentScript {
 
   async fetch(context) {
     log.debug('fetch start')
+    if(this.store != undefined){
+      await this.saveCredentials(this.store.userCredentials)
+    }
     await this.waitForElementInWorker('a[class="ob1-link-icon ml-1 py-1"]')
     const clientRef = await this.runInWorker('findClientRef')
     if (clientRef) {
@@ -199,9 +224,9 @@ class SoshContentScript extends ContentScript {
       await this.clickAndWait(
         '[data-e2e="bp-tile-historic"]',
         '[aria-labelledby="bp-billsHistoryTitle"]'
-      )
-      const redFrame = await this.runInWorker('checkRedFrame')
-      if (redFrame !== null) {
+        )
+        const redFrame = await this.runInWorker('checkRedFrame')
+        if (redFrame !== null) {
         this.log('Website did not load the bills')
         throw new Error('VENDOR_DOWN')
       }
@@ -215,9 +240,12 @@ class SoshContentScript extends ContentScript {
         await this.clickAndWait(
           '[data-e2e="bh-more-bills"]',
           '[aria-labelledby="bp-historicBillsHistoryTitle"]'
-        )
-      }
-
+          )
+        }
+      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+      await this.waitForElementInWorker(
+        '[pause]',
+       )
       await this.runInWorker('clickOnPdfs')
       this.log('pdfButtons founded and clicked')
       await this.runInWorker('processingBills')
@@ -265,10 +293,6 @@ class SoshContentScript extends ContentScript {
         city: this.store.infosIdentity.city,
         phoneNumber: this.store.infosIdentity.phoneNumber
       })
-      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-      // await this.waitForElementInWorker(
-      //   '[pause]',
-      // )
       await this.saveBills(this.store.dataUri, {
         context,
         fileIdAttributes: ['filename'],
@@ -295,30 +319,64 @@ class SoshContentScript extends ContentScript {
     return buttons
   }
 
+  findStayLoggedButton(){
+    this.log('Starting findStayLoggedButton')
+    const button = document.querySelector('[data-oevent-label="bouton_rester_identifie"]')
+    return button
+  }
+
   // ////////
   // WORKER//
   // ////////
-  async checkAuthenticated() {
-    // If Orange page is detected
-    if (
-      document.location.href.includes(
-        'https://espace-client.orange.fr/page-accueil'
-      ) &&
-      document.querySelector('[class="is-mobile is-logged"]')
-    ) {
-      return true
+
+  async findAndSendCredentials(loginField) {
+    this.log('getting in findAndSendCredentials')
+    let userLogin = loginField.innerHTML.replace('<strong>', '').replace('</strong>', '')
+    let divPassword = document.querySelector('#password').value
+    const userCredentials = {
+      email: userLogin,
+      password:divPassword,
     }
-    // If Sosh page is detected
-    if (
-      document.location.href.includes(
-        'https://espace-client.orange.fr/accueil'
+      
+    return userCredentials
+
+  }
+
+  async fillingForm(credentials) {
+    if(document.querySelector('#login')){
+      this.log('filling email field')
+      document.querySelector('#login').value = credentials.email
+      return
+    }
+    if (document.querySelector('#password')){
+      this.log('filling password field')
+      document.querySelector('#password').value = credentials.password
+      return
+    }
+  }
+
+  async checkAuthenticated() {
+    const loginField = document.querySelector('p[data-testid="selected-account-login"]')
+    const passwordField = document.querySelector('#password')
+    if (loginField && passwordField) {
+       const userCredentials = await this.findAndSendCredentials.bind(this)(loginField)
+       this.log('Sending user credentials to Pilot')
+       this.sendToPilot({
+         userCredentials
+        })
+      }
+      if (
+        document.location.href.includes(
+        'https://espace-client.orange.fr/accueil',
       ) &&
-      document.querySelector('[id="oecs__connecte-se-deconnecter"]')
+      document.querySelector('#oecs__connecte')
     ) {
+      this.log('Check Authenticated succeeded')
       return true
     }
     return false
   }
+
   async getUserMail() {
     try {
       const result = document.querySelector(
@@ -380,6 +438,23 @@ class SoshContentScript extends ContentScript {
       '.alert-container alert-container-sm alert-danger mb-0'
     )
     return redFrame
+  }
+
+  async getStayLoggedButton(){
+    this.log('Starting getStayLoggedButton')
+    const button = this.findStayLoggedButton()
+    return button
+  }
+
+  async getTestEmail() {
+    this.log('Getting in getTestEmail')
+    const result = document.querySelector(
+      'p[data-testid="selected-account-login"]',
+    ).innerHTML.replace('<strong>', '').replace('</strong>', '')
+    if (result) {
+      return result
+    }
+    return null
   }
 
   async getMoreBillsButton() {
@@ -456,7 +531,10 @@ connector
       'processingBills',
       'getMoreBillsButton',
       'checkRedFrame',
-      'checkOldBillsRedFrame'
+      'checkOldBillsRedFrame',
+      'getTestEmail',
+      'fillingForm',
+      'getStayLoggedButton',
     ]
   })
   .catch(err => {
