@@ -3,7 +3,10 @@ import RNFS from 'react-native-fs'
 
 import { createMockClient } from 'cozy-client/dist/mock'
 
-import { fetchCozyAppVersion } from '../client'
+import {
+  fetchCozyAppArchiveInfoForVersion,
+  fetchCozyAppVersion
+} from '../client'
 import {
   updateCozyAppBundle,
   updateCozyAppBundleInBackground
@@ -38,6 +41,7 @@ jest.mock('/libs/functions/logger', () => ({
 
 jest.mock('../client', () => ({
   fetchCozyAppVersion: jest.fn(),
+  fetchCozyAppArchiveInfoForVersion: jest.fn(),
   getFqdnFromClient: jest.requireActual('../client').getFqdnFromClient
 }))
 
@@ -73,6 +77,7 @@ describe('cozyAppBundle', () => {
 
       mockLocalVersion('1.45.5')
       mockStackVersion('1.45.6')
+      mockNoTarPrefix()
 
       mockBundleDoesNotExistInLocalFiles()
       mockSuccessBundleDownload()
@@ -118,6 +123,7 @@ describe('cozyAppBundle', () => {
 
       mockLocalVersion('1.45.5')
       mockStackVersion('1.45.6')
+      mockNoTarPrefix()
 
       mockBundleDoesNotExistInLocalFiles()
       mockSuccessBundleDownload()
@@ -162,6 +168,7 @@ describe('cozyAppBundle', () => {
 
       mockLocalVersion('1.45.5')
       mockStackVersion('1.45.6')
+      mockNoTarPrefix()
 
       mockBundleDoesNotExistInLocalFiles()
       mockSuccessBundleDownload()
@@ -206,6 +213,7 @@ describe('cozyAppBundle', () => {
 
       mockLocalVersion('1.45.5')
       mockStackVersion('1.45.5')
+      mockNoTarPrefix()
 
       mockBundleDoesNotExistInLocalFiles()
       mockSuccessBundleDownload()
@@ -227,6 +235,7 @@ describe('cozyAppBundle', () => {
 
       mockLocalVersion('1.45.5')
       mockStackVersion('1.45.6')
+      mockNoTarPrefix()
 
       mockBundleExistsInLocalFiles()
       mockSuccessBundleDownload()
@@ -255,6 +264,7 @@ describe('cozyAppBundle', () => {
 
       mockLocalVersion('1.45.5')
       mockStackVersion('1.45.6')
+      mockNoTarPrefix()
 
       mockBundleDoesNotExistInLocalFiles()
       mockSuccessBundleDownload()
@@ -300,6 +310,7 @@ describe('cozyAppBundle', () => {
 
       mockLocalVersion(undefined)
       mockStackVersion('1.45.6')
+      mockNoTarPrefix()
 
       mockBundleDoesNotExistInLocalFiles()
       mockSuccessBundleDownload()
@@ -334,6 +345,33 @@ describe('cozyAppBundle', () => {
         folder: '1.45.6'
       })
     })
+
+    it('should handle TarPrefix', async () => {
+      client.getStackClient = jest.fn(() => ({
+        uri: 'http://cozy.10-0-2-2.nip.io',
+        getAuthorizationHeader: jest
+          .fn()
+          .mockReturnValue('SOME_AUTHORIZATION_TOKEN')
+      }))
+
+      mockLocalVersion('1.45.5')
+      mockStackVersion('1.45.6')
+      mockTarPrefix('/SOME_TAR_PREFIX')
+
+      mockBundleDoesNotExistInLocalFiles()
+      mockSuccessBundleDownload()
+
+      await updateCozyAppBundle({ slug: 'home', client })
+
+      expect(fetchCozyAppVersion).toHaveBeenCalled()
+
+      expect(setCurrentAppVersionForFqdnAndSlug).toHaveBeenCalledWith({
+        fqdn: 'cozy.10-0-2-2.nip.io',
+        slug: 'home',
+        version: '1.45.6',
+        folder: '1.45.6/SOME_TAR_PREFIX'
+      })
+    })
   })
 
   describe('updateCozyAppBundleInBackground', () => {
@@ -350,6 +388,7 @@ describe('cozyAppBundle', () => {
 
       mockLocalVersion(undefined)
       mockStackVersion('1.45.6')
+      mockNoTarPrefix()
 
       mockBundleDoesNotExistInLocalFiles()
       mockFailedBundleDownload()
@@ -411,4 +450,14 @@ const mockStackVersion = version => {
 
 const mockLocalVersion = version => {
   getCurrentAppConfigurationForFqdnAndSlug.mockResolvedValue({ version })
+}
+
+const mockNoTarPrefix = () => {
+  fetchCozyAppArchiveInfoForVersion.mockResolvedValue({ tarPrefix: '' })
+}
+
+const mockTarPrefix = prefix => {
+  fetchCozyAppArchiveInfoForVersion.mockResolvedValue({
+    tarPrefix: prefix
+  })
 }
