@@ -364,3 +364,20 @@ export const fetchCozyAppVersion = async (slug, client) => {
 
   return version
 }
+
+export const fetchCozyAppArchiveInfoForVersion = async (
+  slug,
+  version,
+  client
+) => {
+  const stackClient = client.getStackClient()
+
+  const { tar_prefix: tarPrefix = '' } = await stackClient.fetchJSON(
+    'GET',
+    `/registry/${slug}/${version}`
+  )
+
+  return {
+    tarPrefix
+  }
+}

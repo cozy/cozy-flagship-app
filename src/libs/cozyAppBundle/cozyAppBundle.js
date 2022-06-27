@@ -2,7 +2,11 @@ import Gzip from '@fengweichong/react-native-gzip'
 import RNFS from 'react-native-fs'
 import { logger } from '/libs/functions/logger'
 
-import { fetchCozyAppVersion, getFqdnFromClient } from '../client'
+import {
+  fetchCozyAppArchiveInfoForVersion,
+  fetchCozyAppVersion,
+  getFqdnFromClient
+} from '../client'
 import { getBaseFolderForFqdnAndSlug } from '../httpserver/httpPaths'
 import {
   getCurrentAppConfigurationForFqdnAndSlug,
@@ -67,6 +71,12 @@ export const updateCozyAppBundle = async ({ slug, client }) => {
     return
   }
 
+  const { tarPrefix } = await fetchCozyAppArchiveInfoForVersion(
+    slug,
+    stackVersion,
+    client
+  )
+
   const destinationPath = await getCozyAppFolderPathForVersion({
     slug,
     version: stackVersion,
@@ -77,6 +87,7 @@ export const updateCozyAppBundle = async ({ slug, client }) => {
     await doesVersionBundleExistInLocalFiles({
       slug,
       version: stackVersion,
+      tarPrefix: tarPrefix,
       client
     })
   ) {
@@ -96,13 +107,14 @@ export const updateCozyAppBundle = async ({ slug, client }) => {
     fqdn,
     slug,
     version: stackVersion,
-    folder: normalizeVersion(stackVersion)
+    folder: normalizeVersion(stackVersion) + tarPrefix
   })
 }
 
 const doesVersionBundleExistInLocalFiles = async ({
   slug,
   version,
+  tarPrefix,
   client
 }) => {
   log.debug(`Check if local '${slug}' bundle version exist for '${version}'`)
@@ -113,7 +125,7 @@ const doesVersionBundleExistInLocalFiles = async ({
     client
   })
 
-  const expectedManifestPath = `${expectedVersionPath}/manifest.webapp`
+  const expectedManifestPath = `${expectedVersionPath}${tarPrefix}/manifest.webapp`
 
   return await RNFS.exists(expectedManifestPath)
 }
