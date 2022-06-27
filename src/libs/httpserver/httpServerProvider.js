@@ -71,29 +71,37 @@ export const HttpServerProvider = props => {
   const isRunning = () => serverInstance?.isRunning()
 
   const getIndexHtmlForSlug = async (slug, client) => {
-    const rootURL = client.getStackClient().uri
+    try {
+      const rootURL = client.getStackClient().uri
 
-    const { host: fqdn } = new URL(rootURL)
+      const { host: fqdn } = new URL(rootURL)
 
-    const { cookie, templateValues } = await fetchAppDataForSlug(slug, client)
+      const { cookie, templateValues } = await fetchAppDataForSlug(slug, client)
 
-    await setCookie(cookie, client)
-    const rawHtml = await getIndexForFqdnAndSlug(fqdn, slug)
+      await setCookie(cookie, client)
+      const rawHtml = await getIndexForFqdnAndSlug(fqdn, slug)
 
-    if (!rawHtml) {
+      if (!rawHtml) {
+        return false
+      }
+
+      const computedHtml = await fillIndexWithData({
+        fqdn,
+        slug,
+        port: serverInstance.port,
+        securityKey: serverSecurityKey,
+        indexContent: rawHtml,
+        indexData: templateValues
+      })
+
+      return computedHtml
+    } catch (err) {
+      log.error(
+        `Error while generating Index.html for ${slug}. Cozy-stack version will be used instead. Error was: ${err.message}`
+      )
+
       return false
     }
-
-    const computedHtml = await fillIndexWithData({
-      fqdn,
-      slug,
-      port: serverInstance.port,
-      securityKey: serverSecurityKey,
-      indexContent: rawHtml,
-      indexData: templateValues
-    })
-
-    return computedHtml
   }
 
   return (
