@@ -4,9 +4,9 @@ import { render } from '@testing-library/react-native'
 
 import { CozyWebView } from './CozyWebView'
 
-import { useIsSecureProtocol } from '../../hooks/useIsSecureProtocol'
+import { useIsSecureProtocol } from '/hooks/useIsSecureProtocol'
 
-jest.mock('../../hooks/useIsSecureProtocol')
+jest.mock('/hooks/useIsSecureProtocol')
 
 const mockGoBack = jest.fn()
 const mockUseIsFocused = jest.fn()
