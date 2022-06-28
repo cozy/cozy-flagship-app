@@ -53,18 +53,11 @@ jest.mock('../../hooks/useSession.js', () => ({
   })
 }))
 
-beforeEach(() => {
-  useIsSecureProtocol.mockReturnValue(true)
-})
-
-afterEach(() => {
-  jest.clearAllMocks()
-})
-
 describe('CozyWebview', () => {
   let consoleError
 
   beforeEach(() => {
+    useIsSecureProtocol.mockReturnValue(true)
     /* eslint-disable no-console */
     consoleError = console.error
     console.error = jest.fn()
