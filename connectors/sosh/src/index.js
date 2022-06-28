@@ -6,8 +6,10 @@ import { format } from 'date-fns'
 const log = Minilog('ContentScript')
 Minilog.enable('soshCCC')
 
-const BASE_URL = 'https://espace-client.orange.fr'
-const DEFAULT_PAGE_URL = BASE_URL + '/accueil'
+// const BASE_URL = 'https://espace-client.orange.fr'
+const BASE_URL = 'https://www.sosh.fr'
+const DEFAULT_PAGE_URL = BASE_URL + '/client'
+// const LOGIN_URL = ' https://login.orange.fr/?service=sosh&propagation=true&domain=sosh&force_authent=true&return_url=https%3A%2F%2Fwww.sosh.fr%2Fclient#/password'
 const DEFAULT_SOURCE_ACCOUNT_IDENTIFIER = 'sosh'
 
 let recentBills = []
@@ -101,61 +103,65 @@ class SoshContentScript extends ContentScript {
   
   async ensureAuthenticated() {
     await this.goto(DEFAULT_PAGE_URL)
+    await this.waitForElementInWorker('#oecs__aide-contact')
     const credentials = await this.getCredentials()
-    await Promise.race([
-      this.waitForElementInWorker('#o-ribbon'),
-      this.waitForElementInWorker('#oecs__connecte')
-    ])
-    if(document.querySelector('#oecs__connecte')){
-      this.log('Already connected, continue')
-      return true
-    }
-    if (document.querySelector('#o-ribbon')){
-      this.log('Login page found, continue')
-
-      if (credentials){
-        log.debug('found credentials, processing')
-        await this.waitForElementInWorker('button[class="btn btn-primary"]')
-        await this.clickAndWait('button[class="btn btn-primary"]','p[data-testid="selected-account-login"]')
-        await this.waitForElementInWorker('#o-ribbon')
-        
-        const testEmail = await this.runInWorker('getTestEmail')
-        
-        
-        if (credentials.email === testEmail ){
-          const stayLogButton = await this.runInWorker('getStayLoggedButton')
-          if ( stayLogButton != null) {
-            stayLogButton.click()
-            await this.waitForElementInWorker('#oecs__connecte')
-            return true
-          }
-          log.debug('found credentials, trying to autoLog')
-          await this.tryAutoLogin(credentials, 'half')
-          return true
-        }
-        
-        if (credentials.email != testEmail){
-          log.debug('getting in different testEmail conditions')
-          await this.clickAndWait('#changeAccountLink','#undefined-label')
-          await this.clickAndWait('#undefined-label','#login')
-          await this.tryAutoLogin(credentials, 'full')
-          return true
-        }
+    if (credentials){
+      const helloMessage = await this.runInWorker('getHelloMessage')
+      this.log(helloMessage)
+      if(helloMessage){
+        // await this.waitForElementInWorker(
+        //   '[pause_connected]',
+        // )
+        return true
       }
-      if (!credentials){
-        log.debug('no credentials found, use normal user login')
-        await this.waitForElementInWorker('button[class="btn btn-primary"]')
-        await this.clickAndWait('button[class="btn btn-primary"]','#changeAccountLink')
-        await this.clickAndWait('#changeAccountLink','#undefined-label')
-        await this.clickAndWait('#undefined-label','#login')
+      this.log('found credentials, processing')
+      await this.waitForElementInWorker('p[data-testid="selected-account-login"]')
+      
+      const testEmail = await this.runInWorker('getTestEmail')
+      
+      
+      if (credentials.email === testEmail ){
+        const stayLogButton = await this.runInWorker('getStayLoggedButton')
+        if ( stayLogButton != null) {
+          stayLogButton.click()
+          await this.waitForElementInWorker('#oecs__connecte')
+          return true
+        }
+        log.debug('found credentials, trying to autoLog')
         // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
         // await this.waitForElementInWorker(
-        //  '[pause]',
+        //  '[pause_half_connection]',
         // )
-        await this.waitForUserAuthentication()
-          return true
-        }
+        await this.tryAutoLogin(credentials, 'half')
+        return true
+      }
+      
+      if (credentials.email != testEmail){
+        log.debug('getting in different testEmail conditions')
+        // await this.waitForElementInWorker(
+        //   '[pause_diff_mail]',
+        //  )
+        await this.clickAndWait('#changeAccountLink','#undefined-label')
+        await this.clickAndWait('#undefined-label','#login')
+        await this.tryAutoLogin(credentials, 'full')
+        return true
+      }
     }
+    if (!credentials){
+      log.debug('no credentials found, use normal user login')
+      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+      // await this.waitForElementInWorker(
+      //  '[pause_no_credentials]',
+      // )
+      await this.clickAndWait('#changeAccountLink','#undefined-label')
+      await this.clickAndWait('#undefined-label','#login')
+      await this.waitForUserAuthentication()
+      return true
+    }
+
+    await this.waitForElementInWorker(
+      '[pause__failed_connected]',
+    )
     
     log.debug('Not authenticated')
     throw new Error('LOGIN_FAILED')
@@ -178,7 +184,7 @@ class SoshContentScript extends ContentScript {
       await this.runInWorker('fillingForm', credentials)
 
       await this.runInWorker('click', loginButton)
-      await this.waitForElementInWorker('#o-ribbon')
+      await this.waitForElementInWorker('#oecs__connecte')
       return true
     }
     await this.waitForElementInWorker(emailSelector)
@@ -213,12 +219,12 @@ class SoshContentScript extends ContentScript {
     if(this.store != undefined){
       await this.saveCredentials(this.store.userCredentials)
     }
-    await this.waitForElementInWorker('a[class="ob1-link-icon ml-1 py-1"]')
+    await this.waitForElementInWorker('a[class="o-link-arrow text-primary pt-0"]')
     const clientRef = await this.runInWorker('findClientRef')
     if (clientRef) {
       this.log('clientRef found')
       await this.clickAndWait(
-        `a[href="facture-paiement/${clientRef}"]`,
+        `a[href="https://espace-client.orange.fr/facture-paiement/${clientRef}"]`,
         '[data-e2e="bp-tile-historic"]'
       )
       await this.clickAndWait(
@@ -229,100 +235,139 @@ class SoshContentScript extends ContentScript {
         if (redFrame !== null) {
         this.log('Website did not load the bills')
         throw new Error('VENDOR_DOWN')
-      }
-      const moreBills = await this.runInWorker('getMoreBillsButton')
-      if (moreBills) {
-        const oldBillsRedFrame = await this.runInWorker('checkOldBillsRedFrame')
-        if (oldBillsRedFrame !== null) {
-          this.log('Website did not load the old bills')
-          throw new Error('VENDOR_DOWN')
         }
+        let recentPdfNumber = await this.runInWorker('getPdfNumber')
         await this.clickAndWait(
-          '[data-e2e="bh-more-bills"]',
-          '[aria-labelledby="bp-historicBillsHistoryTitle"]'
+            '[data-e2e="bh-more-bills"]',
+            '[aria-labelledby="bp-historicBillsHistoryTitle"]',
+        )
+        let allPdfNumber = await this.runInWorker('getPdfNumber')
+        let oldPdfNumber = allPdfNumber - recentPdfNumber
+        for (let i = 0; i < recentPdfNumber; i++){
+          await this.runInWorker('waitForRecentPdfClicked', i)
+          await this.clickAndWait(
+            'a[class="o-link"]',
+            '[data-e2e="bp-tile-historic"]',
+          )
+          await this.clickAndWait(
+          '[data-e2e="bp-tile-historic"]',
+          '[aria-labelledby="bp-billsHistoryTitle"]',
+          )
+          await this.clickAndWait(
+            '[data-e2e="bh-more-bills"]',
+            '[aria-labelledby="bp-historicBillsHistoryTitle"]',
           )
         }
-      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-      await this.waitForElementInWorker(
-        '[pause]',
-       )
-      await this.runInWorker('clickOnPdfs')
-      this.log('pdfButtons founded and clicked')
-      await this.runInWorker('processingBills')
-      this.store.dataUri = []
-
-      for (let i = 0; i < this.store.resolvedBase64.length; i++) {
-        let dateArray = this.store.resolvedBase64[i].href.match(
-          /([0-9]{4})-([0-9]{2})-([0-9]{2})/g
-        )
-        this.store.resolvedBase64[i].date = dateArray[0]
-        const index = this.store.allBills.findIndex(function (bill) {
-          return bill.date === dateArray[0]
+        this.log('recentPdf loop ended')
+        for (let i = 0; i < oldPdfNumber; i++){
+          await this.runInWorker('waitForOldPdfClicked', i)
+          await this.clickAndWait(
+            'a[class="o-link"]',
+            '[data-e2e="bp-tile-historic"]',
+          )
+          await this.clickAndWait(
+          '[data-e2e="bp-tile-historic"]',
+          '[aria-labelledby="bp-billsHistoryTitle"]',
+          )
+          await this.clickAndWait(
+            '[data-e2e="bh-more-bills"]',
+            '[aria-labelledby="bp-historicBillsHistoryTitle"]',
+          )
+        }
+        this.log('oldPdf loop ended')
+        this.log('pdfButtons all clicked')
+        await this.runInWorker('processingBills')
+        this.store.dataUri = []
+        for (let i = 0; i < this.store.resolvedBase64.length; i++) {
+          let dateArray = this.store.resolvedBase64[i].href.match(
+            /([0-9]{4})-([0-9]{2})-([0-9]{2})/g,
+          )
+          this.store.resolvedBase64[i].date = dateArray[0]
+          const index = this.store.allBills.findIndex(function (bill) {
+            return bill.date === dateArray[0]
+          })
+          this.store.dataUri.push({
+            vendor: 'sosh.fr',
+            date: this.store.allBills[index].date,
+            amount: this.store.allBills[index].amount / 100,
+            recurrence: 'monthly',
+            vendorRef: this.store.allBills[index].id
+              ? this.store.allBills[index].id
+              : this.store.allBills[index].tecId,
+            filename: await getFileName(
+              this.store.allBills[index].date,
+              this.store.allBills[index].amount / 100,
+              this.store.allBills[index].id || this.store.allBills[index].tecId,
+            ),
+            dataUri: this.store.resolvedBase64[i].uri,
+            fileAttributes: {
+              metadata: {
+                invoiceNumber: this.store.allBills[index].id
+                  ? this.store.allBills[index].id
+                  : this.store.allBills[index].tecId,
+                contentAuthor: 'sosh',
+                datetime: this.store.allBills[index].date,
+                datetimeLabel: 'startDate',
+                isSubscription: true,
+                startDate: this.store.allBills[index].date,
+                carbonCopy: true,
+              },
+            },
+          })
+        }
+        await this.saveIdentity({
+          mailAdress: this.store.infosIdentity.mail,
+          city: this.store.infosIdentity.city,
+          phoneNumber: this.store.infosIdentity.phoneNumber,
         })
-        this.store.dataUri.push({
-          vendor: 'sosh.fr',
-          date: this.store.allBills[index].date,
-          amount: this.store.allBills[index].amount / 100,
-          recurrence: 'monthly',
-          vendorRef: this.store.allBills[index].id
-            ? this.store.allBills[index].id
-            : this.store.allBills[index].tecId,
-          filename: await getFileName(
-            this.store.allBills[index].date,
-            this.store.allBills[index].amount / 100,
-            this.store.allBills[index].id || this.store.allBills[index].tecId
-          ),
-          dataUri: this.store.resolvedBase64[i].uri,
-          fileAttributes: {
-            metadata: {
-              invoiceNumber: this.store.allBills[index].id
-                ? this.store.allBills[index].id
-                : this.store.allBills[index].tecId,
-              contentAuthor: 'sosh',
-              datetime: this.store.allBills[index].date,
-              datetimeLabel: 'startDate',
-              isSubscription: true,
-              startDate: this.store.allBills[index].date,
-              carbonCopy: true
-            }
-          }
+        await this.saveBills(this.store.dataUri, {
+          context,
+          fileIdAttributes: ['filename'],
+          contentType: 'application/pdf',
+          qualificationLabel: 'isp_invoice',
         })
-      }
-      await this.saveIdentity({
-        mailAdress: this.store.infosIdentity.mail,
-        city: this.store.infosIdentity.city,
-        phoneNumber: this.store.infosIdentity.phoneNumber
-      })
-      await this.saveBills(this.store.dataUri, {
-        context,
-        fileIdAttributes: ['filename'],
-        contentType: 'application/pdf',
-        qualificationLabel: 'isp_invoice'
-      })
     }
+  }
+
+  findMoreBillsButton() {
+    this.log('Starting findMoreBillsButton')
+    const button = Array.from(document.querySelector('[data-e2e="bh-more-bills"]'))
+    this.log('Exiting findMoreBillsButton')
+    return button
   }
 
   findPdfButtons() {
     this.log('Starting findPdfButtons')
     const buttons = Array.from(
-      document.querySelectorAll('a[class="icon-pdf-file bp-downloadIcon"]')
+      document.querySelectorAll('a[class="icon-pdf-file bp-downloadIcon"]'),
     )
     return buttons
   }
 
-  findMoreBillsButton() {
-    this.log('Starting findMoreBillsButton')
+  findBillsHistoricButton() {
+    this.log('Starting findPdfButtons')
+    const button = document.querySelector('[data-e2e="bp-tile-historic"]')
+    return button
+  }
+
+  findPdfNumber(){
+    this.log('Starting findPdfNumber')
     const buttons = Array.from(
-      document.querySelector('[data-e2e="bh-more-bills"]')
+      document.querySelectorAll('a[class="icon-pdf-file bp-downloadIcon"]'),
     )
-    this.log('Exiting findMoreBillsButton')
-    return buttons
+    return buttons.length
   }
 
   findStayLoggedButton(){
     this.log('Starting findStayLoggedButton')
     const button = document.querySelector('[data-oevent-label="bouton_rester_identifie"]')
     return button
+  }
+
+  findHelloMessage(){
+    this.log('Starting findStayLoggedButton')
+    const messageSpan = document.querySelector('span[class="d-block text-center"]')
+    return messageSpan
   }
 
   // ////////
@@ -340,6 +385,16 @@ class SoshContentScript extends ContentScript {
       
     return userCredentials
 
+  }
+
+  waitForRecentPdfClicked(i){
+    let recentPdfs = document.querySelectorAll('[aria-labelledby="bp-billsHistoryTitle"] a[class="icon-pdf-file bp-downloadIcon"]')
+    recentPdfs[i].click()
+  }
+
+  waitForOldPdfClicked(i){
+    let oldPdfs = document.querySelectorAll('[aria-labelledby="bp-historicBillsHistoryTitle"] a[class="icon-pdf-file bp-downloadIcon"]')
+    oldPdfs[i].click()
   }
 
   async fillingForm(credentials) {
@@ -367,7 +422,7 @@ class SoshContentScript extends ContentScript {
       }
       if (
         document.location.href.includes(
-        'https://espace-client.orange.fr/accueil',
+          DEFAULT_PAGE_URL
       ) &&
       document.querySelector('#oecs__connecte')
     ) {
@@ -400,14 +455,20 @@ class SoshContentScript extends ContentScript {
     return false
   }
 
+  async getHelloMessage(){
+    this.log('Starting findHelloMessage')
+    const messageSpan = this.findHelloMessage()
+    return messageSpan
+  }
+
   async findClientRef() {
     let parsedElem
     let clientRef
-    if (document.querySelector('a[class="ob1-link-icon ml-1 py-1"]')) {
+    if (document.querySelector('a[class="o-link-arrow text-primary pt-0"]')) {
       this.log('clientRef founded')
       parsedElem = document
-        .querySelectorAll('a[class="ob1-link-icon ml-1 py-1"]')[1]
-        .getAttribute('href')
+      .querySelector('a[class="o-link-arrow text-primary pt-0"]')
+      .getAttribute('href')
 
       const clientRefArray = parsedElem.match(/([0-9]*)/g)
       this.log(clientRefArray.length)
@@ -463,29 +524,10 @@ class SoshContentScript extends ContentScript {
     return moreBillsButton
   }
 
-  async clickOnPdfs() {
-    log.debug('Get in clickOnPdfs')
-    let buttons = this.findPdfButtons()
-    if (buttons[0].length === 0) {
-      this.log('ERROR Could not find pdf button')
-      return 'VENDOR_DOWN'
-    } else {
-      for (const button of buttons) {
-        this.log('will click one pdf')
-        button.click()
-        this.log('pdfButton clicked')
-        numberOfClick = numberOfClick + 1
-      }
-    }
-    while (
-      recentPromisesToConvertBlobToBase64.length +
-        oldPromisesToConvertBlobToBase64.length !==
-      numberOfClick
-    ) {
-      this.log('Array of bills is not ready yet.')
-      await sleep(1)
-    }
-    this.log('billsArray ready, processing files')
+  async getPdfNumber() {
+    this.log('Getting in getPdfNumber')
+    let pdfNumber = this.findPdfNumber()
+    return pdfNumber
   }
 
   async processingBills() {
@@ -527,7 +569,6 @@ connector
     additionalExposedMethodsNames: [
       'getUserMail',
       'findClientRef',
-      'clickOnPdfs',
       'processingBills',
       'getMoreBillsButton',
       'checkRedFrame',
@@ -535,6 +576,10 @@ connector
       'getTestEmail',
       'fillingForm',
       'getStayLoggedButton',
+      'getHelloMessage',
+      'getPdfNumber',
+      'waitForRecentPdfClicked',
+      'waitForOldPdfClicked',
     ]
   })
   .catch(err => {
