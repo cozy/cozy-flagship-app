@@ -19,7 +19,7 @@ import { jsOnbeforeunload } from '/components/webviews/jsInteractions/jsOnbefore
 import { useSession } from '/hooks/useSession'
 import ReloadInterceptorWebView from '/components/webviews/ReloadInterceptorWebView'
 import { getHostname } from '/libs/functions/getHostname'
-import { useIsSecureProtocol } from '../../hooks/useIsSecureProtocol'
+import { useIsSecureProtocol } from '/hooks/useIsSecureProtocol'
 
 const log = Minilog('CozyWebView')
 
