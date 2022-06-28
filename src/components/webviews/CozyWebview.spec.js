@@ -61,122 +61,136 @@ afterEach(() => {
   jest.clearAllMocks()
 })
 
-it('handles onFocus scenario', () => {
-  mockUseIsFocused.mockReturnValue(true)
-  const { update } = render(
-    <CozyWebView
-      source={{ uri: 'home' }}
-      route={{ name: 'home' }}
-      navObject={{ canGoBack: false }}
-    />
-  )
+describe('CozyWebview', () => {
+  let consoleError
 
-  MockBackHandler.mockPressBack()
-  expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(1)
-  MockBackHandler.mockPressBack()
-  expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(2)
+  beforeEach(() => {
+    /* eslint-disable no-console */
+    consoleError = console.error
+    console.error = jest.fn()
+  })
 
-  update(
-    <CozyWebView
-      source={{ uri: 'home' }}
-      route={{ name: 'home' }}
-      navObject={{ canGoBack: true }}
-    />
-  )
+  afterEach(() => {
+    console.error = consoleError
+    /* eslint-enable no-console */
+  })
 
-  MockBackHandler.mockPressBack()
-  expect(mockGoBack).toHaveBeenCalledTimes(1)
+  it('handles onFocus scenario', () => {
+    mockUseIsFocused.mockReturnValue(true)
+    const { update } = render(
+      <CozyWebView
+        source={{ uri: 'home' }}
+        route={{ name: 'home' }}
+        navObject={{ canGoBack: false }}
+      />
+    )
 
-  MockBackHandler.mockPressBack()
-  expect(mockGoBack).toHaveBeenCalledTimes(2)
-})
+    MockBackHandler.mockPressBack()
+    expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(1)
+    MockBackHandler.mockPressBack()
+    expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(2)
 
-it('handles onFocus inversed', () => {
-  mockUseIsFocused.mockReturnValue(true)
+    update(
+      <CozyWebView
+        source={{ uri: 'home' }}
+        route={{ name: 'home' }}
+        navObject={{ canGoBack: true }}
+      />
+    )
 
-  const { update } = render(
-    <CozyWebView
-      source={{ uri: 'home' }}
-      route={{ name: 'home' }}
-      navObject={{ canGoBack: true }}
-    />
-  )
+    MockBackHandler.mockPressBack()
+    expect(mockGoBack).toHaveBeenCalledTimes(1)
 
-  MockBackHandler.mockPressBack()
-  expect(mockGoBack).toHaveBeenCalledTimes(1)
-  MockBackHandler.mockPressBack()
-  expect(mockGoBack).toHaveBeenCalledTimes(2)
+    MockBackHandler.mockPressBack()
+    expect(mockGoBack).toHaveBeenCalledTimes(2)
+  })
 
-  update(
-    <CozyWebView
-      source={{ uri: 'home' }}
-      route={{ name: 'home' }}
-      navObject={{ canGoBack: false }}
-    />
-  )
+  it('handles onFocus inversed', () => {
+    mockUseIsFocused.mockReturnValue(true)
 
-  MockBackHandler.mockPressBack()
-  expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(1)
-  MockBackHandler.mockPressBack()
-  expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(2)
-})
+    const { update } = render(
+      <CozyWebView
+        source={{ uri: 'home' }}
+        route={{ name: 'home' }}
+        navObject={{ canGoBack: true }}
+      />
+    )
 
-it('handles notFocus scenario', () => {
-  mockUseIsFocused.mockReturnValue(false)
+    MockBackHandler.mockPressBack()
+    expect(mockGoBack).toHaveBeenCalledTimes(1)
+    MockBackHandler.mockPressBack()
+    expect(mockGoBack).toHaveBeenCalledTimes(2)
 
-  const { update } = render(
-    <CozyWebView
-      source={{ uri: 'home' }}
-      route={{ name: 'home' }}
-      navObject={{ canGoBack: false }}
-    />
-  )
+    update(
+      <CozyWebView
+        source={{ uri: 'home' }}
+        route={{ name: 'home' }}
+        navObject={{ canGoBack: false }}
+      />
+    )
 
-  MockBackHandler.mockPressBack()
-  expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(1)
-  MockBackHandler.mockPressBack()
-  expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(2)
+    MockBackHandler.mockPressBack()
+    expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(1)
+    MockBackHandler.mockPressBack()
+    expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(2)
+  })
 
-  update(
-    <CozyWebView
-      source={{ uri: 'home' }}
-      route={{ name: 'home' }}
-      navObject={{ canGoBack: true }}
-    />
-  )
+  it('handles notFocus scenario', () => {
+    mockUseIsFocused.mockReturnValue(false)
 
-  MockBackHandler.mockPressBack()
-  expect(mockGoBack).toHaveBeenCalledTimes(0)
-  MockBackHandler.mockPressBack()
-  expect(mockGoBack).toHaveBeenCalledTimes(0)
-})
+    const { update } = render(
+      <CozyWebView
+        source={{ uri: 'home' }}
+        route={{ name: 'home' }}
+        navObject={{ canGoBack: false }}
+      />
+    )
 
-it('handles notFocus scenario inversed', () => {
-  mockUseIsFocused.mockReturnValue(false)
+    MockBackHandler.mockPressBack()
+    expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(1)
+    MockBackHandler.mockPressBack()
+    expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(2)
 
-  const { update } = render(
-    <CozyWebView
-      source={{ uri: 'home' }}
-      route={{ name: 'home' }}
-      navObject={{ canGoBack: true }}
-    />
-  )
+    update(
+      <CozyWebView
+        source={{ uri: 'home' }}
+        route={{ name: 'home' }}
+        navObject={{ canGoBack: true }}
+      />
+    )
 
-  MockBackHandler.mockPressBack()
-  expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(1)
-  MockBackHandler.mockPressBack()
-  expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(2)
+    MockBackHandler.mockPressBack()
+    expect(mockGoBack).toHaveBeenCalledTimes(0)
+    MockBackHandler.mockPressBack()
+    expect(mockGoBack).toHaveBeenCalledTimes(0)
+  })
 
-  update(
-    <CozyWebView
-      source={{ uri: 'home' }}
-      route={{ name: 'home' }}
-      navObject={{ canGoBack: false }}
-    />
-  )
+  it('handles notFocus scenario inversed', () => {
+    mockUseIsFocused.mockReturnValue(false)
 
-  MockBackHandler.mockPressBack()
-  expect(mockGoBack).toHaveBeenCalledTimes(0)
-  MockBackHandler.mockPressBack()
-  expect(mockGoBack).toHaveBeenCalledTimes(0)
-})
+    const { update } = render(
+      <CozyWebView
+        source={{ uri: 'home' }}
+        route={{ name: 'home' }}
+        navObject={{ canGoBack: true }}
+      />
+    )
+
+    MockBackHandler.mockPressBack()
+    expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(1)
+    MockBackHandler.mockPressBack()
+    expect(MockBackHandler.exitApp).toHaveBeenCalledTimes(2)
+
+    update(
+      <CozyWebView
+        source={{ uri: 'home' }}
+        route={{ name: 'home' }}
+        navObject={{ canGoBack: false }}
+      />
+    )
+
+    MockBackHandler.mockPressBack()
+    expect(mockGoBack).toHaveBeenCalledTimes(0)
+    MockBackHandler.mockPressBack()
+    expect(mockGoBack).toHaveBeenCalledTimes(0)
+  })
