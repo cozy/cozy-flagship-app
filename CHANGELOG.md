@@ -5,7 +5,9 @@
 
 ## 🐛 Bug Fixes
 
+* Status bar stop disappearing when focus on konnector input text
 * Wait 1 ms to display ClouderyView Overlay to prevent flash white screen
+
 
 ## 🔧 Tech
 
@@ -34,12 +36,12 @@
 ## ✨ Features
 
 * Improve wording on Onboarding page ([PR #281](https://github.com/cozy/cozy-react-native/pull/281))
-* Improve cozy-apps openning animation ([PR #282](https://github.com/cozy/cozy-react-native/pull/282))
+* Improve cozy-apps opening animation ([PR #282](https://github.com/cozy/cozy-react-native/pull/282))
 
 ## 🐛 Bug Fixes
 
 * Fix cozy-flags injection from cozy-stack ([PR #264](https://github.com/cozy/cozy-react-native/pull/264) and [PR #273](https://github.com/cozy/cozy-react-native/pull/273))
-* Correctly handle initial screen when openning the app ([PR #261](https://github.com/cozy/cozy-react-native/pull/261))
+* Correctly handle initial screen when opening the app ([PR #261](https://github.com/cozy/cozy-react-native/pull/261))
 * Fix URL interception in Sosh Client Side Connector ([PR #263](https://github.com/cozy/cozy-react-native/pull/263))
 * Fix WebView visibility in Amazon Client Side Connector ([PR #265](https://github.com/cozy/cozy-react-native/pull/265))
 * Fix how safe areas are handled on iOS ([PR #267](https://github.com/cozy/cozy-react-native/pull/267) and [PR #278](https://github.com/cozy/cozy-react-native/pull/278))
