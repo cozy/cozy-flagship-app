@@ -99,6 +99,16 @@ export const ClouderyView = ({ setInstanceData }) => {
 
   const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
 
+  const [displayOverlay, setDisplayOverlay] = useState(true)
+
+  useEffect(() => {
+    if (!loading) {
+      setTimeout(() => {
+        setDisplayOverlay(false)
+      }, 1)
+    }
+  }, [loading])
+
   return (
     <Wrapper style={styles.view} behavior="height">
       <WebView
@@ -112,7 +122,7 @@ export const ClouderyView = ({ setInstanceData }) => {
         }}
         onError={handleError}
       />
-      {loading && (
+      {displayOverlay && (
         <View
           style={[
             styles.loadingOverlay,

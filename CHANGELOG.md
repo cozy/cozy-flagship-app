@@ -5,6 +5,7 @@
 
 ## 🐛 Bug Fixes
 
+* Wait 1 ms to display ClouderyView Overlay to prevent flash white screen
 
 ## 🔧 Tech
 
