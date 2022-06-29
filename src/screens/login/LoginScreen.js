@@ -192,7 +192,7 @@ const LoginSteps = ({ navigation, route, setClient }) => {
     } catch (error) {
       setError(error.message, error)
     }
-  }, [setError, state])
+  }, [setError, state, setClient, showSplashScreen])
 
   const continueOAuth = useCallback(
     async twoFactorCode => {
@@ -236,7 +236,7 @@ const LoginSteps = ({ navigation, route, setClient }) => {
         setError(error.message, error)
       }
     },
-    [setError, state]
+    [setError, state, showSplashScreen, setClient]
   )
 
   const authorize = useCallback(async () => {
@@ -260,7 +260,7 @@ const LoginSteps = ({ navigation, route, setClient }) => {
         setError(error.message, error)
       }
     }
-  }, [cancelOauth, setClient, setError, state])
+  }, [cancelOauth, setClient, setError, state, showSplashScreen])
 
   const setError = useCallback(
     (errorMessage, error) => {

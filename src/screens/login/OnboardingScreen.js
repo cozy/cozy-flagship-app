@@ -99,9 +99,9 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
     })
   }
 
-  const cancelOnboarding = () => {
+  const cancelOnboarding = useCallback(() => {
     navigation.navigate(routes.authenticate)
-  }
+  }, [navigation])
 
   const setError = useCallback(
     (errorMessage, error) => {
@@ -138,7 +138,7 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
         setError(error.message, error)
       }
     }
-  }, [setClient, setError, state])
+  }, [setClient, setError, state, cancelOnboarding])
 
   if (state.step === PASSWORD_STEP) {
     hideSplashScreen()
