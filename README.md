@@ -59,18 +59,18 @@ $ yarn ios
 $ yarn test
 ```
 
-### Debuging 
+### Debugging
 
-Android: To get native log on Android: 
+Android: To get native log on Android:
 ```bash
 adb logcat --pid=$(adb shell pidof -s io.cozy.flagship.mobile)
 ```
 
-Use [flipper](https://fbflipper.com/docs/features/react-native/) to 
+Use [flipper](https://fbflipper.com/docs/features/react-native/) to
 have access to a React Native Debuguer.
 
-To have access to the AsyncStorage content you can install those 
-2 plugins: 
+To have access to the AsyncStorage content you can install those
+2 plugins:
 async-storage and async-storage-advanced (see https://github.com/cozy/cozy-react-native/pull/270
 for more information)
 
@@ -118,6 +118,11 @@ To enable Flagship certification:
 
 If you want to disable Flagship certification:
 - On `src/libs/client.js` set `shouldRequireFlagshipPermissions` to `false`
+
+## patch-package
+
+After installation of every npm packages, yarn applies patches to react-native-webview.
+[Patch-package](https://www.npmjs.com/package/patch-package) is a utility is used to apply the patches located in the patches folder.
 
 ## TROUBLESHOOTING
 
