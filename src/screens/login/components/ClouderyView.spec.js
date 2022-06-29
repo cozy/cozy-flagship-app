@@ -1,8 +1,9 @@
 import React from 'react'
 import { Button as MockButton } from 'react-native'
-import { fireEvent, render } from '@testing-library/react-native'
+import { fireEvent, render, waitFor } from '@testing-library/react-native'
 
 import { ClouderyView } from './ClouderyView'
+import { act } from 'react-dom/test-utils'
 
 const mockGetNextUrl = jest.fn()
 
@@ -15,28 +16,34 @@ jest.mock('react-native-webview', () => {
   class WebView extends React.Component {
     render() {
       return (
-        <MockButton
-          testID="triggerStartLoadWithRequest"
-          onPress={() => {
-            const request = {
-              loading: true,
-              url: mockGetNextUrl()
-            }
-            this.props.onShouldStartLoadWithRequest(request)
-          }}
-          title="WebView Button"
-        />
+        <>
+          <MockButton
+            testID="triggerStartLoadWithRequest"
+            onPress={() => {
+              const request = {
+                loading: true,
+                url: mockGetNextUrl()
+              }
+              this.props.onShouldStartLoadWithRequest(request)
+            }}
+            title="WebView Button"
+          />
+          <MockButton
+            testID="triggerOnLoadEnd"
+            onPress={() => {
+              this.props.onLoadEnd()
+            }}
+            title="WebView Button onLoadEnd"
+          />
+        </>
       )
     }
   }
+
   return { WebView }
 })
 
 describe('ClouderyView', () => {
-  beforeEach(() => {
-    jest.resetAllMocks()
-  })
-
   describe('on handleNavigation', () => {
     const props = {
       setInstanceData: jest.fn()
@@ -56,12 +63,36 @@ describe('ClouderyView', () => {
 
       const button = getByTestId('triggerStartLoadWithRequest')
 
-      // When
       mockGetNextUrl.mockReturnValueOnce(
         'https://loginflagship?fqdn=SOMEINSTANCE.MYCOZY.CLOUD'
       )
 
       fireEvent.press(button)
+    })
+  })
+
+  it('should display overlay over webview while loading', () => {
+    // When
+    const { queryByTestId } = render(<ClouderyView />)
+
+    // Then
+    expect(queryByTestId('overlay')).toBeTruthy()
+  })
+
+  it('should hide overlay 1 ms after loading is finished', done => {
+    // Given
+    const { getByTestId, queryByTestId } = render(<ClouderyView />)
+    const button = getByTestId('triggerOnLoadEnd')
+
+    act(() => {
+      // When
+      fireEvent.press(button) // trigger onLoadEnd
+
+      waitFor(() => {
+        // Then
+        expect(queryByTestId('overlay')).toBeFalsy()
+        done()
+      })
     })
   })
 })

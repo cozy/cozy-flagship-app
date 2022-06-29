@@ -124,6 +124,7 @@ export const ClouderyView = ({ setInstanceData }) => {
       />
       {displayOverlay && (
         <View
+          testID="overlay"
           style={[
             styles.loadingOverlay,
             {
