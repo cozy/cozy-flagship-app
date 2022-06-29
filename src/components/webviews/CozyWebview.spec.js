@@ -187,3 +187,4 @@ describe('CozyWebview', () => {
     MockBackHandler.mockPressBack()
     expect(mockGoBack).toHaveBeenCalledTimes(0)
   })
+})
