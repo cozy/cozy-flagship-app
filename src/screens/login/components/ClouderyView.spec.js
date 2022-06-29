@@ -38,10 +38,18 @@ describe('ClouderyView', () => {
   })
 
   describe('on handleNavigation', () => {
-    // Given
     const props = {
       setInstanceData: jest.fn()
     }
+
+    afterAll(() => {
+      // Then
+      expect(props.setInstanceData).toHaveBeenCalledTimes(1)
+      expect(props.setInstanceData).toHaveBeenCalledWith({
+        instance: 'https://someinstance.mycozy.cloud/',
+        fqdn: 'someinstance.mycozy.cloud'
+      })
+    })
 
     it('should convert instance and FQDN to lowercase', () => {
       const { getByTestId } = render(<ClouderyView {...props} />)
@@ -54,15 +62,6 @@ describe('ClouderyView', () => {
       )
 
       fireEvent.press(button)
-    })
-
-    afterAll(() => {
-      // Then
-      expect(props.setInstanceData).toHaveBeenCalledTimes(1)
-      expect(props.setInstanceData).toHaveBeenCalledWith({
-        instance: 'https://someinstance.mycozy.cloud/',
-        fqdn: 'someinstance.mycozy.cloud'
-      })
     })
   })
 })
