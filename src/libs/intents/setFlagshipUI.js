@@ -14,7 +14,7 @@ const UI_LIGHT = 'light-content'
 
 const isDarkMode = bottomTheme => bottomTheme === UI_LIGHT
 
-const updpateStatusBarAndBottomBar = bottomTheme => {
+const updateStatusBarAndBottomBar = bottomTheme => {
   if (Platform.OS === 'android') {
     bottomTheme && changeBarColors(isDarkMode(bottomTheme))
   } else {
@@ -26,7 +26,7 @@ const updpateStatusBarAndBottomBar = bottomTheme => {
 
 const handleSideEffects = ({ bottomTheme, ...parsedIntent }) => {
   flagshipUI.emit('change', parsedIntent)
-  updpateStatusBarAndBottomBar(bottomTheme)
+  updateStatusBarAndBottomBar(bottomTheme)
 }
 
 const formatTheme = position =>
