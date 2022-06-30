@@ -23,12 +23,11 @@ const account2 = {
 }
 describe('keychain test suite', () => {
   beforeEach(() => {
-    jest.resetAllMocks()
+    console.log = jest.fn() // eslint-disable-line no-console
   })
-  describe('credantials API', () => {
+  describe('credentials API', () => {
     it('test get credentials methods', async () => {
       jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce(false)
-      //  mockGetGenericPassword.mockResolvedValue([])
       const cred = await getCredential(account)
       expect(cred).toBe(null)
       jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
