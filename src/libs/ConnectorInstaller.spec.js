@@ -27,7 +27,7 @@ describe('ConnectorInstaller', () => {
   }
 
   beforeEach(() => {
-    jest.resetAllMocks()
+    console.log = jest.fn() // eslint-disable-line no-console
   })
 
   describe('extractRegistrySourceUrl', () => {
