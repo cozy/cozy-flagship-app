@@ -33,6 +33,10 @@ describe('ReactNativeLauncher', () => {
     })
   }
 
+  beforeEach(() => {
+    console.log = jest.fn() // eslint-disable-line no-console
+  })
+
   describe('start', () => {
     it('should work normaly in nominal case', async () => {
       launcher.setStartContext({
