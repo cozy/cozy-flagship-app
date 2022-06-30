@@ -1,5 +1,6 @@
 import CozyClient from 'cozy-client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Minilog from '@cozy/minilog'
 
 import { queryResultToCrypto } from '../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
 import { loginFlagship } from './clientHelpers/loginFlagship'
@@ -7,6 +8,8 @@ import { normalizeFqdn } from './functions/stringHelpers'
 
 import apiKeys from '../api-keys.json'
 import strings from '../strings.json'
+
+const log = Minilog('LoginScreen')
 
 export const STATE_CONNECTED = 'STATE_CONNECTED'
 export const STATE_AUTHORIZE_NEEDED = 'STATE_AUTHORIZE_NEEDED'
@@ -53,6 +56,7 @@ export const getClient = async () => {
     oauth: { token },
     oauthOptions
   })
+  listenTokenRefresh(client)
   client.getStackClient().setOAuthOptions(oauthOptions)
   await client.login({
     uri,
@@ -165,6 +169,8 @@ export const callOnboardingInitClient = async ({
 
   await client.login()
   await saveClient(client)
+  listenTokenRefresh(client)
+
   return client
 }
 
@@ -255,6 +261,7 @@ const connectClient = async ({
 
   await client.login()
   await saveClient(client)
+  listenTokenRefresh(client)
 
   return {
     client: client,
@@ -275,11 +282,19 @@ export const authorizeClient = async ({ client, sessionCode }) => {
 
   await client.login()
   await saveClient(client)
+  listenTokenRefresh(client)
 
   return {
     client: client,
     state: STATE_CONNECTED
   }
+}
+
+const listenTokenRefresh = client => {
+  client.on('tokenRefreshed', () => {
+    log.debug('Token has been refreshed')
+    saveClient(client)
+  })
 }
 
 /**
