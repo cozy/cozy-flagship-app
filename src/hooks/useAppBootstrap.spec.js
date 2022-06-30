@@ -7,7 +7,9 @@ import { useAppBootstrap } from './useAppBootstrap'
 
 const mockHideSplashScreen = jest.fn()
 const mockRemove = jest.fn()
-const mockClient = 'mockClient'
+const mockClient = {
+  getStackClient: jest.fn().mockReturnValue({ fetchJSON: jest.fn() })
+}
 const initialURL = 'initialURL'
 const homeLink = `https://links.mycozy.cloud/home/folder/1?fallback=${initialURL}`
 const appLink = `https://links.mycozy.cloud/drive/folder/1?fallback=${initialURL}`
