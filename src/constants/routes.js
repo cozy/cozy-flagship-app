@@ -5,6 +5,5 @@ export const routes = {
   home: 'home',
   instanceCreation: 'instanceCreation',
   onboarding: 'onboarding',
-  stack: 'stack',
-  welcome: 'welcome'
+  stack: 'stack'
 }

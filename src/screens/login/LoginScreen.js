@@ -28,9 +28,11 @@ import { useSplashScreen } from '/hooks/useSplashScreen'
 import strings from '../../strings.json'
 import { getColors } from '/theme/colors'
 import { NetService } from '/libs/services/NetService'
+import { WelcomeScreen } from '/screens/welcome/WelcomeScreen'
 
 const log = Minilog('LoginScreen')
 
+const WELCOME_STEP = 'WELCOME_STEP'
 const LOADING_STEP = 'LOADING_STEP'
 const CLOUDERY_STEP = 'CLOUDERY_STEP'
 const PASSWORD_STEP = 'PASSWORD_STEP'
@@ -43,7 +45,7 @@ const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 const LoginSteps = ({ navigation, route, setClient }) => {
   const { showSplashScreen } = useSplashScreen()
   const [state, setState] = useState({
-    step: CLOUDERY_STEP
+    step: WELCOME_STEP
   })
 
   useEffect(() => {
@@ -297,6 +299,12 @@ const LoginSteps = ({ navigation, route, setClient }) => {
       waitForTransition: false
     }))
   }, [])
+
+  if (state.step === WELCOME_STEP) {
+    return (
+      <WelcomeScreen onContinue={() => setState({ step: CLOUDERY_STEP })} />
+    )
+  }
 
   if (state.step === CLOUDERY_STEP) {
     return <ClouderyView setInstanceData={setInstanceData} />

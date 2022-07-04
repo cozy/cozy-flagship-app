@@ -6,13 +6,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { WelcomePage } from '/components/html/WelcomePage'
 import { makeHTML } from '/components/makeHTML'
-import { routes } from '/constants/routes'
 import { makeHandlers } from '/libs/functions/makeHandlers'
-import { navigate } from '/libs/RootNavigation'
 import { getColors } from '/theme/colors'
 import { getNavbarHeight } from '/libs/dimensions'
 
-export const WelcomeScreen = () => {
+export const WelcomeScreen = ({ onContinue }) => {
   const colors = getColors()
   const insets = useSafeAreaInsets()
   return (
@@ -26,7 +24,7 @@ export const WelcomeScreen = () => {
     >
       <WebView
         onMessage={makeHandlers({
-          onContinue: () => navigate(routes.authenticate)
+          onContinue: () => onContinue()
         })}
         source={{ html: makeHTML(WelcomePage) }}
         style={{
