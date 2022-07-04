@@ -53,7 +53,9 @@ const handleError = async webviewErrorEvent => {
  * @returns {import('react').ComponentClass}
  */
 export const ClouderyView = ({ setInstanceData }) => {
-  const [uri] = useState(strings.clouderyUri)
+  const [uri] = useState(
+    Platform.OS === 'ios' ? strings.clouderyiOSUri : strings.clouderyAndroidUri
+  )
   const [loading, setLoading] = useState(true)
   const [checkInstanceData, setCheckInstanceData] = useState()
   const webviewRef = useRef()
