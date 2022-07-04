@@ -11,6 +11,8 @@ import { getColors } from '/theme/colors'
 import { getNavbarHeight } from '/libs/dimensions'
 
 export const WelcomeScreen = ({ onContinue }) => {
+  console.log('👩‍💻 WelcomeScreen launched')
+
   const colors = getColors()
   const insets = useSafeAreaInsets()
   return (

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { StyleSheet, View, Platform } from 'react-native'
+import { StyleSheet, View, Platform, KeyboardAvoidingView } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Minilog from '@cozy/minilog'
 
@@ -300,14 +300,24 @@ const LoginSteps = ({ navigation, route, setClient }) => {
     }))
   }, [])
 
-  if (state.step === WELCOME_STEP) {
-    return (
-      <WelcomeScreen onContinue={() => setState({ step: CLOUDERY_STEP })} />
-    )
-  }
+  const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
 
-  if (state.step === CLOUDERY_STEP) {
-    return <ClouderyView setInstanceData={setInstanceData} />
+  if (state.step === WELCOME_STEP || state.step === CLOUDERY_STEP) {
+    return (
+      <Wrapper style={styles.view}>
+        {state.step === WELCOME_STEP && (
+          <WelcomeScreen
+            style={[styles.fullScreen]}
+            onContinue={() => setState({ step: CLOUDERY_STEP })}
+          />
+        )}
+        {/* ClouderyView needs Opacity from 0 to 1 when welcome button clicked */}
+        <ClouderyView
+          style={[styles.cloudery]}
+          setInstanceData={setInstanceData}
+        />
+      </Wrapper>
+    )
   }
 
   if (state.step === PASSWORD_STEP) {
@@ -403,5 +413,11 @@ export const LoginScreen = ({ navigation, route, setClient }) => {
 const styles = StyleSheet.create({
   view: {
     flex: 1
+  },
+  cloudery: {
+    display: 'none' // style is not applied
+  },
+  fullScreen: {
+    height: '100%'
   }
 })
