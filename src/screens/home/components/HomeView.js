@@ -8,16 +8,8 @@ import { useNativeIntent } from 'cozy-intent'
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { resetUIState } from '/libs/intents/setFlagshipUI'
-import { statusBarHeight, getNavbarHeight } from '/libs/dimensions'
 import { useSession } from '/hooks/useSession'
 import { AppState } from 'react-native'
-
-const injectedJavaScriptBeforeContentLoaded = () => `
-  window.addEventListener('load', (event) => {
-    window.document.body.style.setProperty('--flagship-top-height', '${statusBarHeight}px');
-    window.document.body.style.setProperty('--flagship-bottom-height', '${getNavbarHeight()}px');
-  });
-`
 
 const HomeView = ({ route, navigation, setLauncherContext }) => {
   const client = useClient()
@@ -123,7 +115,6 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
       navigation={navigation}
       route={route}
       logId="HomeView"
-      injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded()}
       onMessage={async event => {
         const data = get(event, 'nativeEvent.data')
 

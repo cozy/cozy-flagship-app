@@ -6,12 +6,13 @@ import React, {
 } from 'react'
 
 import Minilog from '@cozy/minilog'
+
 import { getServerBaseFolder } from './httpPaths'
 import HttpServer from './HttpServer'
 import { setCookie } from './httpCookieManager'
 import { fillIndexWithData, getIndexForFqdnAndSlug } from './indexGenerator'
 import { fetchAppDataForSlug } from './indexDataFetcher'
-
+import { addCSS } from './helpers'
 import { queryResultToCrypto } from '../../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
 
 const log = Minilog('HttpServerProvider')
@@ -94,7 +95,7 @@ export const HttpServerProvider = props => {
         indexData: templateValues
       })
 
-      return computedHtml
+      return addCSS(computedHtml)
     } catch (err) {
       log.error(
         `Error while generating Index.html for ${slug}. Cozy-stack version will be used instead. Error was: ${err.message}`
