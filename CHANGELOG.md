@@ -1,3 +1,14 @@
+# 0.0.17
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+
 # 0.0.16
 
 ## ✨ Features
@@ -5,12 +16,18 @@
 
 ## 🐛 Bug Fixes
 
-* Status bar stop disappearing when focus on konnector input text
-* Wait 1 ms to display ClouderyView Overlay to prevent flash white screen
-
+* iOS Status bar stop disappearing when focus on konnector input text ([PR #306](https://github.com/cozy/cozy-react-native/pull/306))
+* Wait 1 ms to display ClouderyView Overlay to prevent flash white screen ([PR #308](https://github.com/cozy/cozy-react-native/pull/308))
+* Fallback to cozy-stack version when index.html failed to be created ([PR #303](https://github.com/cozy/cozy-react-native/pull/303))
+* Handle tar_prefix when downloading cozy-app bundles ([PR #305](https://github.com/cozy/cozy-react-native/pull/305))
+* Fix Android's login that was prevented by wrong intent schemees configuration ([PR #309](https://github.com/cozy/cozy-react-native/pull/309))
+* Fix Android's onboarding by using old scheme instead of UniversalLink ([PR #317](https://github.com/cozy/cozy-react-native/pull/317))
 
 ## 🔧 Tech
 
+* Clear lint warnings ([PR #307](https://github.com/cozy/cozy-react-native/pull/307))
+* Follow react-hooks/exhaustive-deps and no-shadow ([PR #310](https://github.com/cozy/cozy-react-native/pull/310))
+* Improve test code ([PR #311](https://github.com/cozy/cozy-react-native/pull/311) and [PR #312](https://github.com/cozy/cozy-react-native/pull/312))
 
 # 0.0.15
 
