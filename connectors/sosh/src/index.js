@@ -6,10 +6,9 @@ import { format } from 'date-fns'
 const log = Minilog('ContentScript')
 Minilog.enable('soshCCC')
 
-// const BASE_URL = 'https://espace-client.orange.fr'
 const BASE_URL = 'https://www.sosh.fr'
 const DEFAULT_PAGE_URL = BASE_URL + '/client'
-// const LOGIN_URL = ' https://login.orange.fr/?service=sosh&propagation=true&domain=sosh&force_authent=true&return_url=https%3A%2F%2Fwww.sosh.fr%2Fclient#/password'
+const LOGIN_URL = 'https://login.orange.fr/?service=sosh&propagation=true&domain=sosh&force_authent=true&return_url=https%3A%2F%2Fwww.sosh.fr%2Fclient#/password'
 const DEFAULT_SOURCE_ACCOUNT_IDENTIFIER = 'sosh'
 
 let recentBills = []
@@ -18,7 +17,6 @@ let recentPromisesToConvertBlobToBase64 = []
 let oldPromisesToConvertBlobToBase64 = []
 let recentXhrUrls = []
 let oldXhrUrls = []
-let numberOfClick = 0
 let userInfos = []
 
 // The override here is needed to intercept XHR requests made during the navigation
@@ -100,19 +98,35 @@ class SoshContentScript extends ContentScript {
   // ///////
   // PILOT//
   // ///////
-  
+
   async ensureAuthenticated() {
-    await this.goto(DEFAULT_PAGE_URL)
-    await this.waitForElementInWorker('#oecs__aide-contact')
     const credentials = await this.getCredentials()
     if (credentials){
+      await this.goto(DEFAULT_PAGE_URL)
+      await this.waitForElementInWorker('#oecs__aide-contact')
       const helloMessage = await this.runInWorker('getHelloMessage')
-      this.log(helloMessage)
       if(helloMessage){
         // await this.waitForElementInWorker(
         //   '[pause_connected]',
         // )
         return true
+      }
+      const loginPage = await this.runInWorker('getLoginPage')
+      
+      if (!loginPage){
+        const accountPage = await this.runInWorker('getAccountPage')
+        if (!accountPage){
+          const accountListElement = await this.runInWorker('getAccountList')
+          for (let i = 0; i < accountListElement.length; i++) {
+            this.log('getting in accountList loop')
+            const findMail = accountListElement[i]
+            if (findMail === credentials.email){
+              this.log('One mail in accountList match saved credentials, continue')
+              await this.runInWorker('accountSelection', i)
+              break
+            }
+          }
+        }
       }
       this.log('found credentials, processing')
       await this.waitForElementInWorker('p[data-testid="selected-account-login"]')
@@ -128,19 +142,12 @@ class SoshContentScript extends ContentScript {
           return true
         }
         log.debug('found credentials, trying to autoLog')
-        // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-        // await this.waitForElementInWorker(
-        //  '[pause_half_connection]',
-        // )
         await this.tryAutoLogin(credentials, 'half')
         return true
       }
       
       if (credentials.email != testEmail){
         log.debug('getting in different testEmail conditions')
-        // await this.waitForElementInWorker(
-        //   '[pause_diff_mail]',
-        //  )
         await this.clickAndWait('#changeAccountLink','#undefined-label')
         await this.clickAndWait('#undefined-label','#login')
         await this.tryAutoLogin(credentials, 'full')
@@ -148,20 +155,33 @@ class SoshContentScript extends ContentScript {
       }
     }
     if (!credentials){
+      await this.goto(BASE_URL)
+      await this.waitForElementInWorker('#oecs__aide-contact')
+      const helloMessage = await this.runInWorker('getHelloMessage')
+      this.log(helloMessage)
+      if(helloMessage){
+        this.log('no credentials found but user is still logged in')
+        return true
+      }
+      const loginPage = await this.runInWorker('getLoginPage')
+      if(loginPage){
+        await this.runInWorker('clickLoginPage')
+        const accountPage = await this.runInWorker('getAccountPage')
+        if (accountPage){
+          await this.clickAndWait('#oecs__connexion','#undefined-label')
+          await this.waitForUserAuthentication()
+          return true
+        }
+        if (!accountPage){
+          await this.clickAndWait('#oecs__connexion','p[data-testid="selected-account-login"]')
+        }
+      }
       log.debug('no credentials found, use normal user login')
-      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-      // await this.waitForElementInWorker(
-      //  '[pause_no_credentials]',
-      // )
       await this.clickAndWait('#changeAccountLink','#undefined-label')
       await this.clickAndWait('#undefined-label','#login')
       await this.waitForUserAuthentication()
       return true
     }
-
-    await this.waitForElementInWorker(
-      '[pause__failed_connected]',
-    )
     
     log.debug('Not authenticated')
     throw new Error('LOGIN_FAILED')
@@ -244,6 +264,11 @@ class SoshContentScript extends ContentScript {
         let allPdfNumber = await this.runInWorker('getPdfNumber')
         let oldPdfNumber = allPdfNumber - recentPdfNumber
         for (let i = 0; i < recentPdfNumber; i++){
+          const redFrame = await this.runInWorker('checkRedFrame')
+          if(redFrame !== null){
+            this.log('Something went wrong during recent pdfs loading')
+            throw new Error('VENDOR_DOWN')
+          }
           await this.runInWorker('waitForRecentPdfClicked', i)
           await this.clickAndWait(
             'a[class="o-link"]',
@@ -260,6 +285,11 @@ class SoshContentScript extends ContentScript {
         }
         this.log('recentPdf loop ended')
         for (let i = 0; i < oldPdfNumber; i++){
+          const redFrame = await this.runInWorker('checkOldBillsRedFrame')
+          if(redFrame !== null){
+            this.log('Something went wrong during old pdfs loading')
+            throw new Error('VENDOR_DOWN')
+          }
           await this.runInWorker('waitForOldPdfClicked', i)
           await this.clickAndWait(
             'a[class="o-link"]',
@@ -327,6 +357,13 @@ class SoshContentScript extends ContentScript {
           qualificationLabel: 'isp_invoice',
         })
     }
+    await this.clickAndWait('#oecs__popin-ident-button', '#oecs__connecte-se-deconnecter')
+    await this.clickAndWait('#oecs__connecte-se-deconnecter', '#o-ribbon')
+    // // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+    //   await this.waitForElementInWorker(
+    //    '[pause_end]',
+    //   )
+
   }
 
   findMoreBillsButton() {
@@ -370,9 +407,70 @@ class SoshContentScript extends ContentScript {
     return messageSpan
   }
 
+  findLoginButton(){
+    this.log('Starting findLoginButton')
+    const loginButton = document.querySelector('#oecs__connexion')
+    return loginButton
+  }
+
+  findAccountPage(){
+    this.log('Starting findLoginButton')
+    const loginButton = document.querySelector('#oecs__connexion')
+    return loginButton
+  }
+
+  findAccountList(){
+    this.log('Starting findAccountList')
+    let accountList = []
+    const accountListElement = document.querySelectorAll('a[data-oevent-action="clic_liste"]')
+    for (let i = 0; i < accountListElement.length; i++) {
+      let listedEmail = accountListElement[i].childNodes[1].children[0].childNodes[0].innerHTML
+      console.log(listedEmail)
+      accountList.push(listedEmail)
+    }
+    return accountList
+  }
+
   // ////////
   // WORKER//
   // ////////
+
+  async getAccountList(){
+    this.log('Starting getAccountList')
+    const accountList = this.findAccountList()
+    return accountList
+  }
+
+  async clickLoginPage(){
+    this.log('Starting clickLoginPage')
+    document.querySelector('#oecs__connexion').click()
+  }
+
+  async accountSelection(i){
+    this.log('Starting accountSelection')
+    document.querySelectorAll('a[data-oevent-action="clic_liste"]')[i].click()
+  }
+
+  async getAccountPage(){
+    this.log('Starting getAccountPage')
+    const accountButton = this.findAccountPage()
+    return accountButton
+  }
+
+  async getLoginPage(){
+    this.log('Starting findLoginButton')
+    const loginButton = this.findLoginButton()
+    return loginButton
+  }
+
+  async waitForFullLoading(){
+    window.addEventListener('load', (event) => {
+      this.log('Page fully loaded')
+      this.log(document.location.href)
+      return true
+    })
+    return false
+  }
 
   async findAndSendCredentials(loginField) {
     this.log('getting in findAndSendCredentials')
@@ -580,6 +678,12 @@ connector
       'getPdfNumber',
       'waitForRecentPdfClicked',
       'waitForOldPdfClicked',
+      'waitForFullLoading',
+      'getLoginPage',
+      'getAccountPage',
+      'clickLoginPage',
+      'getAccountList',
+      'accountSelection',
     ]
   })
   .catch(err => {
@@ -587,11 +691,11 @@ connector
   })
 
 // Used for debug purposes only
-function sleep(delay) {
-  return new Promise(resolve => {
-    setTimeout(resolve, delay * 1000)
-  })
-}
+// function sleep(delay) {
+//   return new Promise(resolve => {
+//     setTimeout(resolve, delay * 1000)
+//   })
+// }
 
 async function getFileName(date, amount, vendorRef) {
   const digestId = await hashVendorRef(vendorRef)
