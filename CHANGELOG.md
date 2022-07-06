@@ -1,3 +1,14 @@
+# 0.0.18
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+
 # 0.0.17
 
 ## ✨ Features
@@ -5,6 +16,7 @@
 
 ## 🐛 Bug Fixes
 
+* Prevent UI flickering in cozy-home by injecting CSS in the WebView ([PR #318](https://github.com/cozy/cozy-react-native/pull/318))
 
 ## 🔧 Tech
 
