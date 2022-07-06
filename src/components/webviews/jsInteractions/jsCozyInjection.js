@@ -22,17 +22,4 @@ export const jsCozyGlobal = (routeName, isSecureProtocol) => `
   window.cozy.ClientConnectorLauncher = 'react-native'
   window.cozy.flagship = ${makeMetadata(routeName)}
   window.cozy.isSecureProtocol = ${isSecureProtocol || 'false'}
-
-  window.addEventListener('load', event => {
-    window.document.body.classList.add(
-      'flagship-app',
-      'flagship-os-${Platform.OS}',
-      'flagship-route-${routeName}'
-    )
-    // make the webapp non-zoomable
-    var meta = document.createElement('meta')
-    meta.setAttribute('name', 'viewport')
-    meta.setAttribute('content', 'width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no')
-    document.getElementsByTagName('head')[0].appendChild(meta)
-  })
 `
