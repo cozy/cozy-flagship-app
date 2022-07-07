@@ -124,7 +124,7 @@ export const useAppBootstrap = client => {
           setInitialRoute({ stack: undefined, root: undefined })
 
           return setInitialScreen({
-            stack: routes.welcome,
+            stack: routes.authenticate,
             root: routes.stack
           })
         }

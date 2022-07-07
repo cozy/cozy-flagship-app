@@ -26,7 +26,7 @@ export const WelcomeScreen = () => {
     >
       <WebView
         onMessage={makeHandlers({
-          onContinue: () => navigate(routes.authenticate)
+          onContinue: () => navigate(routes.stack)
         })}
         source={{ html: makeHTML(WelcomePage) }}
         style={{

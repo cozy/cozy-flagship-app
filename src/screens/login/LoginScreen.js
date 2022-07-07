@@ -28,6 +28,8 @@ import { useSplashScreen } from '/hooks/useSplashScreen'
 import strings from '../../strings.json'
 import { getColors } from '/theme/colors'
 import { NetService } from '/libs/services/NetService'
+import { routes } from '/constants/routes'
+import { navigate } from '/libs/RootNavigation'
 
 const log = Minilog('LoginScreen')
 
@@ -296,6 +298,10 @@ const LoginSteps = ({ navigation, route, setClient }) => {
       ...oldState,
       waitForTransition: false
     }))
+  }, [])
+
+  useEffect(() => {
+    navigate(routes.welcome)
   }, [])
 
   if (state.step === CLOUDERY_STEP) {
