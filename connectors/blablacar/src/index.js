@@ -1,7 +1,6 @@
 import ContentScript from '../../connectorLibs/ContentScript'
 import {kyScraper as ky} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
-import get from 'lodash/get'
 
 const log = Minilog('ContentScript')
 Minilog.enable()
@@ -53,7 +52,7 @@ class BlablacarContentScript extends ContentScript {
       ],
       phone: [
         {
-          number: get(session, 'phone.raw_input'),
+          number: session?.phone?.raw_input,
         },
       ],
     }

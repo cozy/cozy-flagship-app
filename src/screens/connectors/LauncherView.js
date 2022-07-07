@@ -1,7 +1,6 @@
 import Minilog from '@cozy/minilog'
 import { withClient } from 'cozy-client'
 import debounce from 'lodash/debounce'
-import get from 'lodash/get'
 import React, { Component } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { WebView } from 'react-native-webview'
@@ -79,7 +78,7 @@ class LauncherView extends Component {
     this.launcher.setStartContext({
       ...this.props.launcherContext,
       client: this.props.client,
-      manifest: get(this, 'state.connector.manifest')
+      manifest: this?.state?.connector?.manifest
     })
   }
 
@@ -88,7 +87,7 @@ class LauncherView extends Component {
     this.launcher.setStartContext({
       ...this.props.launcherContext,
       client: this.props.client,
-      manifest: get(this, 'state.connector.manifest')
+      manifest: this?.state?.connector?.manifest
     })
     const initConnectorError = await this.initConnector()
 
@@ -109,7 +108,7 @@ class LauncherView extends Component {
           pilotWebView: this.pilotWebView,
           workerWebview: this.workerWebview
         },
-        contentScript: get(this, 'state.connector.content')
+        contentScript: this?.state?.connector?.content
       })
     }
     await this.launcher.start({ initConnectorError })
@@ -139,7 +138,7 @@ class LauncherView extends Component {
                 ref={ref => (this.pilotWebView = ref)}
                 originWhitelist={['*']}
                 source={{
-                  uri: get(this, 'state.connector.manifest.vendor_link')
+                  uri: this?.state?.connector?.manifest?.vendor_link
                 }}
                 useWebKit={true}
                 javaScriptEnabled={true}
@@ -147,10 +146,9 @@ class LauncherView extends Component {
                 sharedCookiesEnabled={true}
                 onMessage={this.onPilotMessage}
                 onError={this.onPilotError}
-                injectedJavaScriptBeforeContentLoaded={get(
-                  this,
-                  'state.connector.content'
-                )}
+                injectedJavaScriptBeforeContentLoaded={
+                  this?.state?.connector?.content
+                }
               />
             </View>
             <View style={workerStyle}>
@@ -179,10 +177,9 @@ class LauncherView extends Component {
                 sharedCookiesEnabled={true}
                 onMessage={this.onWorkerMessage}
                 onError={this.onWorkerError}
-                injectedJavaScriptBeforeContentLoaded={get(
-                  this,
-                  'state.connector.content'
-                )}
+                injectedJavaScriptBeforeContentLoaded={
+                  this?.state?.connector?.content
+                }
               />
             </View>
           </>

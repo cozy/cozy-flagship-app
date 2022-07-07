@@ -1,7 +1,6 @@
 import ContentScript from '../../connectorLibs/ContentScript'
 import {kyScraper as ky} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
-import get from 'lodash/get'
 import {format} from 'date-fns'
 import waitFor from 'p-wait-for'
 import {formatHousing} from './utils'
@@ -174,7 +173,7 @@ class EdfContentScript extends ContentScript {
     }
 
     const contractNumber = parseFloat(
-      get(result, 'feSouscriptionResponse.tradeNumber'),
+      result?.feSouscriptionResponse?.tradeNumber,
     )
     const subPath = contracts.folders[contractNumber]
     if (!subPath) {
@@ -187,10 +186,10 @@ class EdfContentScript extends ContentScript {
     const isMonthly =
       result.monthlyPaymentAllowedStatus === 'MENS' &&
       result.paymentSchedule &&
-      get(result, 'paymentSchedule.deadlines')
+      result?.paymentSchedule?.deadlines
 
     if (isMonthly) {
-      const startDate = new Date(get(result, 'paymentSchedule.startDate'))
+      const startDate = new Date(result?.paymentSchedule?.startDate)
       const bills = result.paymentSchedule.deadlines
         .filter(bill => bill.payment === 'EFFECTUE')
         .map(bill => ({
@@ -232,9 +231,7 @@ class EdfContentScript extends ContentScript {
         })
       const filename = `${format(
         new Date(
-          get(
-            paymentDocuments[0],
-            'listOfPaymentsByAccDTO[0].lastPaymentDocument.creationDate',
+          paymentDocuments[0]?.listOfPaymentsByAccDTO?.[0]?.lastPaymentDocument?.creationDate,
           ),
         ),
         'yyyy',
@@ -513,7 +510,7 @@ class EdfContentScript extends ContentScript {
     const context = await ky
       .get(BASE_URL + '/services/rest/context/getCustomerContext')
       .json()
-    const mail = get(context, 'bp.mail')
+    const mail = context?.bp?.mail
     if (mail) {
       return {
         sourceAccountIdentifier: mail,

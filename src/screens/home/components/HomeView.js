@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { get } from 'lodash'
 import { useFocusEffect } from '@react-navigation/native'
 
 import { useClient, generateWebLink } from 'cozy-client'
@@ -116,7 +115,7 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
       route={route}
       logId="HomeView"
       onMessage={async event => {
-        const data = get(event, 'nativeEvent.data')
+        const data = event?.nativeEvent?.data
 
         if (data) {
           const { methodName, message, value } = JSON.parse(data)

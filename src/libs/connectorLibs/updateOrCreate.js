@@ -1,5 +1,4 @@
 import Minilog from '@cozy/minilog'
-import get from 'lodash/get'
 import { Q } from 'cozy-client'
 const log = Minilog('updateOrCreate')
 
@@ -27,8 +26,7 @@ const updateOrCreate = async (
     const toUpdate = existings.find(doc =>
       matchingAttributes.reduce(
         (isMatching, matchingAttribute) =>
-          isMatching &&
-          get(doc, matchingAttribute) === get(entry, matchingAttribute),
+          isMatching && doc?.[matchingAttribute] === entry?.[matchingAttribute],
         true
       )
     )

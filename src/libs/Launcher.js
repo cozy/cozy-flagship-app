@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Q, models } from 'cozy-client'
 import Minilog from '@cozy/minilog'
-import get from 'lodash/get'
 import set from 'lodash/set'
 
 import { saveFiles, saveBills, saveIdentity } from './connectorLibs'
@@ -144,7 +143,7 @@ export default class Launcher {
   async ensureAccountNameAndFolder() {
     const { trigger, account, client } = this.getStartContext()
 
-    const firstRun = !get(account, 'auth.accountName')
+    const firstRun = !account?.auth?.accountName
     if (!firstRun) {
       return
     }

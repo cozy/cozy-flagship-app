@@ -1,5 +1,4 @@
 import Minilog from '@cozy/minilog'
-import get from 'lodash/get'
 
 const log = Minilog('Utils')
 
@@ -110,7 +109,7 @@ export function convertConsumption(yearlyData = [], monthlyData = []) {
 }
 
 export function getEnergyTypeFromContract(contract) {
-  return get(contract, 'subscribeOffer.energy') === 'ELECTRICITE'
+  return contract?.subscribeOffer?.energy === 'ELECTRICITE'
     ? 'electricity'
     : 'gas'
 }
@@ -132,12 +131,12 @@ export function formatHousing(
 ) {
   const consumptions = {
     electricity: convertConsumption(
-      get(rawConsumptions, 'elec.yearlyElecEnergies'),
-      get(rawConsumptions, 'elec.monthlyElecEnergies'),
+      rawConsumptions?.elec?.yearlyElecEnergies,
+      rawConsumptions?.elec?.monthlyElecEnergies,
     ),
     gas: convertConsumption(
-      get(rawConsumptions, 'gas.yearlyGasEnergies'),
-      get(rawConsumptions, 'gas.monthlyGasEnergies'),
+      rawConsumptions?.gas?.yearlyGasEnergies,
+      rawConsumptions?.gas?.monthlyGasEnergies,
     ),
   }
 
@@ -150,9 +149,9 @@ export function formatHousing(
         vendor: 'edfclientside',
         contract_number: c.number,
         energy_type: energyType,
-        contract_type: get(c, 'subscribeOffer.offerName'),
+        contract_type: c?.subscribeOffer?.offerName,
         powerkVA: parseInt(
-          get(contractElec, 'supplyContractParameters.SUBSCRIBED_POWER'),
+          contractElec?.supplyContractParameters?.SUBSCRIBED_POWER,
           10,
         ),
         [energyType + '_consumptions']: consumptions[energyType],
@@ -179,7 +178,7 @@ export function formatHousing(
         heatingSystem.principalHeatingSystemType,
       ),
       water_heating_system: convertWaterHeatingSystem(
-        get(equipment, 'sanitoryHotWater.sanitoryHotWaterType'),
+        equipment?.sanitoryHotWater?.sanitoryHotWaterType,
       ),
       baking_types: convertBakingTypes(equipment.cookingEquipment),
       address: detail.adress,

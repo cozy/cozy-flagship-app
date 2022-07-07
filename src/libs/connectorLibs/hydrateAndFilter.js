@@ -1,4 +1,3 @@
-import get from 'lodash/get'
 import uniqBy from 'lodash/uniqBy'
 import { Q } from 'cozy-client'
 import Minilog from '@cozy/minilog'
@@ -68,7 +67,7 @@ const hydrateAndFilter = async (documents = [], doctype, options = {}) => {
   const createHash = item => {
     return keys
       .map(key => {
-        let result = get(item, key)
+        let result = item?.[key]
         if (key === 'date') {
           result = new Date(result)
         }

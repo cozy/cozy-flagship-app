@@ -1,4 +1,3 @@
-import get from 'lodash/get'
 import waitFor from 'p-wait-for'
 import Minilog from '@cozy/minilog'
 
@@ -313,7 +312,7 @@ export default class ContentScript {
   calculateFileKey(file, fileIdAttributes) {
     return fileIdAttributes
       .sort()
-      .map(key => get(file, key))
+      .map(key => file?.[key])
       .join('####')
   }
 
@@ -407,7 +406,7 @@ export default class ContentScript {
 }
 
 function sendContentScriptReadyEvent() {
-  if (get(window, 'ReactNativeWebView.postMessage')) {
+  if (window?.ReactNativeWebView?.postMessage) {
     window.ReactNativeWebView.postMessage(
       JSON.stringify({ message: 'NEW_WORKER_INITIALIZING' })
     )

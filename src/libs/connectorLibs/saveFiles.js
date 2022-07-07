@@ -171,10 +171,9 @@ function noMetadataDeduplicationWarning(options) {
     )
   }
 
-  const sourceAccountIdentifier = get(
-    options,
-    'sourceAccountOptions.sourceAccountIdentifier'
-  )
+  const sourceAccountIdentifier =
+    options?.sourceAccountOptions?.sourceAccountIdentifier
+
   if (!sourceAccountIdentifier) {
     log.warn(
       'No sourceAccountIdentifier is defined in options, file deduplication will be based on file path'
@@ -185,10 +184,8 @@ function noMetadataDeduplicationWarning(options) {
 async function getFileIfExists(entry, options) {
   const fileIdAttributes = options.fileIdAttributes
   const slug = options.manifest.slug
-  const sourceAccountIdentifier = get(
-    options,
-    'sourceAccountOptions.sourceAccountIdentifier'
-  )
+  const sourceAccountIdentifier =
+    options?.sourceAccountOptions?.sourceAccountIdentifier
 
   const isReadyForFileMetadata =
     fileIdAttributes && slug && sourceAccountIdentifier
@@ -330,7 +327,7 @@ const defaultShouldReplaceFile = (file, entry, options) => {
   const shouldForceMetadataAttr = attr => {
     const result =
       !getAttribute(file, `metadata.${attr}`) &&
-      get(entry, `fileAttributes.metadata.${attr}`)
+      entry?.fileAttributes?.metadata?.[attr]
     if (result) {
       log.debug(`filereplacement: adding ${attr} metadata`)
     }
@@ -339,11 +336,10 @@ const defaultShouldReplaceFile = (file, entry, options) => {
   // replace all files with meta if there is file metadata to add
   const fileHasNoMetadata = !getAttribute(file, 'metadata')
   const fileHasNoId = !getAttribute(file, 'metadata.fileIdAttributes')
-  const entryHasMetadata = !!get(entry, 'fileAttributes.metadata')
-  const hasSourceAccountIdentifierOption = !!get(
-    options,
-    'sourceAccountOptions.sourceAccountIdentifier'
-  )
+  const entryHasMetadata = !!entry?.fileAttributes?.metadata
+  const hasSourceAccountIdentifierOption =
+    !!options?.sourceAccountOptions?.sourceAccountIdentifier
+
   const fileHasSourceAccountIdentifier = !!getAttribute(
     file,
     'cozyMetadata.sourceAccountIdentifier'
@@ -458,7 +454,7 @@ function getValOrFnResult(val, ...args) {
 function calculateFileKey(entry, fileIdAttributes) {
   return fileIdAttributes
     .sort()
-    .map(key => get(entry, key))
+    .map(key => entry?.[key])
     .join('####')
 }
 
@@ -497,7 +493,7 @@ function getFilePath({ file, entry, options }) {
 }
 
 function getAttribute(obj, attribute) {
-  return get(obj, `attributes.${attribute}`, get(obj, attribute))
+  return obj?.attributes?.[attribute] || obj?.[attribute]
 }
 
 async function getOrCreateDestinationPath(entry, saveOptions) {
