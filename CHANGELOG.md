@@ -2,6 +2,7 @@
 
 ## ✨ Features
 
+* feat(welcome): Preload login when displaying Welcome screen ([PR #326](https://github.com/cozy/cozy-react-native/pull/326))
 
 ## 🐛 Bug Fixes
 

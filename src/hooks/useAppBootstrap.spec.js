@@ -119,7 +119,7 @@ it('should set routes.stack and authenticate - when onboard_url not provided', a
   expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
 })
 
-it('Should handle welcome page', async () => {
+it('should load authenticate page by default', async () => {
   const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
 
   await waitForValueToChange(() => result.current.isLoading)
@@ -127,7 +127,7 @@ it('Should handle welcome page', async () => {
   expect(result.current).toStrictEqual({
     client: undefined,
     initialScreen: {
-      stack: routes.welcome,
+      stack: routes.authenticate,
       root: routes.stack
     },
     initialRoute: {
@@ -140,7 +140,7 @@ it('Should handle welcome page', async () => {
   expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
 })
 
-it('Should handle NO client NO initial URL', async () => {
+it('should load authenticate page when NO client NO initial URL', async () => {
   const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
 
   await waitForValueToChange(() => result.current.isLoading)
@@ -148,7 +148,7 @@ it('Should handle NO client NO initial URL', async () => {
   expect(result.current).toStrictEqual({
     client: undefined,
     initialScreen: {
-      stack: routes.welcome,
+      stack: routes.authenticate,
       root: routes.stack
     },
     initialRoute: {
@@ -161,7 +161,7 @@ it('Should handle NO client NO initial URL', async () => {
   expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
 })
 
-it('Should handle NO client WITH initial URL as HOME', async () => {
+it('Should load authenticate page when NO client WITH initial URL as HOME', async () => {
   Linking.getInitialURL.mockResolvedValueOnce(homeLink)
 
   const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
@@ -171,7 +171,7 @@ it('Should handle NO client WITH initial URL as HOME', async () => {
   expect(result.current).toStrictEqual({
     client: undefined,
     initialScreen: {
-      stack: routes.welcome,
+      stack: routes.authenticate,
       root: routes.stack
     },
     initialRoute: {
@@ -182,7 +182,7 @@ it('Should handle NO client WITH initial URL as HOME', async () => {
   })
 })
 
-it('Should handle NO client WITH initial URL as APP', async () => {
+it('should load authenticate page when NO client WITH initial URL as APP', async () => {
   Linking.getInitialURL.mockResolvedValueOnce(appLink)
 
   const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
@@ -192,7 +192,7 @@ it('Should handle NO client WITH initial URL as APP', async () => {
   expect(result.current).toStrictEqual({
     client: undefined,
     initialScreen: {
-      stack: routes.welcome,
+      stack: routes.authenticate,
       root: routes.stack
     },
     initialRoute: {
@@ -205,7 +205,7 @@ it('Should handle NO client WITH initial URL as APP', async () => {
   expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
 })
 
-it('Should handle NO client WITH initial URL as INVALID', async () => {
+it('should load authenticate page when NO client WITH initial URL as INVALID', async () => {
   Linking.getInitialURL.mockResolvedValueOnce(invalidLink)
 
   const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
@@ -215,7 +215,7 @@ it('Should handle NO client WITH initial URL as INVALID', async () => {
   expect(result.current).toStrictEqual({
     client: undefined,
     initialScreen: {
-      stack: routes.welcome,
+      stack: routes.authenticate,
       root: routes.stack
     },
     initialRoute: {
