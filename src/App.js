@@ -84,8 +84,6 @@ const App = ({ setClient }) => {
       >
         {params => <CreateInstanceScreen {...params} />}
       </Stack.Screen>
-
-      <Stack.Screen component={WelcomeScreen} name={routes.welcome} />
     </Stack.Navigator>
   )
 
@@ -95,6 +93,16 @@ const App = ({ setClient }) => {
       screenOptions={{ headerShown: false }}
     >
       <Root.Screen name={routes.stack} component={StackNavigator} />
+
+      <Root.Screen
+        name={routes.welcome}
+        component={WelcomeScreen}
+        options={{
+          presentation: 'modal',
+          animationEnabled: false
+        }}
+        {...(initialRoute.root ? { initialParams: initialRoute.root } : {})}
+      />
 
       <Root.Screen
         name={routes.error}
