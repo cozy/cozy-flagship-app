@@ -1,6 +1,11 @@
+import Minilog from '@cozy/minilog'
+import { withClient } from 'cozy-client'
+import debounce from 'lodash/debounce'
+import get from 'lodash/get'
 import React, { Component } from 'react'
-import { WebView } from 'react-native-webview'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import { WebView } from 'react-native-webview'
+
 // TODO find a proper way to load a connector only when needed
 import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
 import templateConnector from '../../../connectors/template/dist/webviewScript'
@@ -11,13 +16,9 @@ import edfConnector from '../../../connectors/edf/dist/webviewScript'
 import soshConnector from '../../../connectors/sosh/dist/webviewScript'
 import { BackTo } from '/components/ui/icons/BackTo'
 import { statusBarHeight } from '/libs/dimensions'
-import ReactNativeLauncher from '../../libs/ReactNativeLauncher'
+import ReactNativeLauncher from '/libs/ReactNativeLauncher'
 import { getColors } from '/theme/colors'
 import strings from '/strings.json'
-import debounce from 'lodash/debounce'
-import { withClient } from 'cozy-client'
-import { get } from 'lodash'
-import Minilog from '@cozy/minilog'
 
 const log = Minilog('LauncherView')
 
