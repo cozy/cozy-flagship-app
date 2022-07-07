@@ -27,7 +27,25 @@ import { CryptoWebView } from './components/webviews/CryptoWebView/CryptoWebView
 import { withSentry } from './Sentry'
 import { ErrorScreen } from './screens/error/ErrorScreen.jsx'
 import { WelcomeScreen } from './screens/welcome/WelcomeScreen'
+import RNFS from 'react-native-fs'
+import Minilog from '@cozy/minilog'
 
+import Transform from './transform'
+const logger = new Transform()
+logger.write = function (name, level, args) {
+  const date = new Date().toISOString()
+
+  const output = `${date} -- ${name} ${level} ${JSON.stringify(args || {})}`
+  RNFS.appendFile(RNFS.DocumentDirectoryPath + '/logs.txt', `${output}\n`)
+}
+Minilog.unpipe()
+Minilog.pipe(logger)
+
+const log = Minilog('AppJS')
+
+Minilog.enable()
+
+log.info('LOGGIN INTO ' + RNFS.DocumentDirectoryPath)
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
 
