@@ -50,9 +50,10 @@ const handleError = async webviewErrorEvent => {
  *
  * @param {object} props
  * @param {setInstanceData} props.setInstanceData
+ * @param {hasFocus} props.hasFocus - in case welcome screen displayed
  * @returns {import('react').ComponentClass}
  */
-export const ClouderyView = ({ setInstanceData }) => {
+export const ClouderyView = ({ setInstanceData, hasFocus }) => {
   const [uri] = useState(
     Platform.OS === 'ios' ? strings.clouderyiOSUri : strings.clouderyAndroidUri
   )
@@ -94,10 +95,10 @@ export const ClouderyView = ({ setInstanceData }) => {
   }, [checkInstanceData, setInstanceData])
 
   useEffect(() => {
-    if (webviewRef && !loading) {
+    if (hasFocus && webviewRef && !loading) {
       setFocusOnWebviewField(webviewRef.current, 'email')
     }
-  }, [loading, webviewRef])
+  }, [loading, webviewRef, hasFocus])
 
   const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
 

@@ -43,6 +43,7 @@ const ERROR_STEP = 'ERROR_STEP'
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
 const LoginSteps = ({ navigation, route, setClient }) => {
+  const [welcomeDisplayed, setWelcomeDisplayed] = useState(false)
   const { showSplashScreen } = useSplashScreen()
   const [state, setState] = useState({
     step: CLOUDERY_STEP
@@ -301,11 +302,17 @@ const LoginSteps = ({ navigation, route, setClient }) => {
   }, [])
 
   useEffect(() => {
+    setWelcomeDisplayed(true)
     navigate(routes.welcome)
   }, [])
 
   if (state.step === CLOUDERY_STEP) {
-    return <ClouderyView setInstanceData={setInstanceData} />
+    return (
+      <ClouderyView
+        setInstanceData={setInstanceData}
+        hasFocus={!welcomeDisplayed}
+      />
+    )
   }
 
   if (state.step === PASSWORD_STEP) {
