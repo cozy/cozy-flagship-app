@@ -95,6 +95,12 @@ export const ClouderyView = ({ setInstanceData, hasFocus }) => {
   }, [checkInstanceData, setInstanceData])
 
   useEffect(() => {
+    if (!hasFocus) {
+      setDisplayOverlay(true)
+    }
+  }, [hasFocus])
+
+  useEffect(() => {
     if (hasFocus && webviewRef && !loading) {
       setFocusOnWebviewField(webviewRef.current, 'email')
     }

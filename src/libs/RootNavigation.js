@@ -15,7 +15,12 @@ export const goBack = () => navigationRef.goBack()
 
 export const navigate = (name, params) => {
   try {
-    if (isReady()) return navigationRef.navigate(name, params)
+    if (isReady()) {
+      console.log('🧝‍i s ready')
+      console.log({ name, params })
+
+      return navigationRef.navigate(name, params)
+    }
 
     const unsubscribe = navigationRef.addListener('state', () => {
       unsubscribe()

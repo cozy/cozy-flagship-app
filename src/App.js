@@ -98,7 +98,7 @@ const App = ({ setClient }) => {
         name={routes.welcome}
         component={WelcomeScreen}
         options={{
-          presentation: 'transparentModal'
+          presentation: 'modal'
         }}
       />
 

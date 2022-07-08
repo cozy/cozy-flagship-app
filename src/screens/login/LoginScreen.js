@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { StyleSheet, View, Platform } from 'react-native'
+import { StyleSheet, View, Platform, BackHandler } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Minilog from '@cozy/minilog'
 
@@ -30,6 +30,7 @@ import { getColors } from '/theme/colors'
 import { NetService } from '/libs/services/NetService'
 import { routes } from '/constants/routes'
 import { navigate } from '/libs/RootNavigation'
+import { hideSplashScreen } from '/libs/services/SplashScreenService'
 
 const log = Minilog('LoginScreen')
 
@@ -299,6 +300,26 @@ const LoginSteps = ({ navigation, route, setClient }) => {
       ...oldState,
       waitForTransition: false
     }))
+  }, [])
+
+  useEffect(() => {
+    const handleBackPress = () => {
+      console.log('🧝‍ handleBackPress')
+      setWelcomeDisplayed(true)
+      navigate(routes.onboarding)
+      console.log('🧝‍ onboarding')
+      navigate(routes.stack)
+      console.log('🧝‍ stack')
+      navigate(routes.welcome)
+      console.log('🧝‍ welcome')
+      hideSplashScreen()
+    }
+    console.log('🧝‍useEffect')
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+    return () => {
+      console.log('🧝‍remove')
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+    }
   }, [])
 
   useEffect(() => {
