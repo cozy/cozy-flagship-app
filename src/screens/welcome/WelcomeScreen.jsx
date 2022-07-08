@@ -1,5 +1,5 @@
-import React from 'react'
-import { StyleSheet, View, Platform } from 'react-native'
+import React, { useEffect } from 'react'
+import { StyleSheet, View, Platform, BackHandler } from 'react-native'
 
 import WebView from 'react-native-webview'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -15,6 +15,16 @@ import { getNavbarHeight } from '/libs/dimensions'
 export const WelcomeScreen = () => {
   const colors = getColors()
   const insets = useSafeAreaInsets()
+
+  useEffect(() => {
+    const handleBackPress = () => BackHandler.exitApp()
+
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+  }, [])
+
   return (
     <View
       style={[
