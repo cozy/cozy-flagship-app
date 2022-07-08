@@ -61,6 +61,64 @@ afterEach(() => {
   expect(mockRemove).toHaveBeenCalledTimes(1)
 })
 
+it('should set routes.stack and instance creation - when onboard_url provided', async () => {
+  // Given
+  const paramOnboardUrl = 'param-onboard-url'
+  const onboardingUrl = `http://localhost:8080/onboarding-url?onboard_url=${paramOnboardUrl}&fqdn=param-fqdn`
+  Linking.getInitialURL.mockResolvedValueOnce(onboardingUrl)
+
+  const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
+
+  await waitForValueToChange(() => result.current.isLoading)
+
+  expect(result.current).toStrictEqual({
+    client: undefined,
+    initialScreen: {
+      params: {
+        onboardUrl: paramOnboardUrl
+      },
+      stack: routes.instanceCreation,
+      root: routes.stack
+    },
+    initialRoute: {
+      stack: undefined,
+      root: undefined
+    },
+    isLoading: false
+  })
+
+  expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
+})
+
+it('should set routes.stack and authenticate - when onboard_url not provided', async () => {
+  // Given
+  const paramFqdn = `param-fqdn`
+  const onboardingUrl = `http://localhost:8080/onboarding-url?fqdn=${paramFqdn}`
+  Linking.getInitialURL.mockResolvedValueOnce(onboardingUrl)
+
+  const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
+
+  await waitForValueToChange(() => result.current.isLoading)
+
+  expect(result.current).toStrictEqual({
+    client: undefined,
+    initialScreen: {
+      stack: routes.authenticate,
+      root: routes.stack,
+      params: {
+        fqdn: paramFqdn
+      }
+    },
+    initialRoute: {
+      stack: undefined,
+      root: undefined
+    },
+    isLoading: false
+  })
+
+  expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
+})
+
 it('Should handle welcome page', async () => {
   const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
 
