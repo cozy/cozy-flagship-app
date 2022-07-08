@@ -20,6 +20,7 @@
 
 ## 🔧 Tech
 
+* Specify correct stack routes when app bootstraps ([PR #331](https://github.com/cozy/cozy-react-native/pull/331))
 
 # 0.0.16
 

@@ -102,7 +102,7 @@ export const useAppBootstrap = client => {
 
             return setInitialScreen({
               stack: routes.instanceCreation,
-              root: routes.nested,
+              root: routes.stack,
               params: {
                 onboardUrl
               }
@@ -112,7 +112,7 @@ export const useAppBootstrap = client => {
 
             return setInitialScreen({
               stack: routes.authenticate,
-              root: routes.nested,
+              root: routes.stack,
               params: {
                 fqdn
               }
