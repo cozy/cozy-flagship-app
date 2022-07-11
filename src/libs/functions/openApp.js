@@ -49,7 +49,9 @@ const openAppNative = async appNativeData => {
 
   const canOpenApp = await Linking.canOpenURL(schema)
 
-  if (canOpenApp) {
+  // openURL is temporarily disabled on iOS 15+ until we fix the related cozy-pass crash
+  const majorVersionIOS = +Platform.Version
+  if (canOpenApp && (Platform.OS !== 'ios' || majorVersionIOS < 15)) {
     return Linking.openURL(schema)
   } else {
     return new Promise(resolve => {
