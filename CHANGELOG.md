@@ -1,4 +1,4 @@
-# 0.0.18
+# 0.0.19
 
 ## ✨ Features
 
@@ -8,6 +8,22 @@
 
 ## 🔧 Tech
 
+
+# 0.0.18
+
+## ✨ Features
+
+* Improve UI for `close` button in connectors' launcher ([PR #329](https://github.com/cozy/cozy-react-native/pull/329))
+
+## 🐛 Bug Fixes
+
+* Prevent UI flickering in cozy-home by injecting CSS in the WebView ([PR #321](https://github.com/cozy/cozy-react-native/pull/321))
+* Remove supernumerary question mark from clouderyiOSUri ([PR #327](https://github.com/cozy/cozy-react-native/pull/327))
+
+## 🔧 Tech
+
+* Specify correct stack routes when app bootstraps ([PR #331](https://github.com/cozy/cozy-react-native/pull/331))
+* Enable Typescript support ([PR #322](https://github.com/cozy/cozy-react-native/pull/322))
 
 # 0.0.17
 
@@ -20,7 +36,6 @@
 
 ## 🔧 Tech
 
-* Specify correct stack routes when app bootstraps ([PR #331](https://github.com/cozy/cozy-react-native/pull/331))
 
 # 0.0.16
 
