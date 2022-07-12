@@ -11,6 +11,12 @@ import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { useSession } from '/hooks/useSession'
 import { AppState } from 'react-native'
 
+const unzoomHomeView = webviewRef => {
+  webviewRef.injectJavaScript(
+    'window.dispatchEvent(new Event("closeApp"));true;'
+  )
+}
+
 const HomeView = ({ route, navigation, setLauncherContext }) => {
   const client = useClient()
   const [uri, setUri] = useState('')
@@ -18,16 +24,16 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
   const nativeIntent = useNativeIntent()
   const session = useSession()
   const didBlurOnce = useRef(false)
+  const [webviewRef, setParentRef] = useState()
 
   useEffect(() => {
     const subscription = AppState.addEventListener(
       'change',
-      nextAppState =>
-        nextAppState === 'active' && nativeIntent?.call(uri, 'closeApp')
+      nextAppState => nextAppState === 'active' && unzoomHomeView(webviewRef)
     )
 
-    return () => subscription.remove()
-  }, [nativeIntent, uri])
+    return subscription.remove
+  }, [webviewRef])
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
@@ -36,15 +42,15 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
     })
 
     return unsubscribe
-  }, [navigation, uri, trackedWebviewInnerUri])
+  }, [navigation, trackedWebviewInnerUri])
 
   useFocusEffect(
     useCallback(() => {
       if (didBlurOnce.current) {
-        nativeIntent.call(uri, 'closeApp')
+        unzoomHomeView(webviewRef)
         resetUIState(uri)
       }
-    }, [nativeIntent, uri])
+    }, [uri, webviewRef])
   )
 
   useFocusEffect(
@@ -99,7 +105,7 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
     if (!uri && session.subDomainType) {
       getHomeUri()
     }
-  }, [uri, client, route, nativeIntent, navigation, session])
+  }, [uri, client, route, navigation, session])
 
   const handleTrackWebviewInnerUri = webviewInneruri => {
     if (webviewInneruri !== trackedWebviewInnerUri) {
@@ -109,6 +115,7 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
 
   return uri ? (
     <CozyProxyWebView
+      setParentRef={setParentRef}
       slug="home"
       href={uri}
       trackWebviewInnerUri={handleTrackWebviewInnerUri}

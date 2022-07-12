@@ -32,6 +32,7 @@ export const CozyWebView = ({
   trackWebviewInnerUri,
   route,
   injectedJavaScriptBeforeContentLoaded,
+  setParentRef,
   ...rest
 }) => {
   const isSecureProtocol = useIsSecureProtocol()
@@ -128,7 +129,10 @@ export const CozyWebView = ({
       originWhitelist={['http://*', 'https://*', 'intent://*']}
       useWebKit={true}
       javaScriptEnabled={true}
-      ref={ref => setWebviewRef(ref)}
+      ref={ref => {
+        setWebviewRef(ref)
+        setParentRef?.(ref)
+      }}
       TEST_ONLY_setRef={setWebviewRef}
       decelerationRate="normal" // https://github.com/react-native-webview/react-native-webview/issues/1070
       onShouldStartLoadWithRequest={initialRequest => {
