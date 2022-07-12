@@ -20,12 +20,13 @@ class AmazonContentScript extends ContentScript {
       url: baseUrl,
       visible: false,
     })
+
     await this.waitForElementInWorker('#nav-progressive-greeting')
     const authenticated = await this.runInWorker('checkAuthenticated')
     this.log('Authenticated : '+authenticated)
     if (!authenticated) {
       await this.showLoginFormAndWaitForAuthentication()
-      if (this.store && this.store.email) {
+      if (this.store && (this.store.email || this.store.password)) {
         this.log(JSON.stringify(this.store))
         await this.saveCredentials(this.store)
       }
@@ -35,15 +36,6 @@ class AmazonContentScript extends ContentScript {
 
   //W
   async checkAuthenticated() {
-    // Get login ID with a listener
-    const loginField = document.querySelector('#ap_email_login')
-    if (loginField) {
-      loginField.addEventListener(
-        'change',
-        this.findAndSendCredentials.bind(this)
-      )
-    }
-
     const result = Boolean(document.querySelector('#nav-greeting-name'))
     this.log('Authentification detection : '+result)
     return result
@@ -52,14 +44,18 @@ class AmazonContentScript extends ContentScript {
   //W
   findAndSendCredentials(e) {
     const emailField = document.querySelector('#ap_email_login')
-//    const passwordField = document.querySelector('#password2-password-field')
-    if (emailField /*&& passwordField*/) {
+    const passwordField = document.querySelector('#ap_password')
+    this.log('Executing findAndSendCredentials')
+    if (emailField) {
       this.sendToPilot({
-        email: emailField.value,
-//        password: passwordField.value,
+        email: emailField.value
       })
     }
-
+    if (passwordField) {
+      this.sendToPilot({
+        password: passwordField.value
+      })
+    }
     return true
   }
 
@@ -75,16 +71,55 @@ class AmazonContentScript extends ContentScript {
       'a[id="nav-logobar-greeting"]',
       '#ap_email_login'
     )
+
     await this.bridge.call('setWorkerState', {
       visible: true
     })
-    this.log('Waiting on login form')
 
+    this.log('Waiting on login form')
+    await this.runInWorker('setListenerLogin')
+    await this.waitForElementInWorker('[name="rememberMe"]')
+    await this.runInWorker('checkingBox')
+
+    await this.runInWorker('setListenerPassword')
     await this.runInWorkerUntilTrue({method: 'waitForAuthenticated'})
     await this.bridge.call('setWorkerState', {
       visible: false,
     })
   }
+
+  //W
+  async setListenerLogin() {
+    const loginField = document.querySelector('#ap_email_login')
+    if (loginField) {
+      loginField.addEventListener(
+        'change',
+        this.findAndSendCredentials.bind(this)
+      )
+    }
+  }
+
+  //W
+  async setListenerPassword() {
+    const passwordField = document.querySelector('#ap_password')
+    if (passwordField) {
+      passwordField.addEventListener(
+        'change',
+        this.findAndSendCredentials.bind(this)
+      )
+    }
+  }
+
+  //W
+  async checkingBox() {
+    const checkbox = document.querySelector('[name="rememberMe"]')
+    // Checking the 'Stay connected' checkbox when loaded
+    if (checkbox.checked == false) {
+      this.log('Checking the RememberMe box')
+      checkbox.click()
+    }
+  }
+
 
   //P
   async fetch(context) {
@@ -174,7 +209,6 @@ class AmazonContentScript extends ContentScript {
           sourceAccountIdentifier: credentials.email
         }
       } else {
-        //Throw an error. Which One
         this.log('No credentials found')
       }
     }
@@ -183,7 +217,12 @@ class AmazonContentScript extends ContentScript {
 
 const connector = new AmazonContentScript()
 connector
-  .init({additionalExposedMethodsNames: ['getYears']
+  .init({additionalExposedMethodsNames: [
+    'getYears',
+    'checkingBox',
+    'setListenerLogin',
+    'setListenerPassword'
+  ]
         })
   .catch((err) => {
     console.warn(err)
