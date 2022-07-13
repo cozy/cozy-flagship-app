@@ -372,12 +372,22 @@ export const fetchCozyAppArchiveInfoForVersion = async (
 ) => {
   const stackClient = client.getStackClient()
 
-  const { tar_prefix: tarPrefix = '' } = await stackClient.fetchJSON(
-    'GET',
-    `/registry/${slug}/${version}`
-  )
+  try {
+    const { tar_prefix: tarPrefix = '' } = await stackClient.fetchJSON(
+      'GET',
+      `/registry/${slug}/${version}`
+    )
 
-  return {
-    tarPrefix
+    return {
+      tarPrefix
+    }
+  } catch (e) {
+    if (e.status === 404) {
+      return {
+        tarPrefix: ''
+      }
+    }
+
+    throw e
   }
 }
