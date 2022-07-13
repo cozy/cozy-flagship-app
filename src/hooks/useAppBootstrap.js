@@ -5,13 +5,13 @@ import { useEffect, useState } from 'react'
 import strings from '../strings.json'
 import { NetService } from '/libs/services/NetService'
 import { SentryTags, setSentryTag } from '/Sentry'
+import { devConfig } from '/config/dev'
 import { manageIconCache } from '/libs/functions/iconTable'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
-import { useSplashScreen } from './useSplashScreen'
-import { localConfig } from '/config/local'
+import { useSplashScreen } from '/hooks/useSplashScreen'
 
-if (localConfig.ignoreLogBox) LogBox.ignoreAllLogs()
+if (devConfig.ignoreLogBox) LogBox.ignoreAllLogs()
 
 const log = Minilog('useAppBootstrap')
 
@@ -71,6 +71,8 @@ export const useAppBootstrap = client => {
   const [initialScreen, setInitialScreen] = useState('fetching')
   const [isLoading, setIsLoading] = useState(true)
   const { hideSplashScreen } = useSplashScreen()
+
+  if (devConfig.forceHideSplashScreen) hideSplashScreen()
 
   // Handling initial URL init
   useEffect(() => {
