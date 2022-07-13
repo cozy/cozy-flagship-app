@@ -188,3 +188,9 @@ Verify that the Cozy you are login into is using the last version of `cozy-home`
 3. Error on app `Tried to register two views with the same name RCTIndexInjectionWebView`
 
 This may happen after development's HotReload occurs. When encountered just restart the app. This should not happen on production.
+
+4. Cozy-app `cozy-notes` is not working when served locally
+
+`cozy-notes` bundle relies on a specific `tar_prefix`. When served from local `--appDir` then no `tar_prefix` is applied. However the Cozy's registry sends info from production app which has a defined `tar_prefix`.
+This would break the app as ReactNative will try to serve local assets using a non-existing directory.
+To prevent conflict on this, please increase your local `cozy-notes`'s version in the built `manifest.webapp` for a version that does not exist in production (i.e: `"version": "0.0.X.notexisting"`)
