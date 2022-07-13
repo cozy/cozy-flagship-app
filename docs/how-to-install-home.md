@@ -1,6 +1,6 @@
 # How to install cozy-home in local assets
 
-On first launch, the application should be abble to display the cozy-home app as fast as possible
+On first launch, the application should be able to display the cozy-home app as fast as possible
 
 To do so, we chose to embed a copy of cozy-home's build in the app's assets
 
