@@ -1,3 +1,4 @@
+import flow from 'lodash/fp/flow'
 import React, {
   createContext,
   useContext,
@@ -7,18 +8,20 @@ import React, {
 
 import Minilog from '@cozy/minilog'
 
-import { compose } from '/libs/functions/compose'
-import { getServerBaseFolder } from './httpPaths'
-import HttpServer from './HttpServer'
-import { setCookie } from './httpCookieManager'
-import { fillIndexWithData, getIndexForFqdnAndSlug } from './indexGenerator'
-import { fetchAppDataForSlug } from './indexDataFetcher'
+import HttpServer from '/libs/httpserver/HttpServer'
+import { fetchAppDataForSlug } from '/libs/httpserver/indexDataFetcher'
+import { getServerBaseFolder } from '/libs/httpserver/httpPaths'
+import { queryResultToCrypto } from '/components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
+import { setCookie } from '/libs/httpserver/httpCookieManager'
 import {
   addBodyClasses,
   addMetaAttributes,
   addBarStyles
 } from './server-helpers'
-import { queryResultToCrypto } from '../../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
+import {
+  fillIndexWithData,
+  getIndexForFqdnAndSlug
+} from '/libs/httpserver/indexGenerator'
 
 const log = Minilog('HttpServerProvider')
 
@@ -100,11 +103,7 @@ export const HttpServerProvider = props => {
         indexData: templateValues
       })
 
-      return compose(
-        addBarStyles,
-        addBodyClasses,
-        addMetaAttributes
-      )(computedHtml)
+      return flow(addBarStyles, addBodyClasses, addMetaAttributes)(computedHtml)
     } catch (err) {
       log.error(
         `Error while generating Index.html for ${slug}. Cozy-stack version will be used instead. Error was: ${err.message}`
