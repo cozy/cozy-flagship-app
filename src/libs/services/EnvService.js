@@ -1,5 +1,5 @@
 import strings from '/strings.json'
-import { localConfig } from '/config/local'
+import { devConfig } from '/config/dev'
 
 let enableSentryOn = [strings.environments.production]
 
@@ -24,7 +24,7 @@ const name = envNames[Object.entries(envStatus).find(value => value[1])[0]]
 
 const nameIs = envName => envName === name
 
-if (localConfig.sentry) toggleLocalSentry(true)
+if (devConfig.sentry) toggleLocalSentry(true)
 
 const hasSentryEnabled = enableSentryOn.some(
   environment => environment === name

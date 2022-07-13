@@ -12,7 +12,7 @@ import {
   setCurrentAppVersionForFqdnAndSlug
 } from '../cozyAppBundle/cozyAppBundleConfiguration'
 import { replaceAll } from '../functions/stringHelpers'
-import { localConfig } from '/config/local'
+import { devConfig } from '/config/dev'
 
 const log = Minilog('IndexGenerator')
 
@@ -45,7 +45,7 @@ const initLocalBundleIfNotExist = async (fqdn, slug) => {
 }
 
 export const getIndexForFqdnAndSlug = async (fqdn, slug) => {
-  if (localConfig.disableGetIndex) return false // Make cozy-app hosted by webpack-dev-server work with HTTPServer
+  if (devConfig.disableGetIndex) return false // Make cozy-app hosted by webpack-dev-server work with HTTPServer
 
   await initLocalBundleIfNotExist(fqdn, slug)
 
