@@ -74,6 +74,8 @@ To have access to the AsyncStorage content you can install those
 async-storage and async-storage-advanced (see https://github.com/cozy/cozy-react-native/pull/270
 for more information)
 
+A guide for debugging in release mode can be found here: [How to retrieve logs in release mode](docs/how-to-retrieve-logs-in-release.md)
+
 ## How to run SNCF Connector
 
 1. Sncf connector
