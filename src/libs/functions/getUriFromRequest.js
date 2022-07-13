@@ -1,5 +1,6 @@
-import strings from '../../strings.json'
-import { compose } from './compose'
+import flow from 'lodash/fp/flow'
+
+import strings from '/strings.json'
 
 const abort = 'https://urlwithnofqdn'
 
@@ -27,7 +28,7 @@ const handleProtocol = url => {
 }
 
 export const getUriFromRequest = req =>
-  compose(
+  flow(
     validateRequest,
     getFqdn,
     validateFqdn,
