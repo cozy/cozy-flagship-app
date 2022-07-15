@@ -1,4 +1,4 @@
-# 0.0.19
+# 0.0.20
 
 ## ✨ Features
 
@@ -8,6 +8,21 @@
 
 ## 🔧 Tech
 
+
+# 0.0.19
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* Improve `closeApp` mechanism to avoid race condition with handshake from cozy-app view ([PR #336](https://github.com/cozy/cozy-react-native/pull/336))
+
+## 🔧 Tech
+
+* Add new `forceHideSplashScreen` option in dev config ([PR #333](https://github.com/cozy/cozy-react-native/pull/333))
+* Remove custom `flow()` implementation ([PR #339](https://github.com/cozy/cozy-react-native/pull/339))
+* Add guide for debugging app in Release mode ([PR #340](https://github.com/cozy/cozy-react-native/pull/340))
 
 # 0.0.18
 
