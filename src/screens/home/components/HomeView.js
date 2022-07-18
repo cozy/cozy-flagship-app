@@ -12,7 +12,7 @@ import { useSession } from '/hooks/useSession'
 import { AppState } from 'react-native'
 
 const unzoomHomeView = webviewRef => {
-  webviewRef.injectJavaScript(
+  webviewRef?.injectJavaScript(
     'window.dispatchEvent(new Event("closeApp"));true;'
   )
 }
