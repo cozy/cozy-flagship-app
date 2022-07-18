@@ -17,9 +17,16 @@ const makeMetadata = routeName =>
 
 export const jsCozyGlobal = (routeName, isSecureProtocol) => `
   if (!window.cozy) window.cozy = {}
-
   window.cozy.isFlagshipApp = true
   window.cozy.ClientConnectorLauncher = 'react-native'
   window.cozy.flagship = ${makeMetadata(routeName)}
   window.cozy.isSecureProtocol = ${isSecureProtocol || 'false'}
+  // We have random issue on iOS when the app's script is executed
+  // before the view port. To fix that, we wait the load Event 
+  // and then we dispatch the resize even to wake up 
+  // cozy-ui's breakpoint.
+  // for instance https://stackoverflow.com/questions/5508455/mobile-safari-window-reports-980px/35987682#35987682
+  window.addEventListener('load', () => {
+    window.dispatchEvent(new Event('resize'));
+  })
 `
