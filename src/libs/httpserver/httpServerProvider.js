@@ -102,8 +102,17 @@ export const HttpServerProvider = props => {
         indexContent: rawHtml,
         indexData: templateValues
       })
-
-      return flow(addBarStyles, addBodyClasses, addMetaAttributes)(computedHtml)
+      if (slug === 'home') {
+        return flow(
+          addBarStyles,
+          addBodyClasses,
+          addMetaAttributes
+        )(computedHtml)
+      } else {
+        // We do not need the bar styles for other app. We only need it for
+        // the Home application since this is the only "immersive app"
+        return flow(addBodyClasses, addMetaAttributes)(computedHtml)
+      }
     } catch (err) {
       log.error(
         `Error while generating Index.html for ${slug}. Cozy-stack version will be used instead. Error was: ${err.message}`
