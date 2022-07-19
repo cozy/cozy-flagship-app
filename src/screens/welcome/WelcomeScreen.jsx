@@ -1,18 +1,17 @@
-import React from 'react'
-import { StyleSheet, View, Platform } from 'react-native'
+import React, { useState } from 'react'
+import { BackHandler, StyleSheet, View, Platform } from 'react-native'
 
 import WebView from 'react-native-webview'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { WelcomePage } from '/components/html/WelcomePage'
 import { makeHTML } from '/components/makeHTML'
-import { routes } from '/constants/routes'
 import { makeHandlers } from '/libs/functions/makeHandlers'
-import { navigate } from '/libs/RootNavigation'
 import { getColors } from '/theme/colors'
 import { getNavbarHeight } from '/libs/dimensions'
+import { LoginScreen } from '/screens/login/LoginScreen'
 
-export const WelcomeScreen = () => {
+const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
   const colors = getColors()
   const insets = useSafeAreaInsets()
   return (
@@ -26,7 +25,7 @@ export const WelcomeScreen = () => {
     >
       <WebView
         onMessage={makeHandlers({
-          onContinue: () => navigate(routes.authenticate)
+          onContinue: () => setIsWelcomeModalDisplayed(false)
         })}
         source={{ html: makeHTML(WelcomePage) }}
         style={{
@@ -41,8 +40,41 @@ export const WelcomeScreen = () => {
     </View>
   )
 }
+
+export const WelcomeScreen = ({ navigation, route, setClient }) => {
+  const [isWelcomeModalDisplayed, setIsWelcomeModalDisplayed] = useState(true)
+
+  const handleBackPress = () => {
+    if (isWelcomeModalDisplayed) {
+      BackHandler.exitApp()
+    } else {
+      setIsWelcomeModalDisplayed(true)
+    }
+  }
+
+  return (
+    <>
+      <LoginScreen
+        style={styles.view}
+        disabledFocus={isWelcomeModalDisplayed}
+        navigation={navigation}
+        route={route}
+        setClient={setClient}
+        goBack={handleBackPress}
+      />
+      {isWelcomeModalDisplayed && (
+        <WelcomeView setIsWelcomeModalDisplayed={setIsWelcomeModalDisplayed} />
+      )}
+    </>
+  )
+}
+
 const styles = StyleSheet.create({
   view: {
-    flex: 1
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%'
   }
 })

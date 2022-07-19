@@ -1,5 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  BackHandler,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  View
+} from 'react-native'
 import { WebView } from 'react-native-webview'
 
 import Minilog from '@cozy/minilog'
@@ -52,7 +58,7 @@ const handleError = async webviewErrorEvent => {
  * @param {setInstanceData} props.setInstanceData
  * @returns {import('react').ComponentClass}
  */
-export const ClouderyView = ({ setInstanceData }) => {
+export const ClouderyView = ({ setInstanceData, disabledFocus }) => {
   const [uri] = useState(
     Platform.OS === 'ios' ? strings.clouderyiOSUri : strings.clouderyAndroidUri
   )
@@ -60,6 +66,7 @@ export const ClouderyView = ({ setInstanceData }) => {
   const [checkInstanceData, setCheckInstanceData] = useState()
   const webviewRef = useRef()
   const colors = getColors()
+  const [canGoBack, setCanGoBack] = useState(false)
 
   const handleNavigation = request => {
     const instance = getUriFromRequest(request)
@@ -94,10 +101,27 @@ export const ClouderyView = ({ setInstanceData }) => {
   }, [checkInstanceData, setInstanceData])
 
   useEffect(() => {
-    if (webviewRef && !loading) {
+    // add a parameter
+    if (webviewRef && !loading && !disabledFocus) {
       setFocusOnWebviewField(webviewRef.current, 'email')
     }
-  }, [loading, webviewRef])
+  }, [loading, webviewRef, disabledFocus])
+
+  const handleBackPress = useCallback(() => {
+    if (!canGoBack) {
+      return false
+    }
+
+    webviewRef.current.goBack()
+    return true
+  }, [canGoBack, webviewRef])
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+  }, [handleBackPress])
 
   const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
 
@@ -116,6 +140,9 @@ export const ClouderyView = ({ setInstanceData }) => {
       <WebView
         source={{ uri: uri }}
         ref={webviewRef}
+        onNavigationStateChange={event => {
+          setCanGoBack(event.canGoBack)
+        }}
         onShouldStartLoadWithRequest={handleNavigation}
         onLoadEnd={() => setLoading(false)}
         injectedJavaScriptBeforeContentLoaded={run}
