@@ -32,7 +32,7 @@
     "base-64": "^1.0.0",
     "bluebird-retry": "^0.11.0",
     "cheerio": "^1.0.0-rc.9",
-    "cozy-client": "^29.2.0",
+    "cozy-client": "^32.2.4",
     "cozy-client-js": "^0.20.0",
     "cozy-device-helper": "^2.2.0",
     "cozy-flags": "^2.9.0",
