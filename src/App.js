@@ -85,7 +85,9 @@ const App = ({ setClient }) => {
         {params => <CreateInstanceScreen {...params} />}
       </Stack.Screen>
 
-      <Stack.Screen component={WelcomeScreen} name={routes.welcome} />
+      <Stack.Screen name={routes.welcome}>
+        {params => <WelcomeScreen setClient={setClient} {...params} />}
+      </Stack.Screen>
     </Stack.Navigator>
   )
 

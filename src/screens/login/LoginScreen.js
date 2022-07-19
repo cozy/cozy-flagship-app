@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { StyleSheet, View, Platform } from 'react-native'
+import { BackHandler, Platform, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Minilog from '@cozy/minilog'
 
@@ -40,7 +40,13 @@ const ERROR_STEP = 'ERROR_STEP'
 
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
-const LoginSteps = ({ navigation, route, setClient }) => {
+const LoginSteps = ({
+  disabledFocus,
+  goBack,
+  navigation,
+  route,
+  setClient
+}) => {
   const { showSplashScreen } = useSplashScreen()
   const [state, setState] = useState({
     step: CLOUDERY_STEP
@@ -49,6 +55,24 @@ const LoginSteps = ({ navigation, route, setClient }) => {
   useEffect(() => {
     log.debug(`Enter state ${state.step}`)
   }, [state])
+
+  const handleBackPress = useCallback(() => {
+    if (goBack) {
+      setState({
+        step: CLOUDERY_STEP
+      })
+      goBack()
+      return true
+    }
+    return false
+  }, [goBack])
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+  }, [handleBackPress])
 
   useEffect(() => {
     if (state.loginData && state.step === PASSWORD_STEP) {
@@ -299,7 +323,12 @@ const LoginSteps = ({ navigation, route, setClient }) => {
   }, [])
 
   if (state.step === CLOUDERY_STEP) {
-    return <ClouderyView setInstanceData={setInstanceData} />
+    return (
+      <ClouderyView
+        disabledFocus={disabledFocus}
+        setInstanceData={setInstanceData}
+      />
+    )
   }
 
   if (state.step === PASSWORD_STEP) {
@@ -369,7 +398,13 @@ const LoginSteps = ({ navigation, route, setClient }) => {
   }
 }
 
-export const LoginScreen = ({ navigation, route, setClient }) => {
+export const LoginScreen = ({
+  disabledFocus,
+  goBack,
+  navigation,
+  route,
+  setClient
+}) => {
   const colors = getColors()
   const insets = useSafeAreaInsets()
   return (
@@ -382,7 +417,13 @@ export const LoginScreen = ({ navigation, route, setClient }) => {
       ]}
     >
       <View style={{ height: statusBarHeight }} />
-      <LoginSteps navigation={navigation} route={route} setClient={setClient} />
+      <LoginSteps
+        navigation={navigation}
+        route={route}
+        setClient={setClient}
+        disabledFocus={disabledFocus}
+        goBack={goBack}
+      />
       <View
         style={{
           height: Platform.OS === 'ios' ? insets.bottom : getNavbarHeight()
