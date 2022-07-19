@@ -1,10 +1,27 @@
-# 0.0.20
+# 0.0.21
 
 ## ✨ Features
 
 
 ## 🐛 Bug Fixes
 
+
+## 🔧 Tech
+
+
+# 0.0.20
+
+## ✨ Features
+
+* Improve `Amazon` Client Side Connector by persisting credentials and user session ([PR #338](https://github.com/cozy/cozy-react-native/pull/338))
+
+## 🐛 Bug Fixes
+
+* Set blue background on PasswordView to prevent white flash in some scenario ([PR #342](https://github.com/cozy/cozy-react-native/pull/342))
+* Fix crash on iOS app start ([PR #344](https://github.com/cozy/cozy-react-native/pull/344))
+* Fix style issues on iOS due to incorrect `isMobile` detection ([PR #346](https://github.com/cozy/cozy-react-native/pull/346))
+* Fix style margins for cozy-apps views that should have been applied only on the cozy-home view ([PR #345](https://github.com/cozy/cozy-react-native/pull/345))
+* Correctly store new client's token in the device after a refreshToken ([PR #313](https://github.com/cozy/cozy-react-native/pull/313))
 
 ## 🔧 Tech
 
