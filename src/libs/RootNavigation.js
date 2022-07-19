@@ -16,7 +16,7 @@ export const goBack = () => navigationRef.goBack()
 export const navigate = (name, params) => {
   try {
     if (isReady()) {
-      console.log('🧝‍i s ready')
+      console.log('🧝‍RootNavigation: is ready')
       console.log({ name, params })
 
       return navigationRef.navigate(name, params)

@@ -17,11 +17,13 @@ export const WelcomeScreen = () => {
   const insets = useSafeAreaInsets()
 
   useEffect(() => {
-    console.log('🧝🧝🧝 use effect')
+    console.log('🧝🧝🧝 WelcomeScreen: use effect')
 
     const handleBackPress = () => BackHandler.exitApp()
     BackHandler.addEventListener('hardwareBackPress', handleBackPress)
     return () => {
+      console.log('🧝🧝🧝 WelcomeScreen: unmounted')
+
       BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
     }
   }, [])

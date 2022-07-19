@@ -302,32 +302,45 @@ const LoginSteps = ({ navigation, route, setClient }) => {
     }))
   }, [])
 
-  useEffect(() => {
-    const handleBackPress = () => {
-      console.log('🧝‍ handleBackPress')
-      setWelcomeDisplayed(true)
-      navigate(routes.onboarding)
-      console.log('🧝‍ onboarding')
-      navigate(routes.stack)
-      console.log('🧝‍ stack')
-      navigate(routes.welcome)
-      console.log('🧝‍ welcome')
-      hideSplashScreen()
-    }
-    console.log('🧝‍useEffect')
-    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
-    return () => {
-      console.log('🧝‍remove')
-      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
-    }
-  }, [])
+  // useEffect(() => {
+  //   const handleBackPress = () => {
+  //     console.log('🧝‍ LoginScreen: handleBackPress')
+  //     setWelcomeDisplayed(true)
+  //     // navigate(routes.onboarding)
+  //     // console.log('🧝‍ LoginScreen: onboarding')
+  //     // navigate(routes.stack)
+  //     // console.log('🧝‍ LoginScreen: stack')
+  //     navigate(routes.welcome)
+  //     console.log('🧝‍ LoginScreen: welcome')
+  //     hideSplashScreen()
+  //   }
+  //   console.log(
+  //     '🧝LoginScreen: useEffect => addEventListener hardwareBackPress'
+  //   )
+  //   BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+  //   return () => {
+  //     console.log('🧝‍LoginScreen:  removeEventListener hardwareBackPress')
+  //     BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+  //   }
+  // }, [])
 
   useEffect(() => {
-    setWelcomeDisplayed(true)
     navigate(routes.welcome)
   }, [])
 
   if (state.step === CLOUDERY_STEP) {
+    // if (welcomeDisplayed) {
+    //   return (
+    //     <ErrorView
+    //       errorMessage={state.errorMessage}
+    //       error={state.error}
+    //       button={{
+    //         callback: cancelLogin,
+    //         title: 'WELCOME SHOULD BE DISPLAYED'
+    //       }}
+    //     />
+    //   )
+    // }
     return (
       <ClouderyView
         setInstanceData={setInstanceData}
