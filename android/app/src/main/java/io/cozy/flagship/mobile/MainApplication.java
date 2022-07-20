@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import android.webkit.WebView;
 import com.rnfs.RNFSPackage;
+import com.facebook.react.modules.network.OkHttpClientProvider;
 
 import io.cozy.flagship.mobile.keyboard.KeyboardPackage;
 import io.cozy.flagship.mobile.httpserver.HttpServerPackage;
@@ -58,6 +59,7 @@ public class MainApplication extends Application implements ReactApplication {
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
     WebView.setWebContentsDebuggingEnabled(true);
+    OkHttpClientProvider.setOkHttpClientFactory(new UserAgentClientFactory());
   }
 
   /**
