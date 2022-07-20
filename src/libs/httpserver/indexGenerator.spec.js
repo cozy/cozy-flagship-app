@@ -1,3 +1,4 @@
+import RN from 'react-native'
 import RNFS from 'react-native-fs'
 
 import { fillIndexWithData, getIndexForFqdnAndSlug } from './indexGenerator'
@@ -13,6 +14,12 @@ import {
 } from './httpPaths'
 
 import { getAssetVersion, prepareAssets } from './copyAllFilesFromBundleAssets'
+
+jest.mock('react-native', () => ({
+  Platform: {
+    OS: 'ios'
+  }
+}))
 
 jest.mock('react-native-fs', () => ({
   DocumentDirectoryPath: 'SOME_DocumentDirectoryPath',
@@ -311,6 +318,28 @@ describe('indexGenerator', () => {
       const result = await getIndexForFqdnAndSlug(fqdn, slug)
 
       expect(result).toBe(false)
+    })
+
+    describe(`TEMPORARY hack until we fil 'window.history' in iOS`, () => {
+      it(`should not try to generate index.html if slug is 'mespapiers' and platform is 'iOS'`, async () => {
+        const fqdn = 'cozy.tools'
+        const slug = 'mespapiers'
+        RN.Platform.OS = 'ios'
+
+        const result = await getIndexForFqdnAndSlug(fqdn, slug)
+
+        expect(result).toBe(false)
+      })
+
+      it(`should generate index.html if slug is 'mespapiers' and platform is 'android'`, async () => {
+        const fqdn = 'cozy.tools'
+        const slug = 'mespapiers'
+        RN.Platform.OS = 'android'
+
+        const result = await getIndexForFqdnAndSlug(fqdn, slug)
+
+        expect(result).toBe('SOME_FILE_CONTENT')
+      })
     })
   })
 })
