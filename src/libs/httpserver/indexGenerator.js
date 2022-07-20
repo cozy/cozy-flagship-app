@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 import Minilog from '@cozy/minilog'
 
@@ -15,6 +16,13 @@ import { replaceAll } from '../functions/stringHelpers'
 import { devConfig } from '/config/dev'
 
 const log = Minilog('IndexGenerator')
+
+// The slug's blocklist should be use to prevent
+// the list slugs to be injected using HttpServer
+// Instead those slugs will be served from cozy-stack
+const slugBlocklist = [
+  { platform: 'ios', slug: 'mespapiers' } // mespapiers cannot be injected until we fix window.history bug on iOS
+]
 
 const initLocalBundleIfNotExist = async (fqdn, slug) => {
   if (slug !== 'home') {
@@ -44,8 +52,16 @@ const initLocalBundleIfNotExist = async (fqdn, slug) => {
   }
 }
 
+const isSlugInBlocklist = slug =>
+  slugBlocklist.some(
+    blocklistedSlug =>
+      blocklistedSlug.slug === slug && blocklistedSlug.platform === Platform.OS
+  )
+
 export const getIndexForFqdnAndSlug = async (fqdn, slug) => {
   if (devConfig.disableGetIndex) return false // Make cozy-app hosted by webpack-dev-server work with HTTPServer
+
+  if (isSlugInBlocklist(slug)) return false
 
   await initLocalBundleIfNotExist(fqdn, slug)
 
