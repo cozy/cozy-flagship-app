@@ -16,6 +16,7 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
+#import <React/RCTHTTPRequestHandler.h>
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -26,6 +27,18 @@ static void InitializeFlipper(UIApplication *application) {
   [client addPlugin:[[FlipperKitNetworkPlugin alloc] initWithNetworkAdapter:[SKIOSNetworkAdapter new]]];
   [client start];
 }
+
+static void SetCustomNSURLSessionConfiguration() {
+  RCTSetCustomNSURLSessionConfigurationProvider(^NSURLSessionConfiguration *{
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    
+    NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSString * userAgent = [NSString stringWithFormat:@"io.cozy.flagship.mobile-%@", appVersionString];
+    configuration.HTTPAdditionalHeaders = @{ @"User-Agent": userAgent };
+    
+    return configuration;
+  });
+}
 #endif
 
 @implementation AppDelegate
@@ -35,6 +48,7 @@ static void InitializeFlipper(UIApplication *application) {
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
+  SetCustomNSURLSessionConfiguration();
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
