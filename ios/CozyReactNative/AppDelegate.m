@@ -33,7 +33,8 @@ static void SetCustomNSURLSessionConfiguration() {
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     
     NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-    NSString * userAgent = [NSString stringWithFormat:@"io.cozy.flagship.mobile-%@", appVersionString];
+    NSString * bundleIdentifier = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"];
+    NSString * userAgent = [NSString stringWithFormat:@"%@-%@", bundleIdentifier, appVersionString];
     configuration.HTTPAdditionalHeaders = @{ @"User-Agent": userAgent };
     
     return configuration;
