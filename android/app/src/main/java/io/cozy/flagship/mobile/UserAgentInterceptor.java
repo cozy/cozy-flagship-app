@@ -16,10 +16,9 @@ public class UserAgentInterceptor implements Interceptor {
     Request originalRequest = chain.request();
     Request requestWithUserAgent = originalRequest.newBuilder()
       .removeHeader("User-Agent")
-      .addHeader("User-Agent", "io.cozy.flagship.mobile" + "-" + BuildConfig.VERSION_NAME)
+      .addHeader("User-Agent", BuildConfig.APPLICATION_ID + "-" + BuildConfig.VERSION_NAME)
       .build();
 
     return chain.proceed(requestWithUserAgent);
   }
-
 }
