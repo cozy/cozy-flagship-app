@@ -102,86 +102,11 @@ class SoshContentScript extends ContentScript {
   async ensureAuthenticated() {
     const credentials = await this.getCredentials()
     if (credentials){
-      await this.goto(DEFAULT_PAGE_URL)
-      await this.waitForElementInWorker('#oecs__aide-contact')
-      const helloMessage = await this.runInWorker('getHelloMessage')
-      if(helloMessage){
-        // await this.waitForElementInWorker(
-        //   '[pause_connected]',
-        // )
-
-        //If helloMessage is found, return true to continue the process as we are already logged in
-        return true
-      }
-      const loginPage = await this.runInWorker('getLoginPage')
-      
-      if (!loginPage){
-        const accountPage = await this.runInWorker('getAccountPage')
-        if (!accountPage){
-          const accountListElement = await this.runInWorker('getAccountList')
-          for (let i = 0; i < accountListElement.length; i++) {
-            this.log('getting in accountList loop')
-            const findMail = accountListElement[i]
-            if (findMail === credentials.email){
-              this.log('One mail in accountList match saved credentials, continue')
-              await this.runInWorker('accountSelection', i)
-              break
-            }
-          }
-        }
-      }
-      this.log('found credentials, processing')
-      await this.waitForElementInWorker('p[data-testid="selected-account-login"]')
-      
-      const testEmail = await this.runInWorker('getTestEmail')
-      
-      
-      if (credentials.email === testEmail ){
-        const stayLogButton = await this.runInWorker('getStayLoggedButton')
-        if ( stayLogButton != null) {
-          stayLogButton.click()
-          await this.waitForElementInWorker('#oecs__connecte')
-          return true
-        }
-        log.debug('found credentials, trying to autoLog')
-        await this.tryAutoLogin(credentials, 'half')
-        return true
-      }
-      
-      if (credentials.email != testEmail){
-        log.debug('getting in different testEmail conditions')
-        await this.clickAndWait('#changeAccountLink','#undefined-label')
-        await this.clickAndWait('#undefined-label','#login')
-        await this.tryAutoLogin(credentials, 'full')
-        return true
-      }
+      await this.checkAuthWithCredentials(credentials)
+      return true
     }
     if (!credentials){
-      await this.goto(BASE_URL)
-      await this.waitForElementInWorker('#oecs__aide-contact')
-      const helloMessage = await this.runInWorker('getHelloMessage')
-      this.log(helloMessage)
-      if(helloMessage){
-        this.log('no credentials found but user is still logged in')
-        return true
-      }
-      const loginPage = await this.runInWorker('getLoginPage')
-      if(loginPage){
-        await this.runInWorker('clickLoginPage')
-        const accountPage = await this.runInWorker('getAccountPage')
-        if (accountPage){
-          await this.clickAndWait('#oecs__connexion','#undefined-label')
-          await this.waitForUserAuthentication()
-          return true
-        }
-        if (!accountPage){
-          await this.clickAndWait('#oecs__connexion','p[data-testid="selected-account-login"]')
-        }
-      }
-      log.debug('no credentials found, use normal user login')
-      await this.clickAndWait('#changeAccountLink','#undefined-label')
-      await this.clickAndWait('#undefined-label','#login')
-      await this.waitForUserAuthentication()
+      await this.checkAuthWithoutCredentials()
       return true
     }
     
@@ -436,9 +361,117 @@ class SoshContentScript extends ContentScript {
     return accountList
   }
 
+  async checkAuthWithCredentials(credentials){
+    await this.goto(DEFAULT_PAGE_URL)
+    await this.waitForElementInWorker('#oecs__aide-contact')
+    const helloMessage = await this.runInWorker('getHelloMessage')
+    if(helloMessage){
+      // await this.waitForElementInWorker(
+      //   '[pause_connected]',
+      // )
+
+      //If helloMessage is found, return true to continue the process as we are already logged in
+      return true
+    }
+    const loginPage = await this.runInWorker('getLoginPage')
+    
+    if (!loginPage){
+      const accountPage = await this.runInWorker('getAccountPage')
+      if (!accountPage){
+        const accountListElement = await this.runInWorker('getAccountList')
+        for (let i = 0; i < accountListElement.length; i++) {
+          this.log('getting in accountList loop')
+          const findMail = accountListElement[i]
+          if (findMail === credentials.email){
+            this.log('One mail in accountList match saved credentials, continue')
+            await this.runInWorker('accountSelection', i)
+            break
+          }
+        }
+      }
+    }
+    this.log('found credentials, processing')
+
+    await this.clickAndWait('#oecs__connexion', 'p[data-testid="selected-account-login"]')
+    // await this.waitForElementInWorker('p[data-testid="selected-account-login"]')
+    
+    const testEmail = await this.runInWorker('getTestEmail')
+    
+    
+    if (credentials.email === testEmail ){
+      await this.sameMailLogin(credentials)
+      
+    }
+    
+    if (credentials.email != testEmail){
+      await this.differentMailLogin(credentials)
+    }
+  }
+
+  async checkAuthWithoutCredentials(){
+    await this.goto(BASE_URL)
+    await this.waitForElementInWorker('#oecs__aide-contact')
+    const helloMessage = await this.runInWorker('getHelloMessage')
+    this.log(helloMessage)
+    if(helloMessage){
+      this.log('no credentials found but user is still logged in')
+      return true
+    }
+    const loginPage = await this.runInWorker('getLoginPage')
+    if(loginPage){
+      await this.runInWorker('clickLoginPage')
+      const accountPage = await this.runInWorker('getAccountPage')
+      if (accountPage){
+        await this.clickAndWait('#oecs__connexion','#changeAccountLink')
+        await this.waitForUserAuthentication()
+        return true
+      }
+      if (!accountPage){
+        await this.clickAndWait('#oecs__connexion','p[data-testid="selected-account-login"]')
+      }
+    }
+    const alreadyConnected = await this.runInWorker('getLogoutButton')
+    if (alreadyConnected){
+      await this.clickAndWait('span[class="oecs__popin-button-icon"]', '#oecs__connecte-se-deconnecter')
+      await this.clickAndWait('#oecs__connecte-se-deconnecter', '#oecs__connexion')
+    }
+    log.debug('no credentials found, use normal user login')
+    await this.clickAndWait('#oecs__connexion', '#changeAccountLink')
+    await this.clickAndWait('#changeAccountLink','#undefined-label')
+    await this.clickAndWait('#undefined-label','#login')
+    await this.waitForUserAuthentication()
+    return true
+  }
+
+  async sameMailLogin(credentials){
+    const stayLogButton = await this.runInWorker('getStayLoggedButton')
+    if ( stayLogButton != null) {
+      stayLogButton.click()
+      await this.waitForElementInWorker('#oecs__connecte')
+      return true
+    }
+    log.debug('found credentials, trying to autoLog')
+    await this.tryAutoLogin(credentials, 'half')
+    return true
+  }
+
+  async differentMailLogin(credentials){
+    log.debug('getting in different testEmail conditions')
+    await this.clickAndWait('#changeAccountLink','#undefined-label')
+    await this.clickAndWait('#undefined-label','#login')
+    await this.tryAutoLogin(credentials, 'full')
+    return true
+  }
+
   // ////////
   // WORKER//
   // ////////
+
+  getLogoutButton(){
+    this.log('Starting getLogoutButton')
+    const logoutButton = document.querySelector('#oecs__connecte-se-deconnecter')
+    return logoutButton
+  }
 
   async getAccountList(){
     this.log('Starting getAccountList')
@@ -689,6 +722,7 @@ connector
       'clickLoginPage',
       'getAccountList',
       'accountSelection',
+      'getLogoutButton'
     ]
   })
   .catch(err => {
