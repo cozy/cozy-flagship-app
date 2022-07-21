@@ -1,10 +1,12 @@
 import CozyClient from 'cozy-client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Minilog from '@cozy/minilog'
+import { getDeviceName } from 'react-native-device-info'
 
 import { queryResultToCrypto } from '../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
 import { loginFlagship } from './clientHelpers/loginFlagship'
 import { normalizeFqdn } from './functions/stringHelpers'
+import { SOFTWARE_ID, SOFTWARE_NAME } from './constants'
 
 import apiKeys from '../api-keys.json'
 import strings from '../strings.json'
@@ -185,9 +187,9 @@ export const createClient = async instance => {
     scope: ['*'],
     oauth: {
       redirectURI: strings.COZY_SCHEME,
-      softwareID: 'amiral',
+      softwareID: SOFTWARE_ID,
       clientKind: 'mobile',
-      clientName: 'Amiral',
+      clientName: `${SOFTWARE_NAME} (${getDeviceName()})`,
       shouldRequireFlagshipPermissions: true,
       certificationConfig: {
         androidSafetyNetApiKey: apiKeys.androidSafetyNetApiKey

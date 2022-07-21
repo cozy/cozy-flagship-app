@@ -21,6 +21,8 @@ target 'CozyReactNative' do
 
   pod 'GCDWebServer', '~> 3.0'
 
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+
   target 'CozyReactNativeTests' do
     inherit! :complete
     # Pods for testing

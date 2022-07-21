@@ -2,6 +2,10 @@
   "errors": {
     "contactUs": "Un problème, une suggestion ? Contactez-nous à"
   },
+  "software": {
+    "id": "amiral",
+    "name": "Cloud Personnel"
+  },
   "screens": {
     "cozyNotFound": {
       "title": "L'adresse de ce Cozy n'existe pas.",
