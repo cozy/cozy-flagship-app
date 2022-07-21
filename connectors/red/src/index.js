@@ -8,6 +8,7 @@ const baseUrl = 'https://www.red-by-sfr.fr/'
 class TemplateContentScript extends ContentScript {
   async ensureAuthenticated() {
     await this.goto(baseUrl)
+    await this.waitForElementInWorker('[pause]')
   }
 
   async checkAuthenticated() {
