@@ -6,6 +6,7 @@
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#import <React/RCTHTTPRequestHandler.h>
 
 #import "RNBootSplash.h" // <- add the header import
 
@@ -16,7 +17,6 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
-#import <React/RCTHTTPRequestHandler.h>
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -27,6 +27,7 @@ static void InitializeFlipper(UIApplication *application) {
   [client addPlugin:[[FlipperKitNetworkPlugin alloc] initWithNetworkAdapter:[SKIOSNetworkAdapter new]]];
   [client start];
 }
+#endif
 
 static void SetCustomNSURLSessionConfiguration() {
   RCTSetCustomNSURLSessionConfigurationProvider(^NSURLSessionConfiguration *{
@@ -40,7 +41,6 @@ static void SetCustomNSURLSessionConfiguration() {
     return configuration;
   });
 }
-#endif
 
 @implementation AppDelegate
 
