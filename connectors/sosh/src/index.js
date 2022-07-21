@@ -109,6 +109,8 @@ class SoshContentScript extends ContentScript {
         // await this.waitForElementInWorker(
         //   '[pause_connected]',
         // )
+
+        //If helloMessage is found, return true to continue the process as we are already logged in
         return true
       }
       const loginPage = await this.runInWorker('getLoginPage')
@@ -236,7 +238,7 @@ class SoshContentScript extends ContentScript {
 
   async fetch(context) {
     log.debug('fetch start')
-    if(this.store != undefined){
+    if(this.store !== undefined){
       await this.saveCredentials(this.store.userCredentials)
     }
     await this.waitForElementInWorker('a[class="o-link-arrow text-primary pt-0"]')
@@ -264,6 +266,8 @@ class SoshContentScript extends ContentScript {
         let allPdfNumber = await this.runInWorker('getPdfNumber')
         let oldPdfNumber = allPdfNumber - recentPdfNumber
         for (let i = 0; i < recentPdfNumber; i++){
+          // If something went wrong during the loading of the pdf board, a red frame with an error message appears
+          // So we need to check every lap to see if we got one
           const redFrame = await this.runInWorker('checkRedFrame')
           if(redFrame !== null){
             this.log('Something went wrong during recent pdfs loading')
@@ -285,6 +289,7 @@ class SoshContentScript extends ContentScript {
         }
         this.log('recentPdf loop ended')
         for (let i = 0; i < oldPdfNumber; i++){
+          // Same as above with the red frame, but for old bills board
           const redFrame = await this.runInWorker('checkOldBillsRedFrame')
           if(redFrame !== null){
             this.log('Something went wrong during old pdfs loading')
