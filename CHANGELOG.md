@@ -1,4 +1,4 @@
-# 0.0.21
+# 0.0.22
 
 ## ✨ Features
 
@@ -7,6 +7,22 @@
 
 
 ## 🔧 Tech
+
+
+# 0.0.21
+
+## ✨ Features
+
+* Set OAuth client name in the form of `Cloud personnel (device name)` to ease identification in cozy-settings ([PR #351](https://github.com/cozy/cozy-react-native/pull/351))
+
+## 🐛 Bug Fixes
+
+* Make navigation work on `mespapiers` ([PR #350](https://github.com/cozy/cozy-react-native/pull/350))
+
+## 🔧 Tech
+
+* Improve performance when displaying Login screen after the Welcome ([PR #347](https://github.com/cozy/cozy-react-native/pull/347))
+* Set Cozy's UserAgents to all requests to easy technical logging ([PR #349](https://github.com/cozy/cozy-react-native/pull/349))
 
 
 # 0.0.20
