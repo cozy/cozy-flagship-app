@@ -24,8 +24,22 @@ class AmazonContentScript extends ContentScript {
     await this.waitForElementInWorker('#nav-progressive-greeting')
     const authenticated = await this.runInWorker('checkAuthenticated')
     this.log('Authenticated : '+authenticated)
-    if (!authenticated) {
-      await this.showLoginFormAndWaitForAuthentication()
+
+    if (authenticated) {
+      return true
+    } else {
+      let credentials = await this.getCredentials()
+      if (credentials && credentials.email && credentials.password) {
+        try {
+          this.log('Got credentials, trying autologin')
+          await this.tryAutoLogin(credentials)
+        } catch (err) {
+          this.log('autoLogin error' + err.message)
+          await this.showLoginFormAndWaitForAuthentication()
+        }
+      } else {
+        await this.showLoginFormAndWaitForAuthentication()
+      }
       if (this.store && (this.store.email || this.store.password)) {
         this.log(JSON.stringify(this.store))
         await this.saveCredentials(this.store)
@@ -39,6 +53,41 @@ class AmazonContentScript extends ContentScript {
     const result = Boolean(document.querySelector('#nav-greeting-name'))
     this.log('Authentification detection : '+result)
     return result
+  }
+
+  //P
+  async tryAutoLogin(credentials) {
+    // Bring login form via main page
+    await this.bridge.call('setWorkerState', {
+      url: baseUrl,
+      visible: false
+    })
+    await this.waitForElementInWorker('a[id="nav-logobar-greeting"]')
+    await this.clickAndWait(
+      'a[id="nav-logobar-greeting"]',
+      '#ap_email_login'
+    )
+    // Enter login
+    const emailFieldSelector = '#ap_email_login'
+    await this.runInWorker('fillText', emailFieldSelector, credentials.email)
+
+    // Click continue
+    // Watch out: multiples input#continue buttons
+    await this.clickAndWait(
+      'input#continue[aria-labelledby="continue-announce"]'
+,      '[name="rememberMe"]'
+    )
+
+    // Enter password
+    const passFieldSelector = '#ap_password'
+    await this.runInWorker('fillText', passFieldSelector, credentials.password)
+
+    // Click check box
+    await this.runInWorker('checkingBox')
+
+    // Click Login
+    const loginButtonSelector = 'input#signInSubmit'
+    await this.runInWorker('click', loginButtonSelector)
   }
 
   //W
