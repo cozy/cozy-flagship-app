@@ -6,6 +6,7 @@
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#import <React/RCTHTTPRequestHandler.h>
 
 #import "RNBootSplash.h" // <- add the header import
 
@@ -28,6 +29,19 @@ static void InitializeFlipper(UIApplication *application) {
 }
 #endif
 
+static void SetCustomNSURLSessionConfiguration() {
+  RCTSetCustomNSURLSessionConfigurationProvider(^NSURLSessionConfiguration *{
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    
+    NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSString * bundleIdentifier = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"];
+    NSString * userAgent = [NSString stringWithFormat:@"%@-%@", bundleIdentifier, appVersionString];
+    configuration.HTTPAdditionalHeaders = @{ @"User-Agent": userAgent };
+    
+    return configuration;
+  });
+}
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -35,6 +49,7 @@ static void InitializeFlipper(UIApplication *application) {
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
+  SetCustomNSURLSessionConfiguration();
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge

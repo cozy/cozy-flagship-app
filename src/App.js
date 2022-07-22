@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StatusBar, StyleSheet, View } from 'react-native'
 import { decode, encode } from 'base-64'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Provider as PaperProvider } from 'react-native-paper'
+import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import RNAsyncStorageFlipper from 'rn-async-storage-flipper'
 
 import { CozyProvider, useClient } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
 
 import { getClient } from './libs/client'
 import * as RootNavigation from './libs/RootNavigation.js'
+import { CreateInstanceScreen } from './screens/login/CreateInstanceScreen'
+import { HttpServerProvider } from './libs/httpserver/httpServerProvider'
 import { HomeScreen } from './screens/home/HomeScreen'
 import { LoginScreen } from './screens/login/LoginScreen'
 import { OnboardingScreen } from './screens/login/OnboardingScreen'
@@ -59,7 +64,10 @@ const App = ({ setClient }) => {
         {...(initialRoute.stack ? { initialParams: initialRoute.stack } : {})}
       />
 
-      <Stack.Screen name={routes.authenticate}>
+      <Stack.Screen
+        name={routes.authenticate}
+        initialParams={initialScreen.params}
+      >
         {params => <LoginScreen setClient={setClient} {...params} />}
       </Stack.Screen>
 
@@ -70,7 +78,16 @@ const App = ({ setClient }) => {
         {params => <OnboardingScreen setClient={setClient} {...params} />}
       </Stack.Screen>
 
-      <Stack.Screen component={WelcomeScreen} name={routes.welcome} />
+      <Stack.Screen
+        name={routes.instanceCreation}
+        initialParams={initialScreen.params}
+      >
+        {params => <CreateInstanceScreen {...params} />}
+      </Stack.Screen>
+
+      <Stack.Screen name={routes.welcome}>
+        {params => <WelcomeScreen setClient={setClient} {...params} />}
+      </Stack.Screen>
     </Stack.Navigator>
   )
 
@@ -104,17 +121,17 @@ const App = ({ setClient }) => {
 
 const WrappedApp = () => {
   const colors = getColors()
-  const [client, setClient] = useState(null)
+  const [client, setClient] = useState(undefined)
 
-  // Handling client init
   useEffect(() => {
     const handleClientInit = async () => {
       try {
-        setClient((await getClient()) || undefined)
+        setClient((await getClient()) || null)
       } catch {
-        setClient(undefined)
+        setClient(null)
       }
     }
+
     handleClientInit()
   }, [])
 
@@ -131,7 +148,11 @@ const WrappedApp = () => {
                 }
               ]}
             >
-              <CryptoWebView />
+              <StatusBar
+                barStyle="light-content"
+                backgroundColor="transparent"
+                translucent
+              />
               <App setClient={setClient} />
             </View>
           </SplashScreenProvider>
@@ -140,12 +161,35 @@ const WrappedApp = () => {
     </NavigationContainer>
   )
 
-  return client ? (
-    <CozyProvider client={client}>
-      <Nav />
-    </CozyProvider>
-  ) : (
-    <Nav />
+  if (client === null) return <Nav />
+
+  if (client)
+    return (
+      <CozyProvider client={client}>
+        <Nav />
+      </CozyProvider>
+    )
+
+  return null
+}
+
+const Wrapper = () => {
+  const [hasCrypto, setHasCrypto] = useState(false)
+  useEffect(() => {
+    if (__DEV__) {
+      RNAsyncStorageFlipper(AsyncStorage)
+    }
+  }, [])
+  return (
+    <>
+      {__DEV__ && <FlipperAsyncStorage />}
+      <CryptoWebView setHasCrypto={setHasCrypto} />
+      {hasCrypto && (
+        <HttpServerProvider>
+          <WrappedApp />
+        </HttpServerProvider>
+      )}
+    </>
   )
 }
 
@@ -155,4 +199,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withSentry(WrappedApp)
+export default withSentry(Wrapper)

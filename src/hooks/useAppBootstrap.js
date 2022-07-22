@@ -3,15 +3,15 @@ import { Linking, LogBox } from 'react-native'
 import { useEffect, useState } from 'react'
 
 import strings from '../strings.json'
-import { NetService } from '../libs/services/NetService'
-import { SentryTags, setSentryTag } from '../Sentry'
-import { manageIconCache } from '../libs/functions/iconTable'
-import { navigate } from '../libs/RootNavigation'
-import { routes } from '../constants/routes'
-import { useSplashScreen } from './useSplashScreen'
-import { localConfig } from '/config/local'
+import { NetService } from '/libs/services/NetService'
+import { SentryTags, setSentryTag } from '/Sentry'
+import { devConfig } from '/config/dev'
+import { manageIconCache } from '/libs/functions/iconTable'
+import { navigate } from '/libs/RootNavigation'
+import { routes } from '/constants/routes'
+import { useSplashScreen } from '/hooks/useSplashScreen'
 
-if (localConfig.ignoreLogBox) LogBox.ignoreAllLogs()
+if (devConfig.ignoreLogBox) LogBox.ignoreAllLogs()
 
 const log = Minilog('useAppBootstrap')
 
@@ -22,15 +22,15 @@ const parseOnboardingURL = url => {
     }
 
     const onboardingUrl = new URL(url)
-    const registerToken = onboardingUrl.searchParams.get('registerToken')
+    const onboardUrl = onboardingUrl.searchParams.get('onboard_url')
     const fqdn = onboardingUrl.searchParams.get('fqdn')
 
-    if (!fqdn || !registerToken) {
+    if (!onboardUrl && !fqdn) {
       return undefined
     }
 
     return {
-      registerToken,
+      onboardUrl,
       fqdn
     }
   } catch (error) {
@@ -72,6 +72,8 @@ export const useAppBootstrap = client => {
   const [isLoading, setIsLoading] = useState(true)
   const { hideSplashScreen } = useSplashScreen()
 
+  if (devConfig.forceHideSplashScreen) hideSplashScreen()
+
   // Handling initial URL init
   useEffect(() => {
     const doAsync = async () => {
@@ -95,18 +97,29 @@ export const useAppBootstrap = client => {
         const onboardingParams = parseOnboardingURL(onboardingUrl)
 
         if (onboardingParams) {
-          const { registerToken, fqdn } = onboardingParams
+          const { onboardUrl, fqdn } = onboardingParams
 
-          setInitialRoute({ stack: undefined, root: undefined })
+          if (onboardUrl) {
+            setInitialRoute({ stack: undefined, root: undefined })
 
-          return setInitialScreen({
-            stack: routes.onboarding,
-            root: routes.nested,
-            params: {
-              registerToken,
-              fqdn
-            }
-          })
+            return setInitialScreen({
+              stack: routes.instanceCreation,
+              root: routes.stack,
+              params: {
+                onboardUrl
+              }
+            })
+          } else {
+            setInitialRoute({ stack: undefined, root: undefined })
+
+            return setInitialScreen({
+              stack: routes.authenticate,
+              root: routes.stack,
+              params: {
+                fqdn
+              }
+            })
+          }
         } else {
           setInitialRoute({ stack: undefined, root: undefined })
 
@@ -139,7 +152,7 @@ export const useAppBootstrap = client => {
     }
 
     initialRoute === 'fetching' && initialScreen === 'fetching' && doAsync()
-  }, [initialRoute, initialScreen, client, hideSplashScreen])
+  }, [client, initialRoute, initialScreen, hideSplashScreen])
 
   // Handling app readiness
   useEffect(() => {
@@ -164,8 +177,15 @@ export const useAppBootstrap = client => {
       const onboardingParams = parseOnboardingURL(url)
 
       if (onboardingParams) {
-        navigate(routes.onboarding, onboardingParams)
-        return
+        const { onboardUrl, fqdn } = onboardingParams
+
+        if (onboardUrl) {
+          navigate(routes.instanceCreation, { onboardUrl })
+          return
+        } else {
+          navigate(routes.authenticate, { fqdn })
+          return
+        }
       }
 
       const { fallback: href, isHome } = parseFallbackURL(url)

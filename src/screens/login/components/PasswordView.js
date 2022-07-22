@@ -126,6 +126,7 @@ const PasswordForm = ({
         onMessage={processMessage}
         originWhitelist={['*']}
         source={{ html }}
+        style={{ backgroundColor: colors.primaryColor }}
       />
       {loading && (
         <View

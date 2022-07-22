@@ -7,13 +7,19 @@ import { useNativeIntent } from 'cozy-intent'
 
 import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
 import {
+  jsEnsureCrypto,
+  tryCrypto
+} from '/components/webviews/jsInteractions/jsEnsureCrypto'
+import {
   jsLogInterception,
   tryConsole
 } from '/components/webviews/jsInteractions/jsLogInterception'
+import { postMessageFunctionDeclaration } from '/components/webviews/CryptoWebView/jsInteractions/jsFunctions/jsMessaging'
 import { jsOnbeforeunload } from '/components/webviews/jsInteractions/jsOnbeforeunload'
 import { useSession } from '/hooks/useSession'
 import ReloadInterceptorWebView from '/components/webviews/ReloadInterceptorWebView'
 import { getHostname } from '/libs/functions/getHostname'
+import { useIsSecureProtocol } from '/hooks/useIsSecureProtocol'
 
 const log = Minilog('CozyWebView')
 
@@ -26,8 +32,10 @@ export const CozyWebView = ({
   trackWebviewInnerUri,
   route,
   injectedJavaScriptBeforeContentLoaded,
+  setParentRef,
   ...rest
 }) => {
+  const isSecureProtocol = useIsSecureProtocol()
   // To test interception, uncomment this block
   // const [timestamp, setTimestamp] = useState(Date.now())
   const [, setTimestamp] = useState(Date.now())
@@ -45,8 +53,8 @@ export const CozyWebView = ({
    * On subsequent renders, if the uri props ever change, it will override the session_code uri created by handleInterceptAuth()
    */
   useEffect(() => {
-    setUri(source.uri)
-  }, [source.uri])
+    setUri(source.uri || source.baseUrl)
+  }, [source.uri, source.baseUrl])
 
   const [canGoBack, setCanGoBack] = useState(false)
 
@@ -75,9 +83,22 @@ export const CozyWebView = ({
       innerUri && webviewRef && nativeIntent?.unregisterWebview(innerUri)
   }, [innerUri, nativeIntent, webviewRef])
 
+  const onAnswer = useCallback(
+    (messageId, response) => {
+      const payload = JSON.stringify({
+        type: 'Crypto',
+        messageId,
+        param: response
+      })
+
+      webviewRef.postMessage(payload)
+    },
+    [webviewRef]
+  )
+
   const run = `
     (function() {
-      ${jsCozyGlobal(route.name)}
+      ${jsCozyGlobal(route.name, isSecureProtocol)}
 
       ${jsLogInterception}
 
@@ -85,9 +106,15 @@ export const CozyWebView = ({
 
       ${jsOnbeforeunload}
 
+      ${postMessageFunctionDeclaration}
+
+      ${jsEnsureCrypto}
+
       return true;
     })();
   `
+
+  const webviewSource = source.html ? source : { uri }
 
   return uri ? (
     <ReloadInterceptorWebView
@@ -97,20 +124,15 @@ export const CozyWebView = ({
         isValidUri && setInnerUri(isValidUri)
         setCanGoBack(event.canGoBack)
       }}
-      source={{
-        // To test interception, uncomment this block
-        //         html: `<html><body>
-        // <button onclick="window.location.reload()" style="margin: 80px; font-size: 40px;">Reload()</button>
-        // <!--rendered at ${timestamp} -->
-        // </body></html>`,
-        //         baseUrl: uri,
-        uri
-      }}
+      source={webviewSource}
       injectedJavaScriptBeforeContentLoaded={run}
       originWhitelist={['http://*', 'https://*', 'intent://*']}
       useWebKit={true}
       javaScriptEnabled={true}
-      ref={ref => setWebviewRef(ref)}
+      ref={ref => {
+        setWebviewRef(ref)
+        setParentRef?.(ref)
+      }}
       TEST_ONLY_setRef={setWebviewRef}
       decelerationRate="normal" // https://github.com/react-native-webview/react-native-webview/issues/1070
       onShouldStartLoadWithRequest={initialRequest => {
@@ -140,12 +162,15 @@ export const CozyWebView = ({
           return true
         }
       }}
-      onLoad={({ nativeEvent }) => {
+      onLoad={event => {
         if (trackWebviewInnerUri) {
-          trackWebviewInnerUri(nativeEvent.url)
+          trackWebviewInnerUri(event.nativeEvent.url)
         }
+
+        rest.onLoad?.(event)
       }}
       onMessage={async m => {
+        tryCrypto(m, log, logId, onAnswer)
         tryConsole(m, log, logId)
 
         nativeIntent.tryEmit(m)

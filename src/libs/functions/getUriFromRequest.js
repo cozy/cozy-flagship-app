@@ -1,11 +1,14 @@
-import strings from '../../strings.json'
+import flow from 'lodash/fp/flow'
+
+import strings from '/strings.json'
 
 const abort = 'https://urlwithnofqdn'
 
 // We don't want to throw so if there is no request with url provided, we just pass an invalid url
-// This function is not meant to be exported, it can be seen as a private "method" of getUriFromRequest()
-const validateRequest = request =>
+export const validateRequest = request =>
   !request ? abort : !request.url ? abort : request.url
+
+const trimWhitespaces = string => string?.replace(/\s/g, '')
 
 const validateFqdn = fqdn => fqdn || null
 
@@ -24,5 +27,11 @@ const handleProtocol = url => {
   }
 }
 
-export const getUriFromRequest = request =>
-  handleProtocol(validateFqdn(getFqdn(validateRequest(request))))
+export const getUriFromRequest = req =>
+  flow(
+    validateRequest,
+    getFqdn,
+    validateFqdn,
+    trimWhitespaces,
+    handleProtocol
+  )(req)

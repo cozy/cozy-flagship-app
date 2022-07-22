@@ -1,12 +1,22 @@
 {
   "APPS_ICONS": "APPS_ICONS",
+  "BUNDLE_STORAGE_KEY": "@cozy_AmiralAppBundleConfig",
+  "COOKIE_STORAGE_KEY": "@cozy_AmiralAppCookieConfig",
   "COZY_SCHEME": "cozy://",
   "OAUTH_STORAGE_KEY": "@cozy_AmiralAppOAuthConfig",
   "REDIRECT": "redirect",
   "SESSION_CODE": "session_code",
   "SESSION_CREATED_FLAG": "SESSION_CREATED_FLAG",
+  "USER_AGENT": "io.cozy.flagship.mobile",
   "appTouched": "appTouched",
   "authLogin": "/auth/login?redirect=",
+  "connectors": {
+    "worker": {
+      "backButton": "RETOUR À MON COZY"
+    }
+  },
+  "clouderyiOSUri": "https://staging-manager.cozycloud.cc/v2/cozy/start?redirect_after_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fonboarding%3Fflagship%3Dtrue&redirect_after_login=https%3A%2F%2Floginflagship",
+  "clouderyAndroidUri": "https://staging-manager.cozycloud.cc/v2/cozy/start?redirect_after_email=cozy%3A%2F%2Fonboarding%3Fflagship%3Dtrue&redirect_after_login=https%3A%2F%2Floginflagship",
   "defaultHttpScheme": "https://",
   "emptyString": "",
   "environments": {
@@ -31,6 +41,5 @@
   },
   "fqdn": "fqdn",
   "home": "home",
-  "loginUri": "https://manager.cozycloud.cc/v2/cozy/login?redirect=https://loginflagship",
-  "onboardingUri": "https://staging-manager.cozycloud.cc/v2/cozy/onboard?redirect=cozy://onboarding?flagship=true"
+  "registerToken": "registerToken"
 }

@@ -4,6 +4,8 @@ import { WebView } from 'react-native-webview'
 
 import Minilog from '@cozy/minilog'
 
+import { userAgentDefault } from '/constants/userAgent'
+
 const log = Minilog('CozyWebView')
 
 Minilog.enable()
@@ -37,17 +39,19 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
     targetUri,
     source,
     onShouldStartLoadWithRequest,
-    onMessage
+    onMessage,
+    userAgent = userAgentDefault
   } = props
 
   if (!source.html) {
     // Blocking this feature, until source={{ html, baseUrl: uri }} is set
-    return <WebView {...props} ref={ref} />
+    return <WebView {...props} ref={ref} {...userAgent} />
   }
 
   return (
     <WebView
       {...props}
+      {...userAgent}
       ref={ref}
       onShouldStartLoadWithRequest={initialRequest => {
         const stopPageReload = interceptReload(

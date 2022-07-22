@@ -14,13 +14,19 @@ const UI_LIGHT = 'light-content'
 
 const isDarkMode = bottomTheme => bottomTheme === UI_LIGHT
 
-const shouldUpdateNavbar = bottomTheme =>
-  bottomTheme && changeBarColors(isDarkMode(bottomTheme))
+const updateStatusBarAndBottomBar = bottomTheme => {
+  if (Platform.OS === 'android') {
+    bottomTheme && changeBarColors(isDarkMode(bottomTheme))
+  } else {
+    // On iOS we don't have BottomBar so we only need to
+    // change the BarStyle.
+    bottomTheme && StatusBar.setBarStyle(bottomTheme)
+  }
+}
 
 const handleSideEffects = ({ bottomTheme, ...parsedIntent }) => {
   flagshipUI.emit('change', parsedIntent)
-
-  shouldUpdateNavbar(bottomTheme)
+  updateStatusBarAndBottomBar(bottomTheme)
 }
 
 const formatTheme = position =>

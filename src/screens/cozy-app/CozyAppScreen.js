@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { StatusBar, View } from 'react-native'
+import { StatusBar, View, Platform } from 'react-native'
 
-import CozyWebView from '../../components/webviews/CozyWebView'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
+import { CozyProxyWebView } from '../../components/webviews/CozyProxyWebView'
 import { Animation } from './CozyAppScreen.Animation'
 import { flagshipUI } from '../../libs/intents/setFlagshipUI'
 import { getNavbarHeight, statusBarHeight } from '../../libs/dimensions'
@@ -29,6 +31,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
   } = UIState
   const [isReady, setReady] = useState(false)
   const [isFirstHalf, setFirstHalf] = useState(false)
+  const [shouldExitAnimation, setShouldExitAnimation] = useState(false)
 
   useEffect(() => {
     flagshipUI.on('change', state => {
@@ -45,6 +48,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
 
     isFirstHalf && firstHalfUI()
   }, [isFirstHalf, route.params.iconParams])
+  const insets = useSafeAreaInsets()
 
   return (
     <>
@@ -69,23 +73,30 @@ export const CozyAppScreen = ({ route, navigation }) => {
           <Animation
             onFirstHalf={setFirstHalf}
             onFinished={setReady}
+            shouldExit={shouldExitAnimation}
             params={route.params.iconParams}
             slug={route.params.slug}
           />
         )}
 
-        <CozyWebView
+        <CozyProxyWebView
           style={{ ...styles[isFirstHalf ? 'ready' : 'notReady'] }}
-          source={{ uri: route.params.href }}
+          slug={route.params.slug}
+          href={route.params.href}
           navigation={navigation}
           route={route}
           logId="AppScreen"
+          onLoadEnd={() => setShouldExitAnimation(true)}
         />
       </View>
 
       <View
         style={{
-          height: isFirstHalf ? getNavbarHeight() : styles.immersiveHeight,
+          height: isFirstHalf
+            ? Platform.OS === 'ios'
+              ? insets.bottom
+              : getNavbarHeight()
+            : styles.immersiveHeight,
           backgroundColor: bottomBackground
         }}
       >

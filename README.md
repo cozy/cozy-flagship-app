@@ -23,6 +23,8 @@ Extract the content of `cozy-react-native/sentry.properties` from the password-s
 
 ### First time
 
+Note: Before running the app, please copy `cozy-home` files locally first. See [How to install cozy-home in local assets](docs/how-to-install-home.md)
+
 ```bash
 # Download Dependencies
 $ yarn
@@ -57,12 +59,22 @@ $ yarn ios
 $ yarn test
 ```
 
-### Debuging 
+### Debugging
 
-Android: To get native log on Android: 
+Android: To get native log on Android:
 ```bash
 adb logcat --pid=$(adb shell pidof -s io.cozy.flagship.mobile)
 ```
+
+Use [flipper](https://fbflipper.com/docs/features/react-native/) to
+have access to a React Native Debuguer.
+
+To have access to the AsyncStorage content you can install those
+2 plugins:
+async-storage and async-storage-advanced (see https://github.com/cozy/cozy-react-native/pull/270
+for more information)
+
+A guide for debugging in release mode can be found here: [How to retrieve logs in release mode](docs/how-to-retrieve-logs-in-release.md)
 
 ## How to run SNCF Connector
 
@@ -108,6 +120,11 @@ To enable Flagship certification:
 
 If you want to disable Flagship certification:
 - On `src/libs/client.js` set `shouldRequireFlagshipPermissions` to `false`
+
+## patch-package
+
+After installation of every npm packages, yarn applies patches to react-native-webview.
+[Patch-package](https://www.npmjs.com/package/patch-package) is a utility is used to apply the patches located in the patches folder.
 
 ## TROUBLESHOOTING
 
@@ -169,3 +186,13 @@ Read the Sentry configuration paragraph above.
 2. Application blocked on the Splashscreen
 
 Verify that the Cozy you are login into is using the last version of `cozy-home`, and try again
+
+3. Error on app `Tried to register two views with the same name RCTIndexInjectionWebView`
+
+This may happen after development's HotReload occurs. When encountered just restart the app. This should not happen on production.
+
+4. Cozy-app `cozy-notes` is not working when served locally
+
+`cozy-notes` bundle relies on a specific `tar_prefix`. When served from local `--appDir` then no `tar_prefix` is applied. However the Cozy's registry sends info from production app which has a defined `tar_prefix`.
+This would break the app as ReactNative will try to serve local assets using a non-existing directory.
+To prevent conflict on this, please increase your local `cozy-notes`'s version in the built `manifest.webapp` for a version that does not exist in production (i.e: `"version": "0.0.X.notexisting"`)

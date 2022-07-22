@@ -40,6 +40,7 @@ class AmazonContentScript extends ContentScript {
       } else {
         await this.showLoginFormAndWaitForAuthentication()
       }
+
       if (this.store && (this.store.email || this.store.password)) {
         this.log(JSON.stringify(this.store))
         await this.saveCredentials(this.store)

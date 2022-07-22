@@ -2,15 +2,50 @@ import React, { useEffect, useRef } from 'react'
 import { Animated } from 'react-native'
 import { SvgXml } from 'react-native-svg'
 
-import { screenHeight, screenWidth } from '../../libs/dimensions'
-import { iconTable, iconFallback } from '../../libs/functions/iconTable'
+import ProgressBar from '/components/Bar'
+import { iconTable, iconFallback } from '/libs/functions/iconTable'
+import { screenHeight, screenWidth } from '/libs/dimensions'
+import { default as paletteValues } from '/theme/palette.json'
+
 import { styles } from './CozyAppScreen.styles'
 
 const config = {
   duration: 300,
-  width: '64%',
-  height: '64%',
+  width: '44%',
+  height: '44%',
   driver: true
+}
+
+const progressBarConfig = {
+  width: null,
+  indeterminate: true,
+  unfilledColor: paletteValues.Grey[200],
+  color: paletteValues.Primary[600],
+  borderWidth: 0,
+  height: 8,
+  borderRadius: 100,
+  indeterminateAnimationDuration: 1500
+}
+
+const progressBarAnimConfig = {
+  fadeIn: {
+    toValue: 1,
+    duration: 50,
+    useNativeDriver: config.driver
+  },
+  fadeOut: {
+    toValue: 0,
+    duration: 50,
+    useNativeDriver: config.driver
+  }
+}
+
+const containerAnimConfig = {
+  fadeOut: {
+    toValue: 0,
+    duration: 300,
+    useNativeDriver: config.driver
+  }
 }
 
 const getTranslateInput = params => ({
@@ -25,8 +60,13 @@ const getScaleInput = params => ({
   y: params.height / screenHeight
 })
 
-export const Animation = ({ onFirstHalf, onFinished, params, slug }) => {
-  const animateOpacity = useRef(new Animated.Value(1)).current
+export const Animation = ({
+  onFirstHalf,
+  onFinished,
+  shouldExit,
+  params,
+  slug
+}) => {
   const animateTranslate = useRef(
     new Animated.ValueXY(getTranslateInput(params))
   ).current
@@ -34,6 +74,8 @@ export const Animation = ({ onFirstHalf, onFinished, params, slug }) => {
     new Animated.ValueXY(getScaleInput(params))
   ).current
   const animateFadeOut = useRef(new Animated.Value(1)).current
+  const animateBarOpacity = useRef(new Animated.Value(0)).current
+
   class SVG extends React.Component {
     render() {
       return (
@@ -45,6 +87,7 @@ export const Animation = ({ onFirstHalf, onFinished, params, slug }) => {
       )
     }
   }
+
   const Icon = Animated.createAnimatedComponent(SVG)
 
   useEffect(() => {
@@ -58,31 +101,23 @@ export const Animation = ({ onFirstHalf, onFinished, params, slug }) => {
         toValue: { x: 1, y: 1 },
         duration: config.duration,
         useNativeDriver: config.driver
-      }),
-      Animated.timing(animateOpacity, {
-        toValue: 0,
-        duration: config.duration,
-        useNativeDriver: config.driver
       })
     ]).start(() => {
       onFirstHalf(true)
 
-      Animated.timing(animateFadeOut, {
-        toValue: 0,
-        duration: config.duration,
-        useNativeDriver: config.driver
-      }).start(() => {
+      Animated.timing(animateBarOpacity, progressBarAnimConfig.fadeIn).start()
+    })
+  }, [animateBarOpacity, animateScale, animateTranslate, onFirstHalf])
+
+  useEffect(() => {
+    shouldExit &&
+      Animated.parallel([
+        Animated.timing(animateFadeOut, containerAnimConfig.fadeOut),
+        Animated.timing(animateBarOpacity, progressBarAnimConfig.fadeOut)
+      ]).start(() => {
         onFinished(true)
       })
-    })
-  }, [
-    animateFadeOut,
-    animateOpacity,
-    animateScale,
-    animateTranslate,
-    onFinished,
-    onFirstHalf
-  ])
+  }, [animateBarOpacity, animateFadeOut, onFinished, shouldExit])
 
   return (
     <Animated.View
@@ -100,7 +135,13 @@ export const Animation = ({ onFirstHalf, onFinished, params, slug }) => {
         }
       ]}
     >
-      <Icon style={{ opacity: animateOpacity }} />
+      <Icon />
+
+      <Animated.View
+        style={[styles.progressBarContainer, { opacity: animateBarOpacity }]}
+      >
+        <ProgressBar {...progressBarConfig} />
+      </Animated.View>
     </Animated.View>
   )
 }

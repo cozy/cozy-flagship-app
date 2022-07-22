@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
-
+import { BackHandler, Platform, StyleSheet, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Minilog from '@cozy/minilog'
 
 import { ClouderyView } from './components/ClouderyView'
@@ -17,10 +17,12 @@ import {
   createClient,
   fetchPublicData,
   STATE_2FA_NEEDED,
+  STATE_AUTHORIZE_NEEDED,
   STATE_INVALID_PASSWORD
 } from '/libs/client'
 import { getNavbarHeight, statusBarHeight } from '/libs/dimensions'
 import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
+import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 
 import strings from '../../strings.json'
@@ -38,7 +40,13 @@ const ERROR_STEP = 'ERROR_STEP'
 
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
-const LoginSteps = ({ setClient }) => {
+const LoginSteps = ({
+  disabledFocus,
+  goBack,
+  navigation,
+  route,
+  setClient
+}) => {
   const { showSplashScreen } = useSplashScreen()
   const [state, setState] = useState({
     step: CLOUDERY_STEP
@@ -47,6 +55,24 @@ const LoginSteps = ({ setClient }) => {
   useEffect(() => {
     log.debug(`Enter state ${state.step}`)
   }, [state])
+
+  const handleBackPress = useCallback(() => {
+    if (goBack) {
+      setState({
+        step: CLOUDERY_STEP
+      })
+      goBack()
+      return true
+    }
+    return false
+  }, [goBack])
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+  }, [handleBackPress])
 
   useEffect(() => {
     if (state.loginData && state.step === PASSWORD_STEP) {
@@ -60,6 +86,26 @@ const LoginSteps = ({ setClient }) => {
     }
   }, [state.sessionCode, state.waitForTransition, authorize])
 
+  useEffect(() => {
+    const fqdn = consumeRouteParameter('fqdn', route, navigation)
+    if (fqdn) {
+      // fqdn string should never contain the protocol, but we may want to enforce it
+      // when local debugging as this configuration uses `http` only
+      const url =
+        fqdn.startsWith('http://') || fqdn.startsWith('https://')
+          ? new URL(fqdn)
+          : new URL(`https://${fqdn}`)
+
+      const normalizedFqdn = url.host.toLowerCase()
+      const normalizedInstance = url.origin.toLowerCase()
+
+      setInstanceData({
+        fqdn: normalizedFqdn,
+        instance: normalizedInstance
+      })
+    }
+  }, [navigation, route, setInstanceData])
+
   const setStepReadonly = isReadOnly => {
     setState(oldState => ({
       ...oldState,
@@ -67,33 +113,36 @@ const LoginSteps = ({ setClient }) => {
     }))
   }
 
-  const setInstanceData = async ({ instance, fqdn }) => {
-    if (await NetService.isOffline()) NetService.handleOffline()
+  const setInstanceData = useCallback(
+    async ({ instance, fqdn }) => {
+      if (await NetService.isOffline()) NetService.handleOffline()
 
-    try {
-      const client = await createClient(instance)
+      try {
+        const client = await createClient(instance)
 
-      const { kdfIterations, name } = await fetchPublicData(client)
+        const { kdfIterations, name } = await fetchPublicData(client)
 
-      // we do not want to await for flagship certification in order to make the UI more responsive
-      // so do not add `await` keyword here
-      client.certifyFlagship()
+        // we do not want to await for flagship certification in order to make the UI more responsive
+        // so do not add `await` keyword here
+        client.certifyFlagship()
 
-      setState({
-        step: PASSWORD_STEP,
-        stepReadonly: false,
-        waitForTransition: true,
-        requestTransitionStart: false,
-        fqdn: fqdn,
-        instance: instance,
-        name: name,
-        kdfIterations: kdfIterations,
-        client: client
-      })
-    } catch (error) {
-      setError(error.message, error)
-    }
-  }
+        setState({
+          step: PASSWORD_STEP,
+          stepReadonly: false,
+          waitForTransition: true,
+          requestTransitionStart: false,
+          fqdn: fqdn,
+          instance: instance,
+          name: name,
+          kdfIterations: kdfIterations,
+          client: client
+        })
+      } catch (error) {
+        setError(error.message, error)
+      }
+    },
+    [setError]
+  )
 
   const cancelOauth = useCallback(() => {
     setState(oldState => ({
@@ -151,7 +200,7 @@ const LoginSteps = ({ setClient }) => {
           client: result.client,
           twoFactorToken: result.twoFactorToken
         }))
-      } else {
+      } else if (result.state === STATE_AUTHORIZE_NEEDED) {
         setState(oldState => ({
           ...oldState,
           step: AUTHORIZE_TRANSITION_STEP,
@@ -159,11 +208,15 @@ const LoginSteps = ({ setClient }) => {
           client: result.client,
           sessionCode: result.sessionCode
         }))
+      } else {
+        showSplashScreen()
+        await resetKeychainAndSaveLoginData(loginData)
+        setClient(result.client)
       }
     } catch (error) {
       setError(error.message, error)
     }
-  }, [setError, state])
+  }, [setError, state, setClient, showSplashScreen])
 
   const continueOAuth = useCallback(
     async twoFactorCode => {
@@ -190,7 +243,7 @@ const LoginSteps = ({ setClient }) => {
             twoFactorToken: result.twoFactorToken,
             errorMessage2FA: strings.errors.wrong2FA
           }))
-        } else {
+        } else if (result.state === STATE_AUTHORIZE_NEEDED) {
           setState(oldState => ({
             ...oldState,
             step: AUTHORIZE_TRANSITION_STEP,
@@ -198,12 +251,16 @@ const LoginSteps = ({ setClient }) => {
             client: result.client,
             sessionCode: result.sessionCode
           }))
+        } else {
+          showSplashScreen()
+          await resetKeychainAndSaveLoginData(loginData)
+          setClient(result.client)
         }
       } catch (error) {
         setError(error.message, error)
       }
     },
-    [setError, state]
+    [setError, state, showSplashScreen, setClient]
   )
 
   const authorize = useCallback(async () => {
@@ -227,7 +284,7 @@ const LoginSteps = ({ setClient }) => {
         setError(error.message, error)
       }
     }
-  }, [cancelOauth, setClient, setError, state])
+  }, [cancelOauth, setClient, setError, state, showSplashScreen])
 
   const setError = useCallback(
     (errorMessage, error) => {
@@ -266,7 +323,12 @@ const LoginSteps = ({ setClient }) => {
   }, [])
 
   if (state.step === CLOUDERY_STEP) {
-    return <ClouderyView setInstanceData={setInstanceData} />
+    return (
+      <ClouderyView
+        disabledFocus={disabledFocus}
+        setInstanceData={setInstanceData}
+      />
+    )
   }
 
   if (state.step === PASSWORD_STEP) {
@@ -336,9 +398,15 @@ const LoginSteps = ({ setClient }) => {
   }
 }
 
-export const LoginScreen = ({ setClient }) => {
+export const LoginScreen = ({
+  disabledFocus,
+  goBack,
+  navigation,
+  route,
+  setClient
+}) => {
   const colors = getColors()
-
+  const insets = useSafeAreaInsets()
   return (
     <View
       style={[
@@ -349,8 +417,18 @@ export const LoginScreen = ({ setClient }) => {
       ]}
     >
       <View style={{ height: statusBarHeight }} />
-      <LoginSteps setClient={setClient} />
-      <View style={{ height: getNavbarHeight() }} />
+      <LoginSteps
+        navigation={navigation}
+        route={route}
+        setClient={setClient}
+        disabledFocus={disabledFocus}
+        goBack={goBack}
+      />
+      <View
+        style={{
+          height: Platform.OS === 'ios' ? insets.bottom : getNavbarHeight()
+        }}
+      />
     </View>
   )
 }

@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { get } from 'lodash'
+import { useFocusEffect } from '@react-navigation/native'
 
 import { useClient, generateWebLink } from 'cozy-client'
 import { useNativeIntent } from 'cozy-intent'
 
-import CozyWebView from '/components/webviews/CozyWebView'
+import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { resetUIState } from '/libs/intents/setFlagshipUI'
-import { statusBarHeight, getNavbarHeight } from '/libs/dimensions'
 import { useSession } from '/hooks/useSession'
+import { AppState } from 'react-native'
 
-const injectedJavaScriptBeforeContentLoaded = () => `
-  window.addEventListener('load', (event) => {
-    window.document.body.style.setProperty('--flagship-top-height', '${statusBarHeight}px');
-    window.document.body.style.setProperty('--flagship-bottom-height', '${getNavbarHeight()}px');
-  });
-`
+const unzoomHomeView = webviewRef => {
+  webviewRef?.injectJavaScript(
+    'window.dispatchEvent(new Event("closeApp"));true;'
+  )
+}
 
 const HomeView = ({ route, navigation, setLauncherContext }) => {
   const client = useClient()
@@ -23,17 +23,38 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
   const [trackedWebviewInnerUri, setTrackedWebviewInnerUri] = useState('')
   const nativeIntent = useNativeIntent()
   const session = useSession()
+  const didBlurOnce = useRef(false)
+  const [webviewRef, setParentRef] = useState()
 
-  React.useEffect(() => {
+  useEffect(() => {
+    const subscription = AppState.addEventListener(
+      'change',
+      nextAppState => nextAppState === 'active' && unzoomHomeView(webviewRef)
+    )
+
+    return subscription.remove
+  }, [webviewRef])
+
+  useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
+      didBlurOnce.current = true
       setUri(trackedWebviewInnerUri)
     })
 
     return unsubscribe
-  }, [navigation, uri, trackedWebviewInnerUri])
+  }, [navigation, trackedWebviewInnerUri])
 
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+  useFocusEffect(
+    useCallback(() => {
+      if (didBlurOnce.current) {
+        unzoomHomeView(webviewRef)
+        resetUIState(uri)
+      }
+    }, [uri, webviewRef])
+  )
+
+  useFocusEffect(
+    useCallback(() => {
       if (uri) {
         const konnectorParam = consumeRouteParameter(
           'konnector',
@@ -49,10 +70,8 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
           setUri(targetUri)
         }
       }
-    })
-
-    return unsubscribe
-  }, [navigation, route, uri])
+    }, [navigation, route, uri])
+  )
 
   useEffect(() => {
     const deepLink = consumeRouteParameter('href', route, navigation)
@@ -86,7 +105,7 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
     if (!uri && session.subDomainType) {
       getHomeUri()
     }
-  }, [uri, client, route, nativeIntent, navigation, session])
+  }, [uri, client, route, navigation, session])
 
   const handleTrackWebviewInnerUri = webviewInneruri => {
     if (webviewInneruri !== trackedWebviewInnerUri) {
@@ -94,28 +113,25 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
     }
   }
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => resetUIState(uri))
-    return unsubscribe
-  }, [navigation, uri])
-
   return uri ? (
-    <CozyWebView
-      source={{ uri }}
+    <CozyProxyWebView
+      setParentRef={setParentRef}
+      slug="home"
+      href={uri}
       trackWebviewInnerUri={handleTrackWebviewInnerUri}
       navigation={navigation}
       route={route}
       logId="HomeView"
-      injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded()}
-      onMessage={async m => {
-        const data = get(m, 'nativeEvent.data')
+      onMessage={async event => {
+        const data = get(event, 'nativeEvent.data')
 
         if (data) {
-          const { message, value } = JSON.parse(data)
+          const { methodName, message, value } = JSON.parse(data)
 
-          if (message === 'startLauncher') {
+          if (methodName === 'openApp') nativeIntent?.call(uri, 'openApp')
+
+          if (message === 'startLauncher')
             setLauncherContext({ state: 'launch', value })
-          }
         }
       }}
     />

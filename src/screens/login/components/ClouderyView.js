@@ -1,33 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  BackHandler,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  View
+} from 'react-native'
 import { WebView } from 'react-native-webview'
 
 import Minilog from '@cozy/minilog'
 
 import strings from '/strings.json'
-import { getColors } from '../../../theme/colors'
-import { getUriFromRequest } from '../../../libs/functions/getUriFromRequest'
-import { setFocusOnWebviewField } from '../../../libs/functions/keyboardHelper'
-import { NetService } from '../../../libs/services/NetService'
-import { jsCozyGlobal } from '../../../components/webviews/jsInteractions/jsCozyInjection'
-import { jsLogInterception } from '../../../components/webviews/jsInteractions/jsLogInterception'
+import { getColors } from '/theme/colors'
+import { getUriFromRequest } from '/libs/functions/getUriFromRequest'
+import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
+import { NetService } from '/libs/services/NetService'
+import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
+import { jsLogInterception } from '/components/webviews/jsInteractions/jsLogInterception'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { rootCozyUrl } from 'cozy-client'
 
 const log = Minilog('ClouderyView')
-
-const isLoginPage = requestUrl => {
-  const url = new URL(requestUrl)
-
-  return url.pathname === '/v2/cozy/login'
-}
-
-const isOnboardPage = requestUrl => {
-  const url = new URL(requestUrl)
-
-  return url.pathname === '/v2/cozy/onboard'
-}
 
 const run = `
     (function() {
@@ -51,38 +45,33 @@ const handleError = async webviewErrorEvent => {
 }
 
 /**
- * Displays the Cloudery web page where the user can specify their Cozy instance
+ * Displays the Cloudery web page where the user can log to their Cozy instance by specifying
+ * an email or their instance URL
  *
- * If the user clicks on `Continue` then the instance data is returned to parent component
- * through `setInstanceData()`
+ * If the user chooses the email method, then an email is sent to them and they can continue
+ * the onboarding process
  *
- * If the user clicks on `I haven't a Cozy` then the user is redirected to `OnboardingScreen`
+ * If the user chooses the instance URL method, after filling the URL and clicking on `Continue`
+ * then the instance data is returned to parent component through `setInstanceData()`
  *
  * @param {object} props
  * @param {setInstanceData} props.setInstanceData
  * @returns {import('react').ComponentClass}
  */
-export const ClouderyView = ({ setInstanceData }) => {
-  const [uri, setUri] = useState(strings.loginUri)
+export const ClouderyView = ({ setInstanceData, disabledFocus }) => {
+  const [uri] = useState(
+    Platform.OS === 'ios' ? strings.clouderyiOSUri : strings.clouderyAndroidUri
+  )
   const [loading, setLoading] = useState(true)
   const [checkInstanceData, setCheckInstanceData] = useState()
   const webviewRef = useRef()
   const colors = getColors()
+  const [canGoBack, setCanGoBack] = useState(false)
 
   const handleNavigation = request => {
     const instance = getUriFromRequest(request)
 
     if (request.loading) {
-      if (isLoginPage(request.url) && request.url !== strings.loginUri) {
-        setUri(strings.loginUri)
-        return false
-      }
-
-      if (isOnboardPage(request.url) && request.url !== strings.onboardingUri) {
-        setUri(strings.onboardingUri)
-        return false
-      }
-
       if (instance) {
         const normalizedInstance = instance.toLowerCase()
         const fqdn = new URL(normalizedInstance).host
@@ -112,18 +101,48 @@ export const ClouderyView = ({ setInstanceData }) => {
   }, [checkInstanceData, setInstanceData])
 
   useEffect(() => {
-    if (webviewRef && !loading) {
-      setFocusOnWebviewField(webviewRef.current, 'slug')
+    // add a parameter
+    if (webviewRef && !loading && !disabledFocus) {
+      setFocusOnWebviewField(webviewRef.current, 'email')
     }
-  }, [loading, webviewRef])
+  }, [loading, webviewRef, disabledFocus])
+
+  const handleBackPress = useCallback(() => {
+    if (!canGoBack) {
+      return false
+    }
+
+    webviewRef.current.goBack()
+    return true
+  }, [canGoBack, webviewRef])
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+  }, [handleBackPress])
 
   const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
+
+  const [displayOverlay, setDisplayOverlay] = useState(true)
+
+  useEffect(() => {
+    if (!loading) {
+      setTimeout(() => {
+        setDisplayOverlay(false)
+      }, 1)
+    }
+  }, [loading])
 
   return (
     <Wrapper style={styles.view} behavior="height">
       <WebView
         source={{ uri: uri }}
         ref={webviewRef}
+        onNavigationStateChange={event => {
+          setCanGoBack(event.canGoBack)
+        }}
         onShouldStartLoadWithRequest={handleNavigation}
         onLoadEnd={() => setLoading(false)}
         injectedJavaScriptBeforeContentLoaded={run}
@@ -132,8 +151,9 @@ export const ClouderyView = ({ setInstanceData }) => {
         }}
         onError={handleError}
       />
-      {loading && (
+      {displayOverlay && (
         <View
+          testID="overlay"
           style={[
             styles.loadingOverlay,
             {

@@ -1,10 +1,17 @@
 import CozyClient from 'cozy-client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Minilog from '@cozy/minilog'
+import { getDeviceName } from 'react-native-device-info'
 
 import { queryResultToCrypto } from '../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
+import { loginFlagship } from './clientHelpers/loginFlagship'
+import { normalizeFqdn } from './functions/stringHelpers'
+import { SOFTWARE_ID, SOFTWARE_NAME } from './constants'
 
 import apiKeys from '../api-keys.json'
 import strings from '../strings.json'
+
+const log = Minilog('LoginScreen')
 
 export const STATE_CONNECTED = 'STATE_CONNECTED'
 export const STATE_AUTHORIZE_NEEDED = 'STATE_AUTHORIZE_NEEDED'
@@ -51,6 +58,7 @@ export const getClient = async () => {
     oauth: { token },
     oauthOptions
   })
+  listenTokenRefresh(client)
   client.getStackClient().setOAuthOptions(oauthOptions)
   await client.login({
     uri,
@@ -163,6 +171,8 @@ export const callOnboardingInitClient = async ({
 
   await client.login()
   await saveClient(client)
+  listenTokenRefresh(client)
+
   return client
 }
 
@@ -177,9 +187,9 @@ export const createClient = async instance => {
     scope: ['*'],
     oauth: {
       redirectURI: strings.COZY_SCHEME,
-      softwareID: 'amiral',
+      softwareID: SOFTWARE_ID,
       clientKind: 'mobile',
-      clientName: 'Amiral',
+      clientName: `${SOFTWARE_NAME} (${getDeviceName()})`,
       shouldRequireFlagshipPermissions: true,
       certificationConfig: {
         androidSafetyNetApiKey: apiKeys.androidSafetyNetApiKey
@@ -210,35 +220,54 @@ const connectClient = async ({
   client,
   twoFactorAuthenticationData = undefined
 }) => {
-  const sessionCodeResult = await fetchSessionCode({
+  const {
+    two_factor_token: twoFactorToken,
+    session_code: sessionCode,
+    invalidPassword,
+    ...token
+  } = await loginFlagship({
     client,
     loginData,
     twoFactorAuthenticationData
   })
 
-  if (sessionCodeResult.invalidPassword) {
+  if (invalidPassword) {
     return {
       client,
       state: STATE_INVALID_PASSWORD
     }
   }
 
-  const need2FA = sessionCodeResult.twoFactorToken !== undefined
+  const need2FA = twoFactorToken !== undefined
 
   if (need2FA) {
     return {
       client,
       state: STATE_2FA_NEEDED,
-      twoFactorToken: sessionCodeResult.twoFactorToken
+      twoFactorToken: twoFactorToken
     }
   }
 
-  const sessionCode = sessionCodeResult.session_code
+  const needFlagshipVerification = sessionCode !== undefined
+
+  if (needFlagshipVerification) {
+    return {
+      client: client,
+      state: STATE_AUTHORIZE_NEEDED,
+      sessionCode: sessionCode
+    }
+  }
+
+  const stackClient = client.getStackClient()
+  stackClient.setToken(token)
+
+  await client.login()
+  await saveClient(client)
+  listenTokenRefresh(client)
 
   return {
     client: client,
-    sessionCode: sessionCode,
-    state: STATE_AUTHORIZE_NEEDED
+    state: STATE_CONNECTED
   }
 }
 
@@ -255,11 +284,19 @@ export const authorizeClient = async ({ client, sessionCode }) => {
 
   await client.login()
   await saveClient(client)
+  listenTokenRefresh(client)
 
   return {
     client: client,
     state: STATE_CONNECTED
   }
+}
+
+const listenTokenRefresh = client => {
+  client.on('tokenRefreshed', () => {
+    log.debug('Token has been refreshed')
+    saveClient(client)
+  })
 }
 
 /**
@@ -271,52 +308,6 @@ export const authorizeClient = async ({ client, sessionCode }) => {
  */
 const createPKCE = async () => {
   return await queryResultToCrypto('computePKCE')
-}
-
-/**
- * Fetch the session code from cozy-stack
- *
- * Errors are handled to detect when 2FA is needed and when password is invalid
- *
- * @param {object} param
- * @param {object} param.client
- * @param {object} param.loginData
- * @param {object} [param.twoFactorAuthenticationData]
- * @returns {SessionCodeResult} The query result with session_code, or 2FA token, or invalid password error
- * @throws
- */
-const fetchSessionCode = async ({
-  client,
-  loginData,
-  twoFactorAuthenticationData = undefined
-}) => {
-  const stackClient = client.getStackClient()
-
-  try {
-    const sessionCodeResult = await stackClient.fetchSessionCodeWithPassword({
-      passwordHash: loginData.passwordHash,
-      twoFactorToken: twoFactorAuthenticationData
-        ? twoFactorAuthenticationData.token
-        : undefined,
-      twoFactorPasscode: twoFactorAuthenticationData
-        ? twoFactorAuthenticationData.passcode
-        : undefined
-    })
-
-    return sessionCodeResult
-  } catch (e) {
-    if (e.status === 403 && e.reason && e.reason.two_factor_token) {
-      return {
-        twoFactorToken: e.reason.two_factor_token
-      }
-    } else if (e.status === 401) {
-      return {
-        invalidPassword: true
-      }
-    } else {
-      throw e
-    }
-  }
 }
 
 /**
@@ -341,5 +332,79 @@ export const fetchPublicData = async client => {
   return {
     kdfIterations,
     name
+  }
+}
+
+export const fetchCozyDataForSlug = async (slug, client, cookie) => {
+  const stackClient = client.getStackClient()
+
+  const headers = cookie
+    ? {
+        headers: {
+          Cookie: `${cookie.name}=${cookie.value}`
+        }
+      }
+    : undefined
+
+  const result = await stackClient.fetchJSON(
+    'GET',
+    `/apps/${slug}/open`,
+    undefined,
+    headers
+  )
+
+  return result
+}
+
+export const getFqdnFromClient = client => {
+  const rootURL = client.getStackClient().uri
+  const { host: fqdn } = new URL(rootURL)
+
+  const normalizedFqdn = normalizeFqdn(fqdn)
+
+  return {
+    fqdn,
+    normalizedFqdn
+  }
+}
+
+export const fetchCozyAppVersion = async (slug, client) => {
+  const stackClient = client.getStackClient()
+
+  const result = await stackClient.fetchJSON('GET', `/apps/${slug}`)
+
+  const version = result?.data?.attributes?.version
+
+  if (!version) {
+    throw new Error(`No version found for app ${slug}`)
+  }
+
+  return version
+}
+
+export const fetchCozyAppArchiveInfoForVersion = async (
+  slug,
+  version,
+  client
+) => {
+  const stackClient = client.getStackClient()
+
+  try {
+    const { tar_prefix: tarPrefix = '' } = await stackClient.fetchJSON(
+      'GET',
+      `/registry/${slug}/${version}`
+    )
+
+    return {
+      tarPrefix
+    }
+  } catch (e) {
+    if (e.status === 404) {
+      return {
+        tarPrefix: ''
+      }
+    }
+
+    throw e
   }
 }

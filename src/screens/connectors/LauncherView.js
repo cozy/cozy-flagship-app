@@ -1,6 +1,11 @@
+import Minilog from '@cozy/minilog'
+import { withClient } from 'cozy-client'
+import debounce from 'lodash/debounce'
+import get from 'lodash/get'
 import React, { Component } from 'react'
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { WebView } from 'react-native-webview'
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native'
+
 // TODO find a proper way to load a connector only when needed
 import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
 import templateConnector from '../../../connectors/template/dist/webviewScript'
@@ -9,13 +14,15 @@ import googleConnector from '../../../connectors/google-takeout/dist/webviewScri
 import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
 import edfConnector from '../../../connectors/edf/dist/webviewScript'
 import soshConnector from '../../../connectors/sosh/dist/webviewScript'
-import ReactNativeLauncher from '../../libs/ReactNativeLauncher'
-import debounce from 'lodash/debounce'
-import { withClient } from 'cozy-client'
-import { get } from 'lodash'
-import Minilog from '@cozy/minilog'
+import { BackTo } from '/components/ui/icons/BackTo'
+import { statusBarHeight } from '/libs/dimensions'
+import ReactNativeLauncher from '/libs/ReactNativeLauncher'
+import { getColors } from '/theme/colors'
+import strings from '/strings.json'
 
 const log = Minilog('LauncherView')
+
+const colors = getColors()
 
 const DEBUG = false
 
@@ -128,6 +135,7 @@ class LauncherView extends Component {
           <>
             <View>
               <WebView
+                mediaPlaybackRequiresUserAction={true}
                 ref={ref => (this.pilotWebView = ref)}
                 originWhitelist={['*']}
                 source={{
@@ -150,15 +158,16 @@ class LauncherView extends Component {
                 <TouchableOpacity
                   activeOpacity={0.5}
                   onPress={this.onStopExecution}
+                  style={styles.headerTouchableStyle}
                 >
-                  <Image
-                    source={require('../../assets/cross.png')}
-                    resizeMode="center"
-                    style={styles.cross}
-                  />
+                  <BackTo color={colors.primaryColor} width={16} height={16} />
+                  <Text style={styles.headerTextStyle}>
+                    {strings.connectors.worker.backButton}
+                  </Text>
                 </TouchableOpacity>
               </View>
               <WebView
+                mediaPlaybackRequiresUserAction={true}
                 ref={ref => (this.workerWebview = ref)}
                 originWhitelist={['*']}
                 useWebKit={true}
@@ -262,15 +271,24 @@ const styles = StyleSheet.create({
     width: 0,
     flex: 0
   },
-  cross: {
-    width: 16,
-    height: 16,
-    position: 'absolute',
-    top: 50,
-    right: 20
-  },
   headerStyle: {
-    height: 80
+    flexDirection: 'row',
+    alignContent: 'center',
+    paddingHorizontal: 8,
+    paddingTop: statusBarHeight + 8,
+    paddingBottom: 8
+  },
+  headerTouchableStyle: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    paddingHorizontal: 6
+  },
+  headerTextStyle: {
+    marginLeft: 10,
+    fontSize: 13,
+    fontWeight: '700',
+    lineHeight: 16,
+    color: colors.primaryColor
   }
 })
 

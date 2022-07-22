@@ -1,0 +1,25 @@
+diff --git a/node_modules/react-native-webview/apple/RNCWebView.m b/node_modules/react-native-webview/apple/RNCWebView.m
+index c9f4030..1e8f5e4 100644
+--- a/node_modules/react-native-webview/apple/RNCWebView.m
++++ b/node_modules/react-native-webview/apple/RNCWebView.m
+@@ -497,7 +497,8 @@ NSString *const CUSTOM_SELECTOR = @"_CUSTOM_SELECTOR_";
+ 
+     _isFullScreenVideoOpen = YES;
+     RCTUnsafeExecuteOnMainQueueSync(^{
+-      [RCTSharedApplication() setStatusBarStyle:self->_savedStatusBarStyle animated:YES];
++      [RCTSharedApplication() setStatusBarHidden:NO animated:YES];
++      [RCTSharedApplication() setStatusBarStyle:RCTSharedApplication().statusBarStyle animated:YES];
+     });
+ #pragma clang diagnostic pop
+ }
+@@ -511,8 +512,8 @@ NSString *const CUSTOM_SELECTOR = @"_CUSTOM_SELECTOR_";
+ 
+     _isFullScreenVideoOpen = NO;
+     RCTUnsafeExecuteOnMainQueueSync(^{
+-      [RCTSharedApplication() setStatusBarHidden:self->_savedStatusBarHidden animated:YES];
+-      [RCTSharedApplication() setStatusBarStyle:self->_savedStatusBarStyle animated:YES];
++      [RCTSharedApplication() setStatusBarHidden:NO animated:YES];
++      [RCTSharedApplication() setStatusBarStyle:RCTSharedApplication().statusBarStyle animated:YES];
+     });
+ #pragma clang diagnostic pop
+ }

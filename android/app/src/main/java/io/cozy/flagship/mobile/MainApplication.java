@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.rnfs.RNFSPackage;
 import com.reactlibrary.GzipPackage;
 import com.facebook.react.ReactInstanceManager;
@@ -14,8 +15,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import android.webkit.WebView;
 import com.rnfs.RNFSPackage;
+import com.facebook.react.modules.network.OkHttpClientProvider;
 
 import io.cozy.flagship.mobile.keyboard.KeyboardPackage;
+import io.cozy.flagship.mobile.httpserver.HttpServerPackage;
+import io.cozy.flagship.mobile.webview.WebViewPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -34,6 +38,8 @@ public class MainApplication extends Application implements ReactApplication {
           // packages.add(new MyReactNativePackage());
           // packages.add(new RNFSPackage());
           packages.add(new KeyboardPackage());
+          packages.add(new HttpServerPackage());
+          packages.add(new WebViewPackage());
           return packages;
         }
 
@@ -54,6 +60,7 @@ public class MainApplication extends Application implements ReactApplication {
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
     WebView.setWebContentsDebuggingEnabled(true);
+    OkHttpClientProvider.setOkHttpClientFactory(new UserAgentClientFactory());
   }
 
   /**

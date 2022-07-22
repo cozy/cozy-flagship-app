@@ -5,6 +5,7 @@ import Minilog from '@cozy/minilog'
 
 import strings from '../../strings.json'
 import iconFallbackJson from '../../assets/iconFallback.json'
+import { clearClient } from '../client'
 
 const log = Minilog('Icon Table')
 Minilog.enable()
@@ -35,6 +36,7 @@ const attemptFetchApps = async client => {
     return await client.getStackClient().fetchJSON('GET', '/apps/')
   } catch (error) {
     log.error(strings.errors.attemptFetchApps, error)
+    if (error.message === 'Invalid token') clearClient()
     return undefined
   }
 }

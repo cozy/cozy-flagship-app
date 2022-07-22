@@ -1,28 +1,34 @@
 import { Linking } from 'react-native'
 import { act, renderHook } from '@testing-library/react-hooks'
 
-import { navigate } from '../libs/RootNavigation'
-import { routes } from '../constants/routes'
+import { navigate } from '/libs/RootNavigation'
+import { routes } from '/constants/routes'
 import { useAppBootstrap } from './useAppBootstrap'
 
 const mockHideSplashScreen = jest.fn()
 const mockRemove = jest.fn()
-const mockClient = 'mockClient'
+const mockClient = {
+  getStackClient: jest.fn().mockReturnValue({ fetchJSON: jest.fn() })
+}
 const initialURL = 'initialURL'
 const homeLink = `https://links.mycozy.cloud/home/folder/1?fallback=${initialURL}`
 const appLink = `https://links.mycozy.cloud/drive/folder/1?fallback=${initialURL}`
 const invalidLink = 'https://foo.com'
 
+jest.mock('../libs/client', () => ({
+  clearClient: jest.fn()
+}))
+
 jest.mock('react-native-bootsplash', () => ({
   show: jest.fn()
 }))
 
-jest.mock('../Sentry', () => ({
+jest.mock('/Sentry', () => ({
   SentryTags: {},
   setSentryTag: jest.fn()
 }))
 
-jest.mock('../libs/RootNavigation.js', () => ({
+jest.mock('/libs/RootNavigation.js', () => ({
   navigate: jest.fn()
 }))
 
@@ -53,6 +59,64 @@ jest.mock('react-native', () => {
 
 afterEach(() => {
   expect(mockRemove).toHaveBeenCalledTimes(1)
+})
+
+it('should set routes.stack and instance creation - when onboard_url provided', async () => {
+  // Given
+  const paramOnboardUrl = 'param-onboard-url'
+  const onboardingUrl = `http://localhost:8080/onboarding-url?onboard_url=${paramOnboardUrl}&fqdn=param-fqdn`
+  Linking.getInitialURL.mockResolvedValueOnce(onboardingUrl)
+
+  const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
+
+  await waitForValueToChange(() => result.current.isLoading)
+
+  expect(result.current).toStrictEqual({
+    client: undefined,
+    initialScreen: {
+      params: {
+        onboardUrl: paramOnboardUrl
+      },
+      stack: routes.instanceCreation,
+      root: routes.stack
+    },
+    initialRoute: {
+      stack: undefined,
+      root: undefined
+    },
+    isLoading: false
+  })
+
+  expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
+})
+
+it('should set routes.stack and authenticate - when onboard_url not provided', async () => {
+  // Given
+  const paramFqdn = `param-fqdn`
+  const onboardingUrl = `http://localhost:8080/onboarding-url?fqdn=${paramFqdn}`
+  Linking.getInitialURL.mockResolvedValueOnce(onboardingUrl)
+
+  const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
+
+  await waitForValueToChange(() => result.current.isLoading)
+
+  expect(result.current).toStrictEqual({
+    client: undefined,
+    initialScreen: {
+      stack: routes.authenticate,
+      root: routes.stack,
+      params: {
+        fqdn: paramFqdn
+      }
+    },
+    initialRoute: {
+      stack: undefined,
+      root: undefined
+    },
+    isLoading: false
+  })
+
+  expect(mockHideSplashScreen).toHaveBeenCalledTimes(1)
 })
 
 it('Should handle welcome page', async () => {
