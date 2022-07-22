@@ -55,6 +55,7 @@ export default class ContentScript {
     for (const method of exposedMethodsNames) {
       exposedMethods[method] = this[method].bind(this)
     }
+    this.store = {}
     await this.bridge.init({ exposedMethods })
     window.onbeforeunload = () =>
       this.log(
@@ -383,10 +384,6 @@ export default class ContentScript {
    * @param {Object} : any object with data to store
    */
   async storeFromWorker(obj) {
-    if (!this.store) {
-      this.store = {}
-    }
-
     Object.assign(this.store, obj)
   }
 
