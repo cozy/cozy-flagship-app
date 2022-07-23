@@ -3,18 +3,28 @@ import { Platform, StatusBar } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
 
 import Minilog from '@cozy/minilog'
+import { FlagshipUI } from 'cozy-intent'
 
 import { internalMethods } from '/libs/intents/localMethods'
 import { urlHasConnectorOpen } from '/libs/functions/urlHasConnector'
 
 const log = Minilog('SET_FLAGSHIP_UI')
 
+interface NormalisedFlagshipUI
+  extends Omit<FlagshipUI, 'bottomTheme' | 'topTheme'> {
+  bottomTheme?: UI_THEME
+  topTheme?: UI_THEME
+}
+
+type UI_THEME = typeof UI_DARK | typeof UI_LIGHT
+
 const UI_DARK = 'dark-content'
+
 const UI_LIGHT = 'light-content'
 
-const isDarkMode = bottomTheme => bottomTheme === UI_LIGHT
+const isDarkMode = (bottomTheme: UI_THEME): boolean => bottomTheme === UI_LIGHT
 
-const updateStatusBarAndBottomBar = bottomTheme => {
+const updateStatusBarAndBottomBar = (bottomTheme?: UI_THEME): void => {
   if (Platform.OS === 'android') {
     bottomTheme && changeBarColors(isDarkMode(bottomTheme))
   } else {
@@ -24,21 +34,25 @@ const updateStatusBarAndBottomBar = bottomTheme => {
   }
 }
 
-const handleSideEffects = ({ bottomTheme, ...parsedIntent }) => {
+const handleSideEffects = ({
+  bottomTheme,
+  ...parsedIntent
+}: NormalisedFlagshipUI): void => {
   flagshipUI.emit('change', parsedIntent)
   updateStatusBarAndBottomBar(bottomTheme)
 }
 
-const formatTheme = position =>
+const formatTheme = (position?: string): UI_THEME | undefined =>
   position && position.includes?.('light')
     ? UI_LIGHT
     : position?.includes?.('dark')
     ? UI_DARK
     : undefined
 
-const handleLogging = (intent, name) => log.info(`by ${name}`, intent)
+const handleLogging = (intent: FlagshipUI, name: string): void =>
+  log.info(`by ${name}`, intent)
 
-export const resetUIState = uri => {
+export const resetUIState = (uri: string): void => {
   const bottomTheme = urlHasConnectorOpen(uri) ? UI_DARK : UI_LIGHT
 
   StatusBar.setBarStyle(bottomTheme)
@@ -50,7 +64,7 @@ export const resetUIState = uri => {
 
 export const flagshipUI = new EventEmitter()
 
-export const setFlagshipUI = (intent, callerName) => {
+export const setFlagshipUI = (intent: FlagshipUI, callerName: string): void => {
   callerName && handleLogging(intent, callerName)
 
   return handleSideEffects(
@@ -61,7 +75,7 @@ export const setFlagshipUI = (intent, callerName) => {
         topTheme: formatTheme(intent.topTheme)
       })
         .filter(([, v]) => v)
-        .map(([k, v]) => [k, v.trim()])
+        .map(([k, v]) => [k, v?.trim()])
     )
   )
 }
