@@ -35,4 +35,9 @@ allprojects {
         google()
         maven { url 'https://www.jitpack.io' }
     }
+
+    
+    // For unknown reasons at this time, the build fails with Javadoc tasks on JDK11
+    // A temporary workaround for that is to disable Javadoc generation for all modules
+    // tasks.withType(Javadoc).all { enabled = false }
 }
