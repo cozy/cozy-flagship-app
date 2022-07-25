@@ -48,12 +48,19 @@ $ yarn ios
 ```
 
 ### Working with locally hosted webviews
-* Create a cozy instance with the following format : `foobar.10-0-2-2.nip.io`, so the webview browser has access to cozy-stack instances thanks to the redirection done by https://nip.io
+
+#### On Android
+* Create a cozy instance with the following format : `foobar.10-0-2-2.nip.io`, so the webview browser has access to cozy-stack instances thanks to the redirection done by https://nip.io (10.0.2.2 is the local IP address of your emulator)
 * Launch your cozy app with `DEV_HOST=(some accessible local IP)` preceding the actual start command, so the webview browser has access to webpack dev server assets. See some examples below:
     * `DEV_HOST="$(ip -4 address show eth0| grep -Po 'inet [^/]+' | cut -d' ' -f2)" yarn start`
     * `DEV_HOST="$(hostname -I | xargs)" yarn start`
+* Disable the local httpServer by setting to `true` disableGetIndex in `dev.js`
 * Your webview browser should now be able to use a locally hosted cozy-app in development/hot-reload mode
 
+#### On iOS simulator 
+* Create a cozy instance with the *.cozy.tools:8080 format
+* Disable the local httpServer by setting to `true` disableGetIndex in `dev.js`
+* Your webview browser should now be able to use a locally hosted cozy-app in development/hot-reload mode
 ### Run App tests
 ```bash
 $ yarn test
