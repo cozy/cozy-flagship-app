@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
-import { WebView } from 'react-native-webview'
 
 import Minilog from '@cozy/minilog'
 
@@ -10,6 +9,7 @@ import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
 import { NetService } from '/libs/services/NetService'
 import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
 import { jsLogInterception } from '/components/webviews/jsInteractions/jsLogInterception'
+import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 
 import { getColors } from '/theme/colors'
 
@@ -75,7 +75,7 @@ export const ClouderyCreateInstanceView = ({
 
   return (
     <Wrapper style={styles.view} behavior="height">
-      <WebView
+      <SupervisedWebView
         source={{ uri: clouderyUrl }}
         ref={webviewRef}
         onShouldStartLoadWithRequest={handleNavigation}

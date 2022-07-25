@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { KeyboardAvoidingView, Platform, View, StyleSheet } from 'react-native'
-import { WebView } from 'react-native-webview'
 
 import { getHtml } from './assets/TwoFactorAuthentication/htmlTwoFactorAuthentication'
 
+import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { getColors } from '../../../theme/colors'
 
 import { setFocusOnWebviewField } from '../../../libs/functions/keyboardHelper'
@@ -71,7 +71,7 @@ export const TwoFactorAuthenticationView = ({
 
   return (
     <Wrapper style={styles.view} behavior="height">
-      <WebView
+      <SupervisedWebView
         ref={webviewRef}
         javaScriptEnabled={true}
         onMessage={processMessage}

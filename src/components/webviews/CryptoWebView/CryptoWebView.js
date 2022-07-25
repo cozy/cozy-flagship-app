@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { View } from 'react-native'
-import { WebView } from 'react-native-webview'
 
 import {
   subscribeToCrypto,
@@ -9,6 +8,8 @@ import {
 } from './cryptoObservable/cryptoObservable'
 import { html } from './jsInteractions/jsCryptoInjection'
 import { styles } from './CryptoWebView.styles'
+
+import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 
 export const CryptoWebView = ({ setHasCrypto }) => {
   const [isLoading, setIsLoading] = useState(true)
@@ -46,13 +47,14 @@ export const CryptoWebView = ({ setHasCrypto }) => {
 
   return (
     <View style={styles.cryptoView}>
-      <WebView
+      <SupervisedWebView
         ref={webviewRef}
         javaScriptEnabled={true}
         onMessage={processAnswer}
         onLoadEnd={() => setIsLoading(false)}
         originWhitelist={['*']}
         source={{ html, baseUrl: 'https://localhost' }}
+        supervisionShowProgress={false}
       />
     </View>
   )

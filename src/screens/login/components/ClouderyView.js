@@ -6,7 +6,6 @@ import {
   StyleSheet,
   View
 } from 'react-native'
-import { WebView } from 'react-native-webview'
 
 import Minilog from '@cozy/minilog'
 
@@ -17,6 +16,7 @@ import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
 import { NetService } from '/libs/services/NetService'
 import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
 import { jsLogInterception } from '/components/webviews/jsInteractions/jsLogInterception'
+import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { rootCozyUrl } from 'cozy-client'
@@ -137,7 +137,7 @@ export const ClouderyView = ({ setInstanceData, disabledFocus }) => {
 
   return (
     <Wrapper style={styles.view} behavior="height">
-      <WebView
+      <SupervisedWebView
         source={{ uri: uri }}
         ref={webviewRef}
         onNavigationStateChange={event => {

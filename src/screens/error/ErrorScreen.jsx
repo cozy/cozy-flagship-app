@@ -1,9 +1,9 @@
 import React from 'react'
 import { Linking } from 'react-native'
-import WebView from 'react-native-webview'
 
 import { CozyNotFoundPage } from '/components/webviews/CozyNotFoundPage'
 import { OfflinePage } from '/components/webviews/OfflinePage'
+import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { goBack } from '/libs/RootNavigation'
 
 const HTML = {
@@ -26,5 +26,5 @@ const makeSource = route => ({
 })
 
 export const ErrorScreen = ({ route }) => (
-  <WebView onMessage={handleMessage} source={makeSource(route)} />
+  <SupervisedWebView onMessage={handleMessage} source={makeSource(route)} />
 )
