@@ -5,7 +5,6 @@ import { changeBarColors } from 'react-native-immersive-bars'
 import Minilog from '@cozy/minilog'
 import { FlagshipUI } from 'cozy-intent'
 
-import { internalMethods } from '/libs/intents/localMethods'
 import { urlHasConnectorOpen } from '/libs/functions/urlHasConnector'
 
 const log = Minilog('SET_FLAGSHIP_UI')
@@ -52,19 +51,12 @@ const formatTheme = (position?: string): UI_THEME | undefined =>
 const handleLogging = (intent: FlagshipUI, name: string): void =>
   log.info(`by ${name}`, intent)
 
-export const resetUIState = (uri: string): void => {
-  const bottomTheme = urlHasConnectorOpen(uri) ? UI_DARK : UI_LIGHT
-
-  StatusBar.setBarStyle(bottomTheme)
-
-  internalMethods.setFlagshipUI({ bottomTheme })
-
-  Platform.OS === 'android' && StatusBar?.setBackgroundColor('transparent')
-}
-
 export const flagshipUI = new EventEmitter()
 
-export const setFlagshipUI = (intent: FlagshipUI, callerName: string): void => {
+export const setFlagshipUI = (
+  intent: FlagshipUI,
+  callerName?: string
+): void => {
   callerName && handleLogging(intent, callerName)
 
   return handleSideEffects(
@@ -78,4 +70,18 @@ export const setFlagshipUI = (intent: FlagshipUI, callerName: string): void => {
         .map(([k, v]) => [k, v?.trim()])
     )
   )
+}
+
+export const resetUIState = (
+  uri: string,
+  // eslint-disable-next-line no-unused-vars
+  callback?: (theme: UI_THEME) => void
+): void => {
+  const theme = urlHasConnectorOpen(uri) ? 'dark' : 'light'
+
+  setFlagshipUI({ bottomTheme: theme, topTheme: theme }, 'resetUIState')
+
+  callback?.(theme === 'dark' ? UI_DARK : UI_LIGHT)
+
+  Platform.OS === 'android' && StatusBar?.setBackgroundColor('transparent')
 }
