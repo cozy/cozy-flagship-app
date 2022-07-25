@@ -12,7 +12,8 @@ const log = Minilog('SupervisedWebView')
 
 Minilog.enable()
 
-const RELOAD_DELAY_IN_MS = 10000
+const RELOAD_DELAY_IN_MS = 2000
+const RELOAD_MAX_DELAY_IN_MS = 10000
 
 const progressBarConfig = {
   width: null,
@@ -33,6 +34,13 @@ const RemountProgress = () => {
   )
 }
 
+const initialState = {
+  isReloading: false,
+  isLoaded: true,
+  shouldBeLoaded: false,
+  reloadDelay: RELOAD_DELAY_IN_MS
+}
+
 /**
  * Display a react-native WebView that is supervised in order to reload it
  * when terminated by iOS
@@ -51,27 +59,27 @@ export const SupervisedWebView =
     ? WebView
     : React.forwardRef((props, ref) => {
         const [state, setState] = useState({
-          isLoaded: true,
-          shouldBeLoaded: false,
+          ...initialState,
           key: 0
         })
 
         const { onLoad, supervisionShowProgress = true, ...otherProps } = props
-        const { isLoaded, shouldBeLoaded, key } = state
+        const { isReloading, isLoaded, shouldBeLoaded, key, reloadDelay } =
+          state
 
         useEffect(
           function verifyLoadSuccess() {
-            if (shouldBeLoaded) {
+            if (isReloading) {
               log.debug('Wait for loading ' + key)
               let timeout = setTimeout(() => {
                 log.debug('Finished waiting for loading ' + key)
                 setState(oldState => ({ ...oldState, shouldBeLoaded: true }))
-              }, RELOAD_DELAY_IN_MS)
+              }, reloadDelay)
 
               return () => clearTimeout(timeout)
             }
           },
-          [shouldBeLoaded, key]
+          [isReloading, key, reloadDelay]
         )
 
         useEffect(
@@ -81,6 +89,7 @@ export const SupervisedWebView =
               reloadWebView()
             } else if (shouldBeLoaded && isLoaded) {
               log.debug('WebView did successfuly load')
+              setState(oldState => ({ ...oldState, ...initialState }))
             }
           },
           [shouldBeLoaded, isLoaded]
@@ -92,7 +101,11 @@ export const SupervisedWebView =
             ...oldState,
             key: oldState.key + 1,
             isLoaded: false,
-            shouldBeLoaded: false
+            shouldBeLoaded: false,
+            isReloading: true,
+            reloadDelay: oldState.shouldBeLoaded
+              ? RELOAD_MAX_DELAY_IN_MS
+              : RELOAD_DELAY_IN_MS
           }))
         }
 
