@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { BackHandler, StyleSheet, View, Platform } from 'react-native'
 
-import WebView from 'react-native-webview'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { WelcomePage } from '/components/html/WelcomePage'
 import { makeHTML } from '/components/makeHTML'
+import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { makeHandlers } from '/libs/functions/makeHandlers'
 import { getColors } from '/theme/colors'
 import { getNavbarHeight } from '/libs/dimensions'
@@ -23,7 +23,7 @@ const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
         }
       ]}
     >
-      <WebView
+      <SupervisedWebView
         onMessage={makeHandlers({
           onContinue: () => setIsWelcomeModalDisplayed(false)
         })}

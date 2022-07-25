@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { KeyboardAvoidingView, Platform, View, StyleSheet } from 'react-native'
-import { WebView } from 'react-native-webview'
 
+import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { doHashPassword } from '../../../libs/functions/passwordHelpers'
 import { setFocusOnWebviewField } from '../../../libs/functions/keyboardHelper'
 
@@ -82,7 +82,7 @@ const PasswordForm = ({
 
   return (
     <Wrapper style={styles.view} behavior="height">
-      <WebView
+      <SupervisedWebView
         ref={webviewRef}
         javaScriptEnabled={true}
         onMessage={processMessage}
