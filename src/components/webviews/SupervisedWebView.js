@@ -1,14 +1,37 @@
 import React, { useEffect, useState } from 'react'
-import { Platform } from 'react-native'
+import { Platform, View } from 'react-native'
 import { WebView } from 'react-native-webview'
 
 import Minilog from '@cozy/minilog'
+
+import ProgressBar from '/components/Bar'
+import { default as paletteValues } from '/theme/palette.json'
+import { styles } from './SupervisedWebView.styles'
 
 const log = Minilog('SupervisedWebView')
 
 Minilog.enable()
 
 const RELOAD_DELAY_IN_MS = 10000
+
+const progressBarConfig = {
+  width: null,
+  indeterminate: true,
+  unfilledColor: paletteValues.Grey[200],
+  color: paletteValues.Primary[600],
+  borderWidth: 0,
+  height: 8,
+  borderRadius: 100,
+  indeterminateAnimationDuration: 1500
+}
+
+const RemountProgress = () => {
+  return (
+    <View style={styles.progressBarContainer}>
+      <ProgressBar {...progressBarConfig} />
+    </View>
+  )
+}
 
 /**
  * Display a react-native WebView that is supervised in order to reload it
@@ -28,12 +51,12 @@ export const SupervisedWebView =
     ? WebView
     : React.forwardRef((props, ref) => {
         const [state, setState] = useState({
-          isLoaded: false,
+          isLoaded: true,
           shouldBeLoaded: false,
           key: 0
         })
 
-        const { onLoad, ...otherProps } = props
+        const { onLoad, supervisionShowProgress = true, ...otherProps } = props
         const { isLoaded, shouldBeLoaded, key } = state
 
         useEffect(
@@ -74,20 +97,23 @@ export const SupervisedWebView =
         }
 
         return (
-          <WebView
-            {...otherProps}
-            ref={ref}
-            key={key}
-            onContentProcessDidTerminate={syntheticEvent => {
-              const { nativeEvent } = syntheticEvent
-              log.warn('WebView terminated, reloading', nativeEvent)
-              reloadWebView()
-            }}
-            onLoad={syntheticEvent => {
-              setState(oldState => ({ ...oldState, isLoaded: true }))
-              onLoad?.(syntheticEvent)
-            }}
-          />
+          <>
+            <WebView
+              {...otherProps}
+              ref={ref}
+              key={key}
+              onContentProcessDidTerminate={syntheticEvent => {
+                const { nativeEvent } = syntheticEvent
+                log.warn('WebView terminated, reloading', nativeEvent)
+                reloadWebView()
+              }}
+              onLoad={syntheticEvent => {
+                setState(oldState => ({ ...oldState, isLoaded: true }))
+                onLoad?.(syntheticEvent)
+              }}
+            />
+            {!isLoaded && supervisionShowProgress && <RemountProgress />}
+          </>
         )
       })
 
