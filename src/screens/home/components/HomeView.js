@@ -17,7 +17,7 @@ const unzoomHomeView = webviewRef => {
   )
 }
 
-const HomeView = ({ route, navigation, setLauncherContext }) => {
+const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   const client = useClient()
   const [uri, setUri] = useState('')
   const [trackedWebviewInnerUri, setTrackedWebviewInnerUri] = useState('')
@@ -48,9 +48,9 @@ const HomeView = ({ route, navigation, setLauncherContext }) => {
     useCallback(() => {
       if (didBlurOnce.current) {
         unzoomHomeView(webviewRef)
-        resetUIState(uri)
+        resetUIState(uri, setBarStyle)
       }
-    }, [uri, webviewRef])
+    }, [setBarStyle, uri, webviewRef])
   )
 
   useFocusEffect(
