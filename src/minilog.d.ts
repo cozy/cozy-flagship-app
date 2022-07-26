@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 declare module '@cozy/minilog' {
   interface MiniLogger {
     debug: (...msg: unknown[]) => void

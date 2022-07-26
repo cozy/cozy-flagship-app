@@ -1,5 +1,6 @@
 import { InAppBrowser } from 'react-native-inappbrowser-reborn'
-import { BrowserResult } from 'react-native-inappbrowser-reborn/types' // eslint-disable-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { BrowserResult } from 'react-native-inappbrowser-reborn/types'
 
 const IAB_OPTIONS = {
   // iOS Properties

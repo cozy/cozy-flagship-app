@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Q, models } from 'cozy-client'
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
@@ -24,6 +23,7 @@ export default class Launcher {
    *
    * @return {Bridge}
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async init({ bridgeOptions, contentScript }) {}
 
   /**
