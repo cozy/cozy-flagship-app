@@ -15,11 +15,25 @@ export const jsLogInterception = `
   }
 
   console = {
-    log: (...log) => consoleLog('log', log),
+    assert: (...log) => consoleLog('assert', log),
+    clear: (...) => consoleLog('clear', log),
+    count: (...) => consoleLog('count', log),
+    countReset: (...) => consoleLog('countReset', log),
     debug: (...log) => consoleLog('debug', log),
-    info: (...log) => consoleLog('info', log),
-    warn: (...log) => consoleLog('warn', log),
+    dir: (...log) => consoleLog('dir', log),
+    dirxml: (...log) => consoleLog('dirxml', log),
     error: (...log) => consoleLog('error', log),
+    group: (...log) => consoleLog('group', log),
+    groupCollapsed: (...log) => consoleLog('groupCollapsed', log),
+    groupEnd: (...log) => consoleLog('groupEnd', log),
+    info: (...log) => consoleLog('info', log),
+    log: (...log) => consoleLog('log', log),
+    table: (...log) => consoleLog('table', log),
+    time: (...log) => consoleLog('time', log),
+    timeEnd: (...log) => consoleLog('timeEnd', log),
+    timeLog: (...log) => consoleLog('timeLog', log),
+    trace: (...log) => consoleLog('trace', log),
+    warn: (...log) => consoleLog('warn', log),
   }
 `
 
