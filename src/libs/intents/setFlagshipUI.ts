@@ -11,19 +11,24 @@ const log = Minilog('SET_FLAGSHIP_UI')
 
 interface NormalisedFlagshipUI
   extends Omit<FlagshipUI, 'bottomTheme' | 'topTheme'> {
-  bottomTheme?: UI_THEME
-  topTheme?: UI_THEME
+  bottomTheme?: StatusBarStyle
+  topTheme?: StatusBarStyle
 }
 
-type UI_THEME = typeof UI_DARK | typeof UI_LIGHT
+enum ThemeInput {
+  Dark = 'dark',
+  Light = 'light'
+}
 
-const UI_DARK = 'dark-content'
+export enum StatusBarStyle {
+  Dark = 'dark-content',
+  Light = 'light-content'
+}
 
-const UI_LIGHT = 'light-content'
+const isDarkMode = (bottomTheme: StatusBarStyle): boolean =>
+  bottomTheme === StatusBarStyle.Light
 
-const isDarkMode = (bottomTheme: UI_THEME): boolean => bottomTheme === UI_LIGHT
-
-const updateStatusBarAndBottomBar = (bottomTheme?: UI_THEME): void => {
+const updateStatusBarAndBottomBar = (bottomTheme?: StatusBarStyle): void => {
   if (Platform.OS === 'android') {
     bottomTheme && changeBarColors(isDarkMode(bottomTheme))
   } else {
@@ -41,11 +46,11 @@ const handleSideEffects = ({
   updateStatusBarAndBottomBar(bottomTheme)
 }
 
-const formatTheme = (position?: string): UI_THEME | undefined =>
-  position && position.includes?.('light')
-    ? UI_LIGHT
-    : position?.includes?.('dark')
-    ? UI_DARK
+const formatTheme = (input?: ThemeInput): StatusBarStyle | undefined =>
+  input && input.includes?.(ThemeInput.Light)
+    ? StatusBarStyle.Light
+    : input?.includes?.(ThemeInput.Dark)
+    ? StatusBarStyle.Dark
     : undefined
 
 const handleLogging = (intent: FlagshipUI, name: string): void =>
@@ -63,8 +68,8 @@ export const setFlagshipUI = (
     Object.fromEntries(
       Object.entries({
         ...intent,
-        bottomTheme: formatTheme(intent.bottomTheme),
-        topTheme: formatTheme(intent.topTheme)
+        bottomTheme: formatTheme(intent.bottomTheme as ThemeInput),
+        topTheme: formatTheme(intent.topTheme as ThemeInput)
       })
         .filter(([, v]) => v)
         .map(([k, v]) => [k, v?.trim()])
@@ -74,14 +79,15 @@ export const setFlagshipUI = (
 
 export const resetUIState = (
   uri: string,
-  // eslint-disable-next-line no-unused-vars
-  callback?: (theme: UI_THEME) => void
+  callback?: (theme: StatusBarStyle) => void
 ): void => {
-  const theme = urlHasConnectorOpen(uri) ? 'dark' : 'light'
+  const theme = urlHasConnectorOpen(uri) ? ThemeInput?.Dark : ThemeInput.Light
 
   setFlagshipUI({ bottomTheme: theme, topTheme: theme }, 'resetUIState')
 
-  callback?.(theme === 'dark' ? UI_DARK : UI_LIGHT)
+  callback?.(
+    theme === ThemeInput.Dark ? StatusBarStyle.Dark : StatusBarStyle.Light
+  )
 
   Platform.OS === 'android' && StatusBar?.setBackgroundColor('transparent')
 }
