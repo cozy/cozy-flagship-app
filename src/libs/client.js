@@ -189,7 +189,7 @@ export const createClient = async instance => {
       redirectURI: strings.COZY_SCHEME,
       softwareID: SOFTWARE_ID,
       clientKind: 'mobile',
-      clientName: `${SOFTWARE_NAME} (${getDeviceName()})`,
+      clientName: `${SOFTWARE_NAME} (${await getDeviceName()})`,
       shouldRequireFlagshipPermissions: true,
       certificationConfig: {
         androidSafetyNetApiKey: apiKeys.androidSafetyNetApiKey
