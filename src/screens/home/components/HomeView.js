@@ -5,11 +5,11 @@ import { useFocusEffect } from '@react-navigation/native'
 import { useClient, generateWebLink } from 'cozy-client'
 import { useNativeIntent } from 'cozy-intent'
 
+import { AppState } from 'react-native'
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { useSession } from '/hooks/useSession'
-import { AppState } from 'react-native'
 
 const unzoomHomeView = webviewRef => {
   webviewRef?.injectJavaScript(
