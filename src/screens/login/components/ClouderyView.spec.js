@@ -12,7 +12,8 @@ jest.mock('cozy-client', () => ({
 }))
 
 jest.mock('react-native-webview', () => {
-  const React = require('react') // eslint-disable-line no-shadow
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const React = require('react')
   class WebView extends React.Component {
     render() {
       return (

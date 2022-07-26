@@ -2,11 +2,10 @@
   "extends": ["@react-native-community", "cozy-app/react"],
   "plugins": ["react-hooks"],
   "rules": {
-    "no-shadow": "error",
-    "no-unused-vars": [
-      "error",
-      { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
-    ],
+    "@typescript-eslint/no-shadow": "error",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "no-shadow": "off",
+    "no-unused-vars": "off",
     "prettier/prettier": [
       "error",
       {

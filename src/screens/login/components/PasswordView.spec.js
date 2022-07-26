@@ -5,7 +5,8 @@ import { PasswordView } from './PasswordView'
 const mockSpy = jest.fn()
 
 jest.mock('react-native-webview', () => {
-  const React = require('react') // eslint-disable-line no-shadow
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const React = require('react')
   class WebView extends React.Component {
     postMessage(payload) {
       mockSpy(payload)
