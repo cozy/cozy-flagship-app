@@ -33,9 +33,9 @@ const interceptReload = (url, targetUri, preventRefreshByDefault) => {
 
 const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
   const [preventRefreshByDefault, setPreventRefreshByDefault] = useState(true)
+  const [timestamp, setTimestamp] = useState(Date.now())
 
   const {
-    triggerWebViewReload,
     targetUri,
     source,
     onShouldStartLoadWithRequest,
@@ -44,7 +44,7 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
   } = props
 
   if (!source.html) {
-    // Blocking this feature, until source={{ html, baseUrl: uri }} is set
+    // Blocking this feature, when source={{ uri }} is set
     return <SupervisedWebView {...props} ref={ref} {...userAgent} />
   }
 
@@ -53,6 +53,7 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
       {...props}
       {...userAgent}
       ref={ref}
+      key={timestamp}
       onShouldStartLoadWithRequest={initialRequest => {
         const stopPageReload = interceptReload(
           initialRequest.url,
@@ -62,7 +63,7 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
         // After first render iOS, refresh interception is enabled
         setPreventRefreshByDefault(stopPageReload)
         if (stopPageReload) {
-          triggerWebViewReload()
+          setTimestamp(Date.now())
           return false
         }
         return onShouldStartLoadWithRequest(initialRequest)
@@ -73,7 +74,7 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
         const dataPayload = JSON.parse(rawData)
         if (dataPayload.type === 'intercept-reload') {
           if (preventRefreshByDefault) {
-            triggerWebViewReload()
+            setTimestamp(Date.now())
           }
           // Prevent infinite refresh, after one refresh
           setPreventRefreshByDefault(!preventRefreshByDefault)

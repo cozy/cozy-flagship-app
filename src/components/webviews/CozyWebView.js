@@ -36,9 +36,6 @@ export const CozyWebView = ({
   ...rest
 }) => {
   const isSecureProtocol = useIsSecureProtocol()
-  // To test interception, uncomment this block
-  // const [timestamp, setTimestamp] = useState(Date.now())
-  const [, setTimestamp] = useState(Date.now())
   const [webviewRef, setWebviewRef] = useState()
   const [uri, setUri] = useState()
   const [innerUri, setInnerUri] = useState()
@@ -179,7 +176,6 @@ export const CozyWebView = ({
           parentOnMessage(m)
         }
       }}
-      triggerWebViewReload={() => setTimestamp(Date.now())}
       targetUri={uri}
     />
   ) : null
