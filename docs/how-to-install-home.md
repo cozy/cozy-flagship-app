@@ -29,6 +29,6 @@ yarn install:home
 Execute this script if:
 - This is the first time you build the project
 - Some updates have been done on cozy-home and you want to test them in the app
-- A release is beeing done (don't forget to build the correct branch from cozy-home first)
+- A release is being done (don't forget to build the correct branch from cozy-home first)
 
 Note that the install is applied only after an Android or iOS build (`yarn android` or XCode build)
