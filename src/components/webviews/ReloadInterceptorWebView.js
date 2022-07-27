@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Platform } from 'react-native'
-import { WebView } from 'react-native-webview'
+import { SupervisedWebView } from './SupervisedWebView'
 
 import Minilog from '@cozy/minilog'
 
@@ -45,11 +45,11 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
 
   if (!source.html) {
     // Blocking this feature, until source={{ html, baseUrl: uri }} is set
-    return <WebView {...props} ref={ref} {...userAgent} />
+    return <SupervisedWebView {...props} ref={ref} {...userAgent} />
   }
 
   return (
-    <WebView
+    <SupervisedWebView
       {...props}
       {...userAgent}
       ref={ref}
