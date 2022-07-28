@@ -47,7 +47,7 @@ const handleSideEffects = ({
 }
 
 const formatTheme = (input?: ThemeInput): StatusBarStyle | undefined =>
-  input && input.includes?.(ThemeInput.Light)
+  input?.includes?.(ThemeInput.Light)
     ? StatusBarStyle.Light
     : input?.includes?.(ThemeInput.Dark)
     ? StatusBarStyle.Dark
