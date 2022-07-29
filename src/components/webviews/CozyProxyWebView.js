@@ -67,7 +67,11 @@ const getPlaformSpecificConfig = (uri, html) => {
 export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
   const client = useClient()
   const httpServerContext = useHttpServerContext()
-  const [html, setHtml] = useState(undefined)
+  const [state, dispatch] = useState({
+    source: undefined,
+    html: undefined,
+    nativeConfig: undefined
+  })
 
   useEffect(() => {
     if (httpServerContext.isRunning()) {
@@ -77,7 +81,14 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
           client
         )
 
-        setHtml(htmlContent || NO_INJECTED_HTML)
+        const { source: sourceActual, nativeConfig: nativeConfigActual } =
+          getPlaformSpecificConfig(href, htmlContent || NO_INJECTED_HTML)
+
+        dispatch({
+          html: htmlContent,
+          nativeConfig: nativeConfigActual,
+          source: sourceActual
+        })
 
         updateCozyAppBundleInBackground({
           slug,
@@ -88,20 +99,22 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
       if (slug) {
         initHtmlContent()
       } else {
-        setHtml(NO_INJECTED_HTML)
+        dispatch({
+          html: undefined,
+          nativeConfig: undefined,
+          source: { uri: href }
+        })
       }
     }
   }, [client, httpServerContext, slug, href])
 
-  const { source, nativeConfig } = getPlaformSpecificConfig(href, html)
-
   return (
     <View style={{ ...styles.view, ...style }}>
-      {source && html ? (
+      {state.source && state.html ? (
         <CozyWebView
-          source={source}
-          nativeConfig={nativeConfig}
-          injectedIndex={html}
+          source={state.source}
+          nativeConfig={state.nativeConfig}
+          injectedIndex={state.html}
           {...props}
         />
       ) : null}
