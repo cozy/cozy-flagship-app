@@ -14715,10 +14715,10 @@ react-native-web@0.17.7:
     normalize-css-color "^1.0.2"
     prop-types "^15.6.0"
 
-react-native-webview@^11.18.2:
-  version "11.18.2"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.18.2.tgz#3e2537f8aa21a6a207f801c3135ed1ae9c03ba9e"
-  integrity sha512-EB2BzFi+soOp6GmZQrw6kpeFfoKMxw1vzZg68gWsBllAXfTpfJuxr5zsRoZSNyRRpIoaJ+N+Ok2BVJJiyUYx+g==
+react-native-webview@^11.23.0:
+  version "11.23.0"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.23.0.tgz#603a584236da2e993906e6a094f165dcac3a1fdb"
+  integrity sha512-mGrgsMnYcQONvQy59xpBn87sKqkCsSkqIDRo+c2Ov4ISYl1j90wFBs+qViVJRWdoNHVuoCAZ4nZkJ65mhDpHhA==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
