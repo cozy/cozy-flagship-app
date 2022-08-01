@@ -15,15 +15,26 @@ const formatUrlToCompare = url => {
   return `http://${host}${pathname}`
 }
 
-const interceptReload = (url, targetUri, preventRefreshByDefault) => {
+const detectReload = (initialRequest, preventRefreshByDefault) => {
+  const { navigationType } = initialRequest
+
+  if (Platform.OS === 'ios' && preventRefreshByDefault) {
+    return false
+  }
+
+  if (navigationType === 'reload') {
+    return true
+  }
+
+  return false
+}
+
+const isRedirectOutside = (url, targetUri) => {
   const realUrl = url === 'about:blank' ? targetUri : url
   const rootUrl = formatUrlToCompare(realUrl)
   const rootBaseUrl = formatUrlToCompare(targetUri)
 
-  if (rootUrl === rootBaseUrl) {
-    // Return false, except on iOS on first render because onShouldStartLoadWithRequest is called
-    return !(Platform.OS === 'ios' && preventRefreshByDefault)
-  } else {
+  if (rootUrl !== rootBaseUrl) {
     log.error(
       `ReloadInterceptorWebView blocks. Current URL was:${rootBaseUrl} and destination URL was: ${rootUrl}`
     )
@@ -54,17 +65,21 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
       ref={ref}
       key={timestamp}
       onShouldStartLoadWithRequest={initialRequest => {
-        const stopPageReload = interceptReload(
-          initialRequest.url,
-          targetUri,
-          preventRefreshByDefault
-        )
-        // After first render iOS, refresh interception is enabled
-        setPreventRefreshByDefault(stopPageReload)
-        if (stopPageReload) {
+        const isReload = detectReload(initialRequest, preventRefreshByDefault)
+        setPreventRefreshByDefault(false)
+
+        if (isReload) {
+          log.debug('Intercepting reload, remount component instead')
           setTimestamp(Date.now())
           return false
         }
+
+        const isRedirect = isRedirectOutside(initialRequest.url, targetUri)
+
+        if (isRedirect) {
+          return false
+        }
+
         return onShouldStartLoadWithRequest(initialRequest)
       }}
     />
