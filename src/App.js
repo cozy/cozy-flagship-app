@@ -3,7 +3,6 @@ import { StatusBar, StyleSheet, View } from 'react-native'
 import { decode, encode } from 'base-64'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { Provider as PaperProvider } from 'react-native-paper'
 import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import RNAsyncStorageFlipper from 'rn-async-storage-flipper'
@@ -20,7 +19,6 @@ import { LoginScreen } from './screens/login/LoginScreen'
 import { OnboardingScreen } from './screens/login/OnboardingScreen'
 import { CozyAppScreen } from './screens/cozy-app/CozyAppScreen'
 import { SplashScreenProvider } from './providers/SplashScreenProvider'
-import { lightTheme } from './theme'
 import { getColors } from './theme/colors'
 import { localMethods } from './libs/intents/localMethods'
 import { useAppBootstrap } from './hooks/useAppBootstrap.js'
@@ -138,25 +136,23 @@ const WrappedApp = () => {
   const Nav = () => (
     <NavigationContainer ref={RootNavigation.navigationRef}>
       <NativeIntentProvider localMethods={localMethods(client)}>
-        <PaperProvider theme={lightTheme}>
-          <SplashScreenProvider>
-            <View
-              style={[
-                styles.view,
-                {
-                  backgroundColor: colors.primaryColor
-                }
-              ]}
-            >
-              <StatusBar
-                barStyle="light-content"
-                backgroundColor="transparent"
-                translucent
-              />
-              <App setClient={setClient} />
-            </View>
-          </SplashScreenProvider>
-        </PaperProvider>
+        <SplashScreenProvider>
+          <View
+            style={[
+              styles.view,
+              {
+                backgroundColor: colors.primaryColor
+              }
+            ]}
+          >
+            <StatusBar
+              barStyle="light-content"
+              backgroundColor="transparent"
+              translucent
+            />
+            <App setClient={setClient} />
+          </View>
+        </SplashScreenProvider>
       </NativeIntentProvider>
     </NavigationContainer>
   )
