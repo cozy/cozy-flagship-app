@@ -7,13 +7,13 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { WebView } from 'react-native-webview'
 
 // TODO find a proper way to load a connector only when needed
-import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
-import templateConnector from '../../../connectors/template/dist/webviewScript'
-import googleConnector from '../../../connectors/google-takeout/dist/webviewScript'
+// import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
+// import templateConnector from '../../../connectors/template/dist/webviewScript'
+// import googleConnector from '../../../connectors/google-takeout/dist/webviewScript'
 // import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
-import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
-import edfConnector from '../../../connectors/edf/dist/webviewScript'
-import soshConnector from '../../../connectors/sosh/dist/webviewScript'
+// import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
+// import edfConnector from '../../../connectors/edf/dist/webviewScript'
+// import soshConnector from '../../../connectors/sosh/dist/webviewScript'
 import { BackTo } from '/components/ui/icons/BackTo'
 import { statusBarHeight } from '/libs/dimensions'
 import ReactNativeLauncher from '/libs/ReactNativeLauncher'
@@ -27,13 +27,13 @@ const colors = getColors()
 const DEBUG = false
 
 const embeddedConnectors = {
-  edf: edfConnector,
-  'google-takeout': googleConnector,
-  amazon: amazonConnector,
-  template: templateConnector,
+  // edf: edfConnector,
+  // 'google-takeout': googleConnector,
+  // amazon: amazonConnector,
+  // template: templateConnector,
   // sncf: sncfConnector,
-  blablacar: blablacarConnector,
-  sosh: soshConnector
+  // blablacar: blablacarConnector,
+  // sosh: soshConnector
 }
 class LauncherView extends Component {
   constructor(props) {
