@@ -15,7 +15,6 @@ import {
   tryConsole
 } from '/components/webviews/jsInteractions/jsLogInterception'
 import { postMessageFunctionDeclaration } from '/components/webviews/CryptoWebView/jsInteractions/jsFunctions/jsMessaging'
-import { jsOnbeforeunload } from '/components/webviews/jsInteractions/jsOnbeforeunload'
 import { useSession } from '/hooks/useSession'
 import ReloadInterceptorWebView from '/components/webviews/ReloadInterceptorWebView'
 import { getHostname } from '/libs/functions/getHostname'
@@ -100,8 +99,6 @@ export const CozyWebView = ({
       ${jsLogInterception}
 
       ${injectedJavaScriptBeforeContentLoaded}
-
-      ${jsOnbeforeunload}
 
       ${postMessageFunctionDeclaration}
 
