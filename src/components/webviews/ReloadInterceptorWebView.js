@@ -39,7 +39,6 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
     targetUri,
     source,
     onShouldStartLoadWithRequest,
-    onMessage,
     userAgent = userAgentDefault
   } = props
 
@@ -67,20 +66,6 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
           return false
         }
         return onShouldStartLoadWithRequest(initialRequest)
-      }}
-      onMessage={async m => {
-        // Handling manual redirection Android see jsOnbeforeunload
-        const { data: rawData } = m.nativeEvent
-        const dataPayload = JSON.parse(rawData)
-        if (dataPayload.type === 'intercept-reload') {
-          if (preventRefreshByDefault) {
-            setTimestamp(Date.now())
-          }
-          // Prevent infinite refresh, after one refresh
-          setPreventRefreshByDefault(!preventRefreshByDefault)
-        }
-
-        return onMessage(m)
       }}
     />
   )
