@@ -110,7 +110,7 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
 
   return (
     <View style={{ ...styles.view, ...style }}>
-      {state.source && state.html ? (
+      {state.source ? (
         <CozyWebView
           source={state.source}
           nativeConfig={state.nativeConfig}
