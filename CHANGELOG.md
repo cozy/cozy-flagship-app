@@ -1,4 +1,4 @@
-# 0.0.22
+# 0.0.23
 
 ## ✨ Features
 
@@ -8,6 +8,29 @@
 
 ## 🔧 Tech
 
+
+# 0.0.22
+
+## ✨ Features
+
+* Add autologin on `Amazon` Client Side Connector ([PR #357](https://github.com/cozy/cozy-react-native/pull/357))
+* Use production URL for ClouderyView ([PR #371](https://github.com/cozy/cozy-react-native/pull/371))
+
+## 🐛 Bug Fixes
+
+* Auto-remount WebView when killed by iOS memory management ([PR #352](https://github.com/cozy/cozy-react-native/pull/352))
+* Fix OAuth client name ([PR #365](https://github.com/cozy/cozy-react-native/pull/365))
+* Fix synchronization problem when navigating from a cozy-app to another ([PR #374](https://github.com/cozy/cozy-react-native/pull/374) and [PR #383](https://github.com/cozy/cozy-react-native/pull/383))
+
+## 🔧 Tech
+
+* Add documentation for debuging `cozy-bar` ([PR #341](https://github.com/cozy/cozy-react-native/pull/341))
+* Migrate `setFlagshipUI()` code to TypeScript ([PR #358](https://github.com/cozy/cozy-react-native/pull/358))
+* Improve `FlagshipUI` behaviour ([PR #362](https://github.com/cozy/cozy-react-native/pull/362))
+* Add commented code as a suggestion to make Android project compilable on Windows ([PR #359](https://github.com/cozy/cozy-react-native/pull/359))
+* Initialize Client Side Connector's store on connector startup ([PR #354](https://github.com/cozy/cozy-react-native/pull/354))
+* Add documentation for debuging local application using hot-reload ([PR #361](https://github.com/cozy/cozy-react-native/pull/361))
+* Intercept WebView reload on iOS ([PR #370](https://github.com/cozy/cozy-react-native/pull/370) and [PR #382](https://github.com/cozy/cozy-react-native/pull/382))
 
 # 0.0.21
 
