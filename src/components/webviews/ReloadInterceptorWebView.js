@@ -55,7 +55,22 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
 
   if (!source.html) {
     // Blocking this feature, when source={{ uri }} is set
-    return <SupervisedWebView {...props} ref={ref} {...userAgent} />
+    return (
+      <SupervisedWebView
+        {...props}
+        ref={ref}
+        {...userAgent}
+        onShouldStartLoadWithRequest={initialRequest => {
+          const isRedirect = isRedirectOutside(initialRequest.url, targetUri)
+
+          if (isRedirect) {
+            return false
+          }
+
+          return onShouldStartLoadWithRequest(initialRequest)
+        }}
+      />
+    )
   }
 
   return (
