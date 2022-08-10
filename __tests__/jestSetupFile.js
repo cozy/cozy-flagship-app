@@ -5,6 +5,11 @@ import mockRNDeviceInfo from 'react-native-device-info/jest/react-native-device-
 jest.mock('react-native-device-info', () => mockRNDeviceInfo)
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage)
 jest.mock('@react-native-community/netinfo', () => mockRNCNetInfo)
+jest.mock('@sentry/react-native', () => ({
+  captureException: jest.fn(),
+  init: jest.fn(),
+  setTag: jest.fn()
+}))
 
 jest.mock(
   '../src/api-keys.json',
