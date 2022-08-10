@@ -110,7 +110,7 @@ const clearPersistentIconTable = async () => {
   try {
     await AsyncStorage.removeItem(strings.APPS_ICONS)
   } catch (error) {
-    log.info(strings.errors.clearPersistentIconTable, error)
+    log.error(strings.errors.clearPersistentIconTable, error)
   }
 }
 

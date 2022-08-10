@@ -13,7 +13,7 @@ export const _netInfoChangeHandler = (state, callbackRoute = routes.stack) => {
   try {
     state.isConnected && reset(callbackRoute)
   } catch (error) {
-    log.debug(error)
+    log.error(error)
   }
 }
 
