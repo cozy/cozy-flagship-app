@@ -31,3 +31,7 @@ Sentry.setTag(SentryTags.Version, version)
 export const withSentry = Sentry.wrap
 
 export const setSentryTag = (tag, value) => Sentry.setTag(tag, value)
+
+export const logToSentry = error => {
+  Sentry.captureException(error)
+}
