@@ -7,7 +7,9 @@ import {interceptXHRResponse} from './XHRinterceptor'
 
 //Intercepting XHR response for pdfs blobs
 let XHRResponses = []
-interceptXHRResponse('api.boulanger.com/sale/document/invoices', XHRResponses)
+let XHRComplements = []
+interceptXHRResponse('api.boulanger.com/sale/document/invoices', XHRResponses, XHRComplements)
+
 
 class TemplateContentScript extends ContentScript {
   //////////
@@ -54,6 +56,7 @@ class TemplateContentScript extends ContentScript {
     await this.waitForElementInWorker(constants.selectors.myOrderPageSelector)
     await this.clickAndWait(constants.selectors.myOrderPageSelector, constants.selectors.orders.yearList)
     await this.runInWorker('getBills')
+    console.log('base64', this.store.resolvedBase64)
     await this.waitForElementInWorker('[pause]')
   }
 
@@ -73,7 +76,7 @@ class TemplateContentScript extends ContentScript {
       // }
       // await this.waitForElementInWorker('[pauseNoSuccess]')
       
-    }
+  }
     
   async authWithoutCredentials(){
     await this.goto(constants.urls.baseUrl)
@@ -200,16 +203,30 @@ class TemplateContentScript extends ContentScript {
     await this.sendToPilot({userIdentity})
     return userIdentity.email
   }
-
+  
   
   async getBills(){
+    const bills = document.querySelectorAll(constants.selectors.orders.orderArticles)
+    const billsLength = bills.length
+    this.log('Computing bills')
+    const computedBills = await this.computeBills(billsLength)
+    console.log('computeBills before association', computedBills)
+    await this.processingPromises()
+    // this.log('Associating XHR with bills')
+    // const allBills = await this.associateXHR(computedBills)
+    // await this.sendToPilot({
+    //   allBills
+    // })
+  }
+    
+  async computeBills(billsLength) {
+    this.log('computeBills starts')
     let allBills = []
     const bills = document.querySelectorAll(constants.selectors.orders.orderArticles)
-    console.log(bills)
-    bills.forEach(async (bill) => {
-      const rawVendorRef = bill.querySelector('h3[class="product-global-info__id"]').innerHTML
-      const rawDate = bill.querySelector('p[class="product-global-info__date"] > span').innerHTML
-      const rawPrice = bill.querySelector('p[class="product-global-info__price"] > span').innerHTML
+    for(let i = 0 ; i < billsLength; i++){
+      const rawVendorRef = bills[i].querySelector(constants.selectors.orders.vendorRef).innerHTML
+      const rawDate = bills[i].querySelector(constants.selectors.orders.date).innerHTML
+      const rawPrice = bills[i].querySelector(constants.selectors.orders.price).innerHTML
       const vendorRef = rawVendorRef.replace('N° : ', '')
       const splittedDate = rawDate.split('/')
       const day = splittedDate[0]
@@ -218,64 +235,121 @@ class TemplateContentScript extends ContentScript {
       const date = new Date(`${month}/${day}/${year}`)
       const amount = parseFloat(rawPrice.replace('€', '').replace(',', '.'))
       const currency = 'EUR'
-      const downloadButton = bill.querySelector(constants.buttons.downloadFileButtonSelector)
+      const downloadButton = bills[i].querySelector(constants.buttons.downloadFileButtonSelector)
       const oneBill = {
         vendorRef,
         date,
         amount,
         currency,
       }
-      const XHRLength = XHRResponses.length
       downloadButton.click()
-      const multipleInvoices = this.checkMultipleInvoices()
-      // if (multipleInvoices){
-      //   console.log('MultipleInvoice condition')
-      //   const linkedFilesButtons = document.querySelectorAll(constants.buttons.downloadLinkedFileButtonSelector)
-      //   const closePage = document.querySelector(constants.buttons.closePage)
-      //   for (let i = 0; i < linkedFilesButtons.length; i++) {
-      //     console.log('forLoop of multipleInvoices')
-      //     const XHRLength = XHRResponses.length
-      //     linkedFilesButtons[i].click()
-      //     await sleep(5)
-      //     // while(this.checkXHRReception(XHRLength)!== true){
-      //     //   this.log('Waiting for XHR reception')
-      //     //   await sleep(1)
-      //     // }
-      //     console.log('XHR Received, continue')
-      //     let linkedInvoice = {
-      //       vendorRef: `${oneBill.vendorRef}-00${i+1}`,
-      //       date: oneBill.date,
-      //       amount: oneBill.amount,
-      //       currency: oneBill.currency
-      //     }
-      //     console.log('Pushing linkedInvoice')
-      //     allBills.push(linkedInvoice)
-      //   }
-      //   console.log('Supposed to close the multipleInvoices page')
-      //   closePage.click()
-      // }else {
+      if (this.checkMultipleInvoices()){
+        const linkedInvoices = await this.handleMultipleInvoices(oneBill)
+        const closePage = document.querySelector(constants.buttons.closePage).shadowRoot.querySelector(constants.buttons.popinHeader).children[0]
+        closePage.click()
+        allBills.push.apply(allBills, linkedInvoices)
+        const isStillMultiple = await this.checkMultipleInvoices()
+        if(isStillMultiple){
+          throw new Error('could not close multipleInvoices page')
+        }
+      }else{
         console.log('just one invoice, continue')
-       console.log('XHR Received, continue')
-       allBills.push(oneBill)
-      // }
-      console.log('allBills', allBills)
+        console.log('XHR Received, continue')
+        allBills.push(oneBill)
+      }
+      
+    }
+    return allBills
+  }
+
+  async processingPromises(){
+    console.log(`processingBill starts`)
+    let resolvedBase64 = []
+    console.log('XHRResponses', XHRResponses)
+    const testDepromessify = await Promise.all(XHRResponses)
+    console.log('testDepromessify', testDepromessify)
+    console.log('XHRResponses length', XHRResponses.length)
+
+    console.log('XHRComplements', XHRComplements)
+    for (let i = 0; i < XHRResponses.length; i++){
+      console.log(`processing bill loop number ${i}`)
+      resolvedBase64.push({
+        uri: billsToBase64[i],
+        url: XHRComplements[i]
+      })
+    }
+    await this.sendToPilot({
+      resolvedBase64
     })
   }
   
+  // async associateXHR(computedBills){
+  //   this.log('associateXHR starts')
+  //   console.log('XHR promises', XHRResponses)
+  //   console.log('computed bills at beginning of association', computedBills)
+  //   const resolvedPromises = await Promise.all(XHRResponses)
+  //   console.log('resolved promises', resolvedPromises)
+  //   let allBills = []
+  //   let subVendorRef = ''
+  //   for(let i = 0; i < computedBills.length; i++) {
+  //     let associatedBills = {
+  //       ...computedBills[i]
+  //     }
+  //     for (let j = 0 ; j < resolvedPromises.length; j++) {
+  //       console.log('checking loop for url match')
+  //       let vendorRefMatch = computedBills[i].vendorRef.match('-')
+  //       console.log(vendorRefMatch)
+  //       if (vendorRefMatch){
+  //         subVendorRef = computedBills[i].vendorRef.split('-')[1]
+  //         console.log(subVendorRef)
+  //       }
+  //       if (resolvedPromises[j].url.match(`${computedBills[i].vendorRef}/sequences/${vendorRefMatch ? subVendorRef : '002'}`)){
+  //         associatedBills.dataUri = resolvedPromises[j].base64
+  //         console.log('associatedBills after uri given',associatedBills)
+  //       }
+  //     }
+  //     console.log('associatedBills',associatedBills)
+  //     allBills.push(associatedBills)
+  //   }
+  //   console.log('All bills after association', allBills)
+
+  // }
+  
   checkMultipleInvoices(){
-    const multipleInvoices =document.querySelector(constants.buttons.downloadLinkedFileButtonSelector)
-    if(multipleInvoices !== null){
+    const isMultipleInvoices =document.querySelector(constants.buttons.downloadLinkedFilePopin)
+    if(isMultipleInvoices !== null){
       return true
     }
     return false
   }
-
+  
   async checkXHRReception(XHRLength){
     const XHRLengthAfterClick = XHRResponses.length
     if (XHRLengthAfterClick <= XHRLength ){
       return false
     }
     return true
+  }
+  
+  async handleMultipleInvoices(bill){
+    let linkedInvoices = []
+    console.log('handleMultipleInvoice starts')
+    const linkedFilesButtons = document.querySelectorAll(constants.buttons.downloadLinkedFileButtonSelector)
+    let i = 0
+    linkedFilesButtons.forEach((button) => {
+      console.log(`${i} loop`)
+      let computedLinkInvoice = {
+        // This vendorRef is NOT arbitrary, the website uses this format for multiple bills.
+        vendorRef: `${bill.vendorRef}-00${i+1}`,
+        date: bill.date,
+        amount: bill.amount,
+        currency: bill.currency
+      }
+      button.click()
+      linkedInvoices.push(computedLinkInvoice)
+      i++
+    })
+    return linkedInvoices
   }
   
 }
@@ -292,6 +366,7 @@ connector.init({ additionalExposedMethodsNames: [
 
 // Used for debug purposes only
 function sleep(delay) {
+  console.log(`Sleeping for ${delay} seconds`)
   return new Promise(resolve => {
     setTimeout(resolve, delay * 1000)
   })

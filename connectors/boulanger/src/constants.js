@@ -24,7 +24,10 @@ const constants = {
         },
         orders: {
             yearList : '#year',
-            orderArticles : 'article[class="account-orders lazy"]'
+            orderArticles : 'article[class="account-orders lazy"]',
+            vendorRef : 'h3[class="product-global-info__id"]',
+            date : 'p[class="product-global-info__date"] > span',
+            price : 'p[class="product-global-info__price"] > span'
         }
     },
     buttons: {
@@ -33,7 +36,9 @@ const constants = {
         loginButtonSelector: '.button-login',
         downloadFileButtonSelector: '.orders-completed-more-actions__download',
         downloadLinkedFileButtonSelector: '.download-invoices-container__button',
-        closePage: '.bl-popin_quit-button'
+        downloadLinkedFilePopin: '.popin--container--full',
+        closePage: 'bl-popin',
+        popinHeader : '.bl-popin_wrapper'
     }
     
 }
