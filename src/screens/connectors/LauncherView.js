@@ -27,7 +27,7 @@ const log = Minilog('LauncherView')
 
 const colors = getColors()
 
-const DEBUG = false
+const DEBUG = true
 
 const embeddedConnectors = {
   // edf: edfConnector,
