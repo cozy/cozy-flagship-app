@@ -1,4 +1,4 @@
-# 0.0.23
+# 0.0.24
 
 ## ✨ Features
 
@@ -8,6 +8,19 @@
 
 ## 🔧 Tech
 
+
+# 0.0.23
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* Intercept outgoing navigation on Android ([PR #385](https://github.com/cozy/cozy-react-native/pull/385))
+
+## 🔧 Tech
+
+* Remove unused libraries ([PR #379](https://github.com/cozy/cozy-react-native/pull/379) and [PR #380](https://github.com/cozy/cozy-react-native/pull/380))
 
 # 0.0.22
 
