@@ -10,7 +10,7 @@ import {
   checkIsRedirectOutside
 } from '/libs/functions/urlHelpers'
 
-const log = Minilog('CozyWebView')
+const log = Minilog('ReloadInterceptorWebView')
 
 Minilog.enable()
 
