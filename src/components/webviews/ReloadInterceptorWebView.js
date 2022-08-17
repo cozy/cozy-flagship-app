@@ -14,6 +14,37 @@ const log = Minilog('ReloadInterceptorWebView')
 
 Minilog.enable()
 
+const interceptNavigation = ({
+  initialRequest,
+  targetUri,
+  onShouldStartLoadWithRequest,
+  interceptReload,
+  onReloadInterception,
+  isFirstCall
+}) => {
+  if (interceptReload) {
+    const preventRefreshByDefault = isFirstCall
+    const isReload = checkIsReload(initialRequest, preventRefreshByDefault)
+
+    if (isReload) {
+      log.debug('Intercepting reload, remount component instead')
+      onReloadInterception()
+      return false
+    }
+  }
+
+  const isRedirectOutside = checkIsRedirectOutside({
+    currentUrl: targetUri,
+    destinationUrl: initialRequest.url
+  })
+
+  if (isRedirectOutside) {
+    return false
+  }
+
+  return onShouldStartLoadWithRequest(initialRequest)
+}
+
 const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
   const [preventRefreshByDefault, setPreventRefreshByDefault] = useState(true)
   const [timestamp, setTimestamp] = useState(Date.now())
@@ -33,16 +64,12 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
         ref={ref}
         {...userAgent}
         onShouldStartLoadWithRequest={initialRequest => {
-          const isRedirectOutside = checkIsRedirectOutside({
-            currentUrl: targetUri,
-            destinationUrl: initialRequest.url
+          return interceptNavigation({
+            initialRequest,
+            targetUri,
+            onShouldStartLoadWithRequest,
+            interceptReload: false
           })
-
-          if (isRedirectOutside) {
-            return false
-          }
-
-          return onShouldStartLoadWithRequest(initialRequest)
         }}
       />
     )
@@ -55,25 +82,17 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
       ref={ref}
       key={timestamp}
       onShouldStartLoadWithRequest={initialRequest => {
-        const isReload = checkIsReload(initialRequest, preventRefreshByDefault)
+        const isFirstCall = preventRefreshByDefault
         setPreventRefreshByDefault(false)
 
-        if (isReload) {
-          log.debug('Intercepting reload, remount component instead')
-          setTimestamp(Date.now())
-          return false
-        }
-
-        const isRedirectOutside = checkIsRedirectOutside({
-          currentUrl: targetUri,
-          destinationUrl: initialRequest.url
+        return interceptNavigation({
+          initialRequest,
+          targetUri,
+          onShouldStartLoadWithRequest,
+          interceptReload: true,
+          onReloadInterception: () => setTimestamp(Date.now()),
+          isFirstCall
         })
-
-        if (isRedirectOutside) {
-          return false
-        }
-
-        return onShouldStartLoadWithRequest(initialRequest)
       }}
     />
   )
