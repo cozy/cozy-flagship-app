@@ -1,46 +1,18 @@
 import React, { useState } from 'react'
-import { Platform } from 'react-native'
 import { SupervisedWebView } from './SupervisedWebView'
 
 import Minilog from '@cozy/minilog'
 
 import { userAgentDefault } from '/constants/userAgent'
 
+import {
+  checkIsReload,
+  checkIsRedirectOutside
+} from '/libs/functions/urlHelpers'
+
 const log = Minilog('CozyWebView')
 
 Minilog.enable()
-
-const formatUrlToCompare = url => {
-  const { host, pathname } = new URL(url)
-  return `http://${host}${pathname}`
-}
-
-const detectReload = (initialRequest, preventRefreshByDefault) => {
-  const { navigationType } = initialRequest
-
-  if (Platform.OS === 'ios' && preventRefreshByDefault) {
-    return false
-  }
-
-  if (navigationType === 'reload') {
-    return true
-  }
-
-  return false
-}
-
-const isRedirectOutside = (url, targetUri) => {
-  const realUrl = url === 'about:blank' ? targetUri : url
-  const rootUrl = formatUrlToCompare(realUrl)
-  const rootBaseUrl = formatUrlToCompare(targetUri)
-
-  if (rootUrl !== rootBaseUrl) {
-    log.error(
-      `ReloadInterceptorWebView blocks. Current URL was:${rootBaseUrl} and destination URL was: ${rootUrl}`
-    )
-    return true
-  }
-}
 
 const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
   const [preventRefreshByDefault, setPreventRefreshByDefault] = useState(true)
@@ -61,9 +33,12 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
         ref={ref}
         {...userAgent}
         onShouldStartLoadWithRequest={initialRequest => {
-          const isRedirect = isRedirectOutside(initialRequest.url, targetUri)
+          const isRedirectOutside = checkIsRedirectOutside({
+            currentUrl: targetUri,
+            destinationUrl: initialRequest.url
+          })
 
-          if (isRedirect) {
+          if (isRedirectOutside) {
             return false
           }
 
@@ -80,7 +55,7 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
       ref={ref}
       key={timestamp}
       onShouldStartLoadWithRequest={initialRequest => {
-        const isReload = detectReload(initialRequest, preventRefreshByDefault)
+        const isReload = checkIsReload(initialRequest, preventRefreshByDefault)
         setPreventRefreshByDefault(false)
 
         if (isReload) {
@@ -89,9 +64,12 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
           return false
         }
 
-        const isRedirect = isRedirectOutside(initialRequest.url, targetUri)
+        const isRedirectOutside = checkIsRedirectOutside({
+          currentUrl: targetUri,
+          destinationUrl: initialRequest.url
+        })
 
-        if (isRedirect) {
+        if (isRedirectOutside) {
           return false
         }
 
