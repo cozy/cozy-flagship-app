@@ -1,4 +1,5 @@
 import { Platform } from 'react-native'
+import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 
 import { deconstructCozyWebLinkWithSlug } from 'cozy-client'
 
@@ -78,4 +79,32 @@ export const checkIsSlugSwitch = ({
     log.error('Error while calling checkIsSlugSwitch', err)
     return false
   }
+}
+
+const IAB_OPTIONS = {
+  // iOS Properties
+  readerMode: false,
+  animated: true,
+  modalPresentationStyle: 'fullScreen',
+  modalTransitionStyle: 'coverVertical',
+  modalEnabled: true,
+  enableBarCollapsing: false,
+  // Android Properties
+  showTitle: true,
+  toolbarColor: '#8e9094',
+  secondaryToolbarColor: 'black',
+  enableUrlBarHiding: true,
+  enableDefaultShare: true,
+  forceCloseOnRedirection: false,
+  showInRecents: true,
+  animations: {
+    startEnter: 'slide_in_right',
+    startExit: 'slide_out_left',
+    endEnter: 'slide_in_left',
+    endExit: 'slide_out_right'
+  }
+}
+
+export const openUrlInAppBrowser = url => {
+  return InAppBrowser.open(url, IAB_OPTIONS)
 }

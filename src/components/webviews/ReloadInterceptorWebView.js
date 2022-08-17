@@ -12,7 +12,8 @@ import { navigateToApp } from '/libs/functions/openApp'
 import {
   checkIsReload,
   checkIsRedirectOutside,
-  checkIsSlugSwitch
+  checkIsSlugSwitch,
+  openUrlInAppBrowser
 } from '/libs/functions/urlHelpers'
 
 const log = Minilog('ReloadInterceptorWebView')
@@ -61,6 +62,7 @@ const interceptNavigation = ({
   })
 
   if (isRedirectOutside) {
+    openUrlInAppBrowser(targetUri)
     return false
   }
 
