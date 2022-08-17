@@ -51,14 +51,24 @@ class TemplateContentScript extends ContentScript {
   async fetch(context) {
     await this.clickAndWait('a[href="/clients/mes-factures/mes-factures-et-paiements"]', 'a[href="/clients/mes-factures/mes-factures-electricite/mon-historique-de-factures"]')
     await this.clickAndWait('a[href="/clients/mes-factures/mes-factures-electricite/mon-historique-de-factures"]', '.detail-facture')
-    await this.runInWorker('getBills')
-    await this.saveIdentity(this.store.userIdentity)
-    await this.saveBills(this.store.allDocuments, {
-      context,
-      fileIdAttributes: ['vendorRef', 'filename'],
-      contentType: 'application/pdf',
-      qualificationLabel: 'energy_invoice'
-    })
+    const billsDone = await this.runInWorker('getBills')
+    if(billsDone){
+      await this.clickAndWait('a[href="/clients/mon-compte/mon-contrat"]', '.cadre2')
+      await this.runInWorker('getContract')
+      await this.saveIdentity(this.store.userIdentity)
+      await this.saveBills(this.store.allDocuments, {
+        context,
+        fileIdAttributes: ['vendorRef', 'filename'],
+        contentType: 'application/pdf',
+        qualificationLabel: 'energy_invoice'
+      })
+      await this.saveFiles(this.store.contract, {
+        context,
+        fileIdAttributes: ['filename'],
+        contentType: 'application/pdf',
+        qualificationLabel: 'energy_contract'
+      })
+    }
     
   }
   
@@ -241,6 +251,39 @@ class TemplateContentScript extends ContentScript {
     const schedules = await this.getSchedules()
     const allDocuments = await this.computeInformations(invoices, schedules)
     await this.sendToPilot({allDocuments}) 
+    return true
+  }
+
+  async getContract(){
+    this.log('getContract starts')
+    const contractElement = document.querySelector('.cadre2')
+    const offerName = contractElement.querySelector('h2').innerHTML
+    const rawStartDate = contractElement.querySelector('p[class="txt-gras"]').innerHTML
+    const splittedStartDate = rawStartDate.split('/')
+    const day = splittedStartDate[0]
+    const month = splittedStartDate[1]
+    const year = splittedStartDate[2]
+    const startDate = new Date(year, month, day)
+    const href = contractElement.querySelectorAll('.ml-std')[1].children[1].getAttribute('href')
+    const fileurl = `https://www.totalenergies.fr${href}`
+    const filename = `${day}-${month}-${year}_TotalEnergie_Contrat_${offerName.replaceAll(' ', '-')}.pdf`
+    const contract = [{
+      filename,
+      fileurl,
+      fileIdAttributes: ['filename'],
+      vendor: 'Total Energies',
+      offerName,
+      fileAttributes: {
+        metadata: {
+          contentAuthor: 'totalenergies.fr',
+          issueDate: new Date(),
+          datetime: startDate,
+          datetimeLabel: 'startDate',
+          carbonCopy: true
+        }
+      }
+    }]
+    await this.sendToPilot({contract})
   }
 
   getInvoices() {
@@ -405,6 +448,7 @@ connector.init({ additionalExposedMethodsNames: [
   'fillingForm',
   'checkIfLogged',
   'getIdentity',
+  'getContract',
 ] }).catch(err => {
   console.warn(err)
 })
