@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Platform } from 'react-native'
 
 import { useClient } from 'cozy-client'
 
@@ -37,6 +38,10 @@ const interceptNavigation = ({
   onReloadInterception,
   isFirstCall
 }) => {
+  if (Platform.OS === 'ios' && !initialRequest.isTopFrame) {
+    return true
+  }
+
   if (interceptReload) {
     const preventRefreshByDefault = isFirstCall
     const isReload = checkIsReload(initialRequest, preventRefreshByDefault)
