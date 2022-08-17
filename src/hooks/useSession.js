@@ -1,4 +1,4 @@
-import { useClient, useQuery, Q, isQueryLoading } from 'cozy-client'
+import { useClient, useCapabilities } from 'cozy-client'
 import { useEffect, useMemo, useState } from 'react'
 
 import { makeSessionAPI } from '/libs/functions/session'
@@ -6,19 +6,12 @@ import { makeSessionAPI } from '/libs/functions/session'
 export const useSession = () => {
   const [subdomainType, setSubdomainType] = useState()
   const client = useClient()
-  const { data, ...query } = useQuery(
-    Q('io.cozy.settings').getById('capabilities'),
-    { as: 'io.cozy.settings/capabilities', singleDocData: true }
-  )
+  const { capabilities, fetchStatus } = useCapabilities(client)
 
   useEffect(() => {
-    !isQueryLoading(query) &&
-      setSubdomainType(
-        data && data.attributes && data.attributes.flat_subdomains
-          ? 'flat'
-          : 'nested'
-      )
-  }, [data, query])
+    fetchStatus === 'loaded' &&
+      setSubdomainType(capabilities?.flat_subdomains ? 'flat' : 'nested')
+  }, [capabilities, fetchStatus])
 
   return useMemo(
     () => makeSessionAPI(client, subdomainType),
