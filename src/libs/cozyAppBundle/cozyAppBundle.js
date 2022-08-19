@@ -83,24 +83,12 @@ export const updateCozyAppBundle = async ({ slug, client }) => {
     client
   })
 
-  if (
-    await doesVersionBundleExistInLocalFiles({
-      slug,
-      version: stackVersion,
-      tarPrefix: tarPrefix,
-      client
-    })
-  ) {
-    log.debug(
-      `Local '${slug}' bundle for version '${stackVersion}' already existing, deleting existing folder before download`
-    )
-    await deleteVersionBundleFromLocalFiles({
-      slug,
-      version: stackVersion,
-      tarPrefix: tarPrefix,
-      client
-    })
-  }
+  await deleteVersionBundleFromLocalFilesIfExists({
+    slug,
+    version: stackVersion,
+    tarPrefix: tarPrefix,
+    client
+  })
 
   await downloadAndExtractCozyAppVersion({
     slug,
@@ -117,7 +105,7 @@ export const updateCozyAppBundle = async ({ slug, client }) => {
   })
 }
 
-const doesVersionBundleExistInLocalFiles = async ({
+const deleteVersionBundleFromLocalFilesIfExists = async ({
   slug,
   version,
   tarPrefix,
@@ -130,23 +118,15 @@ const doesVersionBundleExistInLocalFiles = async ({
     version,
     client
   })
+  const expectedVersionPathWithTarPrefix = `${expectedVersionPath}${tarPrefix}`
 
-  return await RNFS.exists(`${expectedVersionPath}${tarPrefix}`)
-}
-
-const deleteVersionBundleFromLocalFiles = async ({
-  slug,
-  version,
-  tarPrefix,
-  client
-}) => {
-  const expectedVersionPath = await getCozyAppFolderPathForVersion({
-    slug,
-    version,
-    client
-  })
-
-  await RNFS.unlink(`${expectedVersionPath}${tarPrefix}`)
+  const doesFolderExists = await RNFS.exists(expectedVersionPathWithTarPrefix)
+  if (doesFolderExists) {
+    log.debug(
+      `Local '${slug}' bundle for version '${version}' already existing, deleting existing folder before download`
+    )
+    await RNFS.unlink(expectedVersionPathWithTarPrefix)
+  }
 }
 
 const normalizeVersion = version => {
