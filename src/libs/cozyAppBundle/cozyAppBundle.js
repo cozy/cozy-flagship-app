@@ -92,16 +92,22 @@ export const updateCozyAppBundle = async ({ slug, client }) => {
     })
   ) {
     log.debug(
-      `Local '${slug}' bundle for version '${stackVersion}' already existing, skipping download`
+      `Local '${slug}' bundle for version '${stackVersion}' already existing, deleting existing folder before download`
     )
-  } else {
-    await downloadAndExtractCozyAppVersion({
+    await deleteVersionBundleFromLocalFiles({
       slug,
       version: stackVersion,
-      destinationPath,
+      tarPrefix: tarPrefix,
       client
     })
   }
+
+  await downloadAndExtractCozyAppVersion({
+    slug,
+    version: stackVersion,
+    destinationPath,
+    client
+  })
 
   setCurrentAppVersionForFqdnAndSlug({
     fqdn,
@@ -128,6 +134,21 @@ const doesVersionBundleExistInLocalFiles = async ({
   const expectedManifestPath = `${expectedVersionPath}${tarPrefix}/manifest.webapp`
 
   return await RNFS.exists(expectedManifestPath)
+}
+
+const deleteVersionBundleFromLocalFiles = async ({
+  slug,
+  version,
+  tarPrefix,
+  client
+}) => {
+  const expectedVersionPath = await getCozyAppFolderPathForVersion({
+    slug,
+    version,
+    client
+  })
+
+  await RNFS.unlink(`${expectedVersionPath}${tarPrefix}`)
 }
 
 const normalizeVersion = version => {

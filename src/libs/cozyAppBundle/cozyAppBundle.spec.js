@@ -225,7 +225,7 @@ describe('cozyAppBundle', () => {
       expect(setCurrentAppVersionForFqdnAndSlug).not.toHaveBeenCalled()
     })
 
-    it('should do switch local version if cozy-stack version is different but local package already exists', async () => {
+    it('should remove local version before download if cozy-stack version is different but local package already exists', async () => {
       client.getStackClient = jest.fn(() => ({
         uri: 'http://cozy.10-0-2-2.nip.io',
         getAuthorizationHeader: jest
@@ -244,7 +244,10 @@ describe('cozyAppBundle', () => {
 
       expect(fetchCozyAppVersion).toHaveBeenCalled()
 
-      expect(RNFS.downloadFile).not.toHaveBeenCalled()
+      expect(RNFS.unlink).toHaveBeenCalledWith(
+        'SOME_DocumentDirectoryPath/cozy.10-0-2-2.nip.io/home/1.45.6'
+      )
+      expect(RNFS.downloadFile).toHaveBeenCalled()
 
       expect(setCurrentAppVersionForFqdnAndSlug).toHaveBeenCalledWith({
         fqdn: 'cozy.10-0-2-2.nip.io',
