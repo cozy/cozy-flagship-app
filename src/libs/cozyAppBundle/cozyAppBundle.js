@@ -131,9 +131,7 @@ const doesVersionBundleExistInLocalFiles = async ({
     client
   })
 
-  const expectedManifestPath = `${expectedVersionPath}${tarPrefix}/manifest.webapp`
-
-  return await RNFS.exists(expectedManifestPath)
+  return await RNFS.exists(`${expectedVersionPath}${tarPrefix}`)
 }
 
 const deleteVersionBundleFromLocalFiles = async ({
