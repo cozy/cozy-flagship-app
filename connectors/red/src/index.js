@@ -48,6 +48,7 @@ class TemplateContentScript extends ContentScript {
     await this.waitForElementInWorker(`a[href="${PERSONAL_INFOS_URL}"]`)
     await this.clickAndWait(`a[href="${PERSONAL_INFOS_URL}"]`,'#emailContact' )
     const sourceAccountId = await this.runInWorker('getUserMail')
+    await this.runInWorker('getIdentity')
     if (sourceAccountId === 'UNKNOWN_ERROR') {
       this.log("Couldn't get a sourceAccountIdentifier, using default")
       return { sourceAccountIdentifier: DEFAULT_SOURCE_ACCOUNT_IDENTIFIER }
@@ -64,6 +65,7 @@ class TemplateContentScript extends ContentScript {
     await this.runInWorker('getMoreBills')
     await this.runInWorker('getBills')
     this.log('Saving files')
+    await this.saveIdentity(this.store.userIdentity)
     await this.saveBills(this.store.allBills, {
       context,
       fileIdAttributes: ['filename'],
@@ -136,6 +138,50 @@ class TemplateContentScript extends ContentScript {
       return userMailElement
     }
     return 'UNKNOWN_ERROR'
+  }
+
+  async getIdentity(){
+    const givenName = document.querySelector('#nomTitulaire').innerHTML.split(' ')[0]
+    const familyName = document.querySelector('#nomTitulaire').innerHTML.split(' ')[1]
+    const address = document.querySelector('#adresseContact').innerHTML.replace(/\t/g,' ').replace(/\n/g, '')
+    const unspacedAddress = address.replace(/(\s{2,})/g, ' ').replace(/^ +/g, '').replace(/ +$/g, '')
+    const addressNumbers = unspacedAddress.match(/([0-9]{1,})/g)
+    const houseNumber = addressNumbers[0]
+    const postCode = addressNumbers[1]
+    const addressWords = unspacedAddress.match(/([A-Z ]{1,})/g)
+    const street = addressWords[0].replace(/^ +/g, '').replace(/ +$/g, '')
+    const city = addressWords[1].replace(/^ +/g, '').replace(/ +$/g, '')
+    const mobilePhoneNumber = document.querySelector('#telephoneContactMobile').innerHTML
+    const homePhoneNumber = document.querySelector('#telephoneContactFixe').innerHTML
+    const email = document.querySelector('#emailContact').innerHTML
+    const userIdentity = {
+      email,
+      name : {
+        givenName,
+        familyName,
+        fullname : `${givenName} ${familyName}`
+      },
+      address: [
+        {
+          formattedAddress : unspacedAddress,
+          houseNumber,
+          postCode,
+          city,
+          street
+        }
+      ],
+      phone: [
+        {
+          type:'mobile',
+          number : mobilePhoneNumber
+        },
+        {
+          type:'home',
+          number : homePhoneNumber
+        }
+      ]
+    }
+    await this.sendToPilot({userIdentity})
   }
 
   async getMoreBills() {
@@ -303,6 +349,7 @@ connector.init({ additionalExposedMethodsNames: [
   'getMoreBills',
   'getBills',
   'getReloginPage',
+  'getIdentity',
 ] }).catch(err => {
   console.warn(err)
 })
