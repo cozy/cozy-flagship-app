@@ -47,6 +47,8 @@ class TemplateContentScript extends ContentScript {
     await this.waitForElementInWorker(`a[href="${PERSONAL_INFOS_URL}"]`)
     await this.clickAndWait(`a[href="${PERSONAL_INFOS_URL}"]`,'#emailContact' )
     const sourceAccountId = await this.runInWorker('getUserMail')
+    await this.runInWorker('getUserIdentity')
+    // await this.waitForElementInWorker('[pause]')
     if (sourceAccountId === 'UNKNOWN_ERROR') {
       this.log("Couldn't get a sourceAccountIdentifier, using default")
       return { sourceAccountIdentifier: DEFAULT_SOURCE_ACCOUNT_IDENTIFIER }
@@ -62,6 +64,7 @@ class TemplateContentScript extends ContentScript {
     await this.clickAndWait(`a[href="${BILLS_URL_PATH}"]`,'button[onclick="plusFacture(); return false;"]' )
     await this.runInWorker('getMoreBills')
     await this.runInWorker('getBills')
+    await this.saveIdentity(this.store.userIdentity)
     await this.saveBills(this.store.allBills,{
       context,
       fileIdAttributes:['filename'],
@@ -131,6 +134,55 @@ class TemplateContentScript extends ContentScript {
       return userMailElement
     }
     return 'UNKNOWN_ERROR'
+  }
+
+  async getUserIdentity() {
+    const givenName = document.querySelector('#nomTitulaire').innerHTML.split(' ')[0]
+    const familyName = document.querySelector('#nomTitulaire').innerHTML.split(' ')[1]
+    const address = document.querySelector('#adresseContact').innerHTML.replace(/\t/g,' ').replace(/\n/g, '')
+    const unspacedAddress = address.replace(/(\s{2,})/g, ' ').replace(/^ +/g, '').replace(/ +$/g, '')
+    const addressNumbers = unspacedAddress.match(/([0-9]{1,})/g)
+    const houseNumber = addressNumbers[0]
+    const postCode = addressNumbers[1]
+    const addressWords = unspacedAddress.match(/([A-Z ]{1,})/g)
+    const street = addressWords[0].replace(/^ +/g, '').replace(/ +$/g, '')
+    const city = addressWords[1].replace(/^ +/g, '').replace(/ +$/g, '')
+    const mobilePhoneNumber = document.querySelector('#telephoneContactMobile').innerHTML
+    let homePhoneNumber = null
+    if(document.querySelector('#telephoneContactFixe')){
+      homePhoneNumber = document.querySelector('#telephoneContactFixe').innerHTML
+    }
+    const email = document.querySelector('#emailContact').innerHTML
+    const userIdentity = {
+      email,
+      name : {
+        givenName,
+        familyName,
+        fullname : `${givenName} ${familyName}`
+      },
+      address: [
+        {
+          formattedAddress : unspacedAddress,
+          houseNumber,
+          postCode,
+          city,
+          street
+        }
+      ],
+      phone: [
+        {
+          type:'mobile',
+          number : mobilePhoneNumber
+        }
+      ]
+    }
+    if(homePhoneNumber !== null){
+      userIdentity.phone.push({
+        type:'home',
+        number : homePhoneNumber
+      })
+    }
+    await this.sendToPilot({userIdentity})
   }
 
   async getMoreBills() {
@@ -209,7 +261,6 @@ class TemplateContentScript extends ContentScript {
       detailedBill.dataUri = dataUri
       lastBill.push(detailedBill)
     }
-    console.log (computedLastBill)
     // As it's impossible to have the pilot on the same domain as the worker
     // to match domain's specific cookie for the download to be done by saveFiles
     // we need to fetch the stream then pass it to the pilot
@@ -308,6 +359,7 @@ connector.init({ additionalExposedMethodsNames: [
   'getMoreBills',
   'getBills',
   'getReloginPage',
+  'getUserIdentity',
 ] }).catch(err => {
   console.warn(err)
 })
