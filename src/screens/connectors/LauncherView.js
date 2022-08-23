@@ -17,6 +17,7 @@ import { WebView } from 'react-native-webview'
 // import redConnector from '../../../connectors/red/dist/webviewScript'
 // import sfrConnector from '../../../connectors/sfr/dist/webviewScript'
 // import totalenergiesConnector from '../../../connectors/totalenergies/dist/webviewScript'
+// import alanConnector from '../../../connectors/alan/dist/webviewScript'
 import { BackTo } from '/components/ui/icons/BackTo'
 import { statusBarHeight } from '/libs/dimensions'
 import ReactNativeLauncher from '/libs/ReactNativeLauncher'
@@ -40,6 +41,7 @@ const embeddedConnectors = {
   // red: redConnector,
   // sfr: sfrConnector
   // totalenergies: totalenergiesConnector
+  // alan: alanConnector
 }
 class LauncherView extends Component {
   constructor(props) {
