@@ -38,7 +38,7 @@
     "cozy-flags": "^2.9.0",
     "cozy-intent": "^2.2.0",
     "cozy-logger": "^1.9.0",
-    "cozy-ui": "52.0.1",
+    "cozy-ui": "73.2.0",
     "ky": "0.25.1",
     "lodash": "^4.17.21",
     "microee": "^0.0.6",
