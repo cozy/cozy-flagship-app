@@ -11,6 +11,7 @@ import { userAgentDefault } from '/constants/userAgent'
 
 import { navigateToApp } from '/libs/functions/openApp'
 import {
+  checkIsCozyDownloadLink,
   checkIsReload,
   checkIsRedirectOutside,
   checkIsSameApp,
@@ -51,6 +52,16 @@ const interceptNavigation = ({
       onReloadInterception()
       return false
     }
+  }
+
+  const isCozyDownloadLink = checkIsCozyDownloadLink({
+    currentUrl: targetUri,
+    destinationUrl: initialRequest.url,
+    subdomainType
+  })
+
+  if (isCozyDownloadLink) {
+    return true
   }
 
   const newSlug = checkIsSlugSwitch({
