@@ -177,7 +177,19 @@ describe('urlHelpers', () => {
         'notes'
       ],
       ['http://claude-drive.mycozy.cloud', 'http://google.com', 'flat', false],
-      ['http://claude-drive.mycozy.cloud', 'google.com', 'flat', false]
+      ['http://claude-drive.mycozy.cloud', 'google.com', 'flat', false],
+      [
+        'http://claude-drive.cozy.works',
+        'https://claude.cozy.works/files/downloads/SOME_ID/SOME_NAME.SOME_EXTENSION?Dl=1',
+        'flat',
+        false
+      ],
+      [
+        'http://drive.claude.cozy.works',
+        'https://claude.cozy.works/files/downloads/SOME_ID/SOME_NAME.SOME_EXTENSION?Dl=1',
+        'nested',
+        false
+      ]
     ])(
       'should compare %p with %p with %p subdomain and return isSlugSwitch=%p',
       (currentUrl, destinationUrl, subdomainType, result) => {

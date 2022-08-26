@@ -70,7 +70,10 @@ export const checkIsSlugSwitch = ({
       return false
     }
 
-    if (currentUrlData.slug !== destinationUrlData.slug) {
+    if (
+      currentUrlData.slug !== destinationUrlData.slug &&
+      destinationUrlData.slug !== undefined
+    ) {
       return destinationUrlData.slug
     }
 
