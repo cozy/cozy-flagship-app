@@ -81,6 +81,31 @@ export const checkIsSlugSwitch = ({
   }
 }
 
+export const checkIsSameApp = ({
+  currentUrl,
+  destinationUrl,
+  subdomainType = 'flat'
+}) => {
+  try {
+    const currentUrlData = deconstructCozyWebLinkWithSlug(
+      currentUrl,
+      subdomainType
+    )
+    const destinationUrlData = deconstructCozyWebLinkWithSlug(
+      destinationUrl,
+      subdomainType
+    )
+
+    return (
+      currentUrlData.cozyBaseDomain === destinationUrlData.cozyBaseDomain &&
+      currentUrlData.slug === destinationUrlData.slug
+    )
+  } catch (err) {
+    log.error('Error while calling checkIsSlugSwitch', err)
+    return false
+  }
+}
+
 const IAB_OPTIONS = {
   // iOS Properties
   readerMode: false,
