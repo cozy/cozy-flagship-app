@@ -1,6 +1,10 @@
 import RN from 'react-native'
 
-import { checkIsReload, checkIsRedirectOutside } from './urlHelpers'
+import {
+  checkIsReload,
+  checkIsRedirectOutside,
+  checkIsSlugSwitch
+} from './urlHelpers'
 
 jest.mock('react-native-inappbrowser-reborn', () => ({
   open: jest.fn(),
@@ -99,6 +103,86 @@ describe('urlHelpers', () => {
         expect(checkIsRedirectOutside({ currentUrl, destinationUrl })).toEqual(
           result
         )
+      }
+    )
+  })
+
+  describe('checkIsSlugSwitch', () => {
+    it.each([
+      [
+        'http://drive.claude.mycozy.cloud',
+        'http://drive.claude.mycozy.cloud',
+        'nested',
+        false
+      ],
+      [
+        'http://drive.claude.mycozy.cloud#hash1',
+        'http://drive.claude.mycozy.cloud#hash2',
+        'nested',
+        false
+      ],
+      [
+        'http://drive.claude.mycozy.cloud/path1',
+        'http://drive.claude.mycozy.cloud/path2',
+        'nested',
+        false
+      ],
+      [
+        'http://drive.claude.mycozy.cloud/path1#hash1',
+        'http://drive.claude.mycozy.cloud/path1#hash2',
+        'nested',
+        false
+      ],
+      [
+        'http://drive.claude.mycozy.cloud',
+        'http://notes.claude.mycozy.cloud',
+        'nested',
+        'notes'
+      ],
+      [
+        'http://drive.claude.mycozy.cloud',
+        'http://google.com',
+        'nested',
+        false
+      ],
+      [
+        'http://claude-drive.mycozy.cloud',
+        'http://claude-drive.mycozy.cloud',
+        'flat',
+        false
+      ],
+      [
+        'http://claude-drive.mycozy.cloud#hash1',
+        'http://claude-drive.mycozy.cloud#hash2',
+        'flat',
+        false
+      ],
+      [
+        'http://claude-drive.mycozy.cloud/path1',
+        'http://claude-drive.mycozy.cloud/path2',
+        'flat',
+        false
+      ],
+      [
+        'http://claude-drive.mycozy.cloud/path1#hash1',
+        'http://claude-drive.mycozy.cloud/path1#hash2',
+        'flat',
+        false
+      ],
+      [
+        'http://claude-drive.mycozy.cloud',
+        'http://claude-notes.mycozy.cloud',
+        'flat',
+        'notes'
+      ],
+      ['http://claude-drive.mycozy.cloud', 'http://google.com', 'flat', false],
+      ['http://claude-drive.mycozy.cloud', 'google.com', 'flat', false]
+    ])(
+      'should compare %p with %p with %p subdomain and return isSlugSwitch=%p',
+      (currentUrl, destinationUrl, subdomainType, result) => {
+        expect(
+          checkIsSlugSwitch({ currentUrl, destinationUrl, subdomainType })
+        ).toEqual(result)
       }
     )
   })

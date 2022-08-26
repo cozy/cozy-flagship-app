@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
+
+import { useClient } from 'cozy-client'
+
 import { SupervisedWebView } from './SupervisedWebView'
 
 import Minilog from '@cozy/minilog'
 
 import { userAgentDefault } from '/constants/userAgent'
 
+import { navigateToApp } from '/libs/functions/openApp'
 import {
   checkIsReload,
-  checkIsRedirectOutside
+  checkIsRedirectOutside,
+  checkIsSlugSwitch
 } from '/libs/functions/urlHelpers'
 
 const log = Minilog('ReloadInterceptorWebView')
@@ -17,6 +22,8 @@ Minilog.enable()
 const interceptNavigation = ({
   initialRequest,
   targetUri,
+  subdomainType,
+  navigation,
   onShouldStartLoadWithRequest,
   interceptReload,
   onReloadInterception,
@@ -31,6 +38,21 @@ const interceptNavigation = ({
       onReloadInterception()
       return false
     }
+  }
+
+  const newSlug = checkIsSlugSwitch({
+    currentUrl: targetUri,
+    destinationUrl: initialRequest.url,
+    subdomainType
+  })
+
+  if (newSlug) {
+    navigateToApp({
+      navigation,
+      href: initialRequest.url,
+      slug: newSlug
+    })
+    return false
   }
 
   const isRedirectOutside = checkIsRedirectOutside({
@@ -48,12 +70,15 @@ const interceptNavigation = ({
 const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
   const [preventRefreshByDefault, setPreventRefreshByDefault] = useState(true)
   const [timestamp, setTimestamp] = useState(Date.now())
+  const client = useClient()
+  const subdomainType = client.capabilities?.flat_subdomains ? 'flat' : 'nested'
 
   const {
     targetUri,
     source,
     onShouldStartLoadWithRequest,
-    userAgent = userAgentDefault
+    userAgent = userAgentDefault,
+    navigation
   } = props
 
   if (!source.html) {
@@ -67,6 +92,8 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
           return interceptNavigation({
             initialRequest,
             targetUri,
+            subdomainType,
+            navigation,
             onShouldStartLoadWithRequest,
             interceptReload: false
           })
@@ -88,6 +115,8 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
         return interceptNavigation({
           initialRequest,
           targetUri,
+          subdomainType,
+          navigation,
           onShouldStartLoadWithRequest,
           interceptReload: true,
           onReloadInterception: () => setTimestamp(Date.now()),
