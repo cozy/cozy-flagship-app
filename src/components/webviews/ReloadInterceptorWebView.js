@@ -12,6 +12,7 @@ import { navigateToApp } from '/libs/functions/openApp'
 import {
   checkIsReload,
   checkIsRedirectOutside,
+  checkIsSameApp,
   checkIsSlugSwitch,
   openUrlInAppBrowser
 } from '/libs/functions/urlHelpers'
@@ -19,6 +20,12 @@ import {
 const log = Minilog('ReloadInterceptorWebView')
 
 Minilog.enable()
+
+const navigateTo = (webViewForwardRef, url) => {
+  webViewForwardRef(webView => {
+    webView.injectJavaScript(`window.location.href = '${url}'`)
+  })
+}
 
 const interceptNavigation = ({
   initialRequest,
@@ -69,6 +76,50 @@ const interceptNavigation = ({
   return onShouldStartLoadWithRequest(initialRequest)
 }
 
+const interceptOpenWindow = ({
+  currentUrl,
+  destinationUrl,
+  subdomainType,
+  navigation,
+  webViewForwardRef
+}) => {
+  const isSameApp = checkIsSameApp({
+    currentUrl,
+    destinationUrl,
+    subdomainType
+  })
+
+  if (isSameApp) {
+    navigateTo(webViewForwardRef, destinationUrl)
+    return
+  }
+
+  const newSlug = checkIsSlugSwitch({
+    currentUrl,
+    destinationUrl,
+    subdomainType
+  })
+
+  if (newSlug) {
+    navigateToApp({
+      navigation,
+      href: destinationUrl,
+      slug: newSlug
+    })
+    return
+  }
+
+  const isRedirectOutside = checkIsRedirectOutside({
+    currentUrl,
+    destinationUrl
+  })
+
+  if (isRedirectOutside) {
+    openUrlInAppBrowser(destinationUrl)
+    return
+  }
+}
+
 const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
   const [preventRefreshByDefault, setPreventRefreshByDefault] = useState(true)
   const [timestamp, setTimestamp] = useState(Date.now())
@@ -100,6 +151,16 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
             interceptReload: false
           })
         }}
+        onOpenWindow={syntheticEvent => {
+          const { nativeEvent } = syntheticEvent
+          interceptOpenWindow({
+            destinationUrl: nativeEvent.targetUrl,
+            currentUrl: targetUri,
+            subdomainType,
+            navigation,
+            webViewForwardRef: ref
+          })
+        }}
       />
     )
   }
@@ -123,6 +184,16 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
           interceptReload: true,
           onReloadInterception: () => setTimestamp(Date.now()),
           isFirstCall
+        })
+      }}
+      onOpenWindow={syntheticEvent => {
+        const { nativeEvent } = syntheticEvent
+        interceptOpenWindow({
+          destinationUrl: nativeEvent.targetUrl,
+          currentUrl: targetUri,
+          subdomainType,
+          navigation,
+          webViewForwardRef: ref
         })
       }}
     />
