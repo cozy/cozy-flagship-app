@@ -1,4 +1,4 @@
-# 0.0.24
+# 0.0.25
 
 ## ✨ Features
 
@@ -8,6 +8,22 @@
 
 ## 🔧 Tech
 
+
+# 0.0.24
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* Correctly handle external links (i.e. help link, shortcuts) ([PR #391](https://github.com/cozy/cozy-react-native/pull/391) and [PR #396](https://github.com/cozy/cozy-react-native/pull/396))
+* Delete existing version folder if exists when updating a cozy-app to prevent corrupted artifacts after an update error ([PR #392](https://github.com/cozy/cozy-react-native/pull/392))
+
+## 🔧 Tech
+
+* Disable Client Side Connectors ([PR #381](https://github.com/cozy/cozy-react-native/pull/381))
+* Handle cozy-client's injected capabilities as object ([PR #386](https://github.com/cozy/cozy-react-native/pull/386))
+* Log errors in catch statements ([PR #387](https://github.com/cozy/cozy-react-native/pull/387))
 
 # 0.0.23
 
