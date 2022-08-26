@@ -41,6 +41,10 @@ jest.mock('cozy-intent', () => ({
   useNativeIntent: () => mockNativeIntent
 }))
 
+jest.mock('cozy-client', () => ({
+  useClient: jest.fn().mockReturnValue({})
+}))
+
 jest.mock('@react-navigation/native', () => ({
   useIsFocused: () => mockUseIsFocused()
 }))
