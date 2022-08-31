@@ -84,35 +84,6 @@ export const checkIsSlugSwitch = ({
   }
 }
 
-export const checkIsCozyDownloadLink = ({
-  currentUrl,
-  destinationUrl,
-  subdomainType = 'flat'
-}) => {
-  try {
-    const currentUrlData = deconstructCozyWebLinkWithSlug(
-      currentUrl,
-      subdomainType
-    )
-    const destinationUrlData = new URL(destinationUrl)
-
-    const currentCozy = `${currentUrlData.cozyName}.${currentUrlData.cozyBaseDomain}`
-
-    if (currentCozy !== destinationUrlData.host) {
-      return false
-    }
-
-    if (destinationUrlData.pathname.startsWith('/files/downloads/')) {
-      return true
-    }
-
-    return false
-  } catch (err) {
-    log.error('Error while calling checkIsSlugSwitch', err)
-    return false
-  }
-}
-
 export const checkIsSameApp = ({
   currentUrl,
   destinationUrl,

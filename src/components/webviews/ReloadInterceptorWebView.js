@@ -11,7 +11,6 @@ import { userAgentDefault } from '/constants/userAgent'
 
 import { navigateToApp } from '/libs/functions/openApp'
 import {
-  checkIsCozyDownloadLink,
   checkIsReload,
   checkIsRedirectOutside,
   checkIsSameApp,
@@ -19,7 +18,10 @@ import {
   openUrlInAppBrowser
 } from '/libs/functions/urlHelpers'
 
-import { previewFileFromDownloadUrl } from '/libs/functions/filePreviewHelper'
+import {
+  checkIsPreviewableLink,
+  previewFileFromDownloadUrl
+} from '/libs/functions/filePreviewHelper'
 const log = Minilog('ReloadInterceptorWebView')
 
 Minilog.enable()
@@ -56,13 +58,9 @@ const interceptNavigation = ({
     }
   }
 
-  const isCozyDownloadLink = checkIsCozyDownloadLink({
-    currentUrl: targetUri,
-    destinationUrl: initialRequest.url,
-    subdomainType
-  })
+  const isPreviewableLink = checkIsPreviewableLink(initialRequest.url, client)
 
-  if (isCozyDownloadLink) {
+  if (isPreviewableLink) {
     if (Platform.OS === 'ios') {
       previewFileFromDownloadUrl({
         downloadUrl: initialRequest.url,
