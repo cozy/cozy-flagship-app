@@ -1,7 +1,6 @@
 import RN from 'react-native'
 
 import {
-  checkIsCozyDownloadLink,
   checkIsReload,
   checkIsRedirectOutside,
   checkIsSameApp,
@@ -196,98 +195,6 @@ describe('urlHelpers', () => {
       (currentUrl, destinationUrl, subdomainType, result) => {
         expect(
           checkIsSlugSwitch({ currentUrl, destinationUrl, subdomainType })
-        ).toEqual(result)
-      }
-    )
-  })
-
-  describe('checkIsCozyDownloadLink', () => {
-    it.each([
-      [
-        'http://drive.claude.mycozy.cloud',
-        'http://drive.claude.mycozy.cloud',
-        'nested',
-        false
-      ],
-      [
-        'http://drive.claude.mycozy.cloud#hash1',
-        'http://drive.claude.mycozy.cloud#hash2',
-        'nested',
-        false
-      ],
-      [
-        'http://drive.claude.mycozy.cloud/path1',
-        'http://drive.claude.mycozy.cloud/path2',
-        'nested',
-        false
-      ],
-      [
-        'http://drive.claude.mycozy.cloud/path1#hash1',
-        'http://drive.claude.mycozy.cloud/path1#hash2',
-        'nested',
-        false
-      ],
-      [
-        'http://drive.claude.mycozy.cloud',
-        'http://notes.claude.mycozy.cloud',
-        'nested',
-        false
-      ],
-      [
-        'http://drive.claude.mycozy.cloud',
-        'http://google.com',
-        'nested',
-        false
-      ],
-      [
-        'http://claude-drive.mycozy.cloud',
-        'http://claude-drive.mycozy.cloud',
-        'flat',
-        false
-      ],
-      [
-        'http://claude-drive.mycozy.cloud#hash1',
-        'http://claude-drive.mycozy.cloud#hash2',
-        'flat',
-        false
-      ],
-      [
-        'http://claude-drive.mycozy.cloud/path1',
-        'http://claude-drive.mycozy.cloud/path2',
-        'flat',
-        false
-      ],
-      [
-        'http://claude-drive.mycozy.cloud/path1#hash1',
-        'http://claude-drive.mycozy.cloud/path1#hash2',
-        'flat',
-        false
-      ],
-      [
-        'http://claude-drive.mycozy.cloud',
-        'http://claude-notes.mycozy.cloud',
-        'flat',
-        false
-      ],
-      ['http://claude-drive.mycozy.cloud', 'http://google.com', 'flat', false],
-      ['http://claude-drive.mycozy.cloud', 'google.com', 'flat', false],
-      [
-        'http://claude-drive.cozy.works',
-        'https://claude.cozy.works/files/downloads/SOME_ID/SOME_NAME.SOME_EXTENSION?Dl=1',
-        'flat',
-        true
-      ],
-      [
-        'http://drive.claude.cozy.works',
-        'https://claude.cozy.works/files/downloads/SOME_ID/SOME_NAME.SOME_EXTENSION?Dl=1',
-        'nested',
-        true
-      ]
-    ])(
-      'should compare %p with %p with %p subdomain and return sCozyDownloadLink=%p',
-      (currentUrl, destinationUrl, subdomainType, result) => {
-        expect(
-          checkIsCozyDownloadLink({ currentUrl, destinationUrl, subdomainType })
         ).toEqual(result)
       }
     )
