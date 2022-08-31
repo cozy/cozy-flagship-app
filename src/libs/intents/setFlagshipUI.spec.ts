@@ -7,7 +7,7 @@ jest.mock('react-native-immersive-bars')
 const defaultOS = Platform.OS
 
 describe('setFlagshipUI', () => {
-  let mockOnChange
+  let mockOnChange: () => void
   beforeEach(() => {
     mockOnChange = jest.fn()
   })
