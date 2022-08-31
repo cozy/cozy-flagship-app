@@ -8,6 +8,14 @@ import { useIsSecureProtocol } from '/hooks/useIsSecureProtocol'
 
 jest.mock('/hooks/useIsSecureProtocol')
 
+jest.mock('react-native-fs', () => ({
+  downloadFile: jest.fn(),
+  DocumentDirectoryPath: '/app'
+}))
+jest.mock('react-native-file-viewer', () => ({
+  open: jest.fn()
+}))
+
 const mockGoBack = jest.fn()
 const mockUseIsFocused = jest.fn()
 const mockNativeIntent = {

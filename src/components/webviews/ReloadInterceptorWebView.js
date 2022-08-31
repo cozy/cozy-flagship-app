@@ -19,6 +19,7 @@ import {
   openUrlInAppBrowser
 } from '/libs/functions/urlHelpers'
 
+import { previewFileFromDownloadUrl } from '/libs/functions/filePreviewHelper'
 const log = Minilog('ReloadInterceptorWebView')
 
 Minilog.enable()
@@ -37,7 +38,8 @@ const interceptNavigation = ({
   onShouldStartLoadWithRequest,
   interceptReload,
   onReloadInterception,
-  isFirstCall
+  isFirstCall,
+  client
 }) => {
   if (Platform.OS === 'ios' && !initialRequest.isTopFrame) {
     return true
@@ -61,7 +63,15 @@ const interceptNavigation = ({
   })
 
   if (isCozyDownloadLink) {
-    return true
+    if (Platform.OS === 'ios') {
+      previewFileFromDownloadUrl({
+        downloadUrl: initialRequest.url,
+        client
+      })
+      return false
+    } else {
+      return true
+    }
   }
 
   const newSlug = checkIsSlugSwitch({
@@ -164,7 +174,8 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
             subdomainType,
             navigation,
             onShouldStartLoadWithRequest,
-            interceptReload: false
+            interceptReload: false,
+            client
           })
         }}
         onOpenWindow={syntheticEvent => {
@@ -199,7 +210,8 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
           onShouldStartLoadWithRequest,
           interceptReload: true,
           onReloadInterception: () => setTimestamp(Date.now()),
-          isFirstCall
+          isFirstCall,
+          client
         })
       }}
       onOpenWindow={syntheticEvent => {
