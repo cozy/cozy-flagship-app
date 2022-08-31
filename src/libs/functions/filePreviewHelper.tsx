@@ -39,6 +39,7 @@ export const checkIsPreviewableLink = (
   link: string,
   client: CozyClient
 ): PreviewType => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const cozyUrl = new URL(client.getStackClient().uri)
 
   const previewLink = new URL(link)
@@ -150,7 +151,9 @@ const downloadFile = async ({
   client: CozyClient
   setDownloadProgress: React.Dispatch<React.SetStateAction<number>>
 }): Promise<string> => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const stackClient = client.getStackClient()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
   const headers = stackClient.getAuthorizationHeader()
 
   const destinationPath = `${RNFS.DocumentDirectoryPath}/${fileName}`
@@ -166,6 +169,7 @@ const downloadFile = async ({
     headers:
       previewType === PRIVATE_BY_PATH_DOWNLOAD_LINK
         ? {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             Authorization: headers
           }
         : undefined
