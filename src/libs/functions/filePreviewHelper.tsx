@@ -138,6 +138,17 @@ const getFileNameFromCozyDownloadUrl = (
   throw new Error(`No fileName can be extracted from ${downloadUrl}`)
 }
 
+export const getFileExtentionFromCozyDownloadUrl = (
+  downloadUrl: string,
+  previewType: PreviewType
+): string | undefined => {
+  const fileName = getFileNameFromCozyDownloadUrl(downloadUrl, previewType)
+
+  const fileExtension = fileName?.split('.').pop()
+
+  return fileExtension?.toLocaleLowerCase()
+}
+
 const downloadFile = async ({
   fileName,
   downloadUrl,

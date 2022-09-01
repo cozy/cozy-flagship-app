@@ -20,6 +20,7 @@ import {
 
 import {
   checkIsPreviewableLink,
+  getFileExtentionFromCozyDownloadUrl,
   previewFileFromDownloadUrl
 } from '/libs/functions/filePreviewHelper'
 
@@ -65,7 +66,11 @@ const interceptNavigation = ({
   const isPreviewableLink = checkIsPreviewableLink(initialRequest.url, client)
 
   if (isPreviewableLink) {
-    if (Platform.OS === 'ios') {
+    const fileExtension = getFileExtentionFromCozyDownloadUrl(
+      initialRequest.url,
+      isPreviewableLink
+    )
+    if (Platform.OS === 'ios' || fileExtension === 'pdf') {
       previewFileFromDownloadUrl({
         downloadUrl: initialRequest.url,
         client,
