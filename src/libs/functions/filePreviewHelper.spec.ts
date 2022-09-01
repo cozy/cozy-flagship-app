@@ -5,6 +5,7 @@ import RNFS, { DownloadResult } from 'react-native-fs'
 
 import {
   checkIsPreviewableLink,
+  getFileExtentionFromCozyDownloadUrl,
   previewFileFromDownloadUrl,
   PUBLIC_BY_SECRET_DOWNLOAD_LINK,
   PRIVATE_BY_PATH_DOWNLOAD_LINK
@@ -136,6 +137,60 @@ describe('filePreviewHelper', () => {
         progressInterval: 100
       })
       expect(FileViewer.open).toHaveBeenCalledWith('/app/SOME_FILE.pdf')
+    })
+  })
+
+  describe('getFileExtentionFromCozyDownloadUrl', () => {
+    it(`should handle PDF extension`, () => {
+      const downloadUrl =
+        'https://claude.mycozy.cloud/files/download?Path=/Documents/SOME_FILE.pdf&Dl=1'
+      const previewType = PRIVATE_BY_PATH_DOWNLOAD_LINK
+
+      const extension = getFileExtentionFromCozyDownloadUrl(
+        downloadUrl,
+        previewType
+      )
+
+      expect(extension).toBe('pdf')
+    })
+
+    it(`should handle MP4 extension`, () => {
+      const downloadUrl =
+        'https://claude.mycozy.cloud/files/downloads/SOME_SECRET/SOME_FILE.mp4?Dl=1'
+      const previewType = PUBLIC_BY_SECRET_DOWNLOAD_LINK
+
+      const extension = getFileExtentionFromCozyDownloadUrl(
+        downloadUrl,
+        previewType
+      )
+
+      expect(extension).toBe('mp4')
+    })
+
+    it(`should only takes the last part of extension`, () => {
+      const downloadUrl =
+        'https://claude.mycozy.cloud/files/downloads/SOME_SECRET/SOME_FILE.multiple.part.extension.pdf?Dl=1'
+      const previewType = PUBLIC_BY_SECRET_DOWNLOAD_LINK
+
+      const extension = getFileExtentionFromCozyDownloadUrl(
+        downloadUrl,
+        previewType
+      )
+
+      expect(extension).toBe('pdf')
+    })
+
+    it(`should lowecase extension`, () => {
+      const downloadUrl =
+        'https://claude.mycozy.cloud/files/downloads/SOME_SECRET/SOME_FILE.MP4?Dl=1'
+      const previewType = PUBLIC_BY_SECRET_DOWNLOAD_LINK
+
+      const extension = getFileExtentionFromCozyDownloadUrl(
+        downloadUrl,
+        previewType
+      )
+
+      expect(extension).toBe('mp4')
     })
   })
 })
