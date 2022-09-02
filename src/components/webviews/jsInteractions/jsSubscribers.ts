@@ -68,14 +68,14 @@ export const jsSubscribers = `
     })
   
     console.debug(
-      \`EnsureCrypto registered answer... \${answerSubscribers.length} answer(s) are now subscribed\`
+      \`Subscribers registered answer... \${answerSubscribers.length} answer(s) are now subscribed\`
     )
   }
   
   function unsubscribeAnswer(messageId) {
     answerSubscribers = answerSubscribers.filter(({ id }) => id !== messageId)
     console.debug(
-      \`EnsureCrypto cleared answer... \${answerSubscribers.length} answer(s) are now subscribed\`
+      \`Subscribers cleared answer... \${answerSubscribers.length} answer(s) are now subscribed\`
     )
   }
 `
