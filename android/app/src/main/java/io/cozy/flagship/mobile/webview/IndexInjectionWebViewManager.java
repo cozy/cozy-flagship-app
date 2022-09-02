@@ -58,7 +58,8 @@ public class IndexInjectionWebViewManager extends RNCWebViewManager {
       Uri uri = request.getUrl();
 
       String path = uri.getPath();
-      if (path != null && (path.equals("/") || path.equals("/index.html"))) {
+      String refreshTokenParam = uri.getQueryParameter("refreshToken");
+      if ((path != null && (path.equals("/") || path.equals("/index.html"))) && refreshTokenParam == null) {
         String htmlToInject = ((IndexInjectionWebView) view).getInjectedIndex();
 
         if (htmlToInject == null) {
