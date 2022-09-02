@@ -1,11 +1,6 @@
 {
   "extends": ["@react-native-community", "cozy-app/react"],
-  "plugins": ["react-hooks"],
   "rules": {
-    "@typescript-eslint/no-shadow": "error",
-    "@typescript-eslint/no-unused-vars": ["error"],
-    "no-shadow": "off",
-    "no-unused-vars": "off",
     "prettier/prettier": [
       "error",
       {
@@ -16,8 +11,6 @@
         "trailingComma": "none"
       }
     ],
-    "react-hooks/exhaustive-deps": "error",
-    "react-native/no-inline-styles": "error",
     "spaced-comment": ["error", "always", { "block": { "exceptions": ["*"] } }]
   },
   "parserOptions": {
