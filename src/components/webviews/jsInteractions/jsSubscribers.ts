@@ -44,7 +44,7 @@ export const jsSubscribers = `
 
     const dataPayload = JSON.parse(rawData)
 
-    if(dataPayload.type !== 'Crypto') {
+    if(dataPayload.type !== 'Crypto' && dataPayload.type !== 'NavigatorShare') {
       return
     }
 

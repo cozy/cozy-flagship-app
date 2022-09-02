@@ -11,10 +11,15 @@ import {
   tryCrypto
 } from '/components/webviews/jsInteractions/jsEnsureCrypto'
 import {
+  jsEnsureNavigatorShare,
+  tryNavigatorShare
+} from '/components/webviews/jsInteractions/jsEnsureNavigatorShare'
+import {
   jsLogInterception,
   tryConsole
 } from '/components/webviews/jsInteractions/jsLogInterception'
 import { postMessageFunctionDeclaration } from '/components/webviews/CryptoWebView/jsInteractions/jsFunctions/jsMessaging'
+import { jsSubscribers } from '/components/webviews/jsInteractions/jsSubscribers'
 import { useSession } from '/hooks/useSession'
 import ReloadInterceptorWebView from '/components/webviews/ReloadInterceptorWebView'
 import { getHostname } from '/libs/functions/getHostname'
@@ -106,6 +111,8 @@ export const CozyWebView = ({
 
       ${jsEnsureCrypto}
 
+      ${jsEnsureNavigatorShare}
+
       return true;
     })();
   `
@@ -167,6 +174,7 @@ export const CozyWebView = ({
       }}
       onMessage={async m => {
         tryCrypto(m, log, logId, onAnswer)
+        tryNavigatorShare(m, log, logId, onAnswer)
         tryConsole(m, log, logId)
 
         nativeIntent.tryEmit(m)
