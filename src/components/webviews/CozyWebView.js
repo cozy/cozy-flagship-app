@@ -102,6 +102,8 @@ export const CozyWebView = ({
 
       ${postMessageFunctionDeclaration}
 
+      ${jsSubscribers}
+
       ${jsEnsureCrypto}
 
       return true;
