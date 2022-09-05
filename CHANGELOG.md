@@ -1,10 +1,25 @@
-# 0.0.25
+# 0.0.26
 
 ## ✨ Features
 
 
 ## 🐛 Bug Fixes
 
+
+## 🔧 Tech
+
+
+# 0.0.25
+
+## ✨ Features
+
+* Intercept downloads on iOS and open QuickLook instead ([PR #399](https://github.com/cozy/cozy-react-native/pull/399))
+* Intercept PDF downloads on Android and open FileViewer instead ([PR #399](https://github.com/cozy/cozy-react-native/pull/399))
+* Add support for Android's Share feature ([PR #406](https://github.com/cozy/cozy-react-native/pull/406))
+
+## 🐛 Bug Fixes
+
+* Correctly handle RefreshTokens queries on Android ([PR #404](https://github.com/cozy/cozy-react-native/pull/404))
 
 ## 🔧 Tech
 
