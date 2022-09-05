@@ -63,10 +63,12 @@ export const checkIsPreviewableLink = (
  */
 export const previewFileFromDownloadUrl = async ({
   downloadUrl,
-  client
+  client,
+  setDownloadProgress
 }: {
   downloadUrl: string
   client: CozyClient
+  setDownloadProgress: React.Dispatch<React.SetStateAction<number>>
 }): Promise<void> => {
   try {
     const previewType = checkIsPreviewableLink(downloadUrl, client)
@@ -85,7 +87,8 @@ export const previewFileFromDownloadUrl = async ({
       fileName,
       downloadUrl,
       previewType,
-      client
+      client,
+      setDownloadProgress
     })
 
     await FileViewer.open(filePath)
@@ -138,12 +141,14 @@ const downloadFile = async ({
   fileName,
   downloadUrl,
   previewType,
-  client
+  client,
+  setDownloadProgress
 }: {
   fileName: string
   downloadUrl: string
   previewType: PreviewType
   client: CozyClient
+  setDownloadProgress: React.Dispatch<React.SetStateAction<number>>
 }): Promise<string> => {
   const stackClient = client.getStackClient()
   const headers = stackClient.getAuthorizationHeader()
@@ -152,6 +157,12 @@ const downloadFile = async ({
   const result = await RNFS.downloadFile({
     fromUrl: downloadUrl,
     toFile: destinationPath,
+    begin: () => undefined,
+    progress: res => {
+      const progressPercent = res.bytesWritten / res.contentLength
+      setDownloadProgress(progressPercent)
+    },
+    progressInterval: 100,
     headers:
       previewType === PRIVATE_BY_PATH_DOWNLOAD_LINK
         ? {
@@ -167,6 +178,8 @@ const downloadFile = async ({
   if (statusCode < 200 || statusCode >= 300) {
     throw new Error(`Status code: ${statusCode}`)
   }
+
+  setDownloadProgress(0)
 
   return destinationPath
 }

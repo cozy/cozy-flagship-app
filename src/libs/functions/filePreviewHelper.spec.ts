@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import FileViewer from 'react-native-file-viewer'
 import CozyClient from 'cozy-client'
 import RNFS, { DownloadResult } from 'react-native-fs'
@@ -89,13 +90,17 @@ describe('filePreviewHelper', () => {
       await previewFileFromDownloadUrl({
         downloadUrl:
           'https://claude.mycozy.cloud/files/downloads/SOME_SECRET/SOME_FILE.pdf?Dl=1',
-        client
+        client,
+        setDownloadProgress: () => undefined
       })
 
       expect(mockDownloadFile).toHaveBeenCalledWith({
         fromUrl:
           'https://claude.mycozy.cloud/files/downloads/SOME_SECRET/SOME_FILE.pdf?Dl=1',
-        toFile: '/app/SOME_FILE.pdf'
+        toFile: '/app/SOME_FILE.pdf',
+        begin: expect.anything(),
+        progress: expect.anything(),
+        progressInterval: 100
       })
       expect(FileViewer.open).toHaveBeenCalledWith('/app/SOME_FILE.pdf')
     })
@@ -115,7 +120,8 @@ describe('filePreviewHelper', () => {
       await previewFileFromDownloadUrl({
         downloadUrl:
           'https://claude.mycozy.cloud/files/download?Path=/Documents/SOME_FILE.pdf&Dl=1',
-        client
+        client,
+        setDownloadProgress: () => undefined
       })
 
       expect(mockDownloadFile).toHaveBeenCalledWith({
@@ -124,7 +130,10 @@ describe('filePreviewHelper', () => {
         headers: {
           Authorization: 'SOME_AUTHORIZATION_TOKEN'
         },
-        toFile: '/app/SOME_FILE.pdf'
+        toFile: '/app/SOME_FILE.pdf',
+        begin: expect.anything(),
+        progress: expect.anything(),
+        progressInterval: 100
       })
       expect(FileViewer.open).toHaveBeenCalledWith('/app/SOME_FILE.pdf')
     })
