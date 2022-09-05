@@ -22,6 +22,9 @@ import {
   checkIsPreviewableLink,
   previewFileFromDownloadUrl
 } from '/libs/functions/filePreviewHelper'
+
+import { ProgressContainer } from '/components/ProgressContainer'
+
 const log = Minilog('ReloadInterceptorWebView')
 
 Minilog.enable()
@@ -41,7 +44,8 @@ const interceptNavigation = ({
   interceptReload,
   onReloadInterception,
   isFirstCall,
-  client
+  client,
+  setDownloadProgress
 }) => {
   if (Platform.OS === 'ios' && !initialRequest.isTopFrame) {
     return true
@@ -64,7 +68,8 @@ const interceptNavigation = ({
     if (Platform.OS === 'ios') {
       previewFileFromDownloadUrl({
         downloadUrl: initialRequest.url,
-        client
+        client,
+        setDownloadProgress
       })
       return false
     } else {
@@ -150,6 +155,8 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
   const client = useClient()
   const subdomainType = client.capabilities?.flat_subdomains ? 'flat' : 'nested'
 
+  const [progress, setDownloadProgress] = useState(0)
+
   const {
     targetUri,
     source,
@@ -161,19 +168,60 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
   if (!source.html) {
     // Blocking this feature, when source={{ uri }} is set
     return (
+      <ProgressContainer progress={progress}>
+        <SupervisedWebView
+          {...props}
+          ref={ref}
+          {...userAgent}
+          onShouldStartLoadWithRequest={initialRequest => {
+            return interceptNavigation({
+              initialRequest,
+              targetUri,
+              subdomainType,
+              navigation,
+              onShouldStartLoadWithRequest,
+              interceptReload: false,
+              client,
+              setDownloadProgress
+            })
+          }}
+          onOpenWindow={syntheticEvent => {
+            const { nativeEvent } = syntheticEvent
+            interceptOpenWindow({
+              destinationUrl: nativeEvent.targetUrl,
+              currentUrl: targetUri,
+              subdomainType,
+              navigation,
+              webViewForwardRef: ref
+            })
+          }}
+        />
+      </ProgressContainer>
+    )
+  }
+
+  return (
+    <ProgressContainer progress={progress}>
       <SupervisedWebView
         {...props}
-        ref={ref}
         {...userAgent}
+        ref={ref}
+        key={timestamp}
         onShouldStartLoadWithRequest={initialRequest => {
+          const isFirstCall = preventRefreshByDefault
+          setPreventRefreshByDefault(false)
+
           return interceptNavigation({
             initialRequest,
             targetUri,
             subdomainType,
             navigation,
             onShouldStartLoadWithRequest,
-            interceptReload: false,
-            client
+            interceptReload: true,
+            onReloadInterception: () => setTimestamp(Date.now()),
+            isFirstCall,
+            client,
+            setDownloadProgress
           })
         }}
         onOpenWindow={syntheticEvent => {
@@ -187,42 +235,7 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
           })
         }}
       />
-    )
-  }
-
-  return (
-    <SupervisedWebView
-      {...props}
-      {...userAgent}
-      ref={ref}
-      key={timestamp}
-      onShouldStartLoadWithRequest={initialRequest => {
-        const isFirstCall = preventRefreshByDefault
-        setPreventRefreshByDefault(false)
-
-        return interceptNavigation({
-          initialRequest,
-          targetUri,
-          subdomainType,
-          navigation,
-          onShouldStartLoadWithRequest,
-          interceptReload: true,
-          onReloadInterception: () => setTimestamp(Date.now()),
-          isFirstCall,
-          client
-        })
-      }}
-      onOpenWindow={syntheticEvent => {
-        const { nativeEvent } = syntheticEvent
-        interceptOpenWindow({
-          destinationUrl: nativeEvent.targetUrl,
-          currentUrl: targetUri,
-          subdomainType,
-          navigation,
-          webViewForwardRef: ref
-        })
-      }}
-    />
+    </ProgressContainer>
   )
 })
 
