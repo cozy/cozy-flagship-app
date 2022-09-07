@@ -103,7 +103,7 @@ const interceptNavigation = ({
   })
 
   if (isRedirectOutside) {
-    openUrlInAppBrowser(targetUri)
+    openUrlInAppBrowser(initialRequest.url)
     return false
   }
 
