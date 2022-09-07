@@ -1,3 +1,14 @@
+# 0.0.27
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+
 # 0.0.26
 
 ## ✨ Features
@@ -5,6 +16,7 @@
 
 ## 🐛 Bug Fixes
 
+* Correctly open external links into InApp Browser ([PR #412](https://github.com/cozy/cozy-react-native/pull/412))
 
 ## 🔧 Tech
 
