@@ -34,7 +34,7 @@
     "cheerio": "^1.0.0-rc.9",
     "cozy-client": "^33.0.0",
     "cozy-client-js": "^0.20.0",
-    "cozy-device-helper": "^2.2.0",
+    "cozy-device-helper": "^2.3.0",
     "cozy-flags": "^2.9.0",
     "cozy-intent": "^2.4.0",
     "cozy-logger": "^1.9.0",
