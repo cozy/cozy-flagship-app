@@ -19,6 +19,10 @@ import { useSession } from '/hooks/useSession'
 import ReloadInterceptorWebView from '/components/webviews/ReloadInterceptorWebView'
 import { getHostname } from '/libs/functions/getHostname'
 import { useIsSecureProtocol } from '/hooks/useIsSecureProtocol'
+import {
+  BiometryEmitter,
+  makeBiometryInjection
+} from '/libs/intents/setBiometryState'
 
 const log = Minilog('CozyWebView')
 
@@ -109,6 +113,18 @@ export const CozyWebView = ({
   `
 
   const webviewSource = source.html ? source : { uri }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const injectSettings = async () =>
+    webviewRef.injectJavaScript(await makeBiometryInjection())
+
+  useEffect(() => {
+    webviewRef && injectSettings()
+
+    BiometryEmitter.on('change', injectSettings)
+
+    return () => BiometryEmitter.off('change', injectSettings)
+  }, [injectSettings, webviewRef])
 
   return uri ? (
     <ReloadInterceptorWebView
