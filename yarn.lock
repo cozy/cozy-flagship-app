@@ -6559,10 +6559,10 @@ cozy-flags@^2.9.0:
   dependencies:
     microee "^0.0.6"
 
-cozy-intent@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-2.2.0.tgz#bb32115c48bf239338166b90aaa2171f8295b8d5"
-  integrity sha512-DbThgCn3BkHfbe/zzofbzGuzLtSV/dkbuTV+pFKRDxTp3+qe1QsiFZtBS7ClcjPVP/kYKVTPv2gGnpejIgBx5g==
+cozy-intent@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-2.4.0.tgz#f2e1900798e60e3e63c1c4fce13c79baab91e09f"
+  integrity sha512-bW6Jbn/BnPnKttHWxgOe79jUgYhK5lfVwUP+icxp7ZCt3FNsTYX0bZ36PS8zV3j0F8s11kU8wvtMcRxkQ8R87Q==
   dependencies:
     post-me "0.4.5"
 

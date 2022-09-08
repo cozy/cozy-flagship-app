@@ -1,13 +1,14 @@
 import * as RootNavigation from '../RootNavigation'
+import strings from '/strings'
+import { EnvService } from '/libs/services/EnvService'
 import { clearClient } from '../client'
 import { deleteKeychain } from '../keychain'
 import { hideSplashScreen } from '../services/SplashScreenService'
 import { openApp } from '../functions/openApp'
 import { resetSessionToken } from '../functions/session'
+import { openSettingBiometry } from '/libs/intents/setBiometryState'
 import { setFlagshipUI } from './setFlagshipUI'
-import { EnvService } from '/libs/services/EnvService'
 import { showInAppBrowser, closeInAppBrowser } from './InAppBrowser'
-import strings from '/strings'
 
 export const asyncLogout = async () => {
   await clearClient()
@@ -65,13 +66,14 @@ export const internalMethods = {
 export const localMethods = client => {
   return {
     backToHome,
+    closeInAppBrowser,
+    fetchSessionCode: fetchSessionCodeWithClient(client),
     hideSplashScreen,
     logout,
     openApp: (href, app, iconParams) =>
       openApp(RootNavigation, href, app, iconParams),
+    openSettingBiometry,
     setFlagshipUI,
-    showInAppBrowser,
-    closeInAppBrowser,
-    fetchSessionCode: fetchSessionCodeWithClient(client)
+    showInAppBrowser
   }
 }
