@@ -1,13 +1,15 @@
 import ContentScript from '../../connectorLibs/ContentScript'
-// import {kyScraper as ky, blobToBase64} from '../../connectorLibs/utils'
+import {kyScraper as ky, blobToBase64} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
 const log = Minilog('ContentScript')
+const moment = require('moment')
 Minilog.enable('alanCCC')
 
-const BASE_URL = 'https://alan.com/fr-fr'
+const BASE_URL = 'https://alan.com/'
 const LOGIN_URL = 'https://alan.com/login'
 const HOMEPAGE_URL = 'https://alan.com/app/dashboard'
 const PERSONAL_INFOS_URL = 'https://alan.com/app/dashboard#individualProfile/home'
+
 class TemplateContentScript extends ContentScript {
   //////////
   //PILOT //
@@ -59,9 +61,9 @@ class TemplateContentScript extends ContentScript {
   }
   
   async fetch(context) {
-    await this.clickAndWait('#individualProfile-invoices', '.coverage-wrapper')
+    this.log("fetch starts")
+    await this.runInWorker('getDocuments')
     await this.waitForElementInWorker('[pause]')
-
   }
 
   async authWithCredentials(){
@@ -104,10 +106,11 @@ class TemplateContentScript extends ContentScript {
         userCredentials
       })
     }
-    if(document.location.href.includes(`${HOMEPAGE_URL}`) && document.querySelector('a[href="#"]') || document.querySelector('div[class="murray__NavList"]')){
+    if(document.location.href.includes(`${HOMEPAGE_URL}`) && document.querySelector('a[href="#"]') || document.querySelector('div[class="murray__NavListItem"]')){
       this.log('Auth Check succeeded')
       return true
     }
+    this.log('Not respecting condition, returning false')
     return false
   }
 
@@ -150,7 +153,6 @@ class TemplateContentScript extends ContentScript {
   async getUserIdentity(){
     const nameElement = document.querySelector('h4').innerHTML.split('&nbsp;')
     const nameString = nameElement[0]
-    console.log(nameElement)
     const givenName = nameString.split(' ')[0]
     const familyName = nameString.split(' ')[1]
     const userInfosElements = document.querySelectorAll('.value-box-value')
@@ -182,6 +184,80 @@ class TemplateContentScript extends ContentScript {
     await this.sendToPilot({userIdentity})
   }
 
+  async getDocuments(){
+    const tokenPayload = window.localStorage.tokenPayload
+    const tokenBearer = window.localStorage.token
+    const beneficiaryId = tokenPayload.split(',')[1].replace(/"/g,'').split(':')[1]
+
+    const apiUrl = `https://api.alan.com/api/users/${beneficiaryId}?expand=visible_insurance_documents,address,beneficiaries,beneficiaries.insurance_profile.user,beneficiaries.insurance_profile.latest_tp_card`
+    const response = await window.fetch(apiUrl, {
+      headers: {
+        Authorization:`Bearer ${tokenBearer}`
+      }
+    }).then(response => response.text())
+    const jsonDocuments = JSON.parse(response)
+    let {bills, tpCardIdentifier } = await this.computeDocuments(jsonDocuments)
+  }
+
+  async computeDocuments(jsonDocuments){
+    const tokenBearer = window.localStorage.token
+    const beneficiaries = jsonDocuments.beneficiaries
+    let beneficiariesWithIds = []
+    for (const beneficiary of beneficiaries){
+      const name = beneficiary.insurance_profile.user.normalized_full_name
+      const beneficiaryId = beneficiary.insurance_profile_id
+      beneficiariesWithIds.push({
+        name,
+        beneficiaryId
+      })
+    }
+    const apiUrl = `https://api.alan.com/api/insurance_profiles/${beneficiariesWithIds[0].beneficiaryId}/care_events_public`
+    let response = await window.fetch(apiUrl, {
+      headers: {
+        Authorization:`Bearer ${tokenBearer}`
+      }
+    }).then(response => response.text())
+    const jsonEvents = JSON.parse(response)
+
+  let bills = []
+  for (const beneficiary of beneficiaries) {
+    const name = beneficiary.insurance_profile.user.normalized_full_name
+    bills.push.apply(
+      bills,
+      jsonEvents
+        .filter(bill => bill.status === 'refunded')
+        .map(bill => ({
+          vendor: 'alan',
+          vendorRef: bill.id,
+          beneficiary: name,
+          type: 'health_costs',
+          date: moment(bill.estimated_payment_date, 'YYYY-MM-DD').toDate(),
+          originalDate: moment(bill.care_date, 'YYYY-MM-DD').toDate(),
+          subtype: bill.care_acts[0].display_label,
+          socialSecurityRefund: bill.care_acts[0].ss_base / 100,
+          amount: bill.care_acts[0].reimbursed_to_user / 100,
+          originalAmount: bill.care_acts[0].spent_amount / 100,
+          isThirdPartyPayer: bill.care_acts[0].reimbursed_to_user === null,
+          currency: '€',
+          isRefund: true,
+          fileAttributes: {
+            metadata: {
+              contentAuthor: 'alan.com',
+              issueDate: new Date(),
+              datetime: moment(bill.care_date, 'YYYY-MM-DD').toDate(),
+              datetimeLabel: `issueDate`,
+              isSubscription: false,
+              carbonCopy: true
+            }
+          }
+        }))
+    )
+  }
+  const tpCardIdentifier = jsonDocuments.tp_card_identifier.replace(/\s/g, '')
+
+  return {bills, tpCardIdentifier}
+  }
+
 }
 
 const connector = new TemplateContentScript()
@@ -190,6 +266,7 @@ connector.init({ additionalExposedMethodsNames: [
   'checkIfLogged',
   'getUserMail',
   'getUserIdentity',
+  'getDocuments',
 ] }).catch(err => {
   console.warn(err)
 })
