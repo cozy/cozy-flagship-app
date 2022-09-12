@@ -14,7 +14,7 @@ class TemplateContentScript extends ContentScript {
   async ensureAuthenticated() {
     const credentials = await this.getCredentials()
     if (credentials) {
-      const auth = await this.authWithCredentials()
+      const auth = await this.authWithCredentials(credentials)
       if(auth) {
         return true
       }
@@ -35,11 +35,11 @@ class TemplateContentScript extends ContentScript {
     await this.runInWorkerUntilTrue({method: 'waitForAuthenticated'})
     await this.setWorkerState({visible: false})
   }
-
   
   async getUserDataFromWebsite() {
     await this.clickAndWait('a[href="/clients/mon-compte"]', 'a[href="/clients/mon-compte/mes-infos-de-contact"]')
     await this.clickAndWait('a[href="/clients/mon-compte/mes-infos-de-contact"]', 'div[class="pb-dm"]')
+    await this.runInWorker('getIdentity')
     const sourceAccountId = await this.runInWorker('getUserMail')
     if(sourceAccountId === 'UNKNOWN_ERROR'){
       this.log("Couldn't find a sourceAccountIdentifier, using default")
@@ -52,28 +52,32 @@ class TemplateContentScript extends ContentScript {
     await this.clickAndWait('a[href="/clients/mes-factures/mes-factures-et-paiements"]', 'a[href="/clients/mes-factures/mes-factures-electricite/mon-historique-de-factures"]')
     await this.clickAndWait('a[href="/clients/mes-factures/mes-factures-electricite/mon-historique-de-factures"]', '.detail-facture')
     await this.runInWorker('getBills')
+    await this.saveIdentity(this.store.userIdentity)
     await this.saveBills(this.store.allDocuments, {
       context,
       fileIdAttributes: ['vendorRef', 'filename'],
       contentType: 'application/pdf',
       qualificationLabel: 'energy_invoice'
     })
-    // await this.waitForElementInWorker('[pause]')
+    
   }
-
-  async authWithCredentials(){
+  
+  async authWithCredentials(credentials){
     this.log('auth with credentials starts')
     await this.goto(baseUrl)
     await this.waitForElementInWorker('a[class="menu-p-btn-ec"]')
     await this.runInWorker('clickLoginPage')
-    if (await this.checkAuthenticated()){
+    await Promise.race([
+      this.waitForElementInWorker('.menu-btn--deconnexion'),
+      this.waitForElementInWorker('#formz-authentification-form-login')
+    ])
+    const alreadyLoggedIn = await this.runInWorker('checkIfLogged')
+    if(alreadyLoggedIn){
       return true
     }
-    // else {
-    //   //Auto-login coming
-    //   await this.waitForUserAuthentication()
-    //   return true
-    // }
+    else {
+      await this.tryAutoLogin(credentials)
+    }
   }
 
   async authWithoutCredentials(){
@@ -89,6 +93,22 @@ class TemplateContentScript extends ContentScript {
     await this.waitForUserAuthentication()
     await this.saveCredentials(this.store.userCredentials)
     return true
+  }
+
+  async tryAutoLogin(credentials) {
+    this.log('Trying auto login')
+    await this.autoLogin(credentials)
+    if(await this.checkAuthenticated()){
+      return true
+    }
+  }
+
+  async autoLogin(credentials) {
+    this.log('AutoLogin starts')
+    await this.waitForElementInWorker('#formz-authentification-form-login')
+    await this.runInWorker('fillingForm', credentials)
+    await this.runInWorker('click', '#formz-authentification-form-reste-connecte')
+    await this.runInWorker('click', '#js--btn-validation')
   }
   
   //////////
@@ -155,11 +175,64 @@ class TemplateContentScript extends ContentScript {
     }
   }
 
+  async checkIfLogged(){
+    if(document.querySelector('.menu-btn--deconnexion')){
+      return true
+    } 
+    return false
+  }
+
+  fillingForm(credentials){
+    const loginField = document.querySelector('#formz-authentification-form-login')
+    const passwordField = document.querySelector('#formz-authentification-form-password')
+    this.log('Filling fields with credentials')
+    loginField.value = credentials.login
+    passwordField.value = credentials.password
+  }
+
   getUserMail(){
     const userMailElement = document.querySelectorAll('div[class="pb-dm"]')
     const userMail = userMailElement[1].querySelectorAll('strong')[1].innerHTML
     if(userMail) return userMail
     return 'UNKNOWN_ERROR'
+  }
+
+  async getIdentity(){
+    this.log('getIdentity starts')
+    const infosElements = document.querySelectorAll('div[class="pb-dm"]')
+    const familyName = infosElements[0].querySelectorAll('strong')[0].innerHTML
+    const name = infosElements[0].querySelectorAll('strong')[1].innerHTML
+    const clientRef = infosElements[0].querySelectorAll('strong')[2].innerHTML
+    const phoneNumber = infosElements[1].querySelectorAll('strong')[0].innerHTML
+    const email = infosElements[1].querySelectorAll('strong')[1].innerHTML
+    const rawAddress = infosElements[2].querySelectorAll('strong')[0].innerHTML.replaceAll('<br> ', '')
+    const splittedAddress = rawAddress.match(/([0-9]*) ([A-Z\s-]*) ([0-9]{5}) ([A-Z0-9-\s\/]*)/)
+    const fullAddress = splittedAddress[0]
+    const houseNumber = splittedAddress[1]
+    const street = splittedAddress[2]
+    const postCode = splittedAddress[3]
+    const city = splittedAddress[4]
+
+    const userIdentity = {
+      email,
+      clientRef,
+      name : {
+        givenName : name,
+        familyName
+      },
+      address : [{
+        formattedAddress: fullAddress,
+        houseNumber,
+        street,
+        postCode,
+        city
+      }],
+      phone:[{
+        type : phoneNumber.match(/^06|07|\+336|\+337/g) ? 'mobile' : 'home',
+        number: phoneNumber
+      }]
+    }
+    await this.sendToPilot({userIdentity})
   }
 
   async getBills(){
@@ -329,6 +402,9 @@ connector.init({ additionalExposedMethodsNames: [
   'checkMaintenanceStatus',
   'getUserMail',
   'getBills',
+  'fillingForm',
+  'checkIfLogged',
+  'getIdentity',
 ] }).catch(err => {
   console.warn(err)
 })
