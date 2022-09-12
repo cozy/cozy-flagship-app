@@ -1,4 +1,4 @@
-import { Share } from 'react-native'
+import { Platform, Share } from 'react-native'
 import { WebViewMessageEvent } from 'react-native-webview/lib/WebViewTypes'
 import { OnAnswerCallback, SubscriberPayload } from './types'
 
@@ -87,7 +87,7 @@ export const tryNavigatorShare = async (
     try {
       const result = await Share.share({
         title,
-        message,
+        message: Platform.OS === 'android' ? `${message} ${url}` : message,
         url
       })
 
