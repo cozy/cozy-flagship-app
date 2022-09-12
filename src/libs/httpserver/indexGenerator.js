@@ -21,7 +21,12 @@ const log = Minilog('IndexGenerator')
 // the list slugs to be injected using HttpServer
 // Instead those slugs will be served from cozy-stack
 const slugBlocklist = [
-  { platform: 'ios', slug: 'mespapiers' } // mespapiers cannot be injected until we fix window.history bug on iOS
+  // mespapiers cannot be injected until we fix window.history bug on iOS
+  { platform: 'ios', slug: 'mespapiers' },
+
+  // settings cannot be injected until we modernize it by doing all queries through
+  // cozy-client and correctly handle `https` override with `isSecureProtocol` parameter
+  { platform: 'ios', slug: 'settings' }
 ]
 
 const initLocalBundleIfNotExist = async (fqdn, slug) => {
