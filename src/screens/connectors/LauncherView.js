@@ -23,6 +23,7 @@ import { statusBarHeight } from '/libs/dimensions'
 import ReactNativeLauncher from '/libs/ReactNativeLauncher'
 import { getColors } from '/theme/colors'
 import strings from '/strings.json'
+import orangeConnector from '../../../connectors/orange/dist/webviewScript'
 
 const log = Minilog('LauncherView')
 
@@ -38,6 +39,7 @@ const embeddedConnectors = {
   // sncf: sncfConnector,
   // blablacar: blablacarConnector,
   // sosh: soshConnector
+  orange: orangeConnector
   // red: redConnector,
   // sfr: sfrConnector
   // totalenergies: totalenergiesConnector
