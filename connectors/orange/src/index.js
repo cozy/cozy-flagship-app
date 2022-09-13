@@ -137,6 +137,10 @@ class OrangeContentScript extends ContentScript {
   }
   
   async fetch(context) {
+    // // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
+    // await this.waitForElementInWorker(
+    //   '[pause]',
+    // )
     this.log('Starting fetch')
     await this.saveCredentials(this.store.userCredentials)
     // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
@@ -176,6 +180,8 @@ class OrangeContentScript extends ContentScript {
 
   async fetch(context) {
     
+      const vendor = context.manifest.vendor_link
+      const contentAuthor = context.manifest.slug
       for (let i = 0; i < this.store.resolvedBase64.length; i++) {
         let dateArray = this.store.resolvedBase64[i].href.match(
           /([0-9]{4})-([0-9]{2})-([0-9]{2})/g,
@@ -185,7 +191,7 @@ class OrangeContentScript extends ContentScript {
           return bill.date === dateArray[0]
         })
         this.store.dataUri.push({
-          vendor: 'sosh.fr',
+          vendor,
           date: this.store.allBills[index].date,
           amount: this.store.allBills[index].amount / 100,
           recurrence: 'monthly',
@@ -203,7 +209,7 @@ class OrangeContentScript extends ContentScript {
               invoiceNumber: this.store.allBills[index].id
                 ? this.store.allBills[index].id
                 : this.store.allBills[index].tecId,
-              contentAuthor: 'sosh',
+              contentAuthor,
               datetime: this.store.allBills[index].date,
               datetimeLabel: 'startDate',
               isSubscription: true,
@@ -221,7 +227,7 @@ class OrangeContentScript extends ContentScript {
       })
 
       await this.saveBills(this.store.dataUri, {
-        context,
+        context : [],
         fileIdAttributes: ['filename'],
         contentType: 'application/pdf',
         qualificationLabel: 'isp_invoice',
