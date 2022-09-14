@@ -127,13 +127,13 @@ export const CozyWebView = ({
   const injectSettings = async () =>
     webviewRef.injectJavaScript(await makeBiometryInjection())
 
-  useEffect(() => {
-    webviewRef && injectSettings()
+  // useEffect(() => {
+  //   webviewRef && injectSettings()
 
-    BiometryEmitter.on('change', injectSettings)
+  //   BiometryEmitter.on('change', injectSettings)
 
-    return () => BiometryEmitter.off('change', injectSettings)
-  }, [injectSettings, webviewRef])
+  //   return () => BiometryEmitter.off('change', injectSettings)
+  // }, [injectSettings, webviewRef])
 
   return uri ? (
     <ReloadInterceptorWebView
