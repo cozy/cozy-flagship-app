@@ -10,6 +10,9 @@ import { IndexInjectionWebviewComponent } from '/components/webviews/webViewComp
 
 import { styles } from './CozyProxyWebView.styles'
 
+import Minilog from '@cozy/minilog'
+const log = Minilog('CozyProxyWebView')
+
 const NO_INJECTED_HTML = 'NO_INJECTED_HTML'
 
 const getHttpUnsecureUrl = uri => {
@@ -74,8 +77,10 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
   })
 
   useEffect(() => {
+    log.debug(`✅ useEffect for injecting HTML`)
     if (httpServerContext.isRunning()) {
       const initHtmlContent = async () => {
+        log.debug(`✅ initHtmlContent`)
         const htmlContent = await httpServerContext.getIndexHtmlForSlug(
           slug,
           client

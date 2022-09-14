@@ -7,6 +7,9 @@ import Minilog from '@cozy/minilog'
 import ProgressBar from '/components/Bar'
 import { default as paletteValues } from '/theme/palette.json'
 import { styles } from './SupervisedWebView.styles'
+import { getCookie } from '/libs/httpserver/httpCookieManager'
+
+import { useClient } from 'cozy-client'
 
 const log = Minilog('SupervisedWebView')
 
@@ -68,6 +71,8 @@ export const SupervisedWebView = React.forwardRef((props, ref) => {
     key: 0
   })
 
+  const client = useClient()
+
   const { onLoad, supervisionShowProgress = true, ...otherProps } = props
   const { isReloading, isLoaded, shouldBeLoaded, key, reloadDelay } = state
 
@@ -101,6 +106,10 @@ export const SupervisedWebView = React.forwardRef((props, ref) => {
 
   const reloadWebView = () => {
     log.debug('Trying to reload the WebView')
+
+    getCookie(client).then(result => {
+      log.debug(`✅ Current cookie state is`, result)
+    })
     setState(oldState => ({
       ...oldState,
       key: oldState.key + 1,

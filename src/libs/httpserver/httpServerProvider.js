@@ -80,6 +80,7 @@ export const HttpServerProvider = props => {
   const isRunning = () => serverInstance?.isRunning()
 
   const getIndexHtmlForSlug = async (slug, client) => {
+    log.debug('✅ try getIndexHtmlForSlug')
     try {
       const rootURL = client.getStackClient().uri
 
@@ -102,6 +103,7 @@ export const HttpServerProvider = props => {
         indexContent: rawHtml,
         indexData: templateValues
       })
+      log.debug(`✅ return getIndexHtmlForSlug for ${slug}`)
       if (slug === 'home') {
         return flow(
           addBarStyles,
@@ -115,7 +117,7 @@ export const HttpServerProvider = props => {
       }
     } catch (err) {
       log.error(
-        `Error while generating Index.html for ${slug}. Cozy-stack version will be used instead. Error was: ${err.message}`
+        `✅ Error while generating Index.html for ${slug}. Cozy-stack version will be used instead. Error was: ${err.message}`
       )
 
       return false

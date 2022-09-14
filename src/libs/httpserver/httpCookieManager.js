@@ -5,6 +5,12 @@ import { isSecureProtocol } from '../functions/isSecureProtocol'
 
 import strings from '/strings.json'
 
+import Minilog from '@cozy/minilog'
+
+const log = Minilog('HttpCookieManager')
+
+Minilog.enable()
+
 const isCookieName = key => {
   return key === 'cozysessid' || key.startsWith('sess-')
 }
@@ -94,6 +100,7 @@ export const setCookie = async (cookieString, client) => {
 
   await setCookieIntoAsyncStorage(client, stackCookie)
 
+  log.debug(`✅ setCookie for ${appUrl}`, stackCookie)
   return CookieManager.set(appUrl, stackCookie, true)
 }
 
@@ -102,6 +109,7 @@ export const getCookie = async client => {
 
   const cookies = await loadCookiesFromAsyncStorage()
 
+  log.debug(`✅ getCookie from asyncStorage`, cookies?.[appUrl])
   return cookies?.[appUrl]
 }
 
