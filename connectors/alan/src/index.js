@@ -3,6 +3,7 @@ import {kyScraper as ky, blobToBase64} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
 const log = Minilog('ContentScript')
 const moment = require('moment')
+import groupBy from 'lodash/groupBy'
 Minilog.enable('alanCCC')
 
 const BASE_URL = 'https://alan.com/'
@@ -15,11 +16,6 @@ class TemplateContentScript extends ContentScript {
   //PILOT //
   //////////
   async ensureAuthenticated() {
-    // We need to force Desktop version of the website, otherwise some pages won't be accessible on mobile
-    await this.bridge.call(
-      'setUserAgent',
-      'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:94.0) Gecko/20100101 Firefox/94.0',
-    )
     const credentials = await this.getCredentials()
     if (credentials) {
       const auth = await this.authWithCredentials()
@@ -46,11 +42,8 @@ class TemplateContentScript extends ContentScript {
 
 
   async getUserDataFromWebsite() {
-    await this.goto(PERSONAL_INFOS_URL)
-    await this.waitForElementInWorker('.email-wrapper')
-    const sourceAccountId = await this.runInWorker('getUserMail')
-    await this.waitForElementInWorker('.address-wrapper')
     await this.runInWorker('getUserIdentity')
+    const sourceAccountId = this.store.userIdentity.email ? this.store.userIdentity.email : 'UNKNOWN_ERROR'
     if (sourceAccountId === 'UNKNOWN_ERROR') {
       this.log("Couldn't get a sourceAccountIdentifier, using default")
       return { sourceAccountIdentifier: DEFAULT_SOURCE_ACCOUNT_IDENTIFIER }
@@ -62,13 +55,31 @@ class TemplateContentScript extends ContentScript {
   
   async fetch(context) {
     this.log("fetch starts")
-    await this.runInWorker('getDocuments')
-    await this.waitForElementInWorker('[pause]')
+    await this.runInWorker('getDocuments', this.store.jsonDocuments)
+    // await this.waitForElementInWorker('[pause]')
+    await this.saveFiles(this.store.tpCard, {
+      context,
+      contentType: 'application/pdf',
+      fileIdAttributes: ['filename'],
+      qualificationLabel: 'health_insurance_card'
+    })
+    await this.saveBills(this.store.bills, {
+      context,
+      keys: ['vendorRef', 'beneficiary', 'date'],
+      fileIdAttributes:['filename'],
+      contentType: 'application/pdf',
+      qualificationLabel: 'health_invoice'
+    })
   }
 
   async authWithCredentials(){
     await this.goto(LOGIN_URL)
-    await this.waitForElementInWorker('.HelpButton')
+    await this.waitForElementInWorker('a')
+    const isAskingForDownload = await this.runInWorker('checkAskForAppDownload')
+    if(isAskingForDownload){
+      await this.clickAndWait('a[href="#"]','div[class="ListItem ListItem__Clickable ListCareEventItem"]')
+    }
+    // await this.waitForElementInWorker('.HelpButton')
     const isLogged = await this.runInWorker('checkIfLogged')
     if(isLogged){
       return true
@@ -80,12 +91,17 @@ class TemplateContentScript extends ContentScript {
   async authWithoutCredentials(){
     await this.goto(BASE_URL)
     await this.waitForElementInWorker('a[href="/login"]')
-    await this.clickAndWait('a[href="/login"]', 'input[name="password"]' )
+    await this.clickAndWait('a[href="/login"]', 'a' )
+    await this.waitForElementInWorker('a')
+    const isAskingForDownload = await this.runInWorker('checkAskForAppDownload')
+    if(isAskingForDownload){
+      await this.clickAndWait('a[href="#"]','div[class="ListItem ListItem__Clickable ListCareEventItem"]')
+    }
     await this.waitForUserAuthentication()
     await this.saveCredentials(this.store.userCredentials)
-    const isAskingForDownload = await this.runInWorker('checkAskForAppDowload')
-    if(isAskingForDownload){
-      await this.clickAndWait('a[href="#"]','div[class="murray__NavList"]')
+    const isAskingForDownloadAgain = await this.runInWorker('checkAskForAppDownload')
+    if(isAskingForDownloadAgain){
+      await this.clickAndWait('a[href="#"]','div[class="ListItem ListItem__Clickable ListCareEventItem"]')
     }
     return true
   }
@@ -125,7 +141,7 @@ class TemplateContentScript extends ContentScript {
     return userCredentials
   }
 
-  checkAskForAppDowload() {
+  checkAskForAppDownload() {
     if(document.querySelector('a[href="#"]')){
       return true
     }else{
@@ -151,44 +167,9 @@ class TemplateContentScript extends ContentScript {
   }
 
   async getUserIdentity(){
-    const nameElement = document.querySelector('h4').innerHTML.split('&nbsp;')
-    const nameString = nameElement[0]
-    const givenName = nameString.split(' ')[0]
-    const familyName = nameString.split(' ')[1]
-    const userInfosElements = document.querySelectorAll('.value-box-value')
-    const birthDate = userInfosElements[0].textContent.split('M')[0]
-    const socialSecurityNumber = userInfosElements[1].children[0].children[1].children[0].textContent
-    const email = userInfosElements[3].innerHTML
-    const address = userInfosElements[5].innerHTML.split(', ')
-    const street = address[0]
-    const postCode = address[1]
-    const city = address[2]
-    const userIdentity = {
-      email,
-      birthDate,
-      socialSecurityNumber,
-      name : {
-        givenName,
-        familyName,
-        fullname : `${givenName} ${familyName}`
-      },
-      address: [
-        {
-          formattedAddress : `${street} ${postCode} ${city}`,
-          postCode,
-          city,
-          street
-        }
-      ]
-    }
-    await this.sendToPilot({userIdentity})
-  }
-
-  async getDocuments(){
     const tokenPayload = window.localStorage.tokenPayload
     const tokenBearer = window.localStorage.token
     const beneficiaryId = tokenPayload.split(',')[1].replace(/"/g,'').split(':')[1]
-
     const apiUrl = `https://api.alan.com/api/users/${beneficiaryId}?expand=visible_insurance_documents,address,beneficiaries,beneficiaries.insurance_profile.user,beneficiaries.insurance_profile.latest_tp_card`
     const response = await window.fetch(apiUrl, {
       headers: {
@@ -196,7 +177,45 @@ class TemplateContentScript extends ContentScript {
       }
     }).then(response => response.text())
     const jsonDocuments = JSON.parse(response)
-    let {bills, tpCardIdentifier } = await this.computeDocuments(jsonDocuments)
+
+    const email = jsonDocuments.email
+    const socialSecurityNumber = jsonDocuments.beneficiaries[0].insurance_profile.ssn
+    const birthDate = jsonDocuments.birth_date
+    const firstName = jsonDocuments.first_name
+    const lastName = jsonDocuments.last_name
+    const postCode = jsonDocuments.address.postal_code
+    const city = jsonDocuments.address.city
+    const street = jsonDocuments.address.street
+    const country = jsonDocuments.address.country
+
+    const userIdentity = {
+      email,
+      birthDate,
+      socialSecurityNumber,
+      name : {
+        firstName,
+        lastName,
+        fullname : `${firstName} ${lastName}`
+      },
+      address: [
+        {
+          formattedAddress : `${street} ${postCode} ${city} ${country}`,
+          postCode,
+          city,
+          street,
+          country
+        }
+      ]
+    }
+    await this.sendToPilot({userIdentity, jsonDocuments})
+  }
+
+  async getDocuments(jsonDocuments){
+    let {bills, tpCardIdentifier, beneficiariesWithIds } = await this.computeDocuments(jsonDocuments)
+    this.computeGroupAmounts(bills)
+    this.linkFiles(bills, beneficiariesWithIds)
+    await this.getTpCard(tpCardIdentifier)
+    await this.sendToPilot({bills})
   }
 
   async computeDocuments(jsonDocuments){
@@ -206,9 +225,11 @@ class TemplateContentScript extends ContentScript {
     for (const beneficiary of beneficiaries){
       const name = beneficiary.insurance_profile.user.normalized_full_name
       const beneficiaryId = beneficiary.insurance_profile_id
+      const userId = beneficiary.insurance_profile.user.id
       beneficiariesWithIds.push({
         name,
-        beneficiaryId
+        beneficiaryId,
+        userId
       })
     }
     const apiUrl = `https://api.alan.com/api/insurance_profiles/${beneficiariesWithIds[0].beneficiaryId}/care_events_public`
@@ -255,14 +276,99 @@ class TemplateContentScript extends ContentScript {
   }
   const tpCardIdentifier = jsonDocuments.tp_card_identifier.replace(/\s/g, '')
 
-  return {bills, tpCardIdentifier}
+  return {bills, tpCardIdentifier, beneficiariesWithIds}
+  }
+
+  computeGroupAmounts(bills) {
+    this.log('Starting computeGroupAmount')
+    // find groupAmounts by date
+    const groupedBills = groupBy(bills, 'date')
+    bills = bills.map(bill => {
+      if (bill.isThirdPartyPayer) return bill
+      const groupAmount = groupedBills[bill.date]
+        .filter(bill => !bill.isThirdPartyPayer)
+        .reduce((memo, bill) => memo + bill.amount, 0)
+      if (groupAmount > 0 && groupAmount !== bill.amount)
+        bill.groupAmount = parseFloat(groupAmount.toFixed(2))
+      return bill
+    })
+    this.log('Ending computeGroupAmount')
+  }
+
+  linkFiles(bills, beneficiariesWithIds) {
+    const tokenBearer = window.localStorage.token
+    let currentMonthIsReplaced = false
+    let previousMonthIsReplaced = false
+    bills = bills.map(bill => {
+      bill.fileurl = `https://api.alan.com/api/users/${
+        beneficiariesWithIds[0].userId
+      }/decomptes?year=${moment(bill.date).format('YYYY')}&month=${moment(
+        bill.date
+      ).format('M')}`
+      bill.filename = `${moment(bill.date).format('YYYY_MM')}_alan.pdf`
+      const currentMonth = Number(moment().format('M'))
+      const previousMonth = Number(
+        moment()
+          .startOf('month')
+          .subtract(1, 'days')
+          .format('M')
+      )
+      bill.shouldReplaceFile = (file, doc) => {
+        const docMonth = Number(moment(doc.date).format('M'))
+        const isCurrentMonth = docMonth === currentMonth
+        const isPreviousMonth = docMonth === previousMonth
+  
+        // replace current month file only one time
+        if (isCurrentMonth && !currentMonthIsReplaced) {
+          currentMonthIsReplaced = true
+          return true
+        }
+        if (isPreviousMonth && !previousMonthIsReplaced) {
+          previousMonthIsReplaced = true
+          return true
+        }
+        return false
+      }
+      bill.requestOptions = {
+        headers: {
+          Authorization:`Bearer ${tokenBearer}`
+        }
+      }
+      return bill
+    })
+  }
+
+  async getTpCard(tpCardIdentifier) {
+    console.log('tpCardId', tpCardIdentifier)
+    const tokenBearer = window.localStorage.token
+    let tpCard = []
+    tpCard.push({
+      fileurl: `https://api.alan.com/api/users/${tpCardIdentifier}/tp-card?t=${Date.now()}`,
+      filename: 'Carte_Mutuelle.pdf',
+      fileAttributes: {
+        metadata: {
+          contentAuthor: 'alan.com',
+          datetime: new Date(),
+          datetimeLabel: `issueDate`,
+          isSubscription: false,
+          carbonCopy: true,
+        }
+      },
+      shouldReplaceFile: () => true,
+      requestOptions: {
+        headers: {
+          Authorization:`Bearer ${tokenBearer}`
+        }
+      }
+    })
+    await this.sendToPilot({tpCard})
   }
 
 }
 
 const connector = new TemplateContentScript()
 connector.init({ additionalExposedMethodsNames: [
-  'checkAskForAppDowload',
+  'checkAskForAppDownload',
   'checkIfLogged',
   'getUserMail',
   'getUserIdentity',
