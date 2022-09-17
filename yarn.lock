@@ -6545,10 +6545,10 @@ cozy-client@^33.0.0:
     sift "^6.0.0"
     url-search-params-polyfill "^8.0.0"
 
-cozy-device-helper@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/cozy-device-helper/-/cozy-device-helper-2.2.0.tgz#2794157bcd23948e68ef373ab9a67e1a6c17d995"
-  integrity sha512-j6HbiS6zh7/WPxajbbPIRpK/kaxZG8UTH2zlO6FU7pD7PGpisyl3Wl+O9P8WhOYtaKFxAwu1VFXm32FULV+MHw==
+cozy-device-helper@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/cozy-device-helper/-/cozy-device-helper-2.4.0.tgz#eeb6a8ceedde222e64619b0db636e981d589a59e"
+  integrity sha512-WaHY3clsJiZKlTZIOC04kB5F4tHpITMBYb/ny0txKYcIwE+myl/+ZoT80YNUq7M9DEdkDJqYIgl9IK+62OtydQ==
   dependencies:
     lodash "^4.17.19"
 
