@@ -1,6 +1,6 @@
 export type OnAnswerCallback = (messageId: string, result: string) => void
 
-export type SubscriberPayload = {
+export interface SubscriberPayload {
   type: string
   messageId: string
   message?: string

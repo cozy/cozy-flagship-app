@@ -46,10 +46,10 @@ const handleSideEffects = ({
   updateStatusBarAndBottomBar(bottomTheme)
 }
 
-const formatTheme = (input?: ThemeInput): StatusBarStyle | undefined =>
-  input?.includes?.(ThemeInput.Light)
+const formatTheme = (input?: ThemeInput | string): StatusBarStyle | undefined =>
+  input?.includes(ThemeInput.Light)
     ? StatusBarStyle.Light
-    : input?.includes?.(ThemeInput.Dark)
+    : input?.includes(ThemeInput.Dark)
     ? StatusBarStyle.Dark
     : undefined
 
@@ -61,10 +61,10 @@ export const flagshipUI = new EventEmitter()
 export const setFlagshipUI = (
   intent: FlagshipUI,
   callerName?: string
-): void => {
+): Promise<null> => {
   callerName && handleLogging(intent, callerName)
 
-  return handleSideEffects(
+  handleSideEffects(
     Object.fromEntries(
       Object.entries({
         ...intent,
@@ -75,19 +75,21 @@ export const setFlagshipUI = (
         .map(([k, v]) => [k, v?.trim()])
     )
   )
+
+  return Promise.resolve(null)
 }
 
 export const resetUIState = (
   uri: string,
   callback?: (theme: StatusBarStyle) => void
 ): void => {
-  const theme = urlHasConnectorOpen(uri) ? ThemeInput?.Dark : ThemeInput.Light
+  const theme = urlHasConnectorOpen(uri) ? ThemeInput.Dark : ThemeInput.Light
 
-  setFlagshipUI({ bottomTheme: theme, topTheme: theme }, 'resetUIState')
+  void setFlagshipUI({ bottomTheme: theme, topTheme: theme }, 'resetUIState')
 
   callback?.(
     theme === ThemeInput.Dark ? StatusBarStyle.Dark : StatusBarStyle.Light
   )
 
-  Platform.OS === 'android' && StatusBar?.setBackgroundColor('transparent')
+  Platform.OS === 'android' && StatusBar.setBackgroundColor('transparent')
 }

@@ -20,7 +20,7 @@ const progressBarConfig = {
   indeterminateAnimationDuration: 1500
 }
 
-type Props = {
+interface Props {
   children: JSX.Element
   progress: number
 }

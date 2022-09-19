@@ -2,7 +2,7 @@ import { Share } from 'react-native'
 import { WebViewMessageEvent } from 'react-native-webview/lib/WebViewTypes'
 import { OnAnswerCallback, SubscriberPayload } from './types'
 
-type NavigatorShareParams = {
+interface NavigatorShareParams {
   text: string
   title: string
   url: string
