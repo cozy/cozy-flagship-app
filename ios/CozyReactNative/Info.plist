@@ -63,9 +63,14 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Afin de prendre des photos pour Drive ou MesPapiers afin d'importer des documents</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UIAppFonts</key>
-	<array/>
+	<array>
+		<string>Lato-Bold.woff</string>
+		<string>Lato-Bold.woff2</string>
+		<string>Lato-Regular.woff</string>
+		<string>Lato-Regular.woff2</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>BootSplash</string>
 	<key>UIRequiredDeviceCapabilities</key>
