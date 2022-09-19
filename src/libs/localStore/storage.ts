@@ -7,6 +7,7 @@ const log = logger('storage.ts')
 const { setItem, getItem } = AsyncStorage
 
 export enum StorageKeys {
+  AutoLockEnabled = '@cozy_AmiralApp_autoLockEnabled',
   BiometryActivated = '@cozy_AmiralApp_biometryActivated',
   Capabilities = '@cozy_AmiralApp_Capabilities',
   SessionCreatedFlag = 'SESSION_CREATED_FLAG'
@@ -15,7 +16,6 @@ export enum StorageKeys {
 interface StorageItems {
   biometryActivated: boolean
   capabilities: {
-    hasBiometry: boolean
     biometryType: 'FaceID' | 'TouchID' | 'Fingerprint' | 'Unknown'
   }
   sessionCreatedFlag: string
