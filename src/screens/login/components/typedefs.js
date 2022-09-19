@@ -1,7 +1,7 @@
 /**
  * @typedef {object} PasswordData
  * @property {string} password - The user's password
- * @property {string} hint - The user's hint
+ * @property {string} [hint] - The user's hint
  */
 
 /**
