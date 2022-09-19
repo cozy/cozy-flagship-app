@@ -1,5 +1,5 @@
 import { InAppBrowser } from 'react-native-inappbrowser-reborn'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line no-unused-vars
 import { BrowserResult } from 'react-native-inappbrowser-reborn/types'
 
 const IAB_OPTIONS = {

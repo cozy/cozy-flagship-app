@@ -37,9 +37,9 @@ type PreviewType =
  */
 export const checkIsPreviewableLink = (
   link: string,
-  client: CozyClient
+  client: typeof CozyClient
 ): PreviewType => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
   const cozyUrl = new URL(client.getStackClient().uri)
 
   const previewLink = new URL(link)
@@ -68,7 +68,7 @@ export const previewFileFromDownloadUrl = async ({
   setDownloadProgress
 }: {
   downloadUrl: string
-  client: CozyClient
+  client: typeof CozyClient
   setDownloadProgress: React.Dispatch<React.SetStateAction<number>>
 }): Promise<void> => {
   try {
@@ -112,7 +112,7 @@ const getFileNameFromPrivateByPathDownloadLink = (
     )
   }
 
-  return url.searchParams.get('Path')?.split('/').pop() || ''
+  return url.searchParams.get('Path')?.split('/').pop() ?? ''
 }
 
 const getFileNameFromPublicBySecretDownloadLink = (
@@ -120,7 +120,7 @@ const getFileNameFromPublicBySecretDownloadLink = (
 ): string => {
   const url = new URL(downloadUrl)
 
-  return url.pathname.split('/').pop() || ''
+  return url.pathname.split('/').pop() ?? ''
 }
 
 const getFileNameFromCozyDownloadUrl = (
@@ -159,7 +159,7 @@ const downloadFile = async ({
   fileName: string
   downloadUrl: string
   previewType: PreviewType
-  client: CozyClient
+  client: typeof CozyClient
   setDownloadProgress: React.Dispatch<React.SetStateAction<number>>
 }): Promise<string> => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

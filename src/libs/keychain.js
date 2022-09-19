@@ -1,7 +1,7 @@
 import * as Keychain from 'react-native-keychain'
 
 import Minilog from '@cozy/minilog'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line no-unused-vars
 import { AccountsDoctype } from 'cozy-client/dist/types.js'
 
 const log = Minilog('Keychain')
@@ -115,7 +115,7 @@ export async function saveVaultInformation(key, value) {
 /**
  *
  * @param {String} key
- * @returns {String|Object}
+ * @returns {Promise<String|Object>}
  */
 export async function getVaultInformation(key) {
   const password = await getDecodedGenericPasswords()

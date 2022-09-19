@@ -1,7 +1,12 @@
 import { Alert } from 'react-native'
 import { EventEmitter } from 'events'
 
+import Minilog from '@cozy/minilog'
+
 import { getData, StorageKeys, storeData } from '../localStore/storage'
+import { FlagshipMetadata } from 'cozy-device-helper/dist/flagship'
+
+const log = Minilog('setBiometryState.ts')
 
 export const BiometryEmitter = new EventEmitter()
 
@@ -25,7 +30,10 @@ export const openSettingBiometry = (): Promise<boolean> => {
           onPress: (): void => {
             updateBiometrySetting(false)
               .then(v => resolve(v))
-              .catch(e => resolve(e))
+              .catch(e => {
+                log.error(e)
+                resolve(false)
+              })
           }
         },
         {
@@ -33,7 +41,10 @@ export const openSettingBiometry = (): Promise<boolean> => {
           onPress: (): void => {
             updateBiometrySetting(true)
               .then(v => resolve(v))
-              .catch(e => resolve(e))
+              .catch(e => {
+                log.error(e)
+                resolve(true)
+              })
           }
         }
       ]
@@ -41,7 +52,11 @@ export const openSettingBiometry = (): Promise<boolean> => {
   })
 }
 
-export const makeBiometryInjection = async (): Promise<string> =>
-  `window.cozy.flagship.hasBiometry = ${JSON.stringify(
-    Boolean(await getData(StorageKeys.BiometryActivated))
-  )};`
+export const makeBiometryInjection = async (): Promise<string> => {
+  const settings: FlagshipMetadata['settings'] = {
+    biometryEnabled: Boolean(await getData(StorageKeys.BiometryActivated)),
+    autoLockEnabled: Boolean(await getData(StorageKeys.AutoLockEnabled))
+  }
+
+  return `window.cozy.flagship.settings = ${JSON.stringify(settings)};`
+}

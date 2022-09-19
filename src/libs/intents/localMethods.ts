@@ -1,5 +1,5 @@
 import * as RootNavigation from '../RootNavigation'
-import strings from '/strings'
+import strings from '/strings.json'
 import { EnvService } from '/libs/services/EnvService'
 import { clearClient } from '../client'
 import { deleteKeychain } from '../keychain'
@@ -9,22 +9,28 @@ import { resetSessionToken } from '../functions/session'
 import { openSettingBiometry } from '/libs/intents/setBiometryState'
 import { setFlagshipUI } from './setFlagshipUI'
 import { showInAppBrowser, closeInAppBrowser } from './InAppBrowser'
+import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
+import { toggleSetting } from './toggleSetting'
+import CozyClient from 'cozy-client'
+import { routes } from '/constants/routes'
 
-export const asyncLogout = async () => {
+export const asyncLogout = async (): Promise<null> => {
   await clearClient()
   await resetSessionToken()
   await deleteKeychain()
-  RootNavigation.reset('authenticate')
+  RootNavigation.reset(routes.stack, { screen: 'welcome' })
+  return Promise.resolve(null)
 }
 
 // Since logout is used from localMethods
 // it can't be async for now.
-const logout = () => {
-  asyncLogout()
+const logout = (): Promise<null> => {
+  return asyncLogout()
 }
 
-const backToHome = () => {
+const backToHome = (): Promise<null> => {
   RootNavigation.navigate('home')
+  return Promise.resolve(null)
 }
 
 /**
@@ -36,14 +42,19 @@ const backToHome = () => {
  * @returns {Function|null}
  * @throws error containing invalid session code result
  */
-const fetchSessionCodeWithClient = client => {
+const fetchSessionCodeWithClient = (
+  client?: typeof CozyClient
+): (() => Promise<null>) => {
   return async function fetchSessionCode() {
     if (!client) {
       return null
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     const sessionCodeResult = await client.getStackClient().fetchSessionCode()
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (sessionCodeResult.session_code) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
       return sessionCodeResult.session_code
     }
 
@@ -55,25 +66,41 @@ const fetchSessionCodeWithClient = client => {
 }
 
 export const internalMethods = {
-  setFlagshipUI: intent =>
+  setFlagshipUI: (intent: FlagshipUI): Promise<null> =>
     setFlagshipUI(
       intent,
-      EnvService.nameIs(strings.environments.test) &&
-        internalMethods.setFlagshipUI.caller?.name
+      EnvService.nameIs(strings.environments.test)
+        ? internalMethods.setFlagshipUI.caller.name
+        : ''
     )
 }
 
-export const localMethods = client => {
+export const localMethods = (
+  client: typeof CozyClient | undefined
+): NativeMethodsRegister => {
   return {
     backToHome,
+    // @ts-expect-error function to be converted to TS
     closeInAppBrowser,
     fetchSessionCode: fetchSessionCodeWithClient(client),
+    // @ts-expect-error function to be converted to TS
     hideSplashScreen,
     logout,
     openApp: (href, app, iconParams) =>
       openApp(RootNavigation, href, app, iconParams),
-    openSettingBiometry,
+    toggleSetting: async (settingName): Promise<boolean | null> => {
+      if (settingName === 'biometryLock') {
+        return openSettingBiometry()
+      }
+
+      if (settingName === 'autoLock') {
+        return toggleSetting('autoLock')
+      }
+
+      return Promise.resolve(null)
+    },
     setFlagshipUI,
+    // @ts-expect-error function to be converted to TS
     showInAppBrowser
   }
 }

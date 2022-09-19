@@ -15,7 +15,7 @@ jest.mock('react-native-file-viewer', () => ({
   open: jest.fn()
 }))
 
-type DownloadFileT = {
+interface DownloadFileT {
   promise: Promise<{ statusCode: number }>
 }
 const mockDownloadFile = jest.fn() as jest.MockedFunction<
@@ -69,7 +69,7 @@ describe('filePreviewHelper', () => {
         getStackClient: jest.fn(() => ({
           uri: cozyUrl
         }))
-      } as unknown as CozyClient
+      } as unknown as typeof CozyClient
 
       expect(checkIsPreviewableLink(url, client)).toEqual(result)
     })

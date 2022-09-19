@@ -12,10 +12,10 @@ describe('setFlagshipUI', () => {
     mockOnChange = jest.fn()
   })
 
-  it('should parse topTheme light', () => {
+  it('should parse topTheme light', async () => {
     flagshipUI.on('change', mockOnChange)
 
-    setFlagshipUI({
+    await setFlagshipUI({
       topTheme: 'light'
     })
 
@@ -25,10 +25,10 @@ describe('setFlagshipUI', () => {
     expect(changeBarColors).not.toHaveBeenCalled()
   })
 
-  it('should parse topTheme dark', () => {
+  it('should parse topTheme dark', async () => {
     flagshipUI.on('change', mockOnChange)
 
-    setFlagshipUI({
+    await setFlagshipUI({
       topTheme: 'dark'
     })
 
@@ -38,10 +38,10 @@ describe('setFlagshipUI', () => {
     expect(changeBarColors).not.toHaveBeenCalled()
   })
 
-  it('should parse incomplete object', () => {
+  it('should parse incomplete object', async () => {
     flagshipUI.on('change', mockOnChange)
 
-    setFlagshipUI({
+    await setFlagshipUI({
       topTheme: undefined,
       topBackground: '#fff'
     })
@@ -50,10 +50,10 @@ describe('setFlagshipUI', () => {
     expect(changeBarColors).not.toHaveBeenCalled()
   })
 
-  it('should parse padded values', () => {
+  it('should parse padded values', async () => {
     flagshipUI.on('change', mockOnChange)
 
-    setFlagshipUI({
+    await setFlagshipUI({
       bottomBackground: '    #fff    '
     })
 
@@ -63,12 +63,12 @@ describe('setFlagshipUI', () => {
     expect(changeBarColors).not.toHaveBeenCalled()
   })
 
-  it('should parse full objects with bottomTheme special case dark, and not call changeBarColors on iOS', () => {
+  it('should parse full objects with bottomTheme special case dark, and not call changeBarColors on iOS', async () => {
     flagshipUI.on('change', mockOnChange)
 
     Platform.OS = 'ios'
 
-    setFlagshipUI({
+    await setFlagshipUI({
       bottomBackground: 'white',
       bottomTheme: 'dark',
       bottomOverlay: 'transparent',
@@ -88,12 +88,12 @@ describe('setFlagshipUI', () => {
     expect(changeBarColors).not.toHaveBeenCalled()
   })
 
-  it('should emit parse full objects with bottomTheme special case light, and call changeBarColors on Android', () => {
+  it('should emit parse full objects with bottomTheme special case light, and call changeBarColors on Android', async () => {
     flagshipUI.on('change', mockOnChange)
 
     Platform.OS = 'android'
 
-    setFlagshipUI({
+    await setFlagshipUI({
       bottomBackground: 'white',
       bottomTheme: 'light',
       bottomOverlay: 'transparent',
