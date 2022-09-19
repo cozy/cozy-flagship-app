@@ -1,15 +1,30 @@
 import ContentScript from '../../connectorLibs/ContentScript'
-import {kyScraper as ky, blobToBase64} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
 const log = Minilog('ContentScript')
 const moment = require('moment')
 import groupBy from 'lodash/groupBy'
 Minilog.enable('alanCCC')
 
+let preHashedPassword
+const constantMock = window.fetch
+window.fetch = function(){
+  if(arguments[0].includes !== undefined){
+    if(arguments[0].includes('api.alan.com/auth/login')){
+      if(arguments[1].data){
+        preHashedPassword = arguments[1].data.prehashed_password
+      }
+      return constantMock.apply(this, arguments)
+    }else{
+      return constantMock.apply(this, arguments)
+    }
+  }
+  return constantMock.apply(this, arguments)
+}
+
+
 const BASE_URL = 'https://alan.com/'
 const LOGIN_URL = 'https://alan.com/login'
 const HOMEPAGE_URL = 'https://alan.com/app/dashboard'
-const PERSONAL_INFOS_URL = 'https://alan.com/app/dashboard#individualProfile/home'
 
 class TemplateContentScript extends ContentScript {
   //////////
@@ -18,7 +33,7 @@ class TemplateContentScript extends ContentScript {
   async ensureAuthenticated() {
     const credentials = await this.getCredentials()
     if (credentials) {
-      const auth = await this.authWithCredentials()
+      const auth = await this.authWithCredentials(credentials)
       if(auth) {
         return true
       }
@@ -42,7 +57,11 @@ class TemplateContentScript extends ContentScript {
 
 
   async getUserDataFromWebsite() {
-    await this.runInWorker('getUserIdentity')
+    if(this.store.loginResponse){
+      await this.runInWorker('getUserIdentity', this.store.loginResponse)
+    }else{
+      await this.runInWorker('getUserIdentity')
+    }
     const sourceAccountId = this.store.userIdentity.email ? this.store.userIdentity.email : 'UNKNOWN_ERROR'
     if (sourceAccountId === 'UNKNOWN_ERROR') {
       this.log("Couldn't get a sourceAccountIdentifier, using default")
@@ -55,8 +74,7 @@ class TemplateContentScript extends ContentScript {
   
   async fetch(context) {
     this.log("fetch starts")
-    await this.runInWorker('getDocuments', this.store.jsonDocuments)
-    // await this.waitForElementInWorker('[pause]')
+    await this.runInWorker('getDocuments', this.store.jsonDocuments, this.store.loginResponse)
     await this.saveFiles(this.store.tpCard, {
       context,
       contentType: 'application/pdf',
@@ -71,23 +89,29 @@ class TemplateContentScript extends ContentScript {
       qualificationLabel: 'health_invoice'
     })
   }
-
-  async authWithCredentials(){
+  
+  async authWithCredentials(credentials){
     await this.goto(LOGIN_URL)
     await this.waitForElementInWorker('a')
+    const isAskingForLogin = await this.runInWorker('checkAskForLogin')
+    if (isAskingForLogin){
+      const isSuccess = await this.tryAutoLogin(credentials)
+      if(isSuccess){
+        return true
+      }
+    }
     const isAskingForDownload = await this.runInWorker('checkAskForAppDownload')
     if(isAskingForDownload){
       await this.clickAndWait('a[href="#"]','div[class="ListItem ListItem__Clickable ListCareEventItem"]')
     }
-    // await this.waitForElementInWorker('.HelpButton')
     const isLogged = await this.runInWorker('checkIfLogged')
     if(isLogged){
       return true
     }
-    await this.waitForElementInWorker('[pauseWithCred]')
     await this.clickAndWait('a[href="/login"]', 'input[name="password"]' )
+    
   }
-
+  
   async authWithoutCredentials(){
     await this.goto(BASE_URL)
     await this.waitForElementInWorker('a[href="/login"]')
@@ -106,6 +130,23 @@ class TemplateContentScript extends ContentScript {
     return true
   }
 
+  async tryAutoLogin(credentials,) {
+    this.log('Trying autologin')
+    const isSuccess = await this.autoLogin(credentials)
+    return isSuccess
+  }
+
+  async autoLogin(credentials) {
+    this.log('Autologin start')
+    const selectors = {
+      email: 'input[name="email"]',
+      password: 'input[name="password"]',
+      loginButton : 'button[type="submit"]'
+    }
+    await this.waitForElementInWorker(selectors.email)
+    const isSuccess = await this.runInWorker('makeLoginReq', credentials)
+    return isSuccess
+  }
 
   //////////
   //WORKER//
@@ -136,7 +177,8 @@ class TemplateContentScript extends ContentScript {
     let userPassword = password.value
     const userCredentials = {
       login : userLogin,
-      password : userPassword
+      password : userPassword,
+      preHashedPassword
     }
     return userCredentials
   }
@@ -166,10 +208,18 @@ class TemplateContentScript extends ContentScript {
     return 'UNKNOWN_ERROR'
   }
 
-  async getUserIdentity(){
-    const tokenPayload = window.localStorage.tokenPayload
-    const tokenBearer = window.localStorage.token
-    const beneficiaryId = tokenPayload.split(',')[1].replace(/"/g,'').split(':')[1]
+  async getUserIdentity(loginResponse){
+    let tokenPayload
+    let tokenBearer
+    let beneficiaryId
+    if (loginResponse){
+      tokenBearer = loginResponse.token
+      beneficiaryId = loginResponse.token_payload.id
+    }else{
+      tokenPayload = window.localStorage.tokenPayload
+      tokenBearer = window.localStorage.token
+      beneficiaryId = tokenPayload.split(',')[1].replace(/"/g,'').split(':')[1]
+    }
     const apiUrl = `https://api.alan.com/api/users/${beneficiaryId}?expand=visible_insurance_documents,address,beneficiaries,beneficiaries.insurance_profile.user,beneficiaries.insurance_profile.latest_tp_card`
     const response = await window.fetch(apiUrl, {
       headers: {
@@ -210,16 +260,21 @@ class TemplateContentScript extends ContentScript {
     await this.sendToPilot({userIdentity, jsonDocuments})
   }
 
-  async getDocuments(jsonDocuments){
-    let {bills, tpCardIdentifier, beneficiariesWithIds } = await this.computeDocuments(jsonDocuments)
+  async getDocuments(jsonDocuments, loginResponse){
+    let {bills, tpCardIdentifier, beneficiariesWithIds } = await this.computeDocuments(jsonDocuments, loginResponse)
     this.computeGroupAmounts(bills)
-    this.linkFiles(bills, beneficiariesWithIds)
-    await this.getTpCard(tpCardIdentifier)
+    this.linkFiles(bills, beneficiariesWithIds, loginResponse)
+    await this.getTpCard(tpCardIdentifier, loginResponse)
     await this.sendToPilot({bills})
   }
 
-  async computeDocuments(jsonDocuments){
-    const tokenBearer = window.localStorage.token
+  async computeDocuments(jsonDocuments, loginResponse){
+    let tokenBearer
+    if (loginResponse){
+      tokenBearer = loginResponse.token
+    }else{
+      tokenBearer = window.localStorage.token
+    }
     const beneficiaries = jsonDocuments.beneficiaries
     let beneficiariesWithIds = []
     for (const beneficiary of beneficiaries){
@@ -295,8 +350,13 @@ class TemplateContentScript extends ContentScript {
     this.log('Ending computeGroupAmount')
   }
 
-  linkFiles(bills, beneficiariesWithIds) {
-    const tokenBearer = window.localStorage.token
+  linkFiles(bills, beneficiariesWithIds, loginResponse) {
+    let tokenBearer
+    if (loginResponse){
+      tokenBearer = loginResponse.token
+    }else{
+      tokenBearer = window.localStorage.token
+    }
     let currentMonthIsReplaced = false
     let previousMonthIsReplaced = false
     bills = bills.map(bill => {
@@ -338,9 +398,13 @@ class TemplateContentScript extends ContentScript {
     })
   }
 
-  async getTpCard(tpCardIdentifier) {
-    console.log('tpCardId', tpCardIdentifier)
-    const tokenBearer = window.localStorage.token
+  async getTpCard(tpCardIdentifier, loginResponse) {
+    let tokenBearer
+    if (loginResponse){
+      tokenBearer = loginResponse.token
+    }else{
+      tokenBearer = window.localStorage.token
+    }
     let tpCard = []
     tpCard.push({
       fileurl: `https://api.alan.com/api/users/${tpCardIdentifier}/tp-card?t=${Date.now()}`,
@@ -364,6 +428,44 @@ class TemplateContentScript extends ContentScript {
     await this.sendToPilot({tpCard})
   }
 
+  checkAskForLogin(){
+    if(document.querySelector('input[name="email"]') && document.querySelector('input[name="password"]')) return true
+    return false
+  }
+
+  async makeLoginReq(credentials){
+    let cookies = document.cookie
+    const apiUrl = 'https://api.alan.com/auth/login'
+    const loginResponse = await window.fetch(apiUrl, {
+      "method": 'POST',
+      "body" : `{"refresh_token_type":"web","email":"${credentials.login}","prehashed_password":"${credentials.preHashedPassword}"}`,
+      "headers": {
+        "Content-Type": "application/json",
+        "Cookie": cookies,
+        "X-APP-AUTH": "cookie"
+      }
+    }).then(res => res.json())
+
+    cookies = document.cookie
+    const tokenBearer = loginResponse.token
+    const id = loginResponse.token_payload.id
+    const redirectUrl = `https://api.alan.com/api/users/${id}/redirection_status`
+    await window.fetch(redirectUrl, {
+      "method": 'GET',
+      "headers": {
+        "Cookie": cookies,
+        "Authorization":`Bearer ${tokenBearer}`
+      },
+      'referer': 'https://alan.com/app/dashboard'
+    })
+
+    if(!loginResponse.token){
+      return false
+    }
+    await this.sendToPilot({loginResponse})
+    return true
+  }
+
 }
 
 const connector = new TemplateContentScript()
@@ -373,6 +475,8 @@ connector.init({ additionalExposedMethodsNames: [
   'getUserMail',
   'getUserIdentity',
   'getDocuments',
+  'checkAskForLogin',
+  'makeLoginReq',
 ] }).catch(err => {
   console.warn(err)
 })

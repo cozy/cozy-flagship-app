@@ -5,7 +5,8 @@
   "license": "MIT",
   "dependencies": {
     "@cozy/minilog": "^1.0.0",
-    "date-fns": "^2.21.1"
+    "date-fns": "^2.21.1",
+    "moment": "^2.29.4"
   },
   "scripts": {
     "build": "webpack",
