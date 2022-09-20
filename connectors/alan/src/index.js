@@ -1,7 +1,7 @@
 import ContentScript from '../../connectorLibs/ContentScript'
 import Minilog from '@cozy/minilog'
 const log = Minilog('ContentScript')
-const moment = require('moment')
+import {format, subMonths} from 'date-fns'
 import groupBy from 'lodash/groupBy'
 Minilog.enable('alanCCC')
 
@@ -307,8 +307,8 @@ class TemplateContentScript extends ContentScript {
           vendorRef: bill.id,
           beneficiary: name,
           type: 'health_costs',
-          date: moment(bill.estimated_payment_date, 'YYYY-MM-DD').toDate(),
-          originalDate: moment(bill.care_date, 'YYYY-MM-DD').toDate(),
+          date: format(new Date(bill.estimated_payment_date), 'yyyy-MM-dd'),
+          originalDate: format(new Date(bill.care_date), 'yyyy-MM-dd'),
           subtype: bill.care_acts[0].display_label,
           socialSecurityRefund: bill.care_acts[0].ss_base / 100,
           amount: bill.care_acts[0].reimbursed_to_user / 100,
@@ -320,7 +320,7 @@ class TemplateContentScript extends ContentScript {
             metadata: {
               contentAuthor: 'alan.com',
               issueDate: new Date(),
-              datetime: moment(bill.care_date, 'YYYY-MM-DD').toDate(),
+              datetime: format(new Date(bill.care_date), 'yyyy-MM-dd'),
               datetimeLabel: `issueDate`,
               isSubscription: false,
               carbonCopy: true
@@ -362,19 +362,16 @@ class TemplateContentScript extends ContentScript {
     bills = bills.map(bill => {
       bill.fileurl = `https://api.alan.com/api/users/${
         beneficiariesWithIds[0].userId
-      }/decomptes?year=${moment(bill.date).format('YYYY')}&month=${moment(
-        bill.date
-      ).format('M')}`
-      bill.filename = `${moment(bill.date).format('YYYY_MM')}_alan.pdf`
-      const currentMonth = Number(moment().format('M'))
+      }/decomptes?year=${format(new Date(bill.date), 'yyyy')}&month=${format(
+        new Date(bill.date), 'MM'
+      )}`
+      bill.filename = `${format(new Date(bill.date), 'yyyy_MM')}_alan.pdf`
+      const currentMonth = Number(format(new Date(), 'MM'))
       const previousMonth = Number(
-        moment()
-          .startOf('month')
-          .subtract(1, 'days')
-          .format('M')
+        format(subMonths(currentMonth, 1), 'MM')
       )
       bill.shouldReplaceFile = (file, doc) => {
-        const docMonth = Number(moment(doc.date).format('M'))
+        const docMonth = Number(format(new Date(doc.date), 'MM'))
         const isCurrentMonth = docMonth === currentMonth
         const isPreviousMonth = docMonth === previousMonth
   
