@@ -109,28 +109,11 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
     }
   }, [uri, client, route, navigation, session])
 
-  const handleTrackWebviewInnerUri = useCallback(() => {
-    webviewInneruri => {
-      if (webviewInneruri !== trackedWebviewInnerUri) {
-        setTrackedWebviewInnerUri(webviewInneruri)
-      }
+  const handleTrackWebviewInnerUri = webviewInneruri => {
+    if (webviewInneruri !== trackedWebviewInnerUri) {
+      setTrackedWebviewInnerUri(webviewInneruri)
     }
-  }, [trackedWebviewInnerUri])
-
-  const onMessage = useCallback(() => {
-    async event => {
-      const data = get(event, 'nativeEvent.data')
-
-      if (data) {
-        const { methodName, message, value } = JSON.parse(data)
-
-        if (methodName === 'openApp') nativeIntent?.call(uri, 'openApp')
-
-        if (message === 'startLauncher')
-          setLauncherContext({ state: 'launch', value })
-      }
-    }
-  }, [nativeIntent, setLauncherContext, uri])
+  }
 
   return uri ? (
     <CozyProxyWebView
@@ -141,7 +124,18 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
       navigation={navigation}
       route={route}
       logId="HomeView"
-      onMessage={onMessage}
+      onMessage={async event => {
+        const data = get(event, 'nativeEvent.data')
+
+        if (data) {
+          const { methodName, message, value } = JSON.parse(data)
+
+          if (methodName === 'openApp') nativeIntent?.call(uri, 'openApp')
+
+          if (message === 'startLauncher')
+            setLauncherContext({ state: 'launch', value })
+        }
+      }}
     />
   ) : null
 }
