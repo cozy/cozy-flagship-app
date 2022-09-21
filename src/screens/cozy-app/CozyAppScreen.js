@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { StatusBar, View, Platform } from 'react-native'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -50,6 +50,15 @@ export const CozyAppScreen = ({ route, navigation }) => {
   }, [isFirstHalf, route.params.iconParams])
   const insets = useSafeAreaInsets()
 
+  const onLoadEnd = useCallback(() => {
+    setShouldExitAnimation(true)
+  }, [])
+
+  const webViewStyle = useMemo(
+    () => ({ ...styles[isFirstHalf ? 'ready' : 'notReady'] }),
+    [isFirstHalf]
+  )
+
   return (
     <>
       <StatusBar translucent barStyle={topTheme} />
@@ -80,13 +89,13 @@ export const CozyAppScreen = ({ route, navigation }) => {
         )}
 
         <CozyProxyWebView
-          style={{ ...styles[isFirstHalf ? 'ready' : 'notReady'] }}
+          style={webViewStyle}
           slug={route.params.slug}
           href={route.params.href}
           navigation={navigation}
           route={route}
           logId="AppScreen"
-          onLoadEnd={() => setShouldExitAnimation(true)}
+          onLoadEnd={onLoadEnd}
         />
       </View>
 
