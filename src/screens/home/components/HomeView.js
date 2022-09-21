@@ -38,7 +38,9 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
       didBlurOnce.current = true
-      setUri(trackedWebviewInnerUri)
+      if (trackedWebviewInnerUri) {
+        setUri(trackedWebviewInnerUri)
+      }
     })
 
     return unsubscribe
