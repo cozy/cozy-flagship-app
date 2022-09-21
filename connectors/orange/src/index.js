@@ -1,10 +1,12 @@
 import ContentScript from '../../connectorLibs/ContentScript'
-import {kyScraper as ky} from '../../connectorLibs/utils'
+import {blobToBase64} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
 const log = Minilog('ContentScript')
 Minilog.enable('orangeCCC')
 
-const baseUrl = 'https://espace-client.orange.fr'
+const BASE_URL = 'https://espace-client.orange.fr'
+const DEFAULT_PAGE_URL = BASE_URL + '/accueil'
+const DEFAULT_SOURCE_ACCOUNT_IDENTIFIER = 'orange'
 
 let recentBills = []
 let oldBills = []
@@ -100,23 +102,26 @@ class OrangeContentScript extends ContentScript {
     }
     if (credentials){
       log.debug('found credentials, processing')
-      await this.waitForElementInWorker('button[class="btn btn-primary"]')
-      await this.clickAndWait('button[class="btn btn-primary"]','p[data-testid="selected-account-login"]')
+      await this.waitForElementInWorker('a[class="btn btn-primary btn-inverse"]')
+      await this.runInWorker('click', 'a[class="btn btn-primary btn-inverse"]')
       await this.waitForElementInWorker('#o-ribbon')
-      
-      const testEmail = await this.runInWorker('getTestEmail')
-      
-      
+      const {testEmail, type} = await this.runInWorker('getTestEmail')
       if (credentials.email === testEmail ){
-        const stayLogButton = await this.runInWorker('getStayLoggedButton')
-        if ( stayLogButton != null) {
-          stayLogButton.click()
-          await this.waitForElementInWorker('div[class="o-ribbon-is-connected"]')
+        if (type === 'mail'){
+          const stayLogButton = await this.runInWorker('getStayLoggedButton')
+          if ( stayLogButton != null) {
+            stayLogButton.click()
+            await this.waitForElementInWorker('div[class="o-ribbon-is-connected"]')
+            return true
+          }
+        }
+        if(type === 'mailList'){
+          log.debug('found credentials, trying to autoLog')
+          const mailSelector = `a[id="choose-account-${testEmail}"]`
+          await this.runInWorker('click', mailSelector)
+          await this.tryAutoLogin(credentials, 'half')
           return true
         }
-        log.debug('found credentials, trying to autoLog')
-        await this.tryAutoLogin(credentials, 'half')
-        return true
       }
       
       if (credentials.email != testEmail){
@@ -129,15 +134,20 @@ class OrangeContentScript extends ContentScript {
     }
     if (!credentials){
       log.debug('no credentials found, use normal user login')
-      await this.waitForElementInWorker('button[class="btn btn-primary"]')
-      await this.clickAndWait('button[class="btn btn-primary"]','#changeAccountLink')
+      await this.waitForElementInWorker('a[class="btn btn-primary btn-inverse"]')
+      await this.runInWorker('click', 'a[class="btn btn-primary btn-inverse"]' )
+      await this.waitForElementInWorker('#o-ribbon')
+      const rememberUser = await this.runInWorker('checkIfRemember')
+      if(rememberUser){
+        log.debug('Already visited')
+        await this.clickAndWait('#undefined-label','#login')
+        await this.waitForUserAuthentication()
+        return true
+      }
+      await this.clickAndWait('a[class="btn btn-primary btn-inverse"]','#changeAccountLink')
       await this.clickAndWait('#changeAccountLink','#undefined-label')
       await this.clickAndWait('#undefined-label','#login')
       await this.waitForUserAuthentication()
-      // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-      // await this.waitForElementInWorker(
-      //  '[pause]',
-      // )
       return true
     }
     
@@ -204,12 +214,8 @@ class OrangeContentScript extends ContentScript {
   }
   
   async fetch(context) {
-    // // Putting a falsy selector allows you to stay on the wanted page for debugging purposes when DEBUG is activated.
-    // await this.waitForElementInWorker(
-    //   '[pause]',
-    // )
     this.log('Starting fetch')
-    if(this.store != undefined){
+    if(this.store.userCredentials != undefined){
       await this.saveCredentials(this.store.userCredentials)
     }
     await this.waitForElementInWorker('a[class="ob1-link-icon ml-1 py-1"]')
@@ -381,6 +387,14 @@ class OrangeContentScript extends ContentScript {
   }
 
   async getUserDataFromWebsite() {
+    const sourceAccountId = await this.runInWorker('getUserMail')
+    if (sourceAccountId === 'UNKNOWN_ERROR') {
+      this.log("Couldn't get a sourceAccountIdentifier, using default")
+      return {sourceAccountIdentifier: DEFAULT_SOURCE_ACCOUNT_IDENTIFIER}
+    }
+    return {
+      sourceAccountIdentifier: sourceAccountId,
+    }
     
   }
   
@@ -461,13 +475,27 @@ class OrangeContentScript extends ContentScript {
 
   async getTestEmail() {
     this.log('Getting in getTestEmail')
-    const result = document.querySelector(
+    const mail = document.querySelector(
       'p[data-testid="selected-account-login"]',
-    ).innerHTML.replace('<strong>', '').replace('</strong>', '')
-    if (result) {
-      return result
+    )
+    const mailList = document.querySelector('ul[data-testid="accounts-list"]')
+    if(mail){
+      const testEmail = mail.innerHTML.replace('<strong>', '').replace('</strong>', '')
+      const type = 'mail'
+      if (testEmail) {
+        return {testEmail, type}
+      }
+      return null
     }
-    return null
+    if(mailList){
+      const rawMail = mailList.children[0].querySelector('a').getAttribute('id')
+      const testEmail = rawMail.split('choose-account-')[1]
+      const type = 'mailList'
+      if (testEmail) {
+        return {testEmail, type}
+      }
+      return null
+    }
   }
 
   async getMoreBillsButton() {
@@ -519,6 +547,17 @@ class OrangeContentScript extends ContentScript {
       infosIdentity,
     })
   }
+
+  checkIfRemember(){
+    const link = document.querySelector('#changeAccountLink')
+    const button = document.querySelector('#undefined-label')
+    if(link){
+      return false
+    }
+    if(button){
+      return true
+    }
+  }
 }
 
 const connector = new OrangeContentScript()
@@ -537,6 +576,7 @@ connector.init({
     'waitForRecentPdfClicked',
     'waitForOldPdfClicked',
     'getStayLoggedButton',
+    'checkIfRemember',
   ],
 }).catch((err) => {
   console.warn(err)

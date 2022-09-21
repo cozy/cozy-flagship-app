@@ -14,6 +14,7 @@ import { WebView } from 'react-native-webview'
 // import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
 // import edfConnector from '../../../connectors/edf/dist/webviewScript'
 // import soshConnector from '../../../connectors/sosh/dist/webviewScript'
+// import orangeConnector from '../../../connectors/orange/dist/webviewScript'
 // import redConnector from '../../../connectors/red/dist/webviewScript'
 // import sfrConnector from '../../../connectors/sfr/dist/webviewScript'
 // import totalenergiesConnector from '../../../connectors/totalenergies/dist/webviewScript'
@@ -23,7 +24,6 @@ import { statusBarHeight } from '/libs/dimensions'
 import ReactNativeLauncher from '/libs/ReactNativeLauncher'
 import { getColors } from '/theme/colors'
 import strings from '/strings.json'
-import orangeConnector from '../../../connectors/orange/dist/webviewScript'
 
 const log = Minilog('LauncherView')
 
@@ -39,7 +39,7 @@ const embeddedConnectors = {
   // sncf: sncfConnector,
   // blablacar: blablacarConnector,
   // sosh: soshConnector
-  orange: orangeConnector
+  // orange: orangeConnector
   // red: redConnector,
   // sfr: sfrConnector
   // totalenergies: totalenergiesConnector
