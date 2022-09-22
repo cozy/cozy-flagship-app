@@ -338,8 +338,11 @@ export const fetchPublicData = async client => {
 export const fetchCozyDataForSlug = async (slug, client, cookie) => {
   const stackClient = client.getStackClient()
 
-  const headers = cookie
+  const options = cookie
     ? {
+        // credentials:omit is necessary here to prevent cookie duplication in the fetch call
+        // more info: https://github.com/facebook/react-native/issues/23185#issuecomment-536420223
+        credentials: 'omit',
         headers: {
           Cookie: `${cookie.name}=${cookie.value}`
         }
@@ -350,7 +353,7 @@ export const fetchCozyDataForSlug = async (slug, client, cookie) => {
     'GET',
     `/apps/${slug}/open`,
     undefined,
-    headers
+    options
   )
 
   return result
