@@ -43,7 +43,7 @@ const backToHome = (): Promise<null> => {
  * @throws error containing invalid session code result
  */
 const fetchSessionCodeWithClient = (
-  client?: typeof CozyClient
+  client?: CozyClient
 ): (() => Promise<null>) => {
   return async function fetchSessionCode() {
     if (!client) {
@@ -76,7 +76,7 @@ export const internalMethods = {
 }
 
 export const localMethods = (
-  client: typeof CozyClient | undefined
+  client: CozyClient | undefined
 ): NativeMethodsRegister => {
   return {
     backToHome,

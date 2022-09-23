@@ -37,7 +37,7 @@ type PreviewType =
  */
 export const checkIsPreviewableLink = (
   link: string,
-  client: typeof CozyClient
+  client: CozyClient
 ): PreviewType => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
   const cozyUrl = new URL(client.getStackClient().uri)
@@ -68,7 +68,7 @@ export const previewFileFromDownloadUrl = async ({
   setDownloadProgress
 }: {
   downloadUrl: string
-  client: typeof CozyClient
+  client: CozyClient
   setDownloadProgress: React.Dispatch<React.SetStateAction<number>>
 }): Promise<void> => {
   try {
@@ -159,7 +159,7 @@ const downloadFile = async ({
   fileName: string
   downloadUrl: string
   previewType: PreviewType
-  client: typeof CozyClient
+  client: CozyClient
   setDownloadProgress: React.Dispatch<React.SetStateAction<number>>
 }): Promise<string> => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
