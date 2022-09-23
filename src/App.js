@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { StatusBar, StyleSheet, View } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react'
+import { AppState, StatusBar, StyleSheet, View } from 'react-native'
 import { decode, encode } from 'base-64'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -27,6 +27,8 @@ import { CryptoWebView } from './components/webviews/CryptoWebView/CryptoWebView
 import { withSentry } from './Sentry'
 import { ErrorScreen } from './screens/error/ErrorScreen.jsx'
 import { WelcomeScreen } from './screens/welcome/WelcomeScreen'
+import { LockScreen } from '/screens/lock/LockScreen'
+import { getData, StorageKeys } from '/libs/localStore/storage'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -46,6 +48,36 @@ const App = ({ setClient }) => {
     client,
     setClient
   )
+
+  const appState = useRef(AppState.currentState)
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        const currentRoute =
+          RootNavigation.navigationRef.getCurrentRoute() &&
+          JSON.parse(
+            JSON.stringify(RootNavigation.navigationRef.getCurrentRoute())
+          )
+
+        // eslint-disable-next-line promise/catch-or-return
+        getData(StorageKeys.AutoLockEnabled).then(
+          autoLockEnabled =>
+            autoLockEnabled &&
+            RootNavigation.navigate(routes.lock, currentRoute)
+        )
+      }
+
+      appState.current = nextAppState
+    })
+
+    return () => {
+      subscription.remove()
+    }
+  }, [])
 
   if (isLoading) {
     return null
@@ -110,6 +142,15 @@ const App = ({ setClient }) => {
           animationEnabled: false
         }}
         {...(initialRoute.root ? { initialParams: initialRoute.root } : {})}
+      />
+
+      <Root.Screen
+        name={routes.lock}
+        component={LockScreen}
+        options={{
+          presentation: 'transparentModal',
+          animationEnabled: false
+        }}
       />
     </Root.Navigator>
   )

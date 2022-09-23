@@ -4,6 +4,7 @@ export const routes = {
   error: 'error',
   home: 'home',
   instanceCreation: 'instanceCreation',
+  lock: 'lock',
   onboarding: 'onboarding',
   stack: 'stack',
   welcome: 'welcome'

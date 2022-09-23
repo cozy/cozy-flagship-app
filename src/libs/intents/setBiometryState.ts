@@ -32,7 +32,6 @@ export const openSettingBiometry = (): Promise<boolean> => {
               .then(v => resolve(v))
               .catch(e => {
                 log.error(e)
-                resolve(false)
               })
           }
         },
@@ -43,7 +42,6 @@ export const openSettingBiometry = (): Promise<boolean> => {
               .then(v => resolve(v))
               .catch(e => {
                 log.error(e)
-                resolve(true)
               })
           }
         }
