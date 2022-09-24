@@ -1,6 +1,7 @@
 import RN from 'react-native'
 import RNFS from 'react-native-fs'
 
+import { devConfig } from '/config/dev'
 import { fillIndexWithData, getIndexForFqdnAndSlug } from './indexGenerator'
 
 import {
@@ -46,7 +47,9 @@ jest.mock('./httpPaths', () => ({
       .getBaseRelativePathForFqdnAndSlugAndCurrentVersion
 }))
 
-describe('indexGenerator', () => {
+const ifTestEnabled = devConfig.disableGetIndex ? describe.skip : describe
+
+ifTestEnabled('indexGenerator', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     getCurrentAppConfigurationForFqdnAndSlug.mockResolvedValue({})
