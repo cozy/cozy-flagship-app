@@ -8,7 +8,12 @@ import { act } from 'react-dom/test-utils'
 const mockGetNextUrl = jest.fn()
 
 jest.mock('cozy-client', () => ({
-  rootCozyUrl: jest.fn()
+  rootCozyUrl: jest.fn(),
+  useClient: jest.fn().mockReturnValue({})
+}))
+
+jest.mock('@react-native-cookies/cookies', () => ({
+  set: jest.fn()
 }))
 
 jest.mock('react-native-webview', () => {

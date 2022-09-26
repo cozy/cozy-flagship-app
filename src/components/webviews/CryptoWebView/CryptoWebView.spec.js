@@ -13,6 +13,12 @@ jest.mock('./cryptoObservable/cryptoObservable', () => ({
   unsubscribeFromCrypto: jest.fn()
 }))
 
+jest.mock('cozy-client', () => ({
+  useClient: jest.fn().mockReturnValue({})
+}))
+jest.mock('@react-native-cookies/cookies', () => ({
+  set: jest.fn()
+}))
 jest.mock('react-native-webview', () => {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const React = require('react')
