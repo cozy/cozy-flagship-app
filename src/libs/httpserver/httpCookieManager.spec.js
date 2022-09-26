@@ -16,12 +16,25 @@ jest.mock('cozy-client', () => ({
   useAppsInMaintenance: jest.fn()
 }))
 
+let mockedDate = '2022-09-23T09:36:13.358Z'
+let tenYearsAfterMockedDate = '2032-09-23T09:36:13.358Z'
+export class MockDate extends Date {
+  constructor(arg) {
+    super(arg || mockedDate)
+  }
+}
+
 describe('httpCookieManager', () => {
   const client = createMockClient({})
 
   beforeEach(() => {
     AsyncStorage.clear()
     jest.clearAllMocks()
+    global.Date = MockDate
+  })
+
+  afterEach(() => {
+    global.Date = Date
   })
 
   describe('setCookie', () => {
@@ -46,7 +59,8 @@ describe('httpCookieManager', () => {
           version: '1',
           secure: false,
           httpOnly: true,
-          sameSite: 'None'
+          sameSite: 'None',
+          expires: tenYearsAfterMockedDate
         },
         true
       )
@@ -72,7 +86,8 @@ describe('httpCookieManager', () => {
           version: '1',
           secure: false,
           httpOnly: true,
-          sameSite: 'None'
+          sameSite: 'None',
+          expires: tenYearsAfterMockedDate
         },
         true
       )
@@ -98,7 +113,8 @@ describe('httpCookieManager', () => {
           version: '1',
           secure: false,
           httpOnly: true,
-          sameSite: 'None'
+          sameSite: 'None',
+          expires: tenYearsAfterMockedDate
         },
         true
       )
@@ -124,7 +140,8 @@ describe('httpCookieManager', () => {
           version: '1',
           secure: true,
           httpOnly: true,
-          sameSite: 'None'
+          sameSite: 'None',
+          expires: tenYearsAfterMockedDate
         },
         true
       )
@@ -150,7 +167,8 @@ describe('httpCookieManager', () => {
           version: '1',
           secure: false,
           httpOnly: true,
-          sameSite: 'None'
+          sameSite: 'None',
+          expires: tenYearsAfterMockedDate
         },
         true
       )
@@ -176,7 +194,8 @@ describe('httpCookieManager', () => {
           version: '1',
           secure: false,
           httpOnly: true,
-          sameSite: 'None'
+          sameSite: 'None',
+          expires: tenYearsAfterMockedDate
         },
         true
       )
@@ -202,7 +221,8 @@ describe('httpCookieManager', () => {
           version: '1',
           secure: false,
           httpOnly: false,
-          sameSite: 'None'
+          sameSite: 'None',
+          expires: tenYearsAfterMockedDate
         },
         true
       )
@@ -228,7 +248,8 @@ describe('httpCookieManager', () => {
           version: '1',
           secure: false,
           httpOnly: true,
-          sameSite: 'None'
+          sameSite: 'None',
+          expires: tenYearsAfterMockedDate
         },
         true
       )
@@ -273,6 +294,7 @@ describe('httpCookieManager', () => {
         JSON.stringify({
           'http://cozy.10-0-2-2.nip.io': {
             name: 'cozysessid',
+            expires: tenYearsAfterMockedDate,
             value:
               'AAAAAGJ3Ojku0Nzk4YzhlNWQ1ODkTc2tq3IuDMgJZTZhME3MTQ3OT3ODA3YU0MTYwgeWmEE3IsoDkhQcjx0zh-2lpoItEDU8',
             domain: '.cozy.10-0-2-2.nip.io',
@@ -283,6 +305,33 @@ describe('httpCookieManager', () => {
             sameSite: 'None'
           }
         })
+      )
+    })
+
+    it(`should set cookie expiration to 10 years from now`, async () => {
+      client.getStackClient = jest.fn(() => ({
+        uri: 'http://cozy.10-0-2-2.nip.io'
+      }))
+
+      const cookieString =
+        'cozysessid=AAAAAGJ3Ojku0Nzk4YzhlNWQ1ODkTc2tq3IuDMgJZTZhME3MTQ3OT3ODA3YU0MTYwgeWmEE3IsoDkhQcjx0zh-2lpoItEDU8; Path=/; Domain=cozy.10-0-2-2.nip.io; HttpOnly; SameSite=None'
+
+      await setCookie(cookieString, client)
+
+      expect(CookieManager.set).toHaveBeenCalledWith(
+        'http://cozy.10-0-2-2.nip.io',
+        {
+          name: expect.anything(),
+          value: expect.anything(),
+          domain: expect.anything(),
+          path: expect.anything(),
+          version: expect.anything(),
+          secure: expect.anything(),
+          httpOnly: expect.anything(),
+          sameSite: expect.anything(),
+          expires: tenYearsAfterMockedDate
+        },
+        true
       )
     })
   })
