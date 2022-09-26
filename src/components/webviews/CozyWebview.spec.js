@@ -15,6 +15,9 @@ jest.mock('react-native-fs', () => ({
 jest.mock('react-native-file-viewer', () => ({
   open: jest.fn()
 }))
+jest.mock('@react-native-cookies/cookies', () => ({
+  set: jest.fn()
+}))
 
 const mockGoBack = jest.fn()
 const mockUseIsFocused = jest.fn()

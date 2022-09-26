@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { View } from 'react-native'
 import { WebView } from 'react-native-webview'
 
 import Minilog from '@cozy/minilog'
+import { useClient } from 'cozy-client'
 
 import ProgressBar from '/components/Bar'
 import { palette } from '/ui/palette'
 import { styles } from './SupervisedWebView.styles'
+import { resyncCookies } from '/libs/httpserver/httpCookieManager'
 
 const log = Minilog('SupervisedWebView')
 
@@ -63,6 +65,7 @@ const initialState = {
  * - note: navigating to `chrome://crash` as stated in the Android documentation won't work as the WebView would prevent the navitation to any local resource
  */
 export const SupervisedWebView = React.forwardRef((props, ref) => {
+  const client = useClient()
   const [state, setState] = useState({
     ...initialState,
     key: 0
@@ -96,11 +99,19 @@ export const SupervisedWebView = React.forwardRef((props, ref) => {
         setState(oldState => ({ ...oldState, ...initialState }))
       }
     },
-    [shouldBeLoaded, isLoaded]
+    [shouldBeLoaded, isLoaded, reloadWebView]
   )
 
-  const reloadWebView = () => {
+  const reloadWebView = useCallback(async () => {
     log.debug('Trying to reload the WebView')
+
+    if (client) {
+      // In some scenario CookieManager cookies are not applied to the WebView on
+      // iOS reload (when killed while app in background state)
+      // To prevent this we enforce resetting cookies
+      await resyncCookies(client)
+    }
+
     setState(oldState => ({
       ...oldState,
       key: oldState.key + 1,
@@ -111,7 +122,7 @@ export const SupervisedWebView = React.forwardRef((props, ref) => {
         ? RELOAD_MAX_DELAY_IN_MS
         : RELOAD_DELAY_IN_MS
     }))
-  }
+  }, [client])
 
   return (
     <>

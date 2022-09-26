@@ -3,7 +3,7 @@ import CookieManager from '@react-native-cookies/cookies'
 
 import { createMockClient } from 'cozy-client/dist/mock'
 
-import { getCookie, setCookie } from './httpCookieManager'
+import { getCookie, resyncCookies, setCookie } from './httpCookieManager'
 
 import strings from '/strings.json'
 
@@ -379,6 +379,33 @@ describe('httpCookieManager', () => {
       const result = await getCookie(client)
 
       expect(result).toBe(undefined)
+    })
+  })
+
+  describe('resyncCookies', () => {
+    it(`should resyncCookies cookie from AsyncStorage`, async () => {
+      client.getStackClient = jest.fn(() => ({
+        uri: 'http://claude.mycozy.cloud'
+      }))
+
+      AsyncStorage.getItem.mockResolvedValue(MOCK_LOCAl_STORAGE)
+
+      await resyncCookies(client)
+
+      expect(CookieManager.set).toHaveBeenCalledWith(
+        'http://claude.mycozy.cloud',
+        {
+          name: 'SOME_COOKIE_NAME',
+          value: 'SOME_COOKIE_VALUE',
+          domain: '.SOME_COOKIE_DOMAIN',
+          path: '/',
+          version: '1',
+          secure: false,
+          httpOnly: true,
+          sameSite: 'None'
+        },
+        true
+      )
     })
   })
 })

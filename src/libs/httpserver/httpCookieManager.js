@@ -109,6 +109,22 @@ export const getCookie = async client => {
   return cookies?.[appUrl]
 }
 
+/**
+ * Re-fill CookieManager by using cookie stored in AsyncStorage
+ *
+ * @param {CozyClient} client - CozyClient instance
+ * @returns {Promise<boolean>}
+ */
+export const resyncCookies = async client => {
+  const appUrl = client.getStackClient().uri
+
+  const cookies = await loadCookiesFromAsyncStorage()
+
+  const stackCookie = cookies?.[appUrl]
+
+  return CookieManager.set(appUrl, stackCookie, true)
+}
+
 const setCookieIntoAsyncStorage = async (client, cookie) => {
   const appUrl = client.getStackClient().uri
 
