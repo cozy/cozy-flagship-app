@@ -81,8 +81,12 @@ export const setCookie = async (cookieString, client) => {
   const appUrl = client.getStackClient().uri
   const isSecure = isSecureProtocol(client)
 
+  const expireDate = new Date()
+  expireDate.setFullYear(expireDate.getFullYear() + 10)
+
   const stackCookie = {
     name: cookie.name,
+    expires: expireDate.toISOString(),
     value: cookie.value,
     domain: cookie.domain,
     path: cookie.path,
