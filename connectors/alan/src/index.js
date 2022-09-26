@@ -5,6 +5,8 @@ import {format, subMonths} from 'date-fns'
 import groupBy from 'lodash/groupBy'
 Minilog.enable('alanCCC')
 
+// Here we need to intercept the prehashed_password in the login's request
+// to be able to make the autoLogin work on next connection.
 let preHashedPassword
 const constantMock = window.fetch
 window.fetch = function(){
@@ -58,9 +60,9 @@ class TemplateContentScript extends ContentScript {
 
   async getUserDataFromWebsite() {
     if(this.store.loginResponse){
-      await this.runInWorker('getUserIdentity', this.store.loginResponse)
+      await this.runInWorker('getUserDatas', this.store.loginResponse)
     }else{
-      await this.runInWorker('getUserIdentity')
+      await this.runInWorker('getUserDatas')
     }
     const sourceAccountId = this.store.userIdentity.email ? this.store.userIdentity.email : 'UNKNOWN_ERROR'
     if (sourceAccountId === 'UNKNOWN_ERROR') {
@@ -74,7 +76,7 @@ class TemplateContentScript extends ContentScript {
   
   async fetch(context) {
     this.log("fetch starts")
-    await this.runInWorker('getDocuments', this.store.jsonDocuments, this.store.loginResponse)
+    await this.runInWorker('getDocuments', this.store.userDatas, this.store.loginResponse)
     await this.saveFiles(this.store.tpCard, {
       context,
       contentType: 'application/pdf',
@@ -208,36 +210,26 @@ class TemplateContentScript extends ContentScript {
     return 'UNKNOWN_ERROR'
   }
 
-  async getUserIdentity(loginResponse){
-    let tokenPayload
-    let tokenBearer
-    let beneficiaryId
-    if (loginResponse){
-      tokenBearer = loginResponse.token
-      beneficiaryId = loginResponse.token_payload.id
-    }else{
-      tokenPayload = window.localStorage.tokenPayload
-      tokenBearer = window.localStorage.token
-      beneficiaryId = tokenPayload.split(',')[1].replace(/"/g,'').split(':')[1]
+  async getUserDatas(loginResponse){
+    const documentsUrl = 'https://api.alan.com/api/users/${beneficiaryId}?expand=visible_insurance_documents,address,beneficiaries,beneficiaries.insurance_profile.user,beneficiaries.insurance_profile.latest_tp_card'
+    const jsonDocuments = await this.fetchAlanApi(documentsUrl, loginResponse)
+    const beneficiaries = jsonDocuments.beneficiaries
+    let beneficiariesWithIds = []
+    for (const beneficiary of beneficiaries){
+      const name = beneficiary.insurance_profile.user.normalized_full_name
+      const beneficiaryId = beneficiary.insurance_profile_id
+      const userId = beneficiary.insurance_profile.user.id
+      beneficiariesWithIds.push({
+        name,
+        beneficiaryId,
+        userId
+      })
     }
-    const apiUrl = `https://api.alan.com/api/users/${beneficiaryId}?expand=visible_insurance_documents,address,beneficiaries,beneficiaries.insurance_profile.user,beneficiaries.insurance_profile.latest_tp_card`
-    const response = await window.fetch(apiUrl, {
-      headers: {
-        Authorization:`Bearer ${tokenBearer}`
-      }
-    }).then(response => response.text())
-    const jsonDocuments = JSON.parse(response)
-
-    const email = jsonDocuments.email
+    const eventsUrl = `https://api.alan.com/api/insurance_profiles/${beneficiariesWithIds[0].beneficiaryId}/care_events_public`
+    const jsonEvents = await this.fetchAlanApi(eventsUrl, loginResponse)
+    const {email, birth_date: birthDate, first_name: firstName, last_name: lastName, address} = jsonDocuments
     const socialSecurityNumber = jsonDocuments.beneficiaries[0].insurance_profile.ssn
-    const birthDate = jsonDocuments.birth_date
-    const firstName = jsonDocuments.first_name
-    const lastName = jsonDocuments.last_name
-    const postCode = jsonDocuments.address.postal_code
-    const city = jsonDocuments.address.city
-    const street = jsonDocuments.address.street
-    const country = jsonDocuments.address.country
-
+    const {postal_code: postCode, city, street, country} = address
     const userIdentity = {
       email,
       birthDate,
@@ -257,81 +249,63 @@ class TemplateContentScript extends ContentScript {
         }
       ]
     }
-    await this.sendToPilot({userIdentity, jsonDocuments})
+    const userDatas = {
+      jsonDocuments,
+      jsonEvents,
+      beneficiariesWithIds
+    }
+    await Promise.all([this.sendToPilot({userDatas}), this.sendToPilot({userIdentity})])
   }
 
-  async getDocuments(jsonDocuments, loginResponse){
-    let {bills, tpCardIdentifier, beneficiariesWithIds } = await this.computeDocuments(jsonDocuments, loginResponse)
+  async getDocuments(userDatas, loginResponse){
+    let {bills, tpCardIdentifier} = await this.computeDocuments(userDatas.jsonDocuments, userDatas.jsonEvents)
     this.computeGroupAmounts(bills)
-    this.linkFiles(bills, beneficiariesWithIds, loginResponse)
-    await this.getTpCard(tpCardIdentifier, loginResponse)
-    await this.sendToPilot({bills})
+    this.linkFiles(bills, userDatas.beneficiariesWithIds, loginResponse)
+    const tpCard = await this.getTpCard(tpCardIdentifier, loginResponse)
+    await Promise.all([this.sendToPilot({tpCard}), this.sendToPilot({bills})])
   }
 
-  async computeDocuments(jsonDocuments, loginResponse){
-    let tokenBearer
-    if (loginResponse){
-      tokenBearer = loginResponse.token
-    }else{
-      tokenBearer = window.localStorage.token
-    }
-    const beneficiaries = jsonDocuments.beneficiaries
-    let beneficiariesWithIds = []
-    for (const beneficiary of beneficiaries){
+  async computeDocuments(jsonDocuments, jsonEvents){
+    let bills = []
+    for (const beneficiary of jsonDocuments.beneficiaries) {
       const name = beneficiary.insurance_profile.user.normalized_full_name
-      const beneficiaryId = beneficiary.insurance_profile_id
-      const userId = beneficiary.insurance_profile.user.id
-      beneficiariesWithIds.push({
-        name,
-        beneficiaryId,
-        userId
-      })
-    }
-    const apiUrl = `https://api.alan.com/api/insurance_profiles/${beneficiariesWithIds[0].beneficiaryId}/care_events_public`
-    let response = await window.fetch(apiUrl, {
-      headers: {
-        Authorization:`Bearer ${tokenBearer}`
-      }
-    }).then(response => response.text())
-    const jsonEvents = JSON.parse(response)
-
-  let bills = []
-  for (const beneficiary of beneficiaries) {
-    const name = beneficiary.insurance_profile.user.normalized_full_name
-    bills.push.apply(
-      bills,
-      jsonEvents
-        .filter(bill => bill.status === 'refunded')
-        .map(bill => ({
-          vendor: 'alan',
-          vendorRef: bill.id,
-          beneficiary: name,
-          type: 'health_costs',
-          date: format(new Date(bill.estimated_payment_date), 'yyyy-MM-dd'),
-          originalDate: format(new Date(bill.care_date), 'yyyy-MM-dd'),
-          subtype: bill.care_acts[0].display_label,
-          socialSecurityRefund: bill.care_acts[0].ss_base / 100,
-          amount: bill.care_acts[0].reimbursed_to_user / 100,
-          originalAmount: bill.care_acts[0].spent_amount / 100,
-          isThirdPartyPayer: bill.care_acts[0].reimbursed_to_user === null,
-          currency: '€',
-          isRefund: true,
-          fileAttributes: {
-            metadata: {
-              contentAuthor: 'alan.com',
-              issueDate: new Date(),
-              datetime: format(new Date(bill.care_date), 'yyyy-MM-dd'),
-              datetimeLabel: `issueDate`,
-              isSubscription: false,
-              carbonCopy: true
+      bills.push.apply(
+        bills,
+        jsonEvents
+          .filter(bill => bill.status === 'refunded')
+          .map(function (bill){
+            const originalDate = format(new Date(bill.care_date), 'yyyy-MM-dd')
+            return {
+              vendor: 'alan',
+              vendorRef: bill.id,
+              beneficiary: name,
+              type: 'health_costs',
+              date: format(new Date(bill.estimated_payment_date), 'yyyy-MM-dd'),
+              originalDate,
+              subtype: bill.care_acts[0].display_label,
+              socialSecurityRefund: bill.care_acts[0].ss_base / 100,
+              amount: bill.care_acts[0].reimbursed_to_user / 100,
+              originalAmount: bill.care_acts[0].spent_amount / 100,
+              isThirdPartyPayer: bill.care_acts[0].reimbursed_to_user === null,
+              currency: '€',
+              isRefund: true,
+              fileAttributes: {
+                metadata: {
+                  contentAuthor: 'alan.com',
+                  issueDate: new Date(),
+                  datetime: originalDate,
+                  datetimeLabel: `issueDate`,
+                  isSubscription: false,
+                  carbonCopy: true
+                }
+              }
             }
-          }
-        }))
-    )
-  }
-  const tpCardIdentifier = jsonDocuments.tp_card_identifier.replace(/\s/g, '')
+          })
+      )
+    }
+    const tpCardIdentifier = jsonDocuments.tp_card_identifier.replace(/\s/g, '')
 
-  return {bills, tpCardIdentifier, beneficiariesWithIds}
+    return {bills, tpCardIdentifier}
   }
 
   computeGroupAmounts(bills) {
@@ -422,7 +396,7 @@ class TemplateContentScript extends ContentScript {
         }
       }
     })
-    await this.sendToPilot({tpCard})
+    return tpCard
   }
 
   checkAskForLogin(){
@@ -463,6 +437,37 @@ class TemplateContentScript extends ContentScript {
     return true
   }
 
+  async fetchAlanApi(url, loginResponse){
+    // Here we need to know in which login scenario we are.
+    // First and second scenarii happens with "user actions", clicking and such.
+    // Third scenario uses only API calls, so there is no "movement" in the worker.
+    // As a result, localStorage is never filled up, so we need the login response
+    // to actually have access to the token and the beneficiaryId
+    let tokenBearer
+    let beneficiaryId
+    let tokenPayload
+    if (loginResponse){
+      tokenBearer = loginResponse.token
+      beneficiaryId = loginResponse.token_payload.id
+    }else{
+      tokenBearer = window.localStorage.token
+      tokenPayload = window.localStorage.tokenPayload
+      beneficiaryId = tokenPayload.split(',')[1].replace(/"/g,'').split(':')[1]
+    }
+    // As we only need one time the beneficiaryId, we're checking if it is present in the url.
+    if(url.includes('${beneficiaryId}')){
+      // If true, we're using it
+      url = url.replace('${beneficiaryId}', beneficiaryId)
+    }
+    const response = await window.fetch(url, {
+       headers: {
+        Authorization:`Bearer ${tokenBearer}`
+      }
+    })
+    const jsonResponse = await response.json()
+    return jsonResponse
+  }
+
 }
 
 const connector = new TemplateContentScript()
@@ -470,7 +475,7 @@ connector.init({ additionalExposedMethodsNames: [
   'checkAskForAppDownload',
   'checkIfLogged',
   'getUserMail',
-  'getUserIdentity',
+  'getUserDatas',
   'getDocuments',
   'checkAskForLogin',
   'makeLoginReq',
