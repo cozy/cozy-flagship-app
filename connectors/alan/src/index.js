@@ -212,7 +212,7 @@ class TemplateContentScript extends ContentScript {
 
   async getUserDatas(loginResponse){
     const documentsUrl = 'https://api.alan.com/api/users/${beneficiaryId}?expand=visible_insurance_documents,address,beneficiaries,beneficiaries.insurance_profile.user,beneficiaries.insurance_profile.latest_tp_card'
-    const jsonDocuments = await this.fetchAlanApi(documentsUrl, loginResponse)
+    const jsonDocuments = await this.fetchLogic(documentsUrl, loginResponse)
     const beneficiaries = jsonDocuments.beneficiaries
     let beneficiariesWithIds = []
     for (const beneficiary of beneficiaries){
@@ -226,7 +226,7 @@ class TemplateContentScript extends ContentScript {
       })
     }
     const eventsUrl = `https://api.alan.com/api/insurance_profiles/${beneficiariesWithIds[0].beneficiaryId}/care_events_public`
-    const jsonEvents = await this.fetchAlanApi(eventsUrl, loginResponse)
+    const jsonEvents = await this.fetchLogic(eventsUrl, loginResponse)
     const {email, birth_date: birthDate, first_name: firstName, last_name: lastName, address} = jsonDocuments
     const socialSecurityNumber = jsonDocuments.beneficiaries[0].insurance_profile.ssn
     const {postal_code: postCode, city, street, country} = address
@@ -416,20 +416,6 @@ class TemplateContentScript extends ContentScript {
         "X-APP-AUTH": "cookie"
       }
     }).then(res => res.json())
-
-    cookies = document.cookie
-    const tokenBearer = loginResponse.token
-    const id = loginResponse.token_payload.id
-    const redirectUrl = `https://api.alan.com/api/users/${id}/redirection_status`
-    await window.fetch(redirectUrl, {
-      "method": 'GET',
-      "headers": {
-        "Cookie": cookies,
-        "Authorization":`Bearer ${tokenBearer}`
-      },
-      'referer': 'https://alan.com/app/dashboard'
-    })
-
     if(!loginResponse.token){
       return false
     }
@@ -437,34 +423,43 @@ class TemplateContentScript extends ContentScript {
     return true
   }
 
-  async fetchAlanApi(url, loginResponse){
-    // Here we need to know in which login scenario we are.
-    // First and second scenarii happens with "user actions", clicking and such.
-    // Third scenario uses only API calls, so there is no "movement" in the worker.
-    // As a result, localStorage is never filled up, so we need the login response
-    // to actually have access to the token and the beneficiaryId
-    let tokenBearer
-    let beneficiaryId
-    let tokenPayload
-    if (loginResponse){
-      tokenBearer = loginResponse.token
-      beneficiaryId = loginResponse.token_payload.id
-    }else{
-      tokenBearer = window.localStorage.token
-      tokenPayload = window.localStorage.tokenPayload
-      beneficiaryId = tokenPayload.split(',')[1].replace(/"/g,'').split(':')[1]
-    }
-    // As we only need one time the beneficiaryId, we're checking if it is present in the url.
-    if(url.includes('${beneficiaryId}')){
-      // If true, we're using it
-      url = url.replace('${beneficiaryId}', beneficiaryId)
-    }
+  async fetchAlanApi(url, tokenBearer){
     const response = await window.fetch(url, {
        headers: {
         Authorization:`Bearer ${tokenBearer}`
       }
     })
     const jsonResponse = await response.json()
+    return jsonResponse
+  }
+
+  async fetchAlanApiFromPayload(url, payload){
+    let tokenBearer = payload.token
+    let beneficiaryId = payload.token_payload.id
+    if(url.includes('${beneficiaryId}')){
+      url = url.replace('${beneficiaryId}', beneficiaryId)
+    }
+    const jsonResponse = await this.fetchAlanApi(url, tokenBearer)
+    return jsonResponse
+  }
+
+  async fetchAlanApiFromLocalStorage(url){
+    let tokenBearer = window.localStorage.token
+    let tokenPayload = window.localStorage.tokenPayload
+    let beneficiaryId = tokenPayload.split(',')[1].replace(/"/g,'').split(':')[1]
+    if(url.includes('${beneficiaryId}')){
+      url = url.replace('${beneficiaryId}', beneficiaryId)
+    }
+    const jsonResponse = await this.fetchAlanApi(url, tokenBearer)
+    return jsonResponse
+  }
+
+  async fetchLogic(url, payload){
+    if(payload){
+      const jsonResponse = await this.fetchAlanApiFromPayload(url, payload)
+      return jsonResponse
+    }
+    const jsonResponse = await this.fetchAlanApiFromLocalStorage(url)
     return jsonResponse
   }
 
