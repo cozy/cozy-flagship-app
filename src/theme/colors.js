@@ -1,8 +1,8 @@
-import { default as paletteValues } from './palette.json'
+import { palette } from '/ui/palette'
 
 const colors = {
-  primaryColor: paletteValues.Primary['600'],
-  paperBackgroundColor: paletteValues.Common.white
+  primaryColor: palette.Primary['600'],
+  paperBackgroundColor: palette.Common.white
 }
 
 export const getColors = () => {

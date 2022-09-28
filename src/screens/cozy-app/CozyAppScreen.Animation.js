@@ -5,8 +5,7 @@ import { SvgXml } from 'react-native-svg'
 import ProgressBar from '/components/Bar'
 import { iconTable, iconFallback } from '/libs/functions/iconTable'
 import { screenHeight, screenWidth } from '/libs/dimensions'
-import { default as paletteValues } from '/theme/palette.json'
-
+import { palette } from '/ui/palette'
 import { styles } from './CozyAppScreen.styles'
 
 const config = {
@@ -19,8 +18,8 @@ const config = {
 const progressBarConfig = {
   width: null,
   indeterminate: true,
-  unfilledColor: paletteValues.Grey[200],
-  color: paletteValues.Primary[600],
+  unfilledColor: palette.Grey[200],
+  color: palette.Primary[600],
   borderWidth: 0,
   height: 8,
   borderRadius: 100,

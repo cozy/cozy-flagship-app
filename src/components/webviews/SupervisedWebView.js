@@ -5,7 +5,7 @@ import { WebView } from 'react-native-webview'
 import Minilog from '@cozy/minilog'
 
 import ProgressBar from '/components/Bar'
-import { default as paletteValues } from '/theme/palette.json'
+import { palette } from '/ui/palette'
 import { styles } from './SupervisedWebView.styles'
 
 const log = Minilog('SupervisedWebView')
@@ -18,8 +18,8 @@ const RELOAD_MAX_DELAY_IN_MS = 10000
 const progressBarConfig = {
   width: null,
   indeterminate: true,
-  unfilledColor: paletteValues.Grey[200],
-  color: paletteValues.Primary[600],
+  unfilledColor: palette.Grey[200],
+  color: palette.Primary[600],
   borderWidth: 0,
   height: 8,
   borderRadius: 100,

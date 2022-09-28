@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import palette from '/theme/palette.json'
+import { palette } from '/ui/palette'
 
 export const styles = StyleSheet.create({
   button: {
