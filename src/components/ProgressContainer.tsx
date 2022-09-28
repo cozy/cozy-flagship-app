@@ -5,14 +5,14 @@ import ProgressBar from '/components/Bar'
 import { styles } from '/components/ProgressContainer.styles'
 
 import { getColors } from '/theme/colors'
-import { default as paletteValues } from '/theme/palette.json'
+import { palette } from '/ui/palette'
 
 const colors = getColors()
 
 const progressBarConfig = {
   width: null,
   indeterminate: false,
-  unfilledColor: paletteValues.Grey[200],
+  unfilledColor: palette.Grey[200],
   color: colors.primaryColor,
   borderWidth: 0,
   height: 8,
