@@ -20,6 +20,7 @@ import { WebView } from 'react-native-webview'
 // import totalenergiesConnector from '../../../connectors/totalenergies/dist/webviewScript'
 // import alanConnector from '../../../connectors/alan/dist/webviewScript'
 // import veoliaeauConnector from '../../../connectors/veoliaeau/dist/webviewScript'
+// import gaztarifreglementeConnector from '../../../connectors/gaztarifreglemente/dist/webviewScript'
 import { BackTo } from '/components/ui/icons/BackTo'
 import { statusBarHeight } from '/libs/dimensions'
 import ReactNativeLauncher from '/libs/ReactNativeLauncher'
@@ -46,6 +47,7 @@ const embeddedConnectors = {
   // totalenergies: totalenergiesConnector
   // alan: alanConnector
   // veoliaeau: veoliaeauConnector
+  // gaztarifreglemente: gaztarifreglementeConnector
 }
 class LauncherView extends Component {
   constructor(props) {
