@@ -1,5 +1,4 @@
 import ContentScript from '../../connectorLibs/ContentScript'
-import {kyScraper as ky, blobToBase64} from '../../connectorLibs/utils'
 import Minilog from '@cozy/minilog'
 const log = Minilog('ContentScript')
 Minilog.enable('veoliaeauCCC')
@@ -13,6 +12,7 @@ class TemplateContentScript extends ContentScript {
   //PILOT //
   //////////
   async ensureAuthenticated() {
+    this.log('Starting ensureAuthenticated')
     const credentials = await this.getCredentials()
     if (credentials) {
       const auth = await this.authWithCredentials(credentials)
@@ -31,6 +31,7 @@ class TemplateContentScript extends ContentScript {
   }
   
   async authWithCredentials (credentials){
+    this.log('Starting authWithCredentials')
     await this.goto(BASE_URL)
     await this.waitForElementInWorker('.block-bottom-area')
     const isLogged = await this.runInWorker('checkIfLogged')
@@ -49,6 +50,7 @@ class TemplateContentScript extends ContentScript {
   }
 
   async authWithoutCredentials (){
+    this.log('Starting authWithoutCredentials')
     await this.goto(BASE_URL)
     await this.waitForElementInWorker('#veolia_username')
     await this.waitForUserAuthentication()
@@ -56,7 +58,7 @@ class TemplateContentScript extends ContentScript {
   }
 
   async waitForUserAuthentication() {
-    this.log('waitForUserAuthentication starts')
+    this.log('Starting waitForUserAuthentication')
     await this.setWorkerState({visible: true})
     await this.runInWorkerUntilTrue({method: 'waitForAuthenticated'})
     await this.setWorkerState({visible: false})
@@ -64,10 +66,11 @@ class TemplateContentScript extends ContentScript {
 
   
   async getUserDataFromWebsite() {
+    this.log('Starting getUserDataFromWebsite')
     await this.clickAndWait('a[href="/home/espace-client/vos-contrats.html"]', '.bloc_princ')
     await this.runInWorker('getUserBillingInfos')
     await this.clickAndWait('a[href="/home/espace-client/gerer-votre-espace-personnel.html"]', '.fiche-client')
-    await this.runInWorker('getUserPersonnalInfos')
+    await this.runInWorker('getUserPersonalInfos')
     await this.runInWorker('computeIdentity', this.store)
     const sourceAccountId = this.store.userIdentity.email ? this.store.userIdentity.email : 'UNKNOWN_ERROR'
     if (sourceAccountId === 'UNKNOWN_ERROR') {
@@ -80,10 +83,30 @@ class TemplateContentScript extends ContentScript {
   }
   
   async fetch(context) {
-    await this.clickAndWait('a[href="/home/espace-client/vos-factures-et-correspondances.html"]', '.liste-table')
-    await this.runInWorker('getBills')
-    await this.waitForElementInWorker('[pause]')
-    await this.saveIdentity(this.store.userIdentity)
+    this.log('Starting fetch')
+    await this.runInWorker('click', 'a[href="/home/espace-client/vos-factures-et-correspondances.html"]')
+    await this.runInWorkerUntilTrue({method: 'checkBillsPage', args: ['https://www.service.eau.veolia.fr/home/espace-client/vos-factures-et-correspondances.html']})
+    const moreBillsButton = await this.runInWorker('checkMoreBillsButton')
+    if (moreBillsButton){
+      await this.runInWorker('click','a[href="/home/espace-client/vos-factures-et-correspondances.html?voirPlus"]')
+      await this.runInWorkerUntilTrue({method: 'checkBillsPage', args: ['https://www.service.eau.veolia.fr/home/espace-client/vos-factures-et-correspondances.html?voirPlus']})
+      await this.runInWorkerUntilTrue({method:'checkBillsTableLength'})
+    }
+    await this.runInWorker('getDocuments')
+    await Promise.all([
+      this.saveIdentity(this.store.userIdentity),
+      this.saveFiles(this.store.files, {
+        context,
+        fileIdAttributes: ['filename'],
+        contentType: 'application/pdf'
+      }),
+      this.saveBills(this.store.bills, {
+        context,
+        fileIdAttributes: ['filename'],
+        contentType: 'application/pdf',
+        qualificationLabel: 'water_invoice'
+      })
+    ])
     
   }
 
@@ -94,7 +117,7 @@ class TemplateContentScript extends ContentScript {
   }
 
   async autoLogin(credentials) {
-    this.log('Autologin start')
+    this.log('Starting autologin')
     const selectors = {
       email: '#veolia_username',
       password: '#veolia_password',
@@ -102,6 +125,7 @@ class TemplateContentScript extends ContentScript {
       loginButton : 'input[value="OK"]',
       captchaButton : '.frc-button'
     }
+    await this.waitForElementInWorker(selectors.captchaButton)
     await this.runInWorker('handleForm', {selectors, credentials})
     await this.waitForElementInWorker('a[href="/home/espace-client/vos-factures-et-correspondances.html"]')
     return true
@@ -114,6 +138,7 @@ class TemplateContentScript extends ContentScript {
 
 
   async checkAuthenticated() {
+    this.log('Starting checkAuthenticated')
     const loginField = document.querySelector('#veolia_username')
     const passwordField = document.querySelector('#veolia_password')
     if (loginField && passwordField) {
@@ -132,7 +157,7 @@ class TemplateContentScript extends ContentScript {
   }
 
   async findAndSendCredentials(login, password){
-    this.log('findAndSendCredentials starts')
+    this.log('Starting findAndSendCredentials')
     let userLogin = login.value
     let userPassword = password.value
     const userCredentials = {
@@ -154,7 +179,6 @@ class TemplateContentScript extends ContentScript {
       this.log('Still connected, continue')
       return true
     }
-
   }
 
   async handleForm(loginData){
@@ -171,6 +195,7 @@ class TemplateContentScript extends ContentScript {
   }
 
   async checkRecaptcha(){
+    this.log('Starting checkRecaptcha')
     let captchaValue = document.querySelector('input[name="frc-captcha-solution"]').value
     while(captchaValue.length < 100){
       this.log('Recaptcha is not finished')
@@ -180,7 +205,8 @@ class TemplateContentScript extends ContentScript {
     return true
   }
 
-  async getUserPersonnalInfos() {   
+  async getUserPersonalInfos() {
+    this.log('Starting getUserPersonalInfos') 
     const clientInfos = document.querySelectorAll('.ligne-info')
     const email = clientInfos[0].innerHTML.split(': ')[1]
     const homePhoneNumber = clientInfos[2].innerHTML.split(': ')[1]
@@ -205,6 +231,7 @@ class TemplateContentScript extends ContentScript {
   }
 
   async getUserBillingInfos(){
+    this.log('Starting getUserBillingInfos')
     const billingInfosElements = document.querySelectorAll('div[class="bloc_ct bloc_ct_1 bloc_contrat"]')
     const rawContent = billingInfosElements[1].children[1].textContent
     const userBillingInfosArray = rawContent.match(/([A-Z0-9 -]{1,})/g)
@@ -231,41 +258,124 @@ class TemplateContentScript extends ContentScript {
   }
 
   async computeIdentity(store){
+    this.log('Starting computeIdentity')
     const userIdentity = {
       ...store.userBillingInfos,
       ...store.userPersonalInfos
     }
     await this.sendToPilot({userIdentity})
   }
-
-  async getBills(){
-    const buttonIsAvailable = await this.checkMoreBillsButton()
-    if(buttonIsAvailable){
-      buttonIsAvailable.click()
-    }
-    // Trouver l'equivalent de ça dans le worker
-    await this.waitForElementNoReload('table')
-    
-  }
   
   checkMoreBillsButton(){
+    this.log('Starting checkMoreBillsButton')
     const moreBillsButton = document.querySelector('a[href="/home/espace-client/vos-factures-et-correspondances.html?voirPlus"]')
-    if(moreBillsButton){
-      return moreBillsButton
-    }
+    if(moreBillsButton) return moreBillsButton
     return false
   }
+  
+  async checkBillsPage(testUrl){
+    this.log('Starting checkBillsPage')
+    const locationUrl = document.location.href
+    const billsTable = document.querySelector('table')
+    if(locationUrl === testUrl && billsTable){
+      return true
+    }
+    await sleep(3)
+    return false
+  }
+  
+  async checkBillsTableLength(){
+    this.log('Starting checkBillsTableLength')
+    const tableLength = document.querySelector('tbody').children.length
+    if(tableLength > 4){
+      return true
+    }
+    await sleep(3)
+    return false
+  }
+  
+  async getDocuments(){
+    this.log('Starting getDocuments')
+    let bills = []
+    let files = []
+    const documentsLines = document.querySelector('tbody').children
+    for (const document of documentsLines){
+      const extractedDatas = await this.extractDatas(document)
+      const computedFile = await this.computeDatas(extractedDatas)
+      if(computedFile.documentType === "Facture"){
+        bills.push(computedFile)
+      }else{
+        files.push(computedFile)
+      }
+    }
+    await Promise.all([this.sendToPilot({bills}), this.sendToPilot({files})])
+  }
 
+  extractDatas(document){
+    this.log('Stating extractDatas')
+    let documentDatas = []
+    const datas = document.children
+    for (const data of datas){
+      const hasChildren = data.children.length === 1 ? true : false
+      if(hasChildren){
+        documentDatas.push(data.children[0].getAttribute('href'))
+        break
+      }
+      documentDatas.push(data.innerHTML)
+    }
+    return documentDatas
+  }
+  
+  computeDatas(datas){
+    this.log('Starting computeDatas')
+    const [rawDate, documentType, vendorRef, rawAmount, href] = datas
+    const refContract = document.querySelector('.ref_ct').innerHTML
+    const [day, month, year] = rawDate.replace(/ /g, '').split('/')
+    const date = `${year}/${month}/${day}`
+    const vendor = 'veolia'
+    let [amount, currency] = rawAmount.split(' ')
+    const computedFile = {
+      date,
+      documentType,
+      vendorRef,
+      vendor,
+      fileurl : `https://www.service.eau.veolia.fr${href}`,
+      fileAttributes: {
+        metadata: {
+          contentAuthor: 'veolia eau',
+          datetime: new Date(date),
+          datetimeLabel: 'issueDate',
+          isSubscription: true,
+          issueDate: new Date(),
+          carbonCopy: true
+        }
+      }
+    }
+    if(amount !== ''){
+      const normalizedCurrency = currency === '€' ? 'EUR' : currency
+      computedFile.amount = parseFloat(amount)
+      computedFile.currency =  normalizedCurrency
+      computedFile.filename = `${date.replace(/\//g, '')}-${vendor.toLocaleUpperCase()}-${refContract.slice(2)}-${documentType}_${amount}${normalizedCurrency}.pdf`
+      return computedFile
+    }else{
+      computedFile.filename = `${date.replace('/', '')}-${vendor.toLocaleUpperCase()}-${refContract.slice(2)}-${documentType}.pdf`
+      return computedFile
+    }
+  }
+  
 }
 
 const connector = new TemplateContentScript()
 connector.init({ additionalExposedMethodsNames: [
   'checkIfLogged',
   'handleForm',
-  'getUserPersonnalInfos',
+  'getUserPersonalInfos',
   'getUserBillingInfos',
   'computeIdentity',
-  'getBills'
+  'getDocuments',
+  'checkMoreBillsButton',
+  'checkBillsTableLength',
+  'checkBillsPage'
 ] }).catch(err => {
   console.warn(err)
 })
