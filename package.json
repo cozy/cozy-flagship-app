@@ -28,7 +28,7 @@
     "@react-native-cookies/cookies": "^6.0.4",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/stack": "^6.1.1",
-    "@sentry/react-native": "^3.4.1",
+    "@sentry/react-native": "3.4.3",
     "base-64": "^1.0.0",
     "bluebird-retry": "^0.11.0",
     "cheerio": "^1.0.0-rc.9",
