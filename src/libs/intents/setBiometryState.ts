@@ -1,17 +1,16 @@
-import { Alert } from 'react-native'
+import ReactNativeBiometrics from 'react-native-biometrics'
 import { EventEmitter } from 'events'
 
-import Minilog from '@cozy/minilog'
-
-import { getData, StorageKeys, storeData } from '../localStore/storage'
 import { FlagshipMetadata } from 'cozy-device-helper/dist/flagship'
 
-const log = Minilog('setBiometryState.ts')
+import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
+import { promptBiometry } from '/screens/lock/functions/lockScreenFunctions'
 
 export const BiometryEmitter = new EventEmitter()
 
 const updateBiometrySetting = async (activated: boolean): Promise<boolean> => {
   await storeData(StorageKeys.BiometryActivated, activated)
+  await storeData(StorageKeys.AutoLockEnabled, activated)
   const newData = Boolean(await getData(StorageKeys.BiometryActivated))
 
   BiometryEmitter.emit('change', newData)
@@ -19,42 +18,39 @@ const updateBiometrySetting = async (activated: boolean): Promise<boolean> => {
   return newData
 }
 
-export const openSettingBiometry = (): Promise<boolean> => {
-  return new Promise<boolean>(resolve => {
-    Alert.alert(
-      'Biometry Activation',
-      'Do you wish to activate biometric features?',
-      [
-        {
-          text: 'No',
-          onPress: (): void => {
-            updateBiometrySetting(false)
-              .then(v => resolve(v))
-              .catch(e => {
-                log.error(e)
-              })
-          }
-        },
-        {
-          text: 'Yes',
-          onPress: (): void => {
-            updateBiometrySetting(true)
-              .then(v => resolve(v))
-              .catch(e => {
-                log.error(e)
-              })
-          }
-        }
-      ]
-    )
-  })
+const handleBiometryActivation = async (
+  biometryEnabled: FlagshipMetadata['settings_biometryEnabled']
+): Promise<boolean> => {
+  if (biometryEnabled) return updateBiometrySetting(false)
+
+  const { success } = await promptBiometry()
+
+  return success && updateBiometrySetting(true)
 }
 
-export const makeBiometryInjection = async (): Promise<string> => {
-  const settings: FlagshipMetadata['settings'] = {
-    biometryEnabled: Boolean(await getData(StorageKeys.BiometryActivated)),
-    autoLockEnabled: Boolean(await getData(StorageKeys.AutoLockEnabled))
+export const openSettingBiometry = async (): Promise<boolean> => {
+  const biometryEnabled = await getData<
+    FlagshipMetadata['settings_biometryEnabled']
+  >(StorageKeys.BiometryActivated)
+
+  return handleBiometryActivation(Boolean(biometryEnabled))
+}
+
+export const makeFlagshipMetadataInjection = async (): Promise<string> => {
+  const rnBiometrics = new ReactNativeBiometrics()
+
+  const flagshipMetadata: FlagshipMetadata = {
+    settings_biometryEnabled: Boolean(
+      await getData(StorageKeys.BiometryActivated)
+    ),
+    settings_autoLockEnabled: Boolean(
+      await getData(StorageKeys.AutoLockEnabled)
+    ),
+    biometry_type: (await rnBiometrics.isSensorAvailable()).biometryType,
+    biometry_available: (await rnBiometrics.isSensorAvailable()).available
   }
 
-  return `window.cozy.flagship.settings = ${JSON.stringify(settings)};`
+  const flagshipMetadataString = JSON.stringify(flagshipMetadata)
+
+  return `window.cozy.flagship = {...window.cozy.flagship, ...${flagshipMetadataString}};`
 }

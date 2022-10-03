@@ -41,7 +41,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
     return () => {
       flagshipUI.removeAllListeners()
     }
-  }, [UIState])
+  }, [UIState, route])
 
   useEffect(() => {
     !route.params.iconParams && setReady(true)

@@ -18,6 +18,11 @@ jest.mock('react-native-file-viewer', () => ({
 jest.mock('@react-native-cookies/cookies', () => ({
   set: jest.fn()
 }))
+jest.mock('/libs/RootNavigation.js', () => ({
+  navigationRef: {
+    getCurrentRoute: jest.fn().mockReturnValue({ name: 'home' })
+  }
+}))
 
 const mockGoBack = jest.fn()
 const mockUseIsFocused = jest.fn()

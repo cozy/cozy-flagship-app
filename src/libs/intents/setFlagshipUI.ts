@@ -9,7 +9,7 @@ import { urlHasConnectorOpen } from '/libs/functions/urlHasConnector'
 
 const log = Minilog('SET_FLAGSHIP_UI')
 
-interface NormalisedFlagshipUI
+export interface NormalisedFlagshipUI
   extends Omit<FlagshipUI, 'bottomTheme' | 'topTheme'> {
   bottomTheme?: StatusBarStyle
   topTheme?: StatusBarStyle
@@ -22,7 +22,8 @@ enum ThemeInput {
 
 export enum StatusBarStyle {
   Dark = 'dark-content',
-  Light = 'light-content'
+  Light = 'light-content',
+  Default = 'default'
 }
 
 const isDarkMode = (bottomTheme: StatusBarStyle): boolean =>
