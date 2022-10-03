@@ -15,7 +15,11 @@ jest.mock('react-native-biometrics', () => {
 it('should not throw with a null hasBiometry', async () => {
   const result = await makeFlagshipMetadataInjection()
   expect(result).toStrictEqual(
-    'window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};'
+    `
+    window.cozy = window.cozy || {}
+    window.cozy.flagship = window.cozy.flagship || {}
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+  `
   )
 })
 
@@ -23,7 +27,11 @@ it('should handle true value', async () => {
   await storeData(StorageKeys.BiometryActivated, true)
   const result = await makeFlagshipMetadataInjection()
   expect(result).toStrictEqual(
-    'window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":true,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};'
+    `
+    window.cozy = window.cozy || {}
+    window.cozy.flagship = window.cozy.flagship || {}
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":true,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+  `
   )
 })
 
@@ -31,7 +39,11 @@ it('should handle truthy value', async () => {
   await storeData(StorageKeys.BiometryActivated, 'true')
   const result = await makeFlagshipMetadataInjection()
   expect(result).toStrictEqual(
-    'window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":true,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};'
+    `
+    window.cozy = window.cozy || {}
+    window.cozy.flagship = window.cozy.flagship || {}
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":true,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+  `
   )
 })
 
@@ -39,7 +51,11 @@ it('should handle false value', async () => {
   await storeData(StorageKeys.BiometryActivated, false)
   const result = await makeFlagshipMetadataInjection()
   expect(result).toStrictEqual(
-    'window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};'
+    `
+    window.cozy = window.cozy || {}
+    window.cozy.flagship = window.cozy.flagship || {}
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+  `
   )
 })
 
@@ -47,6 +63,10 @@ it('should handle falsy value', async () => {
   await storeData(StorageKeys.BiometryActivated, '')
   const result = await makeFlagshipMetadataInjection()
   expect(result).toStrictEqual(
-    'window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};'
+    `
+    window.cozy = window.cozy || {}
+    window.cozy.flagship = window.cozy.flagship || {}
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+  `
   )
 })
