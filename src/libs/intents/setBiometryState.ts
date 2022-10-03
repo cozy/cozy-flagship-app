@@ -52,5 +52,9 @@ export const makeFlagshipMetadataInjection = async (): Promise<string> => {
 
   const flagshipMetadataString = JSON.stringify(flagshipMetadata)
 
-  return `window.cozy.flagship = {...window.cozy.flagship, ...${flagshipMetadataString}};`
+  return `
+    window.cozy = window.cozy || {}
+    window.cozy.flagship = window.cozy.flagship || {}
+    window.cozy.flagship = {...window.cozy.flagship, ...${flagshipMetadataString}};
+  `
 }
