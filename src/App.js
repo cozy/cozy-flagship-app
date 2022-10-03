@@ -53,10 +53,7 @@ const App = ({ setClient }) => {
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === 'active'
-      ) {
+      if (appState.current.match(/background/) && nextAppState === 'active') {
         const currentRoute =
           RootNavigation.navigationRef.getCurrentRoute() &&
           JSON.parse(
