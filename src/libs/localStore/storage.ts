@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { BiometryType } from 'react-native-biometrics'
 
 import { logger } from '/libs/functions/logger'
 
@@ -15,9 +16,7 @@ export enum StorageKeys {
 
 interface StorageItems {
   biometryActivated: boolean
-  capabilities: {
-    biometryType: 'FaceID' | 'TouchID' | 'Fingerprint' | 'Unknown'
-  }
+  biometryType?: BiometryType
   sessionCreatedFlag: string
 }
 
@@ -32,15 +31,11 @@ export const storeData = async (
   }
 }
 
-export const getData = async (
-  name: StorageKeys
-): Promise<StorageItems[keyof StorageItems] | null> => {
+export const getData = async <T>(name: StorageKeys): Promise<T | null> => {
   try {
     const value = await getItem(name)
 
-    return value !== null
-      ? (JSON.parse(value) as StorageItems[keyof StorageItems])
-      : null
+    return value !== null ? (JSON.parse(value) as T) : null
   } catch (error) {
     log.error(`Failed to get key "${name}" from persistent storage`, error)
     return null

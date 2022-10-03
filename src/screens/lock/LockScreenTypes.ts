@@ -1,5 +1,6 @@
 import { Route } from '@react-navigation/native'
 import { TextInputProps, TouchableWithoutFeedbackProps } from 'react-native'
+import { BiometryType } from 'react-native-biometrics'
 
 export interface LockScreenProps {
   route: CallbackRouteProp
@@ -17,6 +18,9 @@ export interface LockViewProps {
   uiError?: string
   togglePasswordVisibility: TouchableWithoutFeedbackProps['onPress']
   passwordVisibility: boolean
+  handleBiometry: () => Promise<void>
+  biometryType: BiometryType | null
+  biometryEnabled: boolean
 }
 
 export type CallbackRouteProp =

@@ -26,7 +26,7 @@ import { getHostname } from '/libs/functions/getHostname'
 import { useIsSecureProtocol } from '/hooks/useIsSecureProtocol'
 import {
   BiometryEmitter,
-  makeBiometryInjection
+  makeFlagshipMetadataInjection
 } from '/libs/intents/setBiometryState'
 
 const log = Minilog('CozyWebView')
@@ -125,7 +125,7 @@ export const CozyWebView = ({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const injectSettings = async () =>
-    webviewRef.injectJavaScript(await makeBiometryInjection())
+    webviewRef.injectJavaScript(await makeFlagshipMetadataInjection())
 
   useEffect(() => {
     webviewRef && injectSettings()

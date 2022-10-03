@@ -63,6 +63,8 @@ const App = ({ setClient }) => {
             JSON.stringify(RootNavigation.navigationRef.getCurrentRoute())
           )
 
+        if (currentRoute.name === routes.lock) return
+
         // eslint-disable-next-line promise/catch-or-return
         getData(StorageKeys.AutoLockEnabled).then(
           autoLockEnabled =>

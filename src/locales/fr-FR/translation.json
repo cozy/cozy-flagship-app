@@ -14,8 +14,11 @@
       "body": "Nous n'avons trouvé aucun Cozy à cette adresse. Il s'agit peut-être d'une erreur de frappe. Pour le savoir, vérifiez l'adresse de votre Cozy dans l'e-mail que nous vous avons envoyé au moment de sa création."
     },
     "lock": {
-      "title": "Entrez votre mot de passe",
-      "password_label": "Mot de passe"
+      "password_label": "Mot de passe",
+      "promptCancel": "Annuler",
+      "promptSubtitle": "Utilisez votre empreinte biométrique pour vous authentifier",
+      "promptTitle": "S'authentifier",
+      "title": "Entrez votre mot de passe"
     },
     "offline": {
       "title": "Pas de connexion internet",

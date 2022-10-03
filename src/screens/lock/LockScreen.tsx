@@ -6,7 +6,6 @@ import { Container } from '/ui/Container'
 import { CozyCircle } from '/ui/Icons/CozyCircle'
 import { Eye } from '/ui/Icons/Eye'
 import { EyeClosed } from '/ui/Icons/EyeClosed'
-import { Fingerprint } from '/ui/Icons/Fingerprint'
 import { Grid } from '/ui/Grid'
 import { Icon } from '/ui/Icon'
 import { IconButton } from '/ui/IconButton'
@@ -17,6 +16,8 @@ import { Tooltip } from '/ui/Tooltip'
 import { Typography } from '/ui/Typography'
 import { translation } from '/locales'
 import { useLockScreenProps } from '/screens/lock/hooks/useLockScreen'
+import { getBiometryIcon } from './functions/lockScreenFunctions'
+import { FlagshipBars } from '/components/ui/FlagshipBars'
 
 const LockView = ({
   fqdn,
@@ -27,7 +28,10 @@ const LockView = ({
   toggleMode,
   togglePasswordVisibility,
   tryUnlock,
-  uiError
+  uiError,
+  handleBiometry,
+  biometryType,
+  biometryEnabled
 }: LockViewProps): JSX.Element => (
   <Container>
     <Grid container direction="column" justifyContent="space-between">
@@ -36,9 +40,11 @@ const LockView = ({
           <Icon icon={LogoutFlipped} />
         </IconButton>
 
-        <IconButton>
-          <Icon icon={Fingerprint} />
-        </IconButton>
+        {biometryType && biometryEnabled ? (
+          <IconButton onPress={(): void => void handleBiometry()}>
+            <Icon icon={getBiometryIcon(biometryType)} />
+          </IconButton>
+        ) : null}
       </Grid>
 
       <Grid alignItems="center" direction="column">
@@ -95,5 +101,8 @@ const LockView = ({
 )
 
 export const LockScreen = (props: LockScreenProps): JSX.Element => (
-  <LockView {...useLockScreenProps(props.route?.params)} />
+  <>
+    <FlagshipBars />
+    <LockView {...useLockScreenProps(props.route?.params)} />
+  </>
 )

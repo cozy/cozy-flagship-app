@@ -1,8 +1,15 @@
+import ReactNativeBiometrics, { BiometryType } from 'react-native-biometrics'
+
+import { FaceId } from '/ui/Icons/FaceId'
+import { Fingerprint } from '/ui/Icons/Fingerprint'
 import { asyncLogout } from '/libs/intents/localMethods'
 import { doHashPassword } from '/libs/functions/passwordHelpers'
+import { getFqdnFromClient } from '/libs/client'
 import { getVaultInformation } from '/libs/keychain'
 import { translation } from '/locales'
-import { getFqdnFromClient } from '/libs/client'
+import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
+
+const rnBiometrics = new ReactNativeBiometrics()
 
 interface CozyClient {
   getStackClient: () => {
@@ -48,3 +55,70 @@ export const validatePassword = async ({
 }
 
 export const logout = (): void => void asyncLogout()
+
+export const getBiometryType = async (
+  callback: (type?: BiometryType) => void
+): Promise<void> =>
+  callback((await rnBiometrics.isSensorAvailable()).biometryType)
+
+interface UnlockWithPassword {
+  client: CozyClient
+  input: string
+  onSuccess: () => void
+  onFailure: (reason: string) => void
+}
+
+export const tryUnlockWithPassword = async ({
+  client,
+  input,
+  onSuccess,
+  onFailure
+}: UnlockWithPassword): Promise<void> => {
+  await validatePassword({
+    client,
+    input,
+    onSuccess,
+    onFailure
+  })
+}
+
+export const getBiometryIcon = (
+  type: BiometryType
+): typeof Fingerprint | typeof FaceId => {
+  switch (type) {
+    case 'TouchID':
+    case 'Biometrics':
+      return Fingerprint
+
+    case 'FaceID':
+      return FaceId
+  }
+}
+
+export const promptBiometry = async (): Promise<{
+  success: boolean
+  error?: string
+}> => {
+  await setFlagshipUI(
+    {
+      bottomOverlay: 'rgba(0,0,0,0.5)',
+      topOverlay: 'rgba(0,0,0,0.5)'
+    },
+    'promptBiometry'
+  )
+
+  const promptResult = await rnBiometrics.simplePrompt({
+    promptMessage: translation.screens.lock.promptTitle,
+    cancelButtonText: translation.screens.lock.promptCancel
+  })
+
+  await setFlagshipUI(
+    {
+      bottomOverlay: 'transparent',
+      topOverlay: 'transparent'
+    },
+    'promptBiometry'
+  )
+
+  return promptResult
+}
