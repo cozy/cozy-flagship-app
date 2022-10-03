@@ -1,4 +1,4 @@
-# 0.0.27
+# 0.0.28
 
 ## ✨ Features
 
@@ -8,6 +8,31 @@
 
 ## 🔧 Tech
 
+
+# 0.0.27
+
+## ✨ Features
+
+* Add auto-lock when app goes to background ([PR #415](https://github.com/cozy/cozy-react-native/pull/415))
+* Add biometric lock/unlock feature ([PR #402](https://github.com/cozy/cozy-react-native/pull/402) and [PR #428](https://github.com/cozy/cozy-react-native/pull/428) and [PR #433](https://github.com/cozy/cozy-react-native/pull/433))
+* Add `Red` in Client Side Connectors ([PR #372](https://github.com/cozy/cozy-react-native/pull/372))
+* Add `Sfr` in Client Side Connectors ([PR #375](https://github.com/cozy/cozy-react-native/pull/375))
+* Add `TotalEnergie` in Client Side Connectors ([PR #390](https://github.com/cozy/cozy-react-native/pull/390))
+* Add `AlanConnector` in Client Side Connectors ([PR #421](https://github.com/cozy/cozy-react-native/pull/421))
+* Add `Orange` in Client Side Connectors ([PR #254](https://github.com/cozy/cozy-react-native/pull/254))
+* Add autologin on `Sosh` Client Side Connector ([PR #299](https://github.com/cozy/cozy-react-native/pull/299))
+
+## 🐛 Bug Fixes
+
+* Correctly embed URL in Android's Share feature ([PR #417](https://github.com/cozy/cozy-react-native/pull/417))
+* Correctly re-set user's session when the app is resumed after a long period of inactivity ([PR #427](https://github.com/cozy/cozy-react-native/pull/427) and [PR #425](https://github.com/cozy/cozy-react-native/pull/425))
+* Disable HttpServer optimisation for cozy-settings that would prevent this cozy-app to work on iOS ([PR #416](https://github.com/cozy/cozy-react-native/pull/416))
+
+## 🔧 Tech
+
+* Remove some UI unnecessary re-renders ([PR #423](https://github.com/cozy/cozy-react-native/pull/423) and [PR #424](https://github.com/cozy/cozy-react-native/pull/424))
+* Handle HttpServer deactivation in unit-tests ([PR #426](https://github.com/cozy/cozy-react-native/pull/426))
+* Improve file upload API for Client Side Connectors ([PR #422](https://github.com/cozy/cozy-react-native/pull/422))
 
 # 0.0.26
 
