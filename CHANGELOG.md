@@ -1,4 +1,4 @@
-# 0.0.28
+# 0.0.29
 
 ## ✨ Features
 
@@ -8,6 +8,19 @@
 
 ## 🔧 Tech
 
+
+# 0.0.28
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* Fix iOS FaceID crash due to missing permissions declaration ([PR #435](https://github.com/cozy/cozy-react-native/pull/435))
+
+## 🔧 Tech
+
+* Activate Hermes engine ([PR #260](https://github.com/cozy/cozy-react-native/pull/260))
 
 # 0.0.27
 
