@@ -85,5 +85,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Permet le déverouillage de l'application en utilisant FaceID</string>
 </dict>
 </plist>
