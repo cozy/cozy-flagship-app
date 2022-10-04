@@ -1,3 +1,4 @@
+import '../wdyr'
 import React, { useEffect, useState, useRef } from 'react'
 import { AppState, StatusBar, StyleSheet, View } from 'react-native'
 import { decode, encode } from 'base-64'
