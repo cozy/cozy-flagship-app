@@ -6452,10 +6452,10 @@ cozy-flags@^2.9.0:
   dependencies:
     microee "^0.0.6"
 
-cozy-intent@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-2.5.0.tgz#774c4040fbdd657c56cabac6bd6ebdac9f0eae09"
-  integrity sha512-iUH5vGdpYQfwccltQX4JpkWDuUF82SJ8y8ictF/0Orxi8WbD6Y6nPJlNZyk/L+2vLgH3Prkmp2SJPijz56osPQ==
+cozy-intent@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-2.6.0.tgz#390bb287c3f74b019ec332427137a63f3e757401"
+  integrity sha512-zGDmMOO8NApzwxw+5DiOCsoyHmcLrqVEcOnMZw4tQd7HqtIYzJrCE6V5F1mXeuEHa7xeWAY6x3840xf769ii6A==
   dependencies:
     post-me "0.4.5"
 
@@ -14555,6 +14555,11 @@ react-native-keychain@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/react-native-keychain/-/react-native-keychain-8.0.0.tgz#ff708e4dc2a5440df717179bf9b7cd50f78b61d7"
   integrity sha512-c7Cs+YQN26UaQsRG1dmlXL7VL2ctnXwH/dl0IOMEQ7ZaL2NdN313YSAI8ZEZZjrVhNmPsyWEuvTFqWrdpItqQg==
+
+react-native-mask-input@1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-mask-input/-/react-native-mask-input-1.2.1.tgz#2f01683844ded3693d0d845bd1beeb2b8367f2e2"
+  integrity sha512-OsVKhdJjljWIt373CPmsyTAjynlMpQKPkz3UQJ0Y48ZTVQa8zyejb9nmwoe15Zvi0uC49RxggDRACgkUxOjt3w==
 
 react-native-safe-area-context@^4.3.1:
   version "4.3.1"
