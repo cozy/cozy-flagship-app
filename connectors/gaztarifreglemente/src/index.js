@@ -118,13 +118,16 @@ class TemplateContentScript extends ContentScript {
   
   async fetch(context) {
     this.log('Starting fetch')
-    await this.saveBills(this.store.bills, {
-      context,
-      keys: ['vendorRef'],
-      contentType: 'application/pdf',
-      fileIdAttributes: ['filename'],
-      qualificationLabel: 'energy_invoice'
-    })
+    await Promise.all([
+      this.saveIdentity(this.store.userIdentity),
+      this.saveBills(this.store.bills, {
+        context,
+        keys: ['vendorRef'],
+        contentType: 'application/pdf',
+        fileIdAttributes: ['filename'],
+        qualificationLabel: 'energy_invoice'
+      })
+    ])
     await this.clickAndWait('#header-deconnexion', '#idEspaceClientDiv')
   }
 
