@@ -72,14 +72,12 @@ class TemplateContentScript extends ContentScript {
     await this.clickAndWait('a[href="/home/espace-client/gerer-votre-espace-personnel.html"]', '.fiche-client')
     await this.runInWorker('getUserPersonalInfos')
     await this.runInWorker('computeIdentity', this.store)
-    const sourceAccountId = this.store.userIdentity.email ? this.store.userIdentity.email : 'UNKNOWN_ERROR'
-    if (sourceAccountId === 'UNKNOWN_ERROR') {
-      this.log("Couldn't get a sourceAccountIdentifier, using default")
+    if(this.store.userIdentity.email){
+      return { sourceAccountIdentifier : this.store.userIdentity.email }
+      } else {
+       this.log("Couldn't get a sourceAccountIdentifier, using default")
       return { sourceAccountIdentifier: DEFAULT_SOURCE_ACCOUNT_IDENTIFIER }
-    }
-    return {
-      sourceAccountIdentifier: sourceAccountId
-    }
+      }
   }
   
   async fetch(context) {
@@ -223,8 +221,8 @@ class TemplateContentScript extends ContentScript {
     }
     if(mobilePhoneNumber && mobilePhoneNumber !== ''){
       userPersonalInfos.phone.push({
-        type: 'home',
-        number: homePhoneNumber
+        type: 'mobile',
+        number: mobilePhoneNumber
       })
     }
     await this.sendToPilot({userPersonalInfos})
@@ -280,17 +278,18 @@ class TemplateContentScript extends ContentScript {
     if(locationUrl === testUrl && billsTable){
       return true
     }
-    await sleep(3)
     return false
   }
   
   async checkBillsTableLength(){
     this.log('Starting checkBillsTableLength')
+    // As the website load another page with a different url, but with the same composition
+    // the only way other than waiting for a selector to find out when the page is ready
+    // is to check if the table length had increase above the last four bills/notice loaded on previous landing.
     const tableLength = document.querySelector('tbody').children.length
     if(tableLength > 4){
       return true
     }
-    await sleep(3)
     return false
   }
   
