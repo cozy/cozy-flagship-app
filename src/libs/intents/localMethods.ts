@@ -1,18 +1,18 @@
+import CozyClient from 'cozy-client'
+
 import * as RootNavigation from '../RootNavigation'
 import strings from '/strings.json'
 import { EnvService } from '/libs/services/EnvService'
+import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
 import { clearClient } from '../client'
 import { deleteKeychain } from '../keychain'
 import { hideSplashScreen } from '../services/SplashScreenService'
 import { openApp } from '../functions/openApp'
 import { resetSessionToken } from '../functions/session'
-import { openSettingBiometry } from '/libs/intents/setBiometryState'
+import { routes } from '/constants/routes'
 import { setFlagshipUI } from './setFlagshipUI'
 import { showInAppBrowser, closeInAppBrowser } from './InAppBrowser'
-import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
-import { toggleSetting } from './toggleSetting'
-import CozyClient from 'cozy-client'
-import { routes } from '/constants/routes'
+import { toggleSetting } from '/libs/intents/toggleSetting'
 
 export const asyncLogout = async (): Promise<null> => {
   await clearClient()
@@ -88,17 +88,7 @@ export const localMethods = (
     logout,
     openApp: (href, app, iconParams) =>
       openApp(RootNavigation, href, app, iconParams),
-    toggleSetting: async (settingName): Promise<boolean | null> => {
-      if (settingName === 'biometryLock') {
-        return openSettingBiometry()
-      }
-
-      if (settingName === 'autoLock') {
-        return toggleSetting('autoLock')
-      }
-
-      return Promise.resolve(null)
-    },
+    toggleSetting,
     setFlagshipUI,
     // @ts-expect-error function to be converted to TS
     showInAppBrowser
