@@ -1,20 +1,29 @@
 import React from 'react'
 import { TextInput, TextInputProps, View } from 'react-native'
+import { MaskInputProps } from 'react-native-mask-input'
 
 import { Typography } from '/ui/Typography'
 import { styles } from '/ui/TextField/styles'
 
-interface TextFieldProps extends TextInputProps {
+export interface TextFieldProps extends TextInputProps {
   cursorColor?: string
-  label?: string
-  variant?: 'outlined'
   endAdornment?: React.ReactNode
+  inputComponent?:
+    | React.ComponentType<TextInputProps>
+    | React.ForwardRefExoticComponent<
+        MaskInputProps & React.RefAttributes<TextInput>
+      >
+  label?: string
+  inputComponentProps?: Record<string, unknown>
 }
 
 export const TextField = ({
+  endAdornment,
+  inputComponent: InputComponent,
   label,
   style,
-  endAdornment,
+  inputComponentProps,
+  value = '',
   ...props
 }: TextFieldProps): JSX.Element => (
   <View style={[styles.textField, style]}>
@@ -22,11 +31,23 @@ export const TextField = ({
       {label}
     </Typography>
 
-    <TextInput
-      cursorColor={styles.input.color}
-      style={styles.input}
-      {...props}
-    />
+    {InputComponent ? (
+      <InputComponent
+        cursorColor={styles.input.color}
+        style={[styles.input, { letterSpacing: 10 }]}
+        value={value}
+        placeholderTextColor={styles.input.color}
+        {...props}
+        {...inputComponentProps}
+      />
+    ) : (
+      <TextInput
+        cursorColor={styles.input.color}
+        style={styles.input}
+        value={value}
+        {...props}
+      />
+    )}
 
     {endAdornment ? (
       <View style={styles.endAdornment}>{endAdornment}</View>

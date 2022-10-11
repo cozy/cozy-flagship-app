@@ -54,6 +54,9 @@ export const validatePassword = async ({
   return onFailure(translation.errors.badUnlockPassword)
 }
 
+export const validatePin = async (pinCode: string): Promise<boolean> =>
+  (await getVaultInformation('pinCode')) === pinCode
+
 export const logout = (): void => void asyncLogout()
 
 export const getBiometryType = async (

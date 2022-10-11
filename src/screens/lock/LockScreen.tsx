@@ -1,37 +1,39 @@
 import React from 'react'
+import RnMaskInput from 'react-native-mask-input'
 
 import { Button } from '/ui/Button'
-import { LockScreenProps, LockViewProps } from '/screens/lock/LockScreenTypes'
 import { Container } from '/ui/Container'
 import { CozyCircle } from '/ui/Icons/CozyCircle'
 import { Eye } from '/ui/Icons/Eye'
 import { EyeClosed } from '/ui/Icons/EyeClosed'
+import { FlagshipBars } from '/components/ui/FlagshipBars'
 import { Grid } from '/ui/Grid'
 import { Icon } from '/ui/Icon'
 import { IconButton } from '/ui/IconButton'
 import { Link } from '/ui/Link'
+import { LockScreenProps, LockViewProps } from '/screens/lock/LockScreenTypes'
 import { LogoutFlipped } from '/ui/Icons/LogoutFlipped'
 import { TextField } from '/ui/TextField'
 import { Tooltip } from '/ui/Tooltip'
 import { Typography } from '/ui/Typography'
+import { getBiometryIcon } from '/screens/lock/functions/lockScreenFunctions'
 import { translation } from '/locales'
 import { useLockScreenProps } from '/screens/lock/hooks/useLockScreen'
-import { getBiometryIcon } from './functions/lockScreenFunctions'
-import { FlagshipBars } from '/components/ui/FlagshipBars'
 
 const LockView = ({
+  biometryEnabled,
+  biometryType,
   fqdn,
+  handleBiometry,
   handleInput,
   input,
   logout,
+  mode,
   passwordVisibility,
   toggleMode,
   togglePasswordVisibility,
   tryUnlock,
-  uiError,
-  handleBiometry,
-  biometryType,
-  biometryEnabled
+  uiError
 }: LockViewProps): JSX.Element => (
   <Container>
     <Grid container direction="column" justifyContent="space-between">
@@ -51,40 +53,65 @@ const LockView = ({
         <Icon icon={CozyCircle} style={{ marginBottom: 14 }} />
 
         <Typography variant="h4" color="secondary">
-          {translation.screens.lock.title}
+          {mode === 'password' ? translation.screens.lock.title : null}
+          {mode === 'PIN' ? translation.screens.lock.pin_title : null}
         </Typography>
 
         <Typography
-          variant="body2"
           color="secondary"
           style={{ opacity: 0.64, marginBottom: 24 }}
+          variant="body2"
         >
           {fqdn}
         </Typography>
 
         <Tooltip title={uiError}>
-          <TextField
-            label={translation.screens.lock.password_label}
-            onChangeText={handleInput}
-            secureTextEntry={!passwordVisibility}
-            value={input}
-            variant="outlined"
-            returnKeyType="go"
-            onSubmitEditing={tryUnlock}
-            endAdornment={
-              <IconButton onPress={togglePasswordVisibility}>
-                <Icon icon={!passwordVisibility ? EyeClosed : Eye} />
-              </IconButton>
-            }
-          />
+          {mode === 'password' ? (
+            <TextField
+              endAdornment={
+                <IconButton onPress={togglePasswordVisibility}>
+                  <Icon icon={!passwordVisibility ? EyeClosed : Eye} />
+                </IconButton>
+              }
+              label={translation.screens.lock.password_label}
+              onChangeText={handleInput}
+              onSubmitEditing={tryUnlock}
+              returnKeyType="go"
+              secureTextEntry={!passwordVisibility}
+              value={input}
+            />
+          ) : null}
+
+          {mode === 'PIN' ? (
+            <TextField
+              endAdornment={
+                <IconButton onPress={togglePasswordVisibility}>
+                  <Icon icon={!passwordVisibility ? EyeClosed : Eye} />
+                </IconButton>
+              }
+              inputComponent={RnMaskInput}
+              inputComponentProps={{
+                onChangeText: handleInput,
+                mask: [[/\d/], [/\d/], [/\d/], [/\d/]]
+              }}
+              keyboardType="numeric"
+              label={translation.screens.lock.pin_label}
+              onSubmitEditing={tryUnlock}
+              returnKeyType="go"
+              secureTextEntry={!passwordVisibility}
+              value={input}
+            />
+          ) : null}
         </Tooltip>
 
         <Link
-          style={{ alignSelf: 'flex-start', marginVertical: 16 }}
           onPress={toggleMode}
+          style={{ alignSelf: 'flex-start', marginVertical: 16 }}
         >
           <Typography variant="underline" color="secondary">
-            {translation.ui.buttons.usePIN}
+            {mode === 'PIN' ? translation.ui.buttons.forgotPin : null}
+
+            {mode === 'password' ? translation.ui.buttons.forgotPassword : null}
           </Typography>
         </Link>
       </Grid>
@@ -103,6 +130,7 @@ const LockView = ({
 export const LockScreen = (props: LockScreenProps): JSX.Element => (
   <>
     <FlagshipBars />
+
     <LockView {...useLockScreenProps(props.route?.params)} />
   </>
 )

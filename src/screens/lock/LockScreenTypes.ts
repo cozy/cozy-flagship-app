@@ -14,7 +14,7 @@ export interface LockViewProps {
   tryUnlock: TouchableWithoutFeedbackProps['onPress'] &
     TextInputProps['onSubmitEditing']
   fqdn: string
-  mode: 'password' | 'PIN'
+  mode?: 'password' | 'PIN'
   uiError?: string
   togglePasswordVisibility: TouchableWithoutFeedbackProps['onPress']
   passwordVisibility: boolean
