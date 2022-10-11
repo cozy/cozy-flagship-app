@@ -1,39 +1,43 @@
 {
   "errors": {
-    "contactUs": "Un problème, une suggestion ? Contactez-nous à",
     "badUnlockPassword": "Les identifiants que vous avez saisis sont incorrects, veuillez ré-essayer.",
+    "badUnlockPin": "Le code PIN que vous avez saisi est incorrect, veuillez ré-essayer",
+    "contactUs": "Un problème, une suggestion ? Contactez-nous à",
     "unknown_error": "Une erreur inattendue s'est produite, veuillez ré-essayer."
-  },
-  "software": {
-    "id": "amiral",
-    "name": "Cloud Personnel"
   },
   "screens": {
     "cozyNotFound": {
-      "title": "L'adresse de ce Cozy n'existe pas.",
-      "body": "Nous n'avons trouvé aucun Cozy à cette adresse. Il s'agit peut-être d'une erreur de frappe. Pour le savoir, vérifiez l'adresse de votre Cozy dans l'e-mail que nous vous avons envoyé au moment de sa création."
+      "body": "Nous n'avons trouvé aucun Cozy à cette adresse. Il s'agit peut-être d'une erreur de frappe. Pour le savoir, vérifiez l'adresse de votre Cozy dans l'e-mail que nous vous avons envoyé au moment de sa création.",
+      "title": "L'adresse de ce Cozy n'existe pas."
     },
     "lock": {
       "password_label": "Mot de passe",
+      "pin_label": "Code PIN",
+      "pin_title": "Entrez votre code PIN",
       "promptCancel": "Annuler",
       "promptSubtitle": "Utilisez votre empreinte biométrique pour vous authentifier",
       "promptTitle": "S'authentifier",
       "title": "Entrez votre mot de passe"
     },
     "offline": {
-      "title": "Pas de connexion internet",
-      "body": "Vérifier votre connexion internet pour accéder à votre Cozy."
+      "body": "Vérifier votre connexion internet pour accéder à votre Cozy.",
+      "title": "Pas de connexion internet"
     },
     "welcome": {
-      "title": "Bienvenue sur Cozy",
       "body": "Le domicile numérique pour réunir toutes vos données",
-      "button": "C'est parti"
+      "button": "C'est parti",
+      "title": "Bienvenue sur Cozy"
     }
+  },
+  "software": {
+    "id": "amiral",
+    "name": "Cloud Personnel"
   },
   "ui": {
     "buttons": {
-      "unlock": "Déverrouiller",
-      "usePIN": "Utiliser mon code PIN"
+      "forgotPassword": "J'ai oublié mon mot de passe",
+      "forgotPin": "J'ai oublié mon code PIN",
+      "unlock": "Déverrouiller"
     }
   }
 }
