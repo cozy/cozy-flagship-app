@@ -1,42 +1,27 @@
 import ContentScript from '../../connectorLibs/ContentScript'
-import {kyScraper as ky, blobToBase64} from '../../connectorLibs/utils'
+import {format} from 'date-fns'
 import Minilog from '@cozy/minilog'
 const log = Minilog('ContentScript')
 Minilog.enable('gaztarifreglementeCCC')
-import { interceptXHRResponse} from './XHRinterceptor'
 
-
-// let XHRResponses = {
-//   path : 'digitaltr-facture/api/private/facturesarchives?'
-// }
 let XHRResponses = []
-//SAME SH*T
 var proxied = window.XMLHttpRequest.prototype.open
 window.XMLHttpRequest.prototype.open = function (){
-    if (arguments[1].includes('digitaltr-facture/api/private/facturesarchives?')) {
-        var originalResponse = this
-        originalResponse.addEventListener('readystatechange', async function (event) {
-          console.log('Starting EventListener')
-            if (originalResponse.readyState === 4) {
-                const jsonResponse = JSON.parse(originalResponse.responseText)
-                await interceptDatas(jsonResponse)
-                // In every case, always returning the original response untouched
-                return originalResponse
-            }
-        })
-    }
-    return proxied.apply(this, [].slice.call(arguments))
+  if (arguments[1].includes('digitaltr-facture/api/private/facturesarchives?')) {
+    var originalResponse = this
+    originalResponse.addEventListener('readystatechange', async function (event) {
+      if (originalResponse.readyState === 4) {
+        const jsonResponse = JSON.parse(originalResponse.responseText)
+        XHRResponses.push(jsonResponse)
+          // In every case, always returning the original response untouched
+        return originalResponse
+      }
+    })
+  }
+  return proxied.apply(this, [].slice.call(arguments))
 }
 
-//Intercepting XHR response for api response
-// let XHRResponses = [
-//   'digitaltr-facture/api/private/facturesarchives?'
-// ]
-// interceptXHRResponse(XHRResponses)
-
-// let XHRResponses = interceptXHRResponse('digitaltr-facture/api/private/facturesarchives?')
-
-const BASE_URL = 'https://gaz-tarif-reglemente.fr/'
+const DEFAULT_SOURCE_ACCOUNT_IDENTIFIER = 'gaz tarif reglemente'
 const LOGIN_URL = 'https://gaz-tarif-reglemente.fr/login-page.html'
 const HOMEPAGE_URL = 'https://gaz-tarif-reglemente.fr/espace-client-tr/synthese.html'
 class TemplateContentScript extends ContentScript {
@@ -66,11 +51,14 @@ class TemplateContentScript extends ContentScript {
     this.log('Starting authWithCredentials')
     await this.goto(HOMEPAGE_URL)
     await this.waitForElementInWorker('#cai-webchat-div')
+    await Promise.race([
+      this.waitForElementInWorker('#email'),
+      this.waitForElementInWorker('#header-deconnexion')
+    ])
     const isLogged = await this.runInWorker('checkIfLogged')
     if(isLogged){
-      await this.runInWorker('click', 'a[href="/home/espace-client.html"]')
-      await this.waitForElementInWorker('a[href="/home/espace-client/vos-factures-et-correspondances.html"]')
-      return true
+      await this.clickAndWait('#header-deconnexion', '#idEspaceClientDiv')
+      await this.clickAndWait('#idEspaceClientDiv', '#email')
     }
     const isSuccess = await this.tryAutoLogin(credentials)
     if(isSuccess){
@@ -79,8 +67,6 @@ class TemplateContentScript extends ContentScript {
       this.log('Something went wrong while autoLogin, new auth needed')
       this.waitForUserAuthentication()
     }
-    
-    await this.waitForElementInWorker('[pauseWithCred]')
   }
 
   async authWithoutCredentials (){
@@ -96,13 +82,17 @@ class TemplateContentScript extends ContentScript {
     await this.setWorkerState({visible: true})
     await this.runInWorkerUntilTrue({method: 'waitForAuthenticated'})
     await this.setWorkerState({visible: false})
+    // Here wee need to save what we have in the interception
+    // as it is emptyed before we actually use it
+    await this.runInWorkerUntilTrue({method: 'waitForInterception'})
   }
 
 
   async getUserDataFromWebsite() {
+    this.log('Starting getUserDataFromWebsite')
     await this.waitForElementInWorker('a[href="/espace-client-tr/profil-et-contrats.html"]')
     await this.runInWorker('click', 'a[href="/espace-client-tr/profil-et-contrats.html"]')
-    // Here we need to make sure every elements we will need for getUserData to work
+    // Here we need to make sure every elements we will need for getUserIdentity to work
     // are present. Datas are not loaded at the very same time, resulting in html elements
     // visible but not fullfilled entirely, so this slows down a bit the execution but
     // it's supposed to let time for the datas to be injected.
@@ -117,12 +107,25 @@ class TemplateContentScript extends ContentScript {
     await this.runInWorker('getUserIdentity')
     await this.runInWorker('click', 'a[href="/espace-client-tr/factures-et-paiements.html"]')
     await this.waitForElementInWorker('#factures-listeFacture')
-    await this.runInWorker('getUserDatas')
-    await this.waitForElementInWorker('[pauseFetch]')
+    await this.runInWorker('getUserDatas', this.store.XHRResponses)
+    if(this.store.userIdentity.email){
+      return { sourceAccountIdentifier : this.store.userIdentity.email }
+    } else {
+      this.log("Couldn't get a sourceAccountIdentifier, using default")
+      return { sourceAccountIdentifier: DEFAULT_SOURCE_ACCOUNT_IDENTIFIER }
+    }
   }
   
   async fetch(context) {
-
+    this.log('Starting fetch')
+    await this.saveBills(this.store.bills, {
+      context,
+      keys: ['vendorRef'],
+      contentType: 'application/pdf',
+      fileIdAttributes: ['filename'],
+      qualificationLabel: 'energy_invoice'
+    })
+    await this.clickAndWait('#header-deconnexion', '#idEspaceClientDiv')
   }
 
   async tryAutoLogin(credentials,) {
@@ -140,6 +143,7 @@ class TemplateContentScript extends ContentScript {
     }
     await this.waitForElementInWorker(selectors.loginButton)
     await this.runInWorker('handleForm', {selectors, credentials})
+    await this.runInWorkerUntilTrue({method: 'waitForInterception'})
     await this.runInWorkerUntilTrue({method: 'checkIfLoggedWithAutoLogin'})
     return true
   }
@@ -180,19 +184,25 @@ class TemplateContentScript extends ContentScript {
     return userCredentials
   }
 
-  checkIfLogged() {
-    const mailInput = document.querySelector('#email')
-    const includesUrl = document.location.href.includes('?URL_CIBLE=')
-    const blocData = document.querySelector('#blocData')
-    const logoutButton = document.querySelector('#header-deconnexion')
-    if(mailInput && includesUrl){
+  async waitForInterception(){
+    this.log('Starting waitForInterception')
+    while(XHRResponses.length === 0){
       return false
     }
-    if (blocData & logoutButton){
+    await this.sendToPilot({XHRResponses})
+    return true
+  }
+
+  async checkIfLogged() {
+    this.log('Starting checkIfLogged')
+    const mailInput = document.querySelector('#email')
+    const logoutButton = document.querySelector('#header-deconnexion')
+    if(mailInput){
+      return false
+    }
+    if (logoutButton){
       return true
     }
-    this.log('None of the wanted selectors are presents')
-    return false
   }
 
   async handleForm(loginData){
@@ -205,7 +215,7 @@ class TemplateContentScript extends ContentScript {
     submitButton.click()
   }
 
-  checkIfLoggedWithAutoLogin(){
+  async checkIfLoggedWithAutoLogin(){
     if(document.location.href.includes(HOMEPAGE_URL) && document.querySelector('#blocData')){
       return true
     }
@@ -250,9 +260,43 @@ class TemplateContentScript extends ContentScript {
 
   }
 
-  async getUserDatas(){
+  async getUserDatas(datasToCompute){
     this.log('Starting getUserDatas')
-    console.log('XHR interceptions : ', XHRResponses)
+    let bills = []
+
+    for (let bill of datasToCompute[0].listeFactures){
+      const amount = bill.montantTTC.montant
+      const currency = '€'
+      const documentType = bill.libelle
+      const billDate = new Date(bill.dateFacture)
+      const formattedDate = format(billDate, 'dd_MM_yyyy')
+      const vendorRef = bill.numeroFacture
+      const decodeFileHref = `${decodeURIComponent(bill.url)}`
+      const doubleEncodedFileHref = encodeURIComponent(encodeURIComponent(decodeFileHref))
+      const doubleEncodedNumber = encodeURIComponent(encodeURIComponent(`N°${vendorRef}`))
+      const computedBill = {
+        amount,
+        currency,
+        fileurl : `https://gaz-tarif-reglemente.fr/digitaltr-util/api/private/document/mobile/attachment/${doubleEncodedFileHref}/SAE/${formattedDate.replace(/_/g, '')}-${doubleEncodedNumber}.pdf?`,
+        filename : `${formattedDate}_Gaz-tarif-reglemente_${amount}${currency}.pdf`,
+        documentType,
+        billDate,
+        vendor: 'Gaz Tarif Réglementé',
+        vendorRef,
+        fileAttributes : {
+          metadata: {
+            contentAuthor : 'gaz tarif réglementé',
+            datetime: billDate,
+            datetimeLabel: 'issueDate',
+            isSubscription: true,
+            issueDate: new Date(),
+            carbonCopy : true
+          }
+        }
+      }
+      bills.push(computedBill)
+    }
+    await this.sendToPilot({bills})
   }
 
 }
@@ -263,15 +307,8 @@ connector.init({ additionalExposedMethodsNames: [
   'handleForm',
   'checkIfLoggedWithAutoLogin',
   'getUserIdentity',
-  'getUserDatas'
+  'getUserDatas',
+  'waitForInterception'
 ] }).catch(err => {
   console.warn(err)
 })
-
-async function interceptDatas(response){
-  console.log('XHRResponse before saving datas', XHRResponses)
-  console.log('Trying to save datas', response)
-  XHRResponses.push(response)
-  await this.sendToPilot({XHRResponses})
-  console.log('XHRResponse after saving datas', XHRResponses)
-}
