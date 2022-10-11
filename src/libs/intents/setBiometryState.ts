@@ -5,6 +5,7 @@ import { FlagshipMetadata } from 'cozy-device-helper/dist/flagship'
 
 import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
 import { promptBiometry } from '/screens/lock/functions/lockScreenFunctions'
+import { getVaultInformation } from '../keychain'
 
 export const BiometryEmitter = new EventEmitter()
 
@@ -40,6 +41,7 @@ export const makeFlagshipMetadataInjection = async (): Promise<string> => {
   const rnBiometrics = new ReactNativeBiometrics()
 
   const flagshipMetadata: FlagshipMetadata = {
+    settings_PINEnabled: Boolean(await getVaultInformation('pinCode')),
     settings_biometryEnabled: Boolean(
       await getData(StorageKeys.BiometryActivated)
     ),

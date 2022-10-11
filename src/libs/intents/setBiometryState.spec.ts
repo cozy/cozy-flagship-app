@@ -12,13 +12,15 @@ jest.mock('react-native-biometrics', () => {
   return ReactNativeBiometrics
 })
 
+jest.mock('react-native-keychain')
+
 it('should not throw with a null hasBiometry', async () => {
   const result = await makeFlagshipMetadataInjection()
   expect(result).toStrictEqual(
     `
     window.cozy = window.cozy || {}
     window.cozy.flagship = window.cozy.flagship || {}
-    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
   `
   )
 })
@@ -30,7 +32,7 @@ it('should handle true value', async () => {
     `
     window.cozy = window.cozy || {}
     window.cozy.flagship = window.cozy.flagship || {}
-    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":true,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":true,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
   `
   )
 })
@@ -42,7 +44,7 @@ it('should handle truthy value', async () => {
     `
     window.cozy = window.cozy || {}
     window.cozy.flagship = window.cozy.flagship || {}
-    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":true,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":true,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
   `
   )
 })
@@ -54,7 +56,7 @@ it('should handle false value', async () => {
     `
     window.cozy = window.cozy || {}
     window.cozy.flagship = window.cozy.flagship || {}
-    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
   `
   )
 })
@@ -66,7 +68,7 @@ it('should handle falsy value', async () => {
     `
     window.cozy = window.cozy || {}
     window.cozy.flagship = window.cozy.flagship || {}
-    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
   `
   )
 })
