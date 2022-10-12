@@ -1,7 +1,7 @@
 # Cozy Flagship App
 
 The flagship app is meant to get all your Cozy in a single mobile app. 
-This notably includes the possiblity to run client-side konnectors, to get your data without any server scraping.
+This notably includes the possiblity to run client-side konnectors, to get your data without any server-side scraping.
 
 ## Setup / Requirements
 - [RN Environnement setup](https://reactnative.dev/docs/environment-setup)
@@ -28,7 +28,7 @@ Put the Sentry configuration into the following files:
 - `android/sentry.properties`
 - `ios/sentry.properties`
 
-## Run the React Native App
+## Run the Cozy Flagship App
 
 ### First time
 
