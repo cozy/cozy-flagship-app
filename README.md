@@ -1,4 +1,7 @@
-# Cozy React Native
+# Cozy Flagship App
+
+The flagship app is meant to get all your Cozy in a single mobile app. 
+This notably includes the possiblity to run client-side konnectors, to get your data without any server scraping.
 
 ## Setup / Requirements
 - [RN Environnement setup](https://reactnative.dev/docs/environment-setup)
