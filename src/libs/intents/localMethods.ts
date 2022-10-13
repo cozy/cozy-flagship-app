@@ -13,11 +13,13 @@ import { routes } from '/constants/routes'
 import { setFlagshipUI } from './setFlagshipUI'
 import { showInAppBrowser, closeInAppBrowser } from './InAppBrowser'
 import { toggleSetting } from '/libs/intents/toggleSetting'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const asyncLogout = async (): Promise<null> => {
   await clearClient()
   await resetSessionToken()
   await deleteKeychain()
+  await AsyncStorage.clear()
   RootNavigation.reset(routes.stack, { screen: 'welcome' })
   return Promise.resolve(null)
 }
