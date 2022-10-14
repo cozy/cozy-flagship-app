@@ -11,7 +11,7 @@ import { CozyProvider, useClient } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
 
 import { getClient } from './libs/client'
-import * as RootNavigation from './libs/RootNavigation.js'
+import * as RootNavigation from './libs/RootNavigation'
 import { CreateInstanceScreen } from './screens/login/CreateInstanceScreen'
 import { HttpServerProvider } from './libs/httpserver/httpServerProvider'
 import { HomeScreen } from './screens/home/HomeScreen'
@@ -29,6 +29,10 @@ import { ErrorScreen } from './screens/error/ErrorScreen.jsx'
 import { WelcomeScreen } from './screens/welcome/WelcomeScreen'
 import { LockScreen } from '/screens/lock/LockScreen'
 import { getData, StorageKeys } from '/libs/localStore/storage'
+import {
+  hideSplashScreen,
+  showSplashScreen
+} from '/libs/services/SplashScreenService'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -53,6 +57,9 @@ const App = ({ setClient }) => {
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
+      if (appState.current.match(/active/) && nextAppState === 'background')
+        showSplashScreen()
+
       if (appState.current.match(/background/) && nextAppState === 'active') {
         const currentRoute =
           RootNavigation.navigationRef.getCurrentRoute() &&
@@ -60,14 +67,14 @@ const App = ({ setClient }) => {
             JSON.stringify(RootNavigation.navigationRef.getCurrentRoute())
           )
 
-        if (currentRoute.name === routes.lock) return
+        const asyncCore = async () => {
+          const autoLockEnabled = await getData(StorageKeys.AutoLockEnabled)
 
-        // eslint-disable-next-line promise/catch-or-return
-        getData(StorageKeys.AutoLockEnabled).then(
-          autoLockEnabled =>
-            autoLockEnabled &&
-            RootNavigation.navigate(routes.lock, currentRoute)
-        )
+          autoLockEnabled && RootNavigation.navigate(routes.lock, currentRoute)
+        }
+
+        if (currentRoute.name !== routes.lock) void asyncCore()
+        else hideSplashScreen()
       }
 
       appState.current = nextAppState

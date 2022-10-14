@@ -10,12 +10,17 @@ import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { useSession } from '/hooks/useSession'
+import { routes } from '/constants/routes'
+import { navigate } from '/libs/RootNavigation'
+import { getData, StorageKeys } from '/libs/localStore/storage'
 
 const unzoomHomeView = webviewRef => {
   webviewRef?.injectJavaScript(
     'window.dispatchEvent(new Event("closeApp"));true;'
   )
 }
+
+let hasRenderedOnce = false
 
 const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   const client = useClient()
@@ -108,6 +113,16 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
       getHomeUri()
     }
   }, [uri, client, route, navigation, session])
+
+  useEffect(() => {
+    const lockRedirect = async () => {
+      const shouldRedirect = await getData(StorageKeys.AutoLockEnabled)
+      shouldRedirect && navigate(routes.lock)
+      hasRenderedOnce = true
+    }
+
+    !hasRenderedOnce && void lockRedirect()
+  }, [])
 
   const handleTrackWebviewInnerUri = webviewInneruri => {
     if (webviewInneruri !== trackedWebviewInnerUri) {
