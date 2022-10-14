@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     display: 'flex',
     flexDirection: 'row',
+    fontFamily: 'Lato-Regular',
     alignItems: 'center',
     justifyContent: 'space-between',
     position: 'relative',
@@ -24,6 +25,8 @@ export const styles = StyleSheet.create({
   endAdornment: { marginRight: 16 },
   input: {
     color: palette.Primary.ContrastText,
+    fontFamily: 'Lato-Regular',
+    fontSize: 16,
     paddingLeft: 16,
     paddingRight: 40,
     paddingVertical: 13,
