@@ -8,6 +8,7 @@ import { getFqdnFromClient } from '/libs/client'
 import { getVaultInformation } from '/libs/keychain'
 import { translation } from '/locales'
 import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
+import { hideSplashScreen } from '/libs/services/SplashScreenService'
 
 const rnBiometrics = new ReactNativeBiometrics()
 
@@ -124,4 +125,16 @@ export const promptBiometry = async (): Promise<{
   )
 
   return promptResult
+}
+
+export const ensureLockScreenUi = async (): Promise<void> => {
+  await setFlagshipUI(
+    {
+      bottomOverlay: 'transparent',
+      topOverlay: 'transparent'
+    },
+    'ensureLockScreenUi'
+  )
+
+  await hideSplashScreen()
 }

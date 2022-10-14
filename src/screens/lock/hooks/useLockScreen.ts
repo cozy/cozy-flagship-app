@@ -11,6 +11,7 @@ import { navigate } from '/libs/RootNavigation'
 import { resetUIState, StatusBarStyle } from '/libs/intents/setFlagshipUI'
 import { routes } from '/constants/routes'
 import {
+  ensureLockScreenUi,
   getBiometryType,
   logout,
   promptBiometry,
@@ -36,6 +37,7 @@ export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
 
     getMode()
       .then(value => setMode(value))
+      .then(ensureLockScreenUi)
       .catch(() => setMode('password'))
   }, [])
 
@@ -50,6 +52,8 @@ export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
 
     void getData(StorageKeys.BiometryActivated).then(async activated => {
       if (!activated) return
+
+      await ensureLockScreenUi()
 
       const { success } = await promptBiometry()
 
