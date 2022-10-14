@@ -1,5 +1,11 @@
 import React from 'react'
 import RnMaskInput from 'react-native-mask-input'
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback
+} from 'react-native'
 
 import { Button } from '/ui/Button'
 import { Container } from '/ui/Container'
@@ -19,6 +25,7 @@ import { Typography } from '/ui/Typography'
 import { getBiometryIcon } from '/screens/lock/functions/lockScreenFunctions'
 import { translation } from '/locales'
 import { useLockScreenProps } from '/screens/lock/hooks/useLockScreen'
+import { palette } from '/ui/palette'
 
 const LockView = ({
   biometryEnabled,
@@ -131,6 +138,15 @@ export const LockScreen = (props: LockScreenProps): JSX.Element => (
   <>
     <FlagshipBars />
 
-    <LockView {...useLockScreenProps(props.route?.params)} />
+    <TouchableWithoutFeedback
+      onPress={Keyboard.dismiss}
+      style={{ backgroundColor: palette.Primary[600], height: '100%' }}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <LockView {...useLockScreenProps(props.route?.params)} />
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   </>
 )
