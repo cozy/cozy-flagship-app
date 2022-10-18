@@ -23,7 +23,6 @@ window.fetch = function(){
   return constantMock.apply(this, arguments)
 }
 
-
 const BASE_URL = 'https://alan.com/'
 const LOGIN_URL = 'https://alan.com/login'
 const HOMEPAGE_URL = 'https://alan.com/app/dashboard'
@@ -90,46 +89,55 @@ class TemplateContentScript extends ContentScript {
       contentType: 'application/pdf',
       qualificationLabel: 'health_invoice'
     })
+    await this.waitForElementInWorker('[PauseFetch]')
   }
   
   async authWithCredentials(credentials){
     await this.goto(LOGIN_URL)
-    await this.waitForElementInWorker('a')
-    const isAskingForLogin = await this.runInWorker('checkAskForLogin')
-    if (isAskingForLogin){
-      const isSuccess = await this.tryAutoLogin(credentials)
-      if(isSuccess){
-        return true
-      }
-    }
-    const isAskingForDownload = await this.runInWorker('checkAskForAppDownload')
-    if(isAskingForDownload){
-      await this.clickAndWait('a[href="#"]','div[class="ListItem ListItem__Clickable ListCareEventItem"]')
+    await Promise.all([
+      this.waitForElementInWorker('input[name="email"]'),
+      this.waitForElementInWorker('input[name="password"]'),
+      this.waitForElementInWorker('button[type="submit"]')
+    ])
+    const isSuccess = await this.tryAutoLogin(credentials)
+    if(isSuccess){
+      return true
     }
     const isLogged = await this.runInWorker('checkIfLogged')
     if(isLogged){
       return true
     }
-    await this.clickAndWait('a[href="/login"]', 'input[name="password"]' )
-    
+    await this.waitForElementInWorker('[pauseWithCred]')
   }
   
   async authWithoutCredentials(){
-    await this.goto(BASE_URL)
-    await this.waitForElementInWorker('a[href="/login"]')
-    await this.clickAndWait('a[href="/login"]', 'a' )
-    await this.waitForElementInWorker('a')
-    const isAskingForDownload = await this.runInWorker('checkAskForAppDownload')
-    if(isAskingForDownload){
-      await this.clickAndWait('a[href="#"]','div[class="ListItem ListItem__Clickable ListCareEventItem"]')
-    }
+    await this.goto(LOGIN_URL)
+    await Promise.all([
+      this.waitForElementInWorker('input[name="email"]'),
+      this.waitForElementInWorker('input[name="password"]'),
+      this.waitForElementInWorker('button[type="submit"]')
+    ])
     await this.waitForUserAuthentication()
     await this.saveCredentials(this.store.userCredentials)
-    const isAskingForDownloadAgain = await this.runInWorker('checkAskForAppDownload')
-    if(isAskingForDownloadAgain){
-      await this.clickAndWait('a[href="#"]','div[class="ListItem ListItem__Clickable ListCareEventItem"]')
+    await this.waitForElementInWorker('h5')
+    const isAskingForAppDownload = await this.runInWorker('checkAskForAppDownload')
+    if(isAskingForAppDownload){
+      await this.clickAndWait('button','div[class="ListItem ListItem__Clickable ListCareEventItem"]')
     }
+    // await this.waitForElementInWorker('[pauseNoCred]')
     return true
+    // await this.waitForElementInWorker('a')
+    // const isAskingForDownload = await this.runInWorker('checkAskForAppDownload')
+    // if(isAskingForDownload){
+    //   await this.clickAndWait('a[href="#"]','div[class="ListItem ListItem__Clickable ListCareEventItem"]')
+    // }
+    // await this.waitForUserAuthentication()
+    // await this.saveCredentials(this.store.userCredentials)
+    // const isAskingForDownloadAgain = await this.runInWorker('checkAskForAppDownload')
+    // if(isAskingForDownloadAgain){
+    //   await this.clickAndWait('a[href="#"]','div[class="ListItem ListItem__Clickable ListCareEventItem"]')
+    // }
+    // return true
   }
 
   async tryAutoLogin(credentials,) {
@@ -165,7 +173,7 @@ class TemplateContentScript extends ContentScript {
         userCredentials
       })
     }
-    if(document.location.href.includes(`${HOMEPAGE_URL}`) && document.querySelector('a[href="#"]') || document.querySelector('div[class="murray__NavListItem"]')){
+    if(document.location.href.includes(`${HOMEPAGE_URL}`) && document.querySelector('div[class="murray__NavListItem"]')){
       this.log('Auth Check succeeded')
       return true
     }
@@ -186,7 +194,7 @@ class TemplateContentScript extends ContentScript {
   }
 
   checkAskForAppDownload() {
-    if(document.querySelector('a[href="#"]')){
+    if(document.querySelector('h5').textContent === 'Et si on continuait sur notre app ?'){
       return true
     }else{
       return false
@@ -415,8 +423,10 @@ class TemplateContentScript extends ContentScript {
         "Cookie": cookies,
         "X-APP-AUTH": "cookie"
       }
-    }).then(res => res.json())
-    if(!loginResponse.token){
+    }).then(res => {
+      res.json()
+    })
+    if(!loginResponse.token_payload){
       return false
     }
     await this.sendToPilot({loginResponse})
@@ -425,7 +435,7 @@ class TemplateContentScript extends ContentScript {
 
   async fetchAlanApi(url, tokenBearer){
     const response = await window.fetch(url, {
-       headers: {
+      headers: {
         Authorization:`Bearer ${tokenBearer}`
       }
     })
