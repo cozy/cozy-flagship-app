@@ -8,17 +8,22 @@
 
 ## Sentry configuration (REQUIRED, DO NOT SKIP)
 
-This application will not run without a working Sentry configuration, even in development mode.
+This application will not run without a Sentry configuration, even in development mode.
 
 ### Getting the configuration
-In order to configure it, first you have to decrypt the `cozy-react-native/sentry.properties` file in the `password-store-team` repository.
 
-Once this is done, you should now have a decrypted file resembling `android/sentry.properties.example`.
+If you are a Cozy developer, please get the actual Sentry configuration. For this, you need to decrypt the `cozy-react-native/sentry.properties` file in the `password-store-team` repository.
+
+If you are not a Cozy developer and you do not care about Sentry, you can just take the following example: https://github.com/getsentry/examples/blob/master/react-native/sentry.properties
+
+Either way, you should now have a file similar to `android/sentry.properties.example`.
 
 ### Installing the configuration
 
-Extract the content of `cozy-react-native/sentry.properties` from the password-store-team repository into
-`android/sentry.properties` and `ios/sentry.properties` file.
+Put the Sentry configuration into the following files:
+
+- `android/sentry.properties`
+- `ios/sentry.properties`
 
 ## Run the React Native App
 
