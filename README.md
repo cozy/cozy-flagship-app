@@ -2,6 +2,7 @@
 
 ## Setup / Requirements
 - [RN Environnement setup](https://reactnative.dev/docs/environment-setup)
+  - Please follow the React Native CLI part and make sure all the requirements are met with the correct versions.
 - install XCode and Android Studio (or Android SDK)
 - Node 16
 
@@ -184,7 +185,7 @@ a. Run Android app on emulator
 6. To connect, use `http://cozy.192-168-1-102.nip.io:8080` if `192.168.1.102` is your ifconfig and after creating a nip.io URL from it.
    a. When using a nip.io URL, you must create a `cozy-stack` instance with the same FQDN (ex: `cozy.192-168-1-102.nip.io:8080`)
 
-#### Current errors
+### Common errors
 
 1. XCode: `error: An organization slug is required`
 
@@ -203,3 +204,8 @@ This may happen after development's HotReload occurs. When encountered just rest
 `cozy-notes` bundle relies on a specific `tar_prefix`. When served from local `--appDir` then no `tar_prefix` is applied. However the Cozy's registry sends info from production app which has a defined `tar_prefix`.
 This would break the app as ReactNative will try to serve local assets using a non-existing directory.
 To prevent conflict on this, please increase your local `cozy-notes`'s version in the built `manifest.webapp` for a version that does not exist in production (i.e: `"version": "0.0.X.notexisting"`)
+
+
+5. Java-related errors. 
+
+Please make sure that Java 11 is installed and used.
