@@ -72,7 +72,7 @@ export const internalMethods = {
     setFlagshipUI(
       intent,
       EnvService.nameIs(strings.environments.test)
-        ? internalMethods.setFlagshipUI.caller.name
+        ? internalMethods.setFlagshipUI.caller?.name // eslint-disable-line @typescript-eslint/no-unnecessary-condition
         : ''
     )
 }
