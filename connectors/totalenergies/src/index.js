@@ -258,7 +258,7 @@ class TemplateContentScript extends ContentScript {
     this.log('getContract starts')
     const contractElement = document.querySelector('.cadre2')
     const offerName = contractElement.querySelector('h2').innerHTML
-    const rawStartDate = contractElement.querySelector('p[class="txt-gras"]').innerHTML
+    const rawStartDate = contractElement.querySelector('p[class="font-700"]').innerHTML
     const splittedStartDate = rawStartDate.split('/')
     const day = splittedStartDate[0]
     const month = splittedStartDate[1]
