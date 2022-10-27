@@ -84,7 +84,7 @@ class TemplateContentScript extends ContentScript {
     await this.setWorkerState({visible: false})
     // Here wee need to save what we have in the interception
     // as it is emptyed before we actually use it
-    await this.runInWorkerUntilTrue({method: 'waitForInterception'})
+    await this.runInWorkerUntilTrue({method:'waitForInterception', timeout: 30000})
   }
 
 
@@ -94,8 +94,7 @@ class TemplateContentScript extends ContentScript {
     await this.runInWorker('click', 'a[href="/espace-client-tr/profil-et-contrats.html"]')
     // Here we need to make sure every elements we will need for getUserIdentity to work
     // are present. Datas are not loaded at the very same time, resulting in html elements
-    // visible but not fullfilled entirely, so this slows down a bit the execution but
-    // it's supposed to let time for the datas to be injected.
+    // visible but not fullfilled entirely.
     await Promise.all([
       this.waitForElementInWorker('#idEmailContact_Infos'),
       this.waitForElementInWorker('#ProfilConsulterAdresseFacturation_nomComplet'),
@@ -104,6 +103,8 @@ class TemplateContentScript extends ContentScript {
       this.waitForElementInWorker('#ProfilConsulterAdresseFacturation_commune'),
       this.waitForElementInWorker('#idNumerosTelephone_Infos')
     ])
+    // After receiving needed elements, we're checking if everything's fine for scraping
+    await this.runInWorkerUntilTrue({method : 'checkIfFullfilled', timeout: 30000})
     await this.runInWorker('getUserIdentity')
     await this.runInWorker('click', 'a[href="/espace-client-tr/factures-et-paiements.html"]')
     await this.waitForElementInWorker('#factures-listeFacture')
@@ -146,8 +147,8 @@ class TemplateContentScript extends ContentScript {
     }
     await this.waitForElementInWorker(selectors.loginButton)
     await this.runInWorker('handleForm', {selectors, credentials})
-    await this.runInWorkerUntilTrue({method: 'waitForInterception'})
-    await this.runInWorkerUntilTrue({method: 'checkIfLoggedWithAutoLogin'})
+    await this.runInWorkerUntilTrue({method:'waitForInterception', timeout: 30000})
+    await this.runInWorkerUntilTrue({method: 'checkIfLoggedWithAutoLogin', timeout: 30000})
     return true
   }
 
@@ -188,8 +189,7 @@ class TemplateContentScript extends ContentScript {
   }
 
   async waitForInterception(){
-    this.log('Starting waitForInterception')
-    while(XHRResponses.length === 0){
+    if(XHRResponses.length === 0){
       return false
     }
     await this.sendToPilot({XHRResponses})
@@ -220,6 +220,26 @@ class TemplateContentScript extends ContentScript {
 
   async checkIfLoggedWithAutoLogin(){
     if(document.location.href.includes(HOMEPAGE_URL) && document.querySelector('#blocData')){
+      return true
+    }
+    return false
+  }
+
+  async checkIfFullfilled(){
+    function sortTruthy(value,index,array){
+      return value !== undefined
+    }
+    const neededInfos = [
+      document.querySelector('#idEmailContact_Infos'),
+      document.querySelector('#ProfilConsulterAdresseFacturation_nomComplet'),
+      document.querySelector('#ProfilConsulterAdresseFacturation_adresse'),
+      document.querySelector('#ProfilConsulterAdresseFacturation_complementAdresse'),
+      document.querySelector('#ProfilConsulterAdresseFacturation_commune'),
+      document.querySelector('#idNumerosTelephone_Infos')
+    ]
+    const truthyInfos = neededInfos.filter(sortTruthy)
+
+    if(truthyInfos.length === neededInfos.length){
       return true
     }
     return false
@@ -311,7 +331,8 @@ connector.init({ additionalExposedMethodsNames: [
   'checkIfLoggedWithAutoLogin',
   'getUserIdentity',
   'getUserDatas',
-  'waitForInterception'
+  'waitForInterception',
+  'checkIfFullfilled'
 ] }).catch(err => {
   console.warn(err)
 })
