@@ -57,8 +57,9 @@ const App = ({ setClient }) => {
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
-      if (appState.current.match(/active/) && nextAppState === 'background')
+      if (nextAppState === 'background') {
         showSplashScreen()
+      }
 
       if (appState.current.match(/background/) && nextAppState === 'active') {
         const currentRoute =
@@ -70,11 +71,17 @@ const App = ({ setClient }) => {
         const asyncCore = async () => {
           const autoLockEnabled = await getData(StorageKeys.AutoLockEnabled)
 
-          autoLockEnabled && RootNavigation.navigate(routes.lock, currentRoute)
+          if (autoLockEnabled) {
+            RootNavigation.navigate(routes.lock, currentRoute)
+          } else {
+            hideSplashScreen()
+          }
         }
 
         if (currentRoute.name !== routes.lock) void asyncCore()
-        else hideSplashScreen()
+        else {
+          hideSplashScreen()
+        }
       }
 
       appState.current = nextAppState
