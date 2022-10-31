@@ -213,7 +213,12 @@ This may happen after development's HotReload occurs. When encountered just rest
 This would break the app as ReactNative will try to serve local assets using a non-existing directory.
 To prevent conflict on this, please increase your local `cozy-notes`'s version in the built `manifest.webapp` for a version that does not exist in production (i.e: `"version": "0.0.X.notexisting"`)
 
-
 5. Java-related errors. 
 
 Please make sure that Java 11 is installed and used.
+
+6. Command PhaseScriptExecution failed with a nonzero exit code
+
+When compiling the app from XCode, if you encounter a `Command PhaseScriptExecution failed with a nonzero exit code` error, then your NodeJS configuration may be invalid
+If using NVM, then ensure that `/usr/local/bin/node` is correctly linked to your NVM default NodeJS location
+More info: https://github.com/facebook/react-native/issues/32984#issuecomment-1165385007
