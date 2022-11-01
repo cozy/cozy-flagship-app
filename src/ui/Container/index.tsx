@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ViewProps } from 'react-native'
+import { SafeAreaView, View, ViewProps } from 'react-native'
 import { getNavbarHeight } from '/libs/dimensions'
 
 import { styles } from '/ui/Container/styles'
@@ -15,6 +15,6 @@ export const Container = ({
     style={[styles.container, { paddingBottom: getNavbarHeight() + 16 }, style]}
     {...props}
   >
-    {children}
+    <SafeAreaView>{children}</SafeAreaView>
   </View>
 )
