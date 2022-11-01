@@ -1,5 +1,6 @@
 import { BiometryType } from 'react-native-biometrics'
 import { useCallback, useEffect, useState } from 'react'
+import { AppState } from 'react-native'
 
 import { useClient } from 'cozy-client'
 
@@ -28,8 +29,49 @@ export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
   const [mode, setMode] = useState<'password' | 'PIN'>()
   const [passwordVisibility, _togglePasswordVisibility] = useState(false)
   const [uiError, setUiError] = useState('')
+  const [isOnBackground, setIsOnBackground] = useState(false)
   const client = useClient()
   const { fqdn } = getFqdnFromClient(client)
+
+  const onUnlock = useCallback((): void => {
+    if (!route) return navigate(routes.home)
+
+    return navigate(route.name, route.params)
+  }, [route])
+
+  const tryBiometry = useCallback((): Promise<void> => {
+    return getData(StorageKeys.BiometryActivated).then(async activated => {
+      if (!activated) return
+
+      await ensureLockScreenUi()
+
+      const { success } = await promptBiometry()
+
+      if (success) return onUnlock()
+
+      return
+    })
+  }, [onUnlock])
+
+  useEffect(
+    function showBiometryOnResume() {
+      const subscription = AppState.addEventListener('change', nextAppState => {
+        if (isOnBackground && nextAppState === 'active') {
+          setIsOnBackground(false)
+          void tryBiometry()
+        }
+
+        if (nextAppState === 'background') {
+          setIsOnBackground(true)
+        }
+      })
+
+      return () => {
+        subscription.remove()
+      }
+    },
+    [isOnBackground, tryBiometry]
+  )
 
   useEffect(() => {
     const getMode = async (): Promise<'password' | 'PIN'> =>
@@ -41,31 +83,15 @@ export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
       .catch(() => setMode('password'))
   }, [])
 
-  const onUnlock = useCallback((): void => {
-    if (!route) return navigate(routes.home)
-
-    return navigate(route.name, route.params)
-  }, [route])
-
   useEffect(() => {
     resetUIState(StatusBarStyle.Dark)
 
-    void getData(StorageKeys.BiometryActivated).then(async activated => {
-      if (!activated) return
-
-      await ensureLockScreenUi()
-
-      const { success } = await promptBiometry()
-
-      if (success) return onUnlock()
-
-      return activated
-    })
+    void tryBiometry()
 
     void getBiometryType(type => {
       setBiometryType(type ?? null)
     })
-  }, [onUnlock])
+  }, [onUnlock, tryBiometry])
 
   useEffect(
     () =>
