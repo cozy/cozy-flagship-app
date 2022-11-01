@@ -70,7 +70,11 @@ const App = ({ setClient }) => {
         const asyncCore = async () => {
           const autoLockEnabled = await getData(StorageKeys.AutoLockEnabled)
 
-          autoLockEnabled && RootNavigation.navigate(routes.lock, currentRoute)
+          if (autoLockEnabled) {
+            RootNavigation.navigate(routes.lock, currentRoute)
+          } else {
+            hideSplashScreen()
+          }
         }
 
         if (currentRoute.name !== routes.lock) void asyncCore()
