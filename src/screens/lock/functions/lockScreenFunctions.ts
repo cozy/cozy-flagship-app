@@ -1,4 +1,5 @@
 import ReactNativeBiometrics, { BiometryType } from 'react-native-biometrics'
+import { Platform } from 'react-native'
 
 import { FaceId } from '/ui/Icons/FaceId'
 import { Fingerprint } from '/ui/Icons/Fingerprint'
@@ -103,26 +104,30 @@ export const promptBiometry = async (): Promise<{
   success: boolean
   error?: string
 }> => {
-  await setFlagshipUI(
-    {
-      bottomOverlay: 'rgba(0,0,0,0.5)',
-      topOverlay: 'rgba(0,0,0,0.5)'
-    },
-    'promptBiometry'
-  )
+  if (Platform.OS === 'android') {
+    await setFlagshipUI(
+      {
+        bottomOverlay: 'rgba(0,0,0,0.5)',
+        topOverlay: 'rgba(0,0,0,0.5)'
+      },
+      'promptBiometry'
+    )
+  }
 
   const promptResult = await rnBiometrics.simplePrompt({
     promptMessage: translation.screens.lock.promptTitle,
     cancelButtonText: translation.screens.lock.promptCancel
   })
 
-  await setFlagshipUI(
-    {
-      bottomOverlay: 'transparent',
-      topOverlay: 'transparent'
-    },
-    'promptBiometry'
-  )
+  if (Platform.OS === 'android') {
+    await setFlagshipUI(
+      {
+        bottomOverlay: 'transparent',
+        topOverlay: 'transparent'
+      },
+      'promptBiometry'
+    )
+  }
 
   return promptResult
 }
