@@ -25,6 +25,7 @@ export const styles = StyleSheet.create({
   },
   text: {
     color: palette.Primary.ContrastText,
+    flex: 1,
     fontSize: 12
   }
 })
