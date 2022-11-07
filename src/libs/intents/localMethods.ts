@@ -1,4 +1,5 @@
 import CozyClient from 'cozy-client'
+import { Linking, Platform } from 'react-native'
 
 import * as RootNavigation from '../RootNavigation'
 import strings from '/strings.json'
@@ -67,6 +68,17 @@ const fetchSessionCodeWithClient = (
   }
 }
 
+const openAppOSSettings = async (): Promise<null> => {
+  if (Platform.OS === 'android') {
+    throw new Error(
+      `openAppOSSettings shouldn't be called from Android as no authorization is needed for biometry`
+    )
+  }
+
+  await Linking.openURL('app-settings:')
+  return null
+}
+
 export const internalMethods = {
   setFlagshipUI: (intent: FlagshipUI): Promise<null> =>
     setFlagshipUI(
@@ -93,6 +105,7 @@ export const localMethods = (
     toggleSetting,
     setFlagshipUI,
     // @ts-expect-error function to be converted to TS
-    showInAppBrowser
+    showInAppBrowser,
+    openAppOSSettings
   }
 }

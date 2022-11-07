@@ -9,6 +9,8 @@ import { getVaultInformation } from '../keychain'
 
 export const BiometryEmitter = new EventEmitter()
 
+const BIOMETRY_DENIED_BY_USER_IOS_ERROR = /.*User.*denied.*/
+
 const updateBiometrySetting = async (activated: boolean): Promise<boolean> => {
   await storeData(StorageKeys.BiometryActivated, activated)
   await storeData(StorageKeys.AutoLockEnabled, activated)
@@ -40,6 +42,11 @@ export const openSettingBiometry = async (): Promise<boolean> => {
 export const makeFlagshipMetadataInjection = async (): Promise<string> => {
   const rnBiometrics = new ReactNativeBiometrics()
 
+  const sensorData = await rnBiometrics.isSensorAvailable()
+  const biometryDenied = BIOMETRY_DENIED_BY_USER_IOS_ERROR.test(
+    sensorData.error ?? ''
+  )
+
   const flagshipMetadata: FlagshipMetadata = {
     settings_PINEnabled: Boolean(await getVaultInformation('pinCode')),
     settings_biometryEnabled: Boolean(
@@ -48,8 +55,9 @@ export const makeFlagshipMetadataInjection = async (): Promise<string> => {
     settings_autoLockEnabled: Boolean(
       await getData(StorageKeys.AutoLockEnabled)
     ),
-    biometry_type: (await rnBiometrics.isSensorAvailable()).biometryType,
-    biometry_available: (await rnBiometrics.isSensorAvailable()).available
+    biometry_type: sensorData.biometryType,
+    biometry_available: sensorData.available,
+    biometry_authorisation_denied: biometryDenied
   }
 
   const flagshipMetadataString = JSON.stringify(flagshipMetadata)
