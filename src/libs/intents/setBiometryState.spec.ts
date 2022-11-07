@@ -20,7 +20,7 @@ it('should not throw with a null hasBiometry', async () => {
     `
     window.cozy = window.cozy || {}
     window.cozy.flagship = window.cozy.flagship || {}
-    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true,"biometry_authorisation_denied":false}};
   `
   )
 })
@@ -32,7 +32,7 @@ it('should handle true value', async () => {
     `
     window.cozy = window.cozy || {}
     window.cozy.flagship = window.cozy.flagship || {}
-    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":true,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":true,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true,"biometry_authorisation_denied":false}};
   `
   )
 })
@@ -44,7 +44,7 @@ it('should handle truthy value', async () => {
     `
     window.cozy = window.cozy || {}
     window.cozy.flagship = window.cozy.flagship || {}
-    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":true,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":true,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true,"biometry_authorisation_denied":false}};
   `
   )
 })
@@ -56,7 +56,7 @@ it('should handle false value', async () => {
     `
     window.cozy = window.cozy || {}
     window.cozy.flagship = window.cozy.flagship || {}
-    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true,"biometry_authorisation_denied":false}};
   `
   )
 })
@@ -68,7 +68,7 @@ it('should handle falsy value', async () => {
     `
     window.cozy = window.cozy || {}
     window.cozy.flagship = window.cozy.flagship || {}
-    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true}};
+    window.cozy.flagship = {...window.cozy.flagship, ...{"settings_PINEnabled":false,"settings_biometryEnabled":false,"settings_autoLockEnabled":false,"biometry_type":"FaceID","biometry_available":true,"biometry_authorisation_denied":false}};
   `
   )
 })
