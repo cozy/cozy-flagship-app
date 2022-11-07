@@ -39,6 +39,17 @@ export const openSettingBiometry = async (): Promise<boolean> => {
   return handleBiometryActivation(Boolean(biometryEnabled))
 }
 
+export const isBiometryDenied = async (): Promise<boolean> => {
+  const rnBiometrics = new ReactNativeBiometrics()
+
+  const sensorData = await rnBiometrics.isSensorAvailable()
+  const biometryDenied = BIOMETRY_DENIED_BY_USER_IOS_ERROR.test(
+    sensorData.error ?? ''
+  )
+
+  return biometryDenied
+}
+
 export const makeFlagshipMetadataInjection = async (): Promise<string> => {
   const rnBiometrics = new ReactNativeBiometrics()
 
