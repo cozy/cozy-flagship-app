@@ -14,6 +14,7 @@ import { routes } from '/constants/routes'
 import { setFlagshipUI } from './setFlagshipUI'
 import { showInAppBrowser, closeInAppBrowser } from './InAppBrowser'
 import { toggleSetting } from '/libs/intents/toggleSetting'
+import { isBiometryDenied } from '/libs/intents/setBiometryState'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const asyncLogout = async (): Promise<null> => {
@@ -106,6 +107,7 @@ export const localMethods = (
     setFlagshipUI,
     // @ts-expect-error function to be converted to TS
     showInAppBrowser,
+    isBiometryDenied,
     openAppOSSettings
   }
 }
