@@ -11,7 +11,8 @@ export const BiometryEmitter = new EventEmitter()
 
 const updateBiometrySetting = async (activated: boolean): Promise<boolean> => {
   await storeData(StorageKeys.BiometryActivated, activated)
-  await storeData(StorageKeys.AutoLockEnabled, activated)
+  if (!activated && !(await getData(StorageKeys.AutoLockEnabled)))
+    await storeData(StorageKeys.AutoLockEnabled, true)
   const newData = Boolean(await getData(StorageKeys.BiometryActivated))
 
   BiometryEmitter.emit('change', newData)
