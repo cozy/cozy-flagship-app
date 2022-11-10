@@ -266,7 +266,7 @@ class TemplateContentScript extends ContentScript {
     const startDate = new Date(year, month, day)
     const href = contractElement.querySelectorAll('.ml-std')[1].children[1].getAttribute('href')
     const fileurl = `https://www.totalenergies.fr${href}`
-    const filename = `${day}-${month}-${year}_TotalEnergie_Contrat_${offerName.replaceAll(' ', '-')}.pdf`
+    const filename = `${year}-${month}-${day}_TotalEnergie_Contrat_${offerName.replaceAll(' ', '-')}.pdf`
     const contract = [{
       filename,
       fileurl,
@@ -326,7 +326,7 @@ class TemplateContentScript extends ContentScript {
       const date = new Date(`${month}/${day}/${year}`)
       let invoice = {
         docTitle,
-        filename : `${day}-${month}-${year}_TotalEnergies_${docTitle.replace(/ /g,'-')}_${amount}${currency}.pdf`,
+        filename : `${year}-${month}-${day}_TotalEnergies_${docTitle.replace(/ /g,'-')}_${amount}${currency}.pdf`,
         vendorRef,
         amount,
         date,
@@ -382,7 +382,7 @@ class TemplateContentScript extends ContentScript {
       const date = new Date(`${month}/${day}/${year}`)
       let schedule = {
         docTitle,
-        filename : `${day}-${month}-${year}_TotalEnergies_${docTitle.replace(/ /g,'-')}_${amount}${currency}.pdf`,
+        filename : `${year}-${month}-${day}_TotalEnergies_${docTitle.replace(/ /g,'-')}_${amount}${currency}.pdf`,
         vendorRef,
         amount,
         date,
