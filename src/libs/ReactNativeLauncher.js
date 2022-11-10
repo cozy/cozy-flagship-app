@@ -4,6 +4,8 @@ import Minilog from '@cozy/minilog'
 import ContentScriptBridge from './bridge/ContentScriptBridge'
 import Launcher from './Launcher'
 import * as ConnectorInstaller from './ConnectorInstaller'
+import { saveCookie, getCookie, removeCookie } from './keychain'
+import CookieManager from '@react-native-cookies/cookies'
 
 const log = Minilog('ReactNativeLauncher')
 
@@ -15,7 +17,12 @@ Minilog.enable()
 class ReactNativeLauncher extends Launcher {
   constructor() {
     super()
-    this.workerMethodNames = ['sendToPilot']
+    this.workerMethodNames = [
+      'sendToPilot',
+      'getCookies',
+      'getWebViewCookie',
+      'getCookieFromKeychain'
+    ]
     this.workerListenedEventsNames = ['log', 'workerEvent', 'workerReady']
   }
 
@@ -33,7 +40,11 @@ class ReactNativeLauncher extends Launcher {
           'saveIdentity',
           'setUserAgent',
           'getCredentials',
-          'saveCredentials'
+          'saveCredentials',
+          'getCookies',
+          'saveCookie',
+          'getWebViewCookie',
+          'getCookieFromKeychain'
         ],
         listenedEventsNames: ['log']
       }),
@@ -241,6 +252,116 @@ class ReactNativeLauncher extends Launcher {
       })
     } catch (err) {
       throw new Error(`Init error in worker: ${err.message}`)
+    }
+  }
+
+  /**
+   * This method returns all cookies when asked by the running webview(s).
+   * This method is callable by the content script.
+   *
+   * @param {String} options.cookieDomain : Domain's name where to get cookies from.
+   * @param {String} options.konnectorSlug : Slug of the konnector triggering the function.
+   * @param {String} options.idAccount : Id of the account triggering the function.
+   */
+  async getCookies(cookieDomain) {
+    const { manifest } = this.startContext
+    if (!manifest.cookie_domains.includes(cookieDomain)) {
+      throw new Error('Cookie domain not declared in the manifest')
+    }
+    try {
+      log.info(
+        `getCookie on this domain : ${cookieDomain} for account ${this.startContext.account.id}`
+      )
+      const cookies = await CookieManager.get(cookieDomain)
+      log.info('CookieManager.get =>', cookies)
+      return cookies
+    } catch (err) {
+      throw new Error(`Error in worker: ${err.message}`)
+    }
+  }
+
+  /**
+   * This method returns one cookie matching the provided name when asked by the running webview(s).
+   * This method is callable by the content script.
+   *
+   * @param {String} options.cookieName : wanted cookie's by its name.
+   */
+  async getCookieFromKeychain(cookieName) {
+    log.info('Starting getCookieFromKeychain in RNLauncher')
+    try {
+      const { account, manifest } = this.startContext
+      const accountId = account.id
+      const konnectorSlug = manifest.slug
+      log.info('Checking if cookie is present with this name :', cookieName)
+      const existingCookies = await getCookie({
+        accountId,
+        konnectorSlug,
+        cookieName
+      })
+      if (existingCookies !== null) {
+        return existingCookies
+      }
+      log.info(`No cookie named "${cookieName}" has been found, retunring null`)
+      return null
+    } catch (err) {
+      throw new Error(
+        `Error in worker during getCookieFromKeychain: ${err.message}`
+      )
+    }
+  }
+
+  /**
+   * This method saves given cookie in the keychain when asked by the running webview(s).
+   * This method is callable by the content script.
+   *
+   * @param {cookieObject.<Object>} : Object containing all the needed properties of the cookie.
+   */
+  async saveCookie(cookieObject) {
+    log.info('Starting saveCookie in RNLauncher')
+    try {
+      const { account, manifest } = this.startContext
+      const accountId = account.id
+      const konnectorSlug = manifest.slug
+      log.info(
+        'Checking if cookie is present with this payload :',
+        cookieObject
+      )
+      const existingCookies = await getCookie({
+        accountId,
+        konnectorSlug,
+        cookieObject
+      })
+      log.info('Cookie from keychain', existingCookies)
+      log.info('Cookie Object', { accountId, konnectorSlug, cookieObject })
+      if (existingCookies !== null) {
+        log.info('gettin existing cookie condition')
+        await removeCookie(accountId, konnectorSlug)
+      }
+      await saveCookie({ accountId, konnectorSlug, cookieObject })
+    } catch (err) {
+      throw new Error(`Error in worker during saveCookie: ${err.message}`)
+    }
+  }
+
+  /**
+   * This method returns a webView Cookie find by its name when asked by the running webview(s).
+   * This method is callable by the content script.
+   *
+   * @param {String} cookieDomain : Domain to recover cookies from .
+   * @param {String} cookieName : Name of the wanted cookie.
+   */
+  async getWebViewCookie(cookieDomain, cookieName) {
+    log.info('Starting getWebViewCookie in RNLauncher')
+    let expectedCookie
+    log.info(`for this cookie : ${cookieName} for domain ${cookieDomain}`)
+    try {
+      const cookies = await CookieManager.get(cookieDomain)
+      if (cookies[cookieName]) {
+        expectedCookie = cookies[cookieName]
+      }
+      return expectedCookie
+    } catch (err) {
+      throw new Error(`Error in worker: ${err.message}`)
     }
   }
 
