@@ -40,6 +40,8 @@ export default class ContentScript {
       'fillText',
       'storeFromWorker',
       'clickAndWait',
+      'getCookies',
+      'getWebViewCookie'
     ]
 
     if (options.additionalExposedMethodsNames) {
@@ -261,6 +263,45 @@ export default class ContentScript {
   async saveIdentity(identity) {
     this.onlyIn(PILOT_TYPE, 'saveIdentity')
     return await this.bridge.call('saveIdentity', identity)
+  }
+
+  /**
+   * Bridge to the getCookies method from the RNlauncher.
+   *
+   * @param {String} domain
+   */
+  async getCookies(domain) {
+    return await this.bridge.call('getCookies', domain)
+  }
+
+  /**
+   * Bridge to the getCookies method from the RNlauncher.
+   *
+   * @param {String} domain
+   */
+  async getCookieFromKeychain(cookieName) {
+    return await this.bridge.call('getCookieFromKeychain', cookieName)
+  }
+
+  /**
+   * Bridge to the saveCookie method from the RNlauncher.
+   *
+   * @param {String} domain
+   */
+  async saveCookie(cookieValue) {
+    this.onlyIn(PILOT_TYPE, 'saveCookie')
+    return await this.bridge.call('saveCookie', cookieValue)
+  }
+
+  async getWebViewCookie(cookieDomain, cookieName) {
+    this.onlyIn(WORKER_TYPE, 'getWebViewCookie')
+    const expectedCookie = await this.bridge.call(
+      'getWebViewCookie',
+      cookieDomain,
+      cookieName
+    )
+    this.log(JSON.stringify(expectedCookie))
+    return expectedCookie
   }
 
   /**
