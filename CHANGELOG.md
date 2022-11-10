@@ -1,4 +1,4 @@
-# 0.0.29
+# 0.0.30
 
 ## ✨ Features
 
@@ -8,6 +8,28 @@
 
 ## 🔧 Tech
 
+
+# 0.0.29
+
+## ✨ Features
+
+* Add unlock by PIN feature ([PR #432](https://github.com/cozy/cozy-react-native/pull/432))
+* Improve Lock Screen UI ([PR #442](https://github.com/cozy/cozy-react-native/pull/442))
+* Add `Veolia Eau` in Client Side Connectors ([PR #430](https://github.com/cozy/cozy-react-native/pull/430))
+* Add `Gaz Tarif Réglementé` in Client Side Connectors ([PR #437](https://github.com/cozy/cozy-react-native/pull/437))
+
+## 🐛 Bug Fixes
+
+* Fix bugs related to lock/unlock feature ([PR #441](https://github.com/cozy/cozy-react-native/pull/441) and [PR #453](https://github.com/cozy/cozy-react-native/pull/453))
+* Fix `TotalEnergie` Client Side Connectors ([PR #448](https://github.com/cozy/cozy-react-native/pull/448))
+* Fix app crash when opening a cozy-app ([PR #449](https://github.com/cozy/cozy-react-native/pull/449))
+
+## 🔧 Tech
+
+* Improve project's documentation about Java JDK requirement ([PR #447](https://github.com/cozy/cozy-react-native/pull/447))
+* Improve project's documentation about Sentry configuration ([PR #445](https://github.com/cozy/cozy-react-native/pull/445))
+* Force `androidXBrowser` version to 1.4.0 ([PR #446](https://github.com/cozy/cozy-react-native/pull/446))
+* Add `Hermes` to iOS linked libraries ([PR #451](https://github.com/cozy/cozy-react-native/pull/451))
 
 # 0.0.28
 
