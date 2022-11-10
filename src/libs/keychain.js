@@ -20,6 +20,7 @@ Keychain's Structure
   }
   */
 export const CREDENTIALS_SCOPE = 'CSC_ACCOUNTS'
+export const COOKIES_SCOPE = 'CSC_COOKIES'
 export const VAULT_SCOPE = 'VAULT'
 export const GLOBAL_KEY = 'secure'
 let isLocked = false
@@ -95,6 +96,7 @@ export async function removeCredential(account) {
     unlockKeychain('removeCredential is done')
   }
 }
+
 /**
  *
  * @param {String} key
@@ -161,6 +163,24 @@ function addItem({ scope, key, value }, existingJSON = {}) {
   return clonedJSON
 }
 
+function addCookieItem({ scope, account, key, value }, existingJSON = {}) {
+  const clonedJSON = { ...existingJSON }
+
+  if (!clonedJSON[scope]) {
+    clonedJSON[scope] = {}
+  }
+  if (!clonedJSON[scope][account]) {
+    clonedJSON[scope][account] = {}
+  }
+  if (clonedJSON[scope][account][key]) {
+    throw new Error(
+      `${key} is already saved in ${scope}. You can't add it again.`
+    )
+  }
+  clonedJSON[scope][account][key] = [value]
+  return clonedJSON
+}
+
 function removeItem({ scope, key }, existingJSON = {}) {
   const clonedJSON = { ...existingJSON }
   if (!clonedJSON[scope]) {
@@ -175,6 +195,90 @@ function removeItem({ scope, key }, existingJSON = {}) {
   }
   delete clonedJSON[scope][key]
   return clonedJSON
+}
+
+function removeCookieItem({ scope, account, key }, existingJSON = {}) {
+  const clonedJSON = { ...existingJSON }
+  if (!clonedJSON[scope]) {
+    throw new Error(
+      `removeCookieItem: can't remove ${key} from ${scope} since ${scope} doesn't exist`
+    )
+  }
+  if (!clonedJSON[scope][account]) {
+    throw new Error(
+      `removeCookieItem: can't remove ${account} from ${scope}. ${account} is not there.`
+    )
+  }
+  if (!clonedJSON[scope][account][key]) {
+    throw new Error(
+      `removeCookieItem: can't remove ${key} from ${account} in scope ${scope}. ${key} is not there.`
+    )
+  }
+  delete clonedJSON[scope][account][key]
+  return clonedJSON
+}
+
+export async function saveCookie(cookiesInfos) {
+  lockKeychain("saveCookie: You can't save while the keychain is locked")
+  try {
+    const cookies = await getDecodedGenericPasswords()
+    const newJSON = addCookieItem(
+      {
+        scope: COOKIES_SCOPE,
+        account: cookiesInfos.accountId,
+        key: cookiesInfos.konnectorSlug,
+        value: cookiesInfos.cookieObject
+      },
+      cookies
+    )
+    await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
+  } finally {
+    unlockKeychain('saveCookie is done')
+  }
+}
+
+export async function getCookie(cookieValue) {
+  log.info('Starting getCookie in keychain')
+  const cookie = await getDecodedGenericPasswords()
+  const cookiesKeyChain = cookie[COOKIES_SCOPE] || {}
+  if (!cookiesKeyChain[cookieValue.accountId]) {
+    log.info('No matching accountId')
+    return null
+  }
+  if (!cookiesKeyChain[cookieValue.accountId][cookieValue.konnectorSlug]) {
+    log.info('No matching konnector slug')
+    return null
+  }
+  const foundedCookies =
+    cookiesKeyChain[cookieValue.accountId][cookieValue.konnectorSlug]
+  if (cookieValue.cookieName) {
+    for (let cookie of foundedCookies) {
+      if (cookie.name === cookieValue.cookieName) {
+        return cookie
+      }
+    }
+  }
+  for (let cookie of foundedCookies) {
+    if (cookie.name === cookieValue.cookieObject.name) {
+      return cookie
+    }
+  }
+  log.info('No matching cookie returning null')
+  return null
+}
+
+export async function removeCookie(account, slug) {
+  lockKeychain("removeCookie: You can't remove while the keychain is locked")
+  try {
+    const passwords = await getDecodedGenericPasswords()
+    const newJSON = removeCookieItem(
+      { scope: COOKIES_SCOPE, account: account, key: slug },
+      passwords
+    )
+    await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
+  } finally {
+    unlockKeychain('removeCookie is done')
+  }
 }
 /**
  *
