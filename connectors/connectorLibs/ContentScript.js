@@ -42,6 +42,7 @@ export default class ContentScript {
       'clickAndWait',
       'getCookiesByDomain',
       'getCookieByDomainAndName'
+      'normalizeFileName'
     ]
 
     if (options.additionalExposedMethodsNames) {
@@ -441,6 +442,42 @@ export default class ContentScript {
    * @returns {Object} : Connector execution result. TBD
    */
   async fetch({ context }) {}
+
+  /**
+   * Filename normalization function, harmonize the filename format between all connectors
+   *
+   * @param {Object} filenameInfos : Object containing year/month/day and the vendor's name at least. It can contain an amount, a documentType and a vendorRef if needed
+   * @returns {String} : Fully edited filename following the filename's convention
+   */
+  normalizeFileName(filenameInfos) {
+    this.onlyIn(WORKER_TYPE, 'normalizeFileName')
+    if (
+      !filenameInfos.year ||
+      !filenameInfos.month ||
+      !filenameInfos.day ||
+      !filenameInfos.vendor
+    ) {
+      throw new Error(
+        'Some date properties or vendor are missing, cannot complete filename normalization'
+      )
+    }
+    const normalizedDate = `${filenameInfos.year}-${filenameInfos.month}-${filenameInfos.day}`
+    let normalizedFileName = `${normalizedDate}_${filenameInfos.vendor}`
+    if (filenameInfos.documentType) {
+      normalizedFileName =
+        `${normalizedFileName}` + `_${filenameInfos.documentType}`
+    }
+    if (filenameInfos.amount) {
+      normalizedFileName =
+        `${normalizedFileName}` + `_${filenameInfos.amount}EUR`
+    }
+    if (filenameInfos.vendorRef) {
+      normalizedFileName =
+        `${normalizedFileName}` + `_${filenameInfos.vendorRef}`
+    }
+    normalizedFileName = `${normalizedFileName}` + `.pdf`
+    return normalizedFileName
+  }
 }
 
 function sendContentScriptReadyEvent() {
