@@ -398,8 +398,9 @@ PODS:
     - React
   - RNKeychain (8.0.0):
     - React-Core
-  - RNScreens (2.18.1):
+  - RNScreens (3.18.2):
     - React-Core
+    - React-RCTImage
   - RNSentry (3.4.1):
     - React-Core
     - Sentry (= 7.11.0)
@@ -680,7 +681,7 @@ SPEC CHECKSUMS:
   RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
   RNIOS11DeviceCheck: 9b36378a945711eba558e5e0db3a15a9ccb83150
   RNKeychain: 4f63aada75ebafd26f4bc2c670199461eab85d94
-  RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
+  RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   RNSentry: fbbdcd7213058e3de5fbaa452b25a06a16b4b382
   RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
   Sentry: 0c5cd63d714187b4a39c331c1f0eb04ba7868341

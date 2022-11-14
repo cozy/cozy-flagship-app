@@ -4,9 +4,13 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Pressable,
+  Alert,
+  View,
+  Button as RNButton
 } from 'react-native'
-
+import { FullWindowOverlay } from 'react-native-screens'
 import { Button } from '/ui/Button'
 import { Container } from '/ui/Container'
 import { CozyCircle } from '/ui/Icons/CozyCircle'
@@ -134,19 +138,40 @@ const LockView = ({
   </Container>
 )
 
-export const LockScreen = (props: LockScreenProps): JSX.Element => (
-  <>
-    <FlagshipBars />
-
-    <TouchableWithoutFeedback
-      onPress={Keyboard.dismiss}
-      style={{ backgroundColor: palette.Primary[600], height: '100%' }}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+export const LockScreen = (props: LockScreenProps): JSX.Element => {
+  return (
+    <>
+      <FullWindowOverlay
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          // position: 'absolute',
+          backgroundColor: 'yellow',
+          height: 1000,
+          width: 400
+        }}
       >
-        <LockView {...useLockScreenProps(props.route?.params)} />
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
-  </>
-)
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            position: 'absolute',
+            backgroundColor: 'red',
+            height: 500,
+            width: 400
+          }}
+        >
+          <RNButton
+            title="test"
+            onPress={() => {
+              // eslint-disable @typescript-eslint/explicit-function-return-type
+
+              return alert('clicked')
+            }}
+          />
+          <LockView {...useLockScreenProps(props.route?.params)} />
+        </View>
+      </FullWindowOverlay>
+    </>
+  )
+}
