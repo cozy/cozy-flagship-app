@@ -4,7 +4,20 @@ jest.mock('react-native-fs', () => {
 jest.mock('@fengweichong/react-native-gzip', () => {
   return {}
 })
-
+jest.mock('@react-native-cookies/cookies', () => {
+  return {
+    get: jest.fn()
+  }
+})
+jest.mock('./keychain', () => {
+  return {
+    getCookie: jest.fn(),
+    saveCookie: jest.fn(),
+    removeCookie: jest.fn()
+  }
+})
+import { getCookie, saveCookie, removeCookie } from './keychain'
+import CookieManager from '@react-native-cookies/cookies'
 import ReactNativeLauncher from './ReactNativeLauncher'
 
 const fixtures = {
@@ -121,6 +134,187 @@ describe('ReactNativeLauncher', () => {
       })
       const result = await launcher.runInWorker('toRunInworker')
       expect(result).toEqual(false)
+    })
+  })
+  describe('getCookies', () => {
+    it('should return cookies from CookieManager', async () => {
+      CookieManager.get.mockResolvedValue({ value: 'SOME COOKIE' })
+      launcher.setStartContext({
+        account: {
+          id: 'cozyKonnector'
+        },
+        manifest: {
+          cookie_domains: ['.cozy.io']
+        }
+      })
+      const result = await launcher.getCookies('.cozy.io')
+      expect(result).toStrictEqual({ value: 'SOME COOKIE' })
+      expect(CookieManager.get).toHaveBeenCalledWith('.cozy.io')
+    })
+    it('should throw error if cookie_domains does not exist', async () => {
+      CookieManager.get.mockResolvedValue({ value: 'SOME COOKIE' })
+      launcher.setStartContext({
+        account: {
+          id: 'cozyKonnector'
+        },
+        manifest: {}
+      })
+      await expect(launcher.getCookies('.cozy.io')).rejects.toThrow(
+        'getCookies cannot be called without cookie_domains declared in manifest'
+      )
+    })
+    it('should throw error if cookie_domains does not declare requested domain', async () => {
+      CookieManager.get.mockResolvedValue({ value: 'SOME COOKIE' })
+      launcher.setStartContext({
+        account: {
+          id: 'cozyKonnector'
+        },
+        manifest: {
+          cookie_domains: ['.somedomain']
+        }
+      })
+      await expect(launcher.getCookies('.cozy.io')).rejects.toThrow(
+        'Cookie domain .cozy.io not declared in the manifest'
+      )
+    })
+    it('should return empty object if CookieManager return no cookies', async () => {
+      CookieManager.get.mockResolvedValue({})
+      launcher.setStartContext({
+        account: {
+          id: 'cozyKonnector'
+        },
+        manifest: {
+          cookie_domains: ['apeculiarsite.com']
+        }
+      })
+      const result = await launcher.getCookies('apeculiarsite.com')
+      expect(result).toStrictEqual({})
+    })
+  })
+  describe('getCookieFromKeychain', () => {
+    it('should return cookie with given name', async () => {
+      getCookie.mockResolvedValue({
+        value: 'tokenvalue',
+        name: 'token',
+        path: null,
+        httpOnly: true,
+        secure: true
+      })
+      launcher.setStartContext({
+        account: {
+          id: 'cozyKonnector'
+        },
+        manifest: {
+          slug: 'konnectorSlug'
+        }
+      })
+      const result = await launcher.getCookieFromKeychain('token')
+      expect(result).toEqual({
+        value: 'tokenvalue',
+        name: 'token',
+        path: null,
+        httpOnly: true,
+        secure: true
+      })
+      expect(getCookie).toHaveBeenCalledWith({
+        accountId: 'cozyKonnector',
+        konnectorSlug: 'konnectorSlug',
+        cookieName: 'token'
+      })
+    })
+    it('should return null if there is no cookie with given name', async () => {
+      getCookie.mockResolvedValue(null)
+      launcher.setStartContext({
+        account: {
+          id: 'cozyKonnector'
+        },
+        manifest: {
+          slug: 'konnectorSlug'
+        }
+      })
+      const result = await launcher.getCookieFromKeychain('token')
+      expect(result).toBeNull()
+    })
+  })
+  describe('saveCookie', () => {
+    it('should save given cookie into the keychain', async () => {
+      getCookie.mockResolvedValue(null)
+      launcher.setStartContext({
+        account: {
+          id: 'cozyKonnector'
+        },
+        manifest: {
+          slug: 'konnectorSlug'
+        }
+      })
+      await launcher.saveCookie({
+        value: 'tokenvalue',
+        name: 'token',
+        path: null,
+        httpOnly: true,
+        secure: true
+      })
+      expect(getCookie).toHaveBeenCalledWith({
+        accountId: 'cozyKonnector',
+        konnectorSlug: 'konnectorSlug',
+        cookieName: 'token'
+      })
+      expect(removeCookie).not.toHaveBeenCalled()
+      expect(saveCookie).toHaveBeenCalledWith({
+        accountId: 'cozyKonnector',
+        konnectorSlug: 'konnectorSlug',
+        cookieObject: {
+          value: 'tokenvalue',
+          name: 'token',
+          path: null,
+          httpOnly: true,
+          secure: true
+        }
+      })
+    })
+    it('should override the cookie if the cookie with given name is already saved in the keychain', async () => {
+      getCookie.mockResolvedValue({
+        value: 'tokenvalue',
+        name: 'token',
+        path: null,
+        httpOnly: true,
+        secure: true
+      })
+      launcher.setStartContext({
+        account: {
+          id: 'cozyKonnector'
+        },
+        manifest: {
+          slug: 'konnectorSlug'
+        }
+      })
+      await launcher.saveCookie({
+        value: 'tokenvalue',
+        name: 'token',
+        path: null,
+        httpOnly: true,
+        secure: true
+      })
+      expect(getCookie).toHaveBeenCalledWith({
+        accountId: 'cozyKonnector',
+        konnectorSlug: 'konnectorSlug',
+        cookieName: 'token'
+      })
+      expect(removeCookie).toHaveBeenCalledWith(
+        'cozyKonnector',
+        'konnectorSlug'
+      )
+      expect(saveCookie).toHaveBeenCalledWith({
+        accountId: 'cozyKonnector',
+        konnectorSlug: 'konnectorSlug',
+        cookieObject: {
+          value: 'tokenvalue',
+          name: 'token',
+          path: null,
+          httpOnly: true,
+          secure: true
+        }
+      })
     })
   })
 })

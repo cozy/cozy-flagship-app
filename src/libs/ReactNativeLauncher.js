@@ -265,8 +265,15 @@ class ReactNativeLauncher extends Launcher {
    */
   async getCookies(cookieDomain) {
     const { manifest } = this.startContext
+    if (manifest.cookie_domains === undefined) {
+      throw new Error(
+        'getCookies cannot be called without cookie_domains declared in manifest'
+      )
+    }
     if (!manifest.cookie_domains.includes(cookieDomain)) {
-      throw new Error('Cookie domain not declared in the manifest')
+      throw new Error(
+        `Cookie domain ${cookieDomain} not declared in the manifest`
+      )
     }
     try {
       log.info(
@@ -298,11 +305,12 @@ class ReactNativeLauncher extends Launcher {
         konnectorSlug,
         cookieName
       })
-      if (existingCookies !== null) {
-        return existingCookies
+      if (existingCookies === null) {
+        log.info(
+          `No cookie named "${cookieName}" has been found, returning null`
+        )
       }
-      log.info(`No cookie named "${cookieName}" has been found, retunring null`)
-      return null
+      return existingCookies
     } catch (err) {
       throw new Error(
         `Error in worker during getCookieFromKeychain: ${err.message}`
@@ -329,7 +337,7 @@ class ReactNativeLauncher extends Launcher {
       const existingCookies = await getCookie({
         accountId,
         konnectorSlug,
-        cookieObject
+        cookieName: cookieObject.name
       })
       log.info('Cookie from keychain', existingCookies)
       log.info('Cookie Object', { accountId, konnectorSlug, cookieObject })
