@@ -137,10 +137,14 @@ export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
     void asyncCore()
   }
 
-  const handleBiometry = async (): Promise<void> => {
-    const { success } = await promptBiometry()
-    success && onUnlock()
-    // TODO: handle failure
+  const handleBiometry = (): void => {
+    const doHandleBiometry = async (): Promise<void> => {
+      const { success } = await promptBiometry()
+      success && onUnlock()
+      // TODO: handle failure
+    }
+
+    void doHandleBiometry()
   }
 
   const togglePasswordVisibility = (): void =>

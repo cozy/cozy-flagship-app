@@ -18,7 +18,7 @@ export interface LockViewProps {
   uiError?: string
   togglePasswordVisibility: TouchableWithoutFeedbackProps['onPress']
   passwordVisibility: boolean
-  handleBiometry: () => Promise<void>
+  handleBiometry: () => void
   biometryType: BiometryType | null
   biometryEnabled: boolean
 }

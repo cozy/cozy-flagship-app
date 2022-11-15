@@ -50,7 +50,7 @@ const LockView = ({
         </IconButton>
 
         {biometryType && biometryEnabled ? (
-          <IconButton onPress={(): void => void handleBiometry()}>
+          <IconButton onPress={handleBiometry}>
             <Icon icon={getBiometryIcon(biometryType)} />
           </IconButton>
         ) : null}
