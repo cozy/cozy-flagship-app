@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import RNAsyncStorageFlipper from 'rn-async-storage-flipper'
+import BackgroundTimer from 'react-native-background-timer'
 
 import { CozyProvider, useClient } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
@@ -54,11 +55,18 @@ const App = ({ setClient }) => {
   )
 
   const appState = useRef(AppState.currentState)
+  const isLocked = useRef(false)
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
-      if (appState.current.match(/active/) && nextAppState === 'background')
+      if (appState.current.match(/active/) && nextAppState === 'background') {
         showSplashScreen()
+
+        BackgroundTimer.runBackgroundTimer(
+          () => (isLocked.current = true),
+          300000
+        )
+      }
 
       if (appState.current.match(/background/) && nextAppState === 'active') {
         const currentRoute =
@@ -67,7 +75,7 @@ const App = ({ setClient }) => {
             JSON.stringify(RootNavigation.navigationRef.getCurrentRoute())
           )
 
-        const asyncCore = async () => {
+        const tryLockingApp = async () => {
           const autoLockEnabled = await getData(StorageKeys.AutoLockEnabled)
 
           if (autoLockEnabled) {
@@ -77,8 +85,12 @@ const App = ({ setClient }) => {
           }
         }
 
-        if (currentRoute.name !== routes.lock) void asyncCore()
+        if (currentRoute.name !== routes.lock && isLocked.current)
+          void tryLockingApp()
         else hideSplashScreen()
+
+        BackgroundTimer.stopBackgroundTimer()
+        isLocked.current = false
       }
 
       appState.current = nextAppState
