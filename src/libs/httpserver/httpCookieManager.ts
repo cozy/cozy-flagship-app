@@ -1,15 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import CookieManager from '@react-native-cookies/cookies'
+import CookieManager, { Cookie, Cookies } from '@react-native-cookies/cookies'
+import CozyClient from 'cozy-client'
 
 import { isSecureProtocol } from '../functions/isSecureProtocol'
 
 import strings from '/strings.json'
 
-const isCookieName = key => {
+type CookieRecord = Record<string, string>
+
+const isCookieName = (key: string): boolean => {
   return key === 'cozysessid' || key.startsWith('sess-')
 }
 
-const extractKeyValues = cookieString => {
+const extractKeyValues = (cookieString: string): CookieRecord => {
   const keyValues = cookieString.split('; ').reduce((previous, current) => {
     const pair = current.split('=')
 
@@ -33,7 +36,7 @@ const extractKeyValues = cookieString => {
   return keyValues
 }
 
-const parseCookie = cookieString => {
+const parseCookie = (cookieString: string): Cookie => {
   const keyValues = extractKeyValues(cookieString)
 
   if (!keyValues.Name || !keyValues.Value) {
@@ -56,7 +59,7 @@ const parseCookie = cookieString => {
     value: keyValues.Value,
     domain: cookieDomain,
     path: keyValues.Path || '/',
-    httpOnly: keyValues.HttpOnly || false
+    httpOnly: Boolean(keyValues.HttpOnly)
   }
 }
 
@@ -75,10 +78,14 @@ const parseCookie = cookieString => {
  * @param {CozyClient} client - CozyClient instance
  * @returns {Promise<boolean>}
  */
-export const setCookie = async (cookieString, client) => {
+export const setCookie = async (
+  cookieString: string,
+  client: CozyClient
+): Promise<boolean> => {
   const cookie = parseCookie(cookieString)
 
-  const appUrl = client.getStackClient().uri
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+  const appUrl: string = client.getStackClient().uri
   const isSecure = isSecureProtocol(client)
 
   const expireDate = new Date()
@@ -101,8 +108,9 @@ export const setCookie = async (cookieString, client) => {
   return CookieManager.set(appUrl, stackCookie, true)
 }
 
-export const getCookie = async client => {
-  const appUrl = client.getStackClient().uri
+export const getCookie = async (client: CozyClient): Promise<Cookie> => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+  const appUrl: string = client.getStackClient().uri
 
   const cookies = await loadCookiesFromAsyncStorage()
 
@@ -115,18 +123,23 @@ export const getCookie = async client => {
  * @param {CozyClient} client - CozyClient instance
  * @returns {Promise<boolean>}
  */
-export const resyncCookies = async client => {
-  const appUrl = client.getStackClient().uri
+export const resyncCookies = async (client: CozyClient): Promise<void> => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+  const appUrl: string = client.getStackClient().uri
 
   const cookies = await loadCookiesFromAsyncStorage()
 
   const stackCookie = cookies?.[appUrl]
 
-  return CookieManager.set(appUrl, stackCookie, true)
+  await CookieManager.set(appUrl, stackCookie, true)
 }
 
-const setCookieIntoAsyncStorage = async (client, cookie) => {
-  const appUrl = client.getStackClient().uri
+const setCookieIntoAsyncStorage = async (
+  client: CozyClient,
+  cookie: Cookie
+): Promise<void> => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+  const appUrl: string = client.getStackClient().uri
 
   const cookies = await loadCookiesFromAsyncStorage()
   cookies[appUrl] = cookie
@@ -134,19 +147,19 @@ const setCookieIntoAsyncStorage = async (client, cookie) => {
   return saveCookies(cookies)
 }
 
-const loadCookiesFromAsyncStorage = async () => {
+const loadCookiesFromAsyncStorage = async (): Promise<Cookies> => {
   const state = await AsyncStorage.getItem(strings.COOKIE_STORAGE_KEY)
 
   if (!state) {
     return {}
   }
 
-  const cookies = JSON.parse(state)
+  const cookies = JSON.parse(state) as Cookies
 
   return cookies
 }
 
-const saveCookies = cookies => {
+const saveCookies = (cookies: Cookies): Promise<void> => {
   const state = JSON.stringify(cookies)
   return AsyncStorage.setItem(strings.COOKIE_STORAGE_KEY, state)
 }
