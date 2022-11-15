@@ -15,13 +15,13 @@ import { setFlagshipUI } from './setFlagshipUI'
 import { showInAppBrowser, closeInAppBrowser } from './InAppBrowser'
 import { toggleSetting } from '/libs/intents/toggleSetting'
 import { isBiometryDenied } from '/libs/intents/setBiometryState'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { clearData } from '/libs/localStore/storage'
 
 export const asyncLogout = async (): Promise<null> => {
   await clearClient()
   await resetSessionToken()
   await deleteKeychain()
-  await AsyncStorage.clear()
+  await clearData()
   RootNavigation.reset(routes.stack, { screen: 'welcome' })
   return Promise.resolve(null)
 }

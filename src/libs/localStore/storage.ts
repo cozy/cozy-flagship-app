@@ -5,7 +5,7 @@ import { logger } from '/libs/functions/logger'
 
 const log = logger('storage.ts')
 
-const { setItem, getItem } = AsyncStorage
+const { setItem, getItem, removeItem } = AsyncStorage
 
 export enum StorageKeys {
   AutoLockEnabled = '@cozy_AmiralApp_autoLockEnabled',
@@ -40,5 +40,17 @@ export const getData = async <T>(name: StorageKeys): Promise<T | null> => {
   } catch (error) {
     log.error(`Failed to get key "${name}" from persistent storage`, error)
     return null
+  }
+}
+
+export const clearData = async (): Promise<void> => {
+  try {
+    const keys = Object.values(StorageKeys)
+
+    for (const key of keys) {
+      await removeItem(key)
+    }
+  } catch (error) {
+    log.error(`Failed to clear data from persistent storage`, error)
   }
 }
