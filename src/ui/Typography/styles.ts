@@ -8,8 +8,8 @@ export const styles = StyleSheet.create({
   inherit: { color: palette.Primary.ContrastText },
   primary: { color: palette.Primary['600'] },
   secondary: { color: palette.Primary.ContrastText },
-  textPrimary: { color: palette.Primary.ContrastText },
-  textSecondary: { color: palette.Primary.ContrastText },
+  textPrimary: { color: palette.Grey['900'] },
+  textSecondary: { color: palette.Common.white },
   error: { color: palette.Primary.ContrastText },
   h4: {
     fontFamily: 'Lato-Bold',
@@ -41,7 +41,12 @@ export const styles = StyleSheet.create({
   },
   h1: { fontSize: 16 },
   h2: { fontSize: 16 },
-  h3: { fontSize: 16 },
+  h3: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: palette.Grey['900'],
+    lineHeight: 20
+  },
   h5: { fontSize: 16 },
   subtitle1: { fontSize: 16 },
   subtitle2: { fontSize: 16 },

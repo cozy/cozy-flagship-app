@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 
 import { Button } from '/ui/Button'
+import { ConfirmDialog } from '/ui/CozyDialogs/ConfirmDialog'
 import { Container } from '/ui/Container'
 import { CozyCircle } from '/ui/Icons/CozyCircle'
 import { Eye } from '/ui/Icons/Eye'
@@ -23,9 +24,9 @@ import { TextField } from '/ui/TextField'
 import { Tooltip } from '/ui/Tooltip'
 import { Typography } from '/ui/Typography'
 import { getBiometryIcon } from '/screens/lock/functions/lockScreenFunctions'
+import { palette } from '/ui/palette'
 import { translation } from '/locales'
 import { useLockScreenProps } from '/screens/lock/hooks/useLockScreen'
-import { palette } from '/ui/palette'
 
 const LockView = ({
   biometryEnabled,
@@ -33,19 +34,44 @@ const LockView = ({
   fqdn,
   handleBiometry,
   handleInput,
+  hasLogoutDialog,
   input,
   logout,
   mode,
   passwordVisibility,
+  toggleLogoutDialog,
   toggleMode,
   togglePasswordVisibility,
   tryUnlock,
   uiError
 }: LockViewProps): JSX.Element => (
   <Container>
+    {hasLogoutDialog && (
+      <ConfirmDialog
+        actions={
+          <>
+            <Button onPress={toggleLogoutDialog}>
+              <Typography variant="button">
+                {translation.logout_dialog.cancel}
+              </Typography>
+            </Button>
+
+            <Button onPress={logout} variant="secondary">
+              <Typography color="textSecondary" variant="button">
+                {translation.logout_dialog.confirm}
+              </Typography>
+            </Button>
+          </>
+        }
+        content={translation.logout_dialog.content}
+        onClose={toggleLogoutDialog}
+        title={translation.logout_dialog.title}
+      />
+    )}
+
     <Grid container direction="column" justifyContent="space-between">
       <Grid justifyContent="space-between">
-        <IconButton onPress={logout}>
+        <IconButton onPress={toggleLogoutDialog}>
           <Icon icon={LogoutFlipped} />
         </IconButton>
 
@@ -115,7 +141,7 @@ const LockView = ({
           onPress={toggleMode}
           style={{ alignSelf: 'flex-start', marginVertical: 16 }}
         >
-          <Typography variant="underline" color="secondary">
+          <Typography color="textSecondary" variant="underline">
             {mode === 'PIN' ? translation.ui.buttons.forgotPin : null}
 
             {mode === 'password' ? translation.ui.buttons.forgotPassword : null}
@@ -125,7 +151,7 @@ const LockView = ({
 
       <Grid direction="column">
         <Button onPress={tryUnlock}>
-          <Typography variant="button">
+          <Typography color="primary" variant="button">
             {translation.ui.buttons.unlock}
           </Typography>
         </Button>

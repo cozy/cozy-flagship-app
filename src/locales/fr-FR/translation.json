@@ -5,6 +5,12 @@
     "contactUs": "Un problème, une suggestion ? Contactez-nous à",
     "unknown_error": "Une erreur inattendue s'est produite, veuillez ré-essayer."
   },
+  "logout_dialog": {
+    "cancel": "Annuler",
+    "confirm": "Déconnecter",
+    "content": "Êtes-vous sûr de vouloir vous déconnecter de votre Cozy ?",
+    "title": "Déconnexion"
+  },
   "screens": {
     "cozyNotFound": {
       "body": "Nous n'avons trouvé aucun Cozy à cette adresse. Il s'agit peut-être d'une erreur de frappe. Pour le savoir, vérifiez l'adresse de votre Cozy dans l'e-mail que nous vous avons envoyé au moment de sa création.",
