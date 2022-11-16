@@ -24,11 +24,12 @@ import { openForgotPasswordLink } from '/libs/functions/openForgotPasswordLink'
 export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
   const [biometryEnabled, setBiometryEnabled] = useState(false)
   const [biometryType, setBiometryType] = useState<BiometryType | null>(null)
+  const [hasLogoutDialog, toggleLogoutDialog] = useState(false)
   const [input, setInput] = useState('')
+  const [isOnBackground, setIsOnBackground] = useState(false)
   const [mode, setMode] = useState<'password' | 'PIN'>()
   const [passwordVisibility, _togglePasswordVisibility] = useState(false)
   const [uiError, setUiError] = useState('')
-  const [isOnBackground, setIsOnBackground] = useState(false)
   const client = useClient()
   const { fqdn } = getFqdnFromClient(client)
 
@@ -150,6 +151,8 @@ export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
   return {
     biometryEnabled,
     biometryType,
+    hasLogoutDialog,
+    toggleLogoutDialog: (): void => toggleLogoutDialog(!hasLogoutDialog),
     uiError,
     input,
     logout,

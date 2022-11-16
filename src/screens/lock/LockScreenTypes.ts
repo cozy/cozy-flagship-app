@@ -1,26 +1,28 @@
+import { BiometryType } from 'react-native-biometrics'
 import { Route } from '@react-navigation/native'
 import { TextInputProps, TouchableWithoutFeedbackProps } from 'react-native'
-import { BiometryType } from 'react-native-biometrics'
 
 export interface LockScreenProps {
   route: CallbackRouteProp
 }
 
 export interface LockViewProps {
+  biometryEnabled: boolean
+  biometryType: BiometryType | null
+  fqdn: string
+  handleBiometry: () => Promise<void>
+  handleInput: TextInputProps['onChangeText']
+  hasLogoutDialog: boolean
   input: string
   logout: () => void
-  handleInput: TextInputProps['onChangeText']
+  mode?: 'password' | 'PIN'
+  passwordVisibility: boolean
+  toggleLogoutDialog: () => void
   toggleMode: TouchableWithoutFeedbackProps['onPress']
+  togglePasswordVisibility: TouchableWithoutFeedbackProps['onPress']
   tryUnlock: TouchableWithoutFeedbackProps['onPress'] &
     TextInputProps['onSubmitEditing']
-  fqdn: string
-  mode?: 'password' | 'PIN'
   uiError?: string
-  togglePasswordVisibility: TouchableWithoutFeedbackProps['onPress']
-  passwordVisibility: boolean
-  handleBiometry: () => Promise<void>
-  biometryType: BiometryType | null
-  biometryEnabled: boolean
 }
 
 export type CallbackRouteProp =

@@ -32,7 +32,7 @@ interface TypographyProps extends TextProps {
 }
 
 export const Typography = ({
-  color = 'primary',
+  color = 'textPrimary',
   children,
   variant = 'body2',
   style,
