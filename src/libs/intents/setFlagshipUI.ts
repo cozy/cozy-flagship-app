@@ -9,34 +9,15 @@ import { urlHasConnectorOpen } from '/libs/functions/urlHasConnector'
 
 const log = Minilog('SET_FLAGSHIP_UI')
 
+const isDarkMode = (bottomTheme: StatusBarStyle): boolean =>
+  bottomTheme === StatusBarStyle.Light
+
+const handleLogging = (intent: FlagshipUI, name: string): void =>
+  log.info(`by ${name}`, intent)
 export interface NormalisedFlagshipUI
   extends Omit<FlagshipUI, 'bottomTheme' | 'topTheme'> {
   bottomTheme?: StatusBarStyle
   topTheme?: StatusBarStyle
-}
-
-enum ThemeInput {
-  Dark = 'dark',
-  Light = 'light'
-}
-
-export enum StatusBarStyle {
-  Dark = 'dark-content',
-  Light = 'light-content',
-  Default = 'default'
-}
-
-const isDarkMode = (bottomTheme: StatusBarStyle): boolean =>
-  bottomTheme === StatusBarStyle.Light
-
-const updateStatusBarAndBottomBar = (bottomTheme?: StatusBarStyle): void => {
-  if (Platform.OS === 'android') {
-    bottomTheme && changeBarColors(isDarkMode(bottomTheme))
-  } else {
-    // On iOS we don't have BottomBar so we only need to
-    // change the BarStyle.
-    bottomTheme && StatusBar.setBarStyle(bottomTheme)
-  }
 }
 
 const handleSideEffects = ({
@@ -47,15 +28,37 @@ const handleSideEffects = ({
   updateStatusBarAndBottomBar(bottomTheme)
 }
 
-const formatTheme = (input?: ThemeInput | string): StatusBarStyle | undefined =>
+export enum ThemeInput {
+  Dark = 'dark',
+  Light = 'light'
+}
+
+export enum StatusBarStyle {
+  Dark = 'dark-content',
+  Light = 'light-content',
+  Default = 'default'
+}
+
+export const updateStatusBarAndBottomBar = (
+  bottomTheme?: StatusBarStyle
+): void => {
+  if (Platform.OS === 'android') {
+    bottomTheme && changeBarColors(isDarkMode(bottomTheme))
+  } else {
+    // On iOS we don't have BottomBar so we only need to
+    // change the BarStyle.
+    bottomTheme && StatusBar.setBarStyle(bottomTheme)
+  }
+}
+
+export const formatTheme = (
+  input?: ThemeInput | string
+): StatusBarStyle | undefined =>
   input?.includes(ThemeInput.Light)
     ? StatusBarStyle.Light
     : input?.includes(ThemeInput.Dark)
     ? StatusBarStyle.Dark
     : undefined
-
-const handleLogging = (intent: FlagshipUI, name: string): void =>
-  log.info(`by ${name}`, intent)
 
 export const flagshipUI = new EventEmitter()
 

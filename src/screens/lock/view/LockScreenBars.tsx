@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { View, StatusBar } from 'react-native'
 
+import { lockScreenUi } from '/screens/lock/events/LockScreen.events'
 import { statusBarHeight, getNavbarHeight } from '/libs/dimensions'
+import { styles } from '/screens/lock/view/LockScreenBars.styles'
 import {
-  flagshipUI,
   NormalisedFlagshipUI,
   StatusBarStyle
 } from '/libs/intents/setFlagshipUI'
-import { styles } from '/components/ui/FlagshipBars.styles'
 
-export const FlagshipBars = ({
+export const LockScreenBars = ({
   initialUi = {
     bottomBackground: 'transparent',
     bottomOverlay: 'transparent',
@@ -28,14 +28,14 @@ export const FlagshipBars = ({
   } = UIState
 
   useEffect(() => {
-    flagshipUI.on('change', (state: NormalisedFlagshipUI) => {
-      setUIState({ ...UIState, ...state })
-    })
+    lockScreenUi.on('lockscreen:change', (state: NormalisedFlagshipUI) =>
+      setUIState(prevState => ({ ...prevState, ...state }))
+    )
 
     return () => {
-      flagshipUI.removeAllListeners()
+      lockScreenUi.removeAllListeners()
     }
-  }, [UIState])
+  }, [])
 
   return (
     <>
