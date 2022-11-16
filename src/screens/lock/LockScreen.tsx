@@ -12,20 +12,20 @@ import { Container } from '/ui/Container'
 import { CozyCircle } from '/ui/Icons/CozyCircle'
 import { Eye } from '/ui/Icons/Eye'
 import { EyeClosed } from '/ui/Icons/EyeClosed'
-import { FlagshipBars } from '/components/ui/FlagshipBars'
 import { Grid } from '/ui/Grid'
 import { Icon } from '/ui/Icon'
 import { IconButton } from '/ui/IconButton'
 import { Link } from '/ui/Link'
+import { LockScreenBars } from '/screens/lock/view/LockScreenBars'
 import { LockScreenProps, LockViewProps } from '/screens/lock/LockScreenTypes'
 import { LogoutFlipped } from '/ui/Icons/LogoutFlipped'
 import { TextField } from '/ui/TextField'
 import { Tooltip } from '/ui/Tooltip'
 import { Typography } from '/ui/Typography'
 import { getBiometryIcon } from '/screens/lock/functions/lockScreenFunctions'
+import { palette } from '/ui/palette'
 import { translation } from '/locales'
 import { useLockScreenProps } from '/screens/lock/hooks/useLockScreen'
-import { palette } from '/ui/palette'
 
 const LockView = ({
   biometryEnabled,
@@ -136,7 +136,7 @@ const LockView = ({
 
 export const LockScreen = (props: LockScreenProps): JSX.Element => (
   <>
-    <FlagshipBars />
+    <LockScreenBars />
 
     <TouchableWithoutFeedback
       onPress={Keyboard.dismiss}

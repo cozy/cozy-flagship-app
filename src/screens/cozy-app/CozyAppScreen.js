@@ -44,10 +44,12 @@ export const CozyAppScreen = ({ route, navigation }) => {
   }, [UIState, route])
 
   useEffect(() => {
+    if (isReady) return // We don't want to trigger the animation UI changes twice (in case of app unlock for instance)
+
     !route.params.iconParams && setReady(true)
 
     isFirstHalf && firstHalfUI()
-  }, [isFirstHalf, route.params.iconParams])
+  }, [isFirstHalf, isReady, route.params.iconParams])
   const insets = useSafeAreaInsets()
 
   const onLoadEnd = useCallback(() => {

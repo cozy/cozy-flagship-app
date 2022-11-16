@@ -7,9 +7,9 @@ import { asyncLogout } from '/libs/intents/localMethods'
 import { doHashPassword } from '/libs/functions/passwordHelpers'
 import { getFqdnFromClient } from '/libs/client'
 import { getVaultInformation } from '/libs/keychain'
-import { translation } from '/locales'
-import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { hideSplashScreen } from '/libs/services/SplashScreenService'
+import { setLockScreenUI } from '/screens/lock/events/LockScreen.events'
+import { translation } from '/locales'
 
 const rnBiometrics = new ReactNativeBiometrics()
 
@@ -105,13 +105,10 @@ export const promptBiometry = async (): Promise<{
   error?: string
 }> => {
   if (Platform.OS === 'android') {
-    await setFlagshipUI(
-      {
-        bottomOverlay: 'rgba(0,0,0,0.5)',
-        topOverlay: 'rgba(0,0,0,0.5)'
-      },
-      'promptBiometry'
-    )
+    await setLockScreenUI({
+      bottomOverlay: 'rgba(0,0,0,0.5)',
+      topOverlay: 'rgba(0,0,0,0.5)'
+    })
   }
 
   const promptResult = await rnBiometrics.simplePrompt({
@@ -120,26 +117,20 @@ export const promptBiometry = async (): Promise<{
   })
 
   if (Platform.OS === 'android') {
-    await setFlagshipUI(
-      {
-        bottomOverlay: 'transparent',
-        topOverlay: 'transparent'
-      },
-      'promptBiometry'
-    )
+    await setLockScreenUI({
+      bottomOverlay: 'transparent',
+      topOverlay: 'transparent'
+    })
   }
 
   return promptResult
 }
 
 export const ensureLockScreenUi = async (): Promise<void> => {
-  await setFlagshipUI(
-    {
-      bottomOverlay: 'transparent',
-      topOverlay: 'transparent'
-    },
-    'ensureLockScreenUi'
-  )
+  await setLockScreenUI({
+    bottomOverlay: 'transparent',
+    topOverlay: 'transparent'
+  })
 
   await hideSplashScreen()
 }

@@ -9,7 +9,6 @@ import { getData, StorageKeys } from '/libs/localStore/storage'
 import { getFqdnFromClient } from '/libs/client'
 import { getVaultInformation } from '/libs/keychain'
 import { navigate } from '/libs/RootNavigation'
-import { resetUIState, StatusBarStyle } from '/libs/intents/setFlagshipUI'
 import { routes } from '/constants/routes'
 import {
   ensureLockScreenUi,
@@ -84,8 +83,6 @@ export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
   }, [])
 
   useEffect(() => {
-    resetUIState(StatusBarStyle.Dark)
-
     void tryBiometry()
 
     void getBiometryType(type => {
