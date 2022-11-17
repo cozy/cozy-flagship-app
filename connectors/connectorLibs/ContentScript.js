@@ -40,7 +40,7 @@ export default class ContentScript {
       'fillText',
       'storeFromWorker',
       'clickAndWait',
-      'getCookies',
+      'getWebViewCookies',
       'getWebViewCookie'
     ]
 
@@ -266,21 +266,21 @@ export default class ContentScript {
   }
 
   /**
-   * Bridge to the getCookies method from the RNlauncher.
+   * Bridge to the getWebViewCookies method from the RNlauncher.
    *
    * @param {String} domain
    */
-  async getCookies(domain) {
-    return await this.bridge.call('getCookies', domain)
+  async getWebViewCookies(domain) {
+    return await this.bridge.call('getWebViewCookies', domain)
   }
 
   /**
-   * Bridge to the getCookies method from the RNlauncher.
+   * Bridge to the getCookie method from the RNlauncher.
    *
    * @param {String} domain
    */
-  async getCookieFromKeychain(cookieName) {
-    return await this.bridge.call('getCookieFromKeychain', cookieName)
+  async getCookie(cookieName) {
+    return await this.bridge.call('getCookie', cookieName)
   }
 
   /**
