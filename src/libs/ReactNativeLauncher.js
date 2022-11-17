@@ -260,8 +260,6 @@ class ReactNativeLauncher extends Launcher {
    * This method is callable by the content script.
    *
    * @param {String} options.cookieDomain : Domain's name where to get cookies from.
-   * @param {String} options.konnectorSlug : Slug of the konnector triggering the function.
-   * @param {String} options.idAccount : Id of the account triggering the function.
    */
   async getWebViewCookies(cookieDomain) {
     const { manifest } = this.startContext
@@ -318,13 +316,11 @@ class ReactNativeLauncher extends Launcher {
   async getCookie(cookieName) {
     log.info('Starting getCookie in RNLauncher')
     try {
-      const { account, manifest } = this.startContext
+      const { account } = this.startContext
       const accountId = account.id
-      const konnectorSlug = manifest.slug
       log.info('Checking if cookie is present with this name :', cookieName)
       const existingCookies = await getCookie({
         accountId,
-        konnectorSlug,
         cookieName
       })
       if (existingCookies === null) {
@@ -347,25 +343,23 @@ class ReactNativeLauncher extends Launcher {
   async saveCookie(cookieObject) {
     log.info('Starting saveCookie in RNLauncher')
     try {
-      const { account, manifest } = this.startContext
+      const { account } = this.startContext
       const accountId = account.id
-      const konnectorSlug = manifest.slug
       log.info(
         'Checking if cookie is present with this payload :',
         cookieObject
       )
       const existingCookies = await getCookie({
         accountId,
-        konnectorSlug,
         cookieName: cookieObject.name
       })
       log.info('Cookie from keychain', existingCookies)
-      log.info('Cookie Object', { accountId, konnectorSlug, cookieObject })
+      log.info('Cookie Object', { accountId, cookieObject })
       if (existingCookies !== null) {
         log.info('gettin existing cookie condition')
-        await removeCookie(accountId, konnectorSlug)
+        await removeCookie(accountId)
       }
-      await saveCookie({ accountId, konnectorSlug, cookieObject })
+      await saveCookie({ accountId, cookieObject })
     } catch (err) {
       throw new Error(`Error in worker during saveCookie: ${err.message}`)
     }
