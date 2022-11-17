@@ -11,6 +11,7 @@ export enum StorageKeys {
   AutoLockEnabled = '@cozy_AmiralApp_autoLockEnabled',
   BiometryActivated = '@cozy_AmiralApp_biometryActivated',
   Capabilities = '@cozy_AmiralApp_Capabilities',
+  LastActivity = '@cozy_AmiralApp_lastActivity',
   SessionCreatedFlag = 'SESSION_CREATED_FLAG'
 }
 
