@@ -493,11 +493,21 @@ describe('keychain test suite', () => {
             }
           })
         })
-        await removeCookie('SOME_ACCOUNT_ID')
+        await removeCookie('SOME_ACCOUNT_ID', 'SOME_EXISTING_COOKIE_NAME')
         expect(Keychain.setGenericPassword).toBeCalledWith(
           GLOBAL_KEY,
           JSON.stringify({
-            CSC_COOKIES: {}
+            CSC_COOKIES: {
+              SOME_ACCOUNT_ID: [
+                {
+                  value: 'SOME_EXISTING_COOKIE_VALUE_2',
+                  name: 'SOME_EXISTING_COOKIE_NAME_2',
+                  path: null,
+                  httpOnly: true,
+                  secure: true
+                }
+              ]
+            }
           })
         )
       })
@@ -524,7 +534,10 @@ describe('keychain test suite', () => {
             }
           })
         })
-        await removeCookie('SOME_NOT_EXISTING_ACCOUNT_ID')
+        await removeCookie(
+          'SOME_NOT_EXISTING_ACCOUNT_ID',
+          'SOME_EXISTING_COOKIE_NAME'
+        )
         expect(Keychain.setGenericPassword).toBeCalledWith(
           GLOBAL_KEY,
           JSON.stringify({

@@ -201,7 +201,7 @@ function removeItem({ scope, key }, existingJSON = {}) {
   return clonedJSON
 }
 
-function removeCookieItem({ accountId }, existingJSON = {}) {
+function removeCookieItem({ accountId, cookieName }, existingJSON = {}) {
   const clonedJSON = { ...existingJSON }
   const scope = COOKIES_SCOPE
   if (!clonedJSON[scope]) {
@@ -216,7 +216,17 @@ function removeCookieItem({ accountId }, existingJSON = {}) {
     )
     return clonedJSON
   }
-  delete clonedJSON[scope][accountId]
+  if (
+    !clonedJSON[scope][accountId].some(cookie => cookie.name === cookieName)
+  ) {
+    log.warn(
+      `removeCookieItem: can't remove ${accountId} from ${scope}. ${accountId} is not there.`
+    )
+    return clonedJSON
+  }
+  clonedJSON[scope][accountId] = clonedJSON[scope][accountId].filter(
+    cookie => cookie.name !== cookieName
+  )
   return clonedJSON
 }
 
@@ -257,11 +267,11 @@ export async function getCookie({ accountId, cookieName }) {
   return result
 }
 
-export async function removeCookie(accountId) {
+export async function removeCookie(accountId, cookieName) {
   lockKeychain("removeCookie: You can't remove while the keychain is locked")
   try {
     const passwords = await getDecodedGenericPasswords()
-    const newJSON = removeCookieItem({ accountId }, passwords)
+    const newJSON = removeCookieItem({ accountId, cookieName }, passwords)
     await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
   } finally {
     unlockKeychain('removeCookie is done')
