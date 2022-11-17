@@ -357,7 +357,7 @@ class ReactNativeLauncher extends Launcher {
       log.info('Cookie Object', { accountId, cookieObject })
       if (existingCookies !== null) {
         log.info('gettin existing cookie condition')
-        await removeCookie(accountId)
+        await removeCookie(accountId, cookieObject.name)
       }
       await saveCookie({ accountId, cookieObject })
     } catch (err) {

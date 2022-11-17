@@ -359,7 +359,7 @@ describe('ReactNativeLauncher', () => {
         accountId: 'cozyKonnector',
         cookieName: 'token'
       })
-      expect(removeCookie).toHaveBeenCalledWith('cozyKonnector')
+      expect(removeCookie).toHaveBeenCalledWith('cozyKonnector', 'token')
       expect(saveCookie).toHaveBeenCalledWith({
         accountId: 'cozyKonnector',
         cookieObject: {
