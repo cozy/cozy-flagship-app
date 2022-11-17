@@ -19,9 +19,9 @@ class ReactNativeLauncher extends Launcher {
     super()
     this.workerMethodNames = [
       'sendToPilot',
-      'getCookies',
+      'getWebViewCookies',
       'getWebViewCookie',
-      'getCookieFromKeychain'
+      'getCookie'
     ]
     this.workerListenedEventsNames = ['log', 'workerEvent', 'workerReady']
   }
@@ -41,10 +41,10 @@ class ReactNativeLauncher extends Launcher {
           'setUserAgent',
           'getCredentials',
           'saveCredentials',
-          'getCookies',
+          'getWebViewCookies',
           'saveCookie',
           'getWebViewCookie',
-          'getCookieFromKeychain'
+          'getCookie'
         ],
         listenedEventsNames: ['log']
       }),
@@ -263,11 +263,11 @@ class ReactNativeLauncher extends Launcher {
    * @param {String} options.konnectorSlug : Slug of the konnector triggering the function.
    * @param {String} options.idAccount : Id of the account triggering the function.
    */
-  async getCookies(cookieDomain) {
+  async getWebViewCookies(cookieDomain) {
     const { manifest } = this.startContext
     if (manifest.cookie_domains === undefined) {
       throw new Error(
-        'getCookies cannot be called without cookie_domains declared in manifest'
+        'getWebViewCookies cannot be called without cookie_domains declared in manifest'
       )
     }
     if (!manifest.cookie_domains.includes(cookieDomain)) {
@@ -277,11 +277,33 @@ class ReactNativeLauncher extends Launcher {
     }
     try {
       log.info(
-        `getCookie on this domain : ${cookieDomain} for account ${this.startContext.account.id}`
+        `getWebViewCookies on this domain : ${cookieDomain} for account ${this.startContext.account.id}`
       )
       const cookies = await CookieManager.get(cookieDomain)
       log.info('CookieManager.get =>', cookies)
       return cookies
+    } catch (err) {
+      throw new Error(`Error in worker: ${err.message}`)
+    }
+  }
+
+  /**
+   * This method returns a webView Cookie find by its name when asked by the running webview(s).
+   * This method is callable by the content script.
+   *
+   * @param {String} cookieDomain : Domain to recover cookies from .
+   * @param {String} cookieName : Name of the wanted cookie.
+   */
+  async getWebViewCookie(cookieDomain, cookieName) {
+    log.info('Starting getWebViewCookie in RNLauncher')
+    let expectedCookie = null
+    log.info(`for this cookie : ${cookieName} for domain ${cookieDomain}`)
+    try {
+      const cookies = await this.getWebViewCookies(cookieDomain)
+      if (cookies[cookieName]) {
+        expectedCookie = cookies[cookieName]
+      }
+      return expectedCookie
     } catch (err) {
       throw new Error(`Error in worker: ${err.message}`)
     }
@@ -293,8 +315,8 @@ class ReactNativeLauncher extends Launcher {
    *
    * @param {String} options.cookieName : wanted cookie's by its name.
    */
-  async getCookieFromKeychain(cookieName) {
-    log.info('Starting getCookieFromKeychain in RNLauncher')
+  async getCookie(cookieName) {
+    log.info('Starting getCookie in RNLauncher')
     try {
       const { account, manifest } = this.startContext
       const accountId = account.id
@@ -312,9 +334,7 @@ class ReactNativeLauncher extends Launcher {
       }
       return existingCookies
     } catch (err) {
-      throw new Error(
-        `Error in worker during getCookieFromKeychain: ${err.message}`
-      )
+      throw new Error(`Error in worker during getCookie: ${err.message}`)
     }
   }
 
@@ -348,28 +368,6 @@ class ReactNativeLauncher extends Launcher {
       await saveCookie({ accountId, konnectorSlug, cookieObject })
     } catch (err) {
       throw new Error(`Error in worker during saveCookie: ${err.message}`)
-    }
-  }
-
-  /**
-   * This method returns a webView Cookie find by its name when asked by the running webview(s).
-   * This method is callable by the content script.
-   *
-   * @param {String} cookieDomain : Domain to recover cookies from .
-   * @param {String} cookieName : Name of the wanted cookie.
-   */
-  async getWebViewCookie(cookieDomain, cookieName) {
-    log.info('Starting getWebViewCookie in RNLauncher')
-    let expectedCookie
-    log.info(`for this cookie : ${cookieName} for domain ${cookieDomain}`)
-    try {
-      const cookies = await CookieManager.get(cookieDomain)
-      if (cookies[cookieName]) {
-        expectedCookie = cookies[cookieName]
-      }
-      return expectedCookie
-    } catch (err) {
-      throw new Error(`Error in worker: ${err.message}`)
     }
   }
 
