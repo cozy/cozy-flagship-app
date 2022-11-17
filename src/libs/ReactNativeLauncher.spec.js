@@ -278,9 +278,6 @@ describe('ReactNativeLauncher', () => {
       launcher.setStartContext({
         account: {
           id: 'cozyKonnector'
-        },
-        manifest: {
-          slug: 'konnectorSlug'
         }
       })
       const result = await launcher.getCookie('token')
@@ -293,7 +290,6 @@ describe('ReactNativeLauncher', () => {
       })
       expect(getCookie).toHaveBeenCalledWith({
         accountId: 'cozyKonnector',
-        konnectorSlug: 'konnectorSlug',
         cookieName: 'token'
       })
     })
@@ -302,9 +298,6 @@ describe('ReactNativeLauncher', () => {
       launcher.setStartContext({
         account: {
           id: 'cozyKonnector'
-        },
-        manifest: {
-          slug: 'konnectorSlug'
         }
       })
       const result = await launcher.getCookie('token')
@@ -317,9 +310,6 @@ describe('ReactNativeLauncher', () => {
       launcher.setStartContext({
         account: {
           id: 'cozyKonnector'
-        },
-        manifest: {
-          slug: 'konnectorSlug'
         }
       })
       await launcher.saveCookie({
@@ -331,13 +321,11 @@ describe('ReactNativeLauncher', () => {
       })
       expect(getCookie).toHaveBeenCalledWith({
         accountId: 'cozyKonnector',
-        konnectorSlug: 'konnectorSlug',
         cookieName: 'token'
       })
       expect(removeCookie).not.toHaveBeenCalled()
       expect(saveCookie).toHaveBeenCalledWith({
         accountId: 'cozyKonnector',
-        konnectorSlug: 'konnectorSlug',
         cookieObject: {
           value: 'tokenvalue',
           name: 'token',
@@ -358,9 +346,6 @@ describe('ReactNativeLauncher', () => {
       launcher.setStartContext({
         account: {
           id: 'cozyKonnector'
-        },
-        manifest: {
-          slug: 'konnectorSlug'
         }
       })
       await launcher.saveCookie({
@@ -372,16 +357,11 @@ describe('ReactNativeLauncher', () => {
       })
       expect(getCookie).toHaveBeenCalledWith({
         accountId: 'cozyKonnector',
-        konnectorSlug: 'konnectorSlug',
         cookieName: 'token'
       })
-      expect(removeCookie).toHaveBeenCalledWith(
-        'cozyKonnector',
-        'konnectorSlug'
-      )
+      expect(removeCookie).toHaveBeenCalledWith('cozyKonnector')
       expect(saveCookie).toHaveBeenCalledWith({
         accountId: 'cozyKonnector',
-        konnectorSlug: 'konnectorSlug',
         cookieObject: {
           value: 'tokenvalue',
           name: 'token',

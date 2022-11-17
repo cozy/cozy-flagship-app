@@ -163,31 +163,25 @@ function addItem({ scope, key, value }, existingJSON = {}) {
   return clonedJSON
 }
 
-function addCookieItem(
-  { accountId, konnectorSlug, cookieObject },
-  existingJSON = {}
-) {
+function addCookieItem({ accountId, cookieObject }, existingJSON = {}) {
   const clonedJSON = { ...existingJSON }
   const scope = COOKIES_SCOPE
   if (!clonedJSON[scope]) {
     clonedJSON[scope] = {}
   }
   if (!clonedJSON[scope][accountId]) {
-    clonedJSON[scope][accountId] = {}
-  }
-  if (!clonedJSON[scope][accountId][konnectorSlug]) {
-    clonedJSON[scope][accountId][konnectorSlug] = []
+    clonedJSON[scope][accountId] = []
   }
   if (
-    clonedJSON[scope][accountId][konnectorSlug].find(
+    clonedJSON[scope][accountId].find(
       cookie => cookie.name === cookieObject.name
     )
   ) {
     throw new Error(
-      `Cookie ${cookieObject.name} is already saved in ${konnectorSlug}. You can't add it again.`
+      `Cookie ${cookieObject.name} is already saved in ${accountId}. You can't add it again.`
     )
   }
-  clonedJSON[scope][accountId][konnectorSlug].push(cookieObject)
+  clonedJSON[scope][accountId].push(cookieObject)
   return clonedJSON
 }
 
@@ -207,12 +201,12 @@ function removeItem({ scope, key }, existingJSON = {}) {
   return clonedJSON
 }
 
-function removeCookieItem({ accountId, konnectorSlug }, existingJSON = {}) {
+function removeCookieItem({ accountId }, existingJSON = {}) {
   const clonedJSON = { ...existingJSON }
   const scope = COOKIES_SCOPE
   if (!clonedJSON[scope]) {
     log.warn(
-      `removeCookieItem: can't remove ${konnectorSlug} from ${scope} since ${scope} doesn't exist`
+      `removeCookieItem: can't remove ${accountId} from ${scope} since ${scope} doesn't exist`
     )
     return clonedJSON
   }
@@ -222,13 +216,7 @@ function removeCookieItem({ accountId, konnectorSlug }, existingJSON = {}) {
     )
     return clonedJSON
   }
-  if (!clonedJSON[scope][accountId][konnectorSlug]) {
-    log.warn(
-      `removeCookieItem: can't remove ${konnectorSlug} from ${accountId} in scope ${scope}. ${konnectorSlug} is not there.`
-    )
-    return clonedJSON
-  }
-  delete clonedJSON[scope][accountId][konnectorSlug]
+  delete clonedJSON[scope][accountId]
   return clonedJSON
 }
 
@@ -239,7 +227,6 @@ export async function saveCookie(cookiesInfos) {
     const newJSON = addCookieItem(
       {
         accountId: cookiesInfos.accountId,
-        konnectorSlug: cookiesInfos.konnectorSlug,
         cookieObject: cookiesInfos.cookieObject
       },
       passwords
@@ -250,18 +237,13 @@ export async function saveCookie(cookiesInfos) {
   }
 }
 
-export async function getCookie({ accountId, konnectorSlug, cookieName }) {
+export async function getCookie({ accountId, cookieName }) {
   log.info('Starting getCookie in keychain')
   const passwords = await getDecodedGenericPasswords()
   const accounts = passwords[COOKIES_SCOPE] || {}
-  const account = accounts[accountId]
-  if (!account) {
-    log.info('No matching accountId')
-    return null
-  }
-  const foundCookies = account[konnectorSlug]
+  const foundCookies = accounts[accountId]
   if (!foundCookies) {
-    log.info('No matching konnector slug')
+    log.info('No matching accountId')
     return null
   }
   if (!cookieName) {
@@ -275,11 +257,11 @@ export async function getCookie({ accountId, konnectorSlug, cookieName }) {
   return result
 }
 
-export async function removeCookie(accountId, konnectorSlug) {
+export async function removeCookie(accountId) {
   lockKeychain("removeCookie: You can't remove while the keychain is locked")
   try {
     const passwords = await getDecodedGenericPasswords()
-    const newJSON = removeCookieItem({ accountId, konnectorSlug }, passwords)
+    const newJSON = removeCookieItem({ accountId }, passwords)
     await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
   } finally {
     unlockKeychain('removeCookie is done')

@@ -174,17 +174,15 @@ describe('keychain test suite', () => {
       it('should return the cookie with the given name if found in the keychain', async () => {
         const keychainContent = {
           CSC_COOKIES: {
-            SOME_ACCOUNT_ID: {
-              SOME_KONNECTOR_SLUG: [
-                {
-                  value: 'tokenvalue',
-                  name: 'SOME_COOKIE_NAME',
-                  path: null,
-                  httpOnly: true,
-                  secure: true
-                }
-              ]
-            }
+            SOME_ACCOUNT_ID: [
+              {
+                value: 'tokenvalue',
+                name: 'SOME_COOKIE_NAME',
+                path: null,
+                httpOnly: true,
+                secure: true
+              }
+            ]
           }
         }
         jest
@@ -193,7 +191,6 @@ describe('keychain test suite', () => {
 
         const result = await getCookie({
           accountId: 'SOME_ACCOUNT_ID',
-          konnectorSlug: 'SOME_KONNECTOR_SLUG',
           cookieName: 'SOME_COOKIE_NAME'
         })
         expect(result).toStrictEqual({
@@ -207,51 +204,31 @@ describe('keychain test suite', () => {
       it('should return the right cookie with the given name', async () => {
         const keychainContent = {
           CSC_COOKIES: {
-            SOME_ACCOUNT_ID: {
-              SOME_KONNECTOR_SLUG: [
-                {
-                  value: 'cookievalue',
-                  name: 'ANOTHER_COOKIE_NAME',
-                  path: null,
-                  httpOnly: true,
-                  secure: true
-                },
-                {
-                  value: 'tokenvalue',
-                  name: 'SOME_COOKIE_NAME',
-                  path: null,
-                  httpOnly: true,
-                  secure: true
-                }
-              ],
-              SOME_OTHER_KONNECTOR_SLUG: [
-                {
-                  value: 'cookievalue',
-                  name: 'ANOTHER_COOKIE_NAME_2',
-                  path: null,
-                  httpOnly: true,
-                  secure: true
-                },
-                {
-                  value: 'tokenvalue',
-                  name: 'ANOTHER_COOKIE_NAME_3',
-                  path: null,
-                  httpOnly: true,
-                  secure: true
-                }
-              ]
-            },
-            SOME_OTHER_ACCOUNT_ID: {
-              SOME_OTHER_KONNECTOR_SLUG: [
-                {
-                  value: 'cookievalue',
-                  name: 'ANOTHER_COOKIE_NAME_4',
-                  path: null,
-                  httpOnly: true,
-                  secure: true
-                }
-              ]
-            }
+            SOME_ACCOUNT_ID: [
+              {
+                value: 'cookievalue',
+                name: 'ANOTHER_COOKIE_NAME',
+                path: null,
+                httpOnly: true,
+                secure: true
+              },
+              {
+                value: 'tokenvalue',
+                name: 'SOME_COOKIE_NAME',
+                path: null,
+                httpOnly: true,
+                secure: true
+              }
+            ],
+            SOME_OTHER_ACCOUNT_ID: [
+              {
+                value: 'cookievalue',
+                name: 'ANOTHER_COOKIE_NAME_2',
+                path: null,
+                httpOnly: true,
+                secure: true
+              }
+            ]
           }
         }
         jest
@@ -260,7 +237,6 @@ describe('keychain test suite', () => {
 
         const result = await getCookie({
           accountId: 'SOME_ACCOUNT_ID',
-          konnectorSlug: 'SOME_KONNECTOR_SLUG',
           cookieName: 'SOME_COOKIE_NAME'
         })
         expect(result).toStrictEqual({
@@ -274,17 +250,15 @@ describe('keychain test suite', () => {
       it('should return null if no account found for given accountId', async () => {
         const keychainContent = {
           CSC_COOKIES: {
-            SOME_OTHER_ACCOUNT_ID: {
-              SOME_OTHER_KONNECTOR_SLUG: [
-                {
-                  value: 'cookievalue',
-                  name: 'ANOTHER_COOKIE_NAME_4',
-                  path: null,
-                  httpOnly: true,
-                  secure: true
-                }
-              ]
-            }
+            SOME_OTHER_ACCOUNT_ID: [
+              {
+                value: 'cookievalue',
+                name: 'ANOTHER_COOKIE_NAME_2',
+                path: null,
+                httpOnly: true,
+                secure: true
+              }
+            ]
           }
         }
         jest
@@ -293,41 +267,6 @@ describe('keychain test suite', () => {
 
         const result = await getCookie({
           accountId: 'SOME_ACCOUNT_ID',
-          konnectorSlug: 'SOME_KONNECTOR_SLUG',
-          cookieName: 'SOME_COOKIE_NAME'
-        })
-        expect(result).toBeNull()
-      })
-      it('should return null if no konnectorSlug found for given slug', async () => {
-        const keychainContent = {
-          CSC_COOKIES: {
-            SOME_ACCOUNT_ID: {
-              SOME_OTHER_KONNECTOR_SLUG: [
-                {
-                  value: 'cookievalue',
-                  name: 'ANOTHER_COOKIE_NAME_2',
-                  path: null,
-                  httpOnly: true,
-                  secure: true
-                },
-                {
-                  value: 'tokenvalue',
-                  name: 'ANOTHER_COOKIE_NAME_3',
-                  path: null,
-                  httpOnly: true,
-                  secure: true
-                }
-              ]
-            }
-          }
-        }
-        jest
-          .spyOn(Keychain, 'getGenericPassword')
-          .mockResolvedValueOnce({ password: JSON.stringify(keychainContent) })
-
-        const result = await getCookie({
-          accountId: 'SOME_ACCOUNT_ID',
-          konnectorSlug: 'SOME_KONNECTOR_SLUG',
           cookieName: 'SOME_COOKIE_NAME'
         })
         expect(result).toBeNull()
@@ -335,17 +274,15 @@ describe('keychain test suite', () => {
       it('should return null if no cookie found with given cookieName', async () => {
         const keychainContent = {
           CSC_COOKIES: {
-            SOME_ACCOUNT_ID: {
-              SOME_KONNECTOR_SLUG: [
-                {
-                  value: 'cookievalue',
-                  name: 'ANOTHER_COOKIE_NAME',
-                  path: null,
-                  httpOnly: true,
-                  secure: true
-                }
-              ]
-            }
+            SOME_ACCOUNT_ID: [
+              {
+                value: 'cookievalue',
+                name: 'ANOTHER_COOKIE_NAME',
+                path: null,
+                httpOnly: true,
+                secure: true
+              }
+            ]
           }
         }
         jest
@@ -354,7 +291,6 @@ describe('keychain test suite', () => {
 
         const result = await getCookie({
           accountId: 'SOME_ACCOUNT_ID',
-          konnectorSlug: 'SOME_KONNECTOR_SLUG',
           cookieName: 'SOME_COOKIE_NAME'
         })
         expect(result).toBeNull()
@@ -362,17 +298,15 @@ describe('keychain test suite', () => {
       it('should throw an Error if no cookieName is given', async () => {
         const keychainContent = {
           CSC_COOKIES: {
-            SOME_ACCOUNT_ID: {
-              SOME_KONNECTOR_SLUG: [
-                {
-                  value: 'tokenvalue',
-                  name: 'SOME_COOKIE_NAME',
-                  path: null,
-                  httpOnly: true,
-                  secure: true
-                }
-              ]
-            }
+            SOME_ACCOUNT_ID: [
+              {
+                value: 'tokenvalue',
+                name: 'SOME_COOKIE_NAME',
+                path: null,
+                httpOnly: true,
+                secure: true
+              }
+            ]
           }
         }
         jest
@@ -382,7 +316,6 @@ describe('keychain test suite', () => {
         await expect(
           getCookie({
             accountId: 'SOME_ACCOUNT_ID',
-            konnectorSlug: 'SOME_KONNECTOR_SLUG',
             cookieName: ''
           })
         ).rejects.toThrow('getCookie cannot be called without a cookieName')
@@ -393,7 +326,6 @@ describe('keychain test suite', () => {
         jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce(null)
         const cookieToAdd = {
           accountId: 'SOME_ACCOUNT_ID',
-          konnectorSlug: 'SOME_KONNECTOR_SLUG',
           cookieObject: {
             value: 'SOME_COOKIE_VALUE',
             name: 'SOME_COOKIE_NAME',
@@ -407,17 +339,15 @@ describe('keychain test suite', () => {
           GLOBAL_KEY,
           JSON.stringify({
             CSC_COOKIES: {
-              SOME_ACCOUNT_ID: {
-                SOME_KONNECTOR_SLUG: [
-                  {
-                    value: 'SOME_COOKIE_VALUE',
-                    name: 'SOME_COOKIE_NAME',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  }
-                ]
-              }
+              SOME_ACCOUNT_ID: [
+                {
+                  value: 'SOME_COOKIE_VALUE',
+                  name: 'SOME_COOKIE_NAME',
+                  path: null,
+                  httpOnly: true,
+                  secure: true
+                }
+              ]
             }
           })
         )
@@ -430,7 +360,6 @@ describe('keychain test suite', () => {
         })
         const cookieToAdd = {
           accountId: 'SOME_ACCOUNT_ID',
-          konnectorSlug: 'SOME_KONNECTOR_SLUG',
           cookieObject: {
             value: 'SOME_COOKIE_VALUE',
             name: 'SOME_COOKIE_NAME',
@@ -445,42 +374,37 @@ describe('keychain test suite', () => {
           JSON.stringify({
             VAULT: { key: 'value' },
             CSC_COOKIES: {
-              SOME_ACCOUNT_ID: {
-                SOME_KONNECTOR_SLUG: [
-                  {
-                    value: 'SOME_COOKIE_VALUE',
-                    name: 'SOME_COOKIE_NAME',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  }
-                ]
-              }
+              SOME_ACCOUNT_ID: [
+                {
+                  value: 'SOME_COOKIE_VALUE',
+                  name: 'SOME_COOKIE_NAME',
+                  path: null,
+                  httpOnly: true,
+                  secure: true
+                }
+              ]
             }
           })
         )
       })
-      it('should save the given cookie when keychain already has some cookies for the given konnector slug', async () => {
+      it('should save the given cookie when keychain already has some cookies for the given konnector accountId', async () => {
         jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
           password: JSON.stringify({
             CSC_COOKIES: {
-              SOME_ACCOUNT_ID: {
-                SOME_KONNECTOR_SLUG: [
-                  {
-                    value: 'SOME_EXISTING_COOKIE_VALUE',
-                    name: 'SOME_EXISTING_COOKIE_NAME',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  }
-                ]
-              }
+              SOME_ACCOUNT_ID: [
+                {
+                  value: 'SOME_EXISTING_COOKIE_VALUE',
+                  name: 'SOME_EXISTING_COOKIE_NAME',
+                  path: null,
+                  httpOnly: true,
+                  secure: true
+                }
+              ]
             }
           })
         })
         const cookieToAdd = {
           accountId: 'SOME_ACCOUNT_ID',
-          konnectorSlug: 'SOME_KONNECTOR_SLUG',
           cookieObject: {
             value: 'SOME_COOKIE_VALUE',
             name: 'SOME_COOKIE_NAME',
@@ -494,24 +418,22 @@ describe('keychain test suite', () => {
           GLOBAL_KEY,
           JSON.stringify({
             CSC_COOKIES: {
-              SOME_ACCOUNT_ID: {
-                SOME_KONNECTOR_SLUG: [
-                  {
-                    value: 'SOME_EXISTING_COOKIE_VALUE',
-                    name: 'SOME_EXISTING_COOKIE_NAME',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  },
-                  {
-                    value: 'SOME_COOKIE_VALUE',
-                    name: 'SOME_COOKIE_NAME',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  }
-                ]
-              }
+              SOME_ACCOUNT_ID: [
+                {
+                  value: 'SOME_EXISTING_COOKIE_VALUE',
+                  name: 'SOME_EXISTING_COOKIE_NAME',
+                  path: null,
+                  httpOnly: true,
+                  secure: true
+                },
+                {
+                  value: 'SOME_COOKIE_VALUE',
+                  name: 'SOME_COOKIE_NAME',
+                  path: null,
+                  httpOnly: true,
+                  secure: true
+                }
+              ]
             }
           })
         )
@@ -520,23 +442,20 @@ describe('keychain test suite', () => {
         jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
           password: JSON.stringify({
             CSC_COOKIES: {
-              SOME_ACCOUNT_ID: {
-                SOME_KONNECTOR_SLUG: [
-                  {
-                    value: 'SOME_EXISTING_COOKIE_VALUE',
-                    name: 'SOME_EXISTING_COOKIE_NAME',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  }
-                ]
-              }
+              SOME_ACCOUNT_ID: [
+                {
+                  value: 'SOME_EXISTING_COOKIE_VALUE',
+                  name: 'SOME_EXISTING_COOKIE_NAME',
+                  path: null,
+                  httpOnly: true,
+                  secure: true
+                }
+              ]
             }
           })
         })
         const cookieToAdd = {
           accountId: 'SOME_ACCOUNT_ID',
-          konnectorSlug: 'SOME_KONNECTOR_SLUG',
           cookieObject: {
             value: 'SOME_COOKIE_VALUE',
             name: 'SOME_EXISTING_COOKIE_NAME',
@@ -546,43 +465,39 @@ describe('keychain test suite', () => {
           }
         }
         await expect(saveCookie(cookieToAdd)).rejects.toThrow(
-          "Cookie SOME_EXISTING_COOKIE_NAME is already saved in SOME_KONNECTOR_SLUG. You can't add it again."
+          "Cookie SOME_EXISTING_COOKIE_NAME is already saved in SOME_ACCOUNT_ID. You can't add it again."
         )
       })
     })
     describe('removeCookie', () => {
-      it('should remove cookies from the given konnector slug and account id', async () => {
+      it('should remove cookies from the given account id', async () => {
         jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
           password: JSON.stringify({
             CSC_COOKIES: {
-              SOME_ACCOUNT_ID: {
-                SOME_KONNECTOR_SLUG: [
-                  {
-                    value: 'SOME_EXISTING_COOKIE_VALUE',
-                    name: 'SOME_EXISTING_COOKIE_NAME',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  },
-                  {
-                    value: 'SOME_EXISTING_COOKIE_VALUE_2',
-                    name: 'SOME_EXISTING_COOKIE_NAME_2',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  }
-                ]
-              }
+              SOME_ACCOUNT_ID: [
+                {
+                  value: 'SOME_EXISTING_COOKIE_VALUE',
+                  name: 'SOME_EXISTING_COOKIE_NAME',
+                  path: null,
+                  httpOnly: true,
+                  secure: true
+                },
+                {
+                  value: 'SOME_EXISTING_COOKIE_VALUE_2',
+                  name: 'SOME_EXISTING_COOKIE_NAME_2',
+                  path: null,
+                  httpOnly: true,
+                  secure: true
+                }
+              ]
             }
           })
         })
-        await removeCookie('SOME_ACCOUNT_ID', 'SOME_KONNECTOR_SLUG')
+        await removeCookie('SOME_ACCOUNT_ID')
         expect(Keychain.setGenericPassword).toBeCalledWith(
           GLOBAL_KEY,
           JSON.stringify({
-            CSC_COOKIES: {
-              SOME_ACCOUNT_ID: {}
-            }
+            CSC_COOKIES: {}
           })
         )
       })
@@ -590,108 +505,46 @@ describe('keychain test suite', () => {
         jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
           password: JSON.stringify({
             CSC_COOKIES: {
-              SOME_ACCOUNT_ID: {
-                SOME_KONNECTOR_SLUG: [
-                  {
-                    value: 'SOME_EXISTING_COOKIE_VALUE',
-                    name: 'SOME_EXISTING_COOKIE_NAME',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  },
-                  {
-                    value: 'SOME_EXISTING_COOKIE_VALUE_2',
-                    name: 'SOME_EXISTING_COOKIE_NAME_2',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  }
-                ]
-              }
+              SOME_ACCOUNT_ID: [
+                {
+                  value: 'SOME_EXISTING_COOKIE_VALUE',
+                  name: 'SOME_EXISTING_COOKIE_NAME',
+                  path: null,
+                  httpOnly: true,
+                  secure: true
+                },
+                {
+                  value: 'SOME_EXISTING_COOKIE_VALUE_2',
+                  name: 'SOME_EXISTING_COOKIE_NAME_2',
+                  path: null,
+                  httpOnly: true,
+                  secure: true
+                }
+              ]
             }
           })
         })
-        await removeCookie(
-          'SOME_NOT_EXISTING_ACCOUNT_ID',
-          'SOME_KONNECTOR_SLUG'
-        )
+        await removeCookie('SOME_NOT_EXISTING_ACCOUNT_ID')
         expect(Keychain.setGenericPassword).toBeCalledWith(
           GLOBAL_KEY,
           JSON.stringify({
             CSC_COOKIES: {
-              SOME_ACCOUNT_ID: {
-                SOME_KONNECTOR_SLUG: [
-                  {
-                    value: 'SOME_EXISTING_COOKIE_VALUE',
-                    name: 'SOME_EXISTING_COOKIE_NAME',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  },
-                  {
-                    value: 'SOME_EXISTING_COOKIE_VALUE_2',
-                    name: 'SOME_EXISTING_COOKIE_NAME_2',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  }
-                ]
-              }
-            }
-          })
-        )
-      })
-      it('should not modify the saved keychain if the given konnector slug doesnt exist', async () => {
-        jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
-          password: JSON.stringify({
-            CSC_COOKIES: {
-              SOME_ACCOUNT_ID: {
-                SOME_KONNECTOR_SLUG: [
-                  {
-                    value: 'SOME_EXISTING_COOKIE_VALUE',
-                    name: 'SOME_EXISTING_COOKIE_NAME',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  },
-                  {
-                    value: 'SOME_EXISTING_COOKIE_VALUE_2',
-                    name: 'SOME_EXISTING_COOKIE_NAME_2',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  }
-                ]
-              }
-            }
-          })
-        })
-        await removeCookie(
-          'SOME_ACCOUNT_ID',
-          'SOME_NOT_EXISTING_KONNECTOR_SLUG'
-        )
-        expect(Keychain.setGenericPassword).toBeCalledWith(
-          GLOBAL_KEY,
-          JSON.stringify({
-            CSC_COOKIES: {
-              SOME_ACCOUNT_ID: {
-                SOME_KONNECTOR_SLUG: [
-                  {
-                    value: 'SOME_EXISTING_COOKIE_VALUE',
-                    name: 'SOME_EXISTING_COOKIE_NAME',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  },
-                  {
-                    value: 'SOME_EXISTING_COOKIE_VALUE_2',
-                    name: 'SOME_EXISTING_COOKIE_NAME_2',
-                    path: null,
-                    httpOnly: true,
-                    secure: true
-                  }
-                ]
-              }
+              SOME_ACCOUNT_ID: [
+                {
+                  value: 'SOME_EXISTING_COOKIE_VALUE',
+                  name: 'SOME_EXISTING_COOKIE_NAME',
+                  path: null,
+                  httpOnly: true,
+                  secure: true
+                },
+                {
+                  value: 'SOME_EXISTING_COOKIE_VALUE_2',
+                  name: 'SOME_EXISTING_COOKIE_NAME_2',
+                  path: null,
+                  httpOnly: true,
+                  secure: true
+                }
+              ]
             }
           })
         )
@@ -702,7 +555,7 @@ describe('keychain test suite', () => {
             VAULT: { key: 'value' }
           })
         })
-        await removeCookie('SOME_ACCOUNT_ID', 'SOME_KONNECTOR_SLUG')
+        await removeCookie('SOME_ACCOUNT_ID')
         expect(Keychain.setGenericPassword).toBeCalledWith(
           GLOBAL_KEY,
           JSON.stringify({
