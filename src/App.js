@@ -1,12 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { AppState, StatusBar, StyleSheet, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { StatusBar, StyleSheet, View } from 'react-native'
 import { decode, encode } from 'base-64'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import RNAsyncStorageFlipper from 'rn-async-storage-flipper'
-import BackgroundTimer from 'react-native-background-timer'
 
 import { CozyProvider, useClient } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
@@ -29,11 +28,7 @@ import { withSentry } from './Sentry'
 import { ErrorScreen } from './screens/error/ErrorScreen.jsx'
 import { WelcomeScreen } from './screens/welcome/WelcomeScreen'
 import { LockScreen } from '/screens/lock/LockScreen'
-import { getData, StorageKeys } from '/libs/localStore/storage'
-import {
-  hideSplashScreen,
-  showSplashScreen
-} from '/libs/services/SplashScreenService'
+import { useGlobalAppState } from './hooks/useGlobalAppState'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -54,52 +49,7 @@ const App = ({ setClient }) => {
     setClient
   )
 
-  const appState = useRef(AppState.currentState)
-  const isLocked = useRef(false)
-
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      if (appState.current.match(/active/) && nextAppState === 'background') {
-        showSplashScreen()
-
-        BackgroundTimer.runBackgroundTimer(
-          () => (isLocked.current = true),
-          300000
-        )
-      }
-
-      if (appState.current.match(/background/) && nextAppState === 'active') {
-        const currentRoute =
-          RootNavigation.navigationRef.getCurrentRoute() &&
-          JSON.parse(
-            JSON.stringify(RootNavigation.navigationRef.getCurrentRoute())
-          )
-
-        const tryLockingApp = async () => {
-          const autoLockEnabled = await getData(StorageKeys.AutoLockEnabled)
-
-          if (autoLockEnabled) {
-            RootNavigation.navigate(routes.lock, currentRoute)
-          } else {
-            hideSplashScreen()
-          }
-        }
-
-        if (currentRoute.name !== routes.lock && isLocked.current)
-          void tryLockingApp()
-        else hideSplashScreen()
-
-        BackgroundTimer.stopBackgroundTimer()
-        isLocked.current = false
-      }
-
-      appState.current = nextAppState
-    })
-
-    return () => {
-      subscription.remove()
-    }
-  }, [])
+  useGlobalAppState()
 
   if (isLoading) {
     return null
