@@ -451,17 +451,15 @@ export default class ContentScript {
    */
   normalizeFileName(filenameInfos) {
     this.onlyIn(WORKER_TYPE, 'normalizeFileName')
-    if (
-      !filenameInfos.year ||
-      !filenameInfos.month ||
-      !filenameInfos.day ||
-      !filenameInfos.vendor
-    ) {
+    if (!filenameInfos.year || !filenameInfos.month || !filenameInfos.vendor) {
       throw new Error(
         'Some date properties or vendor are missing, cannot complete filename normalization'
       )
     }
-    const normalizedDate = `${filenameInfos.year}-${filenameInfos.month}-${filenameInfos.day}`
+    let normalizedDate = `${filenameInfos.year}-${filenameInfos.month}`
+    if (filenameInfos.day) {
+      normalizedDate = `${normalizedDate}` + `-${filenameInfos.day}`
+    }
     let normalizedFileName = `${normalizedDate}_${filenameInfos.vendor}`
     if (filenameInfos.documentType) {
       normalizedFileName =
