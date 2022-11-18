@@ -6445,10 +6445,10 @@ cozy-device-helper@^2.6.0:
   dependencies:
     lodash "^4.17.19"
 
-cozy-flags@^2.9.0:
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/cozy-flags/-/cozy-flags-2.9.0.tgz#9f458c0eb71f549a2ae12198d55de89434bff96b"
-  integrity sha512-2iezzIS3WtnZ+b8Kupsa7aN5KINebdISS9L5OpGc320wcdmHrHShpZaqkwCQWLxLqhaXalxxe6OIeFLS84pIrQ==
+cozy-flags@^2.10.2:
+  version "2.10.2"
+  resolved "https://registry.yarnpkg.com/cozy-flags/-/cozy-flags-2.10.2.tgz#af9c257c5406abbd465a6796dc39a404efd3f4aa"
+  integrity sha512-mWbFG6qpDt9FS0T+3u0lZFty9KX7Po93LnlDmoufIluBW9qVU1qLMAkT1BqMe239B8WBJdvZhREdvQJ9HAOzNw==
   dependencies:
     microee "^0.0.6"
 
