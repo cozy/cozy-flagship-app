@@ -1,4 +1,7 @@
-import NetInfo from '@react-native-community/netinfo'
+import NetInfo, {
+  NetInfoState,
+  NetInfoSubscription
+} from '@react-native-community/netinfo'
 
 import Minilog from '@cozy/minilog'
 
@@ -10,16 +13,25 @@ import { showSplashScreen } from '/libs/services/SplashScreenService'
 
 const log = Minilog('NetService')
 
-export const _netInfoChangeHandler = (state, callbackRoute = routes.stack) => {
+export const _netInfoChangeHandler = (
+  state: Partial<NetInfoState> | undefined,
+  callbackRoute = routes.stack
+): void => {
   try {
-    state.isConnected && reset(callbackRoute)
+    state?.isConnected && reset(callbackRoute)
   } catch (error) {
     log.error(error)
   }
 }
 
-const makeNetWatcher = () => {
-  let unsubscribe
+const makeNetWatcher = (): (({
+  shouldUnsub,
+  callbackRoute
+}?: {
+  shouldUnsub?: boolean
+  callbackRoute?: string
+}) => void) => {
+  let unsubscribe: NetInfoSubscription | undefined
 
   return ({ shouldUnsub, callbackRoute } = {}) => {
     if (!unsubscribe) {
@@ -38,11 +50,13 @@ const makeNetWatcher = () => {
   }
 }
 
-const isConnected = async () => (await NetInfo.fetch()).isConnected
+const isConnected = async (): Promise<NetInfoState['isConnected']> =>
+  (await NetInfo.fetch()).isConnected
 
-const isOffline = async () => !(await NetInfo.fetch()).isConnected
+const isOffline = async (): Promise<NetInfoState['isConnected']> =>
+  !(await NetInfo.fetch()).isConnected
 
-const handleOffline = () =>
+const handleOffline = (): void =>
   reset(routes.error, { type: strings.errorScreens.offline })
 
 const toggleNetWatcher = makeNetWatcher()

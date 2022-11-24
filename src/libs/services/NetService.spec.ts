@@ -4,11 +4,13 @@ import strings from '/strings.json'
 import { NetService, _netInfoChangeHandler } from './NetService'
 import { routes } from '/constants/routes'
 
-const mockReset = jest.fn()
+const mockReset = jest.fn<jest.Mock, unknown[]>()
 const callbackRoute = 'foo'
 
+const fetch = NetInfo.fetch as jest.Mock
+
 jest.mock('../RootNavigation', () => ({
-  reset: (...args) => mockReset(...args)
+  reset: (...args: unknown[]): jest.Mock => mockReset(...args)
 }))
 
 afterEach(() => {
@@ -16,31 +18,31 @@ afterEach(() => {
 })
 
 it('handles isConnected', async () => {
-  NetInfo.fetch.mockReturnValue({ isConnected: true })
+  fetch.mockReturnValue({ isConnected: true })
 
   expect(await NetService.isConnected()).toBe(true)
 })
 
 it('handles isConnected false', async () => {
-  NetInfo.fetch.mockReturnValue({ isConnected: false })
+  fetch.mockReturnValue({ isConnected: false })
 
   expect(await NetService.isConnected()).toBe(false)
 })
 
 it('handles isOffline', async () => {
-  NetInfo.fetch.mockReturnValue({ isConnected: false })
+  fetch.mockReturnValue({ isConnected: false })
 
   expect(await NetService.isOffline()).toBe(true)
 })
 
 it('handles isOffline false', async () => {
-  NetInfo.fetch.mockReturnValue({ isConnected: true })
+  fetch.mockReturnValue({ isConnected: true })
 
   expect(await NetService.isOffline()).toBe(false)
 })
 
-it('handles offline redirection', async () => {
-  NetInfo.fetch.mockReturnValue({ isConnected: false })
+it('handles offline redirection', () => {
+  fetch.mockReturnValue({ isConnected: false })
 
   NetService.handleOffline()
 
