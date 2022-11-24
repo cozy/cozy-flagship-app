@@ -41,5 +41,9 @@
   },
   "fqdn": "fqdn",
   "home": "home",
-  "registerToken": "registerToken"
+  "registerToken": "registerToken",
+  "reachability": {
+    "cloud": "https://manager.cozycloud.cc/connection_check",
+    "stack": "/connection_check"
+  }
 }
