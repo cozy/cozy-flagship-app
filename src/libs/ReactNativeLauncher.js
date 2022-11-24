@@ -260,6 +260,7 @@ class ReactNativeLauncher extends Launcher {
    * This method is callable by the content script.
    *
    * @param {String} options.cookieDomain : Domain's name where to get cookies from.
+   * @return object | {null}
    */
   async getWebViewCookies(cookieDomain) {
     const { manifest } = this.startContext
@@ -274,11 +275,7 @@ class ReactNativeLauncher extends Launcher {
       )
     }
     try {
-      log.info(
-        `getWebViewCookies on this domain : ${cookieDomain} for account ${this.startContext.account.id}`
-      )
       const cookies = await CookieManager.get(cookieDomain)
-      log.info('CookieManager.get =>', cookies)
       return cookies
     } catch (err) {
       throw new Error(`Error in worker: ${err.message}`)
@@ -291,11 +288,11 @@ class ReactNativeLauncher extends Launcher {
    *
    * @param {String} cookieDomain : Domain to recover cookies from .
    * @param {String} cookieName : Name of the wanted cookie.
+   * @return null | object
    */
   async getWebViewCookie(cookieDomain, cookieName) {
     log.info('Starting getWebViewCookie in RNLauncher')
     let expectedCookie = null
-    log.info(`for this cookie : ${cookieName} for domain ${cookieDomain}`)
     try {
       const cookies = await this.getWebViewCookies(cookieDomain)
       if (cookies[cookieName]) {
@@ -312,13 +309,13 @@ class ReactNativeLauncher extends Launcher {
    * This method is callable by the content script.
    *
    * @param {String} options.cookieName : wanted cookie's by its name.
+   * @return object | null
    */
   async getCookie(cookieName) {
     log.info('Starting getCookie in RNLauncher')
     try {
       const { account } = this.startContext
       const accountId = account.id
-      log.info('Checking if cookie is present with this name :', cookieName)
       const existingCookies = await getCookie({
         accountId,
         cookieName
@@ -345,18 +342,11 @@ class ReactNativeLauncher extends Launcher {
     try {
       const { account } = this.startContext
       const accountId = account.id
-      log.info(
-        'Checking if cookie is present with this payload :',
-        cookieObject
-      )
       const existingCookies = await getCookie({
         accountId,
         cookieName: cookieObject.name
       })
-      log.info('Cookie from keychain', existingCookies)
-      log.info('Cookie Object', { accountId, cookieObject })
       if (existingCookies !== null) {
-        log.info('gettin existing cookie condition')
         await removeCookie(accountId, cookieObject.name)
       }
       await saveCookie({ accountId, cookieObject })
