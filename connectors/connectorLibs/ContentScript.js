@@ -41,7 +41,7 @@ export default class ContentScript {
       'storeFromWorker',
       'clickAndWait',
       'getCookiesByDomain',
-      'getCookieByDomainAndName'
+      'getCookieByDomainAndName',
       'normalizeFileName'
     ]
 
@@ -447,6 +447,12 @@ export default class ContentScript {
    * Filename normalization function, harmonize the filename format between all connectors
    *
    * @param {Object} filenameInfos : Object containing year/month/day and the vendor's name at least. It can contain an amount, a documentType and a vendorRef if needed
+   *  @param {String} filenameInfos.year : Year of the document creation
+   *  @param {String} filenameInfos.month : Month of the document creation
+   *  @param {String} filenameInfos.vendor : Vendor who create the document (eg. "Amazon", "Alan", "Total Energies" ...)
+   *  @param {Number} [filenameInfos.amount] : Optional, the amount of the bill, can be integer or float
+   *  @param {String} [filenameInfos.documentType] : Optional, the type of the document (eg. "Contract", "Mail", "Certificate" ...)
+   *  @param {String} [filenameInfos.vendorRef] : Optional, the document's reference (eg. bill number, document id given by the vendor, SHA sum of one of the previous example ... )
    * @returns {String} : Fully edited filename following the filename's convention
    */
   normalizeFileName(filenameInfos) {
