@@ -15,7 +15,7 @@
     "postinstall": "patch-package",
     "pre-commit": "yarn lint",
     "start": "react-native start",
-    "test": "jest connectors/**/* src/**/*",
+    "test": "jest connectors/**/* src/**/* --detectOpenHandles --forceExit",
     "token": "node scripts/token.js",
     "web": "webpack serve --open --config webpack.config.js --inline --hot --port=9999",
     "web:test": "react-app-rewired test --env=jsdom"
