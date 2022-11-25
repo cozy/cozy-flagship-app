@@ -37,12 +37,21 @@ const handleSleep = (): void => {
 
 /**
  * If we went to sleep while on the lock screen, we don't want to lock the app
+ *
+ * If we went to sleep on an iOS device, we don't want to check the timer and always autolock the app
+ *
+ * In any other case, we just check the inactivity timer and ask to lock the app if needed
  */
-const shouldLockApp = (
+export const _shouldLockApp = (
   parsedRoute: Route<string>,
   timeSinceLastActivity: number
-): boolean =>
-  parsedRoute.name !== routes.lock && timeSinceLastActivity > TIMEOUT_VALUE
+): boolean => {
+  if (parsedRoute.name === routes.lock) return false
+
+  if (Platform.OS === 'ios') return true
+
+  return timeSinceLastActivity > TIMEOUT_VALUE
+}
 
 const handleWakeUp = (): void => {
   const currentRoute = RootNavigation.navigationRef.getCurrentRoute()
@@ -56,7 +65,7 @@ const handleWakeUp = (): void => {
       return now - lastActivityDate.getTime()
     })
     .then(timeSinceLastActivity =>
-      shouldLockApp(parsedRoute, timeSinceLastActivity)
+      _shouldLockApp(parsedRoute, timeSinceLastActivity)
         ? tryLockingApp(parsedRoute)
         : hideSplashScreen()
     )
@@ -86,14 +95,9 @@ const onStateChange = (nextAppState: AppStateStatus): void => {
  */
 export const useGlobalAppState = (): void =>
   useEffect(() => {
-    const subscription =
-      Platform.OS === 'android'
-        ? AppState.addEventListener('change', onStateChange)
-        : null
+    const subscription = AppState.addEventListener('change', onStateChange)
 
     return () => {
-      if (!subscription) return
-
       appState = AppState.currentState
       subscription.remove()
     }
