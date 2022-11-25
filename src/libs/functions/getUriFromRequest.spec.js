@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { getUriFromRequest } from './getUriFromRequest'
 
 test('it returns an url with the correct scheme if none provided', () => {
