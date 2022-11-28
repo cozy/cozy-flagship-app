@@ -141,7 +141,7 @@ const App = ({ setClient }) => {
       <Root.Screen
         name={routes.error}
         component={ErrorScreen}
-        options={{ type: initialRoute.root }}
+        initialParams={{ type: initialRoute.root }}
       />
 
       <Root.Screen
