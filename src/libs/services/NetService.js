@@ -3,9 +3,10 @@ import NetInfo from '@react-native-community/netinfo'
 import Minilog from '@cozy/minilog'
 
 import strings from '/strings.json'
+import { devConfig } from '/config/dev'
 import { reset } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
-import { showSplashScreen } from './SplashScreenService'
+import { showSplashScreen } from '/libs/services/SplashScreenService'
 
 const log = Minilog('NetService')
 
@@ -46,9 +47,11 @@ const handleOffline = () =>
 
 const toggleNetWatcher = makeNetWatcher()
 
-export const NetService = {
+const NetService = {
   handleOffline,
-  isConnected,
-  isOffline,
-  toggleNetWatcher
+  isConnected: devConfig.forceOffline ? Promise.resolve(false) : isConnected,
+  isOffline: devConfig.forceOffline ? Promise.resolve(true) : isOffline,
+  toggleNetWatcher: devConfig.forceOffline ? () => {} : toggleNetWatcher
 }
+
+export { NetService }
