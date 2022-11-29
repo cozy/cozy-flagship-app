@@ -8,6 +8,8 @@ buildscript {
         targetSdkVersion = 30
         ndkVersion = "21.4.7075529"
         androidXBrowser = "1.4.0"
+        AndroidNavbarHeight_targetSdkVersion = 31
+        AndroidNavbarHeight_compileSdkVersion = 31
     }
     repositories {
         google()
