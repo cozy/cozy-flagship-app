@@ -63,6 +63,9 @@ const initialState = {
  * - click the button and wait for the infinite loop to crash the webview
  * - note: do not inject this code from a Chrome inspector. This won't work as fast and this will make your computer's Chrome unresponsive too
  * - note: navigating to `chrome://crash` as stated in the Android documentation won't work as the WebView would prevent the navitation to any local resource
+ *
+ * Extending type for now, should migrate this file to TS later on.
+ * @type extends WebView
  */
 export const SupervisedWebView = React.forwardRef((props, ref) => {
   const client = useClient()
