@@ -49,8 +49,10 @@ const toggleNetWatcher = makeNetWatcher()
 
 const NetService = {
   handleOffline,
-  isConnected: devConfig.forceOffline ? Promise.resolve(false) : isConnected,
-  isOffline: devConfig.forceOffline ? Promise.resolve(true) : isOffline,
+  isConnected: devConfig.forceOffline
+    ? () => Promise.resolve(false)
+    : isConnected,
+  isOffline: devConfig.forceOffline ? () => Promise.resolve(true) : isOffline,
   toggleNetWatcher: devConfig.forceOffline ? () => {} : toggleNetWatcher
 }
 
