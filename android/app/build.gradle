@@ -135,8 +135,8 @@ android {
         applicationId "io.cozy.flagship.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2901
-        versionName "0.0.29"
+        versionCode 3001
+        versionName "0.0.30"
         multiDexEnabled true
     }
     splits {
