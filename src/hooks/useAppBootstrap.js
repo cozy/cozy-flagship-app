@@ -140,7 +140,11 @@ export const useAppBootstrap = client => {
 
         setInitialRoute({
           stack: isHome ? fallback : undefined,
-          root: !isHome ? fallback : undefined
+          root: isConnected
+            ? !isHome
+              ? fallback
+              : undefined
+            : strings.errorScreens.offline
         })
 
         if (!isConnected) {
