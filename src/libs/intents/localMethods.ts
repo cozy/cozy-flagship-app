@@ -1,22 +1,25 @@
-import CozyClient from 'cozy-client'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Linking, Platform } from 'react-native'
 
-import * as RootNavigation from '../RootNavigation'
+import CozyClient from 'cozy-client'
+
+import * as RootNavigation from '/libs/RootNavigation'
 import strings from '/strings.json'
 import { EnvService } from '/libs/services/EnvService'
 import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
-import { clearClient } from '../client'
-import { deleteKeychain } from '../keychain'
-import { hideSplashScreen } from '../services/SplashScreenService'
-import { openApp } from '../functions/openApp'
-import { resetSessionToken } from '../functions/session'
-import { routes } from '/constants/routes'
-import { setFlagshipUI } from './setFlagshipUI'
-import { showInAppBrowser, closeInAppBrowser } from './InAppBrowser'
-import { toggleSetting } from '/libs/intents/toggleSetting'
+import { clearClient } from '/libs/client'
+import { deleteKeychain } from '/libs/keychain'
+import { hideSplashScreen } from '/libs/services/SplashScreenService'
 import { isBiometryDenied } from '/libs/intents/setBiometryState'
+import { openApp } from '/libs/functions/openApp'
+import { resetSessionToken } from '/libs/functions/session'
+import { routes } from '/constants/routes'
+import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
+import { showInAppBrowser, closeInAppBrowser } from '/libs/intents/InAppBrowser'
+import { toggleSetting } from '/libs/intents/toggleSetting'
 import { clearData } from '/libs/localStore/storage'
 import { clearCookies } from '/libs/httpserver/httpCookieManager'
+import { BrowserResult } from 'react-native-inappbrowser-reborn'
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {
@@ -46,25 +49,22 @@ const backToHome = (): Promise<null> => {
 /**
  * Get the fetchSessionCode function to be called with current CozyClient instance
  * fetchSessionCode gets a session code from the current cozy-client instance
- *
- * @param {CozyClient} client - current CozyClient instance
- *
- * @returns {Function|null}
- * @throws error containing invalid session code result
  */
 const fetchSessionCodeWithClient = (
   client?: CozyClient
-): (() => Promise<null>) => {
+): (() => Promise<string | null>) => {
   return async function fetchSessionCode() {
     if (!client) {
       return null
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    const sessionCodeResult = await client.getStackClient().fetchSessionCode()
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const sessionCodeResult = await (
+      client.getStackClient() as {
+        fetchSessionCode: () => Promise<{ session_code: string }>
+      }
+    ).fetchSessionCode()
+
     if (sessionCodeResult.session_code) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
       return sessionCodeResult.session_code
     }
 
@@ -102,23 +102,37 @@ export const internalMethods = {
   }
 }
 
+interface CustomMethods {
+  fetchSessionCode: () => Promise<string | null>
+  showInAppBrowser: (args: { url: string }) => Promise<BrowserResult>
+}
+
+/**
+ * For now cozy-intent doesn't accept methods resolving to void.
+ * We can use this wrapper to still execute an async method an resolve to null no matter what.
+ */
+const nativeMethodWrapper =
+  <T extends () => Promise<void>>(method: T) =>
+  async (): Promise<null> => {
+    await method()
+
+    return null
+  }
+
 export const localMethods = (
   client: CozyClient | undefined
 ): NativeMethodsRegister => {
   return {
     backToHome,
-    // @ts-expect-error function to be converted to TS
     closeInAppBrowser,
     fetchSessionCode: fetchSessionCodeWithClient(client),
-    // @ts-expect-error function to be converted to TS
-    hideSplashScreen,
-    logout: logout(client),
+    hideSplashScreen: nativeMethodWrapper(hideSplashScreen),
+    logout,
     openApp: (href, app, iconParams) =>
       openApp(RootNavigation, href, app, iconParams),
     // @ts-expect-error function to be converted to TS
     toggleSetting,
     setFlagshipUI,
-    // @ts-expect-error function to be converted to TS
     showInAppBrowser,
     isBiometryDenied,
     openAppOSSettings

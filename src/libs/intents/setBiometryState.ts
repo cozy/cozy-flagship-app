@@ -4,8 +4,8 @@ import { EventEmitter } from 'events'
 import { FlagshipMetadata } from 'cozy-device-helper/dist/flagship'
 
 import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
+import { getVaultInformation } from '/libs/keychain'
 import { promptBiometry } from '/screens/lock/functions/lockScreenFunctions'
-import { getVaultInformation } from '../keychain'
 import { ensureAutoLockIsEnabled } from './toggleSetting'
 
 export const BiometryEmitter = new EventEmitter()

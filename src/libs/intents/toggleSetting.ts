@@ -36,7 +36,7 @@ export const ensureAutoLockIsEnabled = async (): Promise<void> => {
 
 export const toggleSetting = async (
   settingName: 'biometryLock' | 'autoLock' | 'PINLock',
-  params?: { pinCode: string }
+  params?: { pinCode?: string }
 ): Promise<boolean | null> => {
   let resolveTo = null
 
