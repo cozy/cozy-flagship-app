@@ -1,10 +1,28 @@
-# 0.0.30
+# 0.0.31
 
 ## ✨ Features
 
 
 ## 🐛 Bug Fixes
 
+
+## 🔧 Tech
+
+
+# 0.0.30
+
+## ✨ Features
+
+* Handle iOS authorization for FaceID ([PR #457](https://github.com/cozy/cozy-react-native/pull/457))
+* Add confirmation dialog when login out from Lock screen ([PR #467](https://github.com/cozy/cozy-react-native/pull/467))
+
+## 🐛 Bug Fixes
+
+* Fix imported files naming format (date) for `TotalEnergie` Client Side Connectors ([PR #461](https://github.com/cozy/cozy-react-native/pull/461))
+* Autolock is not automatically disabled anymore when Biometry is disabled ([PR #459](https://github.com/cozy/cozy-react-native/pull/459))
+* Correctly handle status bar and navigation bar colors on Lock screen ([PR #458](https://github.com/cozy/cozy-react-native/pull/458))
+* Prevent app to be instantaneously locked when opening a file from cozy-drive ([PR #465](https://github.com/cozy/cozy-react-native/pull/465))
+* Fix a scenario where the Offline error screen was blank ([PR #469](https://github.com/cozy/cozy-react-native/pull/469))
 
 ## 🔧 Tech
 
