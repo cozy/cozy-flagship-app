@@ -1,6 +1,7 @@
-import { flagshipUI, setFlagshipUI } from './setFlagshipUI'
-import { changeBarColors } from 'react-native-immersive-bars'
 import { Platform } from 'react-native'
+import { changeBarColors } from 'react-native-immersive-bars'
+
+import { flagshipUI, setFlagshipUI } from '/libs/intents/setFlagshipUI'
 
 jest.mock('react-native-immersive-bars')
 

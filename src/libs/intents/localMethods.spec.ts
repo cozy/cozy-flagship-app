@@ -1,9 +1,12 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Keychain from 'react-native-keychain'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import * as RootNavigation from '../RootNavigation.js'
-import strings from '../../strings.json'
-import { localMethods, asyncLogout } from './localMethods'
+import CozyClient from 'cozy-client/types/CozyClient.js'
+
+import * as RootNavigation from '/libs/RootNavigation.js'
+import strings from '/strings.json'
+import { localMethods, asyncLogout } from '/libs/intents/localMethods'
+import { NativeMethodsRegister } from 'cozy-intent'
 
 jest.mock('react-native-keychain')
 jest.mock('../RootNavigation.js')
@@ -59,9 +62,13 @@ test('fetchSessionCode should return only a session code', async () => {
   fetchSessionCode.mockResolvedValue({
     session_code: 'test_session_code'
   })
-  const client = { getStackClient: () => ({ fetchSessionCode }) }
+  const client = {
+    getStackClient: (): { fetchSessionCode: jest.Mock } => ({
+      fetchSessionCode
+    })
+  }
 
-  const result = await localMethods(client).fetchSessionCode()
+  const result = await localMethods(client as CozyClient).fetchSessionCode()
 
   expect(fetchSessionCode).toHaveBeenCalledTimes(1)
   expect(result).toEqual('test_session_code')
@@ -69,13 +76,18 @@ test('fetchSessionCode should return only a session code', async () => {
 
 test('fetchSessionCode should throw if no session code is returned', async () => {
   const fetchSessionCode = jest.fn()
-  const client = { getStackClient: () => ({ fetchSessionCode }) }
-
+  const client = {
+    getStackClient: (): { fetchSessionCode: jest.Mock } => ({
+      fetchSessionCode
+    })
+  }
   fetchSessionCode.mockResolvedValue({
     twoFactorToken: 'token'
   })
 
-  await expect(localMethods(client).fetchSessionCode()).rejects.toThrowError(
+  await expect(
+    localMethods(client as CozyClient).fetchSessionCode()
+  ).rejects.toThrowError(
     'session code result should contain a session_code ' +
       JSON.stringify({ twoFactorToken: 'token' })
   )

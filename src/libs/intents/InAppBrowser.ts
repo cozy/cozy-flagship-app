@@ -1,6 +1,4 @@
-import { InAppBrowser } from 'react-native-inappbrowser-reborn'
-// eslint-disable-next-line no-unused-vars
-import { BrowserResult } from 'react-native-inappbrowser-reborn/types'
+import { BrowserResult, InAppBrowser } from 'react-native-inappbrowser-reborn'
 
 const IAB_OPTIONS = {
   // iOS Properties
@@ -28,17 +26,17 @@ const IAB_OPTIONS = {
 
 /**
  * Show InAppBrowser with the specified url
- *
- * @param {String} options.url - url to which open the InAppBrowser
- * @returns {BrowserResult}
  */
-export const showInAppBrowser = ({ url }) => {
-  return InAppBrowser.open(url, IAB_OPTIONS)
+export const showInAppBrowser = (args: {
+  url: string
+}): Promise<BrowserResult> => {
+  return InAppBrowser.open(args.url, IAB_OPTIONS)
 }
 
 /**
  * CLose current InAppBrowser
  */
-export const closeInAppBrowser = () => {
-  return InAppBrowser.close()
+export const closeInAppBrowser = (): Promise<null> => {
+  InAppBrowser.close()
+  return Promise.resolve(null)
 }
