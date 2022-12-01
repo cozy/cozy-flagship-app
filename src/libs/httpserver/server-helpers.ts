@@ -16,7 +16,7 @@ export const addBodyClasses = (HTMLstring: string): string => {
 
   const hasClasses = /<body.*?class=("|')(.*?)("|')/i.exec(HTMLstring)
 
-  if (!hasClasses)
+  if (!hasClasses || hasClasses[2] === undefined)
     return HTMLstring.replace('<body', `<body class="${bodyClasses}"`)
 
   const tagIndex = HTMLstring.indexOf('"', HTMLstring.indexOf(hasClasses[2]))

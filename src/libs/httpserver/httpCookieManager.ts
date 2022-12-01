@@ -19,6 +19,10 @@ const extractKeyValues = (cookieString: string): CookieRecord => {
     const key = pair[0]
     const value = pair[1]
 
+    if (!key) {
+      throw new Error('Error while parsing cookieString')
+    }
+
     if (isCookieName(key)) {
       return {
         ...previous,
@@ -108,13 +112,15 @@ export const setCookie = async (
   return CookieManager.set(appUrl, stackCookie, true)
 }
 
-export const getCookie = async (client: CozyClient): Promise<Cookie> => {
+export const getCookie = async (
+  client: CozyClient
+): Promise<Cookie | undefined> => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const appUrl: string = client.getStackClient().uri
 
   const cookies = await loadCookiesFromAsyncStorage()
 
-  return cookies?.[appUrl]
+  return cookies[appUrl]
 }
 
 /**
@@ -129,7 +135,7 @@ export const resyncCookies = async (client: CozyClient): Promise<void> => {
 
   const cookies = await loadCookiesFromAsyncStorage()
 
-  const stackCookie = cookies?.[appUrl]
+  const stackCookie = cookies[appUrl]
 
   if (stackCookie) {
     await CookieManager.set(appUrl, stackCookie, true)
