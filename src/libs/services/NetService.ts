@@ -2,7 +2,9 @@ import NetInfo, {
   NetInfoState,
   NetInfoSubscription
 } from '@react-native-community/netinfo'
+import { useEffect } from 'react'
 
+import CozyClient from 'cozy-client'
 import Minilog from '@cozy/minilog'
 
 import strings from '/strings.json'
@@ -12,6 +14,21 @@ import { routes } from '/constants/routes'
 import { showSplashScreen } from '/libs/services/SplashScreenService'
 
 const log = Minilog('NetService')
+
+const configureService = (client?: CozyClient): void => {
+  NetInfo.configure({
+    reachabilityUrl: client
+      ? `${(client.getStackClient() as { uri: string }).uri}/${
+          strings.reachability.stack
+        }`
+      : strings.reachability.cloud
+  })
+}
+
+export const useNetService = (client?: CozyClient): void =>
+  useEffect(() => {
+    configureService(client)
+  }, [client])
 
 export const _netInfoChangeHandler = (
   state: Partial<NetInfoState> | undefined,
@@ -64,10 +81,14 @@ const toggleNetWatcher = makeNetWatcher()
 const NetService = {
   handleOffline,
   isConnected: devConfig.forceOffline
-    ? () => Promise.resolve(false)
+    ? (): Promise<false> => Promise.resolve(false)
     : isConnected,
-  isOffline: devConfig.forceOffline ? () => Promise.resolve(true) : isOffline,
-  toggleNetWatcher: devConfig.forceOffline ? () => {} : toggleNetWatcher
+  isOffline: devConfig.forceOffline
+    ? (): Promise<true> => Promise.resolve(true)
+    : isOffline,
+  toggleNetWatcher: devConfig.forceOffline
+    ? (): void => undefined
+    : toggleNetWatcher
 }
 
 export { NetService }
