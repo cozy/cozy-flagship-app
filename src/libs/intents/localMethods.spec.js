@@ -12,26 +12,30 @@ jest.mock('@react-native-cookies/cookies', () => ({
 }))
 
 describe('asyncLogout', () => {
+  const client = {
+    logout: jest.fn()
+  }
+
   beforeEach(() => {
     AsyncStorage.setItem(strings.OAUTH_STORAGE_KEY, '1')
     AsyncStorage.setItem(strings.SESSION_CREATED_FLAG, '1')
   })
 
   it('should remove session and oauth storage from AsyncStorage', async () => {
-    await asyncLogout()
+    await asyncLogout(client)
 
     expect(await AsyncStorage.getItem(strings.OAUTH_STORAGE_KEY)).toBeNull()
     expect(await AsyncStorage.getItem(strings.SESSION_CREATED_FLAG)).toBeNull()
   })
 
   it('should delete keychain', async () => {
-    await asyncLogout()
+    await asyncLogout(client)
 
     expect(Keychain.resetGenericPassword).toHaveBeenCalledWith()
   })
 
   it('should handle Navigate to authenticate page and prevent go back', async () => {
-    await asyncLogout()
+    await asyncLogout(client)
 
     expect(RootNavigation.reset).toHaveBeenCalledWith('stack', {
       screen: 'welcome'
@@ -41,7 +45,9 @@ describe('asyncLogout', () => {
 
 describe('backToHome', () => {
   it('should handle Navigation', async () => {
-    localMethods().backToHome()
+    const client = {}
+
+    localMethods(client).backToHome()
 
     expect(RootNavigation.navigate).toHaveBeenCalledWith('home')
   })

@@ -10,10 +10,11 @@ import { getVaultInformation } from '/libs/keychain'
 import { hideSplashScreen } from '/libs/services/SplashScreenService'
 import { setLockScreenUI } from '/screens/lock/events/LockScreen.events'
 import { translation } from '/locales'
+import { default as CozyClientType } from 'cozy-client'
 
 const rnBiometrics = new ReactNativeBiometrics()
 
-interface CozyClient {
+interface CozyClient extends CozyClientType {
   getStackClient: () => {
     uri: string
     fetchJSON: <T>(method: string, path: string) => Promise<T>
@@ -59,7 +60,9 @@ export const validatePassword = async ({
 export const validatePin = async (pinCode: string): Promise<boolean> =>
   (await getVaultInformation('pinCode')) === pinCode
 
-export const logout = (): void => void asyncLogout()
+export const logout = (client: CozyClient): (() => void) => {
+  return (): void => void asyncLogout(client)
+}
 
 export const getBiometryType = async (
   callback: (type?: BiometryType) => void

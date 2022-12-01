@@ -155,7 +155,7 @@ export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
     toggleLogoutDialog: (): void => toggleLogoutDialog(!hasLogoutDialog),
     uiError,
     input,
-    logout,
+    logout: logout(client),
     mode,
     handleInput,
     toggleMode,

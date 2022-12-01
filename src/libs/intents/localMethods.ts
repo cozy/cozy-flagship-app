@@ -18,7 +18,11 @@ import { isBiometryDenied } from '/libs/intents/setBiometryState'
 import { clearData } from '/libs/localStore/storage'
 import { clearCookies } from '/libs/httpserver/httpCookieManager'
 
-export const asyncLogout = async (): Promise<null> => {
+export const asyncLogout = async (client?: CozyClient): Promise<null> => {
+  if (!client) {
+    throw new Error('Logout should not be called with undefined client')
+  }
+  await client.logout()
   await clearClient()
   await resetSessionToken()
   await deleteKeychain()
@@ -30,8 +34,8 @@ export const asyncLogout = async (): Promise<null> => {
 
 // Since logout is used from localMethods
 // it can't be async for now.
-const logout = (): Promise<null> => {
-  return asyncLogout()
+const logout = (client?: CozyClient): (() => Promise<null>) => {
+  return async () => asyncLogout(client)
 }
 
 const backToHome = (): Promise<null> => {
@@ -102,7 +106,7 @@ export const localMethods = (
     fetchSessionCode: fetchSessionCodeWithClient(client),
     // @ts-expect-error function to be converted to TS
     hideSplashScreen,
-    logout,
+    logout: logout(client),
     openApp: (href, app, iconParams) =>
       openApp(RootNavigation, href, app, iconParams),
     toggleSetting,
