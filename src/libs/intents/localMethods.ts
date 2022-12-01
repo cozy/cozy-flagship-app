@@ -16,11 +16,13 @@ import { showInAppBrowser, closeInAppBrowser } from './InAppBrowser'
 import { toggleSetting } from '/libs/intents/toggleSetting'
 import { isBiometryDenied } from '/libs/intents/setBiometryState'
 import { clearData } from '/libs/localStore/storage'
+import { clearCookies } from '/libs/httpserver/httpCookieManager'
 
 export const asyncLogout = async (): Promise<null> => {
   await clearClient()
   await resetSessionToken()
   await deleteKeychain()
+  await clearCookies()
   await clearData()
   RootNavigation.reset(routes.stack, { screen: 'welcome' })
   return Promise.resolve(null)

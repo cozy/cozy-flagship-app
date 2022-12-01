@@ -7,6 +7,9 @@ import { localMethods, asyncLogout } from './localMethods'
 
 jest.mock('react-native-keychain')
 jest.mock('../RootNavigation.js')
+jest.mock('@react-native-cookies/cookies', () => ({
+  clearAll: jest.fn()
+}))
 
 describe('asyncLogout', () => {
   beforeEach(() => {
