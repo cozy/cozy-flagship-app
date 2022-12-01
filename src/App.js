@@ -10,24 +10,25 @@ import RNAsyncStorageFlipper from 'rn-async-storage-flipper'
 import { CozyProvider, useClient } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
 
-import { getClient } from './libs/client'
 import * as RootNavigation from './libs/RootNavigation'
+import { CozyAppScreen } from './screens/cozy-app/CozyAppScreen'
 import { CreateInstanceScreen } from './screens/login/CreateInstanceScreen'
-import { HttpServerProvider } from './libs/httpserver/httpServerProvider'
+import { CryptoWebView } from './components/webviews/CryptoWebView/CryptoWebView'
+import { ErrorScreen } from './screens/error/ErrorScreen.jsx'
 import { HomeScreen } from './screens/home/HomeScreen'
+import { HttpServerProvider } from './libs/httpserver/httpServerProvider'
+import { LockScreen } from '/screens/lock/LockScreen'
 import { LoginScreen } from './screens/login/LoginScreen'
 import { OnboardingScreen } from './screens/login/OnboardingScreen'
-import { CozyAppScreen } from './screens/cozy-app/CozyAppScreen'
 import { SplashScreenProvider } from './providers/SplashScreenProvider'
+import { WelcomeScreen } from './screens/welcome/WelcomeScreen'
+import { getClient } from './libs/client'
 import { getColors } from './theme/colors'
 import { localMethods } from './libs/intents/localMethods'
-import { useAppBootstrap } from './hooks/useAppBootstrap.js'
 import { routes } from './constants/routes.js'
-import { CryptoWebView } from './components/webviews/CryptoWebView/CryptoWebView'
+import { useAppBootstrap } from './hooks/useAppBootstrap.js'
+import { useNetService } from '/libs/services/NetService'
 import { withSentry } from './Sentry'
-import { ErrorScreen } from './screens/error/ErrorScreen'
-import { WelcomeScreen } from './screens/welcome/WelcomeScreen'
-import { LockScreen } from '/screens/lock/LockScreen'
 import { useGlobalAppState } from './hooks/useGlobalAppState'
 
 const Root = createStackNavigator()
@@ -44,6 +45,9 @@ if (!global.atob) {
 
 const App = ({ setClient }) => {
   const client = useClient()
+
+  useNetService(client)
+
   const { initialScreen, initialRoute, isLoading } = useAppBootstrap(
     client,
     setClient
