@@ -47,12 +47,12 @@ const handleMessage = async (
   event: WebViewMessageEvent
 ): Promise<undefined[]> =>
   await Promise.all(
-    Object.keys(handlers).map(async eventId => {
+    Object.entries(handlers).map(async ([eventId, eventFn]) => {
       if (!event.nativeEvent.data.includes(eventId)) return undefined
 
-      if (handlers[eventId].shouldCatch) {
+      if (eventFn.shouldCatch) {
         try {
-          await handlers[eventId].call()
+          await eventFn.call()
         } catch (error) {
           log.error(error)
         }
@@ -62,12 +62,18 @@ const handleMessage = async (
        * We don't want to catch errors here hence the void return.
        * Doesn't even matter if the function is a Promise or not.
        */
-      if (!handlers[eventId].shouldCatch) void handlers[eventId].call()
+      if (!eventFn.shouldCatch) void eventFn.call()
     })
   )
 
 const makeSource = (route: ErrorScreenProps['route']): Source => {
-  return { html: HTML[route.params.type]() }
+  const htmlGenerator = HTML[route.params.type]
+
+  if (!htmlGenerator) {
+    throw new Error('The requested Page cannot be generated')
+  }
+
+  return { html: htmlGenerator() }
 }
 
 export const ErrorScreen = (props: ErrorScreenProps): JSX.Element => (
