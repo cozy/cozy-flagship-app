@@ -134,6 +134,12 @@ export const resyncCookies = async (client: CozyClient): Promise<void> => {
   await CookieManager.set(appUrl, stackCookie, true)
 }
 
+export const clearCookies = async (): Promise<void> => {
+  await AsyncStorage.removeItem(strings.COOKIE_STORAGE_KEY)
+
+  await CookieManager.clearAll()
+}
+
 const setCookieIntoAsyncStorage = async (
   client: CozyClient,
   cookie: Cookie

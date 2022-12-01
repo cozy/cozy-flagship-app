@@ -19,6 +19,8 @@ jest.mock('react-native-biometrics', () => {
 
 jest.mock('react-native-keychain')
 
+jest.mock('@react-native-cookies/cookies', () => ({}))
+
 it('should not throw with a null hasBiometry', async () => {
   const result = await makeFlagshipMetadataInjection()
   expect(result).toStrictEqual(
