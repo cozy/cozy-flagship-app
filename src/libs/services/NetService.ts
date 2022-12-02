@@ -1,5 +1,6 @@
 import NetInfo, {
   NetInfoState,
+  NetInfoStateType,
   NetInfoSubscription
 } from '@react-native-community/netinfo'
 import { useEffect } from 'react'
@@ -14,6 +15,16 @@ import { routes } from '/constants/routes'
 import { showSplashScreen } from '/libs/services/SplashScreenService'
 
 const log = Minilog('NetService')
+
+if (devConfig.forceOffline) {
+  NetInfo.fetch = (): Promise<NetInfoState> =>
+    Promise.resolve({
+      details: null,
+      isConnected: false,
+      isInternetReachable: false,
+      type: NetInfoStateType.none
+    })
+}
 
 const configureService = (client?: CozyClient): void => {
   NetInfo.configure({
@@ -86,19 +97,13 @@ const isOffline = async (): Promise<NetInfoState['isConnected']> =>
 const handleOffline = (): void =>
   reset(routes.error, { type: strings.errorScreens.offline })
 
-const toggleNetWatcher = makeNetWatcher()
+const toggleNetWatcher = devConfig.forceOffline
+  ? (): void => undefined
+  : makeNetWatcher()
 
-const NetService = {
+export const NetService = {
   handleOffline,
-  isConnected: devConfig.forceOffline
-    ? (): Promise<false> => Promise.resolve(false)
-    : isConnected,
-  isOffline: devConfig.forceOffline
-    ? (): Promise<true> => Promise.resolve(true)
-    : isOffline,
-  toggleNetWatcher: devConfig.forceOffline
-    ? (): void => undefined
-    : toggleNetWatcher
+  isConnected,
+  isOffline,
+  toggleNetWatcher
 }
-
-export { NetService }
