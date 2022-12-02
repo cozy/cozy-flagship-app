@@ -17,7 +17,7 @@ const log = Minilog('NetService')
 
 const configureService = (client?: CozyClient): void => {
   NetInfo.configure({
-    reachabilityUrl: client
+    reachabilityUrl: client?.isLogged
       ? `${(client.getStackClient() as { uri: string }).uri}/${
           strings.reachability.stack
         }`
@@ -27,7 +27,17 @@ const configureService = (client?: CozyClient): void => {
 
 export const useNetService = (client?: CozyClient): void =>
   useEffect(() => {
-    configureService(client)
+    const configure = (): void => {
+      configureService(client)
+    }
+
+    client?.on('logout', configure)
+
+    configure()
+
+    return () => {
+      client?.removeListener('logout', configure)
+    }
   }, [client])
 
 export const _netInfoChangeHandler = (
