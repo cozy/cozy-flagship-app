@@ -81,7 +81,7 @@ const isConnected = async (): Promise<NetInfoState['isConnected']> =>
   (await NetInfo.fetch()).isConnected
 
 const isOffline = async (): Promise<NetInfoState['isConnected']> =>
-  !(await NetInfo.fetch()).isConnected
+  (await NetInfo.fetch()).isConnected === false
 
 const handleOffline = (): void =>
   reset(routes.error, { type: strings.errorScreens.offline })
