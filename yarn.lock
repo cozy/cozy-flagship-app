@@ -14521,10 +14521,10 @@ react-native-file-viewer@^2.1.5:
   resolved "https://registry.yarnpkg.com/react-native-file-viewer/-/react-native-file-viewer-2.1.5.tgz#cd4544f573108e79002b5c7e1ebfce4371885250"
   integrity sha512-MGC6sx9jsqHdefhVQ6o0akdsPGpkXgiIbpygb2Sg4g4bh7v6K1cardLV1NwGB9A6u1yICOSDT/MOC//9Ez6EUg==
 
-react-native-flipper@^0.146.1:
-  version "0.146.1"
-  resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.146.1.tgz#b6bbb23edc347597788bdca4c89b58bad425e1a1"
-  integrity sha512-M3pjqDigOPRpPN9lkT3o0yKDViqciGe5aUjPrtuKdxmaCbH4ofpMEZGxrcKjnEwXJWKC24IDZKtz7WitaWgRig==
+react-native-flipper@^0.176.0:
+  version "0.176.0"
+  resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.176.0.tgz#e5ee330f67375677c96c6d05af7e757e5844f086"
+  integrity sha512-gdru74mvZIFahyw9fvvWWiKy3NOBpiH7WBfLBvwqQAQXaTD8V+8SIpnc1tXgsf3Hy9k2dQFlroqilQKozZPUTw==
 
 react-native-fs@^2.20.0:
   version "2.20.0"
