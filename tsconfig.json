@@ -1,5 +1,6 @@
 {
-  "include": ["./src/**/*"],
+  "include": ["./src/**/*", "./scripts/**/*"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
