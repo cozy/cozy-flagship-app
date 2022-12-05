@@ -21,7 +21,7 @@ Restart your bash environment to apply the change
 
 Then you can copy cozy-home's build directory to respective platforms assets' directory by executing:
 ```bash
-yarn install:home
+yarn install:home:local
 ```
 
 ## When to execute this script
