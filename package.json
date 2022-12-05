@@ -9,7 +9,7 @@
     "generate-boot-icon": "yarn react-native generate-bootsplash src/assets/icon-cozy.png --background-color=297EF2 --logo-width=160 --assets-path=src/assets --flavor=main",
     "home:build": "(cd cozy-home && yarn build:mobile)",
     "home:watch": "(cd cozy-home && yarn watch:mobile)",
-    "install:home": "bash ./scripts/install-home.sh",
+    "install:home:local": "bash ./scripts/install-home.sh",
     "install:home:registry": "yarn tsc --project scripts && node scripts/dist/install-home-registry.cmd.js",
     "ios": "react-native run-ios",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
