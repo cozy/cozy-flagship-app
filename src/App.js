@@ -29,6 +29,7 @@ import { routes } from './constants/routes.js'
 import { useAppBootstrap } from './hooks/useAppBootstrap.js'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from './Sentry'
+import { useCookieResyncOnResume } from './hooks/useCookieResyncOnResume'
 import { useGlobalAppState } from './hooks/useGlobalAppState'
 
 const Root = createStackNavigator()
@@ -54,6 +55,7 @@ const App = ({ setClient }) => {
   )
 
   useGlobalAppState()
+  useCookieResyncOnResume()
 
   if (isLoading) {
     return null
