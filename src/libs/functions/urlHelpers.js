@@ -134,5 +134,26 @@ const IAB_OPTIONS = {
 }
 
 export const openUrlInAppBrowser = url => {
-  return InAppBrowser.open(url, IAB_OPTIONS)
+  try {
+    InAppBrowser.open(url, IAB_OPTIONS)
+  } catch (error) {
+    /*
+     * In terms of UX, we prefer to close the current InAppBrowser if it is already opened
+     * and open a new one instead of doing nothing.
+     */
+    if (error.message === 'Another InAppBrowser is already being presented.') {
+      log.warn(
+        'We are trying to open a new InAppBrowser but there is already one opened. We are closing the current one and opening a new one'
+      )
+
+      InAppBrowser.close()
+      InAppBrowser.open(url, IAB_OPTIONS)
+    } else {
+      /**
+       * In other cases, we throw the error to let the caller handle the error
+       * (for example, we could have an error while opening the InAppBrowser because the URL is not valid)
+       */
+      throw error
+    }
+  }
 }
