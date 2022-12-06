@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 import { palette } from '/ui/palette'
 
 export const styles = StyleSheet.create({
-  base: { color: palette.Primary.ContrastText },
+  base: { fontFamily: 'Lato-Regular' },
   initial: { color: palette.Primary.ContrastText },
   inherit: { color: palette.Primary.ContrastText },
   primary: { color: palette.Primary['600'] },
@@ -14,26 +14,21 @@ export const styles = StyleSheet.create({
   h4: {
     fontFamily: 'Lato-Bold',
     fontSize: 20,
-    fontWeight: '700',
     lineHeight: 23
   },
   body2: {
     fontFamily: 'Lato-Regular',
     fontSize: 14,
-    fontWeight: '400',
     lineHeight: 19
   },
   underline: {
     textDecorationLine: 'underline',
     fontSize: 16,
-    fontFamily: 'Lato-Regular',
-    fontWeight: '400',
     lineHeight: 21
   },
   button: {
     color: palette.Primary['600'],
     fontFamily: 'Lato-Bold',
-    fontWeight: '700',
     fontSize: 14,
     lineHeight: 18,
     textTransform: 'uppercase',
@@ -43,7 +38,7 @@ export const styles = StyleSheet.create({
   h2: { fontSize: 16 },
   h3: {
     fontSize: 20,
-    fontWeight: '700',
+    fontFamily: 'Lato-Bold',
     color: palette.Grey['900'],
     lineHeight: 20
   },

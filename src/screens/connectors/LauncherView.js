@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   headerTextStyle: {
     marginLeft: 10,
     fontSize: 13,
-    fontWeight: '700',
+    fontFamily: 'Lato-Bold',
     lineHeight: 16,
     color: colors.primaryColor
   }
