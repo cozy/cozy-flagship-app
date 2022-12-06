@@ -17,19 +17,17 @@ import { devConfig } from '/config/dev'
 
 const log = Minilog('IndexGenerator')
 
-// The slug's blocklist should be use to prevent
-// the list slugs to be injected using HttpServer
-// Instead those slugs will be served from cozy-stack
-const slugBlocklist = [
-  // mespapiers cannot be injected until we fix window.history bug on iOS
-  { platform: 'ios', slug: 'mespapiers' },
-
-  // settings cannot be injected until we modernize it by doing all queries through
-  // cozy-client and correctly handle `https` override with `isSecureProtocol` parameter
-  { platform: 'ios', slug: 'settings' },
-
-  // drive cannot be injected until we fix window.history bug on iOS (bug in OnlyOffice)
-  { platform: 'ios', slug: 'drive' }
+// The slug's allowlist should be use to list apps
+// that are proven to work correctly when injected using HttpServer
+// If not present in this list, then slug will be served from cozy-stack
+// Current known bugs are:
+// - mespapiers cannot be injected until we fix window.history bug on iOS
+// - settings cannot be injected until we modernize it by doing all queries through
+//   cozy-client and correctly handle `https` override with `isSecureProtocol` parameter
+// - drive cannot be injected until we fix window.history bug on iOS (bug in OnlyOffice)
+const slugAllowList = [
+  { platform: 'ALL', slug: 'home' },
+  { platform: 'android', slug: 'ALL' }
 ]
 
 const initLocalBundleIfNotExist = async (fqdn, slug) => {
@@ -60,16 +58,18 @@ const initLocalBundleIfNotExist = async (fqdn, slug) => {
   }
 }
 
-const isSlugInBlocklist = slug =>
-  slugBlocklist.some(
-    blocklistedSlug =>
-      blocklistedSlug.slug === slug && blocklistedSlug.platform === Platform.OS
+const isSlugInAllowlist = currentSlug =>
+  slugAllowList.some(
+    ({ slug, platform }) =>
+      (slug === 'ALL' && platform === Platform.OS) ||
+      (slug === currentSlug && platform === 'ALL') ||
+      (slug === currentSlug && platform === Platform.OS)
   )
 
 export const getIndexForFqdnAndSlug = async (fqdn, slug) => {
   if (devConfig.disableGetIndex) return false // Make cozy-app hosted by webpack-dev-server work with HTTPServer
 
-  if (isSlugInBlocklist(slug)) return false
+  if (!isSlugInAllowlist(slug)) return false
 
   await initLocalBundleIfNotExist(fqdn, slug)
 
