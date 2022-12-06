@@ -40,8 +40,8 @@ export default class ContentScript {
       'fillText',
       'storeFromWorker',
       'clickAndWait',
-      'getWebViewCookies',
-      'getWebViewCookie'
+      'getCookiesByDomain',
+      'getCookieByDomainAndName'
     ]
 
     if (options.additionalExposedMethodsNames) {
@@ -266,41 +266,40 @@ export default class ContentScript {
   }
 
   /**
-   * Bridge to the getWebViewCookies method from the RNlauncher.
+   * Bridge to the getCookiesByDomain method from the RNlauncher.
    *
    * @param {String} domain
    */
-  async getWebViewCookies(domain) {
-    return await this.bridge.call('getWebViewCookies', domain)
+  async getCookiesByDomain(domain) {
+    return await this.bridge.call('getCookiesByDomain', domain)
   }
 
   /**
-   * Bridge to the getCookie method from the RNlauncher.
+   * Bridge to the getCookieFromKeychainByName method from the RNlauncher.
    *
    * @param {String} domain
    */
-  async getCookie(cookieName) {
-    return await this.bridge.call('getCookie', cookieName)
+  async getCookieFromKeychainByName(cookieName) {
+    return await this.bridge.call('getCookieFromKeychainByName', cookieName)
   }
 
   /**
-   * Bridge to the saveCookie method from the RNlauncher.
+   * Bridge to the saveCookieToKeychain method from the RNlauncher.
    *
    * @param {String} domain
    */
-  async saveCookie(cookieValue) {
-    this.onlyIn(PILOT_TYPE, 'saveCookie')
-    return await this.bridge.call('saveCookie', cookieValue)
+  async saveCookieToKeychain(cookieValue) {
+    this.onlyIn(PILOT_TYPE, 'saveCookieToKeychain')
+    return await this.bridge.call('saveCookieToKeychain', cookieValue)
   }
 
-  async getWebViewCookie(cookieDomain, cookieName) {
-    this.onlyIn(WORKER_TYPE, 'getWebViewCookie')
+  async getCookieByDomainAndName(cookieDomain, cookieName) {
+    this.onlyIn(WORKER_TYPE, 'getCookieByDomainAndName')
     const expectedCookie = await this.bridge.call(
-      'getWebViewCookie',
+      'getCookieByDomainAndName',
       cookieDomain,
       cookieName
     )
-    this.log(JSON.stringify(expectedCookie))
     return expectedCookie
   }
 

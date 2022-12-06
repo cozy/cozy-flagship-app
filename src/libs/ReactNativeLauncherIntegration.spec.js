@@ -30,7 +30,7 @@ describe('ReactNativeLauncherIntegration', () => {
     console.log = jest.fn() // eslint-disable-line no-console
   })
 
-  describe('saveCookie', () => {
+  describe('saveCookieToKeychain', () => {
     it('should override the cookie if the cookie with given name is already saved in the keychain but do not remove all the others', async () => {
       const initialCookies = {
         CSC_COOKIES: {
@@ -95,7 +95,7 @@ describe('ReactNativeLauncherIntegration', () => {
           id: 'SOME_ACCOUNT_ID'
         }
       })
-      await launcher.saveCookie({
+      await launcher.saveCookieToKeychain({
         value: 'SOME_NEW_COOKIE_VALUE',
         name: 'SOME_EXISTING_COOKIE_NAME',
         path: null,

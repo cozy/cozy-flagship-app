@@ -136,7 +136,7 @@ describe('ReactNativeLauncher', () => {
       expect(result).toEqual(false)
     })
   })
-  describe('getWebViewCookies', () => {
+  describe('getCookiesByDomain', () => {
     it('should return cookies from CookieManager', async () => {
       CookieManager.get.mockResolvedValue({ value: 'SOME COOKIE' })
       launcher.setStartContext({
@@ -147,7 +147,7 @@ describe('ReactNativeLauncher', () => {
           cookie_domains: ['.cozy.io']
         }
       })
-      const result = await launcher.getWebViewCookies('.cozy.io')
+      const result = await launcher.getCookiesByDomain('.cozy.io')
       expect(result).toStrictEqual({ value: 'SOME COOKIE' })
       expect(CookieManager.get).toHaveBeenCalledWith('.cozy.io')
     })
@@ -159,8 +159,8 @@ describe('ReactNativeLauncher', () => {
         },
         manifest: {}
       })
-      await expect(launcher.getWebViewCookies('.cozy.io')).rejects.toThrow(
-        'getWebViewCookies cannot be called without cookie_domains declared in manifest'
+      await expect(launcher.getCookiesByDomain('.cozy.io')).rejects.toThrow(
+        'getCookiesByDomain cannot be called without cookie_domains declared in manifest'
       )
     })
     it('should throw error if cookie_domains does not declare requested domain', async () => {
@@ -173,7 +173,7 @@ describe('ReactNativeLauncher', () => {
           cookie_domains: ['.somedomain']
         }
       })
-      await expect(launcher.getWebViewCookies('.cozy.io')).rejects.toThrow(
+      await expect(launcher.getCookiesByDomain('.cozy.io')).rejects.toThrow(
         'Cookie domain .cozy.io not declared in the manifest'
       )
     })
@@ -187,11 +187,11 @@ describe('ReactNativeLauncher', () => {
           cookie_domains: ['apeculiarsite.com']
         }
       })
-      const result = await launcher.getWebViewCookies('apeculiarsite.com')
+      const result = await launcher.getCookiesByDomain('apeculiarsite.com')
       expect(result).toStrictEqual({})
     })
   })
-  describe('getWebViewCookie', () => {
+  describe('getCookieByDomainAndName', () => {
     it('should return cookie from CookieManager', async () => {
       CookieManager.get.mockResolvedValue({
         SOME_COOKIE_NAME: 'SOME COOKIE VALUE',
@@ -205,7 +205,7 @@ describe('ReactNativeLauncher', () => {
           cookie_domains: ['.cozy.io']
         }
       })
-      const result = await launcher.getWebViewCookie(
+      const result = await launcher.getCookieByDomainAndName(
         '.cozy.io',
         'SOME_COOKIE_NAME'
       )
@@ -224,9 +224,9 @@ describe('ReactNativeLauncher', () => {
         manifest: {}
       })
       await expect(
-        launcher.getWebViewCookie('.cozy.io', 'SOME_COOKIE_NAME')
+        launcher.getCookieByDomainAndName('.cozy.io', 'SOME_COOKIE_NAME')
       ).rejects.toThrow(
-        'getWebViewCookies cannot be called without cookie_domains declared in manifest'
+        'getCookiesByDomain cannot be called without cookie_domains declared in manifest'
       )
     })
     it('should throw error if cookie_domains does not declare requested domain', async () => {
@@ -243,7 +243,7 @@ describe('ReactNativeLauncher', () => {
         }
       })
       await expect(
-        launcher.getWebViewCookie('.cozy.io', 'SOME_COOKIE_NAME')
+        launcher.getCookieByDomainAndName('.cozy.io', 'SOME_COOKIE_NAME')
       ).rejects.toThrow('Cookie domain .cozy.io not declared in the manifest')
     })
     it('should return null if CookieManager does not contain the requested cookie', async () => {
@@ -259,14 +259,14 @@ describe('ReactNativeLauncher', () => {
           cookie_domains: ['apeculiarsite.com']
         }
       })
-      const result = await launcher.getWebViewCookie(
+      const result = await launcher.getCookieByDomainAndName(
         'apeculiarsite.com',
         'SOME_NON_EXISTING_COOKIE_NAME'
       )
       expect(result).toBeNull()
     })
   })
-  describe('getCookie', () => {
+  describe('getCookieFromKeychainByName', () => {
     it('should return cookie with given name', async () => {
       getCookie.mockResolvedValue({
         value: 'tokenvalue',
@@ -280,7 +280,7 @@ describe('ReactNativeLauncher', () => {
           id: 'cozyKonnector'
         }
       })
-      const result = await launcher.getCookie('token')
+      const result = await launcher.getCookieFromKeychainByName('token')
       expect(result).toEqual({
         value: 'tokenvalue',
         name: 'token',
@@ -300,11 +300,11 @@ describe('ReactNativeLauncher', () => {
           id: 'cozyKonnector'
         }
       })
-      const result = await launcher.getCookie('token')
+      const result = await launcher.getCookieFromKeychainByName('token')
       expect(result).toBeNull()
     })
   })
-  describe('saveCookie', () => {
+  describe('saveCookieToKeychain', () => {
     it('should save given cookie into the keychain', async () => {
       getCookie.mockResolvedValue(null)
       launcher.setStartContext({
@@ -312,7 +312,7 @@ describe('ReactNativeLauncher', () => {
           id: 'cozyKonnector'
         }
       })
-      await launcher.saveCookie({
+      await launcher.saveCookieToKeychain({
         value: 'tokenvalue',
         name: 'token',
         path: null,
@@ -348,7 +348,7 @@ describe('ReactNativeLauncher', () => {
           id: 'cozyKonnector'
         }
       })
-      await launcher.saveCookie({
+      await launcher.saveCookieToKeychain({
         value: 'tokenvalue',
         name: 'token',
         path: null,

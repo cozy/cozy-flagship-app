@@ -19,9 +19,9 @@ class ReactNativeLauncher extends Launcher {
     super()
     this.workerMethodNames = [
       'sendToPilot',
-      'getWebViewCookies',
-      'getWebViewCookie',
-      'getCookie'
+      'getCookiesByDomain',
+      'getCookieByDomainAndName',
+      'getCookieFromKeychainByName'
     ]
     this.workerListenedEventsNames = ['log', 'workerEvent', 'workerReady']
   }
@@ -41,10 +41,10 @@ class ReactNativeLauncher extends Launcher {
           'setUserAgent',
           'getCredentials',
           'saveCredentials',
-          'getWebViewCookies',
-          'saveCookie',
-          'getWebViewCookie',
-          'getCookie'
+          'getCookiesByDomain',
+          'saveCookieToKeychain',
+          'getCookieByDomainAndName',
+          'getCookieFromKeychainByName'
         ],
         listenedEventsNames: ['log']
       }),
@@ -262,11 +262,11 @@ class ReactNativeLauncher extends Launcher {
    * @param {String} options.cookieDomain : Domain's name where to get cookies from.
    * @return object | {null}
    */
-  async getWebViewCookies(cookieDomain) {
+  async getCookiesByDomain(cookieDomain) {
     const { manifest } = this.startContext
     if (manifest.cookie_domains === undefined) {
       throw new Error(
-        'getWebViewCookies cannot be called without cookie_domains declared in manifest'
+        'getCookiesByDomain cannot be called without cookie_domains declared in manifest'
       )
     }
     if (!manifest.cookie_domains.includes(cookieDomain)) {
@@ -290,11 +290,11 @@ class ReactNativeLauncher extends Launcher {
    * @param {String} cookieName : Name of the wanted cookie.
    * @return null | object
    */
-  async getWebViewCookie(cookieDomain, cookieName) {
-    log.info('Starting getWebViewCookie in RNLauncher')
+  async getCookieByDomainAndName(cookieDomain, cookieName) {
+    log.info('Starting getCookieByDomainAndName in RNLauncher')
     let expectedCookie = null
     try {
-      const cookies = await this.getWebViewCookies(cookieDomain)
+      const cookies = await this.getCookiesByDomain(cookieDomain)
       if (cookies[cookieName]) {
         expectedCookie = cookies[cookieName]
       }
@@ -311,23 +311,25 @@ class ReactNativeLauncher extends Launcher {
    * @param {String} options.cookieName : wanted cookie's by its name.
    * @return object | null
    */
-  async getCookie(cookieName) {
-    log.info('Starting getCookie in RNLauncher')
+  async getCookieFromKeychainByName(cookieName) {
+    log.info('Starting getCookieFromKeychainByName in RNLauncher')
     try {
       const { account } = this.startContext
       const accountId = account.id
-      const existingCookies = await getCookie({
+      const existingCookie = await getCookie({
         accountId,
         cookieName
       })
-      if (existingCookies === null) {
+      if (existingCookie === null) {
         log.info(
           `No cookie named "${cookieName}" has been found, returning null`
         )
       }
-      return existingCookies
+      return existingCookie
     } catch (err) {
-      throw new Error(`Error in worker during getCookie: ${err.message}`)
+      throw new Error(
+        `Error in worker during getCookieFromKeychainByName: ${err.message}`
+      )
     }
   }
 
@@ -337,21 +339,23 @@ class ReactNativeLauncher extends Launcher {
    *
    * @param {cookieObject.<Object>} : Object containing all the needed properties of the cookie.
    */
-  async saveCookie(cookieObject) {
-    log.info('Starting saveCookie in RNLauncher')
+  async saveCookieToKeychain(cookieObject) {
+    log.info('Starting saveCookieToKeychain in RNLauncher')
     try {
       const { account } = this.startContext
       const accountId = account.id
-      const existingCookies = await getCookie({
+      const existingCookie = await getCookie({
         accountId,
         cookieName: cookieObject.name
       })
-      if (existingCookies !== null) {
+      if (existingCookie !== null) {
         await removeCookie(accountId, cookieObject.name)
       }
       await saveCookie({ accountId, cookieObject })
     } catch (err) {
-      throw new Error(`Error in worker during saveCookie: ${err.message}`)
+      throw new Error(
+        `Error in worker during saveCookieToKeychain: ${err.message}`
+      )
     }
   }
 
