@@ -66,10 +66,8 @@
 	<string/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Lato-Bold.woff</string>
-		<string>Lato-Bold.woff2</string>
-		<string>Lato-Regular.woff</string>
-		<string>Lato-Regular.woff2</string>
+		<string>Lato-Bold.ttf</string>
+		<string>Lato-Regular.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>BootSplash</string>
