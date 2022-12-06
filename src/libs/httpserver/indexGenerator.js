@@ -26,7 +26,10 @@ const slugBlocklist = [
 
   // settings cannot be injected until we modernize it by doing all queries through
   // cozy-client and correctly handle `https` override with `isSecureProtocol` parameter
-  { platform: 'ios', slug: 'settings' }
+  { platform: 'ios', slug: 'settings' },
+
+  // drive cannot be injected until we fix window.history bug on iOS (bug in OnlyOffice)
+  { platform: 'ios', slug: 'drive' }
 ]
 
 const initLocalBundleIfNotExist = async (fqdn, slug) => {

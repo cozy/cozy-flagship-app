@@ -343,6 +343,46 @@ ifTestEnabled('indexGenerator', () => {
 
         expect(result).toBe('SOME_FILE_CONTENT')
       })
+
+      it(`should not try to generate index.html if slug is 'settings' and platform is 'iOS'`, async () => {
+        const fqdn = 'cozy.tools'
+        const slug = 'settings'
+        RN.Platform.OS = 'ios'
+
+        const result = await getIndexForFqdnAndSlug(fqdn, slug)
+
+        expect(result).toBe(false)
+      })
+
+      it(`should generate index.html if slug is 'settings' and platform is 'android'`, async () => {
+        const fqdn = 'cozy.tools'
+        const slug = 'settings'
+        RN.Platform.OS = 'android'
+
+        const result = await getIndexForFqdnAndSlug(fqdn, slug)
+
+        expect(result).toBe('SOME_FILE_CONTENT')
+      })
+
+      it(`should not try to generate index.html if slug is 'drive' and platform is 'iOS'`, async () => {
+        const fqdn = 'cozy.tools'
+        const slug = 'drive'
+        RN.Platform.OS = 'ios'
+
+        const result = await getIndexForFqdnAndSlug(fqdn, slug)
+
+        expect(result).toBe(false)
+      })
+
+      it(`should generate index.html if slug is 'drive' and platform is 'android'`, async () => {
+        const fqdn = 'cozy.tools'
+        const slug = 'drive'
+        RN.Platform.OS = 'android'
+
+        const result = await getIndexForFqdnAndSlug(fqdn, slug)
+
+        expect(result).toBe('SOME_FILE_CONTENT')
+      })
     })
   })
 })
