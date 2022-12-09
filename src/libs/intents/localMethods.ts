@@ -87,13 +87,19 @@ const openAppOSSettings = async (): Promise<null> => {
 }
 
 export const internalMethods = {
-  setFlagshipUI: (intent: FlagshipUI): Promise<null> =>
-    setFlagshipUI(
-      intent,
-      EnvService.nameIs(strings.environments.test)
-        ? internalMethods.setFlagshipUI.caller?.name // eslint-disable-line @typescript-eslint/no-unnecessary-condition
-        : ''
-    )
+  setFlagshipUI: (intent: FlagshipUI): Promise<null> => {
+    const caller = (): string => {
+      if (!EnvService.nameIs(strings.environments.test)) return 'unknown'
+
+      try {
+        return internalMethods.setFlagshipUI.caller.name
+      } catch (error) {
+        return 'unknown'
+      }
+    }
+
+    return setFlagshipUI(intent, caller())
+  }
 }
 
 export const localMethods = (
