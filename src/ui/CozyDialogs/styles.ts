@@ -4,8 +4,11 @@ import { palette } from '/ui/palette'
 
 export const styles = StyleSheet.create({
   actions: {
-    marginHorizontal: 4,
-    width: '50%'
+    flexGrow: 1,
+    width: 'auto'
+  },
+  actionsLast: {
+    marginLeft: 8
   },
   content: {
     marginBottom: 24,
@@ -17,7 +20,8 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     boxShadow:
       '0px 0px 0px 0.5px rgba(29, 33, 42, 0.12), 0px 8px 12px -5px rgba(29, 33, 42, 0.18), 0px 9px 36px 5px rgba(29, 33, 42, 0.17)',
-    justifyself: 'center'
+    justifyself: 'center',
+    width: '100%'
   },
   dialogContainer: {
     alignItems: 'center',
@@ -29,12 +33,8 @@ export const styles = StyleSheet.create({
     width: '100%'
   },
   footer: {
-    alignItems: 'stretch',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginLeft: -4,
-    marginRight: 12,
     paddingBottom: 24,
     paddingHorizontal: 32
   },

@@ -38,8 +38,13 @@ export const ConfirmDialog = ({
         </View>
 
         <View style={styles.footer}>
-          {actions.props.children.map(child =>
-            React.cloneElement(child, { style: styles.actions })
+          {actions.props.children.map((child, index, array) =>
+            React.cloneElement(child, {
+              style: {
+                ...styles.actions,
+                ...(index + 1 === array.length ? styles.actionsLast : {})
+              }
+            })
           )}
         </View>
       </View>

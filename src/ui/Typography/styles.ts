@@ -39,8 +39,7 @@ export const styles = StyleSheet.create({
   h3: {
     fontSize: 20,
     fontFamily: 'Lato-Bold',
-    color: palette.Grey['900'],
-    lineHeight: 20
+    color: palette.Grey['900']
   },
   h5: { fontSize: 16 },
   subtitle1: { fontSize: 16 },
