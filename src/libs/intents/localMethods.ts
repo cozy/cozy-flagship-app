@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Linking, Platform } from 'react-native'
 
 import CozyClient from 'cozy-client'
@@ -37,8 +36,9 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
 
 // Since logout is used from localMethods
 // it can't be async for now.
-const logout = (client?: CozyClient): (() => Promise<null>) => {
-  return async () => asyncLogout(client)
+const logout = async (client?: CozyClient): Promise<null> => {
+  await asyncLogout(client)
+  return null
 }
 
 const backToHome = (): Promise<null> => {
@@ -121,7 +121,7 @@ const nativeMethodWrapper =
 
 export const localMethods = (
   client: CozyClient | undefined
-): NativeMethodsRegister => {
+): NativeMethodsRegister | CustomMethods => {
   return {
     backToHome,
     closeInAppBrowser,

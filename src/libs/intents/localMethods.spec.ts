@@ -17,11 +17,11 @@ jest.mock('@react-native-cookies/cookies', () => ({
 describe('asyncLogout', () => {
   const client = {
     logout: jest.fn()
-  }
+  } as unknown as CozyClient
 
-  beforeEach(() => {
-    AsyncStorage.setItem(strings.OAUTH_STORAGE_KEY, '1')
-    AsyncStorage.setItem(strings.SESSION_CREATED_FLAG, '1')
+  beforeEach(async () => {
+    await AsyncStorage.setItem(strings.OAUTH_STORAGE_KEY, '1')
+    await AsyncStorage.setItem(strings.SESSION_CREATED_FLAG, '1')
   })
 
   it('should remove session and oauth storage from AsyncStorage', async () => {
@@ -48,9 +48,9 @@ describe('asyncLogout', () => {
 
 describe('backToHome', () => {
   it('should handle Navigation', async () => {
-    const client = {}
+    const client = {} as unknown as CozyClient
 
-    localMethods(client).backToHome()
+    await (localMethods(client) as NativeMethodsRegister).backToHome()
 
     expect(RootNavigation.navigate).toHaveBeenCalledWith('home')
   })

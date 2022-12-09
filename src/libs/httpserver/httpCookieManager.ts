@@ -33,7 +33,7 @@ const extractKeyValues = (cookieString: string): CookieRecord => {
 
     return {
       ...previous,
-      [key]: value || true
+      [key]: value ?? true
     }
   }, {})
 
@@ -62,7 +62,7 @@ const parseCookie = (cookieString: string): Cookie => {
     name: keyValues.Name,
     value: keyValues.Value,
     domain: cookieDomain,
-    path: keyValues.Path || '/',
+    path: keyValues.Path ?? '/',
     httpOnly: Boolean(keyValues.HttpOnly)
   }
 }
