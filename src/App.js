@@ -31,6 +31,7 @@ import { useNetService } from '/libs/services/NetService'
 import { withSentry } from './Sentry'
 import { useCookieResyncOnResume } from './hooks/useCookieResyncOnResume'
 import { useGlobalAppState } from './hooks/useGlobalAppState'
+import NetStatusBoundary from './libs/services/NetStatusBoundary'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -201,7 +202,9 @@ const Wrapper = () => {
       <CryptoWebView setHasCrypto={setHasCrypto} />
       {hasCrypto && (
         <HttpServerProvider>
-          <WrappedApp />
+          <NetStatusBoundary>
+            <WrappedApp />
+          </NetStatusBoundary>
         </HttpServerProvider>
       )}
     </>

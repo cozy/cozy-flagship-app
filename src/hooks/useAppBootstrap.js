@@ -2,8 +2,6 @@ import Minilog from '@cozy/minilog'
 import { Linking, LogBox } from 'react-native'
 import { useEffect, useState } from 'react'
 
-import strings from '../strings.json'
-import { NetService } from '/libs/services/NetService'
 import { SentryTags, setSentryTag } from '/Sentry'
 import { devConfig } from '/config/dev'
 import { manageIconCache } from '/libs/functions/iconTable'
@@ -80,20 +78,6 @@ export const useAppBootstrap = client => {
       if (!client) {
         const onboardingUrl = await Linking.getInitialURL()
 
-        if (await NetService.isOffline()) {
-          NetService.toggleNetWatcher()
-
-          setInitialRoute({
-            stack: undefined,
-            root: strings.errorScreens.offline
-          })
-
-          return setInitialScreen({
-            stack: routes.authenticate,
-            root: routes.error
-          })
-        }
-
         const onboardingParams = parseOnboardingURL(onboardingUrl)
 
         if (onboardingParams) {
@@ -131,27 +115,16 @@ export const useAppBootstrap = client => {
       } else {
         const payload = await Linking.getInitialURL()
         const { fallback, root, isHome } = parseFallbackURL(payload)
-        const isConnected = await NetService.isConnected()
 
         setInitialScreen({
           stack: routes.home,
-          root: isConnected ? root : routes.error
+          root
         })
 
         setInitialRoute({
           stack: isHome ? fallback : undefined,
-          root: isConnected
-            ? !isHome
-              ? fallback
-              : undefined
-            : strings.errorScreens.offline
+          root: !isHome ? fallback : undefined
         })
-
-        if (!isConnected) {
-          NetService.handleOffline()
-          NetService.toggleNetWatcher({ callbackRoute: routes.stack })
-          hideSplashScreen()
-        }
       }
     }
 
