@@ -130,7 +130,6 @@ export const localMethods = (
     logout,
     openApp: (href, app, iconParams) =>
       openApp(RootNavigation, href, app, iconParams),
-    // @ts-expect-error function to be converted to TS
     toggleSetting,
     setFlagshipUI,
     showInAppBrowser,
