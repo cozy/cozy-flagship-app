@@ -71,6 +71,7 @@ describe('filePreviewHelper', () => {
         }))
       } as unknown as typeof CozyClient
 
+      // @ts-expect-error CozyClient is not typed entirely yet
       expect(checkIsPreviewableLink(url, client)).toEqual(result)
     })
   })
