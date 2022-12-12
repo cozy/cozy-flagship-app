@@ -26,6 +26,14 @@ const toggleStorageSetting = async (
   return null
 }
 
+export const ensureAutoLockIsEnabled = async (): Promise<void> => {
+  const autoLockEnabled = await getData(StorageKeys.AutoLockEnabled)
+
+  if (!autoLockEnabled) {
+    await storeData(StorageKeys.AutoLockEnabled, true)
+  }
+}
+
 export const toggleSetting = async (
   settingName: 'biometryLock' | 'autoLock' | 'PINLock',
   params?: { pinCode: string }
@@ -42,9 +50,9 @@ export const toggleSetting = async (
     resolveTo = false
   }
 
-  if (params?.pinCode) {
-    typeof params.pinCode === 'string' &&
-      (await saveVaultInformation('pinCode', params.pinCode))
+  if (params?.pinCode && typeof params.pinCode === 'string') {
+    await saveVaultInformation('pinCode', params.pinCode)
+    await ensureAutoLockIsEnabled()
     resolveTo = true
   }
 

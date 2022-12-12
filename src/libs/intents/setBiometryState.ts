@@ -6,15 +6,19 @@ import { FlagshipMetadata } from 'cozy-device-helper/dist/flagship'
 import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
 import { promptBiometry } from '/screens/lock/functions/lockScreenFunctions'
 import { getVaultInformation } from '../keychain'
+import { ensureAutoLockIsEnabled } from './toggleSetting'
 
 export const BiometryEmitter = new EventEmitter()
 
 const BIOMETRY_DENIED_BY_USER_IOS_ERROR = /.*User.*denied.*/
 
-const updateBiometrySetting = async (activated: boolean): Promise<boolean> => {
+export const updateBiometrySetting = async (
+  activated: boolean
+): Promise<boolean> => {
   await storeData(StorageKeys.BiometryActivated, activated)
-  if (!activated && !(await getData(StorageKeys.AutoLockEnabled)))
-    await storeData(StorageKeys.AutoLockEnabled, true)
+
+  if (activated) await ensureAutoLockIsEnabled()
+
   const newData = Boolean(await getData(StorageKeys.BiometryActivated))
 
   BiometryEmitter.emit('change', newData)

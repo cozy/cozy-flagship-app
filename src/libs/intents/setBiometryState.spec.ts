@@ -1,8 +1,11 @@
 import { StorageKeys, storeData } from '/libs/localStore/storage'
 import {
+  BiometryEmitter,
   isBiometryDenied,
-  makeFlagshipMetadataInjection
+  makeFlagshipMetadataInjection,
+  updateBiometrySetting
 } from '/libs/intents/setBiometryState'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const mockIsSensorAvailable = jest.fn().mockResolvedValue({
   biometryType: 'FaceID',
@@ -107,5 +110,90 @@ describe('isBiometryDenied', () => {
     const result = await isBiometryDenied()
 
     expect(result).toBe(false)
+  })
+})
+
+/**
+ * We also verify in each test that the function resolves to the expected value,
+ * reflecting the new state of the biometry and autolock (if needed) settings.
+ */
+describe('updateBiometrySetting', () => {
+  const eventName = 'change'
+  const fsNullValue = null
+
+  beforeEach(async () => await AsyncStorage.clear())
+
+  it('should create the biometry and autolock setting with activated argument to true', async () => {
+    const expectedValue = true
+
+    BiometryEmitter.once(eventName, value => expect(value).toBe(expectedValue))
+
+    const result = await updateBiometrySetting(expectedValue)
+
+    expect(await AsyncStorage.getItem(StorageKeys.BiometryActivated)).toBe(
+      expectedValue.toString()
+    )
+    expect(await AsyncStorage.getItem(StorageKeys.AutoLockEnabled)).toBe(
+      expectedValue.toString()
+    )
+    expect(result).toBe(expectedValue)
+  })
+
+  it('should update the biometry and autolock setting with activated arguments to true', async () => {
+    const expectedValue = true
+
+    BiometryEmitter.once(eventName, value => expect(value).toBe(expectedValue))
+
+    await AsyncStorage.multiSet([
+      [StorageKeys.BiometryActivated, (!expectedValue).toString()],
+      [StorageKeys.AutoLockEnabled, (!expectedValue).toString()]
+    ])
+
+    const result = await updateBiometrySetting(expectedValue)
+
+    expect(await AsyncStorage.getItem(StorageKeys.BiometryActivated)).toBe(
+      expectedValue.toString()
+    )
+    expect(await AsyncStorage.getItem(StorageKeys.AutoLockEnabled)).toBe(
+      expectedValue.toString()
+    )
+    expect(result).toBe(expectedValue)
+  })
+
+  it('should update the biometry setting with activated argument to false, not touching existing autolock', async () => {
+    const expectedValue = false
+
+    BiometryEmitter.once(eventName, value => expect(value).toBe(expectedValue))
+
+    await AsyncStorage.setItem(
+      StorageKeys.AutoLockEnabled,
+      (!expectedValue).toString()
+    )
+
+    const result = await updateBiometrySetting(expectedValue)
+
+    expect(await AsyncStorage.getItem(StorageKeys.BiometryActivated)).toBe(
+      expectedValue.toString()
+    )
+    expect(await AsyncStorage.getItem(StorageKeys.AutoLockEnabled)).toBe(
+      (!expectedValue).toString()
+    )
+    expect(result).toBe(expectedValue)
+  })
+
+  it('should update the biometry setting with activated argument to false, not touching non-existing autolock', async () => {
+    const expectedValue = false
+
+    BiometryEmitter.once(eventName, value => expect(value).toBe(expectedValue))
+
+    const result = await updateBiometrySetting(expectedValue)
+
+    expect(await AsyncStorage.getItem(StorageKeys.BiometryActivated)).toBe(
+      expectedValue.toString()
+    )
+    expect(await AsyncStorage.getItem(StorageKeys.AutoLockEnabled)).toBe(
+      fsNullValue
+    )
+    expect(result).toBe(expectedValue)
   })
 })
