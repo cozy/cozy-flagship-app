@@ -1,4 +1,4 @@
-# 0.0.31
+# 0.0.32
 
 ## ✨ Features
 
@@ -8,6 +8,32 @@
 
 ## 🔧 Tech
 
+
+# 0.0.31
+
+## ✨ Features
+
+* The connectivity checks are now targeting the Cozy server instead of Google's ones ([PR #470](https://github.com/cozy/cozy-react-native/pull/470) and [PR #479](https://github.com/cozy/cozy-react-native/pull/479))
+* Improve Client Side Connectors API by allowing connectors to manipulate related Cookies ([PR #460](https://github.com/cozy/cozy-react-native/pull/460))
+* Lock screen UI is now using the Cozy's system font ([PR #485](https://github.com/cozy/cozy-react-native/pull/485))
+
+## 🐛 Bug Fixes
+
+* Prevent the app to crash when trying to open an email link but no email client is set on the Android phone ([PR #473](https://github.com/cozy/cozy-react-native/pull/473))
+* Re-apply user's session when App resumes ([PR #468](https://github.com/cozy/cozy-react-native/pull/468))
+* Only serve approved cozy-apps through HttpServer ([PR #486](https://github.com/cozy/cozy-react-native/pull/486))
+* Fix a bug that prevented to open PDF on latest Android versions ([PR #477](https://github.com/cozy/cozy-react-native/pull/477))
+* Fix a bug that could crash the App when opening an in-app browser ([PR #477](https://github.com/cozy/cozy-react-native/pull/477))
+* Fix a bug that could crash the App when accessing `caller.name` JS API ([PR #489](https://github.com/cozy/cozy-react-native/pull/489))
+* Correctly handle Offline detection when opening the App ([PR #488](https://github.com/cozy/cozy-react-native/pull/488))
+
+## 🔧 Tech
+
+* Upgrade testing environment ([PR #471](https://github.com/cozy/cozy-react-native/pull/471))
+* Fix build that was breaking due to incorrect import ([PR #476](https://github.com/cozy/cozy-react-native/pull/476))
+* Add documentation about `PhaseScriptExecution failed` build error in Troubleshooting section ([PR #450](https://github.com/cozy/cozy-react-native/pull/450))
+* Improve release process by generating the Home embedded bundle using the Cozy's Registry ([PR #478](https://github.com/cozy/cozy-react-native/pull/478))
+* Homogenise AsyncStorage keys ([PR #487](https://github.com/cozy/cozy-react-native/pull/487))
 
 # 0.0.30
 
