@@ -1,22 +1,28 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { createMockClient } from 'cozy-client'
 
+import strings from '/strings.json'
+import { expectedTable } from '/tests/fixtures/expected-table'
+import { getApps } from '/tests/fixtures/get-apps'
 import {
+  IconsCache,
+  TESTING_ONLY_clearIconTable,
   iconTable,
-  manageIconCache,
-  TESTING_ONLY_clearIconTable
-} from './iconTable'
-import getApps from '../../../__tests__/fixtures/get.apps'
-import expectedTable from '../../../__tests__/fixtures/expected.table'
-import strings from '../../strings.json'
+  manageIconCache
+} from '/libs/functions/iconTable'
 
-const client = createMockClient({})
-
-client
-  .getStackClient()
-  .fetchJSON.mockImplementation((_get, url) =>
-    url.includes('apps') ? getApps : url.includes('icon') ? '<svg></svg>' : null
-  )
+const client = {
+  getStackClient: (): { fetchJSON: jest.Mock } => ({
+    fetchJSON: jest
+      .fn()
+      .mockImplementation((_method: string, path: string) =>
+        path.includes('apps')
+          ? getApps
+          : path.includes('icon')
+          ? '<svg></svg>'
+          : null
+      )
+  })
+}
 
 afterEach(async () => {
   jest.clearAllMocks()
@@ -28,9 +34,14 @@ it('works with an empty cache', async () => {
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual(expectedTable)
-  expect(
-    JSON.parse(await AsyncStorage.getItem(strings.APPS_ICONS))
-  ).toStrictEqual(expectedTable)
+
+  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
+
+  if (!item) throw new Error('No item found in AsyncStorage.')
+
+  const cache = JSON.parse(item) as IconsCache
+
+  expect(cache).toStrictEqual(expectedTable)
 })
 
 it('works with an incomplete cache', async () => {
@@ -42,9 +53,14 @@ it('works with an incomplete cache', async () => {
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual(expectedTable)
-  expect(
-    JSON.parse(await AsyncStorage.getItem(strings.APPS_ICONS))
-  ).toStrictEqual(expectedTable)
+
+  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
+
+  if (!item) throw new Error('No item found in AsyncStorage.')
+
+  const cache = JSON.parse(item) as IconsCache
+
+  expect(cache).toStrictEqual(expectedTable)
 })
 
 it('works with a broken cache', async () => {
@@ -56,9 +72,14 @@ it('works with a broken cache', async () => {
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual(expectedTable)
-  expect(
-    JSON.parse(await AsyncStorage.getItem(strings.APPS_ICONS))
-  ).toStrictEqual(expectedTable)
+
+  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
+
+  if (!item) throw new Error('No item found in AsyncStorage.')
+
+  const cache = JSON.parse(item) as IconsCache
+
+  expect(cache).toStrictEqual(expectedTable)
 })
 
 it('works with a complete cache', async () => {
@@ -67,9 +88,14 @@ it('works with a complete cache', async () => {
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual(expectedTable)
-  expect(
-    JSON.parse(await AsyncStorage.getItem(strings.APPS_ICONS))
-  ).toStrictEqual(expectedTable)
+
+  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
+
+  if (!item) throw new Error('No item found in AsyncStorage.')
+
+  const cache = JSON.parse(item) as IconsCache
+
+  expect(cache).toStrictEqual(expectedTable)
 })
 
 it('works with an obsolete cache', async () => {
@@ -93,9 +119,14 @@ it('works with an obsolete cache', async () => {
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual(expectedTable)
-  expect(
-    JSON.parse(await AsyncStorage.getItem(strings.APPS_ICONS))
-  ).toStrictEqual(expectedTable)
+
+  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
+
+  if (!item) throw new Error('No item found in AsyncStorage.')
+
+  const cache = JSON.parse(item) as IconsCache
+
+  expect(cache).toStrictEqual(expectedTable)
 })
 
 it('works with unusual semver', async () => {
@@ -103,24 +134,36 @@ it('works with unusual semver', async () => {
     strings.APPS_ICONS,
     JSON.stringify({ store: { version: '1.0.0', xml: '<svg></svg>' } })
   )
-  client
-    .getStackClient()
-    .fetchJSON.mockImplementationOnce((_get, url) =>
-      url.includes('apps')
-        ? { data: [{ attributes: { slug: 'store', version: '1.0.0-beta.1' } }] }
-        : url.includes('icon')
-        ? '<svg></svg>'
-        : null
-    )
+
+  const client = {
+    getStackClient: (): { fetchJSON: jest.Mock } => ({
+      fetchJSON: jest.fn().mockImplementation((_method: string, path: string) =>
+        path.includes('apps')
+          ? {
+              data: [{ attributes: { slug: 'store', version: '1.0.0-beta.1' } }]
+            }
+          : path.includes('icon')
+          ? '<svg></svg>'
+          : null
+      )
+    })
+  }
 
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual({
     store: { version: '1.0.0-beta.1', xml: '<svg></svg>' }
   })
-  expect(
-    JSON.parse(await AsyncStorage.getItem(strings.APPS_ICONS))
-  ).toStrictEqual({ store: { version: '1.0.0-beta.1', xml: '<svg></svg>' } })
+
+  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
+
+  if (!item) throw new Error('No item found in AsyncStorage.')
+
+  const cache = JSON.parse(item) as IconsCache
+
+  expect(cache).toStrictEqual({
+    store: { version: '1.0.0-beta.1', xml: '<svg></svg>' }
+  })
 })
 
 it('works with an incomplete and obsolete cache', async () => {
@@ -138,22 +181,41 @@ it('works with an incomplete and obsolete cache', async () => {
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual(expectedTable)
-  expect(
-    JSON.parse(await AsyncStorage.getItem(strings.APPS_ICONS))
-  ).toStrictEqual(expectedTable)
+
+  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
+
+  if (!item) throw new Error('No item found in AsyncStorage.')
+
+  const cache = JSON.parse(item) as IconsCache
+
+  expect(cache).toStrictEqual(expectedTable)
 })
 
 it('works offline or with network issues without cache', async () => {
-  client.getStackClient().fetchJSON.mockImplementation(() => {})
+  const client = {
+    getStackClient: (): { fetchJSON: jest.Mock } => ({
+      fetchJSON: jest.fn().mockImplementation(() => {
+        // Empty response
+      })
+    })
+  }
 
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual({})
+
   expect(await AsyncStorage.getItem(strings.APPS_ICONS)).toStrictEqual(null)
 })
 
 it('works offline or with network issues with cache', async () => {
-  client.getStackClient().fetchJSON.mockImplementation(() => {})
+  const client = {
+    getStackClient: (): { fetchJSON: jest.Mock } => ({
+      fetchJSON: jest.fn().mockImplementation(() => {
+        // Empty response
+      })
+    })
+  }
+
   await AsyncStorage.setItem(
     strings.APPS_ICONS,
     JSON.stringify({ store: { version: '1.9.11', xml: '<svg></svg>' } })
@@ -164,6 +226,7 @@ it('works offline or with network issues with cache', async () => {
   expect(iconTable).toStrictEqual({
     store: { version: '1.9.11', xml: '<svg></svg>' }
   })
+
   expect(await AsyncStorage.getItem(strings.APPS_ICONS)).toStrictEqual(
     '{"store":{"version":"1.9.11","xml":"<svg></svg>"}}'
   )

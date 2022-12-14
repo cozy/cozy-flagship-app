@@ -3,51 +3,91 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import Minilog from '@cozy/minilog'
 
-import strings from '../../strings.json'
-import iconFallbackJson from '../../assets/iconFallback.json'
-import { clearClient } from '../client'
+import strings from '/strings.json'
+import iconFallbackJson from '/assets/iconFallback.json'
+import { clearClient } from '/libs/client'
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 const log = Minilog('Icon Table')
-Minilog.enable()
 
 export let iconTable = {}
-const setIconTable = table => (iconTable = table)
-export const TESTING_ONLY_clearIconTable = () => (iconTable = {})
+
+export type IconsCache = Record<string, { version: string; xml: string }>
+
+const setIconTable = (table: IconsCache): void => {
+  iconTable = table
+}
+
+export const TESTING_ONLY_clearIconTable = (): void => {
+  iconTable = {}
+}
+
 export const iconFallback = iconFallbackJson.default
 
-const hasNewerVersion = (cachedSemver, fetchedSemver) => {
-  const oldParts = cachedSemver.split('.')
+const hasNewerVersion = (
+  cachedSemver: string | undefined,
+  fetchedSemver: string
+): boolean => {
+  const oldParts = cachedSemver?.split('.')
   const newParts = fetchedSemver.split('.')
-  for (var i = 0; i < newParts.length; i++) {
-    const newInteger = ~~newParts[i]
-    const oldInteger = ~~oldParts[i]
-    if (newInteger > oldInteger) {
-      return true
-    }
-    if (newInteger < oldInteger) {
-      return false
-    }
+
+  for (let i = 0; i < newParts.length; i++) {
+    const newInteger = ~~Number(newParts[i])
+    const oldInteger = ~~Number(oldParts?.[i])
+
+    if (newInteger > oldInteger) return true
+
+    if (newInteger < oldInteger) return false
   }
+
   return false
 }
 
-const attemptFetchApps = async client => {
+interface App {
+  attributes: {
+    slug: string
+    version: string
+  }
+}
+
+interface FetchedApps {
+  data: App[]
+}
+
+declare interface CozyClient {
+  getStackClient: () => {
+    fetchJSON: <T>(method: string, path: string) => Promise<T>
+  }
+}
+
+const attemptFetchApps = async (
+  client: CozyClient
+): Promise<FetchedApps | undefined> => {
   try {
     return await client.getStackClient().fetchJSON('GET', '/apps/')
   } catch (error) {
     log.error(strings.errors.attemptFetchApps, error)
-    if (error.message === 'Invalid token') clearClient()
-    return undefined
+    if (getErrorMessage(error).includes('Invalid token')) await clearClient()
   }
 }
 
-const attemptCacheUpdate = async ({ apps, cache, client }) => {
+const attemptCacheUpdate = async ({
+  apps,
+  cache,
+  client
+}: {
+  apps: FetchedApps
+  cache: IconsCache
+  client: CozyClient
+}): Promise<void> => {
   try {
-    const slugsToUpdate = apps.data.reduce(
-      (acc, { attributes: { slug, version } }) => {
-        if (!cache[slug] || hasNewerVersion(cache[slug].version, version)) {
+    const slugsToUpdate = apps.data.reduce<App[]>(
+      (acc, { attributes: { slug, version } }): App[] => {
+        const cachedIcon = cache[slug]
+        const cachedVersion = cachedIcon?.version
+
+        if (!cachedIcon || hasNewerVersion(cachedVersion, version))
           return [...acc, { attributes: { slug, version } }]
-        }
 
         return acc
       },
@@ -65,48 +105,58 @@ const attemptCacheUpdate = async ({ apps, cache, client }) => {
   }
 }
 
-const attemptFetchIcons = async (apps, client, cache = {}) => {
+const attemptFetchIcons = async (
+  apps: FetchedApps,
+  client: CozyClient,
+  cache = {}
+): Promise<void> => {
+  const reduceFunction = async (
+    acc: Promise<[string, { version: string; xml: string }][]>,
+    { attributes: { slug, version } }: App
+  ): Promise<[string, { version: string; xml: string }][]> => {
+    try {
+      const xml = await client
+        .getStackClient()
+        .fetchJSON<string>('GET', `/registry/${slug}/icon`)
+
+      return [...(await acc), [slug, { version, xml }]]
+    } catch {
+      return await acc
+    }
+  }
+
   try {
-    const apiTable = await apps.data.reduce(
-      async (acc, { attributes: { slug, version } }) => {
-        try {
-          const xml = await client
-            .getStackClient()
-            .fetchJSON('GET', `/registry/${slug}/icon`)
+    const apiTable = await apps.data.reduce<
+      Promise<[string, { version: string; xml: string }][]>
+    >(reduceFunction, Promise.resolve([]))
 
-          return [...(await acc), [slug, { version, xml }]]
-        } catch {
-          return await acc
-        }
-      },
-      []
-    )
-
-    setPersistentIconTable({ ...cache, ...Object.fromEntries(apiTable) })
+    await setPersistentIconTable({ ...cache, ...Object.fromEntries(apiTable) })
   } catch (error) {
     log.error(strings.errors.attemptFetchIcons, error)
   }
 }
 
-const getPersistentIconTable = async () => {
+const getPersistentIconTable = async (): Promise<IconsCache | null> => {
   try {
-    return JSON.parse(await AsyncStorage.getItem(strings.APPS_ICONS))
-  } catch {
+    const table = await AsyncStorage.getItem(strings.APPS_ICONS)
+    return table ? (JSON.parse(table) as IconsCache) : null
+  } catch (error) {
+    log.error(strings.errors.getPersistentIconTable, error)
     return null
   }
 }
 
-const setPersistentIconTable = async table => {
+const setPersistentIconTable = async (table: IconsCache): Promise<void> => {
   try {
     setIconTable(table)
     Object.entries(table).length > 0 &&
-      AsyncStorage.setItem(strings.APPS_ICONS, JSON.stringify(table))
+      (await AsyncStorage.setItem(strings.APPS_ICONS, JSON.stringify(table)))
   } catch (error) {
     log.error(strings.errors.setPersistentIconTable, error)
   }
 }
 
-const clearPersistentIconTable = async () => {
+const clearPersistentIconTable = async (): Promise<void> => {
   try {
     await AsyncStorage.removeItem(strings.APPS_ICONS)
   } catch (error) {
@@ -114,19 +164,13 @@ const clearPersistentIconTable = async () => {
   }
 }
 
-export const manageIconCache = async client => {
+export const manageIconCache = async (client: CozyClient): Promise<void> => {
   const apps = await attemptFetchApps(client)
   const cache = await getPersistentIconTable()
 
-  if (!apps && !cache) {
-    return
-  }
+  if (!apps && cache) return setIconTable(cache)
 
-  if (!apps && cache) {
-    return await setIconTable(cache)
-  }
+  if (apps && !cache) return attemptFetchIcons(apps, client)
 
-  cache
-    ? await attemptCacheUpdate({ apps, cache, client })
-    : await attemptFetchIcons(apps, client)
+  if (apps && cache) return attemptCacheUpdate({ apps, cache, client })
 }
