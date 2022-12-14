@@ -37,13 +37,16 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
 // Since logout is used from localMethods
 // it can't be async for now.
 const logout = async (client?: CozyClient): Promise<null> => {
-  await asyncLogout(client)
-  return null
+  return await asyncLogout(client)
 }
 
 const backToHome = (): Promise<null> => {
   RootNavigation.navigate('home')
   return Promise.resolve(null)
+}
+
+interface StackClient {
+  fetchSessionCode: () => Promise<{ session_code: string }>
 }
 
 /**
@@ -59,9 +62,7 @@ const fetchSessionCodeWithClient = (
     }
 
     const sessionCodeResult = await (
-      client.getStackClient() as {
-        fetchSessionCode: () => Promise<{ session_code: string }>
-      }
+      client.getStackClient() as StackClient
     ).fetchSessionCode()
 
     if (sessionCodeResult.session_code) {
