@@ -33,6 +33,7 @@
     "domainMismatch": "Could not validate redirect url, domain mismatch",
     "protocolMismatch": "Could not validate redirect url, protocol mismatch",
     "clearPersistentIconTable": "Could not clear icon cache. Saved cache might be corrupted.",
+    "getPersistentIconTable": "Could not get icon cache.",
     "setPersistentIconTable": "Could not set icon cache. Cache to save might be corrupted.",
     "attemptFetchApps": "Failed to fetch apps registry, recovering by returning undefined.",
     "attemptFetchIcons": "Failed to fetch icons XML data. No icon will be available until next boot.",
