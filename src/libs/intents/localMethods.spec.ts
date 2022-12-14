@@ -66,9 +66,9 @@ test('fetchSessionCode should return only a session code', async () => {
     getStackClient: (): { fetchSessionCode: jest.Mock } => ({
       fetchSessionCode
     })
-  }
+  } as CozyClient
 
-  const result = await localMethods(client as CozyClient).fetchSessionCode()
+  const result = await localMethods(client).fetchSessionCode()
 
   expect(fetchSessionCode).toHaveBeenCalledTimes(1)
   expect(result).toEqual('test_session_code')
@@ -80,14 +80,13 @@ test('fetchSessionCode should throw if no session code is returned', async () =>
     getStackClient: (): { fetchSessionCode: jest.Mock } => ({
       fetchSessionCode
     })
-  }
+  } as CozyClient
+
   fetchSessionCode.mockResolvedValue({
     twoFactorToken: 'token'
   })
 
-  await expect(
-    localMethods(client as CozyClient).fetchSessionCode()
-  ).rejects.toThrowError(
+  await expect(localMethods(client).fetchSessionCode()).rejects.toThrowError(
     'session code result should contain a session_code ' +
       JSON.stringify({ twoFactorToken: 'token' })
   )
