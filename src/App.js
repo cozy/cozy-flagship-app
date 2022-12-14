@@ -156,23 +156,21 @@ const WrappedApp = () => {
   const Nav = () => (
     <NavigationContainer ref={RootNavigation.navigationRef}>
       <NativeIntentProvider localMethods={localMethods(client)}>
-        <SplashScreenProvider>
-          <View
-            style={[
-              styles.view,
-              {
-                backgroundColor: colors.primaryColor
-              }
-            ]}
-          >
-            <StatusBar
-              barStyle="light-content"
-              backgroundColor="transparent"
-              translucent
-            />
-            <App setClient={setClient} />
-          </View>
-        </SplashScreenProvider>
+        <View
+          style={[
+            styles.view,
+            {
+              backgroundColor: colors.primaryColor
+            }
+          ]}
+        >
+          <StatusBar
+            barStyle="light-content"
+            backgroundColor="transparent"
+            translucent
+          />
+          <App setClient={setClient} />
+        </View>
       </NativeIntentProvider>
     </NavigationContainer>
   )
@@ -202,9 +200,11 @@ const Wrapper = () => {
       <CryptoWebView setHasCrypto={setHasCrypto} />
       {hasCrypto && (
         <HttpServerProvider>
-          <NetStatusBoundary>
-            <WrappedApp />
-          </NetStatusBoundary>
+          <SplashScreenProvider>
+            <NetStatusBoundary>
+              <WrappedApp />
+            </NetStatusBoundary>
+          </SplashScreenProvider>
         </HttpServerProvider>
       )}
     </>

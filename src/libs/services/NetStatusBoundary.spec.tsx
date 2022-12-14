@@ -13,6 +13,16 @@ jest.mock('cozy-client', () => ({
   useClient: jest.fn()
 }))
 
+const mockHideSplashScreen = jest.fn()
+
+jest.mock('/hooks/useSplashScreen', () => ({
+  useSplashScreen: (): {
+    hideSplashScreen: jest.Mock
+  } => ({
+    hideSplashScreen: mockHideSplashScreen
+  })
+}))
+
 const mockedNetInfo = NetInfo as jest.Mocked<typeof NetInfo>
 
 const mockedListener = mockedNetInfo.addEventListener as unknown as jest.Mock<
@@ -20,7 +30,11 @@ const mockedListener = mockedNetInfo.addEventListener as unknown as jest.Mock<
   never[]
 >
 
-it('should render children when connected', async () => {
+beforeEach(() => {
+  jest.clearAllMocks()
+})
+
+it('should render children when connected and not hide splashscreen', async () => {
   mockedNetInfo.fetch.mockResolvedValue({ isConnected: true } as NetInfoState)
 
   render(
@@ -30,9 +44,10 @@ it('should render children when connected', async () => {
   )
 
   expect(await screen.findByText('children')).toBeTruthy()
+  expect(mockHideSplashScreen).not.toHaveBeenCalled()
 })
 
-it('should render error screen when not connected', async () => {
+it('should render error screen prop when not connected and still hide splashscreen', async () => {
   mockedNetInfo.fetch.mockResolvedValue({ isConnected: false } as NetInfoState)
 
   render(
@@ -42,9 +57,23 @@ it('should render error screen when not connected', async () => {
   )
 
   expect(await screen.findByText('offline')).toBeTruthy()
+  expect(mockHideSplashScreen).toHaveBeenCalled()
 })
 
-it('should render children when connected after being disconnected', async () => {
+it('should render error screen when not connected and hide splashscreen', async () => {
+  mockedNetInfo.fetch.mockResolvedValue({ isConnected: false } as NetInfoState)
+
+  render(
+    <NetStatusBoundary>
+      <Text>children</Text>
+    </NetStatusBoundary>
+  )
+
+  await expect(screen.findByText('children')).rejects.toThrow()
+  expect(mockHideSplashScreen).toHaveBeenCalled()
+})
+
+it('should render children when connected after being disconnected and hiding splashscreen', async () => {
   mockedNetInfo.fetch.mockResolvedValue({ isConnected: false } as NetInfoState)
 
   mockedListener.mockImplementation((callback: (state: NetInfoState) => void) =>
@@ -58,9 +87,10 @@ it('should render children when connected after being disconnected', async () =>
   )
 
   expect(await screen.findByText('children')).toBeTruthy()
+  expect(mockHideSplashScreen).toHaveBeenCalled()
 })
 
-it('should not render offlineScreen when disconnected after being connected', async () => {
+it('should not render offlineScreen when disconnected after being connected and not tamper with splashscreen', async () => {
   mockedNetInfo.fetch.mockResolvedValue({ isConnected: true } as NetInfoState)
 
   mockedListener.mockImplementation((callback: (state: NetInfoState) => void) =>
@@ -74,4 +104,5 @@ it('should not render offlineScreen when disconnected after being connected', as
   )
 
   expect(await screen.findByText('children')).toBeTruthy()
+  expect(mockHideSplashScreen).not.toHaveBeenCalled()
 })
