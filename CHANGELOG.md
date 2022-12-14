@@ -1,4 +1,4 @@
-# 0.0.32
+# 0.0.33
 
 ## ✨ Features
 
@@ -8,6 +8,20 @@
 
 ## 🔧 Tech
 
+
+# 0.0.32
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* Improve autolock pairing with biometry/pinCode ([PR #493](https://github.com/cozy/cozy-react-native/pull/493))
+* Offline boot now correctly redirect to Offline screen ([PR #496](https://github.com/cozy/cozy-react-native/pull/496))
+
+## 🔧 Tech
+
+* Improve Typescript typing ([PR #472](https://github.com/cozy/cozy-react-native/pull/472) and [PR #495](https://github.com/cozy/cozy-react-native/pull/495))
 
 # 0.0.31
 
