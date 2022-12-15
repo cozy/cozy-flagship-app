@@ -1,4 +1,4 @@
-# 0.0.33
+# 0.0.34
 
 ## ✨ Features
 
@@ -8,6 +8,19 @@
 
 ## 🔧 Tech
 
+
+# 0.0.33
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* Fix a bug that prevented the app to logout ([PR #498](https://github.com/cozy/cozy-react-native/pull/498))
+
+## 🔧 Tech
+
+* Improve dev documentation about debugging from an Android emulator ([PR #499](https://github.com/cozy/cozy-react-native/pull/499))
 
 # 0.0.32
 
