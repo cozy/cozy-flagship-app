@@ -34,12 +34,6 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   return Promise.resolve(null)
 }
 
-// Since logout is used from localMethods
-// it can't be async for now.
-const logout = async (client?: CozyClient): Promise<null> => {
-  return await asyncLogout(client)
-}
-
 const backToHome = (): Promise<null> => {
   RootNavigation.navigate('home')
   return Promise.resolve(null)
@@ -128,7 +122,7 @@ export const localMethods = (
     closeInAppBrowser,
     fetchSessionCode: fetchSessionCodeWithClient(client),
     hideSplashScreen: nativeMethodWrapper(hideSplashScreen),
-    logout,
+    logout: () => asyncLogout(client),
     openApp: (href, app, iconParams) =>
       openApp(RootNavigation, href, app, iconParams),
     toggleSetting,
