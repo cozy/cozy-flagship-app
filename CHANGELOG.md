@@ -1,4 +1,4 @@
-# 0.0.34
+# 1.0.1
 
 ## ✨ Features
 
@@ -8,6 +8,18 @@
 
 ## 🔧 Tech
 
+
+# 1.0.0
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+* Bump app version to `1.0.0` for release publication ([PR #](https://github.com/cozy/cozy-react-native/pull/))
 
 # 0.0.33
 
