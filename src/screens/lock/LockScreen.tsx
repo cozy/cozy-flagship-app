@@ -6,6 +6,7 @@ import {
   Platform,
   TouchableWithoutFeedback
 } from 'react-native'
+import { FullWindowOverlay } from 'react-native-screens'
 
 import { Button } from '/ui/Button'
 import { ConfirmDialog } from '/ui/CozyDialogs/ConfirmDialog'
@@ -162,17 +163,19 @@ const LockView = ({
 
 export const LockScreen = (props: LockScreenProps): JSX.Element => (
   <>
-    <LockScreenBars />
+    <FullWindowOverlay>
+      <LockScreenBars />
 
-    <TouchableWithoutFeedback
-      onPress={Keyboard.dismiss}
-      style={{ backgroundColor: palette.Primary[600], height: '100%' }}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      <TouchableWithoutFeedback
+        onPress={Keyboard.dismiss}
+        style={{ backgroundColor: palette.Primary[600], height: '100%' }}
       >
-        <LockView {...useLockScreenProps(props.route?.params)} />
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+          <LockView {...useLockScreenProps(props.route?.params)} />
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
+    </FullWindowOverlay>
   </>
 )
