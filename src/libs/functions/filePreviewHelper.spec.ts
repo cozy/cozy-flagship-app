@@ -139,6 +139,73 @@ describe('filePreviewHelper', () => {
       })
       expect(FileViewer.open).toHaveBeenCalledWith('/app/SOME_FILE.pdf')
     })
+
+    it(`should decode URLs for '/files/downloads/:secret/:name' links so the file name does not contains any %20 and is user friendly`, async () => {
+      const client = {
+        getStackClient: jest.fn(() => ({
+          uri: 'https://claude.mycozy.cloud',
+          getAuthorizationHeader: jest
+            .fn()
+            .mockReturnValue('SOME_AUTHORIZATION_TOKEN')
+        }))
+      } as unknown as CozyClient
+
+      mockSuccessFileDownload()
+
+      await previewFileFromDownloadUrl({
+        downloadUrl:
+          'https://claude.mycozy.cloud/files/downloads/SOME_SECRET/SOME%20FILE%20WITH%20SPACES.pdf?Dl=1',
+        client,
+        setDownloadProgress: () => undefined
+      })
+
+      expect(mockDownloadFile).toHaveBeenCalledWith({
+        fromUrl:
+          'https://claude.mycozy.cloud/files/downloads/SOME_SECRET/SOME%20FILE%20WITH%20SPACES.pdf?Dl=1',
+        toFile: '/app/SOME FILE WITH SPACES.pdf',
+        begin: expect.anything(),
+        progress: expect.anything(),
+        progressInterval: 100
+      })
+      expect(FileViewer.open).toHaveBeenCalledWith(
+        '/app/SOME FILE WITH SPACES.pdf'
+      )
+    })
+
+    it(`should decode URLs for '/files/download?Path=' links so the file name does not contains any %20 and is user friendly`, async () => {
+      const client = {
+        getStackClient: jest.fn(() => ({
+          uri: 'https://claude.mycozy.cloud',
+          getAuthorizationHeader: jest
+            .fn()
+            .mockReturnValue('SOME_AUTHORIZATION_TOKEN')
+        }))
+      } as unknown as CozyClient
+
+      mockSuccessFileDownload()
+
+      await previewFileFromDownloadUrl({
+        downloadUrl:
+          'https://claude.mycozy.cloud/files/download?Path=/Documents/SOME%20FILE%20WITH%20SPACES.pdf&Dl=1',
+        client,
+        setDownloadProgress: () => undefined
+      })
+
+      expect(mockDownloadFile).toHaveBeenCalledWith({
+        fromUrl:
+          'https://claude.mycozy.cloud/files/download?Path=/Documents/SOME%20FILE%20WITH%20SPACES.pdf&Dl=1',
+        headers: {
+          Authorization: 'SOME_AUTHORIZATION_TOKEN'
+        },
+        toFile: '/app/SOME FILE WITH SPACES.pdf',
+        begin: expect.anything(),
+        progress: expect.anything(),
+        progressInterval: 100
+      })
+      expect(FileViewer.open).toHaveBeenCalledWith(
+        '/app/SOME FILE WITH SPACES.pdf'
+      )
+    })
   })
 
   describe('getFileExtentionFromCozyDownloadUrl', () => {

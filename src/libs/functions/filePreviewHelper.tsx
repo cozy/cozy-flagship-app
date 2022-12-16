@@ -112,7 +112,7 @@ const getFileNameFromPrivateByPathDownloadLink = (
     )
   }
 
-  return url.searchParams.get('Path')?.split('/').pop() ?? ''
+  return decodeURI(url.searchParams.get('Path')?.split('/').pop() ?? '')
 }
 
 const getFileNameFromPublicBySecretDownloadLink = (
@@ -120,7 +120,7 @@ const getFileNameFromPublicBySecretDownloadLink = (
 ): string => {
   const url = new URL(downloadUrl)
 
-  return url.pathname.split('/').pop() ?? ''
+  return decodeURI(url.pathname.split('/').pop() ?? '')
 }
 
 const getFileNameFromCozyDownloadUrl = (
