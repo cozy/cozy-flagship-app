@@ -6345,16 +6345,17 @@ cozy-client-js@^0.20.0:
     pouchdb-browser "7.0.0"
     pouchdb-find "7.0.0"
 
-cozy-client@^33.4.0:
-  version "33.4.0"
-  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-33.4.0.tgz#39e713656b3ce847dd453714564b665523001d09"
-  integrity sha512-2e8hg9pOHnmScpIyeHM4TjZ45hW/uTV+CCO7lS9LN1AsGsEdNdKjD+d4fvLYIX1zUcaqRDhFNUYzCCdz1t5Mag==
+cozy-client@^34.5.0:
+  version "34.5.0"
+  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-34.5.0.tgz#862e62d3cb545fa34a66fdc0457521bc2959cb3b"
+  integrity sha512-oqrJZTg1UtqtsPBMuk4alJP/D3A2JLh0ofzAmikmnxS/wYlsP0Dn6T4Rl6FUWU4udg7wZ+3AU9PkusIWpe4zrg==
   dependencies:
     "@cozy/minilog" "1.0.0"
     "@types/jest" "^26.0.20"
     "@types/lodash" "^4.14.170"
     btoa "^1.2.1"
-    cozy-stack-client "^33.4.0"
+    cozy-stack-client "^34.1.5"
+    date-fns "2.29.3"
     json-stable-stringify "^1.0.1"
     lodash "^4.17.13"
     microee "^0.0.6"
@@ -6403,10 +6404,10 @@ cozy-logger@^1.9.1:
     chalk "^2.4.2"
     json-stringify-safe "5.0.1"
 
-cozy-stack-client@^33.4.0:
-  version "33.4.0"
-  resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-33.4.0.tgz#c0c7ce7f2d65987b10bc8b4a615a3de0eedcf8d4"
-  integrity sha512-DaCwOdNT+aZJL+BZH04iUe0709O5Pi6qTagRlM+hp7oKwXiJvU3lwYIFE1McGss4rdhlWhIXB107ZFSC1+eagw==
+cozy-stack-client@^34.1.5:
+  version "34.1.5"
+  resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-34.1.5.tgz#28fbc22b72f6343d968d4899d91c70f0261252f4"
+  integrity sha512-i0GsaaHNI2XmXUncbNPzuFY+DDC4/io3m7mwCmhAFyI/REHPdqOi3Oo5Mb7Euuky4A6iZjAWn5t0F69itv3rvg==
   dependencies:
     detect-node "^2.0.4"
     mime "^2.4.0"
@@ -6798,6 +6799,11 @@ data-urls@^2.0.0:
     abab "^2.0.3"
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
+
+date-fns@2.29.3:
+  version "2.29.3"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.29.3.tgz#27402d2fc67eb442b511b70bbdf98e6411cd68a8"
+  integrity sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==
 
 date-fns@^1.28.5:
   version "1.30.1"
