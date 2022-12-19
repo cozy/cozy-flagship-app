@@ -6,6 +6,7 @@ export const openForgotPasswordLink = async (
   const url = new URL(instance)
 
   url.pathname = '/auth/passphrase_reset'
+  url.searchParams.set('hideBackButton', 'true')
 
   await Linking.openURL(url.toString())
 }
