@@ -5,7 +5,7 @@ import Minilog from '@cozy/minilog'
 
 let navbarHeight = 0
 
-const getNavbarHeight = () => navbarHeight
+const getNavbarHeight = (): number => navbarHeight
 const statusBarHeight = getStatusBarHeight()
 const {
   scale,
@@ -13,7 +13,7 @@ const {
   width: screenWidth
 } = Dimensions.get('screen')
 
-const init = async () => {
+const init = async (): Promise<void> => {
   try {
     if (Platform.OS !== 'android') return
     navbarHeight = (await getNavigationBarHeight()) / scale
@@ -25,6 +25,6 @@ const init = async () => {
   }
 }
 
-init()
+void init()
 
 export { getNavbarHeight, screenHeight, screenWidth, statusBarHeight }
