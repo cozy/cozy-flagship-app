@@ -20,14 +20,6 @@ export interface NormalisedFlagshipUI
   topTheme?: StatusBarStyle
 }
 
-const handleSideEffects = ({
-  bottomTheme,
-  ...parsedIntent
-}: NormalisedFlagshipUI): void => {
-  flagshipUI.emit('change', parsedIntent)
-  updateStatusBarAndBottomBar(bottomTheme)
-}
-
 export enum ThemeInput {
   Dark = 'dark',
   Light = 'light'
@@ -39,11 +31,58 @@ export enum StatusBarStyle {
   Default = 'default'
 }
 
+class Ui {
+  private _state: NormalisedFlagshipUI
+
+  constructor(initialState: NormalisedFlagshipUI) {
+    this._state = initialState
+  }
+
+  public get state(): NormalisedFlagshipUI {
+    return this._state
+  }
+
+  public set state(newState: NormalisedFlagshipUI) {
+    this._state = newState
+  }
+}
+
+const ui = new Ui({ topTheme: StatusBarStyle.Light })
+
+const shouldRepaintStatusBar = (
+  bottomTheme?: StatusBarStyle,
+  topTheme?: StatusBarStyle
+): void => {
+  const lastTopTheme = ui.state.topTheme
+
+  if (topTheme && topTheme !== bottomTheme)
+    return StatusBar.setBarStyle(topTheme)
+
+  if (lastTopTheme && lastTopTheme !== bottomTheme)
+    return StatusBar.setBarStyle(lastTopTheme)
+}
+
+const handleSideEffects = ({
+  bottomTheme,
+  ...parsedIntent
+}: NormalisedFlagshipUI): void => {
+  flagshipUI.emit('change', parsedIntent)
+  updateStatusBarAndBottomBar(bottomTheme, parsedIntent.topTheme)
+
+  ui.state = { bottomTheme, ...parsedIntent }
+}
+
 export const updateStatusBarAndBottomBar = (
-  bottomTheme?: StatusBarStyle
+  bottomTheme?: StatusBarStyle,
+  topTheme?: StatusBarStyle
 ): void => {
   if (Platform.OS === 'android') {
     bottomTheme && changeBarColors(isDarkMode(bottomTheme))
+
+    // ChangeBarColors() change both StatusBar and NavigationBar
+    // so we need to check if we need to change the StatusBar
+    // if the StatusBar should be different from the NavigationBar.
+    shouldRepaintStatusBar(bottomTheme, topTheme)
   } else {
     // On iOS we don't have BottomBar so we only need to
     // change the BarStyle.
