@@ -12,6 +12,7 @@ import { jsLogInterception } from '/components/webviews/jsInteractions/jsLogInte
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 
 import { getColors } from '/theme/colors'
+import { routes } from '/constants/routes'
 
 const log = Minilog('ClouderyCreateInstanceView')
 
@@ -45,7 +46,9 @@ export const ClouderyCreateInstanceView = ({
     const { fqdn, registerToken } = getOnboardingDataFromRequest(request)
 
     NetService.isOffline()
-      .then(isOffline => isOffline && NetService.handleOffline())
+      .then(
+        isOffline => isOffline && NetService.handleOffline(routes.onboarding)
+      )
       .catch(error => log.error(error))
 
     if (request.loading) {
