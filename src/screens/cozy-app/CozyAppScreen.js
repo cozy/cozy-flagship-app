@@ -1,14 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { StatusBar, View, Platform } from 'react-native'
-
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { CozyProxyWebView } from '../../components/webviews/CozyProxyWebView'
 import { Animation } from './CozyAppScreen.Animation'
+import { CozyProxyWebView } from '../../components/webviews/CozyProxyWebView'
+import { NetService } from '/libs/services/NetService'
 import { flagshipUI } from '../../libs/intents/setFlagshipUI'
 import { getNavbarHeight, statusBarHeight } from '../../libs/dimensions'
-import { styles } from './CozyAppScreen.styles'
 import { internalMethods } from '../../libs/intents/localMethods'
+import { routes } from '/constants/routes'
+import { styles } from './CozyAppScreen.styles'
 
 const firstHalfUI = () =>
   internalMethods.setFlagshipUI({
@@ -19,6 +20,13 @@ const firstHalfUI = () =>
     topTheme: 'dark',
     topOverlay: 'transparent'
   })
+
+const handleError = ({ nativeEvent }) => {
+  const { code, description } = nativeEvent
+
+  if (code === -2 && description === 'net::ERR_INTERNET_DISCONNECTED')
+    NetService.handleOffline(routes.stack)
+}
 
 export const CozyAppScreen = ({ route, navigation }) => {
   const [UIState, setUIState] = useState({})
@@ -98,6 +106,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
           route={route}
           logId="AppScreen"
           onLoadEnd={onLoadEnd}
+          onError={handleError}
         />
       </View>
 
