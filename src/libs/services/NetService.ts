@@ -1,7 +1,6 @@
 import NetInfo, {
   NetInfoState,
-  NetInfoStateType,
-  NetInfoSubscription
+  NetInfoStateType
 } from '@react-native-community/netinfo'
 import { useEffect } from 'react'
 
@@ -51,41 +50,26 @@ export const useNetService = (client?: CozyClient): void =>
     }
   }, [client])
 
-export const _netInfoChangeHandler = (
-  state: Partial<NetInfoState> | undefined,
-  callbackRoute = routes.stack
-): void => {
-  try {
-    state?.isConnected && reset(callbackRoute)
-  } catch (error) {
-    log.error(error)
-  }
-}
+const waitForOnline = (callbackRoute: string): void => {
+  log.debug('Adding NetInfo listener')
 
-const makeNetWatcher = (): (({
-  shouldUnsub,
-  callbackRoute
-}?: {
-  shouldUnsub?: boolean
-  callbackRoute?: string
-}) => void) => {
-  let unsubscribe: NetInfoSubscription | undefined
-
-  return ({ shouldUnsub, callbackRoute } = {}) => {
-    if (!unsubscribe) {
-      log.debug('Adding NetInfo listener')
-      unsubscribe = NetInfo.addEventListener(state => {
-        callbackRoute === routes.stack && showSplashScreen()
-        _netInfoChangeHandler(state, callbackRoute)
-      })
-    }
-
-    if (shouldUnsub) {
+  const callback = (state: NetInfoState): void => {
+    if (state.isConnected) {
       log.debug('Removing NetInfo listener')
+
+      callbackRoute === routes.stack && showSplashScreen()
+
+      try {
+        reset(callbackRoute)
+      } catch (error) {
+        log.error(error)
+      }
+
       unsubscribe()
-      unsubscribe = undefined
     }
   }
+
+  const unsubscribe = NetInfo.addEventListener(callback)
 }
 
 const isConnected = async (): Promise<NetInfoState['isConnected']> =>
@@ -94,16 +78,14 @@ const isConnected = async (): Promise<NetInfoState['isConnected']> =>
 const isOffline = async (): Promise<NetInfoState['isConnected']> =>
   (await NetInfo.fetch()).isConnected === false
 
-const handleOffline = (): void =>
+const handleOffline = (callbackRoute: string): void => {
   reset(routes.error, { type: strings.errorScreens.offline })
 
-const toggleNetWatcher = devConfig.forceOffline
-  ? (): void => undefined
-  : makeNetWatcher()
+  waitForOnline(callbackRoute)
+}
 
 export const NetService = {
   handleOffline,
   isConnected,
-  isOffline,
-  toggleNetWatcher
+  isOffline
 }

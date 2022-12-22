@@ -28,6 +28,7 @@ import { useSplashScreen } from '/hooks/useSplashScreen'
 import strings from '../../strings.json'
 import { getColors } from '/theme/colors'
 import { NetService } from '/libs/services/NetService'
+import { routes } from '/constants/routes'
 
 const log = Minilog('LoginScreen')
 
@@ -115,7 +116,8 @@ const LoginSteps = ({
 
   const setInstanceData = useCallback(
     async ({ instance, fqdn }) => {
-      if (await NetService.isOffline()) NetService.handleOffline()
+      if (await NetService.isOffline())
+        NetService.handleOffline(routes.authenticate)
 
       try {
         const client = await createClient(instance)
@@ -172,7 +174,8 @@ const LoginSteps = ({
   }
 
   const startOAuth = useCallback(async () => {
-    if (await NetService.isOffline()) NetService.handleOffline()
+    if (await NetService.isOffline())
+      NetService.handleOffline(routes.authenticate)
 
     try {
       const { loginData, instance, client } = state
@@ -220,7 +223,8 @@ const LoginSteps = ({
 
   const continueOAuth = useCallback(
     async twoFactorCode => {
-      if (await NetService.isOffline()) NetService.handleOffline()
+      if (await NetService.isOffline())
+        NetService.handleOffline(routes.authenticate)
 
       try {
         const { loginData, client, twoFactorToken } = state
@@ -264,7 +268,8 @@ const LoginSteps = ({
   )
 
   const authorize = useCallback(async () => {
-    if (await NetService.isOffline()) NetService.handleOffline()
+    if (await NetService.isOffline())
+      NetService.handleOffline(routes.authenticate)
 
     try {
       const { client, loginData, sessionCode } = state

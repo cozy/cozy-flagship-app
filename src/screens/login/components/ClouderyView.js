@@ -36,7 +36,7 @@ const run = `
 const handleError = async webviewErrorEvent => {
   try {
     const isOffline = await NetService.isOffline()
-    isOffline && NetService.handleOffline()
+    isOffline && NetService.handleOffline(routes.onboarding)
   } catch (error) {
     log.error(error)
   } finally {
