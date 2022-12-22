@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Linking } from 'react-native'
 import { WebViewMessageEvent } from 'react-native-webview/lib/WebViewTypes'
 
@@ -8,6 +8,7 @@ import { CozyNotFoundPage } from '/components/webviews/CozyNotFoundPage'
 import { OfflinePage } from '/components/webviews/OfflinePage'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { goBack } from '/libs/RootNavigation'
+import { changeBarColors } from 'react-native-immersive-bars'
 
 const log = Minilog('ErrorScreen')
 
@@ -76,9 +77,19 @@ const makeSource = (route: ErrorScreenProps['route']): Source => {
   return { html: htmlGenerator() }
 }
 
-export const ErrorScreen = (props: ErrorScreenProps): JSX.Element => (
-  <SupervisedWebView
-    onMessage={handleMessage}
-    source={makeSource(props.route)}
-  />
-)
+export const ErrorScreen = (props: ErrorScreenProps): JSX.Element => {
+  /*
+   * All error pages are in immersive mode with blue background, so we need light icons every time.
+   * To err on the side of caution, we set the icon colors to white everytime this page is rendered.
+   */
+  useEffect(() => {
+    changeBarColors(true)
+  }, [])
+
+  return (
+    <SupervisedWebView
+      onMessage={handleMessage}
+      source={makeSource(props.route)}
+    />
+  )
+}
