@@ -7,7 +7,7 @@ const config = {
   preset: 'react-native',
   setupFiles: ['<rootDir>/__tests__/jestSetupFile.js'],
   transform: {
-    '^.+\\.(ts|tsx)?$': 'ts-jest',
+    '^.+\\.(ts|tsx)$': ['ts-jest', { diagnostics: { exclude: ['**'] } }],
     '^.+\\.(js|jsx)$': 'babel-jest'
   },
   transformIgnorePatterns: [
