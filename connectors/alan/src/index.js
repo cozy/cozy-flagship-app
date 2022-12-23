@@ -180,7 +180,7 @@ class TemplateContentScript extends ContentScript {
         userCredentials
       })
     }
-    if(document.location.href.includes(`${HOMEPAGE_URL}`) && document.querySelector('a[href="#"]') || document.querySelector('div[class="murray__NavListItem"]')){
+    if(document.location.href.includes(`${HOMEPAGE_URL}`) && document.querySelector('a[href="#"]') || document.querySelector('div[class="ListItem ListItem__Clickable ListCareEventItem"]')){
       this.log('Auth Check succeeded')
       return true
     }
