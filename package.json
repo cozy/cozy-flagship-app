@@ -72,6 +72,7 @@
     "react-native-webview": "github:cozy/react-native-webview#1.0.0",
     "react-redux": "^8.0.5",
     "react-scripts": "4.0.3",
+    "redux-persist": "^6.0.0",
     "rn-async-storage-flipper": "^0.0.10",
     "rn-flipper-async-storage-advanced": "^1.0.4"
   },
