@@ -14482,7 +14482,8 @@ react-markdown@^4.0.8:
 
 "react-native-android-navbar-height@git+https://github.com/ConnectyCube/react-native-android-navbar-height.git#main":
   version "0.1.0"
-  resolved "git+https://github.com/ConnectyCube/react-native-android-navbar-height.git#3b04b4b66ce1bcc1b316fd44b368575cf8b3432d"
+  uid a8af1560d046974ab07644c2e592b53123544e7c
+  resolved "git+https://github.com/ConnectyCube/react-native-android-navbar-height.git#a8af1560d046974ab07644c2e592b53123544e7c"
 
 react-native-biometrics@3.0.1:
   version "3.0.1"
