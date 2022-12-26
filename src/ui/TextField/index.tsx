@@ -1,5 +1,5 @@
 import React from 'react'
-import { TextInput, TextInputProps, View } from 'react-native'
+import { Platform, TextInput, TextInputProps, View } from 'react-native'
 import { MaskInputProps } from 'react-native-mask-input'
 
 import { Typography } from '/ui/Typography'
@@ -34,6 +34,7 @@ export const TextField = ({
     {InputComponent ? (
       <InputComponent
         cursorColor={styles.input.color}
+        selectionColor={Platform.OS === 'ios' ? styles.input.color : undefined}
         style={[styles.input, { letterSpacing: 10 }]}
         value={value}
         placeholderTextColor={styles.input.color}
@@ -43,6 +44,7 @@ export const TextField = ({
     ) : (
       <TextInput
         cursorColor={styles.input.color}
+        selectionColor={Platform.OS === 'ios' ? styles.input.color : undefined}
         style={styles.input}
         value={value}
         {...props}
