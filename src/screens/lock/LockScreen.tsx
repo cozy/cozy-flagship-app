@@ -28,6 +28,7 @@ import { getBiometryIcon } from '/screens/lock/functions/lockScreenFunctions'
 import { palette } from '/ui/palette'
 import { translation } from '/locales'
 import { useLockScreenProps } from '/screens/lock/hooks/useLockScreen'
+import { ConditionalWrapper } from '/components/ConditionalWrapper'
 
 const LockView = ({
   biometryEnabled,
@@ -161,9 +162,14 @@ const LockView = ({
   </Container>
 )
 
-export const LockScreen = (props: LockScreenProps): JSX.Element => (
-  <>
-    <FullWindowOverlay>
+export const LockScreen = (props: LockScreenProps): React.ReactNode => (
+  <ConditionalWrapper
+    condition={Platform.OS === 'ios'}
+    wrapper={(children): JSX.Element => (
+      <FullWindowOverlay>{children}</FullWindowOverlay>
+    )}
+  >
+    <>
       <LockScreenBars />
 
       <TouchableWithoutFeedback
@@ -176,6 +182,6 @@ export const LockScreen = (props: LockScreenProps): JSX.Element => (
           <LockView {...useLockScreenProps(props.route?.params)} />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
-    </FullWindowOverlay>
-  </>
+    </>
+  </ConditionalWrapper>
 )
