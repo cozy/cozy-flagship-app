@@ -92,7 +92,7 @@ export const getBaseFolderForFqdnAndSlugAndCurrentVersion = async (
  *
  * @param {string} fqdn - FQDN from the cozy serving the cozy-app
  * @param {string} slug - the cozy-app's slug
- * @returns {string}
+ * @returns {Promise<string>}
  */
 export const getBaseFolderForFqdnAndSlug = async (fqdn, slug) => {
   const serverBasePath = getServerBaseFolder()

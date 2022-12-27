@@ -371,6 +371,11 @@ export const getFqdnFromClient = client => {
   }
 }
 
+/**
+ * @param {string} slug - The slug of the cozy-app to update
+ * @param {CozyClient} client - CozyClient instance
+ * @returns {Promise<string>} - The version of the cozy-app
+ */
 export const fetchCozyAppVersion = async (slug, client) => {
   const stackClient = client.getStackClient()
 
@@ -385,6 +390,12 @@ export const fetchCozyAppVersion = async (slug, client) => {
   return version
 }
 
+/**
+ * @param {string} slug - The slug of the cozy-app to update
+ * @param {string} version - The version of the cozy-app to update
+ * @param {CozyClient} client - CozyClient instance
+ * @returns {Promise<{tarPrefix: string}>} - The version of the cozy-app
+ */
 export const fetchCozyAppArchiveInfoForVersion = async (
   slug,
   version,

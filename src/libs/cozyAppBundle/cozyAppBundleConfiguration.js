@@ -11,7 +11,7 @@ import strings from '/constants/strings.json'
  *
  * @param {string} fqdn - FQDN from the cozy serving the cozy-app
  * @param {string} slug - the cozy-app's slug
- * @returns {CozyAppConfiguration} - the configuration for the cozy-app
+ * @returns {Promise<CozyAppConfiguration | undefined>} - the configuration for the cozy-app
  */
 export const getCurrentAppConfigurationForFqdnAndSlug = async (fqdn, slug) => {
   const normalizedFqdn = normalizeFqdn(fqdn)
