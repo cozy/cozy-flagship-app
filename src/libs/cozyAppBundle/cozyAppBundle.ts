@@ -12,10 +12,33 @@ import {
   getCurrentAppConfigurationForFqdnAndSlug,
   setCurrentAppVersionForFqdnAndSlug
 } from './cozyAppBundleConfiguration'
+import CozyClient from 'cozy-client'
+import { getErrorMessage } from '../functions/getErrorMessage'
 
 const log = logger('AppBundle')
 
 const BUNDLE_UPDATE_DELAY_IN_MS = 10000
+
+interface AppInfo {
+  slug: string
+  client: CozyClient
+}
+
+interface CozyAppToUpdate extends AppInfo {
+  delayInMs?: number
+}
+
+interface CozyAppWithVer extends AppInfo {
+  version: string
+}
+
+interface CozyAppWithDest extends CozyAppWithVer {
+  destinationPath: string
+}
+
+interface CozyAppWithPrefix extends CozyAppWithVer {
+  tarPrefix: string
+}
 
 /**
  * After the specified delay, check the cozy-app version on cozy-stack and
@@ -29,21 +52,25 @@ const BUNDLE_UPDATE_DELAY_IN_MS = 10000
  * @param {number} [param.delayInMs] - Duration in millisecond to wait before doing the update (default=BUNDLE_UPDATE_DELAY_IN_MS)
  * @returns {Promise}
  */
-export const updateCozyAppBundleInBackground = async ({
+export const updateCozyAppBundleInBackground = ({
   slug,
   client,
   delayInMs = BUNDLE_UPDATE_DELAY_IN_MS
-}) => {
-  return setTimeout(async () => {
-    try {
-      return await updateCozyAppBundle({ slug, client })
-    } catch (err) {
-      log.error(
-        `Something went wront while updating ${slug} bundle: ${err.message}`
-      )
-    }
-  }, delayInMs)
-}
+}: CozyAppToUpdate): Promise<void> =>
+  new Promise(resolve => {
+    setTimeout(() => {
+      updateCozyAppBundle({ slug, client })
+        .then(resolve)
+        .catch(err =>
+          log.error(
+            `Something went wront while updating ${slug} bundle: ${getErrorMessage(
+              err
+            )}`,
+            resolve()
+          )
+        )
+    }, delayInMs)
+  })
 
 /**
  * Check the cozy-app version on cozy-stack and update the local CozyAppBundle
@@ -54,16 +81,21 @@ export const updateCozyAppBundleInBackground = async ({
  * @param {CozyClient} param.client - CozyClient instance
  * @returns {Promise}
  */
-export const updateCozyAppBundle = async ({ slug, client }) => {
+export const updateCozyAppBundle = async ({
+  slug,
+  client
+}: CozyAppToUpdate): Promise<void> => {
   log.debug(`Check updates for '${slug}'`)
   const { fqdn } = getFqdnFromClient(client)
 
   const { version: currentVersion } =
-    (await getCurrentAppConfigurationForFqdnAndSlug(fqdn, slug)) || {}
+    (await getCurrentAppConfigurationForFqdnAndSlug(fqdn, slug)) ?? {}
   const stackVersion = await fetchCozyAppVersion(slug, client)
 
   log.debug(
-    `Current local version is '${currentVersion}', stack version is '${stackVersion}'`
+    `Current local version is '${
+      currentVersion ?? 'unknown'
+    }', stack version is '${stackVersion}'`
   )
 
   if (currentVersion === stackVersion) {
@@ -97,7 +129,7 @@ export const updateCozyAppBundle = async ({ slug, client }) => {
     client
   })
 
-  setCurrentAppVersionForFqdnAndSlug({
+  void setCurrentAppVersionForFqdnAndSlug({
     fqdn,
     slug,
     version: stackVersion,
@@ -110,7 +142,7 @@ const deleteVersionBundleFromLocalFilesIfExists = async ({
   version,
   tarPrefix,
   client
-}) => {
+}: CozyAppWithPrefix): Promise<void> => {
   log.debug(`Check if local '${slug}' bundle version exist for '${version}'`)
 
   const expectedVersionPath = await getCozyAppFolderPathForVersion({
@@ -129,11 +161,15 @@ const deleteVersionBundleFromLocalFilesIfExists = async ({
   }
 }
 
-const normalizeVersion = version => {
+const normalizeVersion = (version: string): string => {
   return version
 }
 
-const getCozyAppFolderPathForVersion = async ({ slug, version, client }) => {
+const getCozyAppFolderPathForVersion = async ({
+  slug,
+  version,
+  client
+}: CozyAppWithVer): Promise<string> => {
   const { fqdn } = getFqdnFromClient(client)
 
   const baseFolderForFqdnAndSlug = await getBaseFolderForFqdnAndSlug(fqdn, slug)
@@ -142,7 +178,11 @@ const getCozyAppFolderPathForVersion = async ({ slug, version, client }) => {
   return `${baseFolderForFqdnAndSlug}/${normalizedVersion}`
 }
 
-const getCozyAppArchivePathForVersion = async ({ slug, version, client }) => {
+const getCozyAppArchivePathForVersion = async ({
+  slug,
+  version,
+  client
+}: CozyAppWithVer): Promise<string> => {
   const { fqdn } = getFqdnFromClient(client)
 
   const baseFolderForFqdnAndSlug = await getBaseFolderForFqdnAndSlug(fqdn, slug)
@@ -156,7 +196,7 @@ const downloadAndExtractCozyAppVersion = async ({
   version,
   destinationPath,
   client
-}) => {
+}: CozyAppWithDest): Promise<void> => {
   log.debug(`Downloading '${slug}' version '${version}' from stack`)
 
   const archivePath = await getCozyAppArchivePathForVersion({
@@ -177,18 +217,21 @@ const downloadAndExtractCozyAppVersion = async ({
   await removeCozyAppArchive(archivePath)
 }
 
-const extractCozyAppArchive = async (archivePath, destinationPath) => {
+const extractCozyAppArchive = async (
+  archivePath: string,
+  destinationPath: string
+): Promise<void> => {
   try {
     await RNFS.mkdir(destinationPath)
 
     await Gzip.unGzipTar(archivePath, destinationPath, true)
   } catch (err) {
-    log.error(`Error while extracting archive: ${err.message}`)
+    log.error(`Error while extracting archive: ${getErrorMessage(err)}`)
     throw err
   }
 }
 
-const removeCozyAppArchive = async archivePath => {
+const removeCozyAppArchive = async (archivePath: string): Promise<void> => {
   await RNFS.unlink(archivePath)
 }
 
@@ -197,8 +240,11 @@ const downloadCozyAppArchive = async ({
   version,
   destinationPath,
   client
-}) => {
-  const stackClient = client.getStackClient()
+}: CozyAppWithDest): Promise<void> => {
+  const stackClient = client.getStackClient() as {
+    uri: string
+    getAuthorizationHeader: () => string
+  }
   const headers = stackClient.getAuthorizationHeader()
   const instanceUri = stackClient.uri
   const downloadUri = new URL(instanceUri)
@@ -222,7 +268,7 @@ const downloadCozyAppArchive = async ({
       throw new Error(`Status code: ${statusCode}`)
     }
   } catch (err) {
-    log.error(`Error while downloading archive: ${err.message}`)
+    log.error(`Error while downloading archive: ${getErrorMessage(err)}`)
     throw err
   }
 }

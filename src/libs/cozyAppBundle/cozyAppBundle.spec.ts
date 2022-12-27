@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Gzip from '@fengweichong/react-native-gzip'
 import RNFS from 'react-native-fs'
 
