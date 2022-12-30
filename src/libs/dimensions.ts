@@ -1,30 +1,46 @@
-import { Dimensions, Platform } from 'react-native'
-import { getStatusBarHeight } from 'react-native-status-bar-height'
-import { getNavigationBarHeight } from 'react-native-android-navbar-height'
-import Minilog from '@cozy/minilog'
+import { Dimensions } from 'react-native'
+import {
+  initialWindowMetrics,
+  useSafeAreaFrame,
+  useSafeAreaInsets
+} from 'react-native-safe-area-context'
 
-let navbarHeight = 0
+interface DeviceDimensions {
+  navbarHeight: number
+  screenHeight: number
+  screenWidth: number
+  statusBarHeight: number
+}
 
-const getNavbarHeight = (): number => navbarHeight
-const statusBarHeight = getStatusBarHeight()
-const {
-  scale,
-  height: screenHeight,
-  width: screenWidth
-} = Dimensions.get('screen')
+const { height: screenHeight, width: screenWidth } = Dimensions.get('screen')
 
-const init = async (): Promise<void> => {
-  try {
-    if (Platform.OS !== 'android') return
-    navbarHeight = (await getNavigationBarHeight()) / scale
-  } catch (error) {
-    Minilog('libs/dimensions').warn(
-      `Failed to compute NavbarHeight, keeping default value: ${navbarHeight}. Please refer to the error below.\n`,
-      error
-    )
+/**
+ * React Hook that returns device's dimensions (screen, navigationBar and statusBar sizes)
+ * @returns device's dimensions
+ */
+const useDimensions = (): DeviceDimensions => {
+  const insets = useSafeAreaInsets()
+  const frame = useSafeAreaFrame()
+
+  return {
+    navbarHeight: insets.bottom,
+    screenHeight: frame.height,
+    screenWidth: frame.width,
+    statusBarHeight: insets.top
   }
 }
 
-void init()
+/**
+ * Get device's dimensions (screen, navigationBar and statusBar sizes)
+ * @returns device's dimensions
+ */
+const getDimensions = (): DeviceDimensions => {
+  return {
+    navbarHeight: initialWindowMetrics?.insets.bottom ?? 0,
+    screenHeight: screenHeight,
+    screenWidth: screenWidth,
+    statusBarHeight: initialWindowMetrics?.insets.top ?? 0
+  }
+}
 
-export { getNavbarHeight, screenHeight, screenWidth, statusBarHeight }
+export { useDimensions, getDimensions }

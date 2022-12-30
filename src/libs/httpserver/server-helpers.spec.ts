@@ -1,9 +1,17 @@
-import { statusBarHeight, getNavbarHeight } from '/libs/dimensions'
 import {
   addBodyClasses,
   addBarStyles,
   addMetaAttributes
 } from '/libs/httpserver/server-helpers'
+
+jest.mock('react-native-safe-area-context', () => ({
+  initialWindowMetrics: {
+    insets: {
+      bottom: 25,
+      top: 33
+    }
+  }
+}))
 
 jest.mock('/libs/RootNavigation.js', () => ({
   navigationRef: {
@@ -13,7 +21,7 @@ jest.mock('/libs/RootNavigation.js', () => ({
 
 it('should return a stringified HTML with added CSS', () => {
   const html = `<html><head></head><body></body></html>`
-  const expected = `<html><head><style>body {--flagship-top-height: ${statusBarHeight}px; --flagship-bottom-height: ${getNavbarHeight()}px;}</style></head><body></body></html>`
+  const expected = `<html><head><style>body {--flagship-top-height: 33px; --flagship-bottom-height: 25px;}</style></head><body></body></html>`
 
   expect(addBarStyles(html)).toEqual(expected)
 })

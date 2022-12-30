@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { BackHandler, Platform, StyleSheet, View } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { BackHandler, StyleSheet, View } from 'react-native'
 import Minilog from '@cozy/minilog'
 
 import { ClouderyView } from './components/ClouderyView'
@@ -20,7 +19,7 @@ import {
   STATE_AUTHORIZE_NEEDED,
   STATE_INVALID_PASSWORD
 } from '/libs/client'
-import { getNavbarHeight, statusBarHeight } from '/libs/dimensions'
+import { useDimensions } from '/libs/dimensions'
 import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { useSplashScreen } from '/hooks/useSplashScreen'
@@ -411,7 +410,7 @@ export const LoginScreen = ({
   setClient
 }) => {
   const colors = getColors()
-  const insets = useSafeAreaInsets()
+  const dimensions = useDimensions()
   return (
     <View
       style={[
@@ -421,7 +420,7 @@ export const LoginScreen = ({
         }
       ]}
     >
-      <View style={{ height: statusBarHeight }} />
+      <View style={{ height: dimensions.statusBarHeight }} />
       <LoginSteps
         navigation={navigation}
         route={route}
@@ -431,7 +430,7 @@ export const LoginScreen = ({
       />
       <View
         style={{
-          height: Platform.OS === 'ios' ? insets.bottom : getNavbarHeight()
+          height: dimensions.navbarHeight
         }}
       />
     </View>

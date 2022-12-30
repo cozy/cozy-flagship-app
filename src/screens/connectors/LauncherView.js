@@ -22,7 +22,7 @@ import { WebView } from 'react-native-webview'
 // import veoliaeauConnector from '../../../connectors/veoliaeau/dist/webviewScript'
 // import gaztarifreglementeConnector from '../../../connectors/gaztarifreglemente/dist/webviewScript'
 import { BackTo } from '/components/ui/icons/BackTo'
-import { statusBarHeight } from '/libs/dimensions'
+import { getDimensions } from '/libs/dimensions'
 import ReactNativeLauncher from '/libs/ReactNativeLauncher'
 import { getColors } from '/theme/colors'
 import strings from '/strings.json'
@@ -30,6 +30,7 @@ import strings from '/strings.json'
 const log = Minilog('LauncherView')
 
 const colors = getColors()
+const { statusBarHeight } = getDimensions()
 
 const DEBUG = false
 

@@ -4,9 +4,11 @@ import { SvgXml } from 'react-native-svg'
 
 import ProgressBar from '/components/Bar'
 import { iconTable, iconFallback } from '/libs/functions/iconTable'
-import { screenHeight, screenWidth } from '/libs/dimensions'
+import { getDimensions } from '/libs/dimensions'
 import { palette } from '/ui/palette'
 import { styles } from './CozyAppScreen.styles'
+
+const { screenHeight, screenWidth } = getDimensions()
 
 const config = {
   duration: 300,

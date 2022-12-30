@@ -1,10 +1,13 @@
 import { cirrusCss } from '/screens/login/components/assets/common/css/cssCirrus'
 import { cozyBsCss } from '/screens/login/components/assets/common/css/cssCozyBs'
 import { fontsCss } from '/screens/login/components/assets/common/css/cssFonts'
-import { getNavbarHeight, statusBarHeight } from '/libs/dimensions'
+import { getDimensions } from '/libs/dimensions'
 import { themeCss } from '/screens/login/components/assets/common/css/cssTheme'
 
-export const makeHTML = body => `
+export const makeHTML = body => {
+  const { navbarHeight, statusBarHeight } = getDimensions()
+
+  return `
   <!DOCTYPE html>
   <html>
     <head>
@@ -17,10 +20,11 @@ export const makeHTML = body => `
       <style type="text/css">${cirrusCss}</style>
     </head>
 
-    <body class="theme-inverted" style="padding-top: ${statusBarHeight}px; padding-bottom: ${getNavbarHeight()}px;">
+    <body class="theme-inverted" style="padding-top: ${statusBarHeight}px; padding-bottom: ${navbarHeight}px;">
       <main class="wrapper">
         ${body}
       </main>
     </body>
   </html>
 `
+}

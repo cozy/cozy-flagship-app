@@ -1,10 +1,12 @@
 import { Platform } from 'react-native'
 
-import { statusBarHeight, getNavbarHeight } from '/libs/dimensions'
+import { getDimensions } from '/libs/dimensions'
 import { navigationRef } from '/libs/RootNavigation'
 
 export const addBarStyles = (HTMLstring: string): string => {
-  const style = `<style>body {--flagship-top-height: ${statusBarHeight}px; --flagship-bottom-height: ${getNavbarHeight()}px;}</style>`
+  const { navbarHeight, statusBarHeight } = getDimensions()
+
+  const style = `<style>body {--flagship-top-height: ${statusBarHeight}px; --flagship-bottom-height: ${navbarHeight}px;}</style>`
 
   return HTMLstring.replace('</head>', style + '</head>')
 }
