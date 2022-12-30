@@ -3,12 +3,12 @@ import { Animated, Dimensions, Easing, StyleSheet, View } from 'react-native'
 
 import log from 'cozy-logger'
 
-import { statusBarHeight } from '../../../../libs/dimensions'
+import { getDimensions } from '/libs/dimensions'
 import { CozyIcon } from './transitions-icons/CozyIcon'
 
 import { getColors } from '../../../../theme/colors'
 
-const webViewTopToNativeTop = top => top + statusBarHeight
+const webViewTopToNativeTop = top => top + getDimensions().statusBarHeight
 
 /**
  * Display a transition that should come before displaying the PasswordView

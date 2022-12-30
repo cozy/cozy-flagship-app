@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Platform } from 'react-native'
-
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { StyleSheet, View } from 'react-native'
 
 import Minilog from '@cozy/minilog'
 
 import { routes } from '/constants/routes'
 
-import { getNavbarHeight, statusBarHeight } from '/libs/dimensions'
+import { useDimensions } from '/libs/dimensions'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 
 import { getColors } from '/theme/colors'
@@ -48,10 +46,10 @@ export const CreateInstanceScreen = ({ route, navigation }) => {
       setClouderyUrl(onboardUrl)
     }
   }, [navigation, route, setClouderyUrl])
-  const insets = useSafeAreaInsets()
+  const dimensions = useDimensions()
   return (
     <View style={styles.view}>
-      <View style={{ height: statusBarHeight }} />
+      <View style={{ height: dimensions.statusBarHeight }} />
       {clouderyUrl && (
         <ClouderyCreateInstanceView
           clouderyUrl={clouderyUrl}
@@ -60,7 +58,7 @@ export const CreateInstanceScreen = ({ route, navigation }) => {
       )}
       <View
         style={{
-          height: Platform.OS === 'ios' ? insets.bottom : getNavbarHeight()
+          height: dimensions.navbarHeight
         }}
       />
     </View>

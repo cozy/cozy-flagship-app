@@ -1,19 +1,22 @@
 import { Platform } from 'react-native'
 
 import { version } from '../../../../package.json'
-import { statusBarHeight, getNavbarHeight } from '../../../libs/dimensions'
+import { getDimensions } from '/libs/dimensions'
 
 const immersiveRoutes = ['home']
 
-const makeMetadata = routeName =>
-  JSON.stringify({
+const makeMetadata = routeName => {
+  const { navbarHeight, statusBarHeight } = getDimensions()
+
+  return JSON.stringify({
     immersive: immersiveRoutes.includes(routeName),
-    navbarHeight: getNavbarHeight(),
+    navbarHeight,
     platform: Platform,
     routeName,
     statusBarHeight,
     version
   })
+}
 
 export const jsCozyGlobal = (routeName, isSecureProtocol) => `
   if (!window.cozy) window.cozy = {}

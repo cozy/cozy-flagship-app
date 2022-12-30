@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { View, StatusBar } from 'react-native'
 
 import { lockScreenUi } from '/screens/lock/events/LockScreen.events'
-import { statusBarHeight, getNavbarHeight } from '/libs/dimensions'
+import { useDimensions } from '/libs/dimensions'
 import { styles } from '/screens/lock/view/LockScreenBars.styles'
 import {
   NormalisedFlagshipUI,
@@ -19,6 +19,7 @@ export const LockScreenBars = ({
   }
 }): JSX.Element => {
   const [UIState, setUIState] = useState<NormalisedFlagshipUI>(initialUi)
+  const dimensions = useDimensions()
   const {
     bottomBackground,
     bottomOverlay,
@@ -43,7 +44,7 @@ export const LockScreenBars = ({
 
       <View
         style={{
-          height: statusBarHeight,
+          height: dimensions.statusBarHeight,
           backgroundColor: topBackground,
           ...styles.top
         }}
@@ -51,7 +52,7 @@ export const LockScreenBars = ({
 
       <View
         style={{
-          height: statusBarHeight,
+          height: dimensions.statusBarHeight,
           backgroundColor: topOverlay,
           ...styles.top,
           ...styles.innerOverlay
@@ -60,7 +61,7 @@ export const LockScreenBars = ({
 
       <View
         style={{
-          height: getNavbarHeight(),
+          height: dimensions.navbarHeight,
           backgroundColor: bottomBackground,
           ...styles.bottom
         }}
@@ -68,7 +69,7 @@ export const LockScreenBars = ({
 
       <View
         style={{
-          height: getNavbarHeight(),
+          height: dimensions.navbarHeight,
           backgroundColor: bottomOverlay,
           ...styles.bottom,
           ...styles.innerOverlay

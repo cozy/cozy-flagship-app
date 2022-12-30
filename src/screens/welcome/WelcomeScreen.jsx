@@ -1,19 +1,17 @@
 import React, { useState } from 'react'
-import { BackHandler, StyleSheet, View, Platform } from 'react-native'
-
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { BackHandler, StyleSheet, View } from 'react-native'
 
 import { WelcomePage } from '/components/html/WelcomePage'
 import { makeHTML } from '/components/makeHTML'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { makeHandlers } from '/libs/functions/makeHandlers'
 import { getColors } from '/theme/colors'
-import { getNavbarHeight } from '/libs/dimensions'
+import { useDimensions } from '/libs/dimensions'
 import { LoginScreen } from '/screens/login/LoginScreen'
 
 const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
   const colors = getColors()
-  const insets = useSafeAreaInsets()
+  const dimensions = useDimensions()
   return (
     <View
       style={[
@@ -34,7 +32,7 @@ const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
       />
       <View
         style={{
-          height: Platform.OS === 'ios' ? insets.bottom : getNavbarHeight()
+          height: dimensions.navbarHeight
         }}
       />
     </View>

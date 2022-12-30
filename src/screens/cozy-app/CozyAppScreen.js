@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { StatusBar, View, Platform } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { StatusBar, View } from 'react-native'
 
 import { Animation } from './CozyAppScreen.Animation'
 import { CozyProxyWebView } from '../../components/webviews/CozyProxyWebView'
 import { NetService } from '/libs/services/NetService'
 import { flagshipUI } from '../../libs/intents/setFlagshipUI'
-import { getNavbarHeight, statusBarHeight } from '../../libs/dimensions'
+import { useDimensions } from '/libs/dimensions'
 import { internalMethods } from '../../libs/intents/localMethods'
 import { routes } from '/constants/routes'
 import { styles } from './CozyAppScreen.styles'
@@ -58,7 +57,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
 
     isFirstHalf && firstHalfUI()
   }, [isFirstHalf, isReady, route.params.iconParams])
-  const insets = useSafeAreaInsets()
+  const dimensions = useDimensions()
 
   const onLoadEnd = useCallback(() => {
     setShouldExitAnimation(true)
@@ -75,7 +74,9 @@ export const CozyAppScreen = ({ route, navigation }) => {
 
       <View
         style={{
-          height: isFirstHalf ? statusBarHeight : styles.immersiveHeight,
+          height: isFirstHalf
+            ? dimensions.statusBarHeight
+            : styles.immersiveHeight,
           backgroundColor: topBackground
         }}
       >
@@ -113,9 +114,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
       <View
         style={{
           height: isFirstHalf
-            ? Platform.OS === 'ios'
-              ? insets.bottom
-              : getNavbarHeight()
+            ? dimensions.navbarHeight
             : styles.immersiveHeight,
           backgroundColor: bottomBackground
         }}
