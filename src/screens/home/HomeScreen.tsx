@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { StatusBar, View } from 'react-native'
 
-import DebugView from '/screens/connectors/DebugView'
 import HomeView from '/screens/home/components/HomeView'
 import LauncherView from '/screens/connectors/LauncherView'
 import { StatusBarStyle } from '/libs/intents/setFlagshipUI'
@@ -22,7 +21,6 @@ export const HomeScreen = ({
   route
 }: HomeScreenProps): JSX.Element => {
   const [barStyle, setBarStyle] = useState(StatusBarStyle.Light)
-  const [debug] = useState(false)
   const [launcherContext, setLauncherContext] = useState<{
     state: string
     value?: Record<string, unknown>
@@ -38,8 +36,6 @@ export const HomeScreen = ({
         setBarStyle={setBarStyle}
         setLauncherContext={setLauncherContext}
       />
-
-      {debug && <DebugView />}
 
       {launcherContext?.state === 'launch' && (
         <LauncherView

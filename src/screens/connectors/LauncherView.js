@@ -6,21 +6,6 @@ import React, { Component } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { WebView } from 'react-native-webview'
 
-// TODO find a proper way to load a connector only when needed
-// import amazonConnector from '../../../connectors/amazon/dist/webviewScript'
-// import templateConnector from '../../../connectors/template/dist/webviewScript'
-// import googleConnector from '../../../connectors/google-takeout/dist/webviewScript'
-// import sncfConnector from '../../../connectors/sncf/dist/webviewScript'
-// import blablacarConnector from '../../../connectors/blablacar/dist/webviewScript'
-// import edfConnector from '../../../connectors/edf/dist/webviewScript'
-// import soshConnector from '../../../connectors/sosh/dist/webviewScript'
-// import orangeConnector from '../../../connectors/orange/dist/webviewScript'
-// import redConnector from '../../../connectors/red/dist/webviewScript'
-// import sfrConnector from '../../../connectors/sfr/dist/webviewScript'
-// import totalenergiesConnector from '../../../connectors/totalenergies/dist/webviewScript'
-// import alanConnector from '../../../connectors/alan/dist/webviewScript'
-// import veoliaeauConnector from '../../../connectors/veoliaeau/dist/webviewScript'
-// import gaztarifreglementeConnector from '../../../connectors/gaztarifreglemente/dist/webviewScript'
 import { BackTo } from '/components/ui/icons/BackTo'
 import { getDimensions } from '/libs/dimensions'
 import ReactNativeLauncher from '/libs/ReactNativeLauncher'
@@ -34,22 +19,6 @@ const { statusBarHeight } = getDimensions()
 
 const DEBUG = false
 
-const embeddedConnectors = {
-  // edf: edfConnector,
-  // 'google-takeout': googleConnector,
-  // amazon: amazonConnector,
-  // template: templateConnector,
-  // sncf: sncfConnector,
-  // blablacar: blablacarConnector,
-  // sosh: soshConnector
-  // orange: orangeConnector
-  // red: redConnector,
-  // sfr: sfrConnector
-  // totalenergies: totalenergiesConnector
-  // alan: alanConnector
-  // veoliaeau: veoliaeauConnector
-  // gaztarifreglemente: gaztarifreglementeConnector
-}
 class LauncherView extends Component {
   constructor(props) {
     super(props)
@@ -74,20 +43,18 @@ class LauncherView extends Component {
 
   async initConnector() {
     const { client, launcherContext } = this.props
-    let result = null
-    let connector = embeddedConnectors[launcherContext.job.message.konnector]
-    if (!connector) {
-      try {
-        connector = await this.launcher.ensureConnectorIsInstalled({
-          ...launcherContext,
+    const slug = launcherContext.job.message.konnector
+
+    try {
+      this.setState({
+        connector: await this.launcher.ensureConnectorIsInstalled({
+          slug,
           client
         })
-      } catch (err) {
-        result = err
-      }
+      })
+    } catch (err) {
+      return err
     }
-    this.setState({ connector })
-    return result
   }
 
   async componentDidUpdate() {

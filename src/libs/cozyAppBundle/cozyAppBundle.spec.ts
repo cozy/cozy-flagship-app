@@ -1,30 +1,26 @@
 /* eslint-disable */
 import Gzip from '@fengweichong/react-native-gzip'
-import RNFS from 'react-native-fs'
+import _RNFS from 'react-native-fs'
 
 import { createMockClient } from 'cozy-client/dist/mock'
 
 import {
   fetchCozyAppArchiveInfoForVersion,
   fetchCozyAppVersion
-} from '../client'
+} from '/libs/client'
 import {
   updateCozyAppBundle,
   updateCozyAppBundleInBackground
-} from './cozyAppBundle'
+} from '/libs/cozyAppBundle/cozyAppBundle'
 
 import {
   getCurrentAppConfigurationForFqdnAndSlug,
   setCurrentAppVersionForFqdnAndSlug
-} from './cozyAppBundleConfiguration'
+} from '/libs/cozyAppBundle/cozyAppBundleConfiguration'
 
-jest.mock('react-native-fs', () => ({
-  DocumentDirectoryPath: 'SOME_DocumentDirectoryPath',
-  downloadFile: jest.fn(),
-  exists: jest.fn(),
-  mkdir: jest.fn(),
-  unlink: jest.fn()
-}))
+const RNFS = _RNFS as jest.Mocked<typeof _RNFS>
+
+(RNFS.DocumentDirectoryPath as string) = 'SOME_DocumentDirectoryPath'
 
 jest.mock('@fengweichong/react-native-gzip', () => ({
   unGzipTar: jest.fn()
@@ -34,8 +30,9 @@ const mockLoggerError = jest.fn()
 jest.mock('/libs/functions/logger', () => ({
   logger: () => {
     return {
-      error: param => mockLoggerError(param),
-      debug: jest.fn()
+      error: (param: string) => mockLoggerError(param),
+      debug: jest.fn(),
+      warn: jest.fn()
     }
   }
 }))
@@ -51,7 +48,7 @@ jest.mock('./cozyAppBundleConfiguration', () => ({
   setCurrentAppVersionForFqdnAndSlug: jest.fn()
 }))
 
-let originalSetTimeout
+let originalSetTimeout: typeof setTimeout
 
 describe('cozyAppBundle', () => {
   const client = createMockClient({})
@@ -63,8 +60,7 @@ describe('cozyAppBundle', () => {
   })
 
   afterEach(() => {
-    // eslint-disable-next-line no-global-assign
-    setTimeout = originalSetTimeout
+    global.setTimeout = originalSetTimeout
   })
 
   describe('updateCozyAppBundle', () => {
@@ -380,8 +376,10 @@ describe('cozyAppBundle', () => {
 
   describe('updateCozyAppBundleInBackground', () => {
     it('should silently fail on download failure and log error', async () => {
-      // eslint-disable-next-line no-global-assign
-      setTimeout = f => f()
+      global.setTimeout = ((
+        callback: Parameters<typeof setTimeout>[0]
+      ): ReturnType<typeof setTimeout> =>
+        callback() as unknown as NodeJS.Timeout) as unknown as typeof setTimeout
 
       client.getStackClient = jest.fn(() => ({
         uri: 'http://cozy.10-0-2-2.nip.io',
@@ -438,30 +436,36 @@ const mockBundleExistsInLocalFiles = () => {
 
 const mockSuccessBundleDownload = () => {
   RNFS.downloadFile.mockReturnValue({
-    promise: Promise.resolve({ statusCode: 200 })
+    promise: Promise.resolve({ statusCode: 200, jobId: 1, bytesWritten: 1}),
+    jobId: 1
   })
 }
 
 const mockFailedBundleDownload = () => {
   RNFS.downloadFile.mockReturnValue({
-    promise: Promise.resolve({ statusCode: 404 })
+    promise: Promise.resolve({ statusCode: 404, jobId: 1, bytesWritten: 1}),
+    jobId: 1
   })
 }
 
-const mockStackVersion = version => {
-  fetchCozyAppVersion.mockResolvedValue(version)
+const mockStackVersion = (version: string) => {
+  const mockedFetchCozyAppVersion = fetchCozyAppVersion as jest.Mock
+  mockedFetchCozyAppVersion.mockResolvedValue(version)
 }
 
-const mockLocalVersion = version => {
-  getCurrentAppConfigurationForFqdnAndSlug.mockResolvedValue({ version })
+const mockLocalVersion = (version?: string) => {
+  const mockedGetCurrentAppConfigurationForFqdnAndSlug = getCurrentAppConfigurationForFqdnAndSlug as jest.Mock
+  mockedGetCurrentAppConfigurationForFqdnAndSlug.mockResolvedValue({ version })
 }
 
 const mockNoTarPrefix = () => {
-  fetchCozyAppArchiveInfoForVersion.mockResolvedValue({ tarPrefix: '' })
+  const mockedFetchCozyAppArchiveInfoForVersion = fetchCozyAppArchiveInfoForVersion as jest.Mock
+  mockedFetchCozyAppArchiveInfoForVersion.mockResolvedValue({ tarPrefix: '' })
 }
 
-const mockTarPrefix = prefix => {
-  fetchCozyAppArchiveInfoForVersion.mockResolvedValue({
+const mockTarPrefix = (prefix: string) => {
+  const mockedFetchCozyAppArchiveInfoForVersion = fetchCozyAppArchiveInfoForVersion as jest.Mock
+  mockedFetchCozyAppArchiveInfoForVersion.mockResolvedValue({
     tarPrefix: prefix
   })
 }

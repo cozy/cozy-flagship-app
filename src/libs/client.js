@@ -376,10 +376,10 @@ export const getFqdnFromClient = client => {
  * @param {CozyClient} client - CozyClient instance
  * @returns {Promise<string>} - The version of the cozy-app
  */
-export const fetchCozyAppVersion = async (slug, client) => {
+export const fetchCozyAppVersion = async (slug, client, type = 'apps') => {
   const stackClient = client.getStackClient()
 
-  const result = await stackClient.fetchJSON('GET', `/apps/${slug}`)
+  const result = await stackClient.fetchJSON('GET', `/${type}/${slug}`)
 
   const version = result?.data?.attributes?.version
 

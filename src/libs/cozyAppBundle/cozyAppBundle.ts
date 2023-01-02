@@ -6,38 +6,25 @@ import {
   fetchCozyAppArchiveInfoForVersion,
   fetchCozyAppVersion,
   getFqdnFromClient
-} from '../client'
-import { getBaseFolderForFqdnAndSlug } from '../httpserver/httpPaths'
+} from '/libs/client'
+import { getBaseFolderForFqdnAndSlug } from '/libs/httpserver/httpPaths'
 import {
   getCurrentAppConfigurationForFqdnAndSlug,
   setCurrentAppVersionForFqdnAndSlug
-} from './cozyAppBundleConfiguration'
+} from '/libs/cozyAppBundle/cozyAppBundleConfiguration'
 import CozyClient from 'cozy-client'
-import { getErrorMessage } from '../functions/getErrorMessage'
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
+import { getVersionsToKeep, handleCleanup } from '/libs/cozyAppBundle/functions'
 
-const log = logger('AppBundle')
+export const log = logger('AppBundle')
 
 const BUNDLE_UPDATE_DELAY_IN_MS = 10000
 
-interface AppInfo {
-  slug: string
+export type AppType = 'konnectors' | 'apps'
+
+export interface AppInfo {
   client: CozyClient
-}
-
-interface CozyAppToUpdate extends AppInfo {
-  delayInMs?: number
-}
-
-interface CozyAppWithVer extends AppInfo {
-  version: string
-}
-
-interface CozyAppWithDest extends CozyAppWithVer {
-  destinationPath: string
-}
-
-interface CozyAppWithPrefix extends CozyAppWithVer {
-  tarPrefix: string
+  slug: string
 }
 
 /**
@@ -45,18 +32,14 @@ interface CozyAppWithPrefix extends CozyAppWithVer {
  * update the local CozyAppBundle if necessary
  *
  * This method should run in background and cannot be awaited
- *
- * @param {object} param
- * @param {string} param.slug - The slug of the cozy-app to update
- * @param {CozyClient} param.client - CozyClient instance
- * @param {number} [param.delayInMs] - Duration in millisecond to wait before doing the update (default=BUNDLE_UPDATE_DELAY_IN_MS)
- * @returns {Promise}
  */
 export const updateCozyAppBundleInBackground = ({
-  slug,
   client,
-  delayInMs = BUNDLE_UPDATE_DELAY_IN_MS
-}: CozyAppToUpdate): Promise<void> =>
+  delayInMs = BUNDLE_UPDATE_DELAY_IN_MS,
+  slug
+}: AppInfo & {
+  delayInMs?: number
+}): Promise<void> =>
   new Promise(resolve => {
     setTimeout(() => {
       updateCozyAppBundle({ slug, client })
@@ -75,22 +58,20 @@ export const updateCozyAppBundleInBackground = ({
 /**
  * Check the cozy-app version on cozy-stack and update the local CozyAppBundle
  * if necessary
- *
- * @param {object} param
- * @param {string} param.slug - The slug of the cozy-app to update
- * @param {CozyClient} param.client - CozyClient instance
- * @returns {Promise}
  */
 export const updateCozyAppBundle = async ({
+  client,
   slug,
-  client
-}: CozyAppToUpdate): Promise<void> => {
+  type = 'apps'
+}: AppInfo & {
+  type?: AppType
+}): Promise<void> => {
   log.debug(`Check updates for '${slug}'`)
   const { fqdn } = getFqdnFromClient(client)
 
   const { version: currentVersion } =
     (await getCurrentAppConfigurationForFqdnAndSlug(fqdn, slug)) ?? {}
-  const stackVersion = await fetchCozyAppVersion(slug, client)
+  const stackVersion = await fetchCozyAppVersion(slug, client, type)
 
   log.debug(
     `Current local version is '${
@@ -109,46 +90,53 @@ export const updateCozyAppBundle = async ({
     client
   )
 
-  const destinationPath = await getCozyAppFolderPathForVersion({
+  const destinationPath = getCozyAppFolderPathForVersion({
+    client,
     slug,
-    version: stackVersion,
-    client
+    version: stackVersion
   })
 
   await deleteVersionBundleFromLocalFilesIfExists({
+    client,
     slug,
-    version: stackVersion,
     tarPrefix: tarPrefix,
-    client
+    version: stackVersion
   })
 
   await downloadAndExtractCozyAppVersion({
-    slug,
-    version: stackVersion,
+    client,
     destinationPath,
-    client
+    slug,
+    type,
+    version: stackVersion
   })
 
   void setCurrentAppVersionForFqdnAndSlug({
+    folder: stackVersion + tarPrefix,
     fqdn,
     slug,
-    version: stackVersion,
-    folder: normalizeVersion(stackVersion) + tarPrefix
+    version: stackVersion
+  })
+
+  await handleCleanup({
+    client,
+    slug,
+    versionsToKeep: getVersionsToKeep({ type, currentVersion, stackVersion })
   })
 }
 
 const deleteVersionBundleFromLocalFilesIfExists = async ({
+  client,
   slug,
-  version,
   tarPrefix,
-  client
-}: CozyAppWithPrefix): Promise<void> => {
+  version
+}: AppInfo & { tarPrefix: string; version: string }): Promise<void> => {
   log.debug(`Check if local '${slug}' bundle version exist for '${version}'`)
 
-  const expectedVersionPath = await getCozyAppFolderPathForVersion({
+  const expectedVersionPath = getCozyAppFolderPathForVersion({
+    client,
     slug,
-    version,
-    client
+    version
   })
   const expectedVersionPathWithTarPrefix = `${expectedVersionPath}${tarPrefix}`
 
@@ -161,55 +149,55 @@ const deleteVersionBundleFromLocalFilesIfExists = async ({
   }
 }
 
-const normalizeVersion = (version: string): string => {
-  return version
-}
-
-const getCozyAppFolderPathForVersion = async ({
+const getCozyAppFolderPathForVersion = ({
+  client,
   slug,
-  version,
-  client
-}: CozyAppWithVer): Promise<string> => {
+  version
+}: AppInfo & { version: string }): string => {
   const { fqdn } = getFqdnFromClient(client)
 
-  const baseFolderForFqdnAndSlug = await getBaseFolderForFqdnAndSlug(fqdn, slug)
-  const normalizedVersion = normalizeVersion(version)
+  const baseFolderForFqdnAndSlug = getBaseFolderForFqdnAndSlug(fqdn, slug)
 
-  return `${baseFolderForFqdnAndSlug}/${normalizedVersion}`
+  return `${baseFolderForFqdnAndSlug}/${version}`
 }
 
-const getCozyAppArchivePathForVersion = async ({
+const getCozyAppArchivePathForVersion = ({
+  client,
   slug,
-  version,
-  client
-}: CozyAppWithVer): Promise<string> => {
+  version
+}: AppInfo & { version: string }): string => {
   const { fqdn } = getFqdnFromClient(client)
 
-  const baseFolderForFqdnAndSlug = await getBaseFolderForFqdnAndSlug(fqdn, slug)
-  const normalizedVersion = normalizeVersion(version)
+  const baseFolderForFqdnAndSlug = getBaseFolderForFqdnAndSlug(fqdn, slug)
 
-  return `${baseFolderForFqdnAndSlug}/${normalizedVersion}.tar.gz`
+  return `${baseFolderForFqdnAndSlug}/${version}.tar.gz`
 }
 
 const downloadAndExtractCozyAppVersion = async ({
-  slug,
-  version,
+  client,
   destinationPath,
-  client
-}: CozyAppWithDest): Promise<void> => {
+  slug,
+  type,
+  version
+}: AppInfo & {
+  destinationPath: string
+  type: AppType
+  version: string
+}): Promise<void> => {
   log.debug(`Downloading '${slug}' version '${version}' from stack`)
 
-  const archivePath = await getCozyAppArchivePathForVersion({
+  const archivePath = getCozyAppArchivePathForVersion({
+    client,
     slug,
-    version,
-    client
+    version
   })
   await RNFS.mkdir(destinationPath)
   await downloadCozyAppArchive({
-    slug,
-    version,
+    client,
     destinationPath: archivePath,
-    client
+    slug,
+    type,
+    version
   })
 
   await extractCozyAppArchive(archivePath, destinationPath)
@@ -223,7 +211,6 @@ const extractCozyAppArchive = async (
 ): Promise<void> => {
   try {
     await RNFS.mkdir(destinationPath)
-
     await Gzip.unGzipTar(archivePath, destinationPath, true)
   } catch (err) {
     log.error(`Error while extracting archive: ${getErrorMessage(err)}`)
@@ -236,11 +223,16 @@ const removeCozyAppArchive = async (archivePath: string): Promise<void> => {
 }
 
 const downloadCozyAppArchive = async ({
-  slug,
-  version,
+  client,
   destinationPath,
-  client
-}: CozyAppWithDest): Promise<void> => {
+  slug,
+  type,
+  version
+}: AppInfo & {
+  destinationPath: string
+  type: AppType
+  version: string
+}): Promise<void> => {
   const stackClient = client.getStackClient() as {
     uri: string
     getAuthorizationHeader: () => string
@@ -248,19 +240,18 @@ const downloadCozyAppArchive = async ({
   const headers = stackClient.getAuthorizationHeader()
   const instanceUri = stackClient.uri
   const downloadUri = new URL(instanceUri)
-  downloadUri.pathname = `apps/${slug}/download/${version}`
+  downloadUri.pathname = `${type}/${slug}/download/${version}`
 
   try {
     const result = await RNFS.downloadFile({
       fromUrl: downloadUri.toString(),
       toFile: destinationPath,
-      // discretionary: true,
       headers: {
         Authorization: headers
       }
     }).promise
 
-    log.debug(`Donload result is ${JSON.stringify(result)}`)
+    log.debug(`Download result is ${JSON.stringify(result)}`)
 
     const { statusCode } = result
 
