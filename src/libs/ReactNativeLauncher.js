@@ -3,9 +3,10 @@ import Minilog from '@cozy/minilog'
 
 import ContentScriptBridge from './bridge/ContentScriptBridge'
 import Launcher from './Launcher'
-import * as ConnectorInstaller from './ConnectorInstaller'
 import { saveCookie, getCookie, removeCookie } from './keychain'
 import CookieManager from '@react-native-cookies/cookies'
+import { updateCozyAppBundle } from '/libs/cozyAppBundle/cozyAppBundle'
+import { getConnectorBundle } from '/libs/cozyAppBundle/functions'
 
 const log = Minilog('ReactNativeLauncher')
 
@@ -59,14 +60,34 @@ class ReactNativeLauncher extends Launcher {
     log.debug('bridges init done')
   }
 
-  async ensureConnectorIsInstalled({ connector, client }) {
-    await ConnectorInstaller.ensureConnectorIsInstalled({
-      ...connector,
-      client
-    })
-    const content = await ConnectorInstaller.getContentScript(connector)
-    const manifest = await ConnectorInstaller.getManifest(connector)
-    return { content, manifest }
+  async ensureConnectorIsInstalled({ slug, client }) {
+    try {
+      await updateCozyAppBundle({
+        slug,
+        client,
+        type: 'konnectors'
+      })
+    } catch (error) {
+      log.error(
+        `Error while checking if the "${slug}" connector has a new version available.
+        Still attempting to get a cached version.`,
+        error
+      )
+    }
+
+    try {
+      const bundle = await getConnectorBundle({ client, slug })
+
+      if (!bundle) throw new Error('No connector bundle found')
+
+      return bundle
+    } catch (error) {
+      throw new Error(
+        `Critical error while ensuring "${slug}" connector is installed.
+        The connector will not be able to run.`,
+        error
+      )
+    }
   }
 
   async stop({ message } = {}) {

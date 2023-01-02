@@ -41,7 +41,7 @@ export const getBaseRelativePathForFqdnAndSlug = (fqdn, slug) => {
  *
  * @param {*} fqdn - FQDN from the cozy serving the cozy-app
  * @param {*} slug - the cozy-app's slug
- * @returns {string}
+ * @returns {Promise<string>}
  */
 export const getBaseRelativePathForFqdnAndSlugAndCurrentVersion = async (
   fqdn,
@@ -68,7 +68,7 @@ export const getBaseRelativePathForFqdnAndSlugAndCurrentVersion = async (
  *
  * @param {string} fqdn - FQDN from the cozy serving the cozy-app
  * @param {string} slug - the cozy-app's slug
- * @returns {string}
+ * @returns {Promise<string>}
  */
 export const getBaseFolderForFqdnAndSlugAndCurrentVersion = async (
   fqdn,
@@ -92,13 +92,15 @@ export const getBaseFolderForFqdnAndSlugAndCurrentVersion = async (
  *
  * @param {string} fqdn - FQDN from the cozy serving the cozy-app
  * @param {string} slug - the cozy-app's slug
- * @returns {Promise<string>}
+ * @returns {string}
  */
-export const getBaseFolderForFqdnAndSlug = async (fqdn, slug) => {
+export const getBaseFolderForFqdnAndSlug = (fqdn, slug) => {
   const serverBasePath = getServerBaseFolder()
 
-  const baseRelativePathForFqdnAndSlug =
-    await getBaseRelativePathForFqdnAndSlug(fqdn, slug)
+  const baseRelativePathForFqdnAndSlug = getBaseRelativePathForFqdnAndSlug(
+    fqdn,
+    slug
+  )
 
   const basePathForFqdnAndSlug = `${serverBasePath}${baseRelativePathForFqdnAndSlug}`
 
