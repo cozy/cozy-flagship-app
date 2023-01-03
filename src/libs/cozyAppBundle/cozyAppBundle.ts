@@ -14,7 +14,10 @@ import {
 } from '/libs/cozyAppBundle/cozyAppBundleConfiguration'
 import CozyClient from 'cozy-client'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
-import { getVersionsToKeep, handleCleanup } from '/libs/cozyAppBundle/functions'
+import {
+  getVersionsToKeep,
+  handleCleanup
+} from '/libs/cozyAppBundle/cozyAppBundle.functions'
 
 export const log = logger('AppBundle')
 

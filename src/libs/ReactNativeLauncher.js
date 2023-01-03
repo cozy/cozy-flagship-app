@@ -2,11 +2,11 @@ import MicroEE from 'microee'
 import Minilog from '@cozy/minilog'
 
 import ContentScriptBridge from './bridge/ContentScriptBridge'
-import Launcher from './Launcher'
-import { saveCookie, getCookie, removeCookie } from './keychain'
 import CookieManager from '@react-native-cookies/cookies'
+import Launcher from './Launcher'
+import { getConnectorBundle } from '/libs/cozyAppBundle/cozyAppBundle.functions'
+import { saveCookie, getCookie, removeCookie } from './keychain'
 import { updateCozyAppBundle } from '/libs/cozyAppBundle/cozyAppBundle'
-import { getConnectorBundle } from '/libs/cozyAppBundle/functions'
 
 const log = Minilog('ReactNativeLauncher')
 
