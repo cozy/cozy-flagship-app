@@ -6,11 +6,25 @@ import HomeView from '/screens/home/components/HomeView'
 import LauncherView from '/screens/connectors/LauncherView'
 import { StatusBarStyle } from '/libs/intents/setFlagshipUI'
 import { styles } from '/screens/home/HomeScreen.styles'
+import {
+  NavigationProp,
+  ParamListBase,
+  RouteProp
+} from '@react-navigation/native'
 
-export const HomeScreen = ({ route, navigation }) => {
+export const HomeScreen = ({
+  route,
+  navigation
+}: {
+  route: RouteProp<ParamListBase>
+  navigation: NavigationProp<ParamListBase>
+}): JSX.Element => {
   const [barStyle, setBarStyle] = useState(StatusBarStyle.Light)
   const [debug] = useState(false)
-  const [launcherContext, setLauncherContext] = useState({ state: 'default' })
+  const [launcherContext, setLauncherContext] = useState<{
+    state: string
+    value?: Record<string, unknown>
+  } | null>({ state: 'default' })
 
   return (
     <View style={styles.container}>
@@ -25,10 +39,10 @@ export const HomeScreen = ({ route, navigation }) => {
 
       {debug && <DebugView />}
 
-      {launcherContext.state === 'launch' && (
+      {launcherContext?.state === 'launch' && (
         <LauncherView
           launcherContext={launcherContext.value}
-          retry={() => setLauncherContext(null)}
+          retry={(): void => setLauncherContext(null)}
           setLauncherContext={setLauncherContext}
         />
       )}
