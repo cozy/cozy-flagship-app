@@ -12,13 +12,15 @@ import {
   RouteProp
 } from '@react-navigation/native'
 
-export const HomeScreen = ({
-  route,
-  navigation
-}: {
-  route: RouteProp<ParamListBase>
+interface HomeScreenProps {
   navigation: NavigationProp<ParamListBase>
-}): JSX.Element => {
+  route: RouteProp<ParamListBase>
+}
+
+export const HomeScreen = ({
+  navigation,
+  route
+}: HomeScreenProps): JSX.Element => {
   const [barStyle, setBarStyle] = useState(StatusBarStyle.Light)
   const [debug] = useState(false)
   const [launcherContext, setLauncherContext] = useState<{
