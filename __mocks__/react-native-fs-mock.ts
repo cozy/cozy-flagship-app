@@ -1,21 +1,28 @@
-const rnfsMock = {
-  CachesDirectoryPath: jest.fn(),
-  DocumentDirectoryPath: jest.fn(),
-  ExternalDirectoryPath: jest.fn(),
-  ExternalStorageDirectoryPath: jest.fn(),
-  LibraryDirectoryPath: jest.fn(),
-  MainBundlePath: jest.fn(),
-  PicturesDirectoryPath: jest.fn(),
-  TemporaryDirectoryPath: jest.fn(),
+import RNFS from 'react-native-fs'
+
+export const mockRNFS: jest.Mocked<typeof RNFS> = {
+  CachesDirectoryPath: 'mockPath',
+  DocumentDirectoryPath: 'mockPath',
+  DownloadDirectoryPath: 'mockPath',
+  ExternalCachesDirectoryPath: 'mockPath',
+  ExternalDirectoryPath: 'mockPath',
+  ExternalStorageDirectoryPath: 'mockPath',
+  FileProtectionKeys: 'mockKeys',
+  LibraryDirectoryPath: 'mockPath',
+  MainBundlePath: 'mockPath',
+  PicturesDirectoryPath: 'mockPath',
+  TemporaryDirectoryPath: 'mockPath',
   appendFile: jest.fn(),
   completeHandlerIOS: jest.fn(),
+  copyAssetsFileIOS: jest.fn(),
   copyAssetsVideoIOS: jest.fn(),
   copyFile: jest.fn(),
   copyFileAssets: jest.fn(),
-  copyFileAssetsIOS: jest.fn(),
+  copyFileRes: jest.fn(),
   downloadFile: jest.fn(),
   exists: jest.fn(),
   existsAssets: jest.fn(),
+  existsRes: jest.fn(),
   getAllExternalFilesDirs: jest.fn(),
   getFSInfo: jest.fn(),
   hash: jest.fn(),
@@ -29,8 +36,10 @@ const rnfsMock = {
   readDirAssets: jest.fn(),
   readFile: jest.fn(),
   readFileAssets: jest.fn(),
+  readFileRes: jest.fn(),
   readdir: jest.fn(),
   resumeDownload: jest.fn(),
+  scanFile: jest.fn(),
   setReadable: jest.fn(),
   stat: jest.fn(),
   stopDownload: jest.fn(),
@@ -41,5 +50,3 @@ const rnfsMock = {
   write: jest.fn(),
   writeFile: jest.fn()
 }
-
-module.exports = rnfsMock
