@@ -126,9 +126,7 @@ export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
       }
 
       if (mode === 'password') {
-        await openForgotPasswordLink(
-          (client.getStackClient() as { uri: string }).uri
-        )
+        await openForgotPasswordLink(client.getStackClient().uri)
       }
     }
 

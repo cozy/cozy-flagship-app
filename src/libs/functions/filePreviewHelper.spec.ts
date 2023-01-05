@@ -64,14 +64,16 @@ describe('filePreviewHelper', () => {
         'https://claude.mycozy.cloud/files/download?Path=/Documents/SOME_FILE.pdf&Dl=1',
         'https://alice.mycozy.cloud'
       ]
-    ])('%p', (reason, result, url, cozyUrl) => {
+    ])('%p', (_reason, result, url, cozyUrl) => {
       const client = {
         getStackClient: jest.fn(() => ({
-          uri: cozyUrl
+          uri: cozyUrl,
+          fetchJSON: jest.fn(),
+          getAuthorizationHeader: jest.fn(),
+          fetchSessionCode: jest.fn()
         }))
-      } as unknown as typeof CozyClient
+      } as unknown as CozyClient
 
-      // @ts-expect-error CozyClient is not typed entirely yet
       expect(checkIsPreviewableLink(url, client)).toEqual(result)
     })
   })
