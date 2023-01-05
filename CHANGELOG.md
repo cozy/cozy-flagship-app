@@ -1,4 +1,4 @@
-# 1.0.1
+# 1.0.2
 
 ## ✨ Features
 
@@ -8,6 +8,27 @@
 
 ## 🔧 Tech
 
+
+# 1.0.1
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* File-viewer is now correctly hidden by Lock screen on iOS ([PR #501](https://github.com/cozy/cozy-react-native/pull/501) and [PR #523](https://github.com/cozy/cozy-react-native/pull/523))
+* Correctly display file name in file-viewer ([PR #502](https://github.com/cozy/cozy-react-native/pull/502))
+* The "in page" Back button on password reset page is now hidden when displayed on Flagship app ([PR #512](https://github.com/cozy/cozy-react-native/pull/512))
+* The app is now compatible with Android 5.1+ as we fixed the GZip library implementation ([PR #511](https://github.com/cozy/cozy-react-native/pull/511))
+* Fix cookie management for `Alan` Client Side Connector ([PR #510](https://github.com/cozy/cozy-react-native/pull/510))
+* The Lock screen password input now uses the correct caret color ([PR #524](https://github.com/cozy/cozy-react-native/pull/524))
+* Margins for handling navigation bar and status bar sizes should now be computed correctly on a wider device range ([PR #514](https://github.com/cozy/cozy-react-native/pull/514))
+
+## 🔧 Tech
+
+* Navigation bar and status bar Color API now allow to set different text colors on each bars ([PR #513](https://github.com/cozy/cozy-react-native/pull/513))
+* `handleOffline()` now explicitly includes a callbackRoute ([PR #515](https://github.com/cozy/cozy-react-native/pull/515))
+* Migrate `HomeScreen` code to TypeScript ([PR #531](https://github.com/cozy/cozy-react-native/pull/531))
 
 # 1.0.0
 
