@@ -236,10 +236,7 @@ const downloadCozyAppArchive = async ({
   type: AppType
   version: string
 }): Promise<void> => {
-  const stackClient = client.getStackClient() as {
-    uri: string
-    getAuthorizationHeader: () => string
-  }
+  const stackClient = client.getStackClient()
   const headers = stackClient.getAuthorizationHeader()
   const instanceUri = stackClient.uri
   const downloadUri = new URL(instanceUri)

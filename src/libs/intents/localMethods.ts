@@ -39,10 +39,6 @@ const backToHome = (): Promise<null> => {
   return Promise.resolve(null)
 }
 
-interface StackClient {
-  fetchSessionCode: () => Promise<{ session_code: string }>
-}
-
 /**
  * Get the fetchSessionCode function to be called with current CozyClient instance
  * fetchSessionCode gets a session code from the current cozy-client instance
@@ -55,9 +51,7 @@ const fetchSessionCodeWithClient = (
       return null
     }
 
-    const sessionCodeResult = await (
-      client.getStackClient() as StackClient
-    ).fetchSessionCode()
+    const sessionCodeResult = await client.getStackClient().fetchSessionCode()
 
     if (sessionCodeResult.session_code) {
       return sessionCodeResult.session_code

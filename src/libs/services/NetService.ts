@@ -28,9 +28,7 @@ if (devConfig.forceOffline) {
 const configureService = (client?: CozyClient): void => {
   NetInfo.configure({
     reachabilityUrl: client?.isLogged
-      ? `${(client.getStackClient() as { uri: string }).uri}/${
-          strings.reachability.stack
-        }`
+      ? `${client.getStackClient().uri}/${strings.reachability.stack}`
       : strings.reachability.cloud
   })
 }

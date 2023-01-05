@@ -1,6 +1,8 @@
 import ReactNativeBiometrics, { BiometryType } from 'react-native-biometrics'
 import { Platform } from 'react-native'
 
+import CozyClient from 'cozy-client'
+
 import { FaceId } from '/ui/Icons/FaceId'
 import { Fingerprint } from '/ui/Icons/Fingerprint'
 import { asyncLogout } from '/libs/intents/localMethods'
@@ -10,16 +12,8 @@ import { getVaultInformation } from '/libs/keychain'
 import { hideSplashScreen } from '/libs/services/SplashScreenService'
 import { setLockScreenUI } from '/screens/lock/events/LockScreen.events'
 import { translation } from '/locales'
-import { default as CozyClientType } from 'cozy-client'
 
 const rnBiometrics = new ReactNativeBiometrics()
-
-interface CozyClient extends CozyClientType {
-  getStackClient: () => {
-    uri: string
-    fetchJSON: <T>(method: string, path: string) => Promise<T>
-  }
-}
 
 export const validatePassword = async ({
   client,
