@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import Minilog from '@cozy/minilog'
 
-import strings from '/strings.json'
+import strings from '/constants/strings.json'
 import iconFallbackJson from '/assets/iconFallback.json'
 import { clearClient } from '/libs/client'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'

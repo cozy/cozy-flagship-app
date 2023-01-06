@@ -5,7 +5,7 @@ import { WelcomePage } from '/components/html/WelcomePage'
 import { makeHTML } from '/components/makeHTML'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { makeHandlers } from '/libs/functions/makeHandlers'
-import { getColors } from '/theme/colors'
+import { getColors } from '/ui/colors'
 import { useDimensions } from '/libs/dimensions'
 import { LoginScreen } from '/screens/login/LoginScreen'
 

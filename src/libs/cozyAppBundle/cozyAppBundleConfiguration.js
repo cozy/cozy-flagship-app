@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import { normalizeFqdn } from '/libs/functions/stringHelpers'
 
-import strings from '/strings.json'
+import strings from '/constants/strings.json'
 
 /**
  * Get the cozy-app configuration for specified FQFN and slug

@@ -8,8 +8,8 @@ import { loginFlagship } from './clientHelpers/loginFlagship'
 import { normalizeFqdn } from './functions/stringHelpers'
 import { SOFTWARE_ID, SOFTWARE_NAME } from './constants'
 
-import apiKeys from '../api-keys.json'
-import strings from '../strings.json'
+import apiKeys from '/constants/api-keys.json'
+import strings from '/constants/strings.json'
 
 const log = Minilog('LoginScreen')
 

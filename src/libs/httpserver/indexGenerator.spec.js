@@ -1,7 +1,7 @@
 import RN from 'react-native'
 import RNFS from 'react-native-fs'
 
-import { devConfig } from '/config/dev'
+import { devConfig } from '/constants/dev-config'
 import { fillIndexWithData, getIndexForFqdnAndSlug } from './indexGenerator'
 
 import {

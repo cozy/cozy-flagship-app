@@ -10,7 +10,7 @@ import {
 import log from 'cozy-logger'
 
 import { CozyIcon } from './transitions-icons/CozyIcon'
-import { getColors } from '../../../../theme/colors'
+import { getColors } from '/ui/colors'
 
 /**
  * Display a transition that should come before displaying the Authorize view

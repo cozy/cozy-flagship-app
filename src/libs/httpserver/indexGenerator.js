@@ -13,7 +13,7 @@ import {
   setCurrentAppVersionForFqdnAndSlug
 } from '../cozyAppBundle/cozyAppBundleConfiguration'
 import { replaceAll } from '../functions/stringHelpers'
-import { devConfig } from '/config/dev'
+import { devConfig } from '/constants/dev-config'
 
 const log = Minilog('IndexGenerator')
 

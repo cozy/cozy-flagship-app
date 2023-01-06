@@ -13,7 +13,7 @@ import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 
 import { routes } from '/constants/routes'
 
-import { getColors } from '/theme/colors'
+import { getColors } from '/ui/colors'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 
 const log = Minilog('OnboardingScreen')

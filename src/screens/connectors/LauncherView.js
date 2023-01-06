@@ -24,8 +24,8 @@ import { WebView } from 'react-native-webview'
 import { BackTo } from '/components/ui/icons/BackTo'
 import { getDimensions } from '/libs/dimensions'
 import ReactNativeLauncher from '/libs/ReactNativeLauncher'
-import { getColors } from '/theme/colors'
-import strings from '/strings.json'
+import { getColors } from '/ui/colors'
+import strings from '/constants/strings.json'
 
 const log = Minilog('LauncherView')
 

@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react-native'
 import { CaptureConsole } from '@sentry/integrations'
 
 import { EnvService } from '/libs/services/EnvService'
-import { version } from '../package.json'
+import { version } from '../../package.json'
 
 // Sentry Data Source Name
 // A DSN tells a Sentry SDK where to send events so the events are associated with the correct project.

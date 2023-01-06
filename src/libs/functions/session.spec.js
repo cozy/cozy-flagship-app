@@ -4,7 +4,7 @@ import { createMockClient } from 'cozy-client/dist/mock'
 
 import { makeSessionAPI } from './session'
 
-import strings from '../../strings.json'
+import strings from '/constants/strings.json'
 
 const session_code = '123'
 const uri = 'http://cozy.10-0-2-2.nip.io:8080'

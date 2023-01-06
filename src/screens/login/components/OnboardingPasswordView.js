@@ -2,12 +2,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import { KeyboardAvoidingView, Platform, View, StyleSheet } from 'react-native'
 
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
-import { doHashPassword } from '../../../libs/functions/passwordHelpers'
-import { setFocusOnWebviewField } from '../../../libs/functions/keyboardHelper'
+import { doHashPassword } from '/libs/functions/passwordHelpers'
+import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
 
 import { getHtml } from './assets/OnboardingPasswordView/htmlOnboardingPasswordInjection'
 
-import { getColors } from '../../../theme/colors'
+import { getColors } from '/ui/colors'
 
 /**
  * Show a password form that asks the user their password and hint

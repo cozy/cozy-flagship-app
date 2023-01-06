@@ -1,7 +1,7 @@
 import { replaceAll } from '../functions/stringHelpers'
 import { fetchCozyDataForSlug } from '../client'
 import { getCookie } from './httpCookieManager'
-import { logToSentry } from '/Sentry'
+import { logToSentry } from '/libs/Sentry'
 
 export const fetchAppDataForSlug = async (slug, client) => {
   try {

@@ -6,7 +6,7 @@ import log from 'cozy-logger'
 import { getDimensions } from '/libs/dimensions'
 import { CozyIcon } from './transitions-icons/CozyIcon'
 
-import { getColors } from '../../../../theme/colors'
+import { getColors } from '/ui/colors'
 
 const webViewTopToNativeTop = top => top + getDimensions().statusBarHeight
 

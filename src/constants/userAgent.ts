@@ -1,5 +1,5 @@
 import { version } from '../../package.json'
-import strings from '/strings.json'
+import strings from '/constants/strings.json'
 
 export const USER_AGENT = `${strings.USER_AGENT}-${version}`
 

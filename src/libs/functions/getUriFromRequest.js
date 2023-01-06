@@ -1,6 +1,6 @@
 import flow from 'lodash/fp/flow'
 
-import strings from '/strings.json'
+import strings from '/constants/strings.json'
 
 const abort = 'https://urlwithnofqdn'
 

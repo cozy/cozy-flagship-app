@@ -11,7 +11,7 @@ import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjectio
 import { jsLogInterception } from '/components/webviews/jsInteractions/jsLogInterception'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 
-import { getColors } from '/theme/colors'
+import { getColors } from '/ui/colors'
 import { routes } from '/constants/routes'
 
 const log = Minilog('ClouderyCreateInstanceView')

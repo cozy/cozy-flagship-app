@@ -5,7 +5,7 @@ import { createMockClient } from 'cozy-client/dist/mock'
 
 import { getCookie, resyncCookies, setCookie } from './httpCookieManager'
 
-import strings from '/strings.json'
+import strings from '/constants/strings.json'
 
 jest.mock('@react-native-cookies/cookies', () => ({
   set: jest.fn()
