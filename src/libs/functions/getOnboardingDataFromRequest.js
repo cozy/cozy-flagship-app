@@ -1,6 +1,6 @@
 import { validateRequest } from './getUriFromRequest'
 
-import strings from '../../strings.json'
+import strings from '/constants/strings.json'
 
 const getInstanceAndRegisterToken = uri => {
   const url = new URL(window.decodeURIComponent(uri))

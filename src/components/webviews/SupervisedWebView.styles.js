@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { getColors } from '/theme/colors'
+import { getColors } from '/ui/colors'
 
 const colors = getColors()
 

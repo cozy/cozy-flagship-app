@@ -4,9 +4,9 @@ import { KeyboardAvoidingView, Platform, View, StyleSheet } from 'react-native'
 import { getHtml } from './assets/TwoFactorAuthentication/htmlTwoFactorAuthentication'
 
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
-import { getColors } from '../../../theme/colors'
+import { getColors } from '/ui/colors'
 
-import { setFocusOnWebviewField } from '../../../libs/functions/keyboardHelper'
+import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
 
 /**
  * Show a 2FA form that asks the user for their 2FA code received by email/authenticator

@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import CozyClient from 'cozy-client/types/CozyClient.js'
 
 import * as RootNavigation from '/libs/RootNavigation.js'
-import strings from '/strings.json'
+import strings from '/constants/strings.json'
 import { localMethods, asyncLogout } from '/libs/intents/localMethods'
 import { NativeMethodsRegister } from 'cozy-intent'
 

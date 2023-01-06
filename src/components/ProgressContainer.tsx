@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import ProgressBar from '/components/Bar'
 import { styles } from '/components/ProgressContainer.styles'
 
-import { getColors } from '/theme/colors'
+import { getColors } from '/ui/colors'
 import { palette } from '/ui/palette'
 
 const colors = getColors()

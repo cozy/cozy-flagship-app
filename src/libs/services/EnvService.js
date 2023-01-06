@@ -1,5 +1,5 @@
-import strings from '/strings.json'
-import { devConfig } from '/config/dev'
+import strings from '/constants/strings.json'
+import { devConfig } from '/constants/dev-config'
 
 let enableSentryOn = [strings.environments.production]
 

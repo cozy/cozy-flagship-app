@@ -3,7 +3,7 @@ import { Linking, Platform } from 'react-native'
 import CozyClient from 'cozy-client'
 
 import * as RootNavigation from '/libs/RootNavigation'
-import strings from '/strings.json'
+import strings from '/constants/strings.json'
 import { EnvService } from '/libs/services/EnvService'
 import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
 import { clearClient } from '/libs/client'

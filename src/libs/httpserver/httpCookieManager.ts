@@ -4,7 +4,7 @@ import CozyClient from 'cozy-client'
 
 import { isSecureProtocol } from '../functions/isSecureProtocol'
 
-import strings from '/strings.json'
+import strings from '/constants/strings.json'
 
 type CookieRecord = Record<string, string>
 

@@ -9,8 +9,8 @@ import {
 
 import Minilog from '@cozy/minilog'
 
-import strings from '/strings.json'
-import { getColors } from '/theme/colors'
+import strings from '/constants/strings.json'
+import { getColors } from '/ui/colors'
 import { getUriFromRequest } from '/libs/functions/getUriFromRequest'
 import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
 import { NetService } from '/libs/services/NetService'

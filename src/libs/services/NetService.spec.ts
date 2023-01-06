@@ -1,6 +1,6 @@
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo'
 
-import strings from '/strings.json'
+import strings from '/constants/strings.json'
 import { NetService } from './NetService'
 import { routes } from '/constants/routes'
 

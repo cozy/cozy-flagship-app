@@ -6,7 +6,7 @@ import { generateWebLink } from 'cozy-client'
 const log = Minilog('SessionScript')
 Minilog.enable()
 
-import strings from '/strings.json'
+import strings from '/constants/strings.json'
 
 const _throw = message => {
   throw new Error(message)

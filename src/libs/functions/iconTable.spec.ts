@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import strings from '/strings.json'
+import strings from '/constants/strings.json'
 import { expectedTable } from '/tests/fixtures/expected-table'
 import { getApps } from '/tests/fixtures/get-apps'
 import {

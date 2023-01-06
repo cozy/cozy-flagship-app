@@ -5,7 +5,7 @@ import {
   setCurrentAppVersionForFqdnAndSlug
 } from './cozyAppBundleConfiguration'
 
-import strings from '/strings.json'
+import strings from '/constants/strings.json'
 
 describe('cozyAppBundleConfiguration', () => {
   beforeEach(() => {

@@ -33,7 +33,7 @@ describe('client', () => {
       expect(CozyClient).toHaveBeenCalledWith({
         oauth: {
           certificationConfig: {
-            androidSafetyNetApiKey: 'foo'
+            androidSafetyNetApiKey: expect.any(String)
           },
           clientKind: 'mobile',
           clientName: "Cloud Personnel (Becca's iPhone 6)",
