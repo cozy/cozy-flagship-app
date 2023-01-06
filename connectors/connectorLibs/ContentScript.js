@@ -361,11 +361,26 @@ export default class ContentScript {
   /**
    * Send log message to the launcher
    *
+   * @param {string} : the log level
    * @param {string} : the log message
-   * @todo Use cozy-logger to add logging level and other features
    */
-  log(message) {
-    this.bridge.emit('log', message)
+  log(level, message) {
+    const allowedLevels = ['debug', 'info', 'warn', 'error']
+    if (!message) {
+      log.warn(
+        `you are calling log without message, use log(level,message) instead`
+      )
+      return
+    }
+    if (!allowedLevels.includes(level)) {
+      level = 'debug'
+    }
+    const now = new Date()
+    this.bridge.emit('log', {
+      timestamp: now,
+      level,
+      msg: message
+    })
   }
 
   /**

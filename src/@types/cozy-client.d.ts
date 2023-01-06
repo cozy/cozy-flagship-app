@@ -22,8 +22,9 @@ declare module 'cozy-client' {
   }
 
   interface StackClient {
-    fetchJSON: <T>(method: string, path: string) => Promise<T>
     fetchKonnectorToken: (slug: string) => Promise<string>
+    fetchJSON: <T>(method: string, path: string, body: unknown) => Promise<T>
+    uri: string
     fetchSessionCode: () => Promise<{ session_code: string }>
     getAuthorizationHeader: () => string
     uri: string

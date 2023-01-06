@@ -58,6 +58,7 @@ class LauncherView extends Component {
   }
 
   async componentDidUpdate() {
+    this.launcher.setLogger(this.props.onKonnectorLog)
     this.launcher.setStartContext({
       ...this.props.launcherContext,
       client: this.props.client,
@@ -67,6 +68,7 @@ class LauncherView extends Component {
 
   async componentDidMount() {
     this.launcher = new ReactNativeLauncher()
+    this.launcher.setLogger(this.props.onKonnectorLog)
     this.launcher.setStartContext({
       ...this.props.launcherContext,
       client: this.props.client,
