@@ -27,6 +27,16 @@ class ReactNativeLauncher extends Launcher {
     this.workerListenedEventsNames = ['log', 'workerEvent', 'workerReady']
   }
 
+  setLogger(onKonnectorLog) {
+    this.logger = onKonnectorLog
+  }
+
+  log(logContent) {
+    const context = this.getStartContext()
+    const slug = context.manifest.slug
+    this.logger({ ...logContent, slug })
+  }
+
   async init({ bridgeOptions, contentScript }) {
     log.debug('bridges init start')
     const promises = [
