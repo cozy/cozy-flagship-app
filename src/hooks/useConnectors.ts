@@ -1,7 +1,10 @@
 import { useClient } from 'cozy-client'
 
 import { useAppDispatch, useAppSelector } from '/hooks/reduxHooks'
-import { addLog as sliceAddLog } from '/redux/ConnectorState/ConnectorLogsSlice'
+import {
+  addLog as sliceAddLog,
+  LogObj
+} from '/redux/ConnectorState/ConnectorLogsSlice'
 import {
   selectCurrentConnector,
   setCurrentRunningConnector
@@ -9,7 +12,7 @@ import {
 import { sendConnectorsLogs } from '/libs/connectors/sendConnectorsLogs'
 
 export interface UseAddLogHook {
-  addLog: () => void
+  addLog: (logObj: LogObj) => void
   currentRunningConnector?: string
   processLogs: () => void
   setCurrentRunningConnector: (slug: string) => void
@@ -20,9 +23,8 @@ export const useConnectors = (): UseAddLogHook => {
   const dispatch = useAppDispatch()
   const client = useClient()
 
-  const doAddLog = (): void => {
-    // TODO: Implement ADD logic
-    dispatch(sliceAddLog('SOME_LOG'))
+  const doAddLog = (logObj: LogObj): void => {
+    dispatch(sliceAddLog(logObj))
   }
 
   const doSetCurrentRunningConnector = (slug: string): void => {
@@ -30,7 +32,7 @@ export const useConnectors = (): UseAddLogHook => {
   }
 
   const doProcessLogs = (): void => {
-    void sendConnectorsLogs(client, 5)
+    void sendConnectorsLogs(client)
   }
 
   return {

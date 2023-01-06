@@ -1,10 +1,16 @@
 import React, { useState } from 'react'
 import { StatusBar, View } from 'react-native'
+
+import Minilog from '@cozy/minilog'
+const konnLog = Minilog('Konnector')
+
 import {
   NavigationProp,
   ParamListBase,
   RouteProp
 } from '@react-navigation/native'
+import { useConnectors } from '/hooks/useConnectors'
+import { LogObj } from '/redux/ConnectorState/ConnectorLogsSlice'
 
 import HomeView from '/screens/home/components/HomeView'
 import LauncherView from '/screens/connectors/LauncherView'
