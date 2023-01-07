@@ -128,7 +128,7 @@ export const useAppBootstrap = client => {
 
   // Handling app readiness
   useEffect(() => {
-    if (client !== 'fetching' && initialRoute !== 'fetching' && isLoading) {
+    if (initialRoute !== 'fetching' && isLoading) {
       setIsLoading(false)
       if (initialScreen.stack !== routes.home) {
         hideSplashScreen()
