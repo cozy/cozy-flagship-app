@@ -55,10 +55,7 @@ const App = ({ setClient }) => {
 
   useNetService(client)
 
-  const { initialScreen, initialRoute, isLoading } = useAppBootstrap(
-    client,
-    setClient
-  )
+  const { initialScreen, initialRoute, isLoading } = useAppBootstrap(client)
 
   useGlobalAppState()
   useCookieResyncOnResume()
