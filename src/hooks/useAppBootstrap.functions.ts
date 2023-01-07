@@ -42,11 +42,15 @@ export const parseOnboardingURL = (
 interface FallbackUrl {
   fallback: string | null | undefined
   root: string
-  isHome?: boolean
+  isHome: boolean
 }
 
 export const parseFallbackURL = (url: string | null): FallbackUrl => {
-  const defaultParse = { fallback: undefined, root: routes.stack }
+  const defaultParse = {
+    fallback: undefined,
+    root: routes.stack,
+    isHome: false
+  }
 
   if (url === null) {
     return defaultParse
