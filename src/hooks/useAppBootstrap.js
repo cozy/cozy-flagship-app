@@ -8,33 +8,9 @@ import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 
+import { parseOnboardingURL } from './useAppBootstrap.functions'
+
 const log = Minilog('useAppBootstrap')
-
-const parseOnboardingURL = url => {
-  try {
-    if (!url || !url.includes('onboarding')) {
-      return undefined
-    }
-
-    const onboardingUrl = new URL(url)
-    const onboardUrl = onboardingUrl.searchParams.get('onboard_url')
-    const fqdn = onboardingUrl.searchParams.get('fqdn')
-
-    if (!onboardUrl && !fqdn) {
-      return undefined
-    }
-
-    return {
-      onboardUrl,
-      fqdn
-    }
-  } catch (error) {
-    log.error(
-      `Something went wrong while trying to parse onboarding URL data: ${error.message}`
-    )
-    return undefined
-  }
-}
 
 const parseFallbackURL = url => {
   const defaultParse = { fallback: undefined, root: routes.stack }
