@@ -127,7 +127,7 @@ This verification requires the `cozy-stack` to be configured with the app inform
 To enable Flagship certification:
 - Retrieve the project's Safetynet Api Key on the pass manager
   - Or generate a new one following Google documentation: https://developer.android.com/training/safetynet/attestation#add-api-key
-- Create a file `src/api-keys.json` and fill it with the following content:
+- Create a file `src/constants/api-keys.json` and fill it with the following content:
 ```json
 {
   "androidSafetyNetApiKey": "YOUR_GOOGLE_SAFETYNET_API_KEY"

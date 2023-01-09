@@ -1,6 +1,7 @@
 .vscode
 coverage/
 src/api-keys.json
+src/constants/api-keys.json
 storage/
 token.json
 
