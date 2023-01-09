@@ -7,7 +7,7 @@
   "slug": "template",
   "source": "git@github.com:konnectors/template.git",
   "editor": "Cozy",
-  "vendor_link": "http://books.toscrape.com/",
+  "vendor_link": "https://books.toscrape.com/",
   "categories": [
     "transport"
   ],
