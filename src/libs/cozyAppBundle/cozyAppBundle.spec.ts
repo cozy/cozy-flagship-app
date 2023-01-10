@@ -2,7 +2,7 @@
 import Gzip from '@fengweichong/react-native-gzip'
 import _RNFS from 'react-native-fs'
 
-import { createMockClient } from 'cozy-client/dist/mock'
+import { createMockClient } from 'cozy-client'
 
 import {
   fetchCozyAppArchiveInfoForVersion,
