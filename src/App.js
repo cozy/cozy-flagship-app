@@ -4,6 +4,7 @@ import RNAsyncStorageFlipper from 'rn-async-storage-flipper'
 import React, { useEffect, useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { StatusBar, StyleSheet, View } from 'react-native'
+import { Provider } from 'react-redux'
 import { createStackNavigator } from '@react-navigation/stack'
 import { decode, encode } from 'base-64'
 
@@ -32,6 +33,7 @@ import { useCookieResyncOnResume } from '/hooks/useCookieResyncOnResume'
 import { useGlobalAppState } from '/hooks/useGlobalAppState'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
+import { store } from './store'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -199,13 +201,15 @@ const Wrapper = () => {
       {__DEV__ && <FlipperAsyncStorage />}
       <CryptoWebView setHasCrypto={setHasCrypto} />
       {hasCrypto && (
-        <HttpServerProvider>
-          <SplashScreenProvider>
-            <NetStatusBoundary>
-              <WrappedApp />
-            </NetStatusBoundary>
-          </SplashScreenProvider>
-        </HttpServerProvider>
+        <Provider store={store}>
+          <HttpServerProvider>
+            <SplashScreenProvider>
+              <NetStatusBoundary>
+                <WrappedApp />
+              </NetStatusBoundary>
+            </SplashScreenProvider>
+          </HttpServerProvider>
+        </Provider>
       )}
     </>
   )
