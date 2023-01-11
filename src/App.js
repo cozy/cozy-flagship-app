@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { decode, encode } from 'base-64'
 
@@ -33,7 +34,7 @@ import { useCookieResyncOnResume } from '/hooks/useCookieResyncOnResume'
 import { useGlobalAppState } from '/hooks/useGlobalAppState'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
-import { store } from './store'
+import { persistor, store } from './store'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -202,13 +203,15 @@ const Wrapper = () => {
       <CryptoWebView setHasCrypto={setHasCrypto} />
       {hasCrypto && (
         <Provider store={store}>
-          <HttpServerProvider>
-            <SplashScreenProvider>
-              <NetStatusBoundary>
-                <WrappedApp />
-              </NetStatusBoundary>
-            </SplashScreenProvider>
-          </HttpServerProvider>
+          <PersistGate loading={null} persistor={persistor}>
+            <HttpServerProvider>
+              <SplashScreenProvider>
+                <NetStatusBoundary>
+                  <WrappedApp />
+                </NetStatusBoundary>
+              </SplashScreenProvider>
+            </HttpServerProvider>
+          </PersistGate>
         </Provider>
       )}
     </>
