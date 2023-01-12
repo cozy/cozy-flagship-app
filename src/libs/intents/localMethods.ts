@@ -7,6 +7,7 @@ import strings from '/constants/strings.json'
 import { EnvService } from '/libs/services/EnvService'
 import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
 import { clearClient } from '/libs/client'
+import { sendConnectorsLogs } from '/libs/connectors/sendConnectorsLogs'
 import { deleteKeychain } from '/libs/keychain'
 import { hideSplashScreen } from '/libs/services/SplashScreenService'
 import { isBiometryDenied } from '/libs/intents/setBiometryState'
@@ -24,6 +25,8 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {
     throw new Error('Logout should not be called with undefined client')
   }
+
+  await sendConnectorsLogs(client)
   await client.logout()
   await clearClient()
   await resetSessionToken()
