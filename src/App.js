@@ -36,6 +36,8 @@ import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
 import { persistor, store } from './store'
 
+import { cleanConnectorsOnBootInBackground } from '/libs/connectors/cleanConnectorsOnBoot'
+
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
 
@@ -147,7 +149,11 @@ const WrappedApp = () => {
   useEffect(() => {
     const handleClientInit = async () => {
       try {
-        setClient((await getClient()) || null)
+        const existingClient = await getClient()
+        if (existingClient) {
+          cleanConnectorsOnBootInBackground(existingClient)
+        }
+        setClient(existingClient || null)
       } catch {
         setClient(null)
       }
