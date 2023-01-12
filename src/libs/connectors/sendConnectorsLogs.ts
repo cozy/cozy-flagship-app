@@ -2,7 +2,7 @@ import Minilog from '@cozy/minilog'
 import CozyClient from 'cozy-client'
 
 import { clearLogs, spliceLogs } from '/redux/ConnectorState/ConnectorLogsSlice'
-import { store } from '/store'
+import { store } from '/redux/store'
 
 const log = Minilog('sendConnectorsLogs')
 

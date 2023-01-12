@@ -4,7 +4,7 @@ import CozyClient from 'cozy-client'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { sendConnectorsLogs } from '/libs/connectors/sendConnectorsLogs'
 import { CurrentConnectorState } from '/redux/ConnectorState/CurrentConnectorSlice'
-import { store } from '/store'
+import { store } from '/redux/store'
 
 const log = Minilog('cleanConnectorsOnBoot')
 

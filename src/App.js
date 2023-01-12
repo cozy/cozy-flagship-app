@@ -34,7 +34,7 @@ import { useCookieResyncOnResume } from '/hooks/useCookieResyncOnResume'
 import { useGlobalAppState } from '/hooks/useGlobalAppState'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
-import { persistor, store } from './store'
+import { persistor, store } from '/redux/store'
 
 import { cleanConnectorsOnBootInBackground } from '/libs/connectors/cleanConnectorsOnBoot'
 
