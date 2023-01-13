@@ -19,3 +19,10 @@ jest.mock(
   { virtual: true }
 )
 jest.mock('react-native-fs', () => mockRNFS)
+jest.mock('redux-persist', () => {
+  const real = jest.requireActual('redux-persist')
+  return {
+    ...real,
+    persistReducer: jest.fn().mockImplementation((config, reducers) => reducers)
+  }
+})
