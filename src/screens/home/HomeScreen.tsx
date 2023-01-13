@@ -1,30 +1,41 @@
 import React, { useState } from 'react'
 import { StatusBar, View } from 'react-native'
-
-import HomeView from '/screens/home/components/HomeView'
-import LauncherView from '/screens/connectors/LauncherView'
-import { StatusBarStyle } from '/libs/intents/setFlagshipUI'
-import { styles } from '/screens/home/HomeScreen.styles'
 import {
   NavigationProp,
   ParamListBase,
   RouteProp
 } from '@react-navigation/native'
 
+import CozyClient, { CozyProvider } from 'cozy-client'
+
+import HomeView from '/screens/home/components/HomeView'
+import LauncherView from '/screens/connectors/LauncherView'
+import { StatusBarStyle } from '/libs/intents/setFlagshipUI'
+import { styles } from '/screens/home/HomeScreen.styles'
+import { useLauncherClient } from '/hooks/useLauncherClient'
+import { LauncherContext } from '/libs/connectors/models'
+
 interface HomeScreenProps {
   navigation: NavigationProp<ParamListBase>
   route: RouteProp<ParamListBase>
 }
+
+const isLauncherReady = (
+  context: LauncherContext
+): context is LauncherContext => context.state !== 'default'
+
+const isClientReady = (client: CozyClient | undefined): client is CozyClient =>
+  Boolean(client)
 
 export const HomeScreen = ({
   navigation,
   route
 }: HomeScreenProps): JSX.Element => {
   const [barStyle, setBarStyle] = useState(StatusBarStyle.Light)
-  const [launcherContext, setLauncherContext] = useState<{
-    state: string
-    value?: Record<string, unknown>
-  } | null>({ state: 'default' })
+  const [launcherContext, setLauncherContext] = useState<LauncherContext>({
+    state: 'default'
+  })
+  const { launcherClient } = useLauncherClient(launcherContext)
 
   return (
     <View style={styles.container}>
@@ -37,12 +48,14 @@ export const HomeScreen = ({
         setLauncherContext={setLauncherContext}
       />
 
-      {launcherContext?.state === 'launch' && (
-        <LauncherView
-          launcherContext={launcherContext.value}
-          retry={(): void => setLauncherContext(null)}
-          setLauncherContext={setLauncherContext}
-        />
+      {isLauncherReady(launcherContext) && isClientReady(launcherClient) && (
+        <CozyProvider client={launcherClient}>
+          <LauncherView
+            launcherContext={launcherContext.value}
+            retry={(): void => setLauncherContext({ state: 'default' })}
+            setLauncherContext={setLauncherContext}
+          />
+        </CozyProvider>
       )}
     </View>
   )
