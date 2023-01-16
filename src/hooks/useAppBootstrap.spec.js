@@ -3,7 +3,7 @@ import { act, renderHook } from '@testing-library/react-hooks'
 
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
-import { useAppBootstrap } from './useAppBootstrap'
+import { useAppBootstrap } from '/hooks/useAppBootstrap'
 
 const mockHideSplashScreen = jest.fn()
 const mockRemove = jest.fn()
@@ -23,7 +23,7 @@ jest.mock('react-native-bootsplash', () => ({
   show: jest.fn()
 }))
 
-jest.mock('/libs/Sentry', () => ({
+jest.mock('/libs/monitoring/Sentry', () => ({
   SentryTags: {},
   setSentryTag: jest.fn()
 }))

@@ -2,7 +2,7 @@ import Minilog from '@cozy/minilog'
 import { Linking, LogBox } from 'react-native'
 import { useEffect, useState } from 'react'
 
-import { SentryTags, setSentryTag } from '/libs/Sentry'
+import { SentryTags, setSentryTag } from '/libs/monitoring/Sentry'
 import { devConfig } from '/constants/dev-config'
 import { manageIconCache } from '/libs/functions/iconTable'
 import { navigate } from '/libs/RootNavigation'
