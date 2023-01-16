@@ -1,7 +1,9 @@
 import * as Sentry from '@sentry/react-native'
+import flow from 'lodash/fp/flow'
 import { CaptureConsole } from '@sentry/integrations'
 
 import { EnvService } from '/libs/services/EnvService'
+import { scrubPhoneNumbers } from '/libs/monitoring/scrubbing'
 import { version } from '../../../package.json'
 
 // Sentry Data Source Name
@@ -18,6 +20,7 @@ export const SentryTags = {
 
 // Runtime initialisation.
 Sentry.init({
+  beforeSend: event => flow(scrubPhoneNumbers)(event) as Sentry.Event,
   dsn: SentryDsn,
   enabled: EnvService.hasSentryEnabled,
   environment: EnvService.name,
