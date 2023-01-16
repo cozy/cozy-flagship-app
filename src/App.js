@@ -32,7 +32,9 @@ import { useCookieResyncOnResume } from './hooks/useCookieResyncOnResume'
 import { useGlobalAppState } from './hooks/useGlobalAppState'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/Sentry'
+import { hideSplashScreen } from './libs/services/SplashScreenService'
 
+import { TestPostMeVsObservable } from './components/TestPostMeVsObservable'
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
 
@@ -189,6 +191,7 @@ const WrappedApp = () => {
 
 const Wrapper = () => {
   const [hasCrypto, setHasCrypto] = useState(false)
+  hideSplashScreen()
   useEffect(() => {
     if (__DEV__) {
       RNAsyncStorageFlipper(AsyncStorage)
@@ -198,15 +201,7 @@ const Wrapper = () => {
     <>
       {__DEV__ && <FlipperAsyncStorage />}
       <CryptoWebView setHasCrypto={setHasCrypto} />
-      {hasCrypto && (
-        <HttpServerProvider>
-          <SplashScreenProvider>
-            <NetStatusBoundary>
-              <WrappedApp />
-            </NetStatusBoundary>
-          </SplashScreenProvider>
-        </HttpServerProvider>
-      )}
+      {hasCrypto && <TestPostMeVsObservable />}
     </>
   )
 }

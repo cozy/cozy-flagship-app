@@ -97,14 +97,14 @@ const subscribeAnswer = (messageId, callback) => {
     callback: callback
   })
 
-  log.debug(
-    `registered answer... ${answerSubscribers.length} answer(s) are now subscribed`
-  )
+  // log.debug(
+  //   `registered answer... ${answerSubscribers.length} answer(s) are now subscribed`
+  // )
 }
 
 const unsubscribeAnswer = messageId => {
   answerSubscribers = answerSubscribers.filter(({ id }) => id !== messageId)
-  log.debug(
-    `cleared answer... ${answerSubscribers.length} answer(s) are now subscribed`
-  )
+  // log.debug(
+  //   `cleared answer... ${answerSubscribers.length} answer(s) are now subscribed`
+  // )
 }

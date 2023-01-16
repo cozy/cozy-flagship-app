@@ -1,5 +1,6 @@
 import ContentScript from '../../connectorLibs/ContentScript'
 import Minilog from '@cozy/minilog'
+
 const log = Minilog('ContentScript')
 Minilog.enable()
 
@@ -10,20 +11,22 @@ const logoutLinkSelector = `[href='/logout']`
 
 class TemplateContentScript extends ContentScript {
   async ensureAuthenticated() {
-    await this.goto(baseUrl)
-    await this.waitForElementInWorker(defaultSelector)
-    await this.runInWorker('click', defaultSelector)
-    // wait for both logout or login link to be sure to check authentication when ready
-    await Promise.race([
-      this.waitForElementInWorker(loginLinkSelector),
-      this.waitForElementInWorker(logoutLinkSelector)
-    ])
-    const authenticated = await this.runInWorker('checkAuthenticated')
-    if (!authenticated) {
-      this.log('not authenticated')
-      await this.showLoginFormAndWaitForAuthentication()
-    }
+    // console.log('ENSURE AUTHENTICATED')
     return true
+    // await this.goto(baseUrl)
+    // await this.waitForElementInWorker(defaultSelector)
+    // await this.runInWorker('click', defaultSelector)
+    // // wait for both logout or login link to be sure to check authentication when ready
+    // await Promise.race([
+    //   this.waitForElementInWorker(loginLinkSelector),
+    //   this.waitForElementInWorker(logoutLinkSelector)
+    // ])
+    // const authenticated = await this.runInWorker('checkAuthenticated')
+    // if (!authenticated) {
+    //   this.log('not authenticated')
+    //   await this.showLoginFormAndWaitForAuthentication()
+    // }
+    // return true
   }
 
   async checkAuthenticated() {
@@ -80,3 +83,51 @@ const connector = new TemplateContentScript()
 connector.init({ additionalExposedMethodsNames: ['parseBills'] }).catch(err => {
   console.warn(err)
 })
+
+/*********************/
+/* PARTIE OBSERVABLE */
+/*********************/
+
+const doStuffConnector = (messageId) => {
+  const payloadResult = JSON.stringify({
+    message: 'answer___doStuffConnector',
+    messageId: messageId,
+    param: {
+      result: true
+    }
+  })
+
+  postMessage(payloadResult)
+}
+
+function postMessage (message) {
+  if (window.ReactNativeWebView.postMessage === undefined) {
+    setTimeout(postMessage, 200, message)
+  } else {
+    window.ReactNativeWebView.postMessage(message)
+  }
+}
+
+function processMessage (message) {
+  const payload = JSON.parse(message)
+
+  const {
+    message: functionName,
+    messageId,
+    param
+  } = payload
+
+  if (Object.keys(messagingFunctions).includes(functionName)) {
+    messagingFunctions[functionName](messageId, param)
+  } else {
+    console.log('unrecognizedMessage')
+  }
+}
+
+window.document.addEventListener('message', function (e) {
+  processMessage(e.data)
+})
+
+const messagingFunctions = {
+  doStuffConnector
+}
