@@ -63,7 +63,7 @@ $ yarn ios
 * Launch your cozy app with `DEV_HOST=(some accessible local IP)` preceding the actual start command, so the webview browser has access to webpack dev server assets. See some examples below:
     * `DEV_HOST="$(ip -4 address show eth0| grep -Po 'inet [^/]+' | cut -d' ' -f2)" yarn start`
     * `DEV_HOST="$(hostname -I | xargs)" yarn start`
-* Disable the local httpServer by setting to `true` disableGetIndex in `dev.js`
+* Disable the local httpServer by setting to `true` disableGetIndex in `src/constants/dev-config.ts`
 * Your webview browser should now be able to use a locally hosted cozy-app in development/hot-reload mode
 
 You can then connect to your local stack using the following URL : `http://foobar.10-0-2-2.nip.io:8080`
