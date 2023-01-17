@@ -2,9 +2,11 @@ import RN from 'react-native'
 
 import { openApp } from './openApp'
 
-jest.mock('../dimensions', () => ({
-  screenHeight: 732,
-  screenWidth: 412
+jest.mock('/libs/dimensions', () => ({
+  getDimensions: jest.fn().mockReturnValue({
+    screenHeight: 732,
+    screenWidth: 412
+  })
 }))
 
 jest.mock('react-native', () => ({
