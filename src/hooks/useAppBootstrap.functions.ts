@@ -39,14 +39,14 @@ export const parseOnboardingURL = (
 }
 
 interface FallbackUrl {
-  fallback: string | null | undefined
-  isHome: boolean
+  mainAppFallbackURL: string | undefined
+  cozyAppFallbackURL: string | undefined
 }
 
 export const parseFallbackURL = (url: string | null): FallbackUrl => {
   const defaultParse = {
-    fallback: undefined,
-    isHome: false
+    mainAppFallbackURL: undefined,
+    cozyAppFallbackURL: undefined
   }
 
   if (url === null) {
@@ -55,12 +55,12 @@ export const parseFallbackURL = (url: string | null): FallbackUrl => {
 
   try {
     const makeURL = new URL(url)
-    const fallback = makeURL.searchParams.get('fallback')
+    const fallback = makeURL.searchParams.get('fallback') ?? undefined
     const isHome = makeURL.pathname.split('/')[1] === 'home'
 
     return {
-      fallback: fallback ? fallback : undefined,
-      isHome
+      mainAppFallbackURL: isHome ? fallback : undefined,
+      cozyAppFallbackURL: !isHome ? fallback : undefined
     }
   } catch (error) {
     const errorMessage = getErrorMessage(error)

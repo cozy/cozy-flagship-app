@@ -50,13 +50,14 @@ export const useAppBootstrap = client => {
         }
       } else {
         const payload = await Linking.getInitialURL()
-        const { fallback, isHome } = parseFallbackURL(payload)
+        const { mainAppFallbackURL, cozyAppFallbackURL } =
+          parseFallbackURL(payload)
 
         return setInitialRoute({
           route: routes.home,
           params: {
-            mainAppFallbackURL: isHome ? fallback : undefined,
-            cozyAppFallbackURL: !isHome ? fallback : undefined
+            mainAppFallbackURL,
+            cozyAppFallbackURL
           }
         })
       }
