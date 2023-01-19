@@ -1,5 +1,7 @@
-import { fetchAppDataForSlug } from './indexDataFetcher'
-import { fetchCozyDataForSlug } from '../client'
+import CozyClient from 'cozy-client'
+
+import { fetchAppDataForSlug } from '/libs/httpserver/indexDataFetcher'
+import { fetchCozyDataForSlug } from '/libs/client'
 
 jest.mock('../client', () => ({
   fetchCozyDataForSlug: jest.fn()
@@ -9,6 +11,10 @@ jest.mock('@react-native-cookies/cookies', () => ({
   set: jest.fn()
 }))
 
+const mockedFetchCozyDataForSlug = fetchCozyDataForSlug as jest.MockedFunction<
+  typeof fetchCozyDataForSlug
+>
+
 describe('indexDataFetcher', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -17,12 +23,12 @@ describe('indexDataFetcher', () => {
   describe('fetchAppDataForSlug', () => {
     it(`should correctly convert result from cozy-stack into expected data format`, async () => {
       const client = {
-        getStackClient: () => ({
+        getStackClient: (): { uri: string } => ({
           uri: 'http://localhost:8080'
         })
-      }
+      } as CozyClient
 
-      fetchCozyDataForSlug.mockResolvedValue(mockStackResult)
+      mockedFetchCozyDataForSlug.mockResolvedValue(mockStackResult)
 
       const result = await fetchAppDataForSlug('home', client)
 
