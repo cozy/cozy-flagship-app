@@ -45,6 +45,22 @@ jest.mock('./useSplashScreen', () => ({
   useSplashScreen: () => ({ hideSplashScreen: mockHideSplashScreen })
 }))
 
+jest.mock('/libs/functions/openApp', () => ({
+  getDefaultIconParams: jest.fn().mockReturnValue({})
+}))
+
+jest.mock('cozy-client', () => ({
+  deconstructCozyWebLinkWithSlug: jest.fn().mockImplementation(url => {
+    if (url === HOME_FALLBACK_URL) {
+      return { slug: 'home' }
+    } else if (url === APP_FALLBACK_URL) {
+      return { slug: 'drive' }
+    } else {
+      throw new Error('Should not happen')
+    }
+  })
+}))
+
 const listeners = []
 const mockRemove = jest.fn().mockImplementation(listener => {
   return () => {
@@ -362,7 +378,9 @@ it('Should handle WITH lifecycle URL as HOME', async () => {
   })
 
   expect(navigate).toHaveBeenNthCalledWith(1, routes.home, {
-    href: HOME_FALLBACK_URL
+    href: HOME_FALLBACK_URL,
+    slug: 'home',
+    iconParams: expect.anything()
   })
 })
 
@@ -392,7 +410,9 @@ it('Should handle WITH lifecycle URL as APP LINK', async () => {
   })
 
   expect(navigate).toHaveBeenNthCalledWith(1, routes.cozyapp, {
-    href: APP_FALLBACK_URL
+    href: APP_FALLBACK_URL,
+    slug: 'drive',
+    iconParams: expect.anything()
   })
 })
 

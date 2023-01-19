@@ -130,16 +130,22 @@ export const openApp = (navigation, href, app, iconParams) => {
   return navigateToApp({ navigation, href, slug: app?.slug, iconParams })
 }
 
-export const navigateToApp = ({ navigation, href, slug, iconParams }) => {
+export const getDefaultIconParams = () => {
   const { screenWidth, screenHeight } = getDimensions()
+
+  return {
+    x: screenWidth * 0.5 - 32 * 0.5,
+    y: screenHeight * 0.5 - 32 * 0.5,
+    width: 32,
+    height: 32
+  }
+}
+
+export const navigateToApp = ({ navigation, href, slug, iconParams }) => {
   return navigation.navigate('cozyapp', {
     href,
-    iconParams: (iconParams && JSON.parse(iconParams)) || {
-      x: screenWidth * 0.5 - 32 * 0.5,
-      y: screenHeight * 0.5 - 32 * 0.5,
-      width: 32,
-      height: 32
-    },
+    iconParams:
+      (iconParams && JSON.parse(iconParams)) || getDefaultIconParams(),
     slug
   })
 }
