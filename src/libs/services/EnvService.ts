@@ -38,15 +38,12 @@ const hasSentryEnabled = enableSentryOn.some(
 
 export const isDev = (): boolean => nameIs(strings.environments.test)
 
-export const devlog = isDev()
-  ? logger('DevLog')
-  : {
-      debug: (): void => void 0,
-      error: (): void => void 0,
-      info: (): void => void 0,
-      log: (): void => void 0,
-      warn: (): void => void 0
-    }
+/**
+ * The native console.debug is used here,
+ * because its color is more visible than minilog's color
+ */
+// eslint-disable-next-line no-console
+export const devlog = isDev() ? console.debug : (): void => void 0
 
 export const EnvService = {
   name,
