@@ -1,7 +1,11 @@
 {
   "name": "cozy-react-native",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cozy/cozy-flagship-app.git"
+  },
   "scripts": {
     "android": "react-native run-android",
     "build": "react-app-rewired build",
@@ -13,7 +17,9 @@
     "install:home:registry": "yarn tsc --project scripts && node scripts/dist/install-home-registry.cmd.js",
     "ios": "react-native run-ios",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+    "np": "np --no-publish",
     "postinstall": "patch-package",
+    "postversion": "react-native-version",
     "pre-commit": "yarn lint",
     "start": "react-native start",
     "test": "jest connectors/**/* src/**/* scripts/* --detectOpenHandles --forceExit",
@@ -104,8 +110,10 @@
     "jest": "29.3.1",
     "metro-react-native-babel-preset": "^0.73.6",
     "nock": "13.2.9",
+    "np": "7.6.3",
     "react-app-rewired": "2.1.8",
     "react-native-svg-transformer": "1.0.0",
+    "react-native-version": "4.0.0",
     "react-test-renderer": "17.0.2",
     "ts-jest": "29.0.3",
     "typescript": "4.9.4",
