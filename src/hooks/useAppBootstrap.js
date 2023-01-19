@@ -1,8 +1,10 @@
 import { Linking } from 'react-native'
 import { useEffect, useState } from 'react'
+import { deconstructCozyWebLinkWithSlug } from 'cozy-client'
 
 import { SentryCustomTags, setSentryTag } from '/libs/monitoring/Sentry'
 import { manageIconCache } from '/libs/functions/iconTable'
+import { getDefaultIconParams } from '/libs/functions/openApp'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { useSplashScreen } from '/hooks/useSplashScreen'
@@ -100,10 +102,23 @@ export const useAppBootstrap = client => {
         }
       }
 
-      const { fallback: href, isHome } = parseFallbackURL(url)
+      const { mainAppFallbackURL, cozyAppFallbackURL } = parseFallbackURL(url)
 
-      if (href) {
-        navigate(isHome ? routes.home : routes.cozyapp, { href })
+      if (mainAppFallbackURL || cozyAppFallbackURL) {
+        const href = mainAppFallbackURL || cozyAppFallbackURL
+
+        const subdomainType = client.capabilities?.flat_subdomains
+          ? 'flat'
+          : 'nested'
+        const { slug } = deconstructCozyWebLinkWithSlug(href, subdomainType)
+
+        const iconParams = getDefaultIconParams()
+
+        navigate(mainAppFallbackURL ? routes.home : routes.cozyapp, {
+          href,
+          slug,
+          iconParams
+        })
         return
       }
     })
