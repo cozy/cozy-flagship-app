@@ -2,11 +2,16 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { get } from 'lodash'
 import { useFocusEffect } from '@react-navigation/native'
 
-import { useClient, generateWebLink } from 'cozy-client'
+import {
+  deconstructCozyWebLinkWithSlug,
+  generateWebLink,
+  useClient
+} from 'cozy-client'
 import { useNativeIntent } from 'cozy-intent'
 
 import { AppState } from 'react-native'
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
+import { navigateToApp } from '/libs/functions/openApp'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { useSession } from '/hooks/useSession'
@@ -92,7 +97,13 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   )
 
   useEffect(() => {
-    const deepLink = consumeRouteParameter('href', route, navigation)
+    const href = consumeRouteParameter('href', route, navigation)
+    const mainAppFallbackURL = consumeRouteParameter(
+      'mainAppFallbackURL',
+      route,
+      navigation
+    )
+    const deepLink = href || mainAppFallbackURL
 
     if (deepLink) {
       return setUri(deepLink)
@@ -124,6 +135,35 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
       getHomeUri()
     }
   }, [uri, client, route, navigation, session])
+
+  useEffect(
+    function handleCozyAppFallback() {
+      if (uri) {
+        const cozyAppFallbackURL = consumeRouteParameter(
+          'cozyAppFallbackURL',
+          route,
+          navigation
+        )
+
+        if (cozyAppFallbackURL) {
+          const subdomainType = client.capabilities?.flat_subdomains
+            ? 'flat'
+            : 'nested'
+          const { slug } = deconstructCozyWebLinkWithSlug(
+            cozyAppFallbackURL,
+            subdomainType
+          )
+
+          navigateToApp({
+            navigation,
+            href: cozyAppFallbackURL,
+            slug
+          })
+        }
+      }
+    },
+    [uri, client, route, navigation]
+  )
 
   useEffect(() => {
     const lockRedirect = async () => {
