@@ -6,7 +6,6 @@ import { routes } from '/constants/routes'
 import { useAppBootstrap } from '/hooks/useAppBootstrap'
 
 const mockHideSplashScreen = jest.fn()
-const mockRemove = jest.fn()
 const mockClient = {
   getStackClient: jest.fn().mockReturnValue({ fetchJSON: jest.fn() })
 }
@@ -36,18 +35,24 @@ jest.mock('./useSplashScreen', () => ({
   useSplashScreen: () => ({ hideSplashScreen: mockHideSplashScreen })
 }))
 
+const listeners = []
+const mockRemove = jest.fn().mockImplementation(listener => {
+  return () => {
+    const index = listeners.findIndex(l => l === listener)
+    listeners.splice(index, 1)
+  }
+})
 jest.mock('react-native', () => {
-  const listeners = []
-
   return {
     LogBox: {
       ignoreAllLogs: jest.fn()
     },
     Linking: {
       addEventListener: jest.fn((event, handler) => {
-        listeners.push({ event, handler })
+        const listener = { event, handler }
+        listeners.push(listener)
 
-        return { remove: mockRemove }
+        return { remove: mockRemove(listener) }
       }),
       emit: jest.fn((event, props) => {
         listeners.filter(l => l.event === event).forEach(l => l.handler(props))
