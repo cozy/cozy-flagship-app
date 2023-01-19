@@ -64,16 +64,35 @@ const App = ({ setClient }) => {
     return null
   }
 
+  const MainAppNavigator = () => (
+    <Root.Navigator
+      initialRouteName="default"
+      screenOptions={{ headerShown: false }}
+    >
+      <Stack.Screen
+        name="default"
+        component={HomeScreen}
+        initialParams={initialRoute.params}
+      />
+    </Root.Navigator>
+  )
+
   const RootNavigator = () => (
     <Root.Navigator
       initialRouteName={initialRoute.route}
       screenOptions={{ headerShown: false }}
     >
-      <Stack.Screen
-        name={routes.home}
-        component={HomeScreen}
-        initialParams={initialRoute.params}
-      />
+      {/*
+      We embed routes.home into its own Navigator so we prevent initialParams
+      to be re-applied when calling goBack() from the CozyApp route
+      i.e:
+       - We open the app with a deeplink https://links.mycozy.cloud/flagship/drive/?fallback=http://drive.cozy.tools:8080/
+       - routes.home is called with {initialParams:{cozyAppFallbackURL: 'http://drive.cozy.tools:8080/'}}
+       - routes.home reads initialParams and redirects to routes.cozyapp
+       - user press the back button so the app redirects to routes.home
+       - routes.home SHOULD NOT read initialParams and SHOULD NOT redirect to routes.cozyapp
+      */}
+      <Root.Screen name={routes.home} component={MainAppNavigator} />
 
       <Stack.Screen
         name={routes.authenticate}
