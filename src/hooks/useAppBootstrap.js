@@ -1,4 +1,3 @@
-import Minilog from '@cozy/minilog'
 import { Linking } from 'react-native'
 import { useEffect, useState } from 'react'
 
@@ -8,34 +7,10 @@ import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 
-import { parseOnboardingURL } from './useAppBootstrap.functions'
-
-const log = Minilog('useAppBootstrap')
-
-const parseFallbackURL = url => {
-  const defaultParse = { fallback: undefined, root: routes.stack }
-
-  if (url === null) {
-    return defaultParse
-  }
-
-  try {
-    const makeURL = new URL(url)
-    const fallback = makeURL.searchParams.get('fallback')
-    const isHome = makeURL.pathname.split('/')[1] === 'home'
-
-    return {
-      fallback: fallback ? fallback : undefined,
-      root: isHome || !fallback ? routes.stack : routes.cozyapp,
-      isHome
-    }
-  } catch (error) {
-    log.error(
-      `Something went wrong while trying to parse fallback URL data: ${error.message}`
-    )
-    return defaultParse
-  }
-}
+import {
+  parseFallbackURL,
+  parseOnboardingURL
+} from './useAppBootstrap.functions'
 
 export const useAppBootstrap = client => {
   const [initialRoute, setInitialRoute] = useState('fetching')

@@ -1,5 +1,6 @@
 import Minilog from '@cozy/minilog'
 
+import { routes } from '/constants/routes'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 const log = Minilog('useAppBootstrap.functions')
@@ -35,5 +36,37 @@ export const parseOnboardingURL = (
       `Something went wrong while trying to parse onboarding URL data: ${errorMessage}`
     )
     return undefined
+  }
+}
+
+interface FallbackUrl {
+  fallback: string | null | undefined
+  root: string
+  isHome?: boolean
+}
+
+export const parseFallbackURL = (url: string | null): FallbackUrl => {
+  const defaultParse = { fallback: undefined, root: routes.stack }
+
+  if (url === null) {
+    return defaultParse
+  }
+
+  try {
+    const makeURL = new URL(url)
+    const fallback = makeURL.searchParams.get('fallback')
+    const isHome = makeURL.pathname.split('/')[1] === 'home'
+
+    return {
+      fallback: fallback ? fallback : undefined,
+      root: isHome || !fallback ? routes.stack : routes.cozyapp,
+      isHome
+    }
+  } catch (error) {
+    const errorMessage = getErrorMessage(error)
+    log.error(
+      `Something went wrong while trying to parse fallback URL data: ${errorMessage}`
+    )
+    return defaultParse
   }
 }
