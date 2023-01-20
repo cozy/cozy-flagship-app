@@ -24,7 +24,7 @@ jest.mock('react-native-bootsplash', () => ({
 }))
 
 jest.mock('/libs/monitoring/Sentry', () => ({
-  SentryTags: {},
+  SentryCustomTags: {},
   setSentryTag: jest.fn()
 }))
 

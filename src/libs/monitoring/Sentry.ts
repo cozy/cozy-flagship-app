@@ -1,36 +1,20 @@
 import * as Sentry from '@sentry/react-native'
 import flow from 'lodash/fp/flow'
 import { CaptureConsole } from '@sentry/integrations'
+import { devConfig } from '/constants/dev-config'
 
-import { EnvService } from '/libs/services/EnvService'
+import strings from '/constants/strings.json'
+import { devlog, EnvService, isDev } from '/libs/services/EnvService'
 import { scrubPhoneNumbers } from '/libs/monitoring/scrubbing'
 import { version } from '../../../package.json'
 
-// Sentry Data Source Name
-// A DSN tells a Sentry SDK where to send events so the events are associated with the correct project.
-// https://docs.sentry.io/product/sentry-basics/dsn-explainer/
-const SentryDsn =
-  'https://73d1bdec0dad488bb8781dfcfe083380@errors.cozycloud.cc/17'
+const isDebugMode = isDev() && devConfig.sentry
 
-// Available custom tags as enum-like object.
-export const SentryTags = {
+export const SentryCustomTags = {
   Instance: 'cozy-instance',
   Version: 'cozy-version'
 }
 
-// Runtime initialisation.
-Sentry.init({
-  beforeSend: event => flow(scrubPhoneNumbers)(event) as Sentry.Event,
-  dsn: SentryDsn,
-  enabled: EnvService.hasSentryEnabled,
-  environment: EnvService.name,
-  integrations: [new CaptureConsole({ levels: ['error', 'warn'] })]
-})
-
-// Runtime default configuration.
-Sentry.setTag(SentryTags.Version, version)
-
-// Public interface as functions.
 export const withSentry = Sentry.wrap
 
 export const setSentryTag = (tag: string, value: string): void =>
@@ -39,3 +23,19 @@ export const setSentryTag = (tag: string, value: string): void =>
 export const logToSentry = (error: unknown): void => {
   Sentry.captureException(error)
 }
+
+Sentry.init({
+  beforeBreadcrumb: (breadcrumb, hint) =>
+    flow(scrubPhoneNumbers)(breadcrumb, hint) as Sentry.Breadcrumb,
+  beforeSend: (event, hint) =>
+    flow(scrubPhoneNumbers)(event, hint) as Sentry.Event,
+  debug: isDebugMode,
+  dsn: strings.SENTRY_DSN_URL,
+  enabled: EnvService.hasSentryEnabled,
+  environment: EnvService.name,
+  integrations: [new CaptureConsole({ levels: ['error', 'warn'] })],
+  onReady: ({ didCallNativeInit }) =>
+    didCallNativeInit && isDebugMode && devlog('Sentry native SDK initialized')
+})
+
+Sentry.setTag(SentryCustomTags.Version, version)

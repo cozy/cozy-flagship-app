@@ -1,6 +1,5 @@
 import strings from '/constants/strings.json'
 import { devConfig } from '/constants/dev-config'
-import { logger } from '/libs/functions/logger'
 
 let enableSentryOn = [strings.environments.production]
 
