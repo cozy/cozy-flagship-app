@@ -3,7 +3,7 @@ import CozyClient from 'cozy-client'
 import { AppData, AppAttributes } from '/libs/httpserver/models'
 import { fetchCozyDataForSlug } from '/libs/client'
 import { getCookie } from '/libs/httpserver/httpCookieManager'
-import { logToSentry } from '/libs/Sentry'
+import { logToSentry } from '/libs/monitoring/Sentry'
 import { replaceAll } from '/libs/functions/stringHelpers'
 
 interface FetchAppDataForSlugResult {
