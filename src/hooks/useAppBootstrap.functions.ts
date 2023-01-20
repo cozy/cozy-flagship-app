@@ -1,6 +1,5 @@
 import Minilog from '@cozy/minilog'
 
-import { routes } from '/constants/routes'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 const log = Minilog('useAppBootstrap.functions')
@@ -41,14 +40,12 @@ export const parseOnboardingURL = (
 
 interface FallbackUrl {
   fallback: string | null | undefined
-  root: string
   isHome: boolean
 }
 
 export const parseFallbackURL = (url: string | null): FallbackUrl => {
   const defaultParse = {
     fallback: undefined,
-    root: routes.stack,
     isHome: false
   }
 
@@ -63,7 +60,6 @@ export const parseFallbackURL = (url: string | null): FallbackUrl => {
 
     return {
       fallback: fallback ? fallback : undefined,
-      root: isHome || !fallback ? routes.stack : routes.cozyapp,
       isHome
     }
   } catch (error) {

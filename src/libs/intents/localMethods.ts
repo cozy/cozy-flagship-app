@@ -33,7 +33,7 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   await deleteKeychain()
   await clearCookies()
   await clearData()
-  RootNavigation.reset(routes.stack, { screen: 'welcome' })
+  RootNavigation.reset(routes.welcome, { screen: 'welcome' })
   return Promise.resolve(null)
 }
 

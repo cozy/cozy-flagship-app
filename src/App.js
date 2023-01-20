@@ -55,7 +55,7 @@ const App = ({ setClient }) => {
 
   useNetService(client)
 
-  const { initialScreen, initialRoute, isLoading } = useAppBootstrap(client)
+  const { initialRoute, isLoading } = useAppBootstrap(client)
 
   useGlobalAppState()
   useCookieResyncOnResume()
@@ -64,34 +64,34 @@ const App = ({ setClient }) => {
     return null
   }
 
-  const StackNavigator = () => (
-    <Stack.Navigator
-      initialRouteName={client ? routes.home : initialScreen.stack}
+  const RootNavigator = () => (
+    <Root.Navigator
+      initialRouteName={initialRoute.route}
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen
         name={routes.home}
         component={HomeScreen}
-        {...(initialRoute.stack ? { initialParams: initialRoute.stack } : {})}
+        initialParams={initialRoute.params}
       />
 
       <Stack.Screen
         name={routes.authenticate}
-        initialParams={initialScreen.params}
+        initialParams={initialRoute.params}
       >
         {params => <LoginScreen setClient={setClient} {...params} />}
       </Stack.Screen>
 
       <Stack.Screen
         name={routes.onboarding}
-        initialParams={initialScreen.params}
+        initialParams={initialRoute.params}
       >
         {params => <OnboardingScreen setClient={setClient} {...params} />}
       </Stack.Screen>
 
       <Stack.Screen
         name={routes.instanceCreation}
-        initialParams={initialScreen.params}
+        initialParams={initialRoute.params}
       >
         {params => <CreateInstanceScreen {...params} />}
       </Stack.Screen>
@@ -99,15 +99,6 @@ const App = ({ setClient }) => {
       <Stack.Screen name={routes.welcome}>
         {params => <WelcomeScreen setClient={setClient} {...params} />}
       </Stack.Screen>
-    </Stack.Navigator>
-  )
-
-  const RootNavigator = () => (
-    <Root.Navigator
-      initialRouteName={initialScreen.root}
-      screenOptions={{ headerShown: false }}
-    >
-      <Root.Screen name={routes.stack} component={StackNavigator} />
 
       <Root.Screen
         name={routes.error}
@@ -122,7 +113,6 @@ const App = ({ setClient }) => {
           presentation: 'transparentModal',
           animationEnabled: false
         }}
-        {...(initialRoute.root ? { initialParams: initialRoute.root } : {})}
       />
 
       <Root.Screen
