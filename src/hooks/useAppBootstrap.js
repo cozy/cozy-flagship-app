@@ -14,7 +14,6 @@ import {
 
 export const useAppBootstrap = client => {
   const [initialRoute, setInitialRoute] = useState('fetching')
-  const [initialScreen, setInitialScreen] = useState('fetching')
   const [isLoading, setIsLoading] = useState(true)
   const { hideSplashScreen } = useSplashScreen()
 
@@ -30,62 +29,51 @@ export const useAppBootstrap = client => {
           const { onboardUrl, fqdn } = onboardingParams
 
           if (onboardUrl) {
-            setInitialRoute({ stack: undefined, root: undefined })
-
-            return setInitialScreen({
-              stack: routes.instanceCreation,
-              root: routes.stack,
+            return setInitialRoute({
+              route: routes.instanceCreation,
               params: {
                 onboardUrl
               }
             })
           } else {
-            setInitialRoute({ stack: undefined, root: undefined })
-
-            return setInitialScreen({
-              stack: routes.authenticate,
-              root: routes.stack,
+            return setInitialRoute({
+              route: routes.authenticate,
               params: {
                 fqdn
               }
             })
           }
         } else {
-          setInitialRoute({ stack: undefined, root: undefined })
-
-          return setInitialScreen({
-            stack: routes.welcome,
-            root: routes.stack
+          return setInitialRoute({
+            route: routes.welcome
           })
         }
       } else {
         const payload = await Linking.getInitialURL()
-        const { fallback, root, isHome } = parseFallbackURL(payload)
+        const { fallback, isHome } = parseFallbackURL(payload)
 
-        setInitialScreen({
-          stack: routes.home,
-          root
-        })
-
-        setInitialRoute({
-          stack: isHome ? fallback : undefined,
-          root: !isHome ? fallback : undefined
+        return setInitialRoute({
+          route: routes.home,
+          params: {
+            mainAppFallbackURL: isHome ? fallback : undefined,
+            cozyAppFallbackURL: !isHome ? fallback : undefined
+          }
         })
       }
     }
 
-    initialRoute === 'fetching' && initialScreen === 'fetching' && doAsync()
-  }, [client, initialRoute, initialScreen, hideSplashScreen])
+    initialRoute === 'fetching' && doAsync()
+  }, [client, initialRoute, hideSplashScreen])
 
   // Handling app readiness
   useEffect(() => {
     if (initialRoute !== 'fetching' && isLoading) {
       setIsLoading(false)
-      if (initialScreen.stack !== routes.home) {
+      if (initialRoute.route !== routes.home) {
         hideSplashScreen()
       }
     }
-  }, [isLoading, initialRoute, client, hideSplashScreen, initialScreen.stack])
+  }, [isLoading, initialRoute, client, hideSplashScreen, initialRoute.route])
 
   // Handling post load side effects
   useEffect(() => {
@@ -127,7 +115,6 @@ export const useAppBootstrap = client => {
   return {
     client,
     initialRoute,
-    initialScreen,
     isLoading
   }
 }

@@ -40,7 +40,7 @@ describe('asyncLogout', () => {
   it('should handle Navigate to authenticate page and prevent go back', async () => {
     await asyncLogout(client)
 
-    expect(RootNavigation.reset).toHaveBeenCalledWith('stack', {
+    expect(RootNavigation.reset).toHaveBeenCalledWith('welcome', {
       screen: 'welcome'
     })
   })

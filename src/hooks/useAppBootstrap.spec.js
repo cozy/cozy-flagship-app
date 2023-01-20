@@ -7,12 +7,20 @@ import { useAppBootstrap } from '/hooks/useAppBootstrap'
 
 const mockHideSplashScreen = jest.fn()
 const mockClient = {
-  getStackClient: jest.fn().mockReturnValue({ fetchJSON: jest.fn() })
+  getStackClient: jest.fn().mockReturnValue({ fetchJSON: jest.fn() }),
+  capabilities: {
+    flat_subdomains: 'flat'
+  }
 }
-const initialURL = 'initialURL'
-const homeLink = `https://links.mycozy.cloud/home/folder/1?fallback=${initialURL}`
-const appLink = `https://links.mycozy.cloud/drive/folder/1?fallback=${initialURL}`
-const invalidLink = 'https://foo.com'
+const HOME_FALLBACK_URL =
+  'https://claude-drive.mycozy.cloud/#/connected/connector_slug/new'
+const HOME_FALLBACK_URL_ENCODED =
+  'https%3A%2F%2Fclaude-drive.mycozy.cloud%2F%23%2Fconnected%2Fconnector_slug%2Fnew'
+const HOME_UNIVERSAL_LINK = `https://links.mycozy.cloud/home?fallback=${HOME_FALLBACK_URL_ENCODED}`
+const APP_FALLBACK_URL = `https://claude-drive.mycozy.cloud/#/folder/SOME_FOLDER_ID`
+const APP_FALLBACK_URL_ENCODED = `https%3A%2F%2Fclaude-drive.mycozy.cloud%2F%23%2Ffolder%2FSOME_FOLDER_ID`
+const APP_UNIVERSAL_LINK = `https://links.mycozy.cloud/drive/folder/SOME_FOLDER_ID?fallback=${APP_FALLBACK_URL_ENCODED}`
+const INVALID_LINK = 'https://foo.com'
 
 jest.mock('../libs/client', () => ({
   clearClient: jest.fn()
@@ -78,16 +86,11 @@ it('should set routes.stack and instance creation - when onboard_url provided', 
 
   expect(result.current).toStrictEqual({
     client: undefined,
-    initialScreen: {
+    initialRoute: {
+      route: routes.instanceCreation,
       params: {
         onboardUrl: paramOnboardUrl
-      },
-      stack: routes.instanceCreation,
-      root: routes.stack
-    },
-    initialRoute: {
-      stack: undefined,
-      root: undefined
+      }
     },
     isLoading: false
   })
@@ -107,16 +110,11 @@ it('should set routes.stack and authenticate - when onboard_url not provided', a
 
   expect(result.current).toStrictEqual({
     client: undefined,
-    initialScreen: {
-      stack: routes.authenticate,
-      root: routes.stack,
+    initialRoute: {
+      route: routes.authenticate,
       params: {
         fqdn: paramFqdn
       }
-    },
-    initialRoute: {
-      stack: undefined,
-      root: undefined
     },
     isLoading: false
   })
@@ -131,13 +129,8 @@ it('Should handle welcome page', async () => {
 
   expect(result.current).toStrictEqual({
     client: undefined,
-    initialScreen: {
-      stack: routes.welcome,
-      root: routes.stack
-    },
     initialRoute: {
-      stack: undefined,
-      root: undefined
+      route: routes.welcome
     },
     isLoading: false
   })
@@ -152,13 +145,8 @@ it('Should handle NO client NO initial URL', async () => {
 
   expect(result.current).toStrictEqual({
     client: undefined,
-    initialScreen: {
-      stack: routes.welcome,
-      root: routes.stack
-    },
     initialRoute: {
-      stack: undefined,
-      root: undefined
+      route: routes.welcome
     },
     isLoading: false
   })
@@ -167,7 +155,7 @@ it('Should handle NO client NO initial URL', async () => {
 })
 
 it('Should handle NO client WITH initial URL as HOME', async () => {
-  Linking.getInitialURL.mockResolvedValueOnce(homeLink)
+  Linking.getInitialURL.mockResolvedValueOnce(HOME_UNIVERSAL_LINK)
 
   const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
 
@@ -175,20 +163,15 @@ it('Should handle NO client WITH initial URL as HOME', async () => {
 
   expect(result.current).toStrictEqual({
     client: undefined,
-    initialScreen: {
-      stack: routes.welcome,
-      root: routes.stack
-    },
     initialRoute: {
-      stack: undefined,
-      root: undefined
+      route: routes.welcome
     },
     isLoading: false
   })
 })
 
 it('Should handle NO client WITH initial URL as APP', async () => {
-  Linking.getInitialURL.mockResolvedValueOnce(appLink)
+  Linking.getInitialURL.mockResolvedValueOnce(APP_UNIVERSAL_LINK)
 
   const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
 
@@ -196,13 +179,8 @@ it('Should handle NO client WITH initial URL as APP', async () => {
 
   expect(result.current).toStrictEqual({
     client: undefined,
-    initialScreen: {
-      stack: routes.welcome,
-      root: routes.stack
-    },
     initialRoute: {
-      stack: undefined,
-      root: undefined
+      route: routes.welcome
     },
     isLoading: false
   })
@@ -211,7 +189,7 @@ it('Should handle NO client WITH initial URL as APP', async () => {
 })
 
 it('Should handle NO client WITH initial URL as INVALID', async () => {
-  Linking.getInitialURL.mockResolvedValueOnce(invalidLink)
+  Linking.getInitialURL.mockResolvedValueOnce(INVALID_LINK)
 
   const { result, waitForValueToChange } = renderHook(() => useAppBootstrap())
 
@@ -219,13 +197,8 @@ it('Should handle NO client WITH initial URL as INVALID', async () => {
 
   expect(result.current).toStrictEqual({
     client: undefined,
-    initialScreen: {
-      stack: routes.welcome,
-      root: routes.stack
-    },
     initialRoute: {
-      stack: undefined,
-      root: undefined
+      route: routes.welcome
     },
     isLoading: false
   })
@@ -242,20 +215,19 @@ it('Should handle WITH client NO initial URL', async () => {
 
   expect(result.current).toStrictEqual({
     client: mockClient,
-    initialScreen: {
-      stack: routes.home,
-      root: routes.stack
-    },
     initialRoute: {
-      stack: undefined,
-      root: undefined
+      route: routes.home,
+      params: {
+        mainAppFallbackURL: undefined,
+        cozyAppFallbackURL: undefined
+      }
     },
     isLoading: false
   })
 })
 
 it('Should handle WITH client WITH initial URL as HOME', async () => {
-  Linking.getInitialURL.mockResolvedValueOnce(homeLink)
+  Linking.getInitialURL.mockResolvedValueOnce(HOME_UNIVERSAL_LINK)
 
   const { result, waitForValueToChange } = renderHook(() =>
     useAppBootstrap(mockClient)
@@ -265,20 +237,19 @@ it('Should handle WITH client WITH initial URL as HOME', async () => {
 
   expect(result.current).toStrictEqual({
     client: mockClient,
-    initialScreen: {
-      stack: routes.home,
-      root: routes.stack
-    },
     initialRoute: {
-      stack: initialURL,
-      root: undefined
+      route: routes.home,
+      params: {
+        mainAppFallbackURL: HOME_FALLBACK_URL,
+        cozyAppFallbackURL: undefined
+      }
     },
     isLoading: false
   })
 })
 
 it('Should handle WITH client WITH initial URL as APP LINK', async () => {
-  Linking.getInitialURL.mockResolvedValueOnce(appLink)
+  Linking.getInitialURL.mockResolvedValueOnce(APP_UNIVERSAL_LINK)
 
   const { result, waitForValueToChange } = renderHook(() =>
     useAppBootstrap(mockClient)
@@ -288,20 +259,19 @@ it('Should handle WITH client WITH initial URL as APP LINK', async () => {
 
   expect(result.current).toStrictEqual({
     client: mockClient,
-    initialScreen: {
-      stack: routes.home,
-      root: routes.cozyapp
-    },
     initialRoute: {
-      stack: undefined,
-      root: initialURL
+      route: routes.home,
+      params: {
+        mainAppFallbackURL: undefined,
+        cozyAppFallbackURL: APP_FALLBACK_URL
+      }
     },
     isLoading: false
   })
 })
 
 it('Should handle WITH client WITH initial URL as INVALID', async () => {
-  Linking.getInitialURL.mockResolvedValueOnce(invalidLink)
+  Linking.getInitialURL.mockResolvedValueOnce(INVALID_LINK)
 
   const { result, waitForValueToChange } = renderHook(() =>
     useAppBootstrap(mockClient)
@@ -311,13 +281,12 @@ it('Should handle WITH client WITH initial URL as INVALID', async () => {
 
   expect(result.current).toStrictEqual({
     client: mockClient,
-    initialScreen: {
-      stack: routes.home,
-      root: routes.stack
-    },
     initialRoute: {
-      stack: undefined,
-      root: undefined
+      route: routes.home,
+      params: {
+        mainAppFallbackURL: undefined,
+        cozyAppFallbackURL: undefined
+      }
     },
     isLoading: false
   })
@@ -332,22 +301,23 @@ it('Should handle WITH lifecycle URL as HOME', async () => {
 
   expect(result.current).toStrictEqual({
     client: mockClient,
-    initialScreen: {
-      stack: routes.home,
-      root: routes.stack
-    },
     initialRoute: {
-      stack: undefined,
-      root: undefined
+      route: routes.home,
+      params: {
+        mainAppFallbackURL: undefined,
+        cozyAppFallbackURL: undefined
+      }
     },
     isLoading: false
   })
 
   act(() => {
-    Linking.emit('url', { url: homeLink })
+    Linking.emit('url', { url: HOME_UNIVERSAL_LINK })
   })
 
-  expect(navigate).toHaveBeenNthCalledWith(1, routes.home, { href: initialURL })
+  expect(navigate).toHaveBeenNthCalledWith(1, routes.home, {
+    href: HOME_FALLBACK_URL
+  })
 })
 
 it('Should handle WITH lifecycle URL as APP LINK', async () => {
@@ -359,23 +329,24 @@ it('Should handle WITH lifecycle URL as APP LINK', async () => {
 
   expect(result.current).toStrictEqual({
     client: mockClient,
-    initialScreen: {
-      stack: routes.home,
-      root: routes.stack
-    },
     initialRoute: {
-      stack: undefined,
-      root: undefined
+      route: routes.home,
+      params: {
+        mainAppFallbackURL: undefined,
+        cozyAppFallbackURL: undefined
+      }
     },
     isLoading: false
   })
 
   act(() => {
-    Linking.emit('url', { url: appLink })
+    Linking.emit('url', {
+      url: APP_UNIVERSAL_LINK
+    })
   })
 
   expect(navigate).toHaveBeenNthCalledWith(1, routes.cozyapp, {
-    href: initialURL
+    href: APP_FALLBACK_URL
   })
 })
 
@@ -388,19 +359,18 @@ it('Should handle WITH lifecycle URL as INVALID', async () => {
 
   expect(result.current).toStrictEqual({
     client: mockClient,
-    initialScreen: {
-      stack: routes.home,
-      root: routes.stack
-    },
     initialRoute: {
-      stack: undefined,
-      root: undefined
+      route: routes.home,
+      params: {
+        mainAppFallbackURL: undefined,
+        cozyAppFallbackURL: undefined
+      }
     },
     isLoading: false
   })
 
   act(() => {
-    Linking.emit('url', { url: invalidLink })
+    Linking.emit('url', { url: INVALID_LINK })
   })
 
   expect(navigate).not.toHaveBeenCalled()
