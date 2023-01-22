@@ -1,4 +1,4 @@
-# 1.0.2
+# 1.0.3
 
 ## ✨ Features
 
@@ -8,6 +8,24 @@
 
 ## 🔧 Tech
 
+
+# 1.0.2
+
+## ✨ Features
+
+* Client Side Connectors can now be installed from Registry ([PR #525](https://github.com/cozy/cozy-react-native/pull/525))
+* Client Side Connectors are now executed using a permission-limited Client ([PR #533](https://github.com/cozy/cozy-react-native/pull/533))
+
+## 🐛 Bug Fixes
+
+* Fix CozyApp opening animation that was using the wrong screen's width & height calculation ([PR #545](https://github.com/cozy/cozy-react-native/pull/545))
+
+## 🔧 Tech
+
+* Reworked project file structure ([PR #535](https://github.com/cozy/cozy-react-native/pull/535), [PR #541](https://github.com/cozy/cozy-react-native/pull/541) and [PR #546](https://github.com/cozy/cozy-react-native/pull/546))
+* Convert `Template` Client Side Connector to use HTTPS instead of HTTP ([PR #539](https://github.com/cozy/cozy-react-native/pull/539))
+* Local HttpServer now supports `{.CozyFonts}` template tag ([PR #543](https://github.com/cozy/cozy-react-native/pull/543))
+* Prevents phone numbers to be send to Sentry when handling related errors ([PR #544](https://github.com/cozy/cozy-react-native/pull/544))
 
 # 1.0.1
 
