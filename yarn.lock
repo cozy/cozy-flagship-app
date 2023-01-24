@@ -14573,10 +14573,9 @@ react-native-gesture-handler@1.10.3:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-"react-native-google-safetynet@npm:cozy-react-native-google-safetynet@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/cozy-react-native-google-safetynet/-/cozy-react-native-google-safetynet-1.0.1.tgz#4711680bf34fe79bf86c500850bc4f4ffc03c4d7"
-  integrity sha512-5WzyZQ+0bktV3Tx1BGHWfB5r7ytrt+NtW+ML9SNFdKH5zmZIHCTvYqufsgu05lXU8LUfZv8s6xxp8BAWGNeZ/w==
+"react-native-google-safetynet@https://github.com/cozy/cozy-react-native-google-safetynet#feat/upgrade_target_sdk_31":
+  version "1.0.2"
+  resolved "https://github.com/cozy/cozy-react-native-google-safetynet#fd3957a84cf4dbace77186325b0e124ea3c98659"
   dependencies:
     base64-js "^1.3.0"
     jwt-decode "^2.2.0"
