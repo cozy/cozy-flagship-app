@@ -70,7 +70,10 @@ const saveFiles = async (entries, folderPath, options = {}) => {
         entry,
         saveOptions
       )
-      entry = await saveEntry(entry, { ...saveOptions, resultFolderPath })
+      entry = await saveEntry(client, entry, {
+        ...saveOptions,
+        resultFolderPath
+      })
       if (entry && entry._cozy_file_to_create) {
         savedFiles++
         delete entry._cozy_file_to_create
@@ -87,7 +90,7 @@ const saveFiles = async (entries, folderPath, options = {}) => {
   return savedEntries
 }
 
-const saveEntry = async function (entry, options) {
+const saveEntry = async function (client, entry, options) {
   let file = await getFileIfExists(entry, options)
   let shouldReplace = false
   if (file) {
@@ -121,7 +124,7 @@ const saveEntry = async function (entry, options) {
         interval: 1000,
         throw_original: true,
         max_tries: options.retry,
-        args: [entry, options, method, file ? file._id : undefined]
+        args: [client, entry, options, method, file ? file._id : undefined]
       }).catch(err => {
         if (err.message === 'BAD_DOWNLOADED_FILE') {
           log.warn(
@@ -267,7 +270,7 @@ async function getFileFromPath(entry, options) {
   }
 }
 
-async function createFile(entry, options, method, fileId) {
+async function createFile(client, entry, options, method, fileId) {
   const folder = await cozy.files.statByPath(options.folderPath)
   let createFileOptions = {
     name: getFileName(entry),
@@ -307,10 +310,9 @@ async function createFile(entry, options, method, fileId) {
       createFileOptions
     )
   }
-
   if (options.validateFile) {
     if ((await options.validateFile(fileDocument)) === false) {
-      await removeFile(fileDocument)
+      await removeFile(client, fileDocument)
       throw new Error('BAD_DOWNLOADED_FILE')
     }
 
@@ -318,7 +320,7 @@ async function createFile(entry, options, method, fileId) {
       options.validateFileContent &&
       !(await options.validateFileContent(fileDocument))
     ) {
-      await removeFile(fileDocument)
+      await removeFile(client, fileDocument)
       throw new Error('BAD_DOWNLOADED_FILE')
     }
   }
@@ -385,9 +387,11 @@ const shouldReplaceFile = async function (file, entry, options) {
   return shouldReplaceFileFn(file, entry, options)
 }
 
-const removeFile = async function (file) {
-  await cozy.files.trashById(file._id)
-  await cozy.files.destroyById(file._id)
+const removeFile = async function (client, file) {
+  if (!client) {
+    log.error('No client, impossible to delete file')
+  }
+  await client.collection('io.cozy.files').deleteFilePermanently(file._id)
 }
 
 module.exports = saveFiles
