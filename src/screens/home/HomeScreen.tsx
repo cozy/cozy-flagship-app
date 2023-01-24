@@ -35,7 +35,7 @@ export const HomeScreen = ({
   const [launcherContext, setLauncherContext] = useState<LauncherContext>({
     state: 'default'
   })
-  const { launcherClient } = useLauncherClient(launcherContext)
+  const { launcherClient } = useLauncherClient(launcherContext.value)
 
   return (
     <View style={styles.container}>

@@ -15,11 +15,11 @@ export const useLauncherClient = (
   const client = useClient()
 
   useEffect(() => {
-    const slug = launcherContext.job?.message?.konnector
+    const slug = launcherContext?.job?.message?.konnector
 
     if (slug) void getLauncherClient(client, slug, setLauncherClient)
     else setLauncherClient(undefined)
-  }, [client, launcherContext.job?.message?.konnector])
+  }, [client, launcherContext?.job?.message?.konnector])
 
   return { launcherClient }
 }
