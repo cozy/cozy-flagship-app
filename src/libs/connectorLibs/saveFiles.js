@@ -91,7 +91,7 @@ const saveFiles = async (entries, folderPath, options = {}) => {
 }
 
 const saveEntry = async function (client, entry, options) {
-  let file = await getFileIfExists(entry, options)
+  let file = await getFileIfExists(client, entry, options)
   let shouldReplace = false
   if (file) {
     try {
@@ -185,7 +185,7 @@ function noMetadataDeduplicationWarning(options) {
   }
 }
 
-async function getFileIfExists(entry, options) {
+async function getFileIfExists(client, entry, options) {
   const fileIdAttributes = options.fileIdAttributes
   const slug = options.manifest.slug
   const sourceAccountIdentifier = get(
@@ -205,12 +205,12 @@ async function getFileIfExists(entry, options) {
     if (!file) {
       // no file with correct metadata, maybe the corresponding file already exist in the default
       // path from a previous version of the connector
-      return await getFileFromPath(entry, options)
+      return await getFileFromPath(client, entry, options)
     } else {
       return file
     }
   } else {
-    return await getFileFromPath(entry, options)
+    return await getFileFromPath(client, entry, options)
   }
 }
 
@@ -259,11 +259,13 @@ async function getFileFromMetaData(
   }
 }
 
-async function getFileFromPath(entry, options) {
+async function getFileFromPath(client, entry, options) {
   try {
     log.debug(`Checking existence of ${getFilePath({ entry, options })}`)
-    const result = await cozy.files.statByPath(getFilePath({ entry, options }))
-    return result
+    const result = await client
+      .collection('io.cozy.files')
+      .statByPath(getFilePath({ entry, options }))
+    return result.data
   } catch (err) {
     log.debug(err.message)
     return false
@@ -271,10 +273,12 @@ async function getFileFromPath(entry, options) {
 }
 
 async function createFile(client, entry, options, method, fileId) {
-  const folder = await cozy.files.statByPath(options.folderPath)
+  const folder = await client
+    .collection('io.cozy.files')
+    .statByPath(options.folderPath)
   let createFileOptions = {
     name: getFileName(entry),
-    dirID: folder._id
+    dirID: folder.data._id
   }
   if (options.contentType) {
     createFileOptions.contentType = options.contentType
