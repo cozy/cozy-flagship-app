@@ -411,6 +411,7 @@ export const fetchCozyAppArchiveInfoForVersion = async (
   version,
   client
 ) => {
+  return ''
   const stackClient = client.getStackClient()
 
   try {

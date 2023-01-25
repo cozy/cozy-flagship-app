@@ -49,13 +49,12 @@ export const HomeScreen = ({
       />
 
       {isLauncherReady(launcherContext) && isClientReady(launcherClient) && (
-        <CozyProvider client={launcherClient}>
           <LauncherView
+            launcherClient={launcherClient}
             launcherContext={launcherContext.value}
             retry={(): void => setLauncherContext({ state: 'default' })}
             setLauncherContext={setLauncherContext}
           />
-        </CozyProvider>
       )}
     </View>
   )

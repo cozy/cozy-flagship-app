@@ -60,7 +60,7 @@ class LauncherView extends Component {
   async componentDidUpdate() {
     this.launcher.setStartContext({
       ...this.props.launcherContext,
-      client: this.props.client,
+      client: this.props.launcherClient,
       manifest: get(this, 'state.connector.manifest')
     })
   }
@@ -69,7 +69,7 @@ class LauncherView extends Component {
     this.launcher = new ReactNativeLauncher()
     this.launcher.setStartContext({
       ...this.props.launcherContext,
-      client: this.props.client,
+      client: this.props.launcherClient,
       manifest: get(this, 'state.connector.manifest')
     })
     const initConnectorError = await this.initConnector()
