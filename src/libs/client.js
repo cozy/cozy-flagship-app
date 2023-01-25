@@ -8,7 +8,7 @@ import { loginFlagship } from './clientHelpers/loginFlagship'
 import { normalizeFqdn } from './functions/stringHelpers'
 import { SOFTWARE_ID, SOFTWARE_NAME } from './constants'
 
-import apiKeys from '/constants/api-keys.json'
+import { androidSafetyNetApiKey } from '/constants/api-keys'
 import strings from '/constants/strings.json'
 
 const log = Minilog('LoginScreen')
@@ -191,9 +191,7 @@ export const createClient = async instance => {
       clientKind: 'mobile',
       clientName: `${SOFTWARE_NAME} (${await getDeviceName()})`,
       shouldRequireFlagshipPermissions: true,
-      certificationConfig: {
-        androidSafetyNetApiKey: apiKeys.androidSafetyNetApiKey
-      }
+      certificationConfig: { androidSafetyNetApiKey }
     }
   }
 

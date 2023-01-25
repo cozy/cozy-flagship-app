@@ -12,7 +12,7 @@ jest.mock('@sentry/react-native', () => ({
   setTag: jest.fn()
 }))
 jest.mock(
-  '../src/constants/api-keys.json',
+  '../src/constants/api-keys',
   () => ({
     androidSafetyNetApiKey: 'foo'
   }),
