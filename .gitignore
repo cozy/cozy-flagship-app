@@ -76,3 +76,6 @@ scripts/dist/*
 
 # Sentry
 sentry.properties
+
+# Credentials
+.env

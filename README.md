@@ -127,12 +127,7 @@ This verification requires the `cozy-stack` to be configured with the app inform
 To enable Flagship certification:
 - Retrieve the project's Safetynet Api Key on the pass manager
   - Or generate a new one following Google documentation: https://developer.android.com/training/safetynet/attestation#add-api-key
-- Create a file `src/constants/api-keys.json` and fill it with the following content:
-```json
-{
-  "androidSafetyNetApiKey": "YOUR_GOOGLE_SAFETYNET_API_KEY"
-}
-```
+- Put the token in the `ANDROID_SAFETY_NET_API_KEY` variable in your local `.env` file
 - On `src/libs/client.js` set `shouldRequireFlagshipPermissions` to `true`
 - Read `cozy-client` instruction in [flagship-certification/README.md](https://github.com/cozy/cozy-client/blob/master/packages/cozy-client/src/flagship-certification/README.md)
 
