@@ -195,7 +195,7 @@ export default class Launcher {
    */
   async saveBills(entries, options) {
     log.debug(entries, 'saveBills entries')
-    const { client, job, manifest } = this.getStartContext()
+    const { launcherClient: client, job, manifest } = this.getStartContext()
     const { sourceAccountIdentifier } = this.getUserData()
     const result = await saveBills(entries, {
       ...options,
@@ -222,7 +222,7 @@ export default class Launcher {
    * @param {Object} contact : contact object
    */
   async saveIdentity(contact) {
-    const { client } = this.getStartContext()
+    const { launcherClient: client } = this.getStartContext()
     log.debug(contact, 'saveIdentity contact')
     const { sourceAccountIdentifier } = this.getUserData()
     await saveIdentity(contact, sourceAccountIdentifier, { client })
@@ -235,7 +235,12 @@ export default class Launcher {
    * @returns {Array} list of saved files
    */
   async saveFiles(entries, options) {
-    const { client, trigger, job, manifest } = this.getStartContext()
+    const {
+      launcherClient: client,
+      trigger,
+      job,
+      manifest
+    } = this.getStartContext()
     const { sourceAccountIdentifier } = this.getUserData()
     for (const entry of entries) {
       if (entry.dataUri) {
@@ -276,7 +281,7 @@ export default class Launcher {
    * @returns {Object}
    */
   async getPilotContext({ sourceAccountIdentifier, slug }) {
-    const { client } = this.getStartContext()
+    const { launcherClient: client } = this.getStartContext()
     const result = await client.queryAll(
       Q('io.cozy.files')
         .where({

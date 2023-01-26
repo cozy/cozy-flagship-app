@@ -77,7 +77,7 @@ export const updateCozyAppBundle = async ({
   const stackVersion = await fetchCozyAppVersion(slug, client, type)
 
   log.debug(
-    `Current local version is '${
+    `Current local version for ${slug} is '${
       currentVersion ?? 'unknown'
     }', stack version is '${stackVersion}'`
   )

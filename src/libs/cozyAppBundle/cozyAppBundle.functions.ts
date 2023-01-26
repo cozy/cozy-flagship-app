@@ -30,7 +30,7 @@ export const getConnectorBundle = async ({
     const manifest = JSON.parse(
       await RNFS.readFile(path + '/manifest.konnector')
     ) as Record<string, unknown>
-    const content = await RNFS.readFile(path + '/index.js')
+    const content = await RNFS.readFile(path + '/main.js')
 
     return {
       manifest,

@@ -61,6 +61,7 @@ class LauncherView extends Component {
     this.launcher.setStartContext({
       ...this.props.launcherContext,
       client: this.props.client,
+      launcherClient: this.props.launcherClient,
       manifest: get(this, 'state.connector.manifest')
     })
   }
@@ -70,6 +71,7 @@ class LauncherView extends Component {
     this.launcher.setStartContext({
       ...this.props.launcherContext,
       client: this.props.client,
+      launcherClient: this.props.launcherClient,
       manifest: get(this, 'state.connector.manifest')
     })
     const initConnectorError = await this.initConnector()

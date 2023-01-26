@@ -35,7 +35,7 @@ export const HomeScreen = ({
   const [launcherContext, setLauncherContext] = useState<LauncherContext>({
     state: 'default'
   })
-  const { launcherClient } = useLauncherClient(launcherContext)
+  const { launcherClient } = useLauncherClient(launcherContext.value)
 
   return (
     <View style={styles.container}>
@@ -49,13 +49,12 @@ export const HomeScreen = ({
       />
 
       {isLauncherReady(launcherContext) && isClientReady(launcherClient) && (
-        <CozyProvider client={launcherClient}>
-          <LauncherView
-            launcherContext={launcherContext.value}
-            retry={(): void => setLauncherContext({ state: 'default' })}
-            setLauncherContext={setLauncherContext}
-          />
-        </CozyProvider>
+        <LauncherView
+          launcherClient={launcherClient}
+          launcherContext={launcherContext.value}
+          retry={(): void => setLauncherContext({ state: 'default' })}
+          setLauncherContext={setLauncherContext}
+        />
       )}
     </View>
   )
