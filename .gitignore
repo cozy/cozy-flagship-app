@@ -79,3 +79,6 @@ sentry.properties
 
 # Credentials
 .env
+
+# Patches some environment need
+patches/react-native-keychain+8.0.0.patch
