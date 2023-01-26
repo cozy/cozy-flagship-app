@@ -8,8 +8,9 @@ import { loginFlagship } from './clientHelpers/loginFlagship'
 import { normalizeFqdn } from './functions/stringHelpers'
 import { SOFTWARE_ID, SOFTWARE_NAME } from './constants'
 
-import { androidSafetyNetApiKey } from '/constants/api-keys'
 import strings from '/constants/strings.json'
+import { androidSafetyNetApiKey } from '/constants/api-keys'
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 const log = Minilog('LoginScreen')
 
@@ -398,6 +399,9 @@ export const fetchCozyAppVersion = async (slug, client, type = 'apps') => {
   return version
 }
 
+const isClientErrorResponse = error =>
+  Number.isInteger(error.status) && error.status.toString().startsWith('4')
+
 /**
  * @param {string} slug - The slug of the cozy-app to update
  * @param {string} version - The version of the cozy-app to update
@@ -412,21 +416,25 @@ export const fetchCozyAppArchiveInfoForVersion = async (
   const stackClient = client.getStackClient()
 
   try {
-    const { tar_prefix: tarPrefix = '' } = await stackClient.fetchJSON(
+    const { tar_prefix } = await stackClient.fetchJSON(
       'GET',
       `/registry/${slug}/${version}`
     )
 
     return {
-      tarPrefix
+      tarPrefix: tar_prefix ?? ''
     }
-  } catch (e) {
-    if (e.status === 404) {
+  } catch (error) {
+    if (isClientErrorResponse(error)) {
+      log.warn(
+        `Could not fetch tarPrefix for ${slug}@${version}. Using empty string instead.
+        Is your connector available in the registry?\n`,
+        getErrorMessage(error)
+      )
+
       return {
         tarPrefix: ''
       }
-    }
-
-    throw e
+    } else throw error
   }
 }

@@ -18,17 +18,17 @@ export const getLauncherClient = async (
   slug: string,
   callback?: (client: CozyClient) => void
 ): Promise<CozyClient> => {
-  const { fetchKonnectorToken, uri } = client.getStackClient()
+  const { uri } = client.getStackClient()
 
   try {
-    const client = new CozyClient({
-      token: await fetchKonnectorToken(slug),
+    const newClient = new CozyClient({
+      token: await client.getStackClient().fetchKonnectorToken(slug),
       uri
     })
 
-    callback?.(client)
+    callback?.(newClient)
 
-    return client
+    return newClient
   } catch (error) {
     throw new Error(
       `Failed to create launcher client for ${slug}.\n,
