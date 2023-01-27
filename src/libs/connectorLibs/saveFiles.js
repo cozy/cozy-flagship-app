@@ -1,11 +1,9 @@
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import omit from 'lodash/omit'
-import { Client } from 'cozy-client-js'
 import { Q } from 'cozy-client'
 import retry from 'bluebird-retry'
 
-let cozy
 let client
 
 const log = Minilog('saveFiles')
@@ -25,7 +23,6 @@ const saveFiles = async (entries, folderPath, options = {}) => {
   }
 
   client = options.client
-  cozy = initCozyClientJs(client)
 
   const saveOptions = {
     folderPath,
@@ -124,7 +121,7 @@ const saveEntry = async function (client, entry, options) {
         interval: 1000,
         throw_original: true,
         max_tries: options.retry,
-        args: [client, entry, options, method, file ? file._id : undefined]
+        args: [client, entry, options, method, file ? file : undefined]
       }).catch(err => {
         if (err.message === 'BAD_DOWNLOADED_FILE') {
           log.warn(
@@ -272,13 +269,13 @@ async function getFileFromPath(client, entry, options) {
   }
 }
 
-async function createFile(client, entry, options, method, fileId) {
+async function createFile(client, entry, options, method, file) {
   const folder = await client
     .collection('io.cozy.files')
     .statByPath(options.folderPath)
   let createFileOptions = {
     name: getFileName(entry),
-    dirID: folder.data._id
+    dirId: folder.data._id
   }
   if (options.contentType) {
     createFileOptions.contentType = options.contentType
@@ -305,14 +302,23 @@ async function createFile(client, entry, options, method, fileId) {
 
   let fileDocument
   if (method === 'create') {
-    fileDocument = await cozy.files.create(toCreate, createFileOptions)
+    const clientResponse = await client.save({
+      _type: 'io.cozy.files',
+      type: 'file',
+      data: toCreate,
+      ...createFileOptions
+    })
+    fileDocument = clientResponse.data
   } else if (method === 'updateById') {
     log.debug(`replacing file for ${entry.filename}`)
-    fileDocument = await cozy.files.updateById(
-      fileId,
-      toCreate,
-      createFileOptions
-    )
+    const clientResponse = client.save({
+      _id: file._id,
+      _rev: file._rev,
+      _type: 'io.cozy.files',
+      data: toCreate,
+      ...createFileOptions
+    })
+    fileDocument = clientResponse.data
   }
   if (options.validateFile) {
     if ((await options.validateFile(fileDocument)) === false) {
@@ -516,12 +522,4 @@ async function getOrCreateDestinationPath(entry, saveOptions) {
   //   await mkdirp(finalPath)
   // }
   return finalPath
-}
-
-function initCozyClientJs(cozyClient) {
-  const { uri } = cozyClient.stackClient
-  return new Client({
-    cozyURL: uri,
-    token: cozyClient.stackClient.getAccessToken()
-  })
 }
