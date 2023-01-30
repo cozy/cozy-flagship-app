@@ -400,8 +400,9 @@ const shouldReplaceFile = async function (file, entry, options) {
 const removeFile = async function (client, file) {
   if (!client) {
     log.error('No client, impossible to delete file')
+  } else {
+    await client.collection('io.cozy.files').deleteFilePermanently(file._id)
   }
-  await client.collection('io.cozy.files').deleteFilePermanently(file._id)
 }
 
 module.exports = saveFiles
