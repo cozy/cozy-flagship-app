@@ -53,6 +53,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-caches-
 
+      - name: 'Create env file'
+        run: |
+          touch .env
+          echo ANDROID_SAFETY_NET_API_KEY=${{ secrets.ANDROID_SAFETY_NET_API_KEY }} >> .env
+
       - name: Make Gradlew Executable
         run: cd android && chmod +x ./gradlew
 
