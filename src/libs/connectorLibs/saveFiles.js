@@ -4,8 +4,6 @@ import omit from 'lodash/omit'
 import { Q } from 'cozy-client'
 import retry from 'bluebird-retry'
 
-let client
-
 const log = Minilog('saveFiles')
 
 const saveFiles = async (entries, folderPath, options = {}) => {
@@ -22,7 +20,7 @@ const saveFiles = async (entries, folderPath, options = {}) => {
     throw new Error('No cozy-client instance given')
   }
 
-  client = options.client
+  const client = options.client
 
   const saveOptions = {
     folderPath,
@@ -194,6 +192,7 @@ async function getFileIfExists(client, entry, options) {
     fileIdAttributes && slug && sourceAccountIdentifier
   if (isReadyForFileMetadata) {
     const file = await getFileFromMetaData(
+      client,
       entry,
       fileIdAttributes,
       sourceAccountIdentifier,
@@ -212,6 +211,7 @@ async function getFileIfExists(client, entry, options) {
 }
 
 async function getFileFromMetaData(
+  client,
   entry,
   fileIdAttributes,
   sourceAccountIdentifier,
