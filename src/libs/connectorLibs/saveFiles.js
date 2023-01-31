@@ -6,7 +6,7 @@ import retry from 'bluebird-retry'
 
 const log = Minilog('saveFiles')
 
-const saveFiles = async (entries, folderPath, options = {}) => {
+const saveFiles = async (client, entries, folderPath, options = {}) => {
   if (!entries || entries.length === 0) {
     log.warn('No file to download')
   }
@@ -16,11 +16,9 @@ const saveFiles = async (entries, folderPath, options = {}) => {
   if (!options.sourceAccountIdentifier) {
     log.warn('There is no sourceAccountIdentifier given to saveFiles')
   }
-  if (!options.client) {
+  if (!client) {
     throw new Error('No cozy-client instance given')
   }
-
-  const client = options.client
 
   const saveOptions = {
     folderPath,

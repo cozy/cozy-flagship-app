@@ -257,11 +257,11 @@ export default class Launcher {
     }
     log.info(entries, 'saveFiles entries')
     const result = await saveFiles(
+      client,
       entries,
       await this.getFolderPath(trigger.message.folder_to_save),
       {
         ...options,
-        client,
         manifest,
         sourceAccount: job.message.account,
         sourceAccountIdentifier
