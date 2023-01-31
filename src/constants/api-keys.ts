@@ -1,2 +1,4 @@
+import Config from 'react-native-config'
+
 export const androidSafetyNetApiKey =
-  process.env.ANDROID_SAFETY_NET_API_KEY ?? 'testEnvFallback'
+  Config.ANDROID_SAFETY_NET_API_KEY ?? 'testEnvKey'
