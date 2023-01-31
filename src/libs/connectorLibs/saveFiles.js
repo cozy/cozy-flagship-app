@@ -202,12 +202,12 @@ async function getFileIfExists(client, entry, options) {
     if (!file) {
       // no file with correct metadata, maybe the corresponding file already exist in the default
       // path from a previous version of the connector
-      return await getFileFromPath(client, entry, options)
+      return getFileFromPath(client, entry, options)
     } else {
       return file
     }
   } else {
-    return await getFileFromPath(client, entry, options)
+    return getFileFromPath(client, entry, options)
   }
 }
 
