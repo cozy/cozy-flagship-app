@@ -32,8 +32,8 @@
 		E4B01B9E298AAF93008C812F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		E4B01B9F298AAF93008C812F /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FB7AC79E047043178F1289F7 /* Lato-Bold.ttf */; };
 		E4B01BA0298AAF93008C812F /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0572B798A7D41908174A427 /* Lato-Regular.ttf */; };
-		E4B01BA1298AAF93008C812F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4B01B6D298AA1DB008C812F /* GoogleService-Info.plist */; };
 		E4B01BA7298AAF93008C812F /* hermes.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2C5AE7CC291035ED00E1D723 /* hermes.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E4B01BAF298AB0DE008C812F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4B01BAE298AB0DE008C812F /* GoogleService-Info.plist */; };
 		F3B83720E44641879E6927C6 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0572B798A7D41908174A427 /* Lato-Regular.ttf */; };
 /* End PBXBuildFile section */
 
@@ -102,6 +102,7 @@
 		E4B01B6D298AA1DB008C812F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "CozyReactNative/Prod/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E4B01BAC298AAF93008C812F /* CozyReactNativeDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CozyReactNativeDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B01BAD298AAF93008C812F /* CozyReactNativeDev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "CozyReactNativeDev-Info.plist"; path = "/Users/theo/cozy/cozy-flagship-app/ios/CozyReactNativeDev-Info.plist"; sourceTree = "<absolute>"; };
+		E4B01BAE298AB0DE008C812F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "CozyReactNative/Dev/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EBA740E658AB4C90BED7F6D9 /* Lato-Regular.woff2 */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.woff2"; path = "../assets/fonts/Lato-Regular.woff2"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FB7AC79E047043178F1289F7 /* Lato-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Bold.ttf"; path = "../assets/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
@@ -201,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				E4B01B6D298AA1DB008C812F /* GoogleService-Info.plist */,
+				E4B01BAE298AB0DE008C812F /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* CozyReactNative */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* CozyReactNativeTests */,
@@ -386,12 +388,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4B01B9B298AAF93008C812F /* BootSplash.storyboard in Resources */,
+				E4B01BAF298AB0DE008C812F /* GoogleService-Info.plist in Resources */,
 				E4B01B9C298AAF93008C812F /* assets in Resources */,
 				E4B01B9D298AAF93008C812F /* LaunchScreen.storyboard in Resources */,
 				E4B01B9E298AAF93008C812F /* Images.xcassets in Resources */,
 				E4B01B9F298AAF93008C812F /* Lato-Bold.ttf in Resources */,
 				E4B01BA0298AAF93008C812F /* Lato-Regular.ttf in Resources */,
-				E4B01BA1298AAF93008C812F /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
