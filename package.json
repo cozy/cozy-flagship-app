@@ -18,6 +18,7 @@
     "start": "react-native start",
     "test": "jest connectors/**/* src/**/* scripts/* --detectOpenHandles --forceExit",
     "token": "node scripts/token.js",
+    "typecheck": "yarn tsc --noEmit",
     "web": "webpack serve --open --config webpack.config.js --inline --hot --port=9999",
     "web:test": "react-app-rewired test --env=jsdom"
   },
