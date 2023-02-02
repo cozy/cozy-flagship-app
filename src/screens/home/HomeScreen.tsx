@@ -6,7 +6,7 @@ import {
   RouteProp
 } from '@react-navigation/native'
 
-import CozyClient, { CozyProvider } from 'cozy-client'
+import CozyClient from 'cozy-client'
 
 import HomeView from '/screens/home/components/HomeView'
 import LauncherView from '/screens/connectors/LauncherView'

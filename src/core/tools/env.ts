@@ -1,5 +1,5 @@
 import strings from '/constants/strings.json'
-import { devConfig } from '/constants/dev-config'
+import { getDevConfig, initDev } from '/core/tools/dev'
 
 let enableSentryOn = [strings.environments.production]
 
@@ -29,20 +29,34 @@ const name =
 
 const nameIs = (envName: string): boolean => envName === name
 
-if (devConfig.sentry) toggleLocalSentry(true)
-
 const hasSentryEnabled = enableSentryOn.some(
   environment => environment === name
 )
 
 export const isDev = (): boolean => nameIs(strings.environments.test)
 
+export const isTest = (): boolean => process.env.NODE_ENV === 'test'
 /**
  * The native console.debug is used here,
  * because its color is more visible than minilog's color
  */
 // eslint-disable-next-line no-console
-export const devlog = isDev() ? console.debug : (): void => void 0
+export const devlog = isDev() && !isTest() ? console.debug : (): void => void 0
+
+initDev(isDev()).catch(error => devlog('failed to init dev env', error))
+
+const { disableGetIndex, enableLocalSentry, enableReduxLogger } = getDevConfig(
+  isDev()
+)
+
+if (enableLocalSentry) toggleLocalSentry(true)
+
+export const isSentryDebugMode = (): boolean => enableLocalSentry
+
+export const shouldDisableGetIndex = (): boolean => disableGetIndex
+
+export const shouldEnableReduxLogger = (): boolean =>
+  enableReduxLogger && !isTest()
 
 export const EnvService = {
   name,

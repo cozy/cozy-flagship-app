@@ -1,6 +1,6 @@
 import { Breadcrumb, Event } from '@sentry/react-native'
 
-import { devlog } from '/libs/services/EnvService'
+import { devlog } from '/core/tools/env'
 
 const isBreadcrumb = (event: Event | Breadcrumb): event is Breadcrumb =>
   (event as Breadcrumb).data !== undefined

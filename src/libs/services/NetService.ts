@@ -1,29 +1,15 @@
-import NetInfo, {
-  NetInfoState,
-  NetInfoStateType
-} from '@react-native-community/netinfo'
+import NetInfo, { NetInfoState } from '@react-native-community/netinfo'
 import { useEffect } from 'react'
 
 import CozyClient from 'cozy-client'
 import Minilog from '@cozy/minilog'
 
 import strings from '/constants/strings.json'
-import { devConfig } from '/constants/dev-config'
 import { reset } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { showSplashScreen } from '/libs/services/SplashScreenService'
 
 const log = Minilog('NetService')
-
-if (devConfig.forceOffline) {
-  NetInfo.fetch = (): Promise<NetInfoState> =>
-    Promise.resolve({
-      details: null,
-      isConnected: false,
-      isInternetReachable: false,
-      type: NetInfoStateType.none
-    })
-}
 
 const configureService = (client?: CozyClient): void => {
   NetInfo.configure({

@@ -1,7 +1,6 @@
 import RN from 'react-native'
 import RNFS from 'react-native-fs'
 
-import { devConfig } from '/constants/dev-config'
 import { fillIndexWithData, getIndexForFqdnAndSlug } from './indexGenerator'
 
 import {
@@ -15,6 +14,7 @@ import {
 } from './httpPaths'
 
 import { getAssetVersion, prepareAssets } from './copyAllFilesFromBundleAssets'
+import { shouldDisableGetIndex } from '/core/tools/env'
 
 jest.mock('react-native', () => ({
   Platform: {
@@ -47,7 +47,12 @@ jest.mock('./httpPaths', () => ({
       .getBaseRelativePathForFqdnAndSlugAndCurrentVersion
 }))
 
-const ifTestEnabled = devConfig.disableGetIndex ? describe.skip : describe
+jest.mock('react-native-bootsplash', () => ({
+  hide: jest.fn(),
+  show: jest.fn()
+}))
+
+const ifTestEnabled = shouldDisableGetIndex() ? describe.skip : describe
 
 ifTestEnabled('indexGenerator', () => {
   beforeEach(() => {
