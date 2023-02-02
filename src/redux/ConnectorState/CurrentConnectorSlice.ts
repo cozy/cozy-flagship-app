@@ -14,7 +14,10 @@ export const currentConnectorSlice = createSlice({
   name: 'currentConnector',
   initialState,
   reducers: {
-    setCurrentRunningConnector: (state, action: PayloadAction<string>) => {
+    setCurrentRunningConnector: (
+      state,
+      action: PayloadAction<string | undefined>
+    ) => {
       state.currentRunningConnector = action.payload
     }
   }
