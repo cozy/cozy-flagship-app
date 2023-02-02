@@ -11,6 +11,10 @@ import { getDimensions } from '/libs/dimensions'
 import ReactNativeLauncher from '/libs/ReactNativeLauncher'
 import { getColors } from '/ui/colors'
 import strings from '/constants/strings.json'
+import {
+  startTimeout,
+  stopTimeout
+} from '/screens/connectors/core/handleTimeout'
 
 const log = Minilog('LauncherView')
 
@@ -71,6 +75,7 @@ class LauncherView extends Component {
   async componentDidMount() {
     this.launcher = new ReactNativeLauncher()
     this.launcher.setLogger(this.props.onKonnectorLog)
+
     this.launcher.setStartContext({
       ...this.props.launcherContext,
       client: this.props.client,
@@ -99,7 +104,16 @@ class LauncherView extends Component {
         contentScript: get(this, 'state.connector.content')
       })
     }
+
+    startTimeout(() => {
+      this.launcher.stop({ message: 'context deadline exceeded' })
+      this.props.setLauncherContext({ state: 'default' })
+    })
+
     await this.launcher.start({ initConnectorError })
+
+    stopTimeout()
+
     this.props.setLauncherContext({ state: 'default' })
   }
 
