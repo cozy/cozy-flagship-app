@@ -85,5 +85,9 @@
 	<false/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Permet le déverouillage de l'application en utilisant FaceID</string>
+	<key>FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED</key>
+	<true/>
+	<key>GOOGLE_ANALYTICS_IDFV_COLLECTION_ENABLED</key>
+	<false/>
 </dict>
 </plist>
