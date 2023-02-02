@@ -7,12 +7,11 @@ import { manageIconCache } from '/libs/functions/iconTable'
 import { getDefaultIconParams } from '/libs/functions/openApp'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
-import { useSplashScreen } from '/hooks/useSplashScreen'
-
 import {
   parseFallbackURL,
   parseOnboardingURL
-} from './useAppBootstrap.functions'
+} from '/hooks/useAppBootstrap.functions'
+import { useSplashScreen } from '/hooks/useSplashScreen'
 
 export const useAppBootstrap = client => {
   const [initialRoute, setInitialRoute] = useState('fetching')
