@@ -8,12 +8,35 @@ import { Typography } from '/ui/Typography'
 import { styles } from '/ui/CozyDialogs/styles'
 
 interface ConfirmDialogProps {
-  actions: ReactElement<{
-    children: ReactElement<{ style: StyleProp<ViewStyle> }>[]
-  }>
+  actions:
+    | ReactElement<{
+        children: ReactElement<{ style: StyleProp<ViewStyle> }>[]
+      }>
+    | ReactElement<{ style: StyleProp<ViewStyle> }>
   content: string
   onClose: () => void
   title: string
+}
+
+const renderActions = (
+  actions: ConfirmDialogProps['actions']
+): ReactElement => {
+  if ('children' in actions.props && actions.props.children.length > 0) {
+    return (
+      <View style={styles.footer}>
+        {actions.props.children.map((child, index, array) =>
+          React.cloneElement(child, {
+            style: {
+              ...styles.actions,
+              ...(index + 1 === array.length ? styles.actionsLast : {})
+            }
+          })
+        )}
+      </View>
+    )
+  }
+
+  return actions
 }
 
 export const ConfirmDialog = ({
@@ -37,16 +60,7 @@ export const ConfirmDialog = ({
           <Typography>{content}</Typography>
         </View>
 
-        <View style={styles.footer}>
-          {actions.props.children.map((child, index, array) =>
-            React.cloneElement(child, {
-              style: {
-                ...styles.actions,
-                ...(index + 1 === array.length ? styles.actionsLast : {})
-              }
-            })
-          )}
-        </View>
+        <View style={styles.footer}>{renderActions(actions)}</View>
       </View>
     </Pressable>
   </Modal>

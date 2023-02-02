@@ -22,6 +22,17 @@ const unzoomHomeView = webviewRef => {
 
 let hasRenderedOnce = false
 
+/**
+ * @typedef Props
+ * @prop {(arg: import('/libs/connectors/models').LauncherContext) => void} setLauncherContext
+ * @prop {unknown} navigation
+ * @prop {unknown} route
+ * @prop {(arg: import('/libs/intents/setFlagshipUI').BarStyle) => void} setBarStyle
+ */
+
+/**
+ * @param {Props} props
+ */
 const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   const client = useClient()
   const [uri, setUri] = useState('')

@@ -6,36 +6,31 @@ import {
   RouteProp
 } from '@react-navigation/native'
 
-import CozyClient from 'cozy-client'
-
 import HomeView from '/screens/home/components/HomeView'
 import LauncherView from '/screens/connectors/LauncherView'
 import { StatusBarStyle } from '/libs/intents/setFlagshipUI'
 import { styles } from '/screens/home/HomeScreen.styles'
-import { useLauncherClient } from '/hooks/useLauncherClient'
-import { LauncherContext } from '/libs/connectors/models'
+import { useLauncherContext } from '/screens/home/hooks/useLauncherContext'
 
 interface HomeScreenProps {
   navigation: NavigationProp<ParamListBase>
   route: RouteProp<ParamListBase>
 }
 
-const isLauncherReady = (
-  context: LauncherContext
-): context is LauncherContext => context.state !== 'default'
-
-const isClientReady = (client: CozyClient | undefined): client is CozyClient =>
-  Boolean(client)
-
 export const HomeScreen = ({
   navigation,
   route
 }: HomeScreenProps): JSX.Element => {
   const [barStyle, setBarStyle] = useState(StatusBarStyle.Light)
-  const [launcherContext, setLauncherContext] = useState<LauncherContext>({
-    state: 'default'
-  })
-  const { launcherClient } = useLauncherClient(launcherContext.value)
+  const {
+    LauncherDialog,
+    canDisplayLauncher,
+    launcherClient,
+    launcherContext,
+    resetLauncherContext,
+    setLauncherContext,
+    trySetLauncherContext
+  } = useLauncherContext()
 
   return (
     <View style={styles.container}>
@@ -45,17 +40,19 @@ export const HomeScreen = ({
         navigation={navigation}
         route={route}
         setBarStyle={setBarStyle}
-        setLauncherContext={setLauncherContext}
+        setLauncherContext={trySetLauncherContext}
       />
 
-      {isLauncherReady(launcherContext) && isClientReady(launcherClient) && (
+      {canDisplayLauncher() && (
         <LauncherView
           launcherClient={launcherClient}
           launcherContext={launcherContext.value}
-          retry={(): void => setLauncherContext({ state: 'default' })}
+          retry={resetLauncherContext}
           setLauncherContext={setLauncherContext}
         />
       )}
+
+      {LauncherDialog}
     </View>
   )
 }
