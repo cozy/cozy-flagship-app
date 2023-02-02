@@ -1,7 +1,13 @@
+/**
+ * You can modify this object locally, but don't commit changes.
+ * For instance: `$ git update-index --assume-unchanged src/constants/dev-config.ts`.
+ * Please do not use this object directly in other files, use the exported functions instead.
+ */
 export const devConfig = {
-  disableGetIndex: false, // Make cozy-app hosted by webpack-dev-server work with HTTPServer
-  forceHideSplashScreen: false, // Hide react-native splash screen renders in development mode,
-  ignoreLogBox: false, // Hide react-native logbox renders in development mode,
-  forceOffline: false, // Force offline mode in development mode,
-  sentry: false // Allow Sentry logging in development mode,
+  disableGetIndex: false, // Bypass HTTPServer HTML generation which will fallback to local stack, useful for webpack-dev-server
+  enableLocalSentry: false, // Be warned that it will send actual logs to Sentry on the "test" environment, use sparingly
+  enableReduxLogger: false, // Outputs to console every Redux action with payload, prev and next state
+  forceHideSplashScreen: false, // Hide react-native splash screen renders, useful for debugging in case of a webview crash
+  forceOffline: false, // Force offline mode by overwriting the NetInfo module and returning a fake offline state,
+  ignoreLogBox: false // Hide react-native LogBox renders but still display logs to the console,
 }

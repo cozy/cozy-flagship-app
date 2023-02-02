@@ -13,7 +13,7 @@ import {
   setCurrentAppVersionForFqdnAndSlug
 } from '../cozyAppBundle/cozyAppBundleConfiguration'
 import { replaceAll } from '../functions/stringHelpers'
-import { devConfig } from '/constants/dev-config'
+import { shouldDisableGetIndex } from '/core/tools/env'
 
 const log = Minilog('IndexGenerator')
 
@@ -67,7 +67,7 @@ const isSlugInAllowlist = currentSlug =>
   )
 
 export const getIndexForFqdnAndSlug = async (fqdn, slug) => {
-  if (devConfig.disableGetIndex) return false // Make cozy-app hosted by webpack-dev-server work with HTTPServer
+  if (shouldDisableGetIndex()) return false // Make cozy-app hosted by webpack-dev-server work with HTTPServer
 
   if (!isSlugInAllowlist(slug)) return false
 

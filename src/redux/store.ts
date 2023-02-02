@@ -1,17 +1,20 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import {
-  persistStore,
-  persistReducer,
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
   PURGE,
-  REGISTER
+  REGISTER,
+  REHYDRATE,
+  persistReducer,
+  persistStore
 } from 'redux-persist'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import currentConnectorSlice from '/redux/ConnectorState/CurrentConnectorSlice'
+import logger from 'redux-logger'
+
 import connectorLogsSlice from '/redux/ConnectorState/ConnectorLogsSlice'
+import currentConnectorSlice from '/redux/ConnectorState/CurrentConnectorSlice'
+import { shouldEnableReduxLogger } from '/core/tools/env'
 
 const persistConfig = {
   key: 'root',
@@ -27,12 +30,19 @@ const persistedReducer = persistReducer(persistConfig, rootReducter)
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: getDefaultMiddleware =>
-    getDefaultMiddleware({
+  middleware: getDefaultMiddleware => {
+    const middlewares = getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+        ignoredActions: [FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE]
       }
     })
+
+    if (shouldEnableReduxLogger()) {
+      middlewares.push(logger)
+    }
+
+    return middlewares
+  }
 })
 
 export const persistor = persistStore(store)

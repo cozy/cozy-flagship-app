@@ -2,7 +2,7 @@ import { Breadcrumb, Event } from '@sentry/react-native'
 
 import { scrubPhoneNumbers } from '/libs/monitoring/scrubbing'
 
-jest.mock('/libs/services/EnvService', () => ({
+jest.mock('/core/tools/env', () => ({
   devlog: jest.fn()
 }))
 

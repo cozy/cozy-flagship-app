@@ -1,15 +1,12 @@
 import Minilog from '@cozy/minilog'
-import { Linking, LogBox } from 'react-native'
+import { Linking } from 'react-native'
 import { useEffect, useState } from 'react'
 
 import { SentryCustomTags, setSentryTag } from '/libs/monitoring/Sentry'
-import { devConfig } from '/constants/dev-config'
 import { manageIconCache } from '/libs/functions/iconTable'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { useSplashScreen } from '/hooks/useSplashScreen'
-
-if (devConfig.ignoreLogBox) LogBox.ignoreAllLogs()
 
 const log = Minilog('useAppBootstrap')
 
@@ -69,8 +66,6 @@ export const useAppBootstrap = client => {
   const [initialScreen, setInitialScreen] = useState('fetching')
   const [isLoading, setIsLoading] = useState(true)
   const { hideSplashScreen } = useSplashScreen()
-
-  if (devConfig.forceHideSplashScreen) hideSplashScreen()
 
   // Handling initial URL init
   useEffect(() => {

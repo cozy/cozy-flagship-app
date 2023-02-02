@@ -1,14 +1,11 @@
 import * as Sentry from '@sentry/react-native'
 import flow from 'lodash/fp/flow'
 import { CaptureConsole } from '@sentry/integrations'
-import { devConfig } from '/constants/dev-config'
 
 import strings from '/constants/strings.json'
-import { devlog, EnvService, isDev } from '/libs/services/EnvService'
+import { devlog, EnvService, isSentryDebugMode } from '/core/tools/env'
 import { scrubPhoneNumbers } from '/libs/monitoring/scrubbing'
 import { version } from '../../../package.json'
-
-const isDebugMode = isDev() && devConfig.sentry
 
 export const SentryCustomTags = {
   Instance: 'cozy-instance',
@@ -29,13 +26,15 @@ Sentry.init({
     flow(scrubPhoneNumbers)(breadcrumb, hint) as Sentry.Breadcrumb,
   beforeSend: (event, hint) =>
     flow(scrubPhoneNumbers)(event, hint) as Sentry.Event,
-  debug: isDebugMode,
+  debug: isSentryDebugMode(),
   dsn: strings.SENTRY_DSN_URL,
   enabled: EnvService.hasSentryEnabled,
   environment: EnvService.name,
   integrations: [new CaptureConsole({ levels: ['error', 'warn'] })],
   onReady: ({ didCallNativeInit }) =>
-    didCallNativeInit && isDebugMode && devlog('Sentry native SDK initialized')
+    didCallNativeInit &&
+    isSentryDebugMode() &&
+    devlog('Sentry native SDK initialized')
 })
 
 Sentry.setTag(SentryCustomTags.Version, version)
