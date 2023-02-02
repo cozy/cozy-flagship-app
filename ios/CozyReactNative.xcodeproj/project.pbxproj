@@ -12,8 +12,6 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1787FB853A76872C4D38807A /* libPods-CozyReactNative-CozyReactNativeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 79D616F87DFFDD069B1F634E /* libPods-CozyReactNative-CozyReactNativeTests.a */; };
-		2C5AE7D0291280CC00E1D723 /* hermes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C5AE7CC291035ED00E1D723 /* hermes.xcframework */; };
-		2C5AE7D1291280CC00E1D723 /* hermes.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2C5AE7CC291035ED00E1D723 /* hermes.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2C7AA45328157D2E0052F4D8 /* HttpServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7AA45228157D2E0052F4D8 /* HttpServer.swift */; };
 		2C7AA455281584D30052F4D8 /* HttpServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7AA454281584D30052F4D8 /* HttpServer.m */; };
 		573255ED23C142D79968C840 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FB7AC79E047043178F1289F7 /* Lato-Bold.ttf */; };
@@ -34,20 +32,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		2C5AE7D2291280CC00E1D723 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				2C5AE7D1291280CC00E1D723 /* hermes.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		00323DA8D6BE49D2BE5C238B /* Lato-Bold.woff */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Bold.woff"; path = "../assets/fonts/Lato-Bold.woff"; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* CozyReactNativeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CozyReactNativeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -59,7 +43,6 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = CozyReactNative/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = CozyReactNative/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = CozyReactNative/main.m; sourceTree = "<group>"; };
-		2C5AE7CC291035ED00E1D723 /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = hermes.xcframework; path = "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework"; sourceTree = "<group>"; };
 		2C7AA45128157D2D0052F4D8 /* CozyReactNative-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CozyReactNative-Bridging-Header.h"; sourceTree = "<group>"; };
 		2C7AA45228157D2E0052F4D8 /* HttpServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpServer.swift; sourceTree = "<group>"; };
 		2C7AA454281584D30052F4D8 /* HttpServer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HttpServer.m; sourceTree = "<group>"; };
@@ -95,7 +78,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				643009FE24043073DD6A15DE /* libPods-CozyReactNative.a in Frameworks */,
-				2C5AE7D0291280CC00E1D723 /* hermes.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,7 +131,6 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2C5AE7CC291035ED00E1D723 /* hermes.xcframework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				CA875020D8BE788449DD47FC /* libPods-CozyReactNative.a */,
 				79D616F87DFFDD069B1F634E /* libPods-CozyReactNative-CozyReactNativeTests.a */,
@@ -251,7 +232,6 @@
 				53A0BB98387310FC2DDBCB68 /* [CP] Embed Pods Frameworks */,
 				02F6E7460B106C0824136025 /* [CP] Copy Pods Resources */,
 				592D30E9601C4E6BAD83C8B3 /* Upload Debug Symbols to Sentry */,
-				2C5AE7D2291280CC00E1D723 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
