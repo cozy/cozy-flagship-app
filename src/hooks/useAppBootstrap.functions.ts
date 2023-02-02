@@ -9,6 +9,10 @@ interface OnboardingParams {
   fqdn: string | null
 }
 
+const MAIN_APP = 'home'
+const FALLBACK_PARAM = 'fallback'
+const UNIVERSAL_LINK_BASE_PATH = 'flagship'
+
 export const parseOnboardingURL = (
   url: string | null
 ): OnboardingParams | undefined => {
@@ -55,12 +59,15 @@ export const parseFallbackURL = (url: string | null): FallbackUrl => {
 
   try {
     const makeURL = new URL(url)
-    const fallback = makeURL.searchParams.get('fallback') ?? undefined
-    const isHome = makeURL.pathname.split('/')[1] === 'home'
+    const fallback = makeURL.searchParams.get(FALLBACK_PARAM) ?? undefined
+    const isMainApp =
+      makeURL.pathname.startsWith(`/${MAIN_APP}`) ||
+      makeURL.pathname.startsWith(`/${UNIVERSAL_LINK_BASE_PATH}/${MAIN_APP}`) ||
+      makeURL.host === `${MAIN_APP}`
 
     return {
-      mainAppFallbackURL: isHome ? fallback : undefined,
-      cozyAppFallbackURL: !isHome ? fallback : undefined
+      mainAppFallbackURL: isMainApp ? fallback : undefined,
+      cozyAppFallbackURL: !isMainApp ? fallback : undefined
     }
   } catch (error) {
     const errorMessage = getErrorMessage(error)

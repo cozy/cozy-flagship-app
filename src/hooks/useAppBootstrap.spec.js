@@ -16,10 +16,12 @@ const HOME_FALLBACK_URL =
   'https://claude-drive.mycozy.cloud/#/connected/connector_slug/new'
 const HOME_FALLBACK_URL_ENCODED =
   'https%3A%2F%2Fclaude-drive.mycozy.cloud%2F%23%2Fconnected%2Fconnector_slug%2Fnew'
-const HOME_UNIVERSAL_LINK = `https://links.mycozy.cloud/home?fallback=${HOME_FALLBACK_URL_ENCODED}`
+const HOME_UNIVERSAL_LINK = `https://links.mycozy.cloud/flagship/home?fallback=${HOME_FALLBACK_URL_ENCODED}`
+const HOME_ANDROID_SCHEME = `cozy://home?fallback=${HOME_FALLBACK_URL_ENCODED}`
 const APP_FALLBACK_URL = `https://claude-drive.mycozy.cloud/#/folder/SOME_FOLDER_ID`
 const APP_FALLBACK_URL_ENCODED = `https%3A%2F%2Fclaude-drive.mycozy.cloud%2F%23%2Ffolder%2FSOME_FOLDER_ID`
-const APP_UNIVERSAL_LINK = `https://links.mycozy.cloud/drive/folder/SOME_FOLDER_ID?fallback=${APP_FALLBACK_URL_ENCODED}`
+const APP_UNIVERSAL_LINK = `https://links.mycozy.cloud/flagship/drive/folder/SOME_FOLDER_ID?fallback=${APP_FALLBACK_URL_ENCODED}`
+const APP_ANDROID_SCHEME = `cozy://drive/folder/SOME_FOLDER_ID?fallback=${APP_FALLBACK_URL_ENCODED}`
 const INVALID_LINK = 'https://foo.com'
 
 jest.mock('../libs/client', () => ({
@@ -226,7 +228,7 @@ it('Should handle WITH client NO initial URL', async () => {
   })
 })
 
-it('Should handle WITH client WITH initial URL as HOME', async () => {
+it('Should handle WITH client WITH initial URL as HOME (Universal Link)', async () => {
   Linking.getInitialURL.mockResolvedValueOnce(HOME_UNIVERSAL_LINK)
 
   const { result, waitForValueToChange } = renderHook(() =>
@@ -248,8 +250,52 @@ it('Should handle WITH client WITH initial URL as HOME', async () => {
   })
 })
 
-it('Should handle WITH client WITH initial URL as APP LINK', async () => {
+it('Should handle WITH client WITH initial URL as HOME (Android Scheme)', async () => {
+  Linking.getInitialURL.mockResolvedValueOnce(HOME_ANDROID_SCHEME)
+
+  const { result, waitForValueToChange } = renderHook(() =>
+    useAppBootstrap(mockClient)
+  )
+
+  await waitForValueToChange(() => result.current.isLoading)
+
+  expect(result.current).toStrictEqual({
+    client: mockClient,
+    initialRoute: {
+      route: routes.home,
+      params: {
+        mainAppFallbackURL: HOME_FALLBACK_URL,
+        cozyAppFallbackURL: undefined
+      }
+    },
+    isLoading: false
+  })
+})
+
+it('Should handle WITH client WITH initial URL as APP LINK (Universal Link)', async () => {
   Linking.getInitialURL.mockResolvedValueOnce(APP_UNIVERSAL_LINK)
+
+  const { result, waitForValueToChange } = renderHook(() =>
+    useAppBootstrap(mockClient)
+  )
+
+  await waitForValueToChange(() => result.current.isLoading)
+
+  expect(result.current).toStrictEqual({
+    client: mockClient,
+    initialRoute: {
+      route: routes.home,
+      params: {
+        mainAppFallbackURL: undefined,
+        cozyAppFallbackURL: APP_FALLBACK_URL
+      }
+    },
+    isLoading: false
+  })
+})
+
+it('Should handle WITH client WITH initial URL as APP LINK (Android Scheme)', async () => {
+  Linking.getInitialURL.mockResolvedValueOnce(APP_ANDROID_SCHEME)
 
   const { result, waitForValueToChange } = renderHook(() =>
     useAppBootstrap(mockClient)
