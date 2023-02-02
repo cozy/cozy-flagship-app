@@ -3,7 +3,10 @@ import CozyClient from 'cozy-client'
 
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { sendConnectorsLogs } from '/libs/connectors/sendConnectorsLogs'
-import { CurrentConnectorState } from '/redux/ConnectorState/CurrentConnectorSlice'
+import {
+  CurrentConnectorState,
+  setCurrentRunningConnector
+} from '/redux/ConnectorState/CurrentConnectorSlice'
 import { store } from '/redux/store'
 
 const log = Minilog('cleanConnectorsOnBoot')
@@ -30,6 +33,8 @@ export const cleanConnectorsOnBoot = async (
     log.error(
       `A running connector is tagged as running. This means that the app may have previously crashed. Related connector: ${runningConnector}`
     )
+
+    store.dispatch(setCurrentRunningConnector())
   }
 
   await sendConnectorsLogs(client, 4)
