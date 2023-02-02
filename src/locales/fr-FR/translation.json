@@ -1,4 +1,11 @@
 {
+  "connectors": {
+    "errorDoubleRun": {
+      "title": "Déjà un compte en cours d'exécution",
+      "body": "Un compte {{running_connector}} est déjà en cours d'éxecution. Vous ne pouvez pas lancer deux comptes simultanément. Veuillez donc attendre la fin de l'exécution du compte {{running_connector}} avant de lancer votre compte {{concurrent_connector}}",
+      "button": "J'ai compris"
+    }
+  },
   "errors": {
     "badUnlockPassword": "Les identifiants que vous avez saisis sont incorrects, veuillez ré-essayer.",
     "badUnlockPin": "Le code PIN que vous avez saisi est incorrect, veuillez ré-essayer",
