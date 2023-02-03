@@ -82,4 +82,3 @@ jobs:
           releaseFiles: android/app/build/outputs/bundle/release/*.aab
           track: internal
           status: completed
-          inAppUpdatePriority: 2
