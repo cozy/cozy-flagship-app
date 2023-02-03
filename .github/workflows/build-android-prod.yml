@@ -1,8 +1,7 @@
 name: Android Deploy
 
-on:
-  release:
-    types: [published]
+on: 
+  workflow_dispatch:
 
 jobs:
   android-build:
