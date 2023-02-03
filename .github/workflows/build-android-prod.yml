@@ -1,4 +1,4 @@
-name: Android Build
+name: Android Deploy
 
 on:
   release:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   android-build:
-    name: Android Build
+    name: Android Deploy
     runs-on: ubuntu-latest
 
     steps:
