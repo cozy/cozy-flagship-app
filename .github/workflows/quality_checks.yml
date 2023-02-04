@@ -5,6 +5,7 @@ on:
   pull_request:
     branches:
       - master
+  push:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,6 +25,11 @@ jobs:
         node-version: '16.x'
         cache: 'yarn'
 
+    - name: Setup CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: javascript
+
     - name: Install dependencies
       run: yarn --frozen-lockfile
 
@@ -35,3 +41,6 @@ jobs:
 
     - name: Typecheck
       run: yarn typecheck
+
+    - name: CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
