@@ -7,6 +7,7 @@ import Launcher from './Launcher'
 import { getConnectorBundle } from '/libs/cozyAppBundle/cozyAppBundle.functions'
 import { saveCookie, getCookie, removeCookie } from './keychain'
 import { updateCozyAppBundle } from '/libs/cozyAppBundle/cozyAppBundle'
+import { sendConnectorsLogs } from '/libs/connectors/sendConnectorsLogs'
 
 const log = Minilog('ReactNativeLauncher')
 
@@ -101,6 +102,9 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async stop({ message } = {}) {
+    const context = this.getStartContext()
+    const client = context.client
+    sendConnectorsLogs(client)
     if (message) {
       await this.updateJobResult({
         state: 'errored',
