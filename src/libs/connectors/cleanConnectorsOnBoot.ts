@@ -37,7 +37,7 @@ export const cleanConnectorsOnBoot = async (
     store.dispatch(setCurrentRunningConnector())
   }
 
-  await sendConnectorsLogs(client, 4)
+  await sendConnectorsLogs(client)
 }
 
 /**
