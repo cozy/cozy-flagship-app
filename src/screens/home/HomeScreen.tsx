@@ -1,16 +1,10 @@
 import React, { useState } from 'react'
 import { StatusBar, View } from 'react-native'
-
-import Minilog from '@cozy/minilog'
-const konnLog = Minilog('Konnector')
-
 import {
   NavigationProp,
   ParamListBase,
   RouteProp
 } from '@react-navigation/native'
-import { useConnectors } from '/hooks/useConnectors'
-import { LogObj } from '/redux/ConnectorState/ConnectorLogsSlice'
 
 import HomeView from '/screens/home/components/HomeView'
 import LauncherView from '/screens/connectors/LauncherView'
@@ -33,6 +27,7 @@ export const HomeScreen = ({
     canDisplayLauncher,
     launcherClient,
     launcherContext,
+    onKonnectorLog,
     resetLauncherContext,
     setLauncherContext,
     trySetLauncherContext
@@ -55,6 +50,7 @@ export const HomeScreen = ({
           launcherContext={launcherContext.value}
           retry={resetLauncherContext}
           setLauncherContext={setLauncherContext}
+          onKonnectorLog={onKonnectorLog}
         />
       )}
 
