@@ -53,7 +53,8 @@ class LauncherView extends Component {
         })
       })
     } catch (err) {
-      return err
+      log.error({ err })
+      return 'UNKNOWN_ERROR'
     }
   }
 
@@ -186,16 +187,18 @@ class LauncherView extends Component {
    *
    * @param {Object} event
    */
-  onWorkerError(event) {
-    log.error('worker error event', event)
+  onWorkerError({ nativeEvent }) {
+    log.error('onWorkerError', { nativeEvent })
+    this.stop({ message: 'VENDOR_DOWN' })
   }
   /**
    * When an error is detected in the pilot webview
    *
    * @param {Object} event
    */
-  onPilotError(event) {
-    log.error('error event', event)
+  onPilotError({ nativeEvent }) {
+    log.error('onWorkerError', { nativeEvent })
+    this.stop({ message: 'VENDOR_DOWN' })
   }
   /**
    * Postmessage relay from the pilot to  the launcher
