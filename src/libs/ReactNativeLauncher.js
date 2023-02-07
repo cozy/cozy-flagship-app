@@ -104,7 +104,7 @@ class ReactNativeLauncher extends Launcher {
   async stop({ message } = {}) {
     const context = this.getStartContext()
     const client = context.client
-    sendConnectorsLogs(client)
+    await sendConnectorsLogs(client)
     if (message) {
       await this.updateJobResult({
         state: 'errored',
