@@ -40,7 +40,41 @@ export const checkIsRedirectOutside = ({ currentUrl, destinationUrl }) => {
 
   return false
 }
+/**
+ *
+ * @param {object} params
+ * @param {string} params.cozyUrl The URL of the cozy, from client.stackclient.uri
+ * @param {string} params.destinationUrl The URL we want to redirect the user
+ * @param {'flat' | 'nested'} params.subdomainType - the Cozy's subdomain type
+ * @returns {boolean} True is the destination is the same cozy
+ */
+export const isSameCozy = ({
+  cozyUrl,
+  destinationUrl,
+  subdomainType = 'flat'
+}) => {
+  try {
+    const currentUrlData = deconstructCozyWebLinkWithSlug(
+      cozyUrl,
+      subdomainType
+    )
+    const destinationUrlData = deconstructCozyWebLinkWithSlug(
+      destinationUrl,
+      subdomainType
+    )
+    if (
+      currentUrlData.cozyBaseDomain !== destinationUrlData.cozyBaseDomain ||
+      currentUrlData.cozyName !== destinationUrlData.cozyName
+    ) {
+      return false
+    }
 
+    return true
+  } catch (err) {
+    log.error('Error while calling isSameCozy', err)
+    return false
+  }
+}
 /**
  * The function isSameCozy is used to check if the destination url is in the same instance than the cozy url.
  * sharing is in the same instance than the url of the cozy.
@@ -212,6 +246,7 @@ const IAB_OPTIONS = {
 }
 
 export const openUrlInAppBrowser = url => {
+  console.log(' InAppBrowser', InAppBrowser)
   try {
     InAppBrowser.open(url, IAB_OPTIONS)
   } catch (error) {
