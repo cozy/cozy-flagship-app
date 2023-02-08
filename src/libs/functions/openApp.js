@@ -1,5 +1,6 @@
 import { Alert, Linking, Platform } from 'react-native'
 import { getDimensions } from '/libs/dimensions'
+import { isSameCozy, openUrlInAppBrowser } from '/libs/functions/urlHelpers'
 /**
  * App's mobile information. Used to describe the app scheme and its store urls
  * @typedef {object} AppManifestMobileInfo
@@ -103,13 +104,26 @@ const openConnectorInHome = (navigation, connector) => {
 
 /**
  * Open the native mobile app if the app has a mobile version
- * Otherwise open the app on a webview using href
+ * Otherwise open the app on a webview using href if the href belongs to the Cozy.
+ * Otherwise open the href inside an InAppBrowser
+ * @param {import("cozy-client/dist/index").CozyClient} client - CozyClient instance
  * @param {any} navigation - The React navigation context
  * @param {string} href - The app web url
  * @param {AppManifest} app - The app information
  * @returns {Promise}
  */
-export const openApp = (navigation, href, app, iconParams) => {
+export const openApp = (client, navigation, href, app, iconParams) => {
+  const subdomainType = client.capabilities?.flat_subdomains ? 'flat' : 'nested'
+  const shouldOpenInIAB = !isSameCozy({
+    cozyUrl: client.getStackClient().uri,
+    destinationUrl: href,
+    subdomainType
+  })
+
+  if (shouldOpenInIAB) {
+    openUrlInAppBrowser(href)
+    return
+  }
   if (app?.type === 'konnector') {
     openConnectorInHome(navigation, app)
     return

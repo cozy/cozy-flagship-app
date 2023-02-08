@@ -40,7 +40,41 @@ export const checkIsRedirectOutside = ({ currentUrl, destinationUrl }) => {
 
   return false
 }
+/**
+ *
+ * @param {object} params
+ * @param {string} params.cozyUrl The URL of the cozy, from client.stackclient.uri
+ * @param {string} params.destinationUrl The URL we want to redirect the user
+ * @param {'flat' | 'nested'} params.subdomainType - the Cozy's subdomain type
+ * @returns {boolean} True is the destination is the same cozy
+ */
+export const isSameCozy = ({
+  cozyUrl,
+  destinationUrl,
+  subdomainType = 'flat'
+}) => {
+  try {
+    const currentUrlData = deconstructCozyWebLinkWithSlug(
+      cozyUrl,
+      subdomainType
+    )
+    const destinationUrlData = deconstructCozyWebLinkWithSlug(
+      destinationUrl,
+      subdomainType
+    )
+    if (
+      currentUrlData.cozyBaseDomain !== destinationUrlData.cozyBaseDomain ||
+      currentUrlData.cozyName !== destinationUrlData.cozyName
+    ) {
+      return false
+    }
 
+    return true
+  } catch (err) {
+    log.error('Error while calling isSameCozy', err)
+    return false
+  }
+}
 /**
  * Compare current URL and target URL and detect if the app should navigate to another cozy-app
  * or if it is another type of navigation (same cozy-app or outgoing link)
