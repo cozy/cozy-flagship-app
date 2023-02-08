@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import CozyClient from 'cozy-client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Minilog from '@cozy/minilog'
@@ -437,4 +438,17 @@ export const fetchCozyAppArchiveInfoForVersion = async (
       }
     } else throw error
   }
+}
+
+export const saveNotificationDeviceToken = async (client, token) => {
+  const oauthOptions = client.getStackClient().oauthOptions
+
+  if (oauthOptions?.notification_device_token === token) return
+
+  await client.getStackClient().updateInformation({
+    ...oauthOptions,
+    notificationDeviceToken: token,
+    notificationPlatform: Platform.OS
+  })
+  await saveClient(client)
 }
