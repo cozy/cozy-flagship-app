@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import logger from 'redux-logger'
 
 import connectorLogsSlice from '/redux/ConnectorState/ConnectorLogsSlice'
+import connectorUrlsSlice from '/redux/ConnectorState/ConnectorUrlsSlice'
 import currentConnectorSlice from '/redux/ConnectorState/CurrentConnectorSlice'
 import { shouldEnableReduxLogger } from '/core/tools/env'
 
@@ -23,7 +24,8 @@ const persistConfig = {
 
 const rootReducter = combineReducers({
   currentConnector: currentConnectorSlice,
-  connectorLogs: connectorLogsSlice
+  connectorLogs: connectorLogsSlice,
+  connectorUrls: connectorUrlsSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducter)

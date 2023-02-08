@@ -6,11 +6,15 @@ import React, { Component } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { WebView } from 'react-native-webview'
 
-import { BackTo } from '/components/ui/icons/BackTo'
-import { getDimensions } from '/libs/dimensions'
 import ReactNativeLauncher from '/libs/ReactNativeLauncher'
-import { getColors } from '/ui/colors'
 import strings from '/constants/strings.json'
+import { BackTo } from '/components/ui/icons/BackTo'
+import { getColors } from '/ui/colors'
+import { getDimensions } from '/libs/dimensions'
+import {
+  cleanAllConnectorCookies,
+  handleWorkerStartRequest
+} from '/libs/connectors/manageCookies'
 
 const log = Minilog('LauncherView')
 
@@ -106,6 +110,7 @@ class LauncherView extends Component {
     if (this.launcher.removeAllListener) {
       this.launcher.removeAllListener()
     }
+    cleanAllConnectorCookies()
     this.launcher.close()
   }
 
@@ -169,6 +174,7 @@ class LauncherView extends Component {
                   this,
                   'state.connector.content'
                 )}
+                onShouldStartLoadWithRequest={handleWorkerStartRequest}
               />
             </View>
           </>

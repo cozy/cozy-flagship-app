@@ -8,6 +8,8 @@ import {
   setCurrentRunningConnector
 } from '/redux/ConnectorState/CurrentConnectorSlice'
 import { store } from '/redux/store'
+import { cleanAllConnectorCookies } from '/libs/connectors/manageCookies'
+import { selectConnectorUrls } from '/redux/ConnectorState/ConnectorUrlsSlice'
 
 const log = Minilog('cleanConnectorsOnBoot')
 
@@ -21,12 +23,14 @@ const getRunningConnector = (state: {
 
 /**
  * Check for still-running connectors, clean them and
- * send remaining connectors' logs on cozy-stack
+ * send remaining connectors' logs on cozy-stack.
+ * Also remove all cookies related to connectors
  */
 export const cleanConnectorsOnBoot = async (
   client: CozyClient
 ): Promise<void> => {
   const state = store.getState()
+  const { urls } = selectConnectorUrls(state)
 
   const runningConnector = getRunningConnector(state)
   if (runningConnector !== undefined) {
@@ -38,6 +42,8 @@ export const cleanConnectorsOnBoot = async (
   }
 
   await sendConnectorsLogs(client)
+
+  if (urls.length > 0) await cleanAllConnectorCookies()
 }
 
 /**
