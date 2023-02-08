@@ -1,13 +1,17 @@
 import { useEffect } from 'react'
 
 import { useClient } from 'cozy-client'
-import { handleNotificationOpening } from '/libs/notifications/notifications'
+import {
+  handleNotificationTokenReceiving,
+  handleNotificationOpening
+} from '/libs/notifications/notifications'
 
 export const useNotifications = () => {
   const client = useClient()
 
   useEffect(() => {
     if (client) {
+      handleNotificationTokenReceiving(client)
       handleNotificationOpening(client)
     }
   }, [client])
