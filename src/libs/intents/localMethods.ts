@@ -121,7 +121,7 @@ export const localMethods = (
     hideSplashScreen: nativeMethodWrapper(hideSplashScreen),
     logout: () => asyncLogout(client),
     openApp: (href, app, iconParams) =>
-      openApp(RootNavigation, href, app, iconParams),
+      openApp(client, RootNavigation, href, app, iconParams),
     toggleSetting,
     setFlagshipUI,
     showInAppBrowser,
