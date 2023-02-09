@@ -12,16 +12,9 @@ import {
 
 const client = {
   getStackClient: (): { fetchJSON: jest.Mock } => ({
-    fetchJSON: jest
-      .fn()
-      .mockImplementation((_method: string, path: string) =>
-        path.includes('apps')
-          ? getApps
-          : path.includes('icon')
-          ? '<svg></svg>'
-          : null
-      )
-  })
+    fetchJSON: jest.fn().mockImplementation(() => '<svg></svg>')
+  }),
+  fetchQueryAndGetFromState: jest.fn().mockImplementation(() => getApps)
 }
 
 afterEach(async () => {
@@ -137,16 +130,11 @@ it('works with unusual semver', async () => {
 
   const client = {
     getStackClient: (): { fetchJSON: jest.Mock } => ({
-      fetchJSON: jest.fn().mockImplementation((_method: string, path: string) =>
-        path.includes('apps')
-          ? {
-              data: [{ attributes: { slug: 'store', version: '1.0.0-beta.1' } }]
-            }
-          : path.includes('icon')
-          ? '<svg></svg>'
-          : null
-      )
-    })
+      fetchJSON: jest.fn().mockImplementation(() => '<svg></svg>')
+    }),
+    fetchQueryAndGetFromState: jest.fn().mockImplementation(() => ({
+      data: [{ attributes: { slug: 'store', version: '1.0.0-beta.1' } }]
+    }))
   }
 
   await manageIconCache(client)
@@ -193,10 +181,8 @@ it('works with an incomplete and obsolete cache', async () => {
 
 it('works offline or with network issues without cache', async () => {
   const client = {
-    getStackClient: (): { fetchJSON: jest.Mock } => ({
-      fetchJSON: jest.fn().mockImplementation(() => {
-        // Empty response
-      })
+    fetchQueryAndGetFromState: jest.fn().mockImplementation(() => {
+      // Empty response
     })
   }
 
@@ -209,10 +195,8 @@ it('works offline or with network issues without cache', async () => {
 
 it('works offline or with network issues with cache', async () => {
   const client = {
-    getStackClient: (): { fetchJSON: jest.Mock } => ({
-      fetchJSON: jest.fn().mockImplementation(() => {
-        // Empty response
-      })
+    fetchQueryAndGetFromState: jest.fn().mockImplementation(() => {
+      // Empty response
     })
   }
 
