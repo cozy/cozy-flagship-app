@@ -1,4 +1,5 @@
 /* eslint-disable no-bitwise */
+import { Q } from 'cozy-client'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import Minilog from '@cozy/minilog'
@@ -64,7 +65,12 @@ const attemptFetchApps = async (
   client: CozyClient
 ): Promise<FetchedApps | undefined> => {
   try {
-    return await client.getStackClient().fetchJSON('GET', '/apps/')
+    return await client.fetchQueryAndGetFromState({
+      definition: Q('io.cozy.apps'),
+      options: {
+        as: 'io.cozy.apps'
+      }
+    })
   } catch (error) {
     log.error(strings.errors.attemptFetchApps, error)
     if (getErrorMessage(error).includes('Invalid token')) await clearClient()
