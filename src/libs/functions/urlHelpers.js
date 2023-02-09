@@ -1,7 +1,7 @@
 import { Platform } from 'react-native'
 import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 
-import { deconstructCozyWebLinkWithSlug } from 'cozy-client'
+import { deconstructCozyWebLinkWithSlug } from 'cozy-client/dist/helpers'
 
 import Minilog from '@cozy/minilog'
 
