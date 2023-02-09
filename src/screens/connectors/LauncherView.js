@@ -197,7 +197,7 @@ class LauncherView extends Component {
    * @param {Object} event
    */
   onPilotError({ nativeEvent }) {
-    log.error('onWorkerError', { nativeEvent })
+    log.error('onPilotError', { nativeEvent })
     this.stop({ message: 'VENDOR_DOWN' })
   }
   /**
