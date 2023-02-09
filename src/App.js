@@ -35,7 +35,11 @@ import { useGlobalAppState } from '/hooks/useGlobalAppState'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
 import { persistor, store } from '/redux/store'
-
+import { WebViewIncognitoTest } from './components/WebViewIncognitoTest'
+import {
+  hideSplashScreen,
+  showSplashScreen
+} from '/libs/services/SplashScreenService'
 import { cleanConnectorsOnBootInBackground } from '/libs/connectors/cleanConnectorsOnBoot'
 
 const Root = createStackNavigator()
@@ -209,25 +213,27 @@ const Wrapper = () => {
       RNAsyncStorageFlipper(AsyncStorage)
     }
   }, [])
-  return (
-    <>
-      {__DEV__ && <FlipperAsyncStorage />}
-      <CryptoWebView setHasCrypto={setHasCrypto} />
-      {hasCrypto && (
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <HttpServerProvider>
-              <SplashScreenProvider>
-                <NetStatusBoundary>
-                  <WrappedApp />
-                </NetStatusBoundary>
-              </SplashScreenProvider>
-            </HttpServerProvider>
-          </PersistGate>
-        </Provider>
-      )}
-    </>
-  )
+  hideSplashScreen()
+  return <WebViewIncognitoTest />
+  // return (
+  //   <>
+  //     {__DEV__ && <FlipperAsyncStorage />}
+  //     <CryptoWebView setHasCrypto={setHasCrypto} />
+  //     {hasCrypto && (
+  //       <Provider store={store}>
+  //         <PersistGate loading={null} persistor={persistor}>
+  //           <HttpServerProvider>
+  //             <SplashScreenProvider>
+  //               <NetStatusBoundary>
+  //                 <WrappedApp />
+  //               </NetStatusBoundary>
+  //             </SplashScreenProvider>
+  //           </HttpServerProvider>
+  //         </PersistGate>
+  //       </Provider>
+  //     )}
+  //   </>
+  // )
 }
 
 const styles = StyleSheet.create({
