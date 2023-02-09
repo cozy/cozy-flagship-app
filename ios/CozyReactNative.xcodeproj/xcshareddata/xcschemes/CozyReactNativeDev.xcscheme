@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E4B01B8F298AAF93008C812F"
+               BlueprintIdentifier = "E4BB579229954D2E00095D06"
                BuildableName = "CozyReactNativeDev.app"
                BlueprintName = "CozyReactNativeDev"
                ReferencedContainer = "container:CozyReactNative.xcodeproj">
@@ -44,7 +44,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E4B01B8F298AAF93008C812F"
+            BlueprintIdentifier = "E4BB579229954D2E00095D06"
             BuildableName = "CozyReactNativeDev.app"
             BlueprintName = "CozyReactNativeDev"
             ReferencedContainer = "container:CozyReactNative.xcodeproj">
@@ -61,7 +61,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E4B01B8F298AAF93008C812F"
+            BlueprintIdentifier = "E4BB579229954D2E00095D06"
             BuildableName = "CozyReactNativeDev.app"
             BlueprintName = "CozyReactNativeDev"
             ReferencedContainer = "container:CozyReactNative.xcodeproj">
