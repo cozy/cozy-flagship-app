@@ -70,7 +70,6 @@ export const ClouderyView = ({ setInstanceData, disabledFocus }) => {
 
   const handleNavigation = request => {
     const instance = getUriFromRequest(request)
-
     if (request.loading) {
       if (instance) {
         const normalizedInstance = instance.toLowerCase()

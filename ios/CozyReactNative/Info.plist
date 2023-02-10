@@ -66,8 +66,6 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Afin de prendre des photos pour Drive ou MesPapiers afin d'importer des documents</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Permet le déverouillage de l'application en utilisant FaceID</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UIAppFonts</key>
@@ -93,6 +91,16 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pour faire un backup de vos photos</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Pour faire un backup de vos photos</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Permet le déverouillage de l'application en utilisant FaceID</string>
+  	<key>FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED</key>
+	<true/>
+	<key>GOOGLE_ANALYTICS_IDFV_COLLECTION_ENABLED</key>
 	<false/>
 </dict>
 </plist>

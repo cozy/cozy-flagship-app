@@ -13,6 +13,8 @@ import {
 } from '/hooks/useAppBootstrap.functions'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 
+import { CameraRoll } from '@react-native-camera-roll/camera-roll'
+
 export const useAppBootstrap = client => {
   const [initialRoute, setInitialRoute] = useState('fetching')
   const [isLoading, setIsLoading] = useState(true)
@@ -127,6 +129,50 @@ export const useAppBootstrap = client => {
     }
   }, [client, isLoading])
 
+  // Photos Sync
+  useEffect(() => {
+    var upload = response => {
+      var jobId = response.jobId
+      console.log('UPLOAD HAS BEGUN! JobId: ' + jobId)
+    }
+
+    var uploadProgress = response => {
+      var percentage = Math.floor(
+        (response.totalBytesSent / response.totalBytesExpectedToSend) * 100
+      )
+      console.log('UPLOAD IS ' + percentage + '% DONE!')
+    }
+
+    const backupPhotos = async () => {
+      const photos = await CameraRoll.getPhotos({
+        first: 20,
+        include: ['filename', 'fileExtension', 'location', 'imageSize']
+      })
+
+      for (var i = 0; i < photos.edges.length; i++) {
+        console.log(
+          `photo ${i} : ${p.node.group_name} / ${p.node.image.uri} / filename: ${p.node.image.filename} / extension: ${p.node.image.extension} / timestamp: ${p.node.timestamp} / location: ${p.node.location}`
+        )
+        await RNFS.uploadFiles({
+          toUrl: uploadUrl,
+          files: files,
+          method: 'POST',
+          headers: {
+            Accept: 'application/json'
+          },
+          fields: {
+            hello: 'world'
+          },
+          begin: uploadBegin,
+          progress: uploadProgress
+        }).promise
+      }
+    }
+
+    backupPhotos().catch(e => {
+      console.error(e)
+    })
+  }, [])
   return {
     client,
     initialRoute,
