@@ -23,6 +23,11 @@ target 'CozyReactNative' do
 
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
+  target 'CozyReactNativeDev' do
+    inherit! :complete
+    # Pods for testing
+  end
+
   target 'CozyReactNativeTests' do
     inherit! :complete
     # Pods for testing
