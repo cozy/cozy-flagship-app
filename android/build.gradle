@@ -15,6 +15,7 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:4.2.2")
+        classpath("com.google.gms:google-services:4.3.15")
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -37,7 +38,7 @@ allprojects {
         maven { url 'https://www.jitpack.io' }
     }
 
-    
+
     // For unknown reasons at this time, the build fails with Javadoc tasks on JDK11
     // A temporary workaround for that is to disable Javadoc generation for all modules
     // tasks.withType(Javadoc).all { enabled = false }

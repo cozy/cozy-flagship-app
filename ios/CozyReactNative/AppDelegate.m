@@ -10,6 +10,8 @@
 
 #import "RNBootSplash.h" // <- add the header import
 
+#import <Firebase.h>
+
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
 #import <FlipperKitLayoutPlugin/FlipperKitLayoutPlugin.h>
@@ -32,12 +34,12 @@ static void InitializeFlipper(UIApplication *application) {
 static void SetCustomNSURLSessionConfiguration() {
   RCTSetCustomNSURLSessionConfigurationProvider(^NSURLSessionConfiguration *{
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    
+
     NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     NSString * bundleIdentifier = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"];
     NSString * userAgent = [NSString stringWithFormat:@"%@-%@", bundleIdentifier, appVersionString];
     configuration.HTTPAdditionalHeaders = @{ @"User-Agent": userAgent };
-    
+
     return configuration;
   });
 }
@@ -46,6 +48,8 @@ static void SetCustomNSURLSessionConfiguration() {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [FIRApp configure];
+
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
