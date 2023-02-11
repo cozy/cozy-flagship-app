@@ -18,6 +18,9 @@ export const sendConnectorsLogs = async (client: CozyClient): Promise<void> => {
     for (const slug of slugs) {
       log.debug(`Sending ${slug} logs batch`)
       // Clean slug property in LogObj
+
+      // Locally disable the rule because we delete the slug property with a destructuring assignment
+      /* eslint "@typescript-eslint/no-unused-vars" : ["warn", { "ignoreRestSiblings": true }] */
       const cleanedLogs = logs[slug]?.map(({ slug, ...el }) => el)
       if (!cleanedLogs) {
         continue
