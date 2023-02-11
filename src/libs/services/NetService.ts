@@ -41,7 +41,7 @@ const waitForOnline = (callbackRoute: string): void => {
     if (state.isConnected) {
       log.debug('Removing NetInfo listener')
 
-      callbackRoute === routes.stack && showSplashScreen()
+      callbackRoute === routes.stack && showSplashScreen().catch(log.error)
 
       try {
         reset(callbackRoute)

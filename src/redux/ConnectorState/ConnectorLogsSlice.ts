@@ -41,7 +41,10 @@ export const connectorLogsSlice = createSlice({
       if (result?.length) {
         state.logs[action.payload.slug] = result
       } else {
-        delete state.logs[action.payload.slug]
+        // Locally disable the rule because we delete the dynamic `[action.payload.slug]` property with a destructuring assignment
+        /* eslint "@typescript-eslint/no-unused-vars" : ["warn", { "ignoreRestSiblings": true }] */
+        const { [action.payload.slug]: _, ...rest } = state.logs
+        state.logs = rest
       }
     },
     clearLogs: state => {
