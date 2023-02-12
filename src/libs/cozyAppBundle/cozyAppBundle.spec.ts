@@ -51,7 +51,7 @@ jest.mock('./cozyAppBundleConfiguration', () => ({
 let originalSetTimeout: typeof setTimeout
 
 describe('cozyAppBundle', () => {
-  const client = createMockClient({})
+  const client = createMockClient({queries: {}, remote: {}, clientOptions: {}})
 
   beforeEach(() => {
     originalSetTimeout = setTimeout
@@ -70,7 +70,7 @@ describe('cozyAppBundle', () => {
         getAuthorizationHeader: jest
           .fn()
           .mockReturnValue('SOME_AUTHORIZATION_TOKEN')
-      }))
+      })) as unknown as jest.MockedFunction<typeof client.getStackClient>
 
       mockLocalVersion('1.45.5')
       mockStackVersion('1.45.6')
@@ -116,7 +116,7 @@ describe('cozyAppBundle', () => {
         getAuthorizationHeader: jest
           .fn()
           .mockReturnValue('SOME_AUTHORIZATION_TOKEN')
-      }))
+      })) as unknown as jest.MockedFunction<typeof client.getStackClient>
 
       mockLocalVersion('1.45.5')
       mockStackVersion('1.45.6')
@@ -161,7 +161,7 @@ describe('cozyAppBundle', () => {
         getAuthorizationHeader: jest
           .fn()
           .mockReturnValue('SOME_AUTHORIZATION_TOKEN')
-      }))
+      })) as unknown as jest.MockedFunction<typeof client.getStackClient>
 
       mockLocalVersion('1.45.5')
       mockStackVersion('1.45.6')
@@ -206,7 +206,7 @@ describe('cozyAppBundle', () => {
         getAuthorizationHeader: jest
           .fn()
           .mockReturnValue('SOME_AUTHORIZATION_TOKEN')
-      }))
+      })) as unknown as jest.MockedFunction<typeof client.getStackClient>
 
       mockLocalVersion('1.45.5')
       mockStackVersion('1.45.5')
@@ -228,7 +228,7 @@ describe('cozyAppBundle', () => {
         getAuthorizationHeader: jest
           .fn()
           .mockReturnValue('SOME_AUTHORIZATION_TOKEN')
-      }))
+      })) as unknown as jest.MockedFunction<typeof client.getStackClient>
 
       mockLocalVersion('1.45.5')
       mockStackVersion('1.45.6')
@@ -260,7 +260,7 @@ describe('cozyAppBundle', () => {
         getAuthorizationHeader: jest
           .fn()
           .mockReturnValue('SOME_AUTHORIZATION_TOKEN')
-      }))
+      })) as unknown as jest.MockedFunction<typeof client.getStackClient>
 
       mockLocalVersion('1.45.5')
       mockStackVersion('1.45.6')
@@ -306,7 +306,7 @@ describe('cozyAppBundle', () => {
         getAuthorizationHeader: jest
           .fn()
           .mockReturnValue('SOME_AUTHORIZATION_TOKEN')
-      }))
+      })) as unknown as jest.MockedFunction<typeof client.getStackClient>
 
       mockLocalVersion(undefined)
       mockStackVersion('1.45.6')
@@ -352,7 +352,7 @@ describe('cozyAppBundle', () => {
         getAuthorizationHeader: jest
           .fn()
           .mockReturnValue('SOME_AUTHORIZATION_TOKEN')
-      }))
+      })) as unknown as jest.MockedFunction<typeof client.getStackClient>
 
       mockLocalVersion('1.45.5')
       mockStackVersion('1.45.6')
@@ -386,7 +386,7 @@ describe('cozyAppBundle', () => {
         getAuthorizationHeader: jest
           .fn()
           .mockReturnValue('SOME_AUTHORIZATION_TOKEN')
-      }))
+      })) as unknown as jest.MockedFunction<typeof client.getStackClient>
 
       mockLocalVersion(undefined)
       mockStackVersion('1.45.6')
