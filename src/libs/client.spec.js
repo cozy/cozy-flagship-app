@@ -1,4 +1,8 @@
-import { createClient, saveNotificationDeviceToken } from '/libs/client'
+import {
+  createClient,
+  saveNotificationDeviceToken,
+  removeNotificationDeviceToken
+} from '/libs/client'
 import CozyClient from 'cozy-client'
 
 jest.genMockFromModule('cozy-client')
@@ -110,6 +114,43 @@ describe('client', () => {
 
       // When
       await saveNotificationDeviceToken(client, 'SAME_TOKEN')
+
+      // Then
+      expect(mockUpdateInformation).toHaveBeenCalledTimes(0)
+    })
+  })
+
+  describe('removeNotificationDeviceToken', () => {
+    const instance = {}
+
+    it('should remove notification device token if there was one', async () => {
+      // Given
+      const client = await createClient(instance)
+      client.getStackClient().oauthOptions = {
+        notification_device_token: 'SAME_TOKEN'
+      }
+
+      // When
+      await removeNotificationDeviceToken(client)
+
+      // Then
+      expect(mockUpdateInformation).toHaveBeenCalledTimes(1)
+      expect(mockUpdateInformation).toHaveBeenCalledWith({
+        ...client.getStackClient().oauthOptions,
+        notificationDeviceToken: '',
+        notificationPlatform: ''
+      })
+    })
+
+    it('should not remove notification device token if there was not one', async () => {
+      // Given
+      const client = await createClient(instance)
+      client.getStackClient().oauthOptions = {
+        notification_device_token: ''
+      }
+
+      // When
+      await removeNotificationDeviceToken(client)
 
       // Then
       expect(mockUpdateInformation).toHaveBeenCalledTimes(0)
