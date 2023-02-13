@@ -452,3 +452,17 @@ export const saveNotificationDeviceToken = async (client, token) => {
   })
   await saveClient(client)
 }
+
+export const removeNotificationDeviceToken = async client => {
+  const oauthOptions = client.getStackClient().oauthOptions
+
+  if (oauthOptions?.notification_device_token === '') return
+
+  await client.getStackClient().updateInformation({
+    ...oauthOptions,
+    notificationDeviceToken: '',
+    notificationPlatform: ''
+  })
+
+  await saveClient(client)
+}

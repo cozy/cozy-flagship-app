@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import messaging from '@react-native-firebase/messaging'
 
 import { generateWebLink } from 'cozy-client'
@@ -51,4 +52,26 @@ export const handleNotificationTokenReceiving = async client => {
   messaging().onTokenRefresh(token => {
     saveNotificationDeviceToken(client, token)
   })
+}
+
+const requestAndGetIosNotificationPermission = async () => {
+  return await messaging().requestPermission()
+}
+
+/*
+ * Because we target Android 12, Android handles automatically notification permission request if needed.
+ * But messaging().requestPermission() never return the correct permission contrary to messaging().hasPermission().
+ * When we will target Android 13, we will need to handles manually notification permission request.
+ */
+const requestAndGetAndroidNotificationPermission = async () => {
+  return await messaging().hasPermission()
+}
+
+export const requestAndGetNotificationPermission = async () => {
+  if (Platform.OS === 'ios') {
+    return await requestAndGetIosNotificationPermission()
+  } else if (Platform.OS === 'android') {
+    return await requestAndGetAndroidNotificationPermission()
+  }
+  return messaging.AuthorizationStatus.NOT_DETERMINED
 }
