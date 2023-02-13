@@ -32,8 +32,9 @@ import { localMethods } from '/libs/intents/localMethods'
 import { persistor, store } from '/redux/store'
 import { routes } from '/constants/routes.js'
 import { useAppBootstrap } from '/hooks/useAppBootstrap.js'
-import { useCookieResyncOnResume } from '/hooks/useCookieResyncOnResume'
 import { useGlobalAppState } from '/hooks/useGlobalAppState'
+import { useCookieResyncOnResume } from '/hooks/useCookieResyncOnResume'
+import { useNotifications } from '/hooks/useNotifications'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
 
@@ -58,6 +59,7 @@ const App = ({ setClient }) => {
 
   useGlobalAppState()
   useCookieResyncOnResume()
+  useNotifications()
 
   if (isLoading) {
     return null
