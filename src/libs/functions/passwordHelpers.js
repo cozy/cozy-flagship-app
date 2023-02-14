@@ -5,7 +5,7 @@ import { deleteKeychain, saveVaultInformation } from '../keychain'
 
 const log = Minilog('passwordHelpers')
 
-const DEFAULT_ITERATION_NUMBER = 100000
+const DEFAULT_ITERATION_NUMBER = 650000
 
 const getSaltForInstance = instance => {
   const domain = instance.split(':')[0]
