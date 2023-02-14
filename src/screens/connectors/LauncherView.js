@@ -21,6 +21,7 @@ const DEBUG = false
 
 class LauncherView extends Component {
   constructor(props) {
+    console.timeLog('LauncherFlow', 'LauncherView constructor')
     super(props)
     this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
@@ -71,13 +72,18 @@ class LauncherView extends Component {
   async componentDidMount() {
     this.launcher = new ReactNativeLauncher()
     this.launcher.setLogger(this.props.onKonnectorLog)
+    console.timeLog('LauncherFlow', 'setStartContext() started')
     this.launcher.setStartContext({
       ...this.props.launcherContext,
       client: this.props.client,
       launcherClient: this.props.launcherClient,
       manifest: get(this, 'state.connector.manifest')
     })
+    console.timeLog('LauncherFlow', 'setStartContext() ended')
+
+    console.timeLog('LauncherFlow', 'initConnector() started')
     const initConnectorError = await this.initConnector()
+    console.timeLog('LauncherFlow', 'initConnector() ended')
 
     this.launcher.on('SET_WORKER_STATE', options => {
       this.setState({ worker: { ...this.state.worker, ...options } })
@@ -91,6 +97,7 @@ class LauncherView extends Component {
     })
 
     if (this.state.connector) {
+      console.timeLog('LauncherFlow', 'init() started')
       await this.launcher.init({
         bridgeOptions: {
           pilotWebView: this.pilotWebView,
@@ -98,8 +105,12 @@ class LauncherView extends Component {
         },
         contentScript: get(this, 'state.connector.content')
       })
+      console.timeLog('LauncherFlow', 'init() ended')
     }
+
+    console.timeLog('LauncherFlow', 'start() started')
     await this.launcher.start({ initConnectorError })
+    console.timeLog('LauncherFlow', 'start() ended')
     this.props.setLauncherContext({ state: 'default' })
   }
 
@@ -108,6 +119,8 @@ class LauncherView extends Component {
       this.launcher.removeAllListener()
     }
     this.launcher.close()
+    console.timeEnd('LauncherFlow')
+    console.log('⌚ - LauncherFlow End')
   }
 
   render() {

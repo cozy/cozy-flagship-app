@@ -117,18 +117,29 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async start({ initConnectorError } = {}) {
+    console.time('ReactNativeLauncher.start')
     try {
       if (initConnectorError) {
         log.info('Got initConnectorError ' + initConnectorError.message)
         throw initConnectorError
       }
       await this.pilot.call('setContentScriptType', 'pilot')
+      console.timeLog('ReactNativeLauncher.start', 'setContentScriptType')
       await this.worker.call('setContentScriptType', 'worker')
+      console.timeLog(
+        'ReactNativeLauncher.start',
+        'setContentScriptType',
+        'worker'
+      )
       await this.pilot.call('ensureAuthenticated')
+      console.timeLog('ReactNativeLauncher.start', 'ensureAuthenticated')
       await this.sendLoginSuccess()
+      console.timeLog('ReactNativeLauncher.start', 'sendLoginSuccess')
 
       this.setUserData(await this.pilot.call('getUserDataFromWebsite'))
+      console.timeLog('ReactNativeLauncher.start', 'getUserDataFromWebsite')
       await this.ensureAccountNameAndFolder()
+      console.timeLog('ReactNativeLauncher.start', 'ensureAccountNameAndFolder')
 
       const pilotContext = []
       // FIXME not used at the moment since the fetched file will not have the proper "createdByApp"
@@ -137,12 +148,15 @@ class ReactNativeLauncher extends Launcher {
       //   slug: manifest.slug,
       // })
       await this.pilot.call('fetch', pilotContext)
+      console.timeLog('ReactNativeLauncher.start', 'fetch')
       await this.stop()
+      console.timeLog('ReactNativeLauncher.start', 'stop')
     } catch (err) {
       log.error(err, 'start error')
       await this.stop({ message: err.message })
     }
     this.emit('CONNECTOR_EXECUTION_END')
+    console.timeEnd('ReactNativeLauncher.start')
   }
 
   async close() {

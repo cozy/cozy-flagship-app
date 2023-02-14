@@ -198,8 +198,11 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
 
           if (methodName === 'openApp') nativeIntent?.call(uri, 'openApp')
 
-          if (message === 'startLauncher')
+          if (message === 'startLauncher') {
+            console.log('⌚ - LauncherFlow Start')
+            console.time('LauncherFlow')
             setLauncherContext({ state: 'launch', value })
+          }
         }
       }}
     />
