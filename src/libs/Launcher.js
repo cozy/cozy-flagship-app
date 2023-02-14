@@ -1,3 +1,4 @@
+// @ts-check
 /* eslint-disable no-unused-vars */
 import { Q, models } from 'cozy-client'
 import Minilog from '@cozy/minilog'
@@ -16,13 +17,19 @@ const log = Minilog('Launcher')
  * @interface
  */
 export default class Launcher {
+  constructor() {
+    this.setUserData({
+      sourceAccountIdentifier: null
+    })
+  }
   /**
    * Inject the content script and initialize the bridge to communicate it
    *
-   * @param  {Object} options.bridgeOptions : options which will be given as is to the bridge. Bridge options depend on the environment of the launcher
-   * @param  {String} options.contentScript : source code of the content script which will be injected
+   * @param  {Object} options               - options object
+   * @param  {Object} options.bridgeOptions - options which will be given as is to the bridge. Bridge options depend on the environment of the launcher
+   * @param  {String} options.contentScript - source code of the content script which will be injected
    *
-   * @return {Bridge}
+   * @returns {Promise<void>}
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async init({ bridgeOptions, contentScript }) {}
@@ -30,14 +37,14 @@ export default class Launcher {
   /**
    * Start the connector execution
    *
-   * @returns {Bridge}
+   * @returns {Promise<void>}
    */
   async start() {}
 
   /**
    * Get user unique identifier data, that the connector got after beeing authenticated
    *
-   * @returns {UserData}
+   * @returns {UserData|undefined}
    */
   getUserData() {
     return this.userData
@@ -67,22 +74,27 @@ export default class Launcher {
    * @returns {LauncherStartContext}
    */
   getStartContext() {
+    if (!this.startContext) {
+      throw new Error('getStartContext should not be called before the start')
+    }
     return this.startContext
   }
 
   /**
    * Updates the result of the current job
    *
-   * @param {String} options.state - Final result of the job. Can be 'errored' or 'done'
-   * @param {String} options.error - Job error message if any
+   * @param {object} options         - options object
+   * @param {String} options.state   - Final result of the job. Can be 'errored' or 'done'
+   * @param {String} [options.error] - Job error message if any
    *
-   * @returns {JobDocument}
+   * @returns {Promise<"io.cozy.jobs"|undefined>}
    */
-  async updateJobResult({ state = 'done', error } = {}) {
+  async updateJobResult({ state, error } = { state: 'done' }) {
     const { job, client } = this.getStartContext()
     return await client.save({
       ...job,
       attributes: {
+        // @ts-ignore
         ...job.attributes,
         ...{ state, error }
       }
@@ -92,8 +104,8 @@ export default class Launcher {
   /**
    * Save credentials for the current context
    *
-   * @param {Object} : any object containing credentials. Ex: {login: 'login', password: 'password'}
-   * @returns {Promise<null>}
+   * @param {Object} credentials - any object containing credentials. Ex: {login: 'login', password: 'password'}
+   * @returns {Promise<void>}
    */
   async saveCredentials(credentials) {
     const { account } = this.getStartContext()
@@ -107,7 +119,7 @@ export default class Launcher {
   /**
    * Remove any existing credential for the current context
    *
-   * @returns {Promise<null>}
+   * @returns {Promise<void>}
    */
   async removeCredentials() {
     const { account } = this.getStartContext()
@@ -130,6 +142,9 @@ export default class Launcher {
    */
   async sendLoginSuccess() {
     const { account, client } = this.getStartContext()
+    if (!account._id) {
+      throw new Error('sendLoginSuccess: not account to update')
+    }
     const updatedAccount = await client.query(
       Q('io.cozy.accounts').getById(account._id)
     )
@@ -150,8 +165,13 @@ export default class Launcher {
       return
     }
 
-    const { sourceAccountIdentifier } = this.getUserData()
+    const { sourceAccountIdentifier } = this.getUserData() || {}
+    // @ts-ignore
     const folderId = trigger.message.folder_to_save
+
+    if (!account._id) {
+      throw new Error('ensureAccountNameAndFolder: no account to check')
+    }
 
     log.info('This is the first run for this account')
     const updatedAccount = await client.query(
@@ -169,7 +189,7 @@ export default class Launcher {
         .updateAttributes(folderId, { name: sourceAccountIdentifier })
     } catch (err) {
       log.warn(
-        `Could not rename the destination folder ${folderId} to ${sourceAccountIdentifier}. ${err.message}`
+        `Could not rename the destination folder ${folderId} to ${sourceAccountIdentifier}. ${err}`
       )
     }
   }
@@ -179,22 +199,21 @@ export default class Launcher {
    */
   async ensureAccountTriggerAndLaunch() {
     const startContext = this.getStartContext()
-    let { trigger, account, connector, client, job } = startContext
+    let { trigger, account, connector, client, job, launcherClient } =
+      startContext
 
     if (!account) {
-      log(
-        'debug',
+      log.debug(
         `ensureAccountAndTriggerAndJob: found no account in start context. Creating one`
       )
       const accountData = models.account.buildAccount(connector, {})
       accountData._type = 'io.cozy.accounts'
       const accountResponse = await client.save(accountData)
       account = accountResponse.data
-      log('debug', `ensureAccountAndTriggerAndJob: created account`, account)
+      log.debug(`ensureAccountAndTriggerAndJob: created account`, account)
     }
     if (!trigger) {
-      log(
-        'debug',
+      log.debug(
         `ensureAccountAndTriggerAndJob: found no trigger in start context. Creating one`
       )
       const triggerData = models.trigger.triggers.buildTriggerAttributes({
@@ -204,7 +223,7 @@ export default class Launcher {
       triggerData._type = 'io.cozy.triggers'
       const triggerResponse = await client.save(triggerData)
       trigger = triggerResponse.data
-      log('debug', `ensureAccountAndTriggerAndJob: created trigger`, trigger)
+      log.debug(`ensureAccountAndTriggerAndJob: created trigger`, trigger)
     }
 
     // trigger should not be already running (blocked in an upper level)
@@ -215,13 +234,15 @@ export default class Launcher {
         .launch(trigger)
       job = launchResponse.data
     }
-    log('debug', `ensureAccountAndTriggerAndJob: launched job`, job)
+    log.debug(`ensureAccountAndTriggerAndJob: launched job`, job)
 
     this.setStartContext({
-      ...startContext,
+      client,
       account,
       trigger,
-      job
+      job,
+      connector,
+      launcherClient
     })
   }
 
@@ -230,7 +251,7 @@ export default class Launcher {
    *
    * @param {String} folderId - Id of the folder
    *
-   * @returns {String} Folder path
+   * @returns {Promise<String>} Folder path
    */
   async getFolderPath(folderId) {
     const { client } = this.getStartContext()
@@ -241,17 +262,23 @@ export default class Launcher {
   /**
    * Calls cozy-konnector-libs' saveBills function
    *
-   * @param {Array} entries : list of file entries to save
-   * @returns {Array} list of saved bills
+   * @param {Array<object>} entries  - list of file entries to save
+   * @param {object} options - options object
+   * @returns {Promise<Array<object>>} list of saved bills
    */
   async saveBills(entries, options) {
     log.debug(entries, 'saveBills entries')
-    const { launcherClient: client, job, manifest } = this.getStartContext()
-    const { sourceAccountIdentifier } = this.getUserData()
+    const {
+      launcherClient: client,
+      job,
+      connector
+    } = this.getStartContext() || {}
+    const { sourceAccountIdentifier } = this.getUserData() || {}
     const result = await saveBills(entries, {
       ...options,
       client,
-      manifest,
+      manifest: connector,
+      // @ts-ignore
       sourceAccount: job.message.account,
       sourceAccountIdentifier
     })
@@ -261,7 +288,7 @@ export default class Launcher {
   /**
    * Get content script logs. This function is called by the content script via the bridge
    *
-   * @param  {ContentScriptLogMessage} message : log message
+   * @param  {ContentScriptLogMessage} message - log message
    */
   log(message) {
     Minilog('ContentScript').info(message)
@@ -270,29 +297,31 @@ export default class Launcher {
   /**
    * Calls cozy-konnector-libs' saveIdentifier function
    *
-   * @param {Object} contact : contact object
+   * @param {Object} contact - contact object
    */
   async saveIdentity(contact) {
     const { launcherClient: client } = this.getStartContext()
     log.debug(contact, 'saveIdentity contact')
-    const { sourceAccountIdentifier } = this.getUserData()
+    const { sourceAccountIdentifier } = this.getUserData() || {}
     await saveIdentity(contact, sourceAccountIdentifier, { client })
   }
 
   /**
    * Calls cozy-konnector-libs' saveFiles function
    *
-   * @param {Array} entries : list of file entries to save
-   * @returns {Array} list of saved files
+   * @param {Array<FileDocument>} entries - list of file entries to save
+   * @param {object} options - options object
+   * @param {String} options.qualificationLabel - file qualification label
+   * @returns {Promise<Array<object>>} list of saved files
    */
   async saveFiles(entries, options) {
     const {
       launcherClient: client,
       trigger,
       job,
-      manifest
-    } = this.getStartContext()
-    const { sourceAccountIdentifier } = this.getUserData()
+      connector
+    } = this.getStartContext() || {}
+    const { sourceAccountIdentifier } = this.getUserData() || {}
     for (const entry of entries) {
       if (entry.dataUri) {
         entry.filestream = dataURItoArrayBuffer(entry.dataUri).arrayBuffer
@@ -310,10 +339,12 @@ export default class Launcher {
     const result = await saveFiles(
       client,
       entries,
-      await this.getFolderPath(trigger.message.folder_to_save),
+      // @ts-ignore
+      await this.getFolderPath(trigger.message?.folder_to_save),
       {
         ...options,
-        manifest,
+        manifest: connector,
+        // @ts-ignore
         sourceAccount: job.message.account,
         sourceAccountIdentifier
       }
@@ -327,9 +358,10 @@ export default class Launcher {
    * Fetches data already imported by the connector with the current sourceAccountIdentifier
    * This allows the connector to only fetch new data
    *
-   * @param {String} options.sourceAccountIdentifier: current account unique identifier
-   * @param {String} options.slug: connector slug
-   * @returns {Object}
+   * @param {object} options                         - options object
+   * @param {String} options.sourceAccountIdentifier - current account unique identifier
+   * @param {String} options.slug - connector slug
+   * @returns {Promise<Object>}
    */
   async getPilotContext({ sourceAccountIdentifier, slug }) {
     const { launcherClient: client } = this.getStartContext()
@@ -355,22 +387,29 @@ export default class Launcher {
 
 /**
  * @typedef ContentScriptLogMessage
- * @property {string} level            : ( debug | info | warning | error | critical). Log level
- * @property {any} message             : message content
- * @property {string | null} label     : user defined label
- * @property {string | null} namespace : user defined namespace
+ * @property {'debug'|'info'|'warning'|'error'|'critical'} level - Log level
+ * @property {any} message             - message content
+ * @property {string | null} label     - user defined label
+ * @property {string | null} namespace - user defined namespace
  */
 
 /**
  * @typedef LauncherStartContext
- * @property {CozyClient} client - CozyClient instance
- * @property {Object} manifest   - Manifest from the client side connector
- * @property {io.cozy.accounts} account
- * @property {io.cozy.triggers} trigger
- * @property {io.cozy.jobs}     job
+ * @property {import('cozy-client').default} client - CozyClient instance
+ * @property {import('cozy-client').default} launcherClient - CozyClient instance with konnector permissions
+ * @property {import('cozy-client/types/types').IOCozyAccount}   account
+ * @property {import('cozy-client/types/types').IOCozyTrigger}   trigger
+ * @property {import('cozy-client/types/types').CozyClientDocument}       job
+ * @property {import('cozy-client/types/types').IOCozyKonnector} connector
  */
 
 /**
  * @typedef UserData
- * @property {String} sourceAccountIdentifier - Unique string representing user's account. It may be user's email or name. This will be used to define the destination folder name and will be associated to each fetched data as metadata to assure it's unicity
+ * @property {String|null} sourceAccountIdentifier - Unique string representing user's account. It may be user's email or name. This will be used to define the destination folder name and will be associated to each fetched data as metadata to assure it's unicity
+ */
+
+/**
+ * @typedef FileDocument
+ * @property {String} [dataUri]
+ * @property {ArrayBuffer} filestream
  */
