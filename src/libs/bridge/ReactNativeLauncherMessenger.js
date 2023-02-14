@@ -1,4 +1,4 @@
-import { MessengerInterface } from './bridgeInterfaces'
+import { MessengerInterface } from 'cozy-clisk'
 import Minilog from '@cozy/minilog'
 
 /**

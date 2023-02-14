@@ -1,5 +1,5 @@
 import { ParentHandshake } from 'post-me'
-import { Bridge } from './bridgeInterfaces'
+import { Bridge } from 'cozy-clisk'
 import ReactNativeLauncherMessenger from './ReactNativeLauncherMessenger'
 
 const DEBUG_BRIDGE = true

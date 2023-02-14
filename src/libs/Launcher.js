@@ -3,8 +3,8 @@ import { Q, models } from 'cozy-client'
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import set from 'lodash/set'
+import { saveFiles, saveBills, saveIdentity } from 'cozy-clisk'
 
-import { saveFiles, saveBills, saveIdentity } from './connectorLibs'
 import { saveCredential, getCredential, removeCredential } from './keychain'
 import { dataURItoArrayBuffer } from './utils'
 

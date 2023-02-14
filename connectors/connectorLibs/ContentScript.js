@@ -2,7 +2,7 @@ import get from 'lodash/get'
 import waitFor from 'p-wait-for'
 import Minilog from '@cozy/minilog'
 
-import LauncherBridge from './bridge/LauncherBridge'
+import { LauncherBridge } from 'cozy-clisk'
 import { kyScraper as ky, blobToBase64 } from './utils'
 
 const log = Minilog('ContentScript class')
