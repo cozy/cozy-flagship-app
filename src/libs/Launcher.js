@@ -323,7 +323,7 @@ export default class Launcher {
       launcherClient: client,
       trigger,
       job,
-      konnector
+      connector
     } = this.getStartContext() || {}
     const { sourceAccountIdentifier } = this.getUserData() || {}
     for (const entry of entries) {
