@@ -38,12 +38,13 @@ describe('ReactNativeLauncher', () => {
     call: jest.fn()
   }
   const updateAttributes = jest.fn()
+  const launch = jest.fn()
   const client = {
     save: jest.fn(),
     query: jest.fn(),
     collection: () => ({
-      updateAttributes
-    })
+      updateAttributes,
+      launch
   }
 
   beforeEach(() => {
@@ -51,14 +52,68 @@ describe('ReactNativeLauncher', () => {
   })
 
   describe('start', () => {
+    it('should ensure account and trigger', async () => {
+      launcher.setStartContext({
+        client,
+        connector: { slug: 'connectorslug', clientSide: true }
+      })
+      client.save
+        .mockResolvedValueOnce({ data: fixtures.account })
+        .mockResolvedValueOnce({ data: fixtures.trigger })
+      launch.mockResolvedValue({ data: fixtures.job })
+      client.query.mockResolvedValue({ data: fixtures.account })
+      launcher.pilot.call
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce({
+          sourceAccountIdentifier: 'testsourceaccountidentifier'
+        })
+      await launcher.start()
+      expect(client.save).toHaveBeenNthCalledWith(1, {
+        _type: 'io.cozy.accounts',
+        account_type: 'connectorslug',
+        auth: {},
+        identifier: null,
+        state: null
+      })
+      expect(client.save).toHaveBeenNthCalledWith(2, {
+        _type: 'io.cozy.triggers',
+        type: '@client',
+        worker: 'konnector',
+        message: {
+          account: 'normal_account_id',
+          konnector: 'connectorslug'
+        }
+      })
+      expect(launch).toHaveBeenCalledTimes(1)
+    })
+    it('should launch the given trigger if any', async () => {
+      launcher.setStartContext({
+        client,
+        account: fixtures.account,
+        trigger: fixtures.trigger,
+        connector: { slug: 'connectorslug', clientSide: true }
+      })
+      launch.mockResolvedValue({ data: fixtures.job })
+      client.query.mockResolvedValue({ data: fixtures.account })
+      launcher.pilot.call
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce({
+          sourceAccountIdentifier: 'testsourceaccountidentifier'
+        })
+      await launcher.start()
+      expect(launch).toHaveBeenCalledTimes(1)
+    })
     it('should work normaly in nominal case', async () => {
       launcher.setStartContext({
         client,
-        job: fixtures.job,
         account: fixtures.account,
-        trigger: fixtures.trigger
+        trigger: fixtures.trigger,
+        connector: { slug: 'connectorslug', clientSide: true }
       })
       client.query.mockResolvedValue({ data: fixtures.account })
+      launch.mockResolvedValue({ data: fixtures.job })
       launcher.pilot.call
         .mockResolvedValueOnce(true)
         .mockResolvedValueOnce(true)
@@ -103,11 +158,11 @@ describe('ReactNativeLauncher', () => {
     it('should update job with error message on error', async () => {
       launcher.setStartContext({
         client,
-        job: fixtures.job,
         account: fixtures.account,
         trigger: fixtures.trigger
       })
       client.query.mockResolvedValue({ data: fixtures.account })
+      launch.mockResolvedValue({ data: fixtures.job })
       launcher.pilot.call.mockRejectedValue(new Error('test error message'))
       await launcher.start()
       expect(client.save).toHaveBeenNthCalledWith(1, {

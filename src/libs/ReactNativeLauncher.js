@@ -122,6 +122,7 @@ class ReactNativeLauncher extends Launcher {
         log.info('Got initConnectorError ' + initConnectorError.message)
         throw initConnectorError
       }
+      await this.ensureAccountTriggerAndLaunch()
       await this.pilot.call('setContentScriptType', 'pilot')
       await this.worker.call('setContentScriptType', 'worker')
       await this.pilot.call('ensureAuthenticated')

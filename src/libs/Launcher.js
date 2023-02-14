@@ -175,6 +175,57 @@ export default class Launcher {
   }
 
   /**
+   * Ensures that account and triggers are created and launch the trigger
+   */
+  async ensureAccountTriggerAndLaunch() {
+    const startContext = this.getStartContext()
+    let { trigger, account, connector, client, job } = startContext
+
+    if (!account) {
+      log(
+        'debug',
+        `ensureAccountAndTriggerAndJob: found no account in start context. Creating one`
+      )
+      const accountData = models.account.buildAccount(connector, {})
+      accountData._type = 'io.cozy.accounts'
+      const accountResponse = await client.save(accountData)
+      account = accountResponse.data
+      log('debug', `ensureAccountAndTriggerAndJob: created account`, account)
+    }
+    if (!trigger) {
+      log(
+        'debug',
+        `ensureAccountAndTriggerAndJob: found no trigger in start context. Creating one`
+      )
+      const triggerData = models.trigger.triggers.buildTriggerAttributes({
+        account,
+        konnector: connector
+      })
+      triggerData._type = 'io.cozy.triggers'
+      const triggerResponse = await client.save(triggerData)
+      trigger = triggerResponse.data
+      log('debug', `ensureAccountAndTriggerAndJob: created trigger`, trigger)
+    }
+
+    // trigger should not be already running (blocked in an upper level)
+    // do not fail if the job is already created by harvest (on apps with not updated harvest)
+    if (!job) {
+      const launchResponse = await client
+        .collection('io.cozy.triggers')
+        .launch(trigger)
+      job = launchResponse.data
+    }
+    log('debug', `ensureAccountAndTriggerAndJob: launched job`, job)
+
+    this.setStartContext({
+      ...startContext,
+      account,
+      trigger,
+      job
+    })
+  }
+
+  /**
    * Get the folder path of any folder, given it's Id
    *
    * @param {String} folderId - Id of the folder
