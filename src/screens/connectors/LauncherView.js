@@ -47,7 +47,7 @@ class LauncherView extends Component {
 
   async initConnector() {
     const { client, launcherContext } = this.props
-    const slug = launcherContext.job.message.konnector
+    const slug = launcherContext.connector.slug
 
     try {
       this.setState({
