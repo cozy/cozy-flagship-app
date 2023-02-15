@@ -30,11 +30,18 @@ declare module 'cozy-client' {
     uri: string
   }
 
+  interface InstanceOptions {
+    capabilities: {
+      flat_subdomains: string
+    }
+  }
+
   export const useClient = (): CozyClient => CozyClient as CozyClient
 
   export default class CozyClient {
     constructor(rawOptions?: ClientOptions)
     getStackClient(): StackClient
+    getInstanceOptions(): InstanceOptions
     isLogged: boolean
     on: (event: string, callback: () => void) => void
     removeListener: (event: string, callback: () => void) => void
