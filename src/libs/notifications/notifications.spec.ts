@@ -1,3 +1,5 @@
+import CozyClient from 'cozy-client'
+import { navigate } from '/libs/RootNavigation'
 import { navigateToApp } from '/libs/functions/openApp'
 import { navigateFromNotification } from '/libs/notifications/notifications'
 
@@ -7,7 +9,7 @@ describe('navigateFromNotification', () => {
   const client = {
     getInstanceOptions: () => ({ capabilities: { flat_subdomains: false } }),
     getStackClient: () => ({ uri: 'http://alice.mycozy.cloud' })
-  }
+  } as CozyClient
 
   it('should navigate to app to generated url', () => {
     // Given
@@ -20,10 +22,10 @@ describe('navigateFromNotification', () => {
 
     // Then
     expect(navigateToApp).toHaveBeenCalledWith({
-      navigation: expect.anything(),
+      navigation: { navigate },
       href: 'http://contacts.alice.mycozy.cloud/#/new',
       slug: 'contacts',
-      iconParams: {}
+      iconParams: undefined
     })
   })
 
