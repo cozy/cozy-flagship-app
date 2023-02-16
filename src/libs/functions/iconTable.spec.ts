@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import CozyClient from 'cozy-client'
 
 import strings from '/constants/strings.json'
 import { expectedTable } from '/tests/fixtures/expected-table'
@@ -15,7 +16,7 @@ const client = {
     fetchJSON: jest.fn().mockImplementation(() => '<svg></svg>')
   }),
   fetchQueryAndGetFromState: jest.fn().mockImplementation(() => getApps)
-}
+} as unknown as CozyClient
 
 afterEach(async () => {
   jest.clearAllMocks()
@@ -135,7 +136,7 @@ it('works with unusual semver', async () => {
     fetchQueryAndGetFromState: jest.fn().mockImplementation(() => ({
       data: [{ attributes: { slug: 'store', version: '1.0.0-beta.1' } }]
     }))
-  }
+  } as unknown as CozyClient
 
   await manageIconCache(client)
 
@@ -184,7 +185,7 @@ it('works offline or with network issues without cache', async () => {
     fetchQueryAndGetFromState: jest.fn().mockImplementation(() => {
       // Empty response
     })
-  }
+  } as unknown as CozyClient
 
   await manageIconCache(client)
 
@@ -198,7 +199,7 @@ it('works offline or with network issues with cache', async () => {
     fetchQueryAndGetFromState: jest.fn().mockImplementation(() => {
       // Empty response
     })
-  }
+  } as unknown as CozyClient
 
   await AsyncStorage.setItem(
     strings.APPS_ICONS,
