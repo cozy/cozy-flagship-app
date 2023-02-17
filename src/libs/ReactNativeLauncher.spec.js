@@ -30,21 +30,26 @@ const fixtures = {
 }
 
 describe('ReactNativeLauncher', () => {
-  const launcher = new ReactNativeLauncher()
-  launcher.pilot = {
-    call: jest.fn()
-  }
-  launcher.worker = {
-    call: jest.fn()
-  }
-  const updateAttributes = jest.fn()
-  const launch = jest.fn()
-  const client = {
-    save: jest.fn(),
-    query: jest.fn(),
-    collection: () => ({
-      updateAttributes,
-      launch
+  function setup() {
+    const launcher = new ReactNativeLauncher()
+    launcher.pilot = {
+      call: jest.fn()
+    }
+    launcher.worker = {
+      call: jest.fn()
+    }
+    const updateAttributes = jest.fn()
+    const launch = jest.fn()
+    const client = {
+      save: jest.fn(),
+      create: jest.fn(),
+      query: jest.fn(),
+      collection: () => ({
+        updateAttributes,
+        launch
+      })
+    }
+    return { launcher, updateAttributes, launch, client }
   }
 
   beforeEach(() => {
@@ -53,6 +58,7 @@ describe('ReactNativeLauncher', () => {
 
   describe('start', () => {
     it('should ensure account and trigger', async () => {
+      const { launcher, client, launch } = setup()
       launcher.setStartContext({
         client,
         connector: { slug: 'connectorslug', clientSide: true }
@@ -88,6 +94,7 @@ describe('ReactNativeLauncher', () => {
       expect(launch).toHaveBeenCalledTimes(1)
     })
     it('should launch the given trigger if any', async () => {
+      const { launcher, client, launch } = setup()
       launcher.setStartContext({
         client,
         account: fixtures.account,
@@ -106,6 +113,7 @@ describe('ReactNativeLauncher', () => {
       expect(launch).toHaveBeenCalledTimes(1)
     })
     it('should work normaly in nominal case', async () => {
+      const { launcher, client, launch, updateAttributes } = setup()
       launcher.setStartContext({
         client,
         account: fixtures.account,
@@ -156,6 +164,7 @@ describe('ReactNativeLauncher', () => {
       })
     })
     it('should update job with error message on error', async () => {
+      const { launcher, client, launch } = setup()
       launcher.setStartContext({
         client,
         account: fixtures.account,
@@ -173,15 +182,33 @@ describe('ReactNativeLauncher', () => {
         }
       })
     })
+    it('should not create account and trigger if the user stops the execution before login success', async () => {
+      const { launcher, client, launch } = setup()
+      launcher.setStartContext({
+        client,
+        connector: { slug: 'connectorslug', clientSide: true }
+      })
+      launcher.pilot.call.mockImplementation(() => {
+        return new Promise(() => {
+          return
+        })
+      })
+      await Promise.all([launcher.start(), launcher.stop()])
+
+      expect(client.create).not.toHaveBeenCalled()
+      expect(launch).not.toHaveBeenCalled()
+    })
   })
   describe('runInWorker', () => {
     it('should resolve with method result', async () => {
+      const { launcher } = setup()
       launcher.worker.call.mockResolvedValue('worker result')
       const result = await launcher.runInWorker('toRunInworker')
       expect(launcher.worker.call).toHaveBeenCalledTimes(1)
       expect(result).toEqual('worker result')
     })
     it('should return false WORKER_WILL_RELOAD event is emitted', async () => {
+      const { launcher } = setup()
       launcher.worker.call.mockImplementation(async () => {
         launcher.emit('WORKER_WILL_RELOAD')
         launcher.emit('WORKER_RELOADED')
@@ -193,6 +220,7 @@ describe('ReactNativeLauncher', () => {
   })
   describe('getCookiesByDomain', () => {
     it('should return cookies from CookieManager', async () => {
+      const { launcher } = setup()
       CookieManager.get.mockResolvedValue({ value: 'SOME COOKIE' })
       launcher.setStartContext({
         account: {
@@ -207,6 +235,7 @@ describe('ReactNativeLauncher', () => {
       expect(CookieManager.get).toHaveBeenCalledWith('.cozy.io')
     })
     it('should throw error if cookie_domains does not exist', async () => {
+      const { launcher } = setup()
       CookieManager.get.mockResolvedValue({ value: 'SOME COOKIE' })
       launcher.setStartContext({
         account: {
@@ -219,6 +248,7 @@ describe('ReactNativeLauncher', () => {
       )
     })
     it('should throw error if cookie_domains does not declare requested domain', async () => {
+      const { launcher } = setup()
       CookieManager.get.mockResolvedValue({ value: 'SOME COOKIE' })
       launcher.setStartContext({
         account: {
@@ -233,6 +263,7 @@ describe('ReactNativeLauncher', () => {
       )
     })
     it('should return empty object if CookieManager return no cookies', async () => {
+      const { launcher } = setup()
       CookieManager.get.mockResolvedValue({})
       launcher.setStartContext({
         account: {
@@ -248,6 +279,7 @@ describe('ReactNativeLauncher', () => {
   })
   describe('getCookieByDomainAndName', () => {
     it('should return cookie from CookieManager', async () => {
+      const { launcher } = setup()
       CookieManager.get.mockResolvedValue({
         SOME_COOKIE_NAME: 'SOME COOKIE VALUE',
         SOME_COOKIE_NAME_2: 'SOME COOKIE VALUE_2'
@@ -268,6 +300,7 @@ describe('ReactNativeLauncher', () => {
       expect(CookieManager.get).toHaveBeenCalledWith('.cozy.io')
     })
     it('should throw error if cookie_domains does not exist', async () => {
+      const { launcher } = setup()
       CookieManager.get.mockResolvedValue({
         SOME_COOKIE_NAME: 'SOME COOKIE VALUE',
         SOME_COOKIE_NAME_2: 'SOME COOKIE VALUE_2'
@@ -285,6 +318,7 @@ describe('ReactNativeLauncher', () => {
       )
     })
     it('should throw error if cookie_domains does not declare requested domain', async () => {
+      const { launcher } = setup()
       CookieManager.get.mockResolvedValue({
         SOME_COOKIE_NAME: 'SOME COOKIE VALUE',
         SOME_COOKIE_NAME_2: 'SOME COOKIE VALUE_2'
@@ -302,6 +336,7 @@ describe('ReactNativeLauncher', () => {
       ).rejects.toThrow('Cookie domain .cozy.io not declared in the manifest')
     })
     it('should return null if CookieManager does not contain the requested cookie', async () => {
+      const { launcher } = setup()
       CookieManager.get.mockResolvedValue({
         SOME_COOKIE_NAME: 'SOME COOKIE VALUE',
         SOME_COOKIE_NAME_2: 'SOME COOKIE VALUE_2'
@@ -323,6 +358,7 @@ describe('ReactNativeLauncher', () => {
   })
   describe('getCookieFromKeychainByName', () => {
     it('should return cookie with given name', async () => {
+      const { launcher } = setup()
       getCookie.mockResolvedValue({
         value: 'tokenvalue',
         name: 'token',
@@ -349,6 +385,7 @@ describe('ReactNativeLauncher', () => {
       })
     })
     it('should return null if there is no cookie with given name', async () => {
+      const { launcher } = setup()
       getCookie.mockResolvedValue(null)
       launcher.setStartContext({
         account: {
@@ -361,6 +398,7 @@ describe('ReactNativeLauncher', () => {
   })
   describe('saveCookieToKeychain', () => {
     it('should save given cookie into the keychain', async () => {
+      const { launcher } = setup()
       getCookie.mockResolvedValue(null)
       launcher.setStartContext({
         account: {
@@ -391,6 +429,7 @@ describe('ReactNativeLauncher', () => {
       })
     })
     it('should override the cookie if the cookie with given name is already saved in the keychain', async () => {
+      const { launcher } = setup()
       getCookie.mockResolvedValue({
         value: 'tokenvalue',
         name: 'token',

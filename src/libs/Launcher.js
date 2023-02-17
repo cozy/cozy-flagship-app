@@ -91,14 +91,18 @@ export default class Launcher {
    */
   async updateJobResult({ state, error } = { state: 'done' }) {
     const { job, client } = this.getStartContext()
-    return await client.save({
-      ...job,
-      attributes: {
-        // @ts-ignore
-        ...job.attributes,
-        ...{ state, error }
-      }
-    })
+    if (job) {
+      return await client.save({
+        ...job,
+        attributes: {
+          // @ts-ignore
+          ...job.attributes,
+          ...{ state, error }
+        }
+      })
+    } else {
+      log.info('Konnector execution stopped by user, no job to stop')
+    }
   }
 
   /**
