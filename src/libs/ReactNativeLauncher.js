@@ -26,6 +26,8 @@ class ReactNativeLauncher extends Launcher {
       'getCookieFromKeychainByName'
     ]
     this.workerListenedEventsNames = ['log', 'workerEvent', 'workerReady']
+
+    this.controller = new AbortController()
   }
 
   setLogger(onKonnectorLog) {
@@ -116,7 +118,23 @@ class ReactNativeLauncher extends Launcher {
     this.close()
   }
 
-  async start({ initConnectorError } = {}) {
+  async start(...args) {
+    return new Promise(resolve => {
+      this.controller.signal.addEventListener('abort', () => {
+        log('info', `Konnector launch was aborted`)
+        resolve('abort')
+      })
+      this._start(...args)
+        .then(() => {
+          return resolve()
+        })
+        .catch(err => {
+          log('err', 'An error in launcher.start was not caught : ', err)
+        })
+    })
+  }
+
+  async _start({ initConnectorError } = {}) {
     try {
       if (initConnectorError) {
         log.info('Got initConnectorError ' + initConnectorError.message)
@@ -147,6 +165,7 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async close() {
+    this.controller.abort()
     if (this.pilot) {
       this.pilot.close()
     }
