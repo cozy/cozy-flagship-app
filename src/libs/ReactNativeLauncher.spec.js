@@ -195,6 +195,7 @@ describe('ReactNativeLauncher', () => {
       })
       await Promise.all([launcher.start(), launcher.stop()])
 
+      expect(client.create).not.toHaveBeenCalled()
       expect(launch).not.toHaveBeenCalled()
     })
   })
