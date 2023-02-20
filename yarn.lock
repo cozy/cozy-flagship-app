@@ -13093,6 +13093,11 @@ p-timeout@^3.0.0:
   dependencies:
     p-finally "^1.0.0"
 
+p-timeout@^6.0.0:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/p-timeout/-/p-timeout-6.1.1.tgz#bcee5e37d730f5474d973b6ff226751a1a5e6ff1"
+  integrity sha512-yqz2Wi4fiFRpMmK0L2pGAU49naSUaP23fFIQL2Y6YT+qDGPoFwpvgQM/wzc6F8JoenUkIlAFa4Ql7NguXBxI7w==
+
 p-try@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-1.0.0.tgz#cbc79cdbaf8fd4228e13f621f2b1a237c1b207b3"
@@ -13109,6 +13114,13 @@ p-wait-for@^3.0.0:
   integrity sha512-wpgERjNkLrBiFmkMEjuZJEWKKDrNfHCKA1OhyN1wg1FrLkULbviEy6py1AyJUgZ72YWFbZ38FIpnqvVqAlDUwA==
   dependencies:
     p-timeout "^3.0.0"
+
+p-wait-for@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/p-wait-for/-/p-wait-for-5.0.0.tgz#67e0f7e83969f7e0da59f6f0b9fd38452eb8dbd5"
+  integrity sha512-nkxeZInKET8e78NTtqBgxpnxDLbiCiQnGdoTnkLkluovfTyI5UTCrGwPNOr6ewJ90NpWyxEFt1ToZ96LmIXXHQ==
+  dependencies:
+    p-timeout "^6.0.0"
 
 pako@^1.0.5, pako@~1.0.5:
   version "1.0.11"
