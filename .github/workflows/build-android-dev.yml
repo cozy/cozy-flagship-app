@@ -69,12 +69,26 @@ jobs:
       - name: Make Gradlew Executable
         run: cd android && chmod +x ./gradlew
 
+      - name: Upload artifact to GitHub Temp
+        uses: actions/upload-artifact@v3
+        with:
+          name: Env
+          path: |
+            .env
+
       - name: Generate App APK
         run: |
-          cd android && ./gradlew assembleRelease --no-daemon
+          ls && cat .env && cd android && ./gradlew assembleRelease --no-daemon
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          ANDROID_SAFETY_NET_API_KEY: ${{ secrets.ANDROID_SAFETY_NET_API_KEY }}
+        #   ANDROID_SAFETY_NET_API_KEY: ${{ secrets.ANDROID_SAFETY_NET_API_KEY }}
+
+      - name: Upload artifact to GitHub Unsigned Temp
+        uses: actions/upload-artifact@v3
+        with:
+          name: Signed Android Package Unsigned
+          path: |
+            android/app/build/outputs/apk/release/*.apk
 
       - name: Sign APK
         id: sign_app
