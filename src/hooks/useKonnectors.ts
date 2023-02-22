@@ -4,22 +4,22 @@ import { useAppDispatch, useAppSelector } from '/hooks/reduxHooks'
 import {
   addLog as sliceAddLog,
   LogObj
-} from '/redux/ConnectorState/ConnectorLogsSlice'
+} from '/redux/KonnectorState/KonnectorLogsSlice'
 import {
-  selectCurrentConnector,
-  setCurrentRunningConnector
-} from '/redux/ConnectorState/CurrentConnectorSlice'
-import { sendConnectorsLogs } from '/libs/connectors/sendConnectorsLogs'
+  selectCurrentKonnector,
+  setCurrentRunningKonnector
+} from '/redux/KonnectorState/CurrentKonnectorSlice'
+import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 
 export interface UseAddLogHook {
   addLog: (logObj: LogObj) => void
-  currentRunningConnector?: string
+  currentRunningKonnector?: string
   processLogs: () => void
-  setCurrentRunningConnector: (slug: string) => void
+  setCurrentRunningKonnector: (slug: string) => void
 }
 
-export const useConnectors = (): UseAddLogHook => {
-  const { currentRunningConnector } = useAppSelector(selectCurrentConnector)
+export const useKonnectors = (): UseAddLogHook => {
+  const { currentRunningKonnector } = useAppSelector(selectCurrentKonnector)
   const dispatch = useAppDispatch()
   const client = useClient()
 
@@ -27,18 +27,17 @@ export const useConnectors = (): UseAddLogHook => {
     dispatch(sliceAddLog(logObj))
   }
 
-  const doSetCurrentRunningConnector = (slug: string): void => {
-    dispatch(setCurrentRunningConnector(slug))
+  const doSetCurrentRunningKonnector = (slug: string): void => {
+    dispatch(setCurrentRunningKonnector(slug))
   }
 
   const doProcessLogs = (): void => {
-    void sendConnectorsLogs(client)
+    void sendKonnectorsLogs(client)
   }
 
   return {
     addLog: doAddLog,
-    currentRunningConnector,
-    processLogs: doProcessLogs,
-    setCurrentRunningConnector: doSetCurrentRunningConnector
+    currentRunningKonnector, processLogs: doProcessLogs,
+    setCurrentRunningKonnector: doSetCurrentRunningKonnector
   }
 }

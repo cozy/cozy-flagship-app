@@ -2,31 +2,31 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import type { RootState } from '/redux/store'
 
-export interface CurrentConnectorState {
-  currentRunningConnector?: string
+export interface CurrentKonnectorState {
+  currentRunningKonnector?: string
 }
 
-const initialState: CurrentConnectorState = {
-  currentRunningConnector: undefined
+const initialState: CurrentKonnectorState = {
+  currentRunningKonnector: undefined
 }
 
-export const currentConnectorSlice = createSlice({
-  name: 'currentConnector',
+export const currentKonnectorSlice = createSlice({
+  name: 'currentKonnector',
   initialState,
   reducers: {
-    setCurrentRunningConnector: (
+    setCurrentRunningKonnector: (
       state,
       action: PayloadAction<string | undefined>
     ) => {
-      state.currentRunningConnector = action.payload
+      state.currentRunningKonnector = action.payload
     }
   }
 })
 
-export const { setCurrentRunningConnector } = currentConnectorSlice.actions
+export const { setCurrentRunningKonnector } = currentKonnectorSlice.actions
 
-export const selectCurrentConnector = (
+export const selectCurrentKonnector = (
   state: RootState
-): CurrentConnectorState => state.currentConnector
+): CurrentKonnectorState => state.currentKonnector
 
-export default currentConnectorSlice.reducer
+export default currentKonnectorSlice.reducer
