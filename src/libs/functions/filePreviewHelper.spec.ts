@@ -37,13 +37,13 @@ describe('filePreviewHelper', () => {
       [
         `Should return 'PUBLIC_BY_SECRET_DOWNLOAD_LINK' for a '/files/downloads/:secret/:name' link`,
         PUBLIC_BY_SECRET_DOWNLOAD_LINK,
-        'https://claude.mycozy.cloud/files/downloads/SOME_SECRET/2022-08-29_some_connector.pdf',
+        'https://claude.mycozy.cloud/files/downloads/SOME_SECRET/2022-08-29_some_konnector.pdf',
         'https://claude.mycozy.cloud'
       ],
       [
         `Should return 'PUBLIC_BY_SECRET_DOWNLOAD_LINK' for a '/files/downloads/:secret/:name' link from another Cozy`,
         PUBLIC_BY_SECRET_DOWNLOAD_LINK,
-        'https://claude.mycozy.cloud/files/downloads/SOME_SECRET/2022-08-29_some_connector.pdf',
+        'https://claude.mycozy.cloud/files/downloads/SOME_SECRET/2022-08-29_some_konnector.pdf',
         'https://alice.mycozy.cloud'
       ],
       [

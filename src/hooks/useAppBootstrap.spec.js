@@ -13,9 +13,9 @@ const mockClient = {
   }
 }
 const HOME_FALLBACK_URL =
-  'https://claude-drive.mycozy.cloud/#/connected/connector_slug/new'
+  'https://claude-drive.mycozy.cloud/#/connected/konnector_slug/new'
 const HOME_FALLBACK_URL_ENCODED =
-  'https%3A%2F%2Fclaude-drive.mycozy.cloud%2F%23%2Fconnected%2Fconnector_slug%2Fnew'
+  'https%3A%2F%2Fclaude-drive.mycozy.cloud%2F%23%2Fconnected%2Fkonnector_slug%2Fnew'
 const HOME_UNIVERSAL_LINK = `https://links.mycozy.cloud/flagship/home?fallback=${HOME_FALLBACK_URL_ENCODED}`
 const HOME_ANDROID_SCHEME = `cozy://home?fallback=${HOME_FALLBACK_URL_ENCODED}`
 const APP_FALLBACK_URL = `https://claude-drive.mycozy.cloud/#/folder/SOME_FOLDER_ID`

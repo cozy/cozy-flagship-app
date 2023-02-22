@@ -8,21 +8,21 @@ import {
 import { getFqdnFromClient } from '/libs/client'
 import { getErrorMessage } from 'cozy-intent'
 
-export interface ConnectorBundle {
+export interface KonnectorBundle {
   content: string
   manifest: Record<string, unknown>
 }
 
 /**
- * Returns the manifest and the content of the main.js file for a given connector
+ * Returns the manifest and the content of the main.js file for a given konnector
  *
- * @param {AppInfo} appInfo - Information about the connector to get the manifest and main.js file
- * @returns {ConnectorBundle} The manifest and main.js file for the connector
+ * @param {AppInfo} appInfo - Information about the konnector to get the manifest and main.js file
+ * @returns {KonnectorBundle} The manifest and main.js file for the konnector
  */
-export const getConnectorBundle = async ({
+export const getKonnectorBundle = async ({
   client,
   slug
-}: AppInfo): Promise<ConnectorBundle> => {
+}: AppInfo): Promise<KonnectorBundle> => {
   const { fqdn } = getFqdnFromClient(client)
   const path = await getBaseFolderForFqdnAndSlugAndCurrentVersion(fqdn, slug)
 
@@ -38,7 +38,7 @@ export const getConnectorBundle = async ({
     }
   } catch (error) {
     log.error(
-      `Could not read manifest or main.js for connector "${slug}" at path "${path}": ${getErrorMessage(
+      `Could not read manifest or main.js for konnector "${slug}" at path "${path}": ${getErrorMessage(
         error
       )}.`
     )
@@ -51,7 +51,7 @@ export const getConnectorBundle = async ({
  * Deletes all cache folders for the given slug that are not in the versionsToKeep array.
  *
  * @param client - The client that is being used
- * @param slug - The slug of the app/connector that is being cleaned up
+ * @param slug - The slug of the app/konnector that is being cleaned up
  * @param versionsToKeep - The list of versions that will not be deleted
  */
 export const handleCleanup = async ({

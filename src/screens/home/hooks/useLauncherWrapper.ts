@@ -1,6 +1,6 @@
 import CozyClient from 'cozy-client'
 
-import { LauncherContext } from '/libs/connectors/models'
+import { LauncherContext } from '/libs/konnectors/models'
 import { useLauncherClient } from '/screens/home/hooks/useLauncherClient'
 
 const isLauncherReady = (

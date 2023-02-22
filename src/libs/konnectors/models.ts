@@ -1,5 +1,5 @@
 export interface LauncherContextValue {
-  connector: Connector
+  konnector: Konnector
   account: Account
   trigger: Trigger
   job: Job
@@ -32,12 +32,12 @@ interface UpdatedByApp {
   slug?: string
 }
 
-interface Connector {
+interface Konnector {
   type: string
   id?: string
-  attributes?: Connector
+  attributes?: Konnector
   meta?: Meta
-  links?: ConnectorLinks
+  links?: KonnectorLinks
   categories: string[]
   checksum: string
   clientSide: boolean
@@ -50,7 +50,7 @@ interface Connector {
   language: string
   locales: Locales
   name: string
-  permissions: ConnectorPermissions
+  permissions: KonnectorPermissions
   slug: string
   source: string
   state: string
@@ -65,7 +65,7 @@ interface Folder {
   defaultDir: string
 }
 
-interface ConnectorLinks {
+interface KonnectorLinks {
   self: string
   icon: string
   permissions: string
@@ -94,7 +94,7 @@ interface Meta {
   rev: string
 }
 
-interface ConnectorPermissions {
+interface KonnectorPermissions {
   bills: FluffyBills
   files: FluffyBills
 }

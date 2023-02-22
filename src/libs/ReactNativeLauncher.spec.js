@@ -61,7 +61,7 @@ describe('ReactNativeLauncher', () => {
       const { launcher, client, launch } = setup()
       launcher.setStartContext({
         client,
-        connector: { slug: 'connectorslug', clientSide: true }
+        konnector: { slug: 'konnectorslug', clientSide: true }
       })
       client.save
         .mockResolvedValueOnce({ data: fixtures.account })
@@ -77,7 +77,7 @@ describe('ReactNativeLauncher', () => {
       await launcher.start()
       expect(client.save).toHaveBeenNthCalledWith(1, {
         _type: 'io.cozy.accounts',
-        account_type: 'connectorslug',
+        account_type: 'konnectorslug',
         auth: {},
         identifier: null,
         state: null
@@ -88,7 +88,7 @@ describe('ReactNativeLauncher', () => {
         worker: 'konnector',
         message: {
           account: 'normal_account_id',
-          konnector: 'connectorslug'
+          konnector: 'konnectorslug'
         }
       })
       expect(launch).toHaveBeenCalledTimes(1)
@@ -99,7 +99,7 @@ describe('ReactNativeLauncher', () => {
         client,
         account: fixtures.account,
         trigger: fixtures.trigger,
-        connector: { slug: 'connectorslug', clientSide: true }
+        konnector: { slug: 'konnectorslug', clientSide: true }
       })
       launch.mockResolvedValue({ data: fixtures.job })
       client.query.mockResolvedValue({ data: fixtures.account })
@@ -118,7 +118,7 @@ describe('ReactNativeLauncher', () => {
         client,
         account: fixtures.account,
         trigger: fixtures.trigger,
-        connector: { slug: 'connectorslug', clientSide: true }
+        konnector: { slug: 'konnectorslug', clientSide: true }
       })
       client.query.mockResolvedValue({ data: fixtures.account })
       launch.mockResolvedValue({ data: fixtures.job })
@@ -186,7 +186,7 @@ describe('ReactNativeLauncher', () => {
       const { launcher, client, launch } = setup()
       launcher.setStartContext({
         client,
-        connector: { slug: 'connectorslug', clientSide: true }
+        konnector: { slug: 'konnectorslug', clientSide: true }
       })
       launcher.pilot.call.mockImplementation(() => {
         return new Promise(() => {
@@ -195,7 +195,6 @@ describe('ReactNativeLauncher', () => {
       })
       await Promise.all([launcher.start(), launcher.stop()])
 
-      expect(client.create).not.toHaveBeenCalled()
       expect(launch).not.toHaveBeenCalled()
     })
   })

@@ -5,7 +5,7 @@ import { changeBarColors } from 'react-native-immersive-bars'
 import Minilog from '@cozy/minilog'
 import { FlagshipUI } from 'cozy-intent'
 
-import { urlHasConnectorOpen } from '/libs/functions/urlHasConnector'
+import { urlHasKonnectorOpen } from '/libs/functions/urlHasKonnector'
 
 const log = Minilog('SET_FLAGSHIP_UI')
 
@@ -126,7 +126,7 @@ export const resetUIState = (
   uri: string,
   callback?: (theme: StatusBarStyle) => void
 ): void => {
-  const theme = urlHasConnectorOpen(uri) ? ThemeInput.Dark : ThemeInput.Light
+  const theme = urlHasKonnectorOpen(uri) ? ThemeInput.Dark : ThemeInput.Light
 
   void setFlagshipUI({ bottomTheme: theme, topTheme: theme }, 'resetUIState')
 

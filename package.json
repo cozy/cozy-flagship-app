@@ -16,7 +16,7 @@
     "postinstall": "patch-package && yarn install:home:registry",
     "pre-commit": "yarn lint",
     "start": "react-native start",
-    "test": "jest connectors/**/* src/**/* scripts/* --detectOpenHandles --forceExit",
+    "test": "jest src/**/* scripts/* --detectOpenHandles --forceExit",
     "token": "node scripts/token.js",
     "typecheck": "yarn tsc",
     "web": "webpack serve --open --config webpack.config.js --inline --hot --port=9999",

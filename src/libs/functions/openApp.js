@@ -90,10 +90,10 @@ const openAppNative = async appNativeData => {
 }
 
 /**
- * Open the connector pane in the Home view
- * @param {AppManifest} connector - The connector information
+ * Open the konnector pane in the Home view
+ * @param {AppManifest} konnector - The konnector information
  */
-const openConnectorInHome = connector => {
+const openKonnectorInHome = konnector => {
   const { slug } = connector
 
   navigate({
@@ -127,7 +127,7 @@ export const openApp = (client, navigation, href, app, iconParams) => {
     return
   }
   if (app?.type === 'konnector') {
-    openConnectorInHome(app)
+    openKonnectorInHome(app)
     return
   }
 

@@ -4,10 +4,10 @@ import Minilog from '@cozy/minilog'
 import ContentScriptBridge from './bridge/ContentScriptBridge'
 import CookieManager from '@react-native-cookies/cookies'
 import Launcher from './Launcher'
-import { getConnectorBundle } from '/libs/cozyAppBundle/cozyAppBundle.functions'
+import { getKonnectorBundle } from '/libs/cozyAppBundle/cozyAppBundle.functions'
 import { saveCookie, getCookie, removeCookie } from './keychain'
 import { updateCozyAppBundle } from '/libs/cozyAppBundle/cozyAppBundle'
-import { sendConnectorsLogs } from '/libs/connectors/sendConnectorsLogs'
+import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 
 const log = Minilog('ReactNativeLauncher')
 
@@ -73,7 +73,7 @@ class ReactNativeLauncher extends Launcher {
     log.debug('bridges init done')
   }
 
-  async ensureConnectorIsInstalled({ slug, client }) {
+  async ensureKonnectorIsInstalled({ slug, client }) {
     try {
       await updateCozyAppBundle({
         slug,
@@ -82,22 +82,22 @@ class ReactNativeLauncher extends Launcher {
       })
     } catch (error) {
       log.error(
-        `Error while checking if the "${slug}" connector has a new version available.
+        `Error while checking if the "${slug}" konnector has a new version available.
         Still attempting to get a cached version.`,
         error
       )
     }
 
     try {
-      const bundle = await getConnectorBundle({ client, slug })
+      const bundle = await getKonnectorBundle({ client, slug })
 
-      if (!bundle) throw new Error('No connector bundle found')
+      if (!bundle) throw new Error('No konnector bundle found')
 
       return bundle
     } catch (error) {
       throw new Error(
-        `Critical error while ensuring "${slug}" connector is installed.
-        The connector will not be able to run.`,
+        `Critical error while ensuring "${slug}" konnector is installed.
+        The konnector will not be able to run.`,
         error
       )
     }
@@ -106,7 +106,7 @@ class ReactNativeLauncher extends Launcher {
   async stop({ message } = {}) {
     const context = this.getStartContext()
     const client = context.client
-    await sendConnectorsLogs(client)
+    await sendKonnectorsLogs(client)
     if (message) {
       await this.updateJobResult({
         state: 'errored',
@@ -134,11 +134,11 @@ class ReactNativeLauncher extends Launcher {
     })
   }
 
-  async _start({ initConnectorError } = {}) {
+  async _start({ initKonnectorError } = {}) {
     try {
-      if (initConnectorError) {
-        log.info('Got initConnectorError ' + initConnectorError.message)
-        throw initConnectorError
+      if (initKonnectorError) {
+        log.info('Got initKonnectorError ' + initKonnectorError.message)
+        throw initKonnectorError
       }
       await this.pilot.call('setContentScriptType', 'pilot')
       await this.worker.call('setContentScriptType', 'worker')
@@ -162,7 +162,7 @@ class ReactNativeLauncher extends Launcher {
       await this.ensureAccountTriggerAndLaunch() // to create the job even if the error was raised before sendLoginSuccess
       await this.stop({ message: err.message })
     }
-    this.emit('CONNECTOR_EXECUTION_END')
+    this.emit('KONNECTOR_EXECUTION_END')
   }
 
   async close() {

@@ -1,4 +1,4 @@
-export const urlHasConnectorOpen = url => {
+export const urlHasKonnectorOpen = url => {
   try {
     return (
       new URL(url.endsWith('/') ? url.slice(0, -1) : url).hash.split('/')

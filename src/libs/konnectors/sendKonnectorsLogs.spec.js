@@ -1,5 +1,5 @@
 import CozyClient from 'cozy-client'
-import { sendConnectorsLogs } from './sendConnectorsLogs'
+import { sendKonnectorsLogs } from './sendKonnectorsLogs'
 import { store } from '/redux/store'
 
 jest.genMockFromModule('cozy-client')
@@ -26,12 +26,12 @@ describe('Konnectors logs', () => {
     const client = new CozyClient()
 
     store.getState.mockReturnValue({
-      connectorLogs: {
+      konnectorLogs: {
         logs: {}
       }
     })
 
-    await sendConnectorsLogs(client)
+    await sendKonnectorsLogs(client)
     expect(mockFetchJSON).not.toHaveBeenCalled()
     expect(store.dispatch).not.toHaveBeenCalled()
   })
@@ -40,7 +40,7 @@ describe('Konnectors logs', () => {
     const client = new CozyClient()
 
     store.getState.mockReturnValue({
-      connectorLogs: {
+      konnectorLogs: {
         logs: {
           myslug: [
             {
@@ -53,7 +53,7 @@ describe('Konnectors logs', () => {
       }
     })
 
-    await sendConnectorsLogs(client)
+    await sendKonnectorsLogs(client)
     expect(mockFetchJSON).toHaveBeenCalledWith(
       'POST',
       '/konnectors/myslug/logs',
@@ -67,7 +67,7 @@ describe('Konnectors logs', () => {
     )
     expect(store.dispatch).toHaveBeenCalledWith({
       payload: { number: 1, slug: 'myslug' },
-      type: 'connectorLogs/removeLogs'
+      type: 'konnectorLogs/removeLogs'
     })
   })
 
@@ -75,7 +75,7 @@ describe('Konnectors logs', () => {
     const client = new CozyClient()
 
     store.getState.mockReturnValue({
-      connectorLogs: {
+      konnectorLogs: {
         logs: {
           myslug: [
             {
@@ -93,7 +93,7 @@ describe('Konnectors logs', () => {
       }
     })
 
-    await sendConnectorsLogs(client)
+    await sendKonnectorsLogs(client)
     expect(mockFetchJSON).toHaveBeenCalledWith(
       'POST',
       '/konnectors/myslug/logs',
@@ -112,7 +112,7 @@ describe('Konnectors logs', () => {
     )
     expect(store.dispatch).toHaveBeenCalledWith({
       payload: { number: 2, slug: 'myslug' },
-      type: 'connectorLogs/removeLogs'
+      type: 'konnectorLogs/removeLogs'
     })
   })
 
@@ -120,7 +120,7 @@ describe('Konnectors logs', () => {
     const client = new CozyClient()
 
     store.getState.mockReturnValue({
-      connectorLogs: {
+      konnectorLogs: {
         logs: {
           myslug: [
             {
@@ -140,7 +140,7 @@ describe('Konnectors logs', () => {
       }
     })
 
-    await sendConnectorsLogs(client)
+    await sendKonnectorsLogs(client)
     expect(mockFetchJSON).toHaveBeenCalledWith(
       'POST',
       '/konnectors/myslug/logs',
@@ -167,11 +167,11 @@ describe('Konnectors logs', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith({
       payload: { number: 1, slug: 'myslug' },
-      type: 'connectorLogs/removeLogs'
+      type: 'konnectorLogs/removeLogs'
     })
     expect(store.dispatch).toHaveBeenCalledWith({
       payload: { number: 1, slug: 'myslug2' },
-      type: 'connectorLogs/removeLogs'
+      type: 'konnectorLogs/removeLogs'
     })
   })
 })

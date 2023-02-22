@@ -474,7 +474,7 @@ export const getApps = {
         locales: {
           de: {
             changes:
-              'Du hast es nicht verpasst, der Store ist in deinem Cozy angekommen!\nWir haben es genutzt, um Collect zu verbessern:\n * Store Anpassungen.\n * Kachelzusammenführung: Wenn du mehrere Konten bei einem Dienst hast, werden diese nun unter die Dienstleister-Kachel zusammengeführt.\n * Verbesserungen einiger Connector-Seiten.',
+              'Du hast es nicht verpasst, der Store ist in deinem Cozy angekommen!\nWir haben es genutzt, um Collect zu verbessern:\n * Store Anpassungen.\n * Kachelzusammenführung: Wenn du mehrere Konten bei einem Dienst hast, werden diese nun unter die Dienstleister-Kachel zusammengeführt.\n * Verbesserungen einiger Konnector-Seiten.',
             long_description:
               'Mit Cozy Collect kannst du ganz einfach:\n * Dokumente all deiner Dienste herunterladen\n * Festlegen, wie häufig Cozy deine Rechnungen holt\n * Direkt auf all die von Cozy gesammelten Dokumente zugreifen',
             name: 'Zuhause',
@@ -483,7 +483,7 @@ export const getApps = {
           },
           en: {
             changes:
-              "You haven't missed it, the Store arrived in your Cozy!\nWe took advantage of it to improve Collect:\n * Store adaptation.\n * Tile merge: when you have several accounts for a single supplier, the former are now merged under the supplier tile.\n * Improvement of some Connectors pages.",
+              "You haven't missed it, the Store arrived in your Cozy!\nWe took advantage of it to improve Collect:\n * Store adaptation.\n * Tile merge: when you have several accounts for a single supplier, the former are now merged under the supplier tile.\n * Improvement of some Konnectors pages.",
             long_description:
               'With Cozy Collect, you can easily:\n * Downloads documents from all your suppliers\n * Set how often Cozy will collect your bills\n * Access directly to the documents gathered by your Cozy',
             name: 'Home',
@@ -510,7 +510,7 @@ export const getApps = {
           },
           it: {
             changes:
-              "You haven't missed it, the Store arrived in your Cozy!\nWe took advantage of it to improve Collect:\n * Store adaptation.\n * Tile merge: when you have several accounts for a single supplier, the former are now merged under the supplier tile.\n * Improvement of some Connectors pages.",
+              "You haven't missed it, the Store arrived in your Cozy!\nWe took advantage of it to improve Collect:\n * Store adaptation.\n * Tile merge: when you have several accounts for a single supplier, the former are now merged under the supplier tile.\n * Improvement of some Konnectors pages.",
             long_description:
               'With Cozy Collect, you can easily:\n * Downloads documents from all your suppliers\n * Set how often Cozy will collect your bills\n * Access directly to the documents gathered by your Cozy',
             name: 'Home',
@@ -528,7 +528,7 @@ export const getApps = {
           },
           nl_NL: {
             changes:
-              "Je kunt het niet gemist hebben: de Winkel is gearriveerd op jouw Cozy!\nWe hebben daar gebruik van gemaakt om Verzamelingen te verbeteren door:\n * winkelintegratie.\n * tegelsamenvoeging: als je meerdere accounts bij dezelfde leverancier hebt, dan zijn ze nu samengevoegd onder één tegel.\n * sommige connector-pagina's te verbeteren.",
+              "Je kunt het niet gemist hebben: de Winkel is gearriveerd op jouw Cozy!\nWe hebben daar gebruik van gemaakt om Verzamelingen te verbeteren door:\n * winkelintegratie.\n * tegelsamenvoeging: als je meerdere accounts bij dezelfde leverancier hebt, dan zijn ze nu samengevoegd onder één tegel.\n * sommige konnector-pagina's te verbeteren.",
             long_description:
               'Met Cozy Verzamelingen kun je eenvoudig:\n * documenten downloaden van al je leveranciers\n * instellen hoe vaak Cozy je rekeningen moet verzamelen\n * toegang krijgen tot documenten die jouw Cozy verzameld heeft',
             name: 'Startpagina',
@@ -1989,7 +1989,7 @@ export const getApps = {
         locales: {
           de: {
             changes:
-              'Du hast es nicht verpasst, der Store ist in deinem Cozy angekommen!\nWir haben es genutzt, um Collect zu verbessern:\n * Store Anpassungen.\n * Kachelzusammenführung: Wenn du mehrere Konten bei einem Dienst hast, werden diese nun unter die Dienstleister-Kachel zusammengeführt.\n * Verbesserungen einiger Connector-Seiten.',
+              'Du hast es nicht verpasst, der Store ist in deinem Cozy angekommen!\nWir haben es genutzt, um Collect zu verbessern:\n * Store Anpassungen.\n * Kachelzusammenführung: Wenn du mehrere Konten bei einem Dienst hast, werden diese nun unter die Dienstleister-Kachel zusammengeführt.\n * Verbesserungen einiger Konnector-Seiten.',
             long_description:
               'Mit Cozy Collect kannst du ganz einfach:\n * Dokumente all deiner Dienste herunterladen\n * Festlegen, wie häufig Cozy deine Rechnungen holt\n * Direkt auf all die von Cozy gesammelten Dokumente zugreifen',
             name: 'Zuhause',
@@ -1998,7 +1998,7 @@ export const getApps = {
           },
           en: {
             changes:
-              "You haven't missed it, the Store arrived in your Cozy!\nWe took advantage of it to improve Collect:\n * Store adaptation.\n * Tile merge: when you have several accounts for a single supplier, the former are now merged under the supplier tile.\n * Improvement of some Connectors pages.",
+              "You haven't missed it, the Store arrived in your Cozy!\nWe took advantage of it to improve Collect:\n * Store adaptation.\n * Tile merge: when you have several accounts for a single supplier, the former are now merged under the supplier tile.\n * Improvement of some Konnectors pages.",
             long_description:
               'With Cozy Collect, you can easily:\n * Downloads documents from all your suppliers\n * Set how often Cozy will collect your bills\n * Access directly to the documents gathered by your Cozy',
             name: 'Home',
@@ -2025,7 +2025,7 @@ export const getApps = {
           },
           it: {
             changes:
-              "You haven't missed it, the Store arrived in your Cozy!\nWe took advantage of it to improve Collect:\n * Store adaptation.\n * Tile merge: when you have several accounts for a single supplier, the former are now merged under the supplier tile.\n * Improvement of some Connectors pages.",
+              "You haven't missed it, the Store arrived in your Cozy!\nWe took advantage of it to improve Collect:\n * Store adaptation.\n * Tile merge: when you have several accounts for a single supplier, the former are now merged under the supplier tile.\n * Improvement of some Konnectors pages.",
             long_description:
               'With Cozy Collect, you can easily:\n * Downloads documents from all your suppliers\n * Set how often Cozy will collect your bills\n * Access directly to the documents gathered by your Cozy',
             name: 'Home',
@@ -2043,7 +2043,7 @@ export const getApps = {
           },
           nl_NL: {
             changes:
-              "Je kunt het niet gemist hebben: de Winkel is gearriveerd op jouw Cozy!\nWe hebben daar gebruik van gemaakt om Verzamelingen te verbeteren door:\n * winkelintegratie.\n * tegelsamenvoeging: als je meerdere accounts bij dezelfde leverancier hebt, dan zijn ze nu samengevoegd onder één tegel.\n * sommige connector-pagina's te verbeteren.",
+              "Je kunt het niet gemist hebben: de Winkel is gearriveerd op jouw Cozy!\nWe hebben daar gebruik van gemaakt om Verzamelingen te verbeteren door:\n * winkelintegratie.\n * tegelsamenvoeging: als je meerdere accounts bij dezelfde leverancier hebt, dan zijn ze nu samengevoegd onder één tegel.\n * sommige konnector-pagina's te verbeteren.",
             long_description:
               'Met Cozy Verzamelingen kun je eenvoudig:\n * documenten downloaden van al je leveranciers\n * instellen hoe vaak Cozy je rekeningen moet verzamelen\n * toegang krijgen tot documenten die jouw Cozy verzameld heeft',
             name: 'Startpagina',
@@ -2822,7 +2822,7 @@ export const getApps = {
           'apps.suggestions': {
             type: 'io.cozy.apps.suggestions',
             description:
-              'Used to suggest which apps / connectors might be useful for the user',
+              'Used to suggest which apps / konnectors might be useful for the user',
             verbs: ['GET', 'POST', 'PUT']
           },
           jobs: {
