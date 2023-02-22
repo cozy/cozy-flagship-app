@@ -6,30 +6,30 @@ import { Typography } from '/ui/Typography'
 import { t } from '/core/tools/interpolate'
 import { translation } from '/locales'
 
-interface ErrorParallelConnectorsProps {
-  concurrentConnector: string
-  currentRunningConnector: string
+interface ErrorParallelKonnectorsProps {
+  concurrentKonnector: string
+  currentRunningKonnector: string
   onClose: () => void
 }
 
-export const ErrorParallelConnectors = ({
-  concurrentConnector,
-  currentRunningConnector,
+export const ErrorParallelKonnectors = ({
+  concurrentKonnector,
+  currentRunningKonnector,
   onClose
-}: ErrorParallelConnectorsProps): JSX.Element | null => (
+}: ErrorParallelKonnectorsProps): JSX.Element | null => (
   <ConfirmDialog
     actions={
       <Button onPress={onClose} variant="secondary">
         <Typography color="textSecondary" variant="button">
-          {translation.connectors.errorDoubleRun.button}
+          {translation.konnectors.errorDoubleRun.button}
         </Typography>
       </Button>
     }
-    content={t(translation.connectors.errorDoubleRun.body, {
-      running_connector: currentRunningConnector,
-      concurrent_connector: concurrentConnector
+    content={t(translation.konnectors.errorDoubleRun.body, {
+      running_konnector: currentRunningKonnector,
+      concurrent_konnector: concurrentKonnector
     })}
     onClose={onClose}
-    title={translation.connectors.errorDoubleRun.title}
+    title={translation.konnectors.errorDoubleRun.title}
   />
 )

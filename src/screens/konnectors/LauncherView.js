@@ -14,7 +14,8 @@ import strings from '/constants/strings.json'
 import {
   startTimeout,
   stopTimeout
-} from '/screens/connectors/core/handleTimeout'
+} from '/screens/konnectors/core/handleTimeout'
+import { navigate } from '/libs/RootNavigation'
 
 const log = Minilog('LauncherView')
 
@@ -29,12 +30,13 @@ class LauncherView extends Component {
     this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
     this.onStopExecution = this.onStopExecution.bind(this)
+    this.onCreatedAccount = this.onCreatedAccount.bind(this)
     this.onWorkerWillReload = debounce(this.onWorkerWillReload.bind(this), 1000)
     this.pilotWebView = null
     this.workerWebview = null
     this.state = {
       userAgent: undefined,
-      connector: null,
+      konnector: null,
       worker: {},
       workerReady: false
     }
@@ -45,13 +47,27 @@ class LauncherView extends Component {
     this.props.setLauncherContext({ state: 'default' })
   }
 
-  async initConnector() {
+  onCreatedAccount(account) {
+    // make the webview navigate to the the harvest route associated to the account
+    const { launcherContext } = this.props
+    const konnector = launcherContext.konnector.slug
+    navigate(
+      'home',
+      {
+        konnector,
+        account: account._id
+      },
+      true
+    )
+  }
+
+  async initKonnector() {
     const { client, launcherContext } = this.props
-    const slug = launcherContext.connector.slug
+    const slug = launcherContext.konnector.slug
 
     try {
       this.setState({
-        connector: await this.launcher.ensureConnectorIsInstalled({
+        konnector: await this.launcher.ensureKonnectorIsInstalled({
           slug,
           client
         })
@@ -68,7 +84,7 @@ class LauncherView extends Component {
       ...this.props.launcherContext,
       client: this.props.client,
       launcherClient: this.props.launcherClient,
-      manifest: get(this, 'state.connector.manifest')
+      manifest: get(this, 'state.konnector.manifest')
     })
   }
 
@@ -80,9 +96,9 @@ class LauncherView extends Component {
       ...this.props.launcherContext,
       client: this.props.client,
       launcherClient: this.props.launcherClient,
-      manifest: get(this, 'state.connector.manifest')
+      manifest: get(this, 'state.konnector.manifest')
     })
-    const initConnectorError = await this.initConnector()
+    const initKonnectorError = await this.initKonnector()
 
     this.launcher.on('SET_WORKER_STATE', options => {
       this.setState({ worker: { ...this.state.worker, ...options } })
@@ -94,14 +110,15 @@ class LauncherView extends Component {
     this.launcher.on('WORKER_READY', () => {
       this.setState({ workerReady: true })
     })
+    this.launcher.on('CREATED_ACCOUNT', this.onCreatedAccount)
 
-    if (this.state.connector) {
+    if (this.state.konnector) {
       await this.launcher.init({
         bridgeOptions: {
           pilotWebView: this.pilotWebView,
           workerWebview: this.workerWebview
         },
-        contentScript: get(this, 'state.connector.content')
+        contentScript: get(this, 'state.konnector.content')
       })
     }
 
@@ -110,7 +127,7 @@ class LauncherView extends Component {
       this.props.setLauncherContext({ state: 'default' })
     })
 
-    await this.launcher.start({ initConnectorError })
+    await this.launcher.start({ initKonnectorError })
 
     stopTimeout()
 
@@ -132,7 +149,7 @@ class LauncherView extends Component {
 
     return (
       <>
-        {this.state.connector ? (
+        {this.state.konnector ? (
           <>
             <View>
               <WebView
@@ -140,7 +157,7 @@ class LauncherView extends Component {
                 ref={ref => (this.pilotWebView = ref)}
                 originWhitelist={['*']}
                 source={{
-                  uri: get(this, 'state.connector.manifest.vendor_link')
+                  uri: get(this, 'state.konnector.manifest.vendor_link')
                 }}
                 useWebKit={true}
                 javaScriptEnabled={true}
@@ -150,7 +167,7 @@ class LauncherView extends Component {
                 onError={this.onPilotError}
                 injectedJavaScriptBeforeContentLoaded={get(
                   this,
-                  'state.connector.content'
+                  'state.konnector.content'
                 )}
               />
             </View>
@@ -163,7 +180,7 @@ class LauncherView extends Component {
                 >
                   <BackTo color={colors.primaryColor} width={16} height={16} />
                   <Text style={styles.headerTextStyle}>
-                    {strings.connectors.worker.backButton}
+                    {strings.konnectors.worker.backButton}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -182,7 +199,7 @@ class LauncherView extends Component {
                 onError={this.onWorkerError}
                 injectedJavaScriptBeforeContentLoaded={get(
                   this,
-                  'state.connector.content'
+                  'state.konnector.content'
                 )}
               />
             </View>

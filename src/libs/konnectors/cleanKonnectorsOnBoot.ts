@@ -2,57 +2,57 @@ import Minilog from '@cozy/minilog'
 import CozyClient from 'cozy-client'
 
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
-import { sendConnectorsLogs } from '/libs/connectors/sendConnectorsLogs'
+import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 import {
-  CurrentConnectorState,
-  setCurrentRunningConnector
-} from '/redux/ConnectorState/CurrentConnectorSlice'
+  CurrentKonnectorState,
+  setCurrentRunningKonnector
+} from '/redux/KonnectorState/CurrentKonnectorSlice'
 import { store } from '/redux/store'
 
-const log = Minilog('cleanConnectorsOnBoot')
+const log = Minilog('cleanKonnectorsOnBoot')
 
 const CLEAN_DELAY_IN_MS = 3000
 
-const getRunningConnector = (state: {
-  currentConnector: CurrentConnectorState
+const getRunningKonnector = (state: {
+  currentKonnector: CurrentKonnectorState
 }): string | undefined => {
-  return state.currentConnector.currentRunningConnector
+  return state.currentKonnector.currentRunningKonnector
 }
 
 /**
- * Check for still-running connectors, clean them and
- * send remaining connectors' logs on cozy-stack
+ * Check for still-running konnectors, clean them and
+ * send remaining konnectors' logs on cozy-stack
  */
-export const cleanConnectorsOnBoot = async (
+export const cleanKonnectorsOnBoot = async (
   client: CozyClient
 ): Promise<void> => {
   const state = store.getState()
 
-  const runningConnector = getRunningConnector(state)
-  if (runningConnector !== undefined) {
+  const runningKonnector = getRunningKonnector(state)
+  if (runningKonnector !== undefined) {
     log.error(
-      `A running connector is tagged as running. This means that the app may have previously crashed. Related connector: ${runningConnector}`
+      `A running konnector is tagged as running. This means that the app may have previously crashed. Related konnector: ${runningKonnector}`
     )
 
-    store.dispatch(setCurrentRunningConnector())
+    store.dispatch(setCurrentRunningKonnector())
   }
 
-  await sendConnectorsLogs(client)
+  await sendKonnectorsLogs(client)
 }
 
 /**
- * After the specified delay, check for still-running connectors, clean them and
- * send remaining connectors' logs on cozy-stack
+ * After the specified delay, check for still-running konnectors, clean them and
+ * send remaining konnectors' logs on cozy-stack
  *
  * This method runs in background and should not be awaited
  */
-export const cleanConnectorsOnBootInBackground = (
+export const cleanKonnectorsOnBootInBackground = (
   client: CozyClient,
   delayInMs = CLEAN_DELAY_IN_MS
 ): Promise<void> => {
   return new Promise(resolve => {
     setTimeout(() => {
-      cleanConnectorsOnBoot(client)
+      cleanKonnectorsOnBoot(client)
         .then(resolve)
         .catch(err =>
           log.error(
