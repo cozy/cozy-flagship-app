@@ -7,7 +7,7 @@ import {
 } from '@react-navigation/native'
 
 import HomeView from '/screens/home/components/HomeView'
-import LauncherView from '/screens/connectors/LauncherView'
+import LauncherView from '/screens/konnectors/LauncherView'
 import { StatusBarStyle } from '/libs/intents/setFlagshipUI'
 import { styles } from '/screens/home/HomeScreen.styles'
 import { useLauncherContext } from '/screens/home/hooks/useLauncherContext'

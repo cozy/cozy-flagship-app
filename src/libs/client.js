@@ -428,7 +428,7 @@ export const fetchCozyAppArchiveInfoForVersion = async (
     if (isClientErrorResponse(error)) {
       log.warn(
         `Could not fetch tarPrefix for ${slug}@${version}. Using empty string instead.
-        Is your connector available in the registry?\n`,
+        Is your konnector available in the registry?\n`,
         getErrorMessage(error)
       )
 

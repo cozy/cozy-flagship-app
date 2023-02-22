@@ -16,7 +16,7 @@ import { isBiometryDenied } from '/libs/intents/setBiometryState'
 import { openApp } from '/libs/functions/openApp'
 import { resetSessionToken } from '/libs/functions/session'
 import { routes } from '/constants/routes'
-import { sendConnectorsLogs } from '/libs/connectors/sendConnectorsLogs'
+import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { showInAppBrowser, closeInAppBrowser } from '/libs/intents/InAppBrowser'
 import { toggleSetting } from '/libs/intents/toggleSetting'
@@ -26,7 +26,7 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
     throw new Error('Logout should not be called with undefined client')
   }
 
-  await sendConnectorsLogs(client)
+  await sendKonnectorsLogs(client)
   await client.logout()
   await clearClient()
   await resetSessionToken()

@@ -5,21 +5,21 @@ import CozyClient from 'cozy-client'
 import Minilog from '@cozy/minilog'
 const konnLog = Minilog('Konnector')
 
-import { LauncherContext } from '/libs/connectors/models'
+import { LauncherContext } from '/libs/konnectors/models'
 import { useLauncherWrapper } from '/screens/home/hooks/useLauncherWrapper'
-import { ErrorParallelConnectors } from '/screens/home/components/ErrorParallelConnectors'
-import { useConnectors } from '/hooks/useConnectors'
-import { LogObj } from '/redux/ConnectorState/ConnectorLogsSlice'
+import { ErrorParallelKonnectors } from '/screens/home/components/ErrorParallelKonnectors'
+import { useKonnectors } from '/hooks/useKonnectors'
+import { LogObj } from '/redux/KonnectorState/KonnectorLogsSlice'
 
 interface useLauncherContextReturn {
   LauncherDialog: JSX.Element | null
   canDisplayLauncher: () => boolean
-  concurrentConnector?: string
+  concurrentKonnector?: string
   launcherClient?: CozyClient
   launcherContext: LauncherContext
   onKonnectorLog: (logObj: LogObj) => void
   resetLauncherContext: () => void
-  setConcurrentConnector: (connectorSlug?: string) => void
+  setConcurrentKonnector: (konnectorSlug?: string) => void
   setLauncherContext: (candidateContext: LauncherContext) => void
   trySetLauncherContext: (candidateContext: LauncherContext) => void
 }
@@ -30,8 +30,8 @@ export const useLauncherContext = (): useLauncherContextReturn => {
   })
   const { canDisplayLauncher, launcherClient } =
     useLauncherWrapper(launcherContext)
-  const [concurrentConnector, setConcurrentConnector] = useState<string>()
-  const { addLog } = useConnectors()
+  const [concurrentKonnector, setConcurrentKonnector] = useState<string>()
+  const { addLog } = useKonnectors()
 
   const onKonnectorLog = (logObj: LogObj): void => {
     const level = logObj.level
@@ -44,7 +44,7 @@ export const useLauncherContext = (): useLauncherContextReturn => {
 
   const trySetLauncherContext = (candidateContext: LauncherContext): void => {
     if (launcherContext.value && candidateContext.value)
-      return setConcurrentConnector(candidateContext.value.connector.slug)
+      return setConcurrentKonnector(candidateContext.value.konnector.slug)
 
     setLauncherContext(candidateContext)
   }
@@ -55,19 +55,19 @@ export const useLauncherContext = (): useLauncherContextReturn => {
 
   return {
     canDisplayLauncher,
-    concurrentConnector,
+    concurrentKonnector,
     launcherClient,
     launcherContext,
     LauncherDialog:
-      launcherContext.value && concurrentConnector ? (
-        <ErrorParallelConnectors
-          currentRunningConnector={launcherContext.value.connector.slug}
-          concurrentConnector={concurrentConnector}
-          onClose={(): void => setConcurrentConnector(undefined)}
+      launcherContext.value && concurrentKonnector ? (
+        <ErrorParallelKonnectors
+          currentRunningKonnector={launcherContext.value.konnector.slug}
+          concurrentKonnector={concurrentKonnector}
+          onClose={(): void => setConcurrentKonnector(undefined)}
         />
       ) : null,
     resetLauncherContext,
-    setConcurrentConnector,
+    setConcurrentKonnector,
     setLauncherContext,
     trySetLauncherContext,
     onKonnectorLog

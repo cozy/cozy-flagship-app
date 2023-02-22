@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 
 import CozyClient, { useClient } from 'cozy-client'
 
-import { LauncherContextValue } from '/libs/connectors/models'
-import { getLauncherClient } from '/libs/connectors/getLauncherClient'
+import { LauncherContextValue } from '/libs/konnectors/models'
+import { getLauncherClient } from '/libs/konnectors/getLauncherClient'
 
 interface useLauncherClientReturn {
   launcherClient?: CozyClient
@@ -16,11 +16,11 @@ export const useLauncherClient = (
   const client = useClient()
 
   useEffect(() => {
-    const slug = launcherContextValue?.connector.slug
+    const slug = launcherContextValue?.konnector.slug
 
     if (slug) void getLauncherClient(client, slug, setLauncherClient)
     else setLauncherClient(undefined)
-  }, [client, launcherContextValue?.connector.slug])
+  }, [client, launcherContextValue?.konnector.slug])
 
   return { launcherClient }
 }

@@ -11,7 +11,7 @@ export interface LogObj {
 
 type LogDict = Record<string, LogObj[] | undefined>
 
-export interface ConnectorLogsState {
+export interface KonnectorLogsState {
   logs: LogDict
 }
 
@@ -20,12 +20,12 @@ export interface removeLogInfo {
   number: number
 }
 
-const initialState: ConnectorLogsState = {
+const initialState: KonnectorLogsState = {
   logs: {}
 }
 
-export const connectorLogsSlice = createSlice({
-  name: 'connectorLogs',
+export const konnectorLogsSlice = createSlice({
+  name: 'konnectorLogs',
   initialState,
   reducers: {
     addLog: (state, action: PayloadAction<LogObj>) => {
@@ -53,9 +53,9 @@ export const connectorLogsSlice = createSlice({
   }
 })
 
-export const { addLog, clearLogs, removeLogs } = connectorLogsSlice.actions
+export const { addLog, clearLogs, removeLogs } = konnectorLogsSlice.actions
 
-export const selectConnectorLogs = (state: RootState): ConnectorLogsState =>
-  state.connectorLogs
+export const selectKonnectorLogs = (state: RootState): KonnectorLogsState =>
+  state.konnectorLogs
 
-export default connectorLogsSlice.reducer
+export default konnectorLogsSlice.reducer

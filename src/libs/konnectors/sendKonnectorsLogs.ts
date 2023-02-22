@@ -1,15 +1,15 @@
 import Minilog from '@cozy/minilog'
 import CozyClient from 'cozy-client'
 
-import { removeLogs } from '/redux/ConnectorState/ConnectorLogsSlice'
+import { removeLogs } from '/redux/KonnectorState/KonnectorLogsSlice'
 import { store } from '/redux/store'
 
-const log = Minilog('sendConnectorsLogs')
+const log = Minilog('sendKonnectorsLogs')
 
-export const sendConnectorsLogs = async (client: CozyClient): Promise<void> => {
+export const sendKonnectorsLogs = async (client: CozyClient): Promise<void> => {
   try {
     const state = store.getState()
-    const logs = state.connectorLogs.logs
+    const logs = state.konnectorLogs.logs
 
     // You can activate this line to get the log loop data
     // log.debug(`🐟 ${this.loopId} - logs`, logs)

@@ -37,6 +37,8 @@ import { useGlobalAppState } from '/hooks/useGlobalAppState'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
 
+import { cleanKonnectorsOnBootInBackground } from '/libs/konnectors/cleanKonnectorsOnBoot'
+
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
 
@@ -156,7 +158,7 @@ const WrappedApp = () => {
       try {
         const existingClient = await getClient()
         if (existingClient) {
-          cleanConnectorsOnBootInBackground(existingClient)
+          cleanKonnectorsOnBootInBackground(existingClient)
         }
         setClient(existingClient || null)
       } catch {

@@ -29,7 +29,7 @@ let hasRenderedOnce = false
 
 /**
  * @typedef Props
- * @prop {(arg: import('/libs/connectors/models').LauncherContext) => void} setLauncherContext
+ * @prop {(arg: import('/libs/konnectors/models').LauncherContext) => void} setLauncherContext
  * @prop {unknown} navigation
  * @prop {unknown} route
  * @prop {(arg: import('/libs/intents/setFlagshipUI').BarStyle) => void} setBarStyle

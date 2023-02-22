@@ -35,14 +35,14 @@ export default class Launcher {
   async init({ bridgeOptions, contentScript }) {}
 
   /**
-   * Start the connector execution
+   * Start the konnector execution
    *
    * @returns {Promise<void>}
    */
   async start() {}
 
   /**
-   * Get user unique identifier data, that the connector got after beeing authenticated
+   * Get user unique identifier data, that the konnector got after beeing authenticated
    *
    * @returns {UserData|undefined}
    */
@@ -51,7 +51,7 @@ export default class Launcher {
   }
 
   /**
-   * Set user unique identifier data, that the connector got after beeing authenticated
+   * Set user unique identifier data, that the konnector got after beeing authenticated
    *
    * @param {UserData} data
    */
@@ -203,14 +203,14 @@ export default class Launcher {
    */
   async ensureAccountTriggerAndLaunch() {
     const startContext = this.getStartContext()
-    let { trigger, account, connector, client, job, launcherClient } =
+    let { trigger, account, konnector, client, job, launcherClient } =
       startContext
 
     if (!account) {
       log.debug(
         `ensureAccountAndTriggerAndJob: found no account in start context. Creating one`
       )
-      const accountData = models.account.buildAccount(connector, {})
+      const accountData = models.account.buildAccount(konnector, {})
       accountData._type = 'io.cozy.accounts'
       const accountResponse = await client.save(accountData)
       account = accountResponse.data
@@ -222,7 +222,7 @@ export default class Launcher {
       )
       const triggerData = models.trigger.triggers.buildTriggerAttributes({
         account,
-        konnector: connector
+        konnector
       })
       triggerData._type = 'io.cozy.triggers'
       const triggerResponse = await client.save(triggerData)
@@ -245,7 +245,7 @@ export default class Launcher {
       account,
       trigger,
       job,
-      connector,
+      konnector,
       launcherClient
     })
   }
@@ -275,13 +275,13 @@ export default class Launcher {
     const {
       launcherClient: client,
       job,
-      connector
+      konnector
     } = this.getStartContext() || {}
     const { sourceAccountIdentifier } = this.getUserData() || {}
     const result = await saveBills(entries, {
       ...options,
       client,
-      manifest: connector,
+      manifest: konnector,
       // @ts-ignore
       sourceAccount: job.message.account,
       sourceAccountIdentifier
@@ -323,7 +323,7 @@ export default class Launcher {
       launcherClient: client,
       trigger,
       job,
-      connector
+      konnector
     } = this.getStartContext() || {}
     const { sourceAccountIdentifier } = this.getUserData() || {}
     for (const entry of entries) {
@@ -347,7 +347,7 @@ export default class Launcher {
       await this.getFolderPath(trigger.message?.folder_to_save),
       {
         ...options,
-        manifest: connector,
+        manifest: konnector,
         // @ts-ignore
         sourceAccount: job.message.account,
         sourceAccountIdentifier
@@ -359,12 +359,12 @@ export default class Launcher {
   }
 
   /**
-   * Fetches data already imported by the connector with the current sourceAccountIdentifier
-   * This allows the connector to only fetch new data
+   * Fetches data already imported by the konnector with the current sourceAccountIdentifier
+   * This allows the konnector to only fetch new data
    *
    * @param {object} options                         - options object
    * @param {String} options.sourceAccountIdentifier - current account unique identifier
-   * @param {String} options.slug - connector slug
+   * @param {String} options.slug - konnector slug
    * @returns {Promise<Object>}
    */
   async getPilotContext({ sourceAccountIdentifier, slug }) {
@@ -404,7 +404,7 @@ export default class Launcher {
  * @property {import('cozy-client/types/types').IOCozyAccount}   account
  * @property {import('cozy-client/types/types').IOCozyTrigger}   trigger
  * @property {import('cozy-client/types/types').CozyClientDocument}       job
- * @property {import('cozy-client/types/types').IOCozyKonnector} connector
+ * @property {import('cozy-client/types/types').IOCozyKonnector} konnector
  */
 
 /**

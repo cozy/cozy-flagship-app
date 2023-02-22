@@ -8,20 +8,19 @@ respective stores as those steps highly depend on your release process
 ## Preparation
 
 Before creating the release bundle, always do the following:
+
 - Execute `yarn install` on the project
-- Execute `yarn install && yarn build` on each connector folder
-- Configure embedded connectors in `src/screens/connectors/LauncherView.js` by adding or removing expected connectors from `embeddedConnectors` object
 
 ## Release on Google PlayStore (Android)
 
 - Put your signing certificate in `android/app/cozycloudkey.keystore`
-    - More details about signing certificates: https://developer.android.com/studio/publish/app-signing
+  - More details about signing certificates: https://developer.android.com/studio/publish/app-signing
 - Put your signing certificate's password in `android/gradle.properties` by replacing `REPLACE_BY_CERTIFICATE_PASS` (:warning: never commit this file)
 - Generate an Android App Bundle
-    - `cd android`
-    - `./gradlew bundleRelease`
+  - `cd android`
+  - `./gradlew bundleRelease`
 - You can test the result on your phone by executing the following command line
-    - `npx react-native run-android --variant=release`
+  - `npx react-native run-android --variant=release`
 - The generated AAB (Android App Bundle) is in `android/app/build/outputs/bundle/release/app-release.aab`
 
 # Release on App Store (iOS)
