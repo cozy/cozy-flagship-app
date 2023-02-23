@@ -26,6 +26,10 @@ jest.mock('react-native', () => ({
   }
 }))
 
+jest.mock('react-native-ios11-devicecheck', () => ({
+  isEmulator: jest.fn().mockResolvedValue(false)
+}))
+
 const navigation = {
   navigate: jest.fn()
 }

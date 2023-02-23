@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import Minilog from '@cozy/minilog'
-import { generateWebLink } from 'cozy-client'
 
 const log = Minilog('SessionScript')
 Minilog.enable()
 
 import strings from '/constants/strings.json'
+import { isSameCozy } from '/libs/functions/urlHelpers'
 
 const _throw = message => {
   throw new Error(message)
@@ -27,39 +27,10 @@ const appendParams = (url, key, value) => {
   return `${appendedURL}`
 }
 
-const validateRedirect = async (client, subDomainType, uri) => {
-  const webLink = generateWebLink({
-    cozyUrl: client.getStackClient().uri,
-    pathname: '/',
-    slug: 'slug',
-    subDomainType
-  })
-
-  const modelURL = new URL(webLink)
-  const inputUrl = new URL(uri)
-
-  if (inputUrl.protocol !== modelURL.protocol) {
-    _throw(strings.errors.protocolMismatch)
-  }
-
-  const modelArray = modelURL.hostname.split('.')
-  const inputArray = inputUrl.hostname.split('.')
-
-  if (`${modelArray.slice(1)}` !== `${inputArray.slice(1)}`) {
-    _throw(strings.errors.domainMismatch)
-  }
-
-  if (subDomainType === 'flat') {
-    if (modelArray[0].split('-')[0] !== inputArray[0].split('-')[0]) {
-      _throw(strings.errors.cozyClientMismatch)
-    }
-  } else if (subDomainType === 'nested') {
-    if (modelArray[1] !== inputArray[1]) {
-      _throw(strings.errors.cozyClientMismatch)
-    }
-  }
-
-  return uri
+const validateRedirect = async (cozyUrl, subDomainType, destinationUrl) => {
+  if (isSameCozy({ cozyUrl, destinationUrl, subDomainType }))
+    return destinationUrl
+  else _throw(strings.errors.cozyClientMismatch)
 }
 
 const fetchSessionCode = async client => {
@@ -98,7 +69,7 @@ const resetSessionToken = () =>
 const handleInterceptAuth = (client, subdomain) => async url => {
   const wrappedUrl = await wrapUrl(client, url)
 
-  return validateRedirect(client, subdomain, wrappedUrl)
+  return validateRedirect(client.getStackClient().uri, subdomain, wrappedUrl)
 }
 
 const handleCreateSession = client => async uri => await wrapUrl(client, uri)
