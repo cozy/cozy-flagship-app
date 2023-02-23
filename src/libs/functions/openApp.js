@@ -113,11 +113,11 @@ const openConnectorInHome = (navigation, connector) => {
  * @returns {Promise}
  */
 export const openApp = (client, navigation, href, app, iconParams) => {
-  const subdomainType = client.capabilities?.flat_subdomains ? 'flat' : 'nested'
+  const subDomainType = client.capabilities?.flat_subdomains ? 'flat' : 'nested'
   const shouldOpenInIAB = !isSameCozy({
     cozyUrl: client.getStackClient().uri,
     destinationUrl: href,
-    subdomainType
+    subDomainType
   })
 
   if (shouldOpenInIAB) {

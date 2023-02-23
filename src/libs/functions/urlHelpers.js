@@ -1,9 +1,9 @@
-import { Platform } from 'react-native'
 import { InAppBrowser } from 'react-native-inappbrowser-reborn'
-
-import { deconstructCozyWebLinkWithSlug } from 'cozy-client/dist/helpers'
+import { Platform } from 'react-native'
 
 import Minilog from '@cozy/minilog'
+import { deconstructCozyWebLinkWithSlug } from 'cozy-client/dist/helpers'
+import { generateWebLink } from 'cozy-client'
 
 const log = Minilog('CozyWebView')
 
@@ -40,41 +40,85 @@ export const checkIsRedirectOutside = ({ currentUrl, destinationUrl }) => {
 
   return false
 }
+
 /**
- *
- * @param {object} params
- * @param {string} params.cozyUrl The URL of the cozy, from client.stackclient.uri
- * @param {string} params.destinationUrl The URL we want to redirect the user
- * @param {'flat' | 'nested'} params.subdomainType - the Cozy's subdomain type
- * @returns {boolean} True is the destination is the same cozy
+ * The function isSameCozy is used to check if the destination url is in the same instance than the cozy url.
+ * sharing is in the same instance than the url of the cozy.
+ * @param {Object} options - options for the function
+ * @param {string} options.cozyUrl - the url of the cozy
+ * @param {string} options.destinationUrl - the url of the destination
+ * @param {string} options.subDomainType - the type of subdomain used for the cozy
+ * @returns {boolean} - true if the url of the cozy and the url of the destination are in the same instance
  */
 export const isSameCozy = ({
   cozyUrl,
   destinationUrl,
-  subdomainType = 'flat'
+  subDomainType = 'flat'
 }) => {
+  // Let's say our cozyUrl is https://dev.10-0-2-2.nip.io while documenting this function
+  const webLink = generateWebLink({
+    cozyUrl,
+    pathname: '/',
+    slug: 'slug',
+    subDomainType
+  })
+
   try {
-    const currentUrlData = deconstructCozyWebLinkWithSlug(
-      cozyUrl,
-      subdomainType
-    )
-    const destinationUrlData = deconstructCozyWebLinkWithSlug(
-      destinationUrl,
-      subdomainType
-    )
+    /**
+     * For flat subdomain, the url should be: http://dev-slug.10-0-2-2.nip.io
+     * For nested subdomain, the url should be: http://slug.dev.10-0-2-2.nip.io
+     */
+    const modelURL = new URL(webLink)
+    /**
+     * For flat subdomain, the url should be: http://dev-contacts.10-0-2-2.nip.io
+     * For nested subdomain, the url should be: http://contacts.dev.10-0-2-2.nip.io
+     */
+    const inputUrl = new URL(destinationUrl)
+
+    // If the protocol is not the same, exit early
+    if (inputUrl.protocol !== modelURL.protocol) return false
+
+    /**
+     * For flat subdomain, the modelArray should be: ['dev-slug', '10-0-2-2', 'nip','io']
+     * For nested subdomain, the modelArray should be: ['slug', 'dev', '10-0-2-2', 'nip','io']
+     */
+    const modelArray = modelURL.hostname.split('.')
+    /**
+     * For flat subdomain, the inputArray should be: ['dev-contacts', '10-0-2-2', 'nip', io']
+     * For nested subdomain, the inputArray should be: ['contacts', 'dev', '10-0-2-2', 'nip', 'io']
+     */
+    const inputArray = inputUrl.hostname.split('.')
+
+    // In subdomain cases, we look at the second part of the hostname
+    // It should always be the same, otherwise it's not the same cozy
+    if (`${modelArray.slice(1)}` !== `${inputArray.slice(1)}`) return false
+
+    // We need an extra check for each subdomain type
+
+    // Flat subdomains
+    // We're comparing the first part of the hostname, like 'dev-slug' vs 'dev-contacts'
+    // What's before the first hyphen must be identical, otherwise it's not the same cozy
     if (
-      currentUrlData.cozyBaseDomain !== destinationUrlData.cozyBaseDomain ||
-      currentUrlData.cozyName !== destinationUrlData.cozyName
-    ) {
+      subDomainType === 'flat' &&
+      modelArray[0].split('-')[0] !== inputArray[0].split('-')[0]
+    )
       return false
-    }
+
+    // Nested subdomains
+    // We're comparing the second part of the hostname, like 'dev' vs 'dev'
+    // It must be identical, otherwise it's not the same cozy
+    if (subDomainType === 'nested' && modelArray[1] !== inputArray[1])
+      return false
 
     return true
-  } catch (err) {
-    log.error('Error while calling isSameCozy', err)
+  } catch (error) {
+    // Most likely any error is linked to a failed URL() parsing
+    // In any case we don't want to throw and just assume it's not the same cozy
+    log.error('Error while calling isSameCozy', error)
     return false
   }
 }
+
 /**
  * Compare current URL and target URL and detect if the app should navigate to another cozy-app
  * or if it is another type of navigation (same cozy-app or outgoing link)
