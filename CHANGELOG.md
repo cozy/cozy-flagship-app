@@ -1,4 +1,4 @@
-# 1.0.3
+# 1.0.4
 
 ## ✨ Features
 
@@ -8,6 +8,32 @@
 
 ## 🔧 Tech
 
+
+# 1.0.3
+
+## ✨ Features
+
+* Improve Client Side Connectors security by enforcint limited permissions ([PR #558](https://github.com/cozy/cozy-react-native/pull/558))
+
+## 🐛 Bug Fixes
+
+* Prevent multiple Client Side Connectors to be executed simultaneously ([PR #572](https://github.com/cozy/cozy-react-native/pull/572))
+* Clean Client Side Connectors state on app startup ([PR #579](https://github.com/cozy/cozy-react-native/pull/579))
+* Shared cozy-notes are now correctly displayed ([PR #596](https://github.com/cozy/cozy-react-native/pull/596))
+
+## 🔧 Tech
+
+* Client Side Connectors can now send execution logs to the cozy-stack ([PR #516](https://github.com/cozy/cozy-react-native/pull/516), [PR #534](https://github.com/cozy/cozy-react-native/pull/534) and [PR #593](https://github.com/cozy/cozy-react-native/pull/593))
+* Client Side Connectors now have an API to normalize files names ([PR #462](https://github.com/cozy/cozy-react-native/pull/462))
+* App's environment variables are now handled by `.env` file ([PR #557](https://github.com/cozy/cozy-react-native/pull/557))
+* Improve dev environement setup ([PR #562](https://github.com/cozy/cozy-react-native/pull/562))
+* Client Side Connectors library has been moved into a dedicated repository ([PR #559](https://github.com/cozy/cozy-react-native/pull/559), [PR #560](https://github.com/cozy/cozy-react-native/pull/560) and [PR #555](https://github.com/cozy/cozy-react-native/pull/555))
+* Client Side Connectors have been moved into their dedicated repositories ([PR #565](https://github.com/cozy/cozy-react-native/pull/565))
+* Fix build error related to `jetified-kotlin-stdlib` ([PR #566](https://github.com/cozy/cozy-react-native/pull/566))
+* Fix build error related to `hermes` ([PR #580](https://github.com/cozy/cozy-react-native/pull/580))
+* Add CI workflows ([PR #551](https://github.com/cozy/cozy-react-native/pull/551), [PR #570](https://github.com/cozy/cozy-react-native/pull/570), [PR #547](https://github.com/cozy/cozy-react-native/pull/547), [PR #584](https://github.com/cozy/cozy-react-native/pull/584), [PR #554](https://github.com/cozy/cozy-react-native/pull/554) and [PR #620](https://github.com/cozy/cozy-react-native/pull/620))
+* Rework app startup algorithms ([PR #550](https://github.com/cozy/cozy-react-native/pull/550))
+* Add foundations for push notifications ([PR #598](https://github.com/cozy/cozy-react-native/pull/598))
 
 # 1.0.2
 
