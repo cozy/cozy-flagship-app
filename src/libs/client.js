@@ -184,6 +184,7 @@ export const callOnboardingInitClient = async ({
  * @returns {CozyClient} - The created and registered CozyClient
  */
 export const createClient = async instance => {
+  console.log('🍎androidSafetyNetApiKey', androidSafetyNetApiKey)
   const options = {
     scope: ['*'],
     oauth: {
