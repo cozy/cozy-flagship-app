@@ -3,9 +3,9 @@ import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
 import RNAsyncStorageFlipper from 'rn-async-storage-flipper'
 import React, { useEffect, useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
-import { StatusBar, StyleSheet, View } from 'react-native'
-import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
+import { Provider } from 'react-redux'
+import { StatusBar, StyleSheet, View } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { decode, encode } from 'base-64'
 
@@ -25,18 +25,17 @@ import { LoginScreen } from '/screens/login/LoginScreen'
 import { OnboardingScreen } from '/screens/login/OnboardingScreen'
 import { SplashScreenProvider } from '/components/providers/SplashScreenProvider'
 import { WelcomeScreen } from '/screens/welcome/WelcomeScreen'
+import { cleanConnectorsOnBootInBackground } from '/libs/connectors/cleanConnectorsOnBoot'
 import { getClient } from '/libs/client'
 import { getColors } from '/ui/colors'
 import { localMethods } from '/libs/intents/localMethods'
+import { persistor, store } from '/redux/store'
 import { routes } from '/constants/routes.js'
 import { useAppBootstrap } from '/hooks/useAppBootstrap.js'
 import { useCookieResyncOnResume } from '/hooks/useCookieResyncOnResume'
 import { useGlobalAppState } from '/hooks/useGlobalAppState'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
-import { persistor, store } from '/redux/store'
-
-import { cleanConnectorsOnBootInBackground } from '/libs/connectors/cleanConnectorsOnBoot'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -66,11 +65,11 @@ const App = ({ setClient }) => {
 
   const MainAppNavigator = () => (
     <Root.Navigator
-      initialRouteName="default"
+      initialRouteName={routes.default}
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen
-        name="default"
+        name={routes.default}
         component={HomeScreen}
         initialParams={initialRoute.params}
       />

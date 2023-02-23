@@ -1,6 +1,9 @@
 import { Alert, Linking, Platform } from 'react-native'
+
 import { getDimensions } from '/libs/dimensions'
 import { isSameCozy, openUrlInAppBrowser } from '/libs/functions/urlHelpers'
+import { navigate } from '/libs/RootNavigation'
+import { routes } from '/constants/routes'
 /**
  * App's mobile information. Used to describe the app scheme and its store urls
  * @typedef {object} AppManifestMobileInfo
@@ -88,14 +91,13 @@ const openAppNative = async appNativeData => {
 
 /**
  * Open the connector pane in the Home view
- * @param {any} navigation - The React navigation context
  * @param {AppManifest} connector - The connector information
  */
-const openConnectorInHome = (navigation, connector) => {
+const openConnectorInHome = connector => {
   const { slug } = connector
 
-  navigation.navigate({
-    name: 'home',
+  navigate({
+    name: routes.default,
     params: {
       konnector: slug
     }
@@ -125,7 +127,7 @@ export const openApp = (client, navigation, href, app, iconParams) => {
     return
   }
   if (app?.type === 'konnector') {
-    openConnectorInHome(navigation, app)
+    openConnectorInHome(app)
     return
   }
 
