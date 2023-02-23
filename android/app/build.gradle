@@ -190,6 +190,15 @@ android {
 
         }
     }
+
+    // to load dev/google-services.json and prod/google-services.json
+    flavorDimensions "version"
+    productFlavors {
+        dev {
+        }
+        prod {
+        }
+    }
 }
 
 dependencies {
