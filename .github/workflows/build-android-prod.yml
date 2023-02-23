@@ -9,6 +9,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set NodeJS version
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
       - name: Check out Git repository
         uses: actions/checkout@v3
 
