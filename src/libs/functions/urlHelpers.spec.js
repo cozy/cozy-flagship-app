@@ -4,7 +4,8 @@ import {
   checkIsReload,
   checkIsRedirectOutside,
   checkIsSameApp,
-  checkIsSlugSwitch
+  checkIsSlugSwitch,
+  isSameCozy
 } from './urlHelpers'
 
 jest.mock('react-native-inappbrowser-reborn', () => ({
@@ -276,6 +277,94 @@ describe('urlHelpers', () => {
         expect(
           checkIsSameApp({ currentUrl, destinationUrl, subdomainType })
         ).toEqual(result)
+      }
+    )
+  })
+
+  describe('isSameCozy', () => {
+    it.each([
+      [
+        'http://claude.mycozy.cloud',
+        'http://drive.claude.mycozy.cloud',
+        'nested',
+        true
+      ],
+      [
+        'http://dev.10-0-2-2.nip.io:8080',
+        'http://contacts.dev.10-0-2-2.nip.io:8080/',
+        'nested',
+        true
+      ],
+      [
+        'http://claude.mycozy.cloud',
+        'http://drive.paul.mycozy.cloud',
+        'nested',
+        false
+      ],
+      [
+        'http://claude.mycozy.cloud#hash1',
+        'http://drive.claude.mycozy.cloud#hash2',
+        'nested',
+        true
+      ],
+      [
+        'http://claude.mycozy.cloud/path1',
+        'http://drive.claude.mycozy.cloud/path2',
+        'nested',
+        true
+      ],
+      [
+        'http://claude.mycozy.cloud/path1#hash1',
+        'http://drive.claude.mycozy.cloud/path1#hash2',
+        'nested',
+        true
+      ],
+      ['http://claude.mycozy.cloud', 'http://google.com', 'nested', false],
+      ['http://claude.mycozy.cloud', 'google.com', 'nested', false],
+      [
+        'http://claude.mycozy.cloud',
+        'http://claude-drive.mycozy.cloud',
+        'flat',
+        true
+      ],
+      [
+        'http://dev.10-0-2-2.nip.io:8080',
+        'http://dev-contacts.10-0-2-2.nip.io:8080/',
+        'flat',
+        true
+      ],
+      [
+        'http://claude.mycozy.cloud',
+        'http://paul-drive.mycozy.cloud',
+        'flat',
+        false
+      ],
+      [
+        'http://claude.mycozy.cloud#hash1',
+        'http://claude-drive.mycozy.cloud#hash2',
+        'flat',
+        true
+      ],
+      [
+        'http://claude.mycozy.cloud/path1',
+        'http://claude-drive.mycozy.cloud/path2',
+        'flat',
+        true
+      ],
+      [
+        'http://claude.mycozy.cloud/path1#hash1',
+        'http://claude-drive.mycozy.cloud/path1#hash2',
+        'flat',
+        true
+      ],
+      ['http://claude.mycozy.cloud', 'http://google.com', 'flat', false],
+      ['http://claude-drive.mycozy.cloud', 'google.com', 'flat', false]
+    ])(
+      'should compare %p with %p with %p subDomain and return isSameCozy=%p',
+      (cozyUrl, destinationUrl, subDomainType, result) => {
+        expect(isSameCozy({ cozyUrl, destinationUrl, subDomainType })).toEqual(
+          result
+        )
       }
     )
   })
