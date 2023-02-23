@@ -47,28 +47,28 @@ export const navigateFromNotification = (
 
 export const handleNotificationOpening = async (
   client: CozyClient
-): Promise<void> => {
+): Promise<() => void> => {
   const initialNotification = await messaging().getInitialNotification()
 
   if (initialNotification) {
     navigateFromNotification(client, initialNotification)
   }
 
-  messaging().onNotificationOpenedApp(notification => {
+  return messaging().onNotificationOpenedApp(notification => {
     navigateFromNotification(client, notification)
   })
 }
 
 export const handleNotificationTokenReceiving = async (
   client: CozyClient
-): Promise<void> => {
+): Promise<() => void> => {
   const initialToken = await messaging().getToken()
 
   if (initialToken) {
     void saveNotificationDeviceToken(client, initialToken)
   }
 
-  messaging().onTokenRefresh(token => {
+  return messaging().onTokenRefresh(token => {
     void saveNotificationDeviceToken(client, token)
   })
 }

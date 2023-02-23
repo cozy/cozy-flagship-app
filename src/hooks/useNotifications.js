@@ -31,9 +31,19 @@ export const useNotifications = () => {
   }, [client])
 
   useEffect(() => {
-    if (areNotificationsEnabled) {
-      handleNotificationTokenReceiving(client)
-      handleNotificationOpening(client)
+    const handleNotifications = async () => {
+      if (areNotificationsEnabled) {
+        const removeNotificationTokenReceivingHandler =
+          await handleNotificationTokenReceiving(client)
+        const removeNotificationOpeningHandler =
+          await handleNotificationOpening(client)
+
+        return () => {
+          removeNotificationTokenReceivingHandler()
+          removeNotificationOpeningHandler()
+        }
+      }
     }
+    handleNotifications()
   }, [client, areNotificationsEnabled])
 }
