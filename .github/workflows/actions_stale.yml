@@ -1,0 +1,41 @@
+name: 'Close stale issues and PRs' 
+on:
+  schedule:
+    - cron: '30 1 * * *' # Run at 01:30 UTC (9:30 PM EST) every day
+
+jobs:
+  actions-stale:
+    runs-on: ubuntu-latest
+
+    permissions:
+      issues: write # Required to close issues
+      pull-requests: write # Required to close PRs
+
+    steps:
+      - uses: actions/stale@v7
+        with:
+          ascending: false # Order to get issues/PRs: false = descending, true = ascending.
+          close-issue-message: 'This issue was closed because it has been inactive for 7 days since being marked as stale.' # Comment on the staled issues while closed.
+          close-issue-reason: 'not_planned' # Reason to use when closing issues.
+          close-pr-message: 'This PR was closed because it has been inactive for 7 days since being marked as stale.' # Comment on the staled PRs while closed.
+          days-before-close: 7 # Idle number of days before closing stale issues/PRs.
+          days-before-issue-stale: 30 # Override days-before-stale for issues only.
+          days-before-pr-stale: 15 # Override days-before-stale for PRs only.
+          days-before-stale: 60 # Idle number of days before marking issues/PRs stale
+          debug-only: false # Dry-run.
+          delete-branch: false # Delete branch after closing a stale PR.
+          enable-statistics: true # Display statistics in the logs.
+          exempt-all-assignees: false # Exempt all issues/PRs with assignees from stale.
+          exempt-all-milestones: false # Exempt all issues/PRs with milestones from stale.
+          exempt-draft-pr: false # Skip the stale action for draft PRs.
+          exempt-issue-labels: 'pinned' # Labels on issues exempted from stale.
+          exempt-pr-labels: 'pinned' # Labels on PRs exempted from stale.
+          ignore-updates: false # Any update (update/comment) can reset the stale idle time on the issues/PRs.
+          include-only-assigned: false # Process only assigned issues.
+          operations-per-run: 30 # Max number of operations per run.
+          remove-stale-when-updated: true # Remove stale label from issues/PRs on updates.
+          repo-token: ${{ github.token }} # PAT for GitHub API authentication.
+          stale-issue-label: 'Stale' # Label to apply to stale issues.
+          stale-issue-message: 'This issue is stale because it has been open for 30 days with no activity.' # Comment to post when marking an issue as stale.
+          stale-pr-label: 'Stale' # Label to apply to stale PRs.
+          stale-pr-message: 'This PR is stale because it has been open for 14 days with no activity.' # Comment to post when marking a PR as stale.
