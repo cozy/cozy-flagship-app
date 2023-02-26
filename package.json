@@ -18,7 +18,7 @@
     "start": "react-native start",
     "test": "jest connectors/**/* src/**/* scripts/* --detectOpenHandles --forceExit",
     "token": "node scripts/token.js",
-    "typecheck": "yarn tsc --noEmit",
+    "typecheck": "yarn tsc",
     "web": "webpack serve --open --config webpack.config.js --inline --hot --port=9999",
     "web:test": "react-app-rewired test --env=jsdom"
   },
@@ -103,6 +103,7 @@
     "babel-plugin-module-resolver": "4.1.0",
     "babel-plugin-optional-require": "0.3.1",
     "babel-plugin-react-native-web": "0.17.7",
+    "cozy-tsconfig": "1.2.0",
     "eslint": "^8.34.0",
     "eslint-config-cozy-app": "^5.2.0",
     "eslint-plugin-prettier": "4.2.1",
