@@ -188,9 +188,19 @@ export default class Launcher {
   }
 
   /**
+   * @typedef ensureAccountTriggerAndLaunchResult
+   * @property {import('cozy-client/types/types').IOCozyAccount} [createdAccount] - the created account if an account was created in the process
+   * @property {import('cozy-client/types/types').IOCozyTrigger} [createdTrigger] - the created trigger if a trigger was created in the process
+   * @property {import('cozy-client/types/types').CozyClientDocument} [createdJob] - the created job if any job was created
+   */
+
+  /**
    * Ensures that account and triggers are created and launch the trigger
+   *
+   * @returns {Promise<ensureAccountTriggerAndLaunchResult>}
    */
   async ensureAccountTriggerAndLaunch() {
+    const result = {}
     const startContext = this.getStartContext()
     let { trigger, account, konnector, client, job, launcherClient } =
       startContext
@@ -204,6 +214,7 @@ export default class Launcher {
       const accountResponse = await client.save(accountData)
       account = accountResponse.data
       log.debug(`ensureAccountAndTriggerAndJob: created account`, account)
+      result.createdAccount = account
     }
     account = await this.ensureAccountName(account)
     const folder = await ensureKonnectorFolder(client, {
@@ -222,6 +233,7 @@ export default class Launcher {
       triggerData._type = 'io.cozy.triggers'
       const triggerResponse = await client.save(triggerData)
       trigger = triggerResponse.data
+      result.createdTrigger = trigger
       log.debug(`ensureAccountAndTriggerAndJob: created trigger`, trigger)
     }
 
@@ -232,6 +244,7 @@ export default class Launcher {
         .collection('io.cozy.triggers')
         .launch(trigger)
       job = launchResponse.data
+      result.createdJob = job
     }
     log.debug(`ensureAccountAndTriggerAndJob: launched job`, job)
 
@@ -243,6 +256,7 @@ export default class Launcher {
       konnector,
       launcherClient
     })
+    return result
   }
 
   /**

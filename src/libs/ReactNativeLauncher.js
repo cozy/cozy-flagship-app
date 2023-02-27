@@ -146,7 +146,10 @@ class ReactNativeLauncher extends Launcher {
 
       this.setUserData(await this.pilot.call('getUserDataFromWebsite'))
 
-      await this.ensureAccountTriggerAndLaunch()
+      const ensureResult = await this.ensureAccountTriggerAndLaunch()
+      if (ensureResult.createdAccount) {
+        this.emit('CREATED_ACCOUNT', ensureResult.createdAccount)
+      }
       await this.sendLoginSuccess()
 
       const pilotContext = []
@@ -160,7 +163,10 @@ class ReactNativeLauncher extends Launcher {
     } catch (err) {
       log.error(err, 'start error')
       // to create the job even if the error was raised before sendLoginSuccess
-      await this.ensureAccountTriggerAndLaunch()
+      const ensureResult = await this.ensureAccountTriggerAndLaunch()
+      if (ensureResult.createdAccount) {
+        this.emit('CREATED_ACCOUNT', ensureResult.createdAccount)
+      }
       await this.stop({ message: err.message })
     }
     this.emit('KONNECTOR_EXECUTION_END')
