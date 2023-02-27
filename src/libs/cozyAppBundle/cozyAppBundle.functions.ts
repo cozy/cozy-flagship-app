@@ -102,3 +102,24 @@ export const getVersionsToKeep = ({
   // If it's a webapp, we need to keep the current and the next versions because the bundle is updated only after a restart
   return [currentVersion, stackVersion]
 }
+
+/**
+ * Returns the manifest and the content of the main.js file for a given connector
+ * using the HTTP server
+ * @param {string} url - The URL of the HTTP server
+ * @returns {ConnectorBundle} The manifest and main.js file for the connector
+ * @throws {Error} If the manifest or main.js file could not be fetched
+ * @throws {Error} If the manifest or main.js file could not be parsed
+ * @throws {Error} If the manifest or main.js file could not be read
+ */
+export const fetchKonnectorFromUrl = async (
+  url: string
+): Promise<KonnectorBundle> => {
+  const manifest = await fetch(`${url}/manifest.konnector`)
+  const content = await fetch(`${url}/main.js`)
+
+  return {
+    manifest: (await manifest.json()) as Record<string, unknown>,
+    content: await content.text()
+  }
+}

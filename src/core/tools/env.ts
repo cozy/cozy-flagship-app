@@ -45,9 +45,12 @@ export const devlog = isDev() && !isTest() ? console.debug : (): void => void 0
 
 initDev(isDev()).catch(error => devlog('failed to init dev env', error))
 
-const { disableGetIndex, enableLocalSentry, enableReduxLogger } = getDevConfig(
-  isDev()
-)
+const {
+  disableGetIndex,
+  enableLocalSentry,
+  enableReduxLogger,
+  konnectorServer
+} = getDevConfig(isDev())
 
 if (enableLocalSentry) toggleLocalSentry(true)
 
@@ -57,6 +60,8 @@ export const shouldDisableGetIndex = (): boolean => disableGetIndex
 
 export const shouldEnableReduxLogger = (): boolean =>
   enableReduxLogger && !isTest()
+
+export { konnectorServer }
 
 export const EnvService = {
   name,

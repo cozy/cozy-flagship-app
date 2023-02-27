@@ -31,5 +31,8 @@ export const getDevConfig = (isDev: boolean): DevConfig =>
   isDev
     ? devConfig
     : (Object.fromEntries(
-        Object.entries(devConfig).map(([key]) => [key, false])
+        Object.entries(devConfig).map(([key, value]) => [
+          key,
+          typeof value === 'boolean' ? false : ''
+        ])
       ) as DevConfig)

@@ -4,10 +4,14 @@ import Minilog from '@cozy/minilog'
 import ContentScriptBridge from './bridge/ContentScriptBridge'
 import CookieManager from '@react-native-cookies/cookies'
 import Launcher from './Launcher'
-import { getKonnectorBundle } from '/libs/cozyAppBundle/cozyAppBundle.functions'
+import {
+  fetchKonnectorFromUrl,
+  getKonnectorBundle
+} from '/libs/cozyAppBundle/cozyAppBundle.functions'
 import { saveCookie, getCookie, removeCookie } from './keychain'
 import { updateCozyAppBundle } from '/libs/cozyAppBundle/cozyAppBundle'
 import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
+import { konnectorServer } from '/core/tools/env'
 
 const log = Minilog('ReactNativeLauncher')
 
@@ -89,6 +93,8 @@ class ReactNativeLauncher extends Launcher {
     }
 
     try {
+      log.info('Fetching konnector bundle from ' + konnectorServer)
+      // const bundle = await fetchKonnectorFromUrl(konnectorServer)
       const bundle = await getKonnectorBundle({ client, slug })
 
       if (!bundle) throw new Error('No konnector bundle found')
