@@ -173,6 +173,7 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
     },
     [uri, client, route, navigation]
   )
+  // useEffect ici pour navigateTo(backupphoto route)
 
   useEffect(() => {
     const lockRedirect = async () => {

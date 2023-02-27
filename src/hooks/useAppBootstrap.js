@@ -1,4 +1,4 @@
-import { Linking } from 'react-native'
+import { Linking, Platform } from 'react-native'
 import { useEffect, useState } from 'react'
 import { deconstructCozyWebLinkWithSlug } from 'cozy-client'
 
@@ -14,6 +14,9 @@ import {
 import { useSplashScreen } from '/hooks/useSplashScreen'
 
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
+import RNFS from 'react-native-fs'
+import { backgroundUpload, getRealPath } from 'react-native-compressor'
+import InAppBrowser from 'react-native-inappbrowser-reborn'
 
 export const useAppBootstrap = client => {
   const [initialRoute, setInitialRoute] = useState('fetching')
@@ -22,6 +25,7 @@ export const useAppBootstrap = client => {
 
   // Handling initial URL init
   useEffect(() => {
+    InAppBrowser.open('http://localhost:8126')
     const doAsync = async () => {
       if (!client) {
         const onboardingUrl = await Linking.getInitialURL()
@@ -131,7 +135,7 @@ export const useAppBootstrap = client => {
 
   // Photos Sync
   useEffect(() => {
-    var upload = response => {
+    var uploadBegin = response => {
       var jobId = response.jobId
       console.log('UPLOAD HAS BEGUN! JobId: ' + jobId)
     }
@@ -145,27 +149,82 @@ export const useAppBootstrap = client => {
 
     const backupPhotos = async () => {
       const photos = await CameraRoll.getPhotos({
-        first: 20,
+        first: 1,
         include: ['filename', 'fileExtension', 'location', 'imageSize']
       })
-
+      console.log('TOKEN', client.getStackClient().token)
       for (var i = 0; i < photos.edges.length; i++) {
         console.log(
-          `photo ${i} : ${p.node.group_name} / ${p.node.image.uri} / filename: ${p.node.image.filename} / extension: ${p.node.image.extension} / timestamp: ${p.node.timestamp} / location: ${p.node.location}`
+          `photo ${i} : ${photos.edges[i].node.group_name} / ${photos.edges[i].node.image.uri} / filename: ${photos.edges[i].node.image.filename} / extension: ${photos.edges[i].node.image.extension} / timestamp: ${photos.edges[i].node.timestamp} / location: ${photos.edges[i].node.location}`
         )
-        await RNFS.uploadFiles({
-          toUrl: uploadUrl,
-          files: files,
-          method: 'POST',
-          headers: {
-            Accept: 'application/json'
-          },
-          fields: {
-            hello: 'world'
-          },
-          begin: uploadBegin,
-          progress: uploadProgress
-        }).promise
+
+        if (Platform.OS === 'ios') {
+          const filepath = await RNFS.copyAssetsFileIOS(
+            photos.edges[i].node.image.uri,
+            RNFS.TemporaryDirectoryPath + photos.edges[i].node.image.filename,
+            0,
+            0
+          )
+          console.log('filepath', filepath)
+          const realPath = await getRealPath(
+            photos.edges[i].node.image.uri,
+            'video'
+          )
+          console.log('realPath', realPath)
+          const createdAt = new Date(
+            photos.edges[i].node.timestamp * 1000
+          ).toISOString()
+          const toURL =
+            client.getStackClient().uri +
+            '/files/io.cozy.files.root-dir' +
+            '?Name=' +
+            encodeURIComponent(photos.edges[i].node.image.filename) +
+            '&Type=file&Tags=library&Executable=false&CreatedAt=' +
+            createdAt +
+            '&UpdatedAt=' +
+            createdAt
+          try {
+            /* const r = await RNFS.uploadFiles({
+              toUrl: toURL,
+
+              files: [
+                {
+                  filename: photos.edges[i].node.image.filename,
+                  filepath
+                }
+              ],
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                Authorization:
+                  'Bearer ' + client.getStackClient().token.accessToken
+              },
+              begin: uploadBegin,
+              progress: uploadProgress
+            })
+            const uploadPromise = await r
+            const promiseResult = await uploadPromise.promise
+            console.log('promiseResult', promiseResult) */
+
+            const headers = {
+              Accept: 'application/json',
+              Authorization:
+                'Bearer ' + client.getStackClient().token.accessToken
+            }
+
+            const uploadResult = await backgroundUpload(
+              toURL,
+              realPath,
+              { httpMethod: 'POST', headers },
+              (written, total) => {
+                console.log(written, total)
+              }
+            )
+            console.log('uploadResult', uploadResult)
+          } catch (e) {
+            console.log('error', e)
+          }
+        }
       }
     }
 

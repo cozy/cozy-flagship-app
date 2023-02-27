@@ -68,6 +68,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CozyReactNative/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		997B98B12769CFD100089037 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = CozyReactNative/BootSplash.storyboard; sourceTree = "<group>"; };
 		99A26C682632A5AC00365D30 /* CozyReactNative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = CozyReactNative.entitlements; path = CozyReactNative/CozyReactNative.entitlements; sourceTree = "<group>"; };
+		99F5593E299B725B000FCF78 /* CozyReactNativeDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = CozyReactNativeDebug.entitlements; path = CozyReactNative/CozyReactNativeDebug.entitlements; sourceTree = "<group>"; };
 		9A8507EB61A9895B473A06A3 /* Pods-CozyReactNative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative/Pods-CozyReactNative.release.xcconfig"; sourceTree = "<group>"; };
 		9F5886BEE4526A9676E4D592 /* Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-CozyReactNativeTests/Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A0572B798A7D41908174A427 /* Lato-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.ttf"; path = "../assets/fonts/Lato-Regular.ttf"; sourceTree = "<group>"; };
@@ -134,6 +135,7 @@
 		13B07FAE1A68108700A75B9A /* CozyReactNative */ = {
 			isa = PBXGroup;
 			children = (
+				99F5593E299B725B000FCF78 /* CozyReactNativeDebug.entitlements */,
 				6B8CB25B2807246700E1F390 /* assets */,
 				2C7AA45028157D130052F4D8 /* HttpServer */,
 				99A26C682632A5AC00365D30 /* CozyReactNative.entitlements */,
@@ -756,9 +758,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = CozyReactNative/CozyReactNative.entitlements;
+				CODE_SIGN_ENTITLEMENTS = CozyReactNative/CozyReactNativeDebug.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3AKXFMV43J;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 3AKXFMV43J;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = CozyReactNative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -772,6 +776,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.cozy.flagship.mobile;
 				PRODUCT_NAME = CozyReactNative;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "VS: WildCard Development";
 				SWIFT_OBJC_BRIDGING_HEADER = "CozyReactNative-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;

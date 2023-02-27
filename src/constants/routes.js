@@ -8,5 +8,6 @@ export const routes = {
   lock: 'lock',
   onboarding: 'onboarding',
   stack: 'stack',
-  welcome: 'welcome'
+  welcome: 'welcome',
+  backupphotos: 'backupphotos'
 }
