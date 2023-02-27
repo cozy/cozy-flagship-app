@@ -8,6 +8,7 @@ import { saveFiles, saveBills, saveIdentity } from 'cozy-clisk'
 
 import { saveCredential, getCredential, removeCredential } from './keychain'
 import { dataURItoArrayBuffer } from './utils'
+import { ensureKonnectorFolder } from './folder'
 
 const log = Minilog('Launcher')
 
@@ -146,7 +147,7 @@ export default class Launcher {
    */
   async sendLoginSuccess() {
     const { account, client } = this.getStartContext()
-    if (!account._id) {
+    if (!account?._id) {
       throw new Error('sendLoginSuccess: not account to update')
     }
     const updatedAccount = await client.query(
@@ -159,42 +160,30 @@ export default class Launcher {
   }
 
   /**
-   * Ensure that the account and the destination folder get the name corresponding to sourceAccountIdentifier
+   * Ensures that that the account has the proper account name which is the sourceAccountIdentifier fetched by the konnector
+   *
+   * @param {import('cozy-client/types/types').IOCozyAccount} account - cozy account
+   * @returns {Promise<import('cozy-client/types/types').IOCozyAccount>}
    */
-  async ensureAccountNameAndFolder() {
-    const { trigger, account, client } = this.getStartContext()
-
-    const firstRun = !get(account, 'auth.accountName')
-    if (!firstRun) {
-      return
-    }
-
+  async ensureAccountName(account) {
+    const { client, konnector } = this.getStartContext()
     const { sourceAccountIdentifier } = this.getUserData() || {}
-    // @ts-ignore
-    const folderId = trigger.message.folder_to_save
-
     if (!account._id) {
-      throw new Error('ensureAccountNameAndFolder: no account to check')
+      throw new Error('ensureAccountName: no account to check')
     }
 
-    log.info('This is the first run for this account')
-    const updatedAccount = await client.query(
+    let { data: accountGetResult } = await client.query(
       Q('io.cozy.accounts').getById(account._id)
     )
-    const newAccount = await client.save({
-      ...updatedAccount.data,
-      auth: { accountName: sourceAccountIdentifier }
-    })
-    log.debug(newAccount, 'resulting account')
-
-    try {
-      await client
-        .collection('io.cozy.files')
-        .updateAttributes(folderId, { name: sourceAccountIdentifier })
-    } catch (err) {
-      log.warn(
-        `Could not rename the destination folder ${folderId} to ${sourceAccountIdentifier}. ${err}`
-      )
+    if (accountGetResult?.auth?.accountName !== sourceAccountIdentifier) {
+      log.debug('Will update account accountName to ', sourceAccountIdentifier)
+      const { data: accountSaveResult } = await client.save({
+        ...accountGetResult,
+        auth: { accountName: sourceAccountIdentifier }
+      })
+      return accountSaveResult
+    } else {
+      return accountGetResult
     }
   }
 
@@ -216,13 +205,19 @@ export default class Launcher {
       account = accountResponse.data
       log.debug(`ensureAccountAndTriggerAndJob: created account`, account)
     }
+    account = await this.ensureAccountName(account)
+    const folder = await ensureKonnectorFolder(client, {
+      konnector,
+      account
+    })
     if (!trigger) {
       log.debug(
         `ensureAccountAndTriggerAndJob: found no trigger in start context. Creating one`
       )
       const triggerData = models.trigger.triggers.buildTriggerAttributes({
         account,
-        konnector
+        konnector,
+        folder
       })
       triggerData._type = 'io.cozy.triggers'
       const triggerResponse = await client.save(triggerData)
