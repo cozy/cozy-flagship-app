@@ -1,6 +1,6 @@
 name: Android Build
 
-on: 
+on:
   workflow_dispatch:
     inputs:
       logLevel:
@@ -73,19 +73,36 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           ANDROID_SAFETY_NET_API_KEY: ${{ secrets.ANDROID_SAFETY_NET_API_KEY }}
 
-      - name: Sign APK
+      - name: Sign Dev APK
         id: sign_app
         uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: android/app/build/outputs/apk/release
+          releaseDirectory: android/app/build/outputs/apk/dev/release
           signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
           alias: ${{ secrets.ANDROID_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
-      - name: Upload artifact to GitHub
+      - name: Upload Dev artifact to GitHub
         uses: actions/upload-artifact@v3
         with:
-          name: Signed Android Package
+          name: Signed Android Package Dev Env
           path: |
-            android/app/build/outputs/apk/release/*-signed.apk
+            android/app/build/outputs/apk/dev/release/*-signed.apk
+
+      - name: Sign Prod APK
+        id: sign_app
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: android/app/build/outputs/apk/prod/release
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+          alias: ${{ secrets.ANDROID_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Upload Prod artifact to GitHub
+        uses: actions/upload-artifact@v3
+        with:
+          name: Signed Android Package Prod Env
+          path: |
+            android/app/build/outputs/apk/prod/release/*-signed.apk

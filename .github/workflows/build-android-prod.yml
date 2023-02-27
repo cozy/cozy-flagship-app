@@ -1,6 +1,6 @@
 name: Android Deploy
 
-on: 
+on:
   workflow_dispatch:
 
 jobs:
@@ -72,7 +72,7 @@ jobs:
         id: sign_app
         uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: android/app/build/outputs/bundle/release
+          releaseDirectory: android/app/build/outputs/bundle/prodRelease
           signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
           alias: ${{ secrets.ANDROID_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
@@ -83,6 +83,6 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT_JSON_TEXT }}
           packageName: io.cozy.flagship.mobile
-          releaseFiles: android/app/build/outputs/bundle/release/*.aab
+          releaseFiles: android/app/build/outputs/bundle/prodRelease/*.aab
           track: internal
           status: completed
