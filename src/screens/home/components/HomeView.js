@@ -89,6 +89,15 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
           const url = new URL(uri)
           url.hash = `/connected/${konnectorParam}`
 
+          const accountParam = consumeRouteParameter(
+            'account',
+            route,
+            navigation
+          )
+          if (accountParam) {
+            url.hash += `/accounts/${accountParam}`
+          }
+
           const targetUri = url.toString()
           setUri(targetUri)
         }
