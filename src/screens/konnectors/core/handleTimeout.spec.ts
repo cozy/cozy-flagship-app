@@ -1,4 +1,4 @@
-import { constants } from '../constants/connectors-constants'
+import { constants } from '../constants/konnectors-constants'
 import { startTimeout, stopTimeout } from './handleTimeout'
 
 test('startTimeout fires callback and deletes itself on completion', () => {

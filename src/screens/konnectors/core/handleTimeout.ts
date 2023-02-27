@@ -1,4 +1,4 @@
-import { constants } from '../constants/connectors-constants'
+import { constants } from '../constants/konnectors-constants'
 
 let timerId: NodeJS.Timeout
 

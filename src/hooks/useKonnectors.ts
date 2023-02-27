@@ -37,7 +37,8 @@ export const useKonnectors = (): UseAddLogHook => {
 
   return {
     addLog: doAddLog,
-    currentRunningKonnector, processLogs: doProcessLogs,
+    currentRunningKonnector,
+    processLogs: doProcessLogs,
     setCurrentRunningKonnector: doSetCurrentRunningKonnector
   }
 }

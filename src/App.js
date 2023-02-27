@@ -25,7 +25,7 @@ import { LoginScreen } from '/screens/login/LoginScreen'
 import { OnboardingScreen } from '/screens/login/OnboardingScreen'
 import { SplashScreenProvider } from '/components/providers/SplashScreenProvider'
 import { WelcomeScreen } from '/screens/welcome/WelcomeScreen'
-import { cleanConnectorsOnBootInBackground } from '/libs/connectors/cleanConnectorsOnBoot'
+import { cleanKonnectorsOnBootInBackground } from '/libs/konnectors/cleanKonnectorsOnBoot'
 import { getClient } from '/libs/client'
 import { getColors } from '/ui/colors'
 import { localMethods } from '/libs/intents/localMethods'
@@ -36,8 +36,6 @@ import { useCookieResyncOnResume } from '/hooks/useCookieResyncOnResume'
 import { useGlobalAppState } from '/hooks/useGlobalAppState'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
-
-import { cleanKonnectorsOnBootInBackground } from '/libs/konnectors/cleanKonnectorsOnBoot'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
