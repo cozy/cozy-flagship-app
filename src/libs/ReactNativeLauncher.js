@@ -143,11 +143,11 @@ class ReactNativeLauncher extends Launcher {
       await this.pilot.call('setContentScriptType', 'pilot')
       await this.worker.call('setContentScriptType', 'worker')
       await this.pilot.call('ensureAuthenticated')
-      await this.sendLoginSuccess()
-      await this.ensureAccountTriggerAndLaunch()
 
       this.setUserData(await this.pilot.call('getUserDataFromWebsite'))
-      await this.ensureAccountNameAndFolder()
+
+      await this.ensureAccountTriggerAndLaunch()
+      await this.sendLoginSuccess()
 
       const pilotContext = []
       // FIXME not used at the moment since the fetched file will not have the proper "createdByApp"
@@ -159,7 +159,8 @@ class ReactNativeLauncher extends Launcher {
       await this.stop()
     } catch (err) {
       log.error(err, 'start error')
-      await this.ensureAccountTriggerAndLaunch() // to create the job even if the error was raised before sendLoginSuccess
+      // to create the job even if the error was raised before sendLoginSuccess
+      await this.ensureAccountTriggerAndLaunch()
       await this.stop({ message: err.message })
     }
     this.emit('KONNECTOR_EXECUTION_END')
