@@ -71,8 +71,18 @@ class ReactNativeLauncher extends Launcher {
     log.debug('bridges init done')
   }
 
+  async fetchKonnector(url) {
+    const manifest = await fetch(`${url}/manifest.konnector`)
+    const content = await fetch(`${url}/main.js`)
+
+    return {
+      manifest: await manifest.json(),
+      content: await content.text()
+    }
+  }
+
   async ensureConnectorIsInstalled({ slug, client }) {
-    try {
+    /*     try {
       await updateCozyAppBundle({
         slug,
         client,
@@ -84,10 +94,11 @@ class ReactNativeLauncher extends Launcher {
         Still attempting to get a cached version.`,
         error
       )
-    }
+    } */
 
     try {
-      const bundle = await getConnectorBundle({ client, slug })
+      // Use your local konnector server (not the one from the cozy-stack)
+      const bundle = await this.fetchKonnector('http://172.28.246.230:3000')
 
       if (!bundle) throw new Error('No connector bundle found')
 
