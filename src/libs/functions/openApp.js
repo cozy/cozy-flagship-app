@@ -94,7 +94,7 @@ const openAppNative = async appNativeData => {
  * @param {AppManifest} konnector - The konnector information
  */
 const openKonnectorInHome = konnector => {
-  const { slug } = connector
+  const { slug } = konnector
 
   navigate({
     name: routes.default,
