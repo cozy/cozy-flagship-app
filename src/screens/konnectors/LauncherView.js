@@ -15,6 +15,7 @@ import {
   startTimeout,
   stopTimeout
 } from '/screens/konnectors/core/handleTimeout'
+import { navigate } from '/libs/RootNavigation'
 
 const log = Minilog('LauncherView')
 
@@ -29,6 +30,7 @@ class LauncherView extends Component {
     this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
     this.onStopExecution = this.onStopExecution.bind(this)
+    this.onCreatedAccount = this.onCreatedAccount.bind(this)
     this.onWorkerWillReload = debounce(this.onWorkerWillReload.bind(this), 1000)
     this.pilotWebView = null
     this.workerWebview = null
@@ -43,6 +45,13 @@ class LauncherView extends Component {
   onStopExecution() {
     this.launcher.stop({ message: 'stopped by user' })
     this.props.setLauncherContext({ state: 'default' })
+  }
+
+  onCreatedAccount(account) {
+    // make the webview navigate to the the harvest route associated to the account
+    const { launcherContext } = this.props
+    const konnector = launcherContext.konnector.slug
+    navigate('default', { konnector, account: account._id })
   }
 
   async initKonnector() {
@@ -95,6 +104,7 @@ class LauncherView extends Component {
     this.launcher.on('WORKER_READY', () => {
       this.setState({ workerReady: true })
     })
+    this.launcher.on('CREATED_ACCOUNT', this.onCreatedAccount)
 
     if (this.state.konnector) {
       await this.launcher.init({
