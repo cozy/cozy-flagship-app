@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { BackHandler, StyleSheet, View } from 'react-native'
+import { BackHandler, StyleSheet, Text, View } from 'react-native'
 
 import { WelcomePage } from '/components/html/WelcomePage'
 import { makeHTML } from '/components/makeHTML'
@@ -8,6 +8,7 @@ import { makeHandlers } from '/libs/functions/makeHandlers'
 import { getColors } from '/ui/colors'
 import { useDimensions } from '/libs/dimensions'
 import { LoginScreen } from '/screens/login/LoginScreen'
+import { useInstallReferrer } from '/screens/welcome/install-referrer/useInstallReferrer'
 
 const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
   const colors = getColors()
@@ -39,7 +40,7 @@ const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
   )
 }
 
-export const WelcomeScreen = ({ navigation, route, setClient }) => {
+export const CozyWelcomeScreen = ({ navigation, route, setClient }) => {
   const [isWelcomeModalDisplayed, setIsWelcomeModalDisplayed] = useState(true)
 
   const handleBackPress = () => {
@@ -64,6 +65,40 @@ export const WelcomeScreen = ({ navigation, route, setClient }) => {
         <WelcomeView setIsWelcomeModalDisplayed={setIsWelcomeModalDisplayed} />
       )}
     </>
+  )
+}
+
+export const OnboardingPartnerWelcomeScreen = ({ partner }) => {
+  return (
+    <View style={{ marginTop: 50, backgroundColor: '#000' }}>
+      <Text>ONBOARDING PARTNER:</Text>
+      <Text>- SOURCE: {partner.source}</Text>
+      <Text>- CONTEXT: {partner.context}</Text>
+    </View>
+  )
+}
+
+export const WelcomeScreen = ({ navigation, route, setClient }) => {
+  const { isInitialized, onboardingPartner } = useInstallReferrer()
+
+  if (!isInitialized) return null
+
+  if (onboardingPartner.hasReferral)
+    return (
+      <OnboardingPartnerWelcomeScreen
+        navigation={navigation}
+        partner={onboardingPartner}
+        route={route}
+        setClient={setClient}
+      />
+    )
+
+  return (
+    <CozyWelcomeScreen
+      navigation={navigation}
+      route={route}
+      setClient={setClient}
+    />
   )
 }
 
