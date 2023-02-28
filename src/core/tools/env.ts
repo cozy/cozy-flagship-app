@@ -45,15 +45,22 @@ export const devlog = isDev() && !isTest() ? console.debug : (): void => void 0
 
 initDev(isDev()).catch(error => devlog('failed to init dev env', error))
 
-const { disableGetIndex, enableLocalSentry, enableReduxLogger } = getDevConfig(
-  isDev()
-)
+const {
+  disableGetIndex,
+  enableLocalSentry,
+  enableReduxLogger,
+  enforcedInstallReferrer,
+  forceInstallReferrer
+} = getDevConfig(isDev())
 
 if (enableLocalSentry) toggleLocalSentry(true)
 
 export const isSentryDebugMode = (): boolean => enableLocalSentry
 
 export const shouldDisableGetIndex = (): boolean => disableGetIndex
+
+export const shouldForceInstallReferrer = (): boolean => forceInstallReferrer
+export const getEnforcedInstallReferrer = (): string => enforcedInstallReferrer
 
 export const shouldEnableReduxLogger = (): boolean =>
   enableReduxLogger && !isTest()
