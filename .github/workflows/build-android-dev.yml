@@ -74,7 +74,7 @@ jobs:
           ANDROID_SAFETY_NET_API_KEY: ${{ secrets.ANDROID_SAFETY_NET_API_KEY }}
 
       - name: Sign Dev APK
-        id: sign_app
+        id: sign_app_dev
         uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: android/app/build/outputs/apk/dev/release
@@ -91,7 +91,7 @@ jobs:
             android/app/build/outputs/apk/dev/release/*-signed.apk
 
       - name: Sign Prod APK
-        id: sign_app
+        id: sign_app_prod
         uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: android/app/build/outputs/apk/prod/release
