@@ -1,4 +1,4 @@
-# 1.0.4
+# 1.0.5
 
 ## ✨ Features
 
@@ -8,6 +8,30 @@
 
 ## 🔧 Tech
 
+
+# 1.0.4
+
+## ✨ Features
+
+* The App can now receive notifications from the user's Cozy ([PR #594](https://github.com/cozy/cozy-react-native/pull/594))
+
+## 🐛 Bug Fixes
+
+* Fix a bug that prevented Connectors to be opened from cozy-store ([PR #618](https://github.com/cozy/cozy-react-native/pull/618))
+* Canceling login step when executin a Client Side Connector doesn't block the connector anymore ([PR #607](https://github.com/cozy/cozy-react-native/pull/607), [PR #630](https://github.com/cozy/cozy-react-native/pull/630) and [PR #631](https://github.com/cozy/cozy-react-native/pull/631))
+
+## 🔧 Tech
+
+* Client Side Connectors execution duration is now limited to 15min ([PR #571](https://github.com/cozy/cozy-react-native/pull/571))
+* Use cache for fetch apps query ([PR #597](https://github.com/cozy/cozy-react-native/pull/597))
+* Fix ESLint warnings ([PR #602](https://github.com/cozy/cozy-react-native/pull/602))
+* Extract Client Side Connectors code into `cozy-clisk` library ([PR #599](https://github.com/cozy/cozy-react-native/pull/599) and [PR #621](https://github.com/cozy/cozy-react-native/pull/621))
+* Increase default `PBKDF2` iteration number to from `100000` to `650000` ([PR #606](https://github.com/cozy/cozy-react-native/pull/606))
+* Fix URL interception for Cozys with nested domain configuration ([PR #619](https://github.com/cozy/cozy-react-native/pull/619))
+* Remove dependency to cozy-ui ([PR #609](https://github.com/cozy/cozy-react-native/pull/609))
+* Use `cozy-tsconfig` for Typescript configuration ([PR #627](https://github.com/cozy/cozy-react-native/pull/627))
+* Homogenize `Konnector/Connector` naming convention by using only `Konnector` ([PR #617](https://github.com/cozy/cozy-react-native/pull/617))
+* Add foundations for OnboardingPartner context interception ([PR #632](https://github.com/cozy/cozy-react-native/pull/632))
 
 # 1.0.3
 
