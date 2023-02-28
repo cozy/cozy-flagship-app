@@ -337,10 +337,17 @@ export default class Launcher {
     } = this.getStartContext() || {}
     const { sourceAccountIdentifier } = this.getUserData() || {}
     for (const entry of entries) {
+      // TODO Filter existing entries
+      if (entry.fileurl) {
+        // @ts-ignore
+        entry.dataUri = await this.worker.call('downloadFileInWorker', entry)
+        delete entry.fileurl
+      }
       if (entry.dataUri) {
         entry.filestream = dataURItoArrayBuffer(entry.dataUri).arrayBuffer
         delete entry.dataUri
       }
+      // Adding qualification here because of the need of models
       if (options.qualificationLabel) {
         set(
           entry,
@@ -425,5 +432,6 @@ export default class Launcher {
 /**
  * @typedef FileDocument
  * @property {String} [dataUri]
- * @property {ArrayBuffer} filestream
+ * @property {ArrayBuffer} [filestream]
+ * @property {String} [fileurl]
  */
