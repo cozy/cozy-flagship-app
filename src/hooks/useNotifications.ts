@@ -4,18 +4,20 @@ import messaging from '@react-native-firebase/messaging'
 import { useClient } from 'cozy-client'
 import { removeNotificationDeviceToken } from '/libs/client'
 import {
+  handleInitialToken,
   handleNotificationTokenReceiving,
+  handleInitialNotification,
   handleNotificationOpening,
   requestAndGetNotificationPermission
 } from '/libs/notifications/notifications'
 
-export const useNotifications = () => {
+export const useNotifications = (): void => {
   const client = useClient()
 
   const [areNotificationsEnabled, setAreNotificationsEnabled] = useState(false)
 
   useEffect(() => {
-    const initializeNotifications = async () => {
+    const initializeNotifications = async (): Promise<void> => {
       if (!client) return
 
       const permission = await requestAndGetNotificationPermission()
@@ -27,23 +29,21 @@ export const useNotifications = () => {
       }
     }
 
-    initializeNotifications()
+    void initializeNotifications()
   }, [client])
 
   useEffect(() => {
-    const handleNotifications = async () => {
-      if (areNotificationsEnabled) {
-        const removeNotificationTokenReceivingHandler =
-          await handleNotificationTokenReceiving(client)
-        const removeNotificationOpeningHandler =
-          await handleNotificationOpening(client)
+    if (!areNotificationsEnabled) return
 
-        return () => {
-          removeNotificationTokenReceivingHandler()
-          removeNotificationOpeningHandler()
-        }
-      }
+    void handleInitialToken(client)
+    void handleInitialNotification(client)
+
+    const removeTokenReceivingHandler = handleNotificationTokenReceiving(client)
+    const removeOpeningHandler = handleNotificationOpening(client)
+
+    return () => {
+      removeTokenReceivingHandler()
+      removeOpeningHandler()
     }
-    handleNotifications()
   }, [client, areNotificationsEnabled])
 }
