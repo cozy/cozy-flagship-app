@@ -32,7 +32,7 @@ declare module 'cozy-client' {
 
   interface InstanceOptions {
     capabilities: {
-      flat_subdomains: string
+      flat_subdomains: boolean
     }
   }
 
