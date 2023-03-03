@@ -152,6 +152,7 @@ class ReactNativeLauncher extends Launcher {
       this.setUserData(await this.pilot.call('getUserDataFromWebsite'))
 
       const ensureResult = await this.ensureAccountTriggerAndLaunch()
+      await this.createTimeoutTrigger()
       if (ensureResult.createdAccount) {
         this.emit('CREATED_ACCOUNT', ensureResult.createdAccount)
       }
@@ -177,8 +178,13 @@ class ReactNativeLauncher extends Launcher {
     this.emit('KONNECTOR_EXECUTION_END')
   }
 
+  /**
+   * Clean all remaining active objects when closing the connector
+   * @returns {Promise<vod>}
+   */
   async close() {
     this.controller.abort()
+    this.removeTimeoutTrigger()
     if (this.pilot) {
       this.pilot.close()
     }

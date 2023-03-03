@@ -34,10 +34,12 @@ describe('ReactNativeLauncher', () => {
   function setup() {
     const launcher = new ReactNativeLauncher()
     launcher.pilot = {
-      call: jest.fn()
+      call: jest.fn(),
+      close: jest.fn()
     }
     launcher.worker = {
-      call: jest.fn()
+      call: jest.fn(),
+      close: jest.fn()
     }
     const launch = jest.fn()
     const findReferencedBy = jest
@@ -54,6 +56,7 @@ describe('ReactNativeLauncher', () => {
       save: jest.fn(),
       create: jest.fn(),
       query: jest.fn(),
+      destroy: jest.fn(),
       collection: () => ({
         launch,
         findReferencedBy,
@@ -121,6 +124,21 @@ describe('ReactNativeLauncher', () => {
           folder_to_save: 'testfolderid'
         }
       })
+      expect(client.save).toHaveBeenNthCalledWith(
+        4,
+        expect.objectContaining({
+          _type: 'io.cozy.triggers',
+          type: '@at',
+          worker: 'service',
+          message: {
+            slug: 'home',
+            name: 'cliskTimeout',
+            fields: {
+              cliskJobId: 'normal_job_id'
+            }
+          }
+        })
+      )
       expect(launch).toHaveBeenCalledTimes(1)
     })
     it('should launch the given trigger if any', async () => {
@@ -161,17 +179,46 @@ describe('ReactNativeLauncher', () => {
           sourceAccountIdentifier: 'testsourceaccountidentifier'
         })
       await launcher.start()
+      expect(client.destroy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          _type: 'io.cozy.triggers',
+          type: '@at',
+          worker: 'service',
+          message: {
+            slug: 'home',
+            name: 'cliskTimeout',
+            fields: {
+              cliskJobId: 'normal_job_id'
+            }
+          }
+        })
+      )
       expect(client.save).toHaveBeenNthCalledWith(1, {
         _id: 'normal_account_id',
         auth: {
           accountName: 'testsourceaccountidentifier'
         }
       })
-      expect(client.save).toHaveBeenNthCalledWith(2, {
+      expect(client.save).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          _type: 'io.cozy.triggers',
+          type: '@at',
+          worker: 'service',
+          message: {
+            slug: 'home',
+            name: 'cliskTimeout',
+            fields: {
+              cliskJobId: 'normal_job_id'
+            }
+          }
+        })
+      )
+      expect(client.save).toHaveBeenNthCalledWith(3, {
         _id: 'normal_account_id',
         state: 'LOGIN_SUCCESS'
       })
-      expect(client.save).toHaveBeenNthCalledWith(3, {
+      expect(client.save).toHaveBeenNthCalledWith(4, {
         _id: 'normal_job_id',
         attributes: {
           state: 'done'
