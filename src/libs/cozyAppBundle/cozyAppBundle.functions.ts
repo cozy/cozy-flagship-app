@@ -73,7 +73,7 @@ export const handleCleanup = async ({
     )
 
   for (const dir of dirs) {
-    if (!versionsToKeep.includes(dir.name))
+    if (!versionsToKeep.includes(dir.name) && dir.name !== 'embedded')
       await RNFS.unlink(`${path}/${dir.name}`)
   }
 }

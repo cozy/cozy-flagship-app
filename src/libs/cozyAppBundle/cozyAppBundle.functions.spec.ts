@@ -53,4 +53,52 @@ describe('handleCleanup', () => {
       'SOME_DocumentDirectoryPath/test.cozy.tools_8080/test/1.0.2'
     )
   })
+  it('should not delete embedded folder', async () => {
+    const versionsToKeep = ['1.0.0', '1.0.3']
+    const slug = 'test'
+    const client = {
+      getStackClient: (): { uri: string } => ({
+        uri: 'https://test.cozy.tools:8080'
+      })
+    } as CozyClient
+
+    jest
+      .spyOn(RNFS, 'readDir')
+      .mockResolvedValue([
+        { name: '1.0.0' },
+        { name: '1.0.1' },
+        { name: '1.0.2' },
+        { name: 'embedded' },
+        { name: '1.0.3' }
+      ] as RNFS.ReadDirItem[])
+
+    const deleteFolderSpy = jest.spyOn(RNFS, 'unlink')
+
+    await handleCleanup({
+      client,
+      slug,
+      versionsToKeep
+    })
+
+    expect(deleteFolderSpy).not.toHaveBeenCalledWith(
+      'SOME_DocumentDirectoryPath/test.cozy.tools_8080/test/embedded'
+    )
+    expect(deleteFolderSpy).not.toHaveBeenCalledWith(
+      'SOME_DocumentDirectoryPath/test.cozy.tools_8080/test/1.0.0'
+    )
+
+    expect(deleteFolderSpy).not.toHaveBeenCalledWith(
+      'SOME_DocumentDirectoryPath/test.cozy.tools_8080/test/1.0.3'
+    )
+
+    expect(deleteFolderSpy).toHaveBeenNthCalledWith(
+      1,
+      'SOME_DocumentDirectoryPath/test.cozy.tools_8080/test/1.0.1'
+    )
+
+    expect(deleteFolderSpy).toHaveBeenNthCalledWith(
+      2,
+      'SOME_DocumentDirectoryPath/test.cozy.tools_8080/test/1.0.2'
+    )
+  })
 })
