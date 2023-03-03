@@ -10,6 +10,8 @@ import { ensureKonnectorFolder } from './folder'
 import { saveCredential, getCredential, removeCredential } from './keychain'
 import { dataURItoArrayBuffer } from './utils'
 
+import { constants } from '/screens/konnectors/constants/konnectors-constants'
+
 const log = Minilog('Launcher')
 
 export const TIMEOUT_KONNECTOR_ERROR = 'context deadline exceeded'
@@ -370,6 +372,61 @@ export default class Launcher {
   }
 
   /**
+   * Creates a trigger to launch a service from home application which will force the end of the current job with 'context deadline exceeded'
+   * message after constants.serviceTimeoutDuration minutes
+   *
+   * @returns {Promise<void>}
+   */
+  async createTimeoutTrigger() {
+    const { client, job } = this.getStartContext() || {}
+
+    if (!job) {
+      throw new Error('createTimeoutTrigger: no job found in context')
+    }
+
+    const { data: timeoutTrigger } = await client.save({
+      _type: 'io.cozy.triggers',
+      worker: 'service',
+      type: '@at', // did not use @in because only @at triggers remove themselves after use
+      arguments: new Date(
+        Date.now() + constants.serviceTimeoutDuration
+      ).toISOString(),
+      message: {
+        slug: 'home',
+        name: 'cliskTimeout',
+        fields: {
+          cliskJobId: job._id
+        }
+      }
+    })
+    this.setStartContext({
+      ...this.getStartContext(),
+      timeoutTrigger
+    })
+  }
+
+  /**
+   * Removes the timeout trigger when the job is already done
+   *
+   * @returns {Promise<void>}
+   */
+  async removeTimeoutTrigger() {
+    const { client, timeoutTrigger } = this.getStartContext() || {}
+    if (timeoutTrigger) {
+      try {
+        await client.destroy(timeoutTrigger)
+      } catch (err) {
+        // @ts-ignore
+        if (err.status === 404) {
+          log.warn(
+            `The timeout trigger ${timeoutTrigger._id} does not exist anymore. Could not remove it`
+          )
+        } else throw err
+      }
+    }
+  }
+
+  /**
    * Fetches data already imported by the konnector with the current sourceAccountIdentifier
    * This allows the konnector to only fetch new data
    *
@@ -416,6 +473,7 @@ export default class Launcher {
  * @property {import('cozy-client/types/types').IOCozyTrigger}   trigger
  * @property {import('cozy-client/types/types').CozyClientDocument}       job
  * @property {import('cozy-client/types/types').IOCozyKonnector} konnector
+ * @property {import('cozy-client/types/types').IOCozyTrigger} [timeoutTrigger]
  */
 
 /**
