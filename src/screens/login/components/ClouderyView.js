@@ -1,3 +1,4 @@
+import Minilog from '@cozy/minilog'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   BackHandler,
@@ -6,8 +7,6 @@ import {
   StyleSheet,
   View
 } from 'react-native'
-
-import Minilog from '@cozy/minilog'
 
 import strings from '/constants/strings.json'
 import { getColors } from '/ui/colors'
@@ -19,6 +18,7 @@ import { jsLogInterception } from '/components/webviews/jsInteractions/jsLogInte
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
+
 import { rootCozyUrl } from 'cozy-client'
 
 const log = Minilog('ClouderyView')

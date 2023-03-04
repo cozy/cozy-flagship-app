@@ -1,9 +1,9 @@
-import React from 'react'
-import { Button as MockButton } from 'react-native'
 import { fireEvent, render, waitFor } from '@testing-library/react-native'
+import React from 'react'
+import { act } from 'react-dom/test-utils'
+import { Button as MockButton } from 'react-native'
 
 import { ClouderyView } from './ClouderyView'
-import { act } from 'react-dom/test-utils'
 
 const mockGetNextUrl = jest.fn()
 

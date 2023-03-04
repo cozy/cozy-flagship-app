@@ -1,14 +1,15 @@
 // @ts-check
 /* eslint-disable no-unused-vars */
-import { Q, models } from 'cozy-client'
 import Minilog from '@cozy/minilog'
 import get from 'lodash/get'
 import set from 'lodash/set'
+
+import { Q, models } from 'cozy-client'
 import { saveFiles, saveBills, saveIdentity } from 'cozy-clisk'
 
+import { ensureKonnectorFolder } from './folder'
 import { saveCredential, getCredential, removeCredential } from './keychain'
 import { dataURItoArrayBuffer } from './utils'
-import { ensureKonnectorFolder } from './folder'
 
 const log = Minilog('Launcher')
 

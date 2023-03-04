@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events'
+
 import { FlagshipUI } from 'cozy-intent'
 
 import {

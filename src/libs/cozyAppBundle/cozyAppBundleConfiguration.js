@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import { normalizeFqdn } from '/libs/functions/stringHelpers'
-
 import strings from '/constants/strings.json'
 
 /**

@@ -1,5 +1,6 @@
-import { MessengerInterface } from 'cozy-clisk'
 import Minilog from '@cozy/minilog'
+
+import { MessengerInterface } from 'cozy-clisk'
 
 /**
  * post-me messenger implementation for the react native launcher

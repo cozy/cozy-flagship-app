@@ -1,10 +1,11 @@
+import { CaptureConsole } from '@sentry/integrations'
 import * as Sentry from '@sentry/react-native'
 import flow from 'lodash/fp/flow'
-import { CaptureConsole } from '@sentry/integrations'
 
 import strings from '/constants/strings.json'
 import { devlog, EnvService, isSentryDebugMode } from '/core/tools/env'
 import { scrubPhoneNumbers } from '/libs/monitoring/scrubbing'
+
 import { version } from '../../../package.json'
 
 export const SentryCustomTags = {

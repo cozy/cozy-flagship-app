@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import messaging from '@react-native-firebase/messaging'
 
 import { useClient } from 'cozy-client'
+
 import { removeNotificationDeviceToken } from '/libs/client'
 import {
   handleInitialToken,

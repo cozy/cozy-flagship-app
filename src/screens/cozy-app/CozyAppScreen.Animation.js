@@ -6,6 +6,7 @@ import ProgressBar from '/components/Bar'
 import { iconTable, iconFallback } from '/libs/functions/iconTable'
 import { getDimensions } from '/libs/dimensions'
 import { palette } from '/ui/palette'
+
 import { styles } from './CozyAppScreen.styles'
 
 const { screenHeight, screenWidth } = getDimensions()

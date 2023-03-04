@@ -1,7 +1,7 @@
 import { AppState, AppStateStatus } from 'react-native'
 import { useEffect } from 'react'
-
 import Minilog from '@cozy/minilog'
+
 import CozyClient, { useClient } from 'cozy-client'
 
 import { resyncCookies } from '/libs/httpserver/httpCookieManager'

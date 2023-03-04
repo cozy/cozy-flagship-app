@@ -4,9 +4,13 @@ import CozyClient from 'cozy-client'
 
 import * as RootNavigation from '/libs/RootNavigation'
 import strings from '/constants/strings.json'
+
 import { BrowserResult } from 'react-native-inappbrowser-reborn'
+
 import { EnvService } from '/core/tools/env'
+
 import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
+
 import { clearClient } from '/libs/client'
 import { clearCookies } from '/libs/httpserver/httpCookieManager'
 import { clearData } from '/libs/localStore/storage'

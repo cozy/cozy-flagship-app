@@ -1,9 +1,8 @@
+import Minilog from '@cozy/minilog'
 import {
   createNavigationContainerRef,
   CommonActions
 } from '@react-navigation/native'
-
-import Minilog from '@cozy/minilog'
 
 const log = Minilog('RootNavigation')
 

@@ -1,5 +1,7 @@
 import Minilog from '@cozy/minilog'
+
 import { withClient } from 'cozy-client'
+
 import debounce from 'lodash/debounce'
 import get from 'lodash/get'
 import React, { Component } from 'react'

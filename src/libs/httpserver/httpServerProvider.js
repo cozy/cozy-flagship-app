@@ -5,7 +5,6 @@ import React, {
   useLayoutEffect,
   useState
 } from 'react'
-
 import Minilog from '@cozy/minilog'
 
 import HttpServer from '/libs/httpserver/HttpServer'
@@ -13,11 +12,13 @@ import { fetchAppDataForSlug } from '/libs/httpserver/indexDataFetcher'
 import { getServerBaseFolder } from '/libs/httpserver/httpPaths'
 import { queryResultToCrypto } from '/components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
 import { setCookie } from '/libs/httpserver/httpCookieManager'
+
 import {
   addBodyClasses,
   addMetaAttributes,
   addBarStyles
 } from './server-helpers'
+
 import {
   fillIndexWithData,
   getIndexForFqdnAndSlug

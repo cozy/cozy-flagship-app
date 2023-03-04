@@ -1,5 +1,7 @@
 import CozyClient from 'cozy-client'
+
 import { sendKonnectorsLogs } from './sendKonnectorsLogs'
+
 import { store } from '/redux/store'
 
 jest.genMockFromModule('cozy-client')

@@ -1,7 +1,7 @@
 /* eslint-disable no-bitwise */
 import CozyClient, { Q } from 'cozy-client'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import Minilog from '@cozy/minilog'
 
 import strings from '/constants/strings.json'
@@ -84,7 +84,7 @@ const attemptCacheUpdate = async ({
     const slugsToUpdate = apps.data.reduce<App[]>(
       (acc, { attributes: { slug, version } }): App[] => {
         const cachedIcon = cache[slug]
-        const cachedVersion = cachedIcon?.version
+        const cachedVersion = cachedIcon.version
 
         if (!cachedIcon || hasNewerVersion(cachedVersion, version))
           return [...acc, { attributes: { slug, version } }]

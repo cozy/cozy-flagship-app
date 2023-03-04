@@ -3,12 +3,12 @@ import { Platform, View } from 'react-native'
 
 import { useClient } from 'cozy-client'
 
+import { styles } from './CozyProxyWebView.styles'
 import { CozyWebView } from './CozyWebView'
+
 import { updateCozyAppBundleInBackground } from '/libs/cozyAppBundle/cozyAppBundle'
 import { useHttpServerContext } from '/libs/httpserver/httpServerProvider'
 import { IndexInjectionWebviewComponent } from '/components/webviews/webViewComponents/IndexInjectionWebviewComponent'
-
-import { styles } from './CozyProxyWebView.styles'
 
 const NO_INJECTED_HTML = 'NO_INJECTED_HTML'
 

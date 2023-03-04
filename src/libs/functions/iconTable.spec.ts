@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+
 import CozyClient from 'cozy-client'
 
 import strings from '/constants/strings.json'

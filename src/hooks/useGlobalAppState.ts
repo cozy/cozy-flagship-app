@@ -1,7 +1,6 @@
 import { AppState, AppStateStatus, Platform } from 'react-native'
 import { Route } from '@react-navigation/routers'
 import { useEffect } from 'react'
-
 import Minilog from '@cozy/minilog'
 
 import * as RootNavigation from '/libs/RootNavigation'

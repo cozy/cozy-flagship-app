@@ -1,9 +1,9 @@
-import { InAppBrowser } from 'react-native-inappbrowser-reborn'
-import { Platform } from 'react-native'
-
 import Minilog from '@cozy/minilog'
-import { deconstructCozyWebLinkWithSlug } from 'cozy-client/dist/helpers'
+import { Platform } from 'react-native'
+import { InAppBrowser } from 'react-native-inappbrowser-reborn'
+
 import { generateWebLink } from 'cozy-client'
+import { deconstructCozyWebLinkWithSlug } from 'cozy-client/dist/helpers'
 
 const log = Minilog('CozyWebView')
 

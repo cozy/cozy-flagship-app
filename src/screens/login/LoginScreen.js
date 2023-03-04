@@ -23,7 +23,6 @@ import { useDimensions } from '/libs/dimensions'
 import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { useSplashScreen } from '/hooks/useSplashScreen'
-
 import strings from '/constants/strings.json'
 import { getColors } from '/ui/colors'
 import { NetService } from '/libs/services/NetService'

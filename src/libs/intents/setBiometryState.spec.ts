@@ -5,6 +5,7 @@ import {
   makeFlagshipMetadataInjection,
   updateBiometrySetting
 } from '/libs/intents/setBiometryState'
+
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const mockIsSensorAvailable = jest.fn().mockResolvedValue({

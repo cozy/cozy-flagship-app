@@ -4,7 +4,6 @@ import {
   getBaseRelativePathForFqdnAndSlugAndCurrentVersion,
   getServerBaseFolder
 } from './httpPaths'
-
 import { getCurrentAppConfigurationForFqdnAndSlug } from '../cozyAppBundle/cozyAppBundleConfiguration'
 
 const MOCK_DIRECTORY_PATH = 'SOME_DocumentDirectoryPath'

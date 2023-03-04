@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import CookieManager, { Cookie, Cookies } from '@react-native-cookies/cookies'
+
 import CozyClient from 'cozy-client'
 
 import { isSecureProtocol } from '../functions/isSecureProtocol'

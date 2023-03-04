@@ -1,14 +1,13 @@
+import Minilog from '@cozy/minilog'
 import React, { useEffect } from 'react'
 import { Linking } from 'react-native'
+import { changeBarColors } from 'react-native-immersive-bars'
 import { WebViewMessageEvent } from 'react-native-webview/lib/WebViewTypes'
-
-import Minilog from '@cozy/minilog'
 
 import { CozyNotFoundPage } from '/components/webviews/CozyNotFoundPage'
 import { OfflinePage } from '/components/webviews/OfflinePage'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { goBack } from '/libs/RootNavigation'
-import { changeBarColors } from 'react-native-immersive-bars'
 
 const log = Minilog('ErrorScreen')
 
@@ -20,7 +19,7 @@ interface ErrorScreenProps {
 }
 
 interface Source {
-  html: ReturnType<typeof HTML[keyof typeof HTML]>
+  html: ReturnType<(typeof HTML)[keyof typeof HTML]>
 }
 
 type Handlers = Record<

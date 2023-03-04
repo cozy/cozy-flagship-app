@@ -4,6 +4,7 @@ import { Animated, Dimensions, Easing, StyleSheet, View } from 'react-native'
 import log from 'cozy-logger'
 
 import { getDimensions } from '/libs/dimensions'
+
 import { CozyIcon } from './transitions-icons/CozyIcon'
 
 import { getColors } from '/ui/colors'

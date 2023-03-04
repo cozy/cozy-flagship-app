@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { View } from 'react-native'
 import { WebView } from 'react-native-webview'
-
 import Minilog from '@cozy/minilog'
+
 import { useClient } from 'cozy-client'
 
 import ProgressBar from '/components/Bar'
 import { palette } from '/ui/palette'
+
 import { styles } from './SupervisedWebView.styles'
+
 import { resyncCookies } from '/libs/httpserver/httpCookieManager'
 
 const log = Minilog('SupervisedWebView')

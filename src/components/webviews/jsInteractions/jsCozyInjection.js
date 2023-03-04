@@ -1,6 +1,7 @@
 import { Platform } from 'react-native'
 
 import { version } from '../../../../package.json'
+
 import { getDimensions } from '/libs/dimensions'
 
 const immersiveRoutes = ['home']

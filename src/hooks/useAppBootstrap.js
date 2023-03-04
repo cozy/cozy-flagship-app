@@ -1,5 +1,6 @@
 import { Linking } from 'react-native'
 import { useEffect, useState } from 'react'
+
 import { deconstructCozyWebLinkWithSlug } from 'cozy-client'
 
 import { SentryCustomTags, setSentryTag } from '/libs/monitoring/Sentry'

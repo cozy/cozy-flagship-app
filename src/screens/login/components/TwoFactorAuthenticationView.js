@@ -5,7 +5,6 @@ import { getHtml } from './assets/TwoFactorAuthentication/htmlTwoFactorAuthentic
 
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { getColors } from '/ui/colors'
-
 import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
 
 /**

@@ -2,6 +2,7 @@ import NetInfo, { NetInfoState } from '@react-native-community/netinfo'
 import { useEffect } from 'react'
 
 import CozyClient from 'cozy-client'
+
 import Minilog from '@cozy/minilog'
 
 import strings from '/constants/strings.json'

@@ -13,6 +13,7 @@ import {
   setCurrentAppVersionForFqdnAndSlug
 } from '../cozyAppBundle/cozyAppBundleConfiguration'
 import { replaceAll } from '../functions/stringHelpers'
+
 import { shouldDisableGetIndex } from '/core/tools/env'
 
 const log = Minilog('IndexGenerator')

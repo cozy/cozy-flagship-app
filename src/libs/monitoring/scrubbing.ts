@@ -30,7 +30,7 @@ export const scrubPhoneNumbers = (
     if (hasConsoleArguments(event)) {
       const message = event.data.arguments[0]
 
-      if (message?.includes('tel:')) {
+      if (message.includes('tel:')) {
         const sanitizedMessage = scrubPhone(message)
         event.data.arguments[0] = sanitizedMessage
         event.message = sanitizedMessage

@@ -1,5 +1,5 @@
-import { constants } from '../constants/konnectors-constants'
 import { startTimeout, stopTimeout } from './handleTimeout'
+import { constants } from '../constants/konnectors-constants'
 
 test('startTimeout fires callback and deletes itself on completion', () => {
   jest.useFakeTimers()

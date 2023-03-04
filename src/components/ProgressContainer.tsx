@@ -3,7 +3,6 @@ import { View } from 'react-native'
 
 import ProgressBar from '/components/Bar'
 import { styles } from '/components/ProgressContainer.styles'
-
 import { getColors } from '/ui/colors'
 import { palette } from '/ui/palette'
 

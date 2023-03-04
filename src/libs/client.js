@@ -1,5 +1,7 @@
 import { Platform } from 'react-native'
+
 import CozyClient from 'cozy-client'
+
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Minilog from '@cozy/minilog'
 import { getDeviceName } from 'react-native-device-info'

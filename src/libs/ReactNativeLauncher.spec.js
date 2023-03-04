@@ -16,9 +16,10 @@ jest.mock('./keychain', () => {
     removeCookie: jest.fn()
   }
 })
-import { getCookie, saveCookie, removeCookie } from './keychain'
 import CookieManager from '@react-native-cookies/cookies'
+
 import ReactNativeLauncher from './ReactNativeLauncher'
+import { getCookie, saveCookie, removeCookie } from './keychain'
 
 const fixtures = {
   job: { _id: 'normal_job_id' },

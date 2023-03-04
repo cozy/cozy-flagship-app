@@ -4,6 +4,7 @@ import messaging, {
 } from '@react-native-firebase/messaging'
 
 import CozyClient, { generateWebLink } from 'cozy-client'
+
 import { navigate } from '/libs/RootNavigation'
 import { navigateToApp } from '/libs/functions/openApp'
 import { saveNotificationDeviceToken } from '/libs/client'
