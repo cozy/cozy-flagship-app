@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies -- We rely on react-native here
 const { getDefaultConfig } = require('metro-config')
 
 module.exports = (async () => {

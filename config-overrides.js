@@ -1,4 +1,4 @@
-module.exports = function override(config, env) {
+module.exports = function override(config) {
   config.module.rules.push({
     test: /\.js$/,
     exclude: /node_modules[/\\](?!react-native-vector-icons)/,
@@ -11,17 +11,17 @@ module.exports = function override(config, env) {
 
         // The configuration for compilation
         presets: [
-          ['@babel/preset-env', {useBuiltIns: 'usage'}],
+          ['@babel/preset-env', { useBuiltIns: 'usage' }],
           '@babel/preset-react',
           '@babel/preset-flow',
-          '@babel/preset-typescript',
+          '@babel/preset-typescript'
         ],
         plugins: [
           '@babel/plugin-proposal-class-properties',
-          '@babel/plugin-proposal-object-rest-spread',
-        ],
-      },
-    },
+          '@babel/plugin-proposal-object-rest-spread'
+        ]
+      }
+    }
   })
 
   return config
