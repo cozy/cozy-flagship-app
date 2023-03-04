@@ -1,6 +1,6 @@
-import RNFS from 'react-native-fs'
-import { Platform } from 'react-native'
 import Minilog from '@cozy/minilog'
+import { Platform } from 'react-native'
+import RNFS from 'react-native-fs'
 
 const log = Minilog('BundleAssets')
 

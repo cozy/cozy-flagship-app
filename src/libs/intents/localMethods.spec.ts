@@ -1,11 +1,12 @@
-import * as Keychain from 'react-native-keychain'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as Keychain from 'react-native-keychain'
 
 import CozyClient from 'cozy-client/types/CozyClient.js'
 
 import * as RootNavigation from '/libs/RootNavigation.js'
 import strings from '/constants/strings.json'
 import { localMethods, asyncLogout } from '/libs/intents/localMethods'
+
 import { NativeMethodsRegister } from 'cozy-intent'
 
 jest.mock('react-native-keychain')

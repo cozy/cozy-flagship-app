@@ -13,8 +13,8 @@ jest.mock('@react-native-cookies/cookies', () => {
 })
 
 import * as Keychain from 'react-native-keychain'
-import ReactNativeLauncher from './ReactNativeLauncher'
 
+import ReactNativeLauncher from './ReactNativeLauncher'
 import { GLOBAL_KEY } from './keychain'
 
 describe('ReactNativeLauncherIntegration', () => {

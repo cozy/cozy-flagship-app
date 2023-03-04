@@ -1,8 +1,9 @@
 import { EventEmitter } from 'events'
+
 import { Platform, StatusBar } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
-
 import Minilog from '@cozy/minilog'
+
 import { FlagshipUI } from 'cozy-intent'
 
 import { urlHasKonnectorOpen } from '/libs/functions/urlHasKonnector'

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import FileViewer from 'react-native-file-viewer'
-import CozyClient from 'cozy-client'
 import RNFS, { DownloadResult } from 'react-native-fs'
+
+import CozyClient from 'cozy-client'
 
 import {
   checkIsPreviewableLink,

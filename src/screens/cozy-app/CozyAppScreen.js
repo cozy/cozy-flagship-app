@@ -2,13 +2,18 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { StatusBar, View } from 'react-native'
 
 import { Animation } from './CozyAppScreen.Animation'
-import { CozyProxyWebView } from '../../components/webviews/CozyProxyWebView'
-import { NetService } from '/libs/services/NetService'
-import { flagshipUI } from '../../libs/intents/setFlagshipUI'
-import { useDimensions } from '/libs/dimensions'
-import { internalMethods } from '../../libs/intents/localMethods'
-import { routes } from '/constants/routes'
 import { styles } from './CozyAppScreen.styles'
+import { CozyProxyWebView } from '../../components/webviews/CozyProxyWebView'
+
+import { NetService } from '/libs/services/NetService'
+
+import { flagshipUI } from '../../libs/intents/setFlagshipUI'
+
+import { useDimensions } from '/libs/dimensions'
+
+import { internalMethods } from '../../libs/intents/localMethods'
+
+import { routes } from '/constants/routes'
 
 const firstHalfUI = () =>
   internalMethods.setFlagshipUI({

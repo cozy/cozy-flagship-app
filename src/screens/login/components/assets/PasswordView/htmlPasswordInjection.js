@@ -2,17 +2,16 @@
 /* This code should reflect cozy-stack/assets/templates/login.html */
 /********************************************************************/
 
+import { handleErrorMessage } from './js/jsHandleErrorMessage'
 import { loginJs } from './js/jsLogin'
-import { cirrusJs } from '../common/js/jsCirrus'
 import { passwordHelperJs } from './js/jsPasswordHelper'
 import { passwordVisibilityJs } from './js/jsPasswordVisibility'
-import { handleErrorMessage } from './js/jsHandleErrorMessage'
-import { readonlyJs } from '../common/js/jsReadonly'
-
 import { cirrusCss } from '../common/css/cssCirrus'
-import { fontsCss } from '../common/css/cssFonts'
 import { cozyBsCss } from '../common/css/cssCozyBs'
+import { fontsCss } from '../common/css/cssFonts'
 import { themeCss } from '../common/css/cssTheme'
+import { cirrusJs } from '../common/js/jsCirrus'
+import { readonlyJs } from '../common/js/jsReadonly'
 
 const strBackButton = "Revenir à l'écran précédent"
 const strPasswordField = 'Mot de passe'

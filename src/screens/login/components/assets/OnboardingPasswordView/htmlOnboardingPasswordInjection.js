@@ -4,15 +4,14 @@
 
 import { newPasswordJs } from './js/jsNewPassword'
 import { passwordStrengthJs } from './js/jsPasswordStrength'
-import { cirrusJs } from '../common/js/jsCirrus'
 import { passwordHelperJs } from '../PasswordView/js/jsPasswordHelper'
 import { passwordVisibilityJs } from '../PasswordView/js/jsPasswordVisibility'
-import { readonlyJs } from '../common/js/jsReadonly'
-
 import { cirrusCss } from '../common/css/cssCirrus'
-import { fontsCss } from '../common/css/cssFonts'
 import { cozyBsCss } from '../common/css/cssCozyBs'
+import { fontsCss } from '../common/css/cssFonts'
 import { themeCss } from '../common/css/cssTheme'
+import { cirrusJs } from '../common/js/jsCirrus'
+import { readonlyJs } from '../common/js/jsReadonly'
 
 const strBackButton = "Revenir à l'écran précédent"
 const strTitle = 'Choisir un mot de passe'

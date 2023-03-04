@@ -1,12 +1,12 @@
-import { windowPasswordObjectDeclaration } from './jsFunctions/jsPasswordHelpers'
-import { computePassFunctionDeclaration } from './jsFunctions/jsComputePass'
 import { computePKCEFunctionDeclaration } from './jsFunctions/jsComputePKCE'
-import { subtleFunctionDeclaration } from './jsFunctions/jsSubtle'
+import { computePassFunctionDeclaration } from './jsFunctions/jsComputePass'
 import { generateHttpServerSecurityKeyFunctionDeclaration } from './jsFunctions/jsGenerateHttpServerSecurityKey'
 import {
   postMessageFunctionDeclaration,
   listenMessageFunctionDeclaration
 } from './jsFunctions/jsMessaging'
+import { windowPasswordObjectDeclaration } from './jsFunctions/jsPasswordHelpers'
+import { subtleFunctionDeclaration } from './jsFunctions/jsSubtle'
 
 const jsCode = `
   ${windowPasswordObjectDeclaration}

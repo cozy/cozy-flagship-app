@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import Minilog from '@cozy/minilog'
 
 const log = Minilog('SessionScript')

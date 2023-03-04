@@ -1,6 +1,7 @@
 import RNFS from 'react-native-fs'
 
 import CozyClient from 'cozy-client/types/CozyClient'
+
 import { handleCleanup } from '/libs/cozyAppBundle/cozyAppBundle.functions'
 
 jest.mock('@fengweichong/react-native-gzip', () => ({}))

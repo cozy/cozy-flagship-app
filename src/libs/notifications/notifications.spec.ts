@@ -1,4 +1,5 @@
 import CozyClient from 'cozy-client'
+
 import { navigate } from '/libs/RootNavigation'
 import { navigateToApp } from '/libs/functions/openApp'
 import { navigateFromNotification } from '/libs/notifications/notifications'

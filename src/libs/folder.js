@@ -1,9 +1,10 @@
 // FIXME this code is extracted from cozy-harvest-lib and temporary. The next step is to add it to
 // cozy-client models with some refactoring.
 
-import { models } from 'cozy-client'
 import get from 'lodash/get'
 import trim from 'lodash/trim'
+
+import { models } from 'cozy-client'
 
 const FILES_DOCTYPE = 'io.cozy.files'
 const PERMISSIONS_DOCTYPE = 'io.cozy.permissions'

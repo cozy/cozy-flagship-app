@@ -1,6 +1,6 @@
-import { BiometryType } from 'react-native-biometrics'
 import { Route } from '@react-navigation/native'
 import { TextInputProps, TouchableWithoutFeedbackProps } from 'react-native'
+import { BiometryType } from 'react-native-biometrics'
 
 export interface LockScreenProps {
   route: CallbackRouteProp

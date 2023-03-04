@@ -1,8 +1,8 @@
 // This was taken from https://github.com/oblador/react-native-progress because hacks were needed
 // At this time the fastest was just to copy the file, it has no dependencies
 
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Animated, Easing, View, I18nManager } from 'react-native'
 
 const INDETERMINATE_WIDTH_FACTOR = 0.6 // 0.3 to 0.6

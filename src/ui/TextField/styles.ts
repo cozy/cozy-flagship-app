@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+
 import { palette } from '/ui/palette'
 
 export const styles = StyleSheet.create({

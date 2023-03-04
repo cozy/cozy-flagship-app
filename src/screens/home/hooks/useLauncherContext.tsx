@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 
 import CozyClient from 'cozy-client'
+
 import Minilog from '@cozy/minilog'
 const konnLog = Minilog('Konnector')
 

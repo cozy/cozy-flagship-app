@@ -3,13 +3,12 @@
 /************************************************************************/
 
 import { twoFactorAuthenticationJs } from './js/jsTwoFactorAuthentication'
+import { cirrusCss } from '../common/css/cssCirrus'
+import { cozyBsCss } from '../common/css/cssCozyBs'
+import { fontsCss } from '../common/css/cssFonts'
+import { themeCss } from '../common/css/cssTheme'
 import { cirrusJs } from '../common/js/jsCirrus'
 import { readonlyJs } from '../common/js/jsReadonly'
-
-import { cirrusCss } from '../common/css/cssCirrus'
-import { fontsCss } from '../common/css/cssFonts'
-import { cozyBsCss } from '../common/css/cssCozyBs'
-import { themeCss } from '../common/css/cssTheme'
 
 const strBackButton = "Revenir à l'écran précédent"
 const strLoginTwoFactorTitle = 'Authentification en 2 étapes'

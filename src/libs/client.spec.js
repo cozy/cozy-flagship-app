@@ -3,6 +3,7 @@ import {
   saveNotificationDeviceToken,
   removeNotificationDeviceToken
 } from '/libs/client'
+
 import CozyClient from 'cozy-client'
 
 jest.genMockFromModule('cozy-client')

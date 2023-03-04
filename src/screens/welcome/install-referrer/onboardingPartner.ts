@@ -1,11 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
-
 import Minilog from '@cozy/minilog'
 
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { getInstallReferrer } from '/screens/welcome/install-referrer/androidPlayInstallReferrer'
-
 import strings from '/constants/strings.json'
 
 const log = Minilog('Referral')

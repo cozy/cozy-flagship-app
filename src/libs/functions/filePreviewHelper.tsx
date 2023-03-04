@@ -1,7 +1,8 @@
 import Minilog from '@cozy/minilog'
-import CozyClient from 'cozy-client'
 import FileViewer from 'react-native-file-viewer'
 import RNFS from 'react-native-fs'
+
+import CozyClient from 'cozy-client'
 
 const log = Minilog('ReloadInterceptorWebView')
 

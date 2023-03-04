@@ -6,6 +6,7 @@ import {
   getBaseFolderForFqdnAndSlugAndCurrentVersion
 } from '/libs/httpserver/httpPaths'
 import { getFqdnFromClient } from '/libs/client'
+
 import { getErrorMessage } from 'cozy-intent'
 
 export interface KonnectorBundle {

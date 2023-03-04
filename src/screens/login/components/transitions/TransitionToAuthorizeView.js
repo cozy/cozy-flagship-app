@@ -7,9 +7,11 @@ import {
   StyleSheet,
   View
 } from 'react-native'
+
 import log from 'cozy-logger'
 
 import { CozyIcon } from './transitions-icons/CozyIcon'
+
 import { getColors } from '/ui/colors'
 
 /**

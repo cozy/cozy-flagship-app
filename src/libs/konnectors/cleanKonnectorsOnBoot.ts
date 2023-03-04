@@ -1,4 +1,5 @@
 import Minilog from '@cozy/minilog'
+
 import CozyClient from 'cozy-client'
 
 import { getErrorMessage } from '/libs/functions/getErrorMessage'

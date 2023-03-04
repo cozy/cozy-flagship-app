@@ -8,7 +8,6 @@ import { SupervisedWebView } from './SupervisedWebView'
 import Minilog from '@cozy/minilog'
 
 import { userAgentDefault } from '/constants/userAgent'
-
 import { navigateToApp } from '/libs/functions/openApp'
 import {
   checkIsReload,
@@ -17,13 +16,11 @@ import {
   checkIsSlugSwitch,
   openUrlInAppBrowser
 } from '/libs/functions/urlHelpers'
-
 import {
   checkIsPreviewableLink,
   getFileExtentionFromCozyDownloadUrl,
   previewFileFromDownloadUrl
 } from '/libs/functions/filePreviewHelper'
-
 import { ProgressContainer } from '/components/ProgressContainer'
 
 const log = Minilog('ReloadInterceptorWebView')

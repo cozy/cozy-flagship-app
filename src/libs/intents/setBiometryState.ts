@@ -1,11 +1,13 @@
-import ReactNativeBiometrics from 'react-native-biometrics'
 import { EventEmitter } from 'events'
+
+import ReactNativeBiometrics from 'react-native-biometrics'
 
 import { FlagshipMetadata } from 'cozy-device-helper/dist/flagship'
 
 import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
 import { getVaultInformation } from '/libs/keychain'
 import { promptBiometry } from '/screens/lock/functions/lockScreenFunctions'
+
 import { ensureAutoLockIsEnabled } from './toggleSetting'
 
 export const BiometryEmitter = new EventEmitter()

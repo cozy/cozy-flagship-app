@@ -1,10 +1,10 @@
 import MicroEE from 'microee'
 import React from 'react'
 import { AppState } from 'react-native'
-
 import { render } from '@testing-library/react-native'
 
 import { useCookieResyncOnResume } from './useCookieResyncOnResume'
+
 import { resyncCookies } from '/libs/httpserver/httpCookieManager'
 
 jest.mock('/libs/httpserver/httpCookieManager', () => ({

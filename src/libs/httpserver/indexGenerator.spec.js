@@ -2,18 +2,16 @@ import RN from 'react-native'
 import RNFS from 'react-native-fs'
 
 import { fillIndexWithData, getIndexForFqdnAndSlug } from './indexGenerator'
-
 import {
   getCurrentAppConfigurationForFqdnAndSlug,
   setCurrentAppVersionForFqdnAndSlug
 } from '../cozyAppBundle/cozyAppBundleConfiguration'
-
 import {
   getBaseFolderForFqdnAndSlug,
   getBaseFolderForFqdnAndSlugAndCurrentVersion
 } from './httpPaths'
-
 import { getAssetVersion, prepareAssets } from './copyAllFilesFromBundleAssets'
+
 import { shouldDisableGetIndex } from '/core/tools/env'
 
 jest.mock('react-native', () => ({

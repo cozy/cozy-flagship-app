@@ -1,4 +1,5 @@
 import { useClient, useCapabilities } from 'cozy-client'
+
 import { useEffect, useMemo, useState } from 'react'
 
 import { makeSessionAPI } from '/libs/functions/session'

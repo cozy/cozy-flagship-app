@@ -10,9 +10,7 @@ import { callOnboardingInitClient } from '/libs/client'
 import { useDimensions } from '/libs/dimensions'
 import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
-
 import { routes } from '/constants/routes'
-
 import { getColors } from '/ui/colors'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 

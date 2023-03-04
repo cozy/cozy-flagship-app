@@ -1,7 +1,7 @@
 import Gzip from '@fengweichong/react-native-gzip'
 import RNFS from 'react-native-fs'
-import { logger } from '/libs/functions/logger'
 
+import { logger } from '/libs/functions/logger'
 import {
   fetchCozyAppArchiveInfoForVersion,
   fetchCozyAppVersion,
@@ -12,7 +12,9 @@ import {
   getCurrentAppConfigurationForFqdnAndSlug,
   setCurrentAppVersionForFqdnAndSlug
 } from '/libs/cozyAppBundle/cozyAppBundleConfiguration'
+
 import CozyClient from 'cozy-client'
+
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import {
   getVersionsToKeep,

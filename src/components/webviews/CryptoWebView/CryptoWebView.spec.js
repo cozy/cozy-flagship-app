@@ -1,6 +1,7 @@
-import { CryptoWebView } from './CryptoWebView'
-import React from 'react'
 import { render } from '@testing-library/react-native'
+import React from 'react'
+
+import { CryptoWebView } from './CryptoWebView'
 import {
   sendAnswer,
   subscribeToCrypto,

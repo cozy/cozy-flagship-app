@@ -10,6 +10,7 @@ import {
 import { useNativeIntent } from 'cozy-intent'
 
 import { AppState } from 'react-native'
+
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { navigateToApp } from '/libs/functions/openApp'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
