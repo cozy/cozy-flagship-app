@@ -32,6 +32,7 @@ export const useKonnectors = (): UseAddLogHook => {
   }
 
   const doProcessLogs = (): void => {
+    if (!client) return
     void sendKonnectorsLogs(client)
   }
 

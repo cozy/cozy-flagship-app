@@ -16,6 +16,8 @@ export const useLauncherClient = (
   const client = useClient()
 
   useEffect(() => {
+    if (!client) return
+
     const slug = launcherContextValue?.konnector.slug
 
     if (slug) void getLauncherClient(client, slug, setLauncherClient)
