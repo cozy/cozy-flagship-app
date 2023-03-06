@@ -6352,16 +6352,16 @@ cozy-client-js@^0.20.0:
     pouchdb-browser "7.0.0"
     pouchdb-find "7.0.0"
 
-cozy-client@^34.11.0:
-  version "34.11.1"
-  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-34.11.1.tgz#c37ae4d791c93d516fe3890d3977e49b696749e0"
-  integrity sha512-rCRHN20EmSw+EJ6GTGVYSqpHK+pk+jYeLf1Oz31zdrKbIXJa95sXTRZ3GkFWwgWbEl5WZU2Wuut48Babe2LNJQ==
+cozy-client@35.4.1:
+  version "35.4.1"
+  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-35.4.1.tgz#d118fd7181035754f7ab2eb9ceccabcffc428ecb"
+  integrity sha512-QGgV8xadUXODrrVMFFQwt2XOzJjojvB4ZHJpAmrHCVgpC4vIw3MUz3YfpW26/VX9PPc2r+LNKBFYuUbl6j+FgQ==
   dependencies:
     "@cozy/minilog" "1.0.0"
     "@types/jest" "^26.0.20"
     "@types/lodash" "^4.14.170"
     btoa "^1.2.1"
-    cozy-stack-client "^34.11.0"
+    cozy-stack-client "^35.3.1"
     date-fns "2.29.3"
     json-stable-stringify "^1.0.1"
     lodash "^4.17.13"
@@ -6377,16 +6377,16 @@ cozy-client@^34.11.0:
     sift "^6.0.0"
     url-search-params-polyfill "^8.0.0"
 
-cozy-client@^35.3.1:
-  version "35.3.1"
-  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-35.3.1.tgz#06b1e0309d29ac37686bd4f49d8b977090875f4c"
-  integrity sha512-aXRA4Nw/hdrLVHk3Zd1K0yMw416Zt6DTtgSCzsq75gUgtd9m+fTw65a5Tk4eiPM3NDfHgrwIPyCOmuqxiqnr1g==
+cozy-client@^34.11.0:
+  version "34.11.1"
+  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-34.11.1.tgz#c37ae4d791c93d516fe3890d3977e49b696749e0"
+  integrity sha512-rCRHN20EmSw+EJ6GTGVYSqpHK+pk+jYeLf1Oz31zdrKbIXJa95sXTRZ3GkFWwgWbEl5WZU2Wuut48Babe2LNJQ==
   dependencies:
     "@cozy/minilog" "1.0.0"
     "@types/jest" "^26.0.20"
     "@types/lodash" "^4.14.170"
     btoa "^1.2.1"
-    cozy-stack-client "^35.3.1"
+    cozy-stack-client "^34.11.0"
     date-fns "2.29.3"
     json-stable-stringify "^1.0.1"
     lodash "^4.17.13"
@@ -7612,10 +7612,10 @@ escodegen@^2.0.0:
   optionalDependencies:
     source-map "~0.6.1"
 
-eslint-config-cozy-app@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-cozy-app/-/eslint-config-cozy-app-6.0.0.tgz#3d4786aeb2d83fe31ee09d30effe7b07b076432c"
-  integrity sha512-h141QPK6+cCaBLKHRcZ5auEYHpjQWt8TXGYub6Hj1TOxMcwGgtmyKo/9B/B+9G26jMAjnqmyfTUKS7N8IVb4Ow==
+eslint-config-cozy-app@6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-cozy-app/-/eslint-config-cozy-app-6.1.0.tgz#943699b2798ddd56fcea665147641ee865e06dd7"
+  integrity sha512-hyufiVoe6PHWLDnPmWX/HoiZ+cax907v2pL2mrOkvy/pqrbQ1oBfV/JYexH9y9CSDuojUX1y5A9WbZRiyU2+fQ==
 
 eslint-config-prettier@8.6.0:
   version "8.6.0"

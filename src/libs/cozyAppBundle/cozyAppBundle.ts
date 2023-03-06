@@ -32,9 +32,6 @@ export interface AppInfo {
   slug: string
 }
 
-// Tricky refactor for now
-/* eslint-disable promise/prefer-await-to-then */
-/* eslint-disable promise/prefer-await-to-callbacks */
 /**
  * After the specified delay, check the cozy-app version on cozy-stack and
  * update the local CozyAppBundle if necessary
@@ -62,8 +59,6 @@ export const updateCozyAppBundleInBackground = ({
         )
     }, delayInMs)
   })
-/* eslint-enable promise/prefer-await-to-then */
-/* eslint-enable promise/prefer-await-to-callbacks */
 
 /**
  * Check the cozy-app version on cozy-stack and update the local CozyAppBundle
