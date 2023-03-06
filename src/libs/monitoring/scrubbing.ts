@@ -22,15 +22,15 @@ const scrubPhone = (message: string): string => {
 }
 
 // Every number after "tel:" is replaced by "*"
-//
 export const scrubPhoneNumbers = (
   event: Event | Breadcrumb
 ): Event | Breadcrumb => {
   if (isBreadcrumb(event)) {
     if (hasConsoleArguments(event)) {
-      const message = event.data.arguments[0]
+      const eventArgs = event.data.arguments
+      const message = eventArgs.length > 0 ? eventArgs[0] : undefined
 
-      if (message.includes('tel:')) {
+      if (message?.includes('tel:')) {
         const sanitizedMessage = scrubPhone(message)
         event.data.arguments[0] = sanitizedMessage
         event.message = sanitizedMessage

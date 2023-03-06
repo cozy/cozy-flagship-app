@@ -86,6 +86,7 @@ const attemptCacheUpdate = async ({
         const cachedIcon = cache[slug]
         const cachedVersion = cachedIcon.version
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- value is NOT always falsy, or it's a bug
         if (!cachedIcon || hasNewerVersion(cachedVersion, version))
           return [...acc, { attributes: { slug, version } }]
 

@@ -67,7 +67,7 @@ const handleMessage = async (
   )
 
 const makeSource = (route: ErrorScreenProps['route']): Source => {
-  const htmlGenerator = HTML[route.params.type]
+  const htmlGenerator = HTML[route.params.type] as undefined | (() => string)
 
   if (!htmlGenerator) {
     throw new Error('The requested Page cannot be generated')

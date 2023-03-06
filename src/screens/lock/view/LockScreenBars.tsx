@@ -3,11 +3,12 @@ import { View, StatusBar } from 'react-native'
 
 import { lockScreenUi } from '/screens/lock/events/LockScreen.events'
 import { useDimensions } from '/libs/dimensions'
-import { styles } from '/screens/lock/view/LockScreenBars.styles'
 import {
   NormalisedFlagshipUI,
   StatusBarStyle
 } from '/libs/intents/setFlagshipUI'
+
+import { styles } from '/screens/lock/view/LockScreenBars.styles'
 
 export const LockScreenBars = ({
   initialUi = {

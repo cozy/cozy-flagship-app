@@ -40,7 +40,9 @@ export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
   }, [route])
 
   const tryBiometry = useCallback((): Promise<void> => {
-    return getData(StorageKeys.BiometryActivated).then(async activated => {
+    const handleBiometryParam = async (): Promise<void> => {
+      const activated = await getData(StorageKeys.BiometryActivated)
+
       if (!activated) return
 
       await ensureLockScreenUi()
@@ -50,7 +52,9 @@ export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
       if (success) return onUnlock()
 
       return
-    })
+    }
+
+    return handleBiometryParam()
   }, [onUnlock])
 
   useEffect(
@@ -74,13 +78,19 @@ export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
   )
 
   useEffect(() => {
-    const getMode = async (): Promise<'password' | 'PIN'> =>
-      (await getVaultInformation('pinCode')) ? 'PIN' : 'password'
+    const getMode = async (): Promise<void> => {
+      try {
+        const mode = (await getVaultInformation('pinCode')) ? 'PIN' : 'password'
 
-    getMode()
-      .then(value => setMode(value))
-      .then(ensureLockScreenUi)
-      .catch(() => setMode('password'))
+        setMode(mode)
+
+        await ensureLockScreenUi()
+      } catch {
+        setMode('password')
+      }
+    }
+
+    void getMode()
   }, [])
 
   useEffect(() => {
