@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-fs/android/src/main/java/com/rnfs/Downloader.java b/node_modules/react-native-fs/android/src/main/java/com/rnfs/Downloader.java
+index 4da698e..3dbe830 100644
+--- a/node_modules/react-native-fs/android/src/main/java/com/rnfs/Downloader.java
++++ b/node_modules/react-native-fs/android/src/main/java/com/rnfs/Downloader.java
+@@ -67,6 +67,7 @@ public class Downloader extends AsyncTask<DownloadParams, long[], DownloadResult
+         (
+           statusCode == HttpURLConnection.HTTP_MOVED_PERM ||
+           statusCode == HttpURLConnection.HTTP_MOVED_TEMP ||
++          statusCode == HttpURLConnection.HTTP_SEE_OTHER ||
+           statusCode == 307 ||
+           statusCode == 308
+         )
