@@ -1,3 +1,5 @@
+// Too much refactor needed to make this file pass the linter on async/await
+/* eslint-disable promise/prefer-await-to-then */
 import { AppState, AppStateStatus, Platform } from 'react-native'
 import { Route } from '@react-navigation/routers'
 import { useEffect } from 'react'

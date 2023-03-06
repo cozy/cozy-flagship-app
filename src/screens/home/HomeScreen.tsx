@@ -1,16 +1,17 @@
-import React, { useState } from 'react'
-import { StatusBar, View } from 'react-native'
 import {
   NavigationProp,
   ParamListBase,
   RouteProp
 } from '@react-navigation/native'
+import React, { useState } from 'react'
+import { StatusBar, View } from 'react-native'
 
 import HomeView from '/screens/home/components/HomeView'
 import LauncherView from '/screens/konnectors/LauncherView'
 import { StatusBarStyle } from '/libs/intents/setFlagshipUI'
-import { styles } from '/screens/home/HomeScreen.styles'
 import { useLauncherContext } from '/screens/home/hooks/useLauncherContext'
+
+import { styles } from '/screens/home/HomeScreen.styles'
 
 interface HomeScreenProps {
   navigation: NavigationProp<ParamListBase>

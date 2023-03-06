@@ -1,7 +1,6 @@
 // This was taken from https://github.com/oblador/react-native-progress because hacks were needed
 // At this time the fastest was just to copy the file, it has no dependencies
 
-import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Animated, Easing, View, I18nManager } from 'react-native'
 
@@ -10,26 +9,6 @@ const BAR_WIDTH_ZERO_POSITION =
   INDETERMINATE_WIDTH_FACTOR / (1 + INDETERMINATE_WIDTH_FACTOR)
 
 export default class ProgressBar extends Component {
-  static propTypes = {
-    animated: PropTypes.bool,
-    borderColor: PropTypes.string,
-    borderRadius: PropTypes.number,
-    borderWidth: PropTypes.number,
-    children: PropTypes.node,
-    color: PropTypes.string,
-    height: PropTypes.number,
-    indeterminate: PropTypes.bool,
-    indeterminateAnimationDuration: PropTypes.number,
-    onLayout: PropTypes.func,
-    progress: PropTypes.number,
-    style: PropTypes.any,
-    unfilledColor: PropTypes.string,
-    width: PropTypes.number,
-    useNativeDriver: PropTypes.bool,
-    animationConfig: PropTypes.object,
-    animationType: PropTypes.oneOf(['decay', 'timing', 'spring'])
-  }
-
   static defaultProps = {
     animated: true,
     borderRadius: 4,

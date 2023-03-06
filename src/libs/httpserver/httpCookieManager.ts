@@ -34,6 +34,7 @@ const extractKeyValues = (cookieString: string): CookieRecord => {
 
     return {
       ...previous,
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       [key]: value ?? true
     }
   }, {})
@@ -63,6 +64,7 @@ const parseCookie = (cookieString: string): Cookie => {
     name: keyValues.Name,
     value: keyValues.Value,
     domain: cookieDomain,
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     path: keyValues.Path ?? '/',
     httpOnly: Boolean(keyValues.HttpOnly)
   }
@@ -138,6 +140,7 @@ export const resyncCookies = async (client: CozyClient): Promise<void> => {
 
   const stackCookie = cookies[appUrl]
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (stackCookie) {
     await CookieManager.set(appUrl, stackCookie, true)
   }

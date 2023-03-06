@@ -43,7 +43,11 @@ export const isTest = (): boolean => process.env.NODE_ENV === 'test'
 // eslint-disable-next-line no-console
 export const devlog = isDev() && !isTest() ? console.debug : (): void => void 0
 
-initDev(isDev()).catch(error => devlog('failed to init dev env', error))
+try {
+  void initDev(isDev())
+} catch (error) {
+  devlog('failed to init dev env', error)
+}
 
 const {
   disableGetIndex,
