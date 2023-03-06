@@ -6,6 +6,7 @@ const log = Minilog('useAppBootstrap.functions')
 
 interface OnboardingParams {
   onboardUrl: string | null
+  onboardedRedirection: string | null
   fqdn: string | null
 }
 
@@ -23,6 +24,9 @@ export const parseOnboardingURL = (
 
     const onboardingUrl = new URL(url)
     const onboardUrl = onboardingUrl.searchParams.get('onboard_url')
+    const onboardedRedirection = onboardingUrl.searchParams.get(
+      'onboarded_redirection'
+    )
     const fqdn = onboardingUrl.searchParams.get('fqdn')
 
     if (!onboardUrl && !fqdn) {
@@ -31,6 +35,7 @@ export const parseOnboardingURL = (
 
     return {
       onboardUrl,
+      onboardedRedirection,
       fqdn
     }
   } catch (error) {
