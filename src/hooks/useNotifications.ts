@@ -19,7 +19,6 @@ export const useNotifications = (): void => {
 
   useEffect(() => {
     const initializeNotifications = async (): Promise<void> => {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- how in the world can client be always undefined here?
       if (!client) return
 
       const permission = await requestAndGetNotificationPermission()
