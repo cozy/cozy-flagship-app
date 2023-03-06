@@ -13,6 +13,9 @@ import {
   parseOnboardingURL
 } from '/hooks/useAppBootstrap.functions'
 import { useSplashScreen } from '/hooks/useSplashScreen'
+import { formatOnboardingRedirection } from '/libs/functions/formatOnboardingRedirection'
+
+let OnboardingRedirection = ''
 
 export const useAppBootstrap = client => {
   const [initialRoute, setInitialRoute] = useState('fetching')
@@ -28,7 +31,11 @@ export const useAppBootstrap = client => {
         const onboardingParams = parseOnboardingURL(onboardingUrl)
 
         if (onboardingParams) {
-          const { onboardUrl, fqdn } = onboardingParams
+          const { onboardUrl, onboardedRedirection, fqdn } = onboardingParams
+
+          if (onboardedRedirection) {
+            OnboardingRedirection = onboardedRedirection
+          }
 
           if (onboardUrl) {
             return setInitialRoute({
@@ -50,6 +57,20 @@ export const useAppBootstrap = client => {
             route: routes.welcome
           })
         }
+      } else if (OnboardingRedirection) {
+        const onboardingRedirectionURL = formatOnboardingRedirection(
+          OnboardingRedirection,
+          client
+        )
+
+        OnboardingRedirection = ''
+
+        return setInitialRoute({
+          route: routes.home,
+          params: {
+            cozyAppFallbackURL: onboardingRedirectionURL
+          }
+        })
       } else {
         const payload = await Linking.getInitialURL()
         const { mainAppFallbackURL, cozyAppFallbackURL } =
@@ -91,7 +112,11 @@ export const useAppBootstrap = client => {
       const onboardingParams = parseOnboardingURL(url)
 
       if (onboardingParams) {
-        const { onboardUrl, fqdn } = onboardingParams
+        const { onboardUrl, onboardedRedirection, fqdn } = onboardingParams
+
+        if (onboardedRedirection && !client) {
+          OnboardingRedirection = onboardedRedirection
+        }
 
         if (onboardUrl) {
           navigate(routes.instanceCreation, { onboardUrl })
