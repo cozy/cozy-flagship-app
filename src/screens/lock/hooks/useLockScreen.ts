@@ -30,7 +30,8 @@ export const useLockScreenProps = (route?: RouteProp): LockViewProps => {
   const [mode, setMode] = useState<'password' | 'PIN'>()
   const [passwordVisibility, _togglePasswordVisibility] = useState(false)
   const [uiError, setUiError] = useState('')
-  const client = useClient()
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know that the client is defined
+  const client = useClient()!
   const { fqdn } = getFqdnFromClient(client)
 
   const onUnlock = useCallback((): void => {

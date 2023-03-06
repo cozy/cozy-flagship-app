@@ -38,6 +38,8 @@ export const useCookieResyncOnResume = (): void => {
   const client = useClient()
 
   useEffect(() => {
+    if (!client) return
+
     const subscription = AppState.addEventListener(
       'change',
       onStateChange(client)

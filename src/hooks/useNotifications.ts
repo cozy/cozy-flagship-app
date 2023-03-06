@@ -35,6 +35,7 @@ export const useNotifications = (): void => {
 
   useEffect(() => {
     if (!areNotificationsEnabled) return
+    if (!client) return
 
     void handleInitialToken(client)
     void handleInitialNotification(client)
