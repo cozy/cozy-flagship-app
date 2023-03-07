@@ -4,9 +4,11 @@ import CozyClient from 'cozy-client'
 
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
+import { stopKonnectorJob } from '/libs/konnectors/stopKonnectorJob'
 import {
   CurrentKonnectorState,
-  setCurrentRunningKonnector
+  setCurrentRunningKonnector,
+  setCurrentRunningKonnectorJobId
 } from '/redux/KonnectorState/CurrentKonnectorSlice'
 import { store } from '/redux/store'
 
@@ -20,6 +22,12 @@ const getRunningKonnector = (state: {
   return state.currentKonnector.currentRunningKonnector
 }
 
+const getRunningKonnectorJobId = (state: {
+  currentKonnector: CurrentKonnectorState
+}): string | undefined => {
+  return state.currentKonnector.currentRunningKonnectorJobId
+}
+
 /**
  * Check for still-running konnectors, clean them and
  * send remaining konnectors' logs on cozy-stack
@@ -30,12 +38,21 @@ export const cleanKonnectorsOnBoot = async (
   const state = store.getState()
 
   const runningKonnector = getRunningKonnector(state)
+  const runningKonnectorJobId = getRunningKonnectorJobId(state)
   if (runningKonnector !== undefined) {
     log.error(
       `A running konnector is tagged as running. This means that the app may have previously crashed. Related konnector: ${runningKonnector}`
     )
 
     store.dispatch(setCurrentRunningKonnector())
+  }
+
+  if (runningKonnectorJobId !== undefined) {
+    log.warn(
+      `Stopping the job ${runningKonnectorJobId} as the konnector was not cleaned on previous app session`
+    )
+    await stopKonnectorJob(client, runningKonnectorJobId)
+    store.dispatch(setCurrentRunningKonnectorJobId())
   }
 
   await sendKonnectorsLogs(client)
