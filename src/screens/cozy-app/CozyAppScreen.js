@@ -14,6 +14,7 @@ import { useDimensions } from '/libs/dimensions'
 import { internalMethods } from '../../libs/intents/localMethods'
 
 import { routes } from '/constants/routes'
+import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
 const firstHalfUI = () =>
   internalMethods.setFlagshipUI({
@@ -44,6 +45,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
   const [isReady, setReady] = useState(false)
   const [isFirstHalf, setFirstHalf] = useState(false)
   const [shouldExitAnimation, setShouldExitAnimation] = useState(false)
+  const { setShouldWaitCozyApp } = useHomeStateContext()
 
   useEffect(() => {
     flagshipUI.on('change', state => {
@@ -66,7 +68,8 @@ export const CozyAppScreen = ({ route, navigation }) => {
 
   const onLoadEnd = useCallback(() => {
     setShouldExitAnimation(true)
-  }, [])
+    setShouldWaitCozyApp(false)
+  }, [setShouldWaitCozyApp])
 
   const webViewStyle = useMemo(
     () => ({ ...styles[isFirstHalf ? 'ready' : 'notReady'] }),

@@ -19,6 +19,7 @@ import { CreateInstanceScreen } from '/screens/login/CreateInstanceScreen'
 import { CryptoWebView } from '/components/webviews/CryptoWebView/CryptoWebView'
 import { ErrorScreen } from '/screens/error/ErrorScreen'
 import { HomeScreen } from '/screens/home/HomeScreen'
+import { HomeStateProvider } from '/screens/home/HomeStateProvider'
 import { HttpServerProvider } from '/libs/httpserver/httpServerProvider'
 import { LockScreen } from '/screens/lock/LockScreen'
 import { LoginScreen } from '/screens/login/LoginScreen'
@@ -220,11 +221,13 @@ const Wrapper = () => {
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <HttpServerProvider>
-              <SplashScreenProvider>
-                <NetStatusBoundary>
-                  <WrappedApp />
-                </NetStatusBoundary>
-              </SplashScreenProvider>
+              <HomeStateProvider>
+                <SplashScreenProvider>
+                  <NetStatusBoundary>
+                    <WrappedApp />
+                  </NetStatusBoundary>
+                </SplashScreenProvider>
+              </HomeStateProvider>
             </HttpServerProvider>
           </PersistGate>
         </Provider>
