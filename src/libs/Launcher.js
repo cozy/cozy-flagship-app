@@ -13,6 +13,8 @@ import { dataURItoArrayBuffer } from './utils'
 
 const log = Minilog('Launcher')
 
+export const TIMEOUT_KONNECTOR_ERROR = 'context deadline exceeded'
+
 /**
  * All launchers are supposed to implement this interface
  *
