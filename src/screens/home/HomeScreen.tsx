@@ -29,6 +29,7 @@ export const HomeScreen = ({
     launcherClient,
     launcherContext,
     onKonnectorLog,
+    onKonnectorJobUpdate,
     resetLauncherContext,
     setLauncherContext,
     trySetLauncherContext
@@ -52,6 +53,7 @@ export const HomeScreen = ({
           retry={resetLauncherContext}
           setLauncherContext={setLauncherContext}
           onKonnectorLog={onKonnectorLog}
+          onKonnectorJobUpdate={onKonnectorJobUpdate}
         />
       )}
 

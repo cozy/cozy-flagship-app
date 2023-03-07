@@ -7,7 +7,8 @@ import {
 } from '/redux/KonnectorState/KonnectorLogsSlice'
 import {
   selectCurrentKonnector,
-  setCurrentRunningKonnector
+  setCurrentRunningKonnector,
+  setCurrentRunningKonnectorJobId
 } from '/redux/KonnectorState/CurrentKonnectorSlice'
 import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 
@@ -16,6 +17,7 @@ export interface UseAddLogHook {
   currentRunningKonnector?: string
   processLogs: () => void
   setCurrentRunningKonnector: (slug: string) => void
+  setCurrentRunningKonnectorJobId: (jobId: string | undefined) => void
 }
 
 export const useKonnectors = (): UseAddLogHook => {
@@ -31,6 +33,12 @@ export const useKonnectors = (): UseAddLogHook => {
     dispatch(setCurrentRunningKonnector(slug))
   }
 
+  const doSetCurrentRunningKonnectorJobId = (
+    jobId: string | undefined
+  ): void => {
+    dispatch(setCurrentRunningKonnectorJobId(jobId))
+  }
+
   const doProcessLogs = (): void => {
     if (!client) return
     void sendKonnectorsLogs(client)
@@ -40,6 +48,7 @@ export const useKonnectors = (): UseAddLogHook => {
     addLog: doAddLog,
     currentRunningKonnector,
     processLogs: doProcessLogs,
-    setCurrentRunningKonnector: doSetCurrentRunningKonnector
+    setCurrentRunningKonnector: doSetCurrentRunningKonnector,
+    setCurrentRunningKonnectorJobId: doSetCurrentRunningKonnectorJobId
   }
 }

@@ -120,6 +120,7 @@ class ReactNativeLauncher extends Launcher {
     } else {
       await this.updateJobResult()
     }
+    this.emit('STOPPED_JOB')
     this.close()
   }
 
@@ -155,6 +156,9 @@ class ReactNativeLauncher extends Launcher {
       if (ensureResult.createdAccount) {
         this.emit('CREATED_ACCOUNT', ensureResult.createdAccount)
       }
+      if (ensureResult.createdJob) {
+        this.emit('CREATED_JOB', ensureResult.createdJob)
+      }
       await this.sendLoginSuccess()
 
       const pilotContext = []
@@ -171,6 +175,9 @@ class ReactNativeLauncher extends Launcher {
       const ensureResult = await this.ensureAccountTriggerAndLaunch()
       if (ensureResult.createdAccount) {
         this.emit('CREATED_ACCOUNT', ensureResult.createdAccount)
+      }
+      if (ensureResult.createdJob) {
+        this.emit('CREATED_JOB', ensureResult.createdJob)
       }
       await this.stop({ message: err.message })
     }
