@@ -116,7 +116,7 @@ export const updateCozyAppBundle = async ({
     version: stackVersion
   })
 
-  void setCurrentAppVersionForFqdnAndSlug({
+  await setCurrentAppVersionForFqdnAndSlug({
     folder: stackVersion + tarPrefix,
     fqdn,
     slug,
