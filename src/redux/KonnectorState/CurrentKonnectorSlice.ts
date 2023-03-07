@@ -4,10 +4,12 @@ import type { RootState } from '/redux/store'
 
 export interface CurrentKonnectorState {
   currentRunningKonnector?: string
+  currentRunningKonnectorJobId?: string
 }
 
 const initialState: CurrentKonnectorState = {
-  currentRunningKonnector: undefined
+  currentRunningKonnector: undefined,
+  currentRunningKonnectorJobId: undefined
 }
 
 export const currentKonnectorSlice = createSlice({
@@ -19,11 +21,18 @@ export const currentKonnectorSlice = createSlice({
       action: PayloadAction<string | undefined>
     ) => {
       state.currentRunningKonnector = action.payload
+    },
+    setCurrentRunningKonnectorJobId: (
+      state,
+      action: PayloadAction<string | undefined>
+    ) => {
+      state.currentRunningKonnectorJobId = action.payload
     }
   }
 })
 
-export const { setCurrentRunningKonnector } = currentKonnectorSlice.actions
+export const { setCurrentRunningKonnector, setCurrentRunningKonnectorJobId } =
+  currentKonnectorSlice.actions
 
 export const selectCurrentKonnector = (
   state: RootState

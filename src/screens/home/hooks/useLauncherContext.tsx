@@ -19,6 +19,7 @@ interface useLauncherContextReturn {
   launcherClient?: CozyClient
   launcherContext: LauncherContext
   onKonnectorLog: (logObj: LogObj) => void
+  onKonnectorJobUpdate: (jobId: string | undefined) => void
   resetLauncherContext: () => void
   setConcurrentKonnector: (konnectorSlug?: string) => void
   setLauncherContext: (candidateContext: LauncherContext) => void
@@ -32,7 +33,7 @@ export const useLauncherContext = (): useLauncherContextReturn => {
   const { canDisplayLauncher, launcherClient } =
     useLauncherWrapper(launcherContext)
   const [concurrentKonnector, setConcurrentKonnector] = useState<string>()
-  const { addLog } = useKonnectors()
+  const { addLog, setCurrentRunningKonnectorJobId } = useKonnectors()
 
   const onKonnectorLog = (logObj: LogObj): void => {
     const level = logObj.level
@@ -41,6 +42,10 @@ export const useLauncherContext = (): useLauncherContextReturn => {
       konnLog[key](`${logObj.slug}: ${logObj.msg}`)
     }
     addLog(logObj)
+  }
+
+  const onKonnectorJobUpdate = (jobId: string | undefined): void => {
+    setCurrentRunningKonnectorJobId(jobId)
   }
 
   const trySetLauncherContext = (candidateContext: LauncherContext): void => {
@@ -71,6 +76,7 @@ export const useLauncherContext = (): useLauncherContextReturn => {
     setConcurrentKonnector,
     setLauncherContext,
     trySetLauncherContext,
-    onKonnectorLog
+    onKonnectorLog,
+    onKonnectorJobUpdate
   }
 }

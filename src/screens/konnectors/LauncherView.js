@@ -34,6 +34,8 @@ class LauncherView extends Component {
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
     this.onStopExecution = this.onStopExecution.bind(this)
     this.onCreatedAccount = this.onCreatedAccount.bind(this)
+    this.onCreatedJob = this.onCreatedJob.bind(this)
+    this.onStoppedJob = this.onStoppedJob.bind(this)
     this.onWorkerWillReload = debounce(this.onWorkerWillReload.bind(this), 1000)
     this.pilotWebView = null
     this.workerWebview = null
@@ -48,6 +50,14 @@ class LauncherView extends Component {
   onStopExecution() {
     this.launcher.stop({ message: 'stopped by user' })
     this.props.setLauncherContext({ state: 'default' })
+  }
+
+  onCreatedJob(job) {
+    this.props.onKonnectorJobUpdate(job._id)
+  }
+
+  onStoppedJob() {
+    this.props.onKonnectorJobUpdate()
   }
 
   onCreatedAccount(account) {
@@ -108,6 +118,8 @@ class LauncherView extends Component {
       this.setState({ workerReady: true })
     })
     this.launcher.on('CREATED_ACCOUNT', this.onCreatedAccount)
+    this.launcher.on('CREATED_JOB', this.onCreatedJob)
+    this.launcher.on('STOPPED_JOB', this.onStoppedJob)
 
     if (this.state.konnector) {
       await this.launcher.init({
