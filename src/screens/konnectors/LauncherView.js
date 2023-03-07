@@ -47,21 +47,33 @@ class LauncherView extends Component {
     }
   }
 
+  /**
+   * Run when the job is stopped by the user
+   */
   onStopExecution() {
     this.launcher.stop({ message: 'stopped by user' })
     this.props.setLauncherContext({ state: 'default' })
   }
 
+  /**
+   * Run when a job is created by the launcher. Update the current job id in the redux store.
+   */
   onCreatedJob(job) {
     this.props.onKonnectorJobUpdate(job._id)
   }
 
+  /**
+   * Run when a job is normally stopped. Remove the current job id from the redux store.
+   */
   onStoppedJob() {
     this.props.onKonnectorJobUpdate()
   }
 
+  /**
+   * Run when an account is created by the flagship app
+   * make the webview navigate to the the harvest route associated to the account
+   */
   onCreatedAccount(account) {
-    // make the webview navigate to the the harvest route associated to the account
     const { launcherContext } = this.props
     const konnector = launcherContext.konnector.slug
     navigate('default', { konnector, account: account._id })
