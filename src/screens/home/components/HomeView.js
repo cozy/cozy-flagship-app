@@ -19,6 +19,7 @@ import { useSession } from '/hooks/useSession'
 import { routes } from '/constants/routes'
 import { navigate } from '/libs/RootNavigation'
 import { getData, StorageKeys } from '/libs/localStore/storage'
+import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
 const unzoomHomeView = webviewRef => {
   webviewRef?.injectJavaScript(
@@ -42,6 +43,7 @@ let hasRenderedOnce = false
 const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   const client = useClient()
   const [uri, setUri] = useState('')
+  const { shouldWaitCozyApp, setShouldWaitCozyApp } = useHomeStateContext()
   const [trackedWebviewInnerUri, setTrackedWebviewInnerUri] = useState('')
   const nativeIntent = useNativeIntent()
   const session = useSession()
@@ -156,6 +158,7 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
         )
 
         if (cozyAppFallbackURL) {
+          setShouldWaitCozyApp(true)
           const subdomainType = client.capabilities?.flat_subdomains
             ? 'flat'
             : 'nested'
@@ -169,10 +172,12 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
             href: cozyAppFallbackURL,
             slug
           })
+        } else {
+          if (shouldWaitCozyApp === undefined) setShouldWaitCozyApp(false)
         }
       }
     },
-    [uri, client, route, navigation]
+    [uri, client, route, navigation, setShouldWaitCozyApp, shouldWaitCozyApp]
   )
 
   useEffect(() => {
@@ -191,7 +196,7 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
     }
   }
 
-  return uri ? (
+  return uri && shouldWaitCozyApp !== undefined && !shouldWaitCozyApp ? (
     <CozyProxyWebView
       setParentRef={setParentRef}
       slug="home"
