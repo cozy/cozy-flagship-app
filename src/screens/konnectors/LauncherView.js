@@ -18,6 +18,7 @@ import {
   stopTimeout
 } from '/screens/konnectors/core/handleTimeout'
 import { navigate } from '/libs/RootNavigation'
+import { TIMEOUT_KONNECTOR_ERROR } from '/libs/Launcher'
 
 const log = Minilog('LauncherView')
 
@@ -119,7 +120,7 @@ class LauncherView extends Component {
     }
 
     startTimeout(() => {
-      this.launcher.stop({ message: 'context deadline exceeded' })
+      this.launcher.stop({ message: TIMEOUT_KONNECTOR_ERROR })
       this.props.setLauncherContext({ state: 'default' })
     })
 
