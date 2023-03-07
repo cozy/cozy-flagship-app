@@ -1,4 +1,4 @@
-# 1.0.5
+# 1.0.6
 
 ## ✨ Features
 
@@ -8,6 +8,22 @@
 
 ## 🔧 Tech
 
+
+# 1.0.5
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* Fix a bug that prevented cozy-home to be updated to latest version ([PR #639](https://github.com/cozy/cozy-react-native/pull/639))
+
+## 🔧 Tech
+
+* Add shell script to reset Android development environment ([PR #637](https://github.com/cozy/cozy-react-native/pull/637))
+* Fix a bug that prevented to update local cozy-app bundles on Android from a local development environment ([PR #638](https://github.com/cozy/cozy-react-native/pull/638))
+* Update ESLint config ([PR #646](https://github.com/cozy/cozy-react-native/pull/646))
+* Add foundations for `onboarded_redirection` param handling on Onbarding scenario ([PR #635](https://github.com/cozy/cozy-react-native/pull/635))
 
 # 1.0.4
 
