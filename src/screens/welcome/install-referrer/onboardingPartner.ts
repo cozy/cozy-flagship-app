@@ -24,7 +24,9 @@ interface WithOnboardingPartner {
 
 export type OnboardingPartner = WithOnboardingPartner | NoOnboardingPartner
 
-const noOnboardingPartner = (): NoOnboardingPartner => ({ hasReferral: false })
+export const noOnboardingPartner = (): NoOnboardingPartner => ({
+  hasReferral: false
+})
 
 const extractOnboardingPartner = (
   installReferrer: string
@@ -50,7 +52,7 @@ const extractOnboardingPartner = (
   return null
 }
 
-const saveOnboardingPartnerOnAsyncStorage = async (
+export const saveOnboardingPartnerOnAsyncStorage = async (
   onboardingPartner: OnboardingPartner
 ): Promise<void> => {
   const serializedOnboardingPartner = JSON.stringify(onboardingPartner)
