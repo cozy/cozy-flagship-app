@@ -14,6 +14,7 @@ import {
 } from '/hooks/useAppBootstrap.functions'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 import { formatOnboardingRedirection } from '/libs/functions/formatOnboardingRedirection'
+import { getOrFetchDefaultRedirectionUrl } from '/libs/defaultRedirection/defaultRedirection'
 
 let OnboardingRedirection = ''
 
@@ -75,12 +76,23 @@ export const useAppBootstrap = client => {
         const payload = await Linking.getInitialURL()
         const { mainAppFallbackURL, cozyAppFallbackURL } =
           parseFallbackURL(payload)
+        if (mainAppFallbackURL || cozyAppFallbackURL) {
+          return setInitialRoute({
+            route: routes.home,
+            params: {
+              mainAppFallbackURL,
+              cozyAppFallbackURL
+            }
+          })
+        }
+
+        const defaultRedirectUrl = await getOrFetchDefaultRedirectionUrl(client)
 
         return setInitialRoute({
           route: routes.home,
           params: {
-            mainAppFallbackURL,
-            cozyAppFallbackURL
+            mainAppFallbackURL: undefined,
+            cozyAppFallbackURL: defaultRedirectUrl
           }
         })
       }

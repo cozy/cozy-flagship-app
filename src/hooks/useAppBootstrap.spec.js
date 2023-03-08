@@ -4,6 +4,7 @@ import { act, renderHook } from '@testing-library/react-hooks'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { useAppBootstrap } from '/hooks/useAppBootstrap'
+import { getOrFetchDefaultRedirectionUrl } from '/libs/defaultRedirection/defaultRedirection'
 
 const mockHideSplashScreen = jest.fn()
 const mockClient = {
@@ -48,6 +49,8 @@ jest.mock('./useSplashScreen', () => ({
 jest.mock('/libs/functions/openApp', () => ({
   getDefaultIconParams: jest.fn().mockReturnValue({})
 }))
+
+jest.mock('/libs/defaultRedirection/defaultRedirection')
 
 jest.mock('cozy-client', () => ({
   deconstructCozyWebLinkWithSlug: jest.fn().mockImplementation(url => {
@@ -440,4 +443,28 @@ it('Should handle WITH lifecycle URL as INVALID', async () => {
   })
 
   expect(navigate).not.toHaveBeenCalled()
+})
+
+it('Should handle WITH client WITH redirect URL', async () => {
+  const REDIRECTION_URL = 'http://drive.mycozy.test/#/folder'
+
+  getOrFetchDefaultRedirectionUrl.mockReturnValue(REDIRECTION_URL)
+
+  const { result, waitForValueToChange } = renderHook(() =>
+    useAppBootstrap(mockClient)
+  )
+
+  await waitForValueToChange(() => result.current.isLoading)
+
+  expect(result.current).toStrictEqual({
+    client: mockClient,
+    initialRoute: {
+      route: routes.home,
+      params: {
+        mainAppFallbackURL: undefined,
+        cozyAppFallbackURL: REDIRECTION_URL
+      }
+    },
+    isLoading: false
+  })
 })
