@@ -1,7 +1,8 @@
 import CozyClient from 'cozy-client'
-import { formatOnboardingRedirection } from './formatOnboardingRedirection'
 
-describe('formatOnboardingRedirection', () => {
+import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
+
+describe('formatRedirectLink', () => {
   const client = {
     getStackClient: (): { uri: string } => ({ uri: 'http://mycozy.test' }),
     getInstanceOptions: (): { capabilities: { flat_subdomains: boolean } } => ({
@@ -10,14 +11,14 @@ describe('formatOnboardingRedirection', () => {
   } as CozyClient
 
   it('should format onboarding redirection', () => {
-    expect(
-      formatOnboardingRedirection('contacts/#/hash', client)
-    ).toStrictEqual('http://contacts.mycozy.test/#/hash')
+    expect(formatRedirectLink('contacts/#/hash', client)).toStrictEqual(
+      'http://contacts.mycozy.test/#/hash'
+    )
   })
 
   it('should format onboarding redirection', () => {
-    expect(
-      formatOnboardingRedirection('contacts/path/#/hash', client)
-    ).toStrictEqual('http://contacts.mycozy.test/path/#/hash')
+    expect(formatRedirectLink('contacts/path/#/hash', client)).toStrictEqual(
+      'http://contacts.mycozy.test/path/#/hash'
+    )
   })
 })

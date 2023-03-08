@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import type CozyClient from 'cozy-client'
 import { Q, deconstructCozyWebLinkWithSlug } from 'cozy-client'
 
-import { formatOnboardingRedirection } from '/libs/functions/formatOnboardingRedirection'
+import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
 import { logger } from '/libs/functions/logger'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import strings from '/constants/strings.json'
@@ -51,10 +51,7 @@ export const fetchDefaultRedirectionUrl = async (
 
     const defaultRedirection = data.attributes.default_redirection
 
-    defaultRedirectionUrl = formatOnboardingRedirection(
-      defaultRedirection,
-      client
-    )
+    defaultRedirectionUrl = formatRedirectLink(defaultRedirection, client)
   } catch {
     defaultRedirectionUrl = null
   }
