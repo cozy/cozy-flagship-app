@@ -16,15 +16,14 @@ import {
   fetchAndSetDefaultRedirectionUrlInBackground,
   getOrFetchDefaultRedirectionUrl
 } from '/libs/defaultRedirection/defaultRedirection'
-import { formatOnboardingRedirection } from '/libs/functions/formatOnboardingRedirection'
+import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
 
 jest.mock('@react-native-async-storage/async-storage')
-jest.mock('/libs/functions/formatOnboardingRedirection')
+jest.mock('/libs/functions/formatRedirectLink')
 
-const mockedFormatOnboardingRedirection =
-  formatOnboardingRedirection as jest.MockedFunction<
-    typeof formatOnboardingRedirection
-  >
+const mockedFormatRedirectLink = formatRedirectLink as jest.MockedFunction<
+  typeof formatRedirectLink
+>
 
 const NAVIGATION_APP_URL = `http://${NAVIGATION_APP_SLUG}.mycozy.test/#/`
 const DRIVE_URL = 'http://drive.mycozy.test/#/folder'
@@ -69,11 +68,11 @@ describe('fetchDefaultRedirectionUrl', () => {
       })
     }
 
-    mockedFormatOnboardingRedirection.mockReturnValue(DRIVE_URL)
+    mockedFormatRedirectLink.mockReturnValue(DRIVE_URL)
 
     const defaultRedirectionUrl = await fetchDefaultRedirectionUrl(client)
 
-    expect(formatOnboardingRedirection).toHaveBeenCalled()
+    expect(formatRedirectLink).toHaveBeenCalled()
     expect(defaultRedirectionUrl).toBe(DRIVE_URL)
   })
 
@@ -84,11 +83,11 @@ describe('fetchDefaultRedirectionUrl', () => {
       })
     }
 
-    mockedFormatOnboardingRedirection.mockReturnValue(DRIVE_URL)
+    mockedFormatRedirectLink.mockReturnValue(DRIVE_URL)
 
     const defaultRedirectionUrl = await fetchDefaultRedirectionUrl(client)
 
-    expect(formatOnboardingRedirection).not.toHaveBeenCalled()
+    expect(formatRedirectLink).not.toHaveBeenCalled()
     expect(defaultRedirectionUrl).toBe(null)
   })
 })

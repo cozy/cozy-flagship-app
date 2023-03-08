@@ -13,7 +13,7 @@ import {
   parseOnboardingURL
 } from '/hooks/useAppBootstrap.functions'
 import { useSplashScreen } from '/hooks/useSplashScreen'
-import { formatOnboardingRedirection } from '/libs/functions/formatOnboardingRedirection'
+import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
 import { getOrFetchDefaultRedirectionUrl } from '/libs/defaultRedirection/defaultRedirection'
 
 let OnboardingRedirection = ''
@@ -59,7 +59,7 @@ export const useAppBootstrap = client => {
           })
         }
       } else if (OnboardingRedirection) {
-        const onboardingRedirectionURL = formatOnboardingRedirection(
+        const onboardingRedirectionURL = formatRedirectLink(
           OnboardingRedirection,
           client
         )

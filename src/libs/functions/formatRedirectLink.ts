@@ -3,7 +3,7 @@ import CozyClient, {
   deconstructRedirectLink
 } from 'cozy-client'
 
-export const formatOnboardingRedirection = (
+export const formatRedirectLink = (
   onboardingRedirection: string,
   client: CozyClient
 ): string => {
