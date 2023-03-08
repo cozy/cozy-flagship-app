@@ -142,6 +142,9 @@ export default class Launcher {
    */
   async getCredentials() {
     const { account } = this.getStartContext()
+    if (!account) {
+      return null
+    }
     const encAccount = await getCredential(account)
     return encAccount ? encAccount.auth : null
   }
