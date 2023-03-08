@@ -206,8 +206,15 @@ export default class Launcher {
   async ensureAccountTriggerAndLaunch() {
     const result = {}
     const startContext = this.getStartContext()
-    let { trigger, account, konnector, client, job, launcherClient } =
-      startContext
+    let {
+      trigger,
+      account,
+      konnector,
+      client,
+      job,
+      launcherClient,
+      ...restOfContext
+    } = startContext
 
     if (!account) {
       log.debug(
@@ -251,14 +258,14 @@ export default class Launcher {
       result.createdJob = job
     }
     log.debug(`ensureAccountAndTriggerAndJob: launched job`, job)
-
     this.setStartContext({
       client,
       account,
       trigger,
       job,
       konnector,
-      launcherClient
+      launcherClient,
+      ...restOfContext
     })
     return result
   }
