@@ -1,0 +1,127 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+import type CozyClient from 'cozy-client'
+import { Q, deconstructCozyWebLinkWithSlug } from 'cozy-client'
+
+import { formatOnboardingRedirection } from '/libs/functions/formatOnboardingRedirection'
+import { logger } from '/libs/functions/logger'
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
+import strings from '/constants/strings.json'
+
+export const log = logger('AppBundle')
+
+export const NAVIGATION_APP_SLUG = 'home'
+
+export const DEFAULT_REDIRECTION_DELAY_IN_MS = 3000
+
+export interface InstanceSettings {
+  data: {
+    attributes: {
+      default_redirection: string
+    }
+  }
+}
+
+export const isDefaultRedirectionUrlNavigationApp = (
+  defaultRedirectionUrl: string,
+  client: CozyClient
+): boolean => {
+  const subdomainType = client.capabilities.flat_subdomains ? 'flat' : 'nested'
+
+  const { slug } = deconstructCozyWebLinkWithSlug(
+    defaultRedirectionUrl,
+    subdomainType
+  )
+
+  return slug === NAVIGATION_APP_SLUG
+}
+
+export const fetchDefaultRedirectionUrl = async (
+  client: CozyClient
+): Promise<string | null> => {
+  let defaultRedirectionUrl
+
+  try {
+    const { data } = (await client.query(
+      Q('io.cozy.settings').getById('instance'),
+      {
+        as: 'io.cozy.settings/instance'
+      }
+    )) as InstanceSettings
+
+    const defaultRedirection = data.attributes.default_redirection
+
+    defaultRedirectionUrl = formatOnboardingRedirection(
+      defaultRedirection,
+      client
+    )
+  } catch {
+    defaultRedirectionUrl = null
+  }
+
+  return defaultRedirectionUrl
+}
+
+export const setDefaultRedirectionUrl = async (
+  defaultRedirectionUrl: string
+): Promise<void> => {
+  await AsyncStorage.setItem(
+    strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY,
+    defaultRedirectionUrl
+  )
+}
+
+export const getDefaultRedirectionUrl = async (): Promise<string | null> => {
+  return await AsyncStorage.getItem(strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY)
+}
+
+export const fetchAndSetDefaultRedirectionUrl = async (
+  client: CozyClient
+): Promise<string | null> => {
+  const newDefaultRedirectionUrl = await fetchDefaultRedirectionUrl(client)
+
+  if (!newDefaultRedirectionUrl) return null
+
+  await setDefaultRedirectionUrl(newDefaultRedirectionUrl)
+
+  return newDefaultRedirectionUrl
+}
+
+export const fetchAndSetDefaultRedirectionUrlInBackground = (
+  client: CozyClient,
+  delayInMs = DEFAULT_REDIRECTION_DELAY_IN_MS
+): Promise<void> => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      fetchAndSetDefaultRedirectionUrl(client)
+        .then(() => resolve())
+        .catch(err =>
+          log.error(
+            `Something went wrong when fetching and setting default redirection url in background: ${getErrorMessage(
+              err
+            )}`,
+            resolve()
+          )
+        )
+    }, delayInMs)
+  })
+}
+
+export const getOrFetchDefaultRedirectionUrl = async (
+  client: CozyClient
+): Promise<string | undefined> => {
+  let defaultRedirectionUrl = await getDefaultRedirectionUrl()
+  if (defaultRedirectionUrl) {
+    void fetchAndSetDefaultRedirectionUrlInBackground(client)
+  } else {
+    defaultRedirectionUrl = await fetchAndSetDefaultRedirectionUrl(client)
+  }
+
+  if (
+    !defaultRedirectionUrl ||
+    isDefaultRedirectionUrlNavigationApp(defaultRedirectionUrl, client)
+  )
+    return
+
+  return defaultRedirectionUrl
+}
