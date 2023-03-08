@@ -34,6 +34,7 @@ import { routes } from '/constants/routes.js'
 import { useAppBootstrap } from '/hooks/useAppBootstrap.js'
 import { useGlobalAppState } from '/hooks/useGlobalAppState'
 import { useCookieResyncOnResume } from '/hooks/useCookieResyncOnResume'
+import { useCozyEnvironmentOverride } from '/hooks/useCozyEnvironmentOverride'
 import { useNotifications } from '/hooks/useNotifications'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
@@ -60,6 +61,7 @@ const App = ({ setClient }) => {
   useGlobalAppState()
   useCookieResyncOnResume()
   useNotifications()
+  useCozyEnvironmentOverride()
 
   if (isLoading) {
     return null
