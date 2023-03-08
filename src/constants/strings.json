@@ -5,6 +5,7 @@
   "COZY_SCHEME": "cozy://",
   "OAUTH_STORAGE_KEY": "@cozy_AmiralAppOAuthConfig",
   "ONBOARDING_PARTNER_STORAGE_KEY": "@cozy_AmiralAppOnboardingPartnerConfig",
+  "DEFAULT_REDIRECTION_URL_STORAGE_KEY": "@cozy_AmiralAppDefaultRedirectionUrl",
   "REDIRECT": "redirect",
   "SESSION_CODE": "session_code",
   "SESSION_CREATED_FLAG": "@cozy_AmiralAppSessionCreated",
