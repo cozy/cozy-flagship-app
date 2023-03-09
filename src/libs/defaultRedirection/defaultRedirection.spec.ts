@@ -8,13 +8,13 @@ import {
   NAVIGATION_APP_SLUG,
   DEFAULT_REDIRECTION_DELAY_IN_MS,
   InstanceSettings,
-  isDefaultRedirectionUrlNavigationApp,
   fetchDefaultRedirectionUrl,
   setDefaultRedirectionUrl,
   getDefaultRedirectionUrl,
   fetchAndSetDefaultRedirectionUrl,
   fetchAndSetDefaultRedirectionUrlInBackground,
-  getOrFetchDefaultRedirectionUrl
+  getOrFetchDefaultRedirectionUrl,
+  getParamsWithDefaultRedirectionUrl
 } from '/libs/defaultRedirection/defaultRedirection'
 import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
 
@@ -25,30 +25,9 @@ const mockedFormatRedirectLink = formatRedirectLink as jest.MockedFunction<
   typeof formatRedirectLink
 >
 
-const NAVIGATION_APP_URL = `http://${NAVIGATION_APP_SLUG}.mycozy.test/#/`
+const NAVIGATION_APP_URL = `http://${NAVIGATION_APP_SLUG}.mycozy.test/#/alan`
 const DRIVE_URL = 'http://drive.mycozy.test/#/folder'
 const CONTACT_URL = 'http://contacts.mycozy.test/#/'
-
-describe('isDefaultRedirectionUrlNavigationApp', () => {
-  const client = createMockClient({}) as CozyClient
-  client.capabilities = {
-    flat_subdomains: false
-  }
-
-  beforeAll(() => {
-    jest.resetAllMocks()
-  })
-
-  it('should return true if slug of default redirection url is same than navigation app', () => {
-    expect(
-      isDefaultRedirectionUrlNavigationApp(NAVIGATION_APP_URL, client)
-    ).toBe(true)
-  })
-
-  it('should return false if slug of default redirection url is different than navigation app', () => {
-    expect(isDefaultRedirectionUrlNavigationApp(DRIVE_URL, client)).toBe(false)
-  })
-})
 
 describe('fetchDefaultRedirectionUrl', () => {
   const client = createMockClient({}) as CozyClient
@@ -186,10 +165,6 @@ describe('getOrFetchDefaultRedirectionUrl', () => {
   beforeAll(() => {
     jest.resetAllMocks()
 
-    jest
-      .spyOn(DefaultRedirection, 'isDefaultRedirectionUrlNavigationApp')
-      .mockImplementation(() => false)
-
     spyFetchAndSetDefaultRedirectionUrlInBackground = jest
       .spyOn(DefaultRedirection, 'fetchAndSetDefaultRedirectionUrlInBackground')
       .mockReturnValue(Promise.resolve(undefined))
@@ -227,5 +202,41 @@ describe('getOrFetchDefaultRedirectionUrl', () => {
     expect(
       spyFetchAndSetDefaultRedirectionUrlInBackground
     ).not.toHaveBeenCalled()
+  })
+})
+
+describe('getParamsWithDefaultRedirectionUrl', () => {
+  const client = createMockClient({}) as CozyClient
+  client.capabilities = {
+    flat_subdomains: false
+  }
+
+  beforeAll(() => {
+    jest.resetAllMocks()
+  })
+
+  it('should return undefined urls if default redirection url is null', () => {
+    expect(getParamsWithDefaultRedirectionUrl(null, client)).toMatchObject({
+      mainAppFallbackURL: undefined,
+      cozyAppFallbackURL: undefined
+    })
+  })
+
+  it('should return default redirection url for main app if default redirection url slug = navigation app slug', () => {
+    expect(
+      getParamsWithDefaultRedirectionUrl(NAVIGATION_APP_URL, client)
+    ).toMatchObject({
+      mainAppFallbackURL: NAVIGATION_APP_URL,
+      cozyAppFallbackURL: undefined
+    })
+  })
+
+  it('should return default redirection url for main app if default redirection url slug = navigation app slug', () => {
+    expect(getParamsWithDefaultRedirectionUrl(DRIVE_URL, client)).toMatchObject(
+      {
+        mainAppFallbackURL: undefined,
+        cozyAppFallbackURL: DRIVE_URL
+      }
+    )
   })
 })
