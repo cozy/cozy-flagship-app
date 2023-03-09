@@ -24,6 +24,7 @@ const APP_FALLBACK_URL_ENCODED = `https%3A%2F%2Fclaude-drive.mycozy.cloud%2F%23%
 const APP_UNIVERSAL_LINK = `https://links.mycozy.cloud/flagship/drive/folder/SOME_FOLDER_ID?fallback=${APP_FALLBACK_URL_ENCODED}`
 const APP_ANDROID_SCHEME = `cozy://drive/folder/SOME_FOLDER_ID?fallback=${APP_FALLBACK_URL_ENCODED}`
 const INVALID_LINK = 'https://foo.com'
+const REDIRECTION_URL = 'http://drive.mycozy.test/#/folder'
 
 jest.mock('../libs/client', () => ({
   clearClient: jest.fn()
@@ -50,13 +51,18 @@ jest.mock('/libs/functions/openApp', () => ({
   getDefaultIconParams: jest.fn().mockReturnValue({})
 }))
 
-jest.mock('/libs/defaultRedirection/defaultRedirection')
+jest.mock('/libs/defaultRedirection/defaultRedirection', () => ({
+  ...jest.requireActual('/libs/defaultRedirection/defaultRedirection'),
+  getOrFetchDefaultRedirectionUrl: jest.fn()
+}))
 
 jest.mock('cozy-client', () => ({
   deconstructCozyWebLinkWithSlug: jest.fn().mockImplementation(url => {
     if (url === HOME_FALLBACK_URL) {
       return { slug: 'home' }
     } else if (url === APP_FALLBACK_URL) {
+      return { slug: 'drive' }
+    } else if (url === REDIRECTION_URL) {
       return { slug: 'drive' }
     } else {
       throw new Error('Should not happen')
@@ -446,8 +452,6 @@ it('Should handle WITH lifecycle URL as INVALID', async () => {
 })
 
 it('Should handle WITH client WITH redirect URL', async () => {
-  const REDIRECTION_URL = 'http://drive.mycozy.test/#/folder'
-
   getOrFetchDefaultRedirectionUrl.mockReturnValue(REDIRECTION_URL)
 
   const { result, waitForValueToChange } = renderHook(() =>

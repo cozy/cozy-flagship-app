@@ -14,7 +14,10 @@ import {
 } from '/hooks/useAppBootstrap.functions'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
-import { getOrFetchDefaultRedirectionUrl } from '/libs/defaultRedirection/defaultRedirection'
+import {
+  getOrFetchDefaultRedirectionUrl,
+  getParamsWithDefaultRedirectionUrl
+} from '/libs/defaultRedirection/defaultRedirection'
 
 let OnboardingRedirection = ''
 
@@ -90,10 +93,7 @@ export const useAppBootstrap = client => {
 
         return setInitialRoute({
           route: routes.home,
-          params: {
-            mainAppFallbackURL: undefined,
-            cozyAppFallbackURL: defaultRedirectUrl
-          }
+          params: getParamsWithDefaultRedirectionUrl(defaultRedirectUrl, client)
         })
       }
     }

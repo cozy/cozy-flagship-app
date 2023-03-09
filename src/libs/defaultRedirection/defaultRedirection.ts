@@ -22,23 +22,11 @@ export interface InstanceSettings {
   }
 }
 
-export const isDefaultRedirectionUrlNavigationApp = (
-  defaultRedirectionUrl: string,
-  client: CozyClient
-): boolean => {
-  const subdomainType = client.capabilities.flat_subdomains ? 'flat' : 'nested'
-
-  const { slug } = deconstructCozyWebLinkWithSlug(
-    defaultRedirectionUrl,
-    subdomainType
-  )
-
-  return slug === NAVIGATION_APP_SLUG
-}
+export type DefaultRedirectionUrl = string | null
 
 export const fetchDefaultRedirectionUrl = async (
   client: CozyClient
-): Promise<string | null> => {
+): Promise<DefaultRedirectionUrl> => {
   let defaultRedirectionUrl
 
   try {
@@ -68,13 +56,16 @@ export const setDefaultRedirectionUrl = async (
   )
 }
 
-export const getDefaultRedirectionUrl = async (): Promise<string | null> => {
-  return await AsyncStorage.getItem(strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY)
-}
+export const getDefaultRedirectionUrl =
+  async (): Promise<DefaultRedirectionUrl> => {
+    return await AsyncStorage.getItem(
+      strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY
+    )
+  }
 
 export const fetchAndSetDefaultRedirectionUrl = async (
   client: CozyClient
-): Promise<string | null> => {
+): Promise<DefaultRedirectionUrl> => {
   const newDefaultRedirectionUrl = await fetchDefaultRedirectionUrl(client)
 
   if (!newDefaultRedirectionUrl) return null
@@ -106,7 +97,7 @@ export const fetchAndSetDefaultRedirectionUrlInBackground = (
 
 export const getOrFetchDefaultRedirectionUrl = async (
   client: CozyClient
-): Promise<string | undefined> => {
+): Promise<DefaultRedirectionUrl> => {
   let defaultRedirectionUrl = await getDefaultRedirectionUrl()
   if (defaultRedirectionUrl) {
     void fetchAndSetDefaultRedirectionUrlInBackground(client)
@@ -114,11 +105,36 @@ export const getOrFetchDefaultRedirectionUrl = async (
     defaultRedirectionUrl = await fetchAndSetDefaultRedirectionUrl(client)
   }
 
-  if (
-    !defaultRedirectionUrl ||
-    isDefaultRedirectionUrlNavigationApp(defaultRedirectionUrl, client)
-  )
-    return
-
   return defaultRedirectionUrl
+}
+
+export const getParamsWithDefaultRedirectionUrl = (
+  defaultRedirectionUrl: DefaultRedirectionUrl,
+  client: CozyClient
+): object => {
+  if (!defaultRedirectionUrl) {
+    return {
+      mainAppFallbackURL: undefined,
+      cozyAppFallbackURL: undefined
+    }
+  }
+
+  const subdomainType = client.capabilities.flat_subdomains ? 'flat' : 'nested'
+
+  const { slug } = deconstructCozyWebLinkWithSlug(
+    defaultRedirectionUrl,
+    subdomainType
+  )
+
+  if (slug === NAVIGATION_APP_SLUG) {
+    return {
+      mainAppFallbackURL: defaultRedirectionUrl,
+      cozyAppFallbackURL: undefined
+    }
+  } else {
+    return {
+      mainAppFallbackURL: undefined,
+      cozyAppFallbackURL: defaultRedirectionUrl
+    }
+  }
 }
