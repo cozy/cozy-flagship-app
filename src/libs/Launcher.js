@@ -474,6 +474,7 @@ export default class Launcher {
  * @property {import('cozy-client/types/types').CozyClientDocument}       job
  * @property {import('cozy-client/types/types').IOCozyKonnector} konnector
  * @property {import('cozy-client/types/types').IOCozyTrigger} [timeoutTrigger]
+ * @property {import('cozy-client/types/types').Manifest} manifest
  */
 
 /**
