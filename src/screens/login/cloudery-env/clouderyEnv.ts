@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
 
 import { getOnboardingPartner } from '/screens/welcome/install-referrer/onboardingPartner'
-
 import strings from '/constants/strings.json'
 
 const ALL_CLOUDERY_ENV = ['DEV', 'INT', 'PROD'] as const
@@ -48,18 +47,19 @@ export const getClouderyUrl = async (): Promise<string> => {
   const clouderyEnv = await getClouderyEnvFromAsyncStorage()
 
   const baseUris: Record<ClouderyEnv, string> = {
-    PROD: strings.clouderyProdBaseUri,
-    INT: strings.clouderyIntBaseUri,
-    DEV: strings.clouderyDevBaseUri
+    PROD: strings.cloudery.prodBaseUri,
+    INT: strings.cloudery.intBaseUri,
+    DEV: strings.cloudery.devBaseUri
   }
   const baseUri = baseUris[clouderyEnv]
 
   const onboardingPartnerPath = await getOnboardingPartnerRelativeUrl()
-  const relativeUri = onboardingPartnerPath ?? strings.clouderyCozyRelativeUri
+  const relativeUri = onboardingPartnerPath ?? strings.cloudery.cozyRelativeUri
 
-  const queryString = Platform.OS === 'ios'
-      ? strings.clouderyiOSQueryString
-      : strings.clouderyAndroidQueryString
+  const queryString =
+    Platform.OS === 'ios'
+      ? strings.cloudery.iOSQueryString
+      : strings.cloudery.androidQueryString
 
   return `${baseUri}${relativeUri}?${queryString}`
 }

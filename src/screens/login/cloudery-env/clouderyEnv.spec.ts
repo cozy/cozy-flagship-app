@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
 
 import { getClouderyUrl } from '/screens/login/cloudery-env/clouderyEnv'
-
 import strings from '/constants/strings.json'
 
 jest.mock(
@@ -25,7 +24,10 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyProdBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyAndroidQueryString
+      strings.cloudery.prodBaseUri +
+        strings.cloudery.cozyRelativeUri +
+        '?' +
+        strings.cloudery.androidQueryString
     )
   })
 
@@ -35,7 +37,10 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyDevBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyAndroidQueryString
+      strings.cloudery.devBaseUri +
+        strings.cloudery.cozyRelativeUri +
+        '?' +
+        strings.cloudery.androidQueryString
     )
   })
 
@@ -45,7 +50,10 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyIntBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyAndroidQueryString
+      strings.cloudery.intBaseUri +
+        strings.cloudery.cozyRelativeUri +
+        '?' +
+        strings.cloudery.androidQueryString
     )
   })
 
@@ -56,7 +64,10 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyIntBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyiOSQueryString
+      strings.cloudery.intBaseUri +
+        strings.cloudery.cozyRelativeUri +
+        '?' +
+        strings.cloudery.iOSQueryString
     )
   })
 
@@ -64,7 +75,10 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyProdBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyAndroidQueryString
+      strings.cloudery.prodBaseUri +
+        strings.cloudery.cozyRelativeUri +
+        '?' +
+        strings.cloudery.androidQueryString
     )
   })
 
@@ -74,7 +88,10 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyProdBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyAndroidQueryString
+      strings.cloudery.prodBaseUri +
+        strings.cloudery.cozyRelativeUri +
+        '?' +
+        strings.cloudery.androidQueryString
     )
   })
 
@@ -88,7 +105,9 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyProdBaseUri + '/v2/SOME_SOURCE/SOME_CONTEXT?' + strings.clouderyAndroidQueryString
+      strings.cloudery.prodBaseUri +
+        '/v2/SOME_SOURCE/SOME_CONTEXT?' +
+        strings.cloudery.androidQueryString
     )
   })
 
@@ -102,7 +121,10 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyProdBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyAndroidQueryString
+      strings.cloudery.prodBaseUri +
+        strings.cloudery.cozyRelativeUri +
+        '?' +
+        strings.cloudery.androidQueryString
     )
   })
 })
