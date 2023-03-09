@@ -18,6 +18,7 @@ import { jsLogInterception } from '/components/webviews/jsInteractions/jsLogInte
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
+import { useClouderyUrl } from '/screens/login/cloudery-env/useClouderyUrl'
 
 import { rootCozyUrl } from 'cozy-client'
 
@@ -59,9 +60,7 @@ const handleError = async webviewErrorEvent => {
  * @returns {import('react').ComponentClass}
  */
 export const ClouderyView = ({ setInstanceData, disabledFocus }) => {
-  const [uri] = useState(
-    Platform.OS === 'ios' ? strings.clouderyiOSUri : strings.clouderyAndroidUri
-  )
+  const { uri } = useClouderyUrl()
   const [loading, setLoading] = useState(true)
   const [checkInstanceData, setCheckInstanceData] = useState()
   const webviewRef = useRef()
@@ -137,20 +136,22 @@ export const ClouderyView = ({ setInstanceData, disabledFocus }) => {
 
   return (
     <Wrapper style={styles.view} behavior="height">
-      <SupervisedWebView
-        source={{ uri: uri }}
-        ref={webviewRef}
-        onNavigationStateChange={event => {
-          setCanGoBack(event.canGoBack)
-        }}
-        onShouldStartLoadWithRequest={handleNavigation}
-        onLoadEnd={() => setLoading(false)}
-        injectedJavaScriptBeforeContentLoaded={run}
-        style={{
-          backgroundColor: colors.primaryColor
-        }}
-        onError={handleError}
-      />
+      {uri && (
+        <SupervisedWebView
+          source={{ uri: uri }}
+          ref={webviewRef}
+          onNavigationStateChange={event => {
+            setCanGoBack(event.canGoBack)
+          }}
+          onShouldStartLoadWithRequest={handleNavigation}
+          onLoadEnd={() => setLoading(false)}
+          injectedJavaScriptBeforeContentLoaded={run}
+          style={{
+            backgroundColor: colors.primaryColor
+          }}
+          onError={handleError}
+        />
+      )}
       {displayOverlay && (
         <View
           testID="overlay"

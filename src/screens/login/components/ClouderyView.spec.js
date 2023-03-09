@@ -49,6 +49,12 @@ jest.mock('react-native-webview', () => {
   return { WebView }
 })
 
+jest.mock('/screens/login/cloudery-env/useClouderyUrl', () => {
+  return {
+    useClouderyUrl: jest.fn().mockReturnValue({ uri: 'http://SOME_URI' })
+  }
+})
+
 describe('ClouderyView', () => {
   describe('on handleNavigation', () => {
     const props = {
