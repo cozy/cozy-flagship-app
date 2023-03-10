@@ -200,11 +200,7 @@ class LauncherView extends Component {
               />
             </View>
           </>
-        ) : (
-          <View>
-            <Text>Loading...</Text>
-          </View>
-        )}
+        ) : null}
       </>
     )
   }
