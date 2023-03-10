@@ -56,11 +56,19 @@ const shouldRepaintStatusBar = (
 ): void => {
   const lastTopTheme = ui.state.topTheme
 
-  if (topTheme && topTheme !== bottomTheme)
-    return StatusBar.setBarStyle(topTheme)
+  /**
+   * If the topTheme is defined, we should update the StatusBar
+   * even if it's not strictly necessary because changeBarColors() already did it.
+   */
+  if (topTheme) return StatusBar.setBarStyle(topTheme)
 
-  if (lastTopTheme && lastTopTheme !== bottomTheme)
-    return StatusBar.setBarStyle(lastTopTheme)
+  /**
+   * If the event does not have a topTheme, we should compare the last topTheme
+   * with the bottomTheme. If they are different, we want to override the
+   * changeBarColors() behavior and set the StatusBar to the last topTheme.
+   */
+  if (lastTopTheme !== bottomTheme)
+    StatusBar.setBarStyle(lastTopTheme ?? 'default')
 }
 
 const handleSideEffects = ({
