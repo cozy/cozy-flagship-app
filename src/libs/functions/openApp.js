@@ -116,6 +116,12 @@ const openKonnectorInHome = konnector => {
  */
 export const openApp = (client, navigation, href, app, iconParams) => {
   const subDomainType = client.capabilities?.flat_subdomains ? 'flat' : 'nested'
+
+  if (app?.type === 'konnector') {
+    openKonnectorInHome(app) // Always let Konnectors go through, they don't have a href so they would fail the shouldOpenInIAB check
+    return
+  }
+
   const shouldOpenInIAB = !isSameCozy({
     cozyUrl: client.getStackClient().uri,
     destinationUrl: href,
@@ -124,10 +130,6 @@ export const openApp = (client, navigation, href, app, iconParams) => {
 
   if (shouldOpenInIAB) {
     openUrlInAppBrowser(href)
-    return
-  }
-  if (app?.type === 'konnector') {
-    openKonnectorInHome(app)
     return
   }
 
