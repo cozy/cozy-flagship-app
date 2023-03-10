@@ -4,7 +4,7 @@ import NetInfo, {
 } from '@react-native-community/netinfo'
 import { LogBox } from 'react-native'
 
-import { devConfig } from '/constants/dev-config'
+import { devConfig } from '../constants/dev-config'
 import { hideSplashScreen } from '/libs/services/SplashScreenService'
 
 export const initDev = async (isDev: boolean): Promise<void> => {

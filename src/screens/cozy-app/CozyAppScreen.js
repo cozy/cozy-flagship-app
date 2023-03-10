@@ -3,17 +3,17 @@ import { StatusBar, View } from 'react-native'
 
 import { Animation } from './CozyAppScreen.Animation'
 import { styles } from './CozyAppScreen.styles'
-import { CozyProxyWebView } from '../../components/webviews/CozyProxyWebView'
+import { CozyProxyWebView } from '../../componentsa/webviews/CozyProxyWebView'
 
 import { NetService } from '/libs/services/NetService'
 
 import { flagshipUI } from '../../libs/intents/setFlagshipUI'
 
-import { useDimensions } from '/libs/dimensions'
+import { useDimensions } from '../../core/services/Device/dimensions'
 
 import { internalMethods } from '../../libs/intents/localMethods'
 
-import { routes } from '/constants/routes'
+import { routes } from '../../core/constants/routes'
 
 const firstHalfUI = () =>
   internalMethods.setFlagshipUI({

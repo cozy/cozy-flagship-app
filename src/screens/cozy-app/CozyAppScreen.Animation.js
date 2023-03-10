@@ -2,12 +2,12 @@ import React, { useEffect, useRef } from 'react'
 import { Animated } from 'react-native'
 import { SvgXml } from 'react-native-svg'
 
-import ProgressBar from '/components/Bar'
-import { iconTable, iconFallback } from '/libs/functions/iconTable'
-import { getDimensions } from '/libs/dimensions'
-import { palette } from '/ui/palette'
-
 import { styles } from './CozyAppScreen.styles'
+import { palette } from '../../components/palette'
+import ProgressBar from './Bar'
+
+import { iconTable, iconFallback } from '/libs/functions/iconTable'
+import { getDimensions } from '../../core/services/Device/dimensions'
 
 const { screenHeight, screenWidth } = getDimensions()
 

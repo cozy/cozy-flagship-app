@@ -2,10 +2,10 @@ import Minilog from '@cozy/minilog'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 
-import { routes } from '/constants/routes'
-import { useDimensions } from '/libs/dimensions'
+import { routes } from '../../core/constants/routes'
+import { useDimensions } from '../../core/services/Device/dimensions'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
-import { getColors } from '/ui/colors'
+import { getColors } from '../../components/colors'
 
 import { ClouderyCreateInstanceView } from './components/ClouderyCreateInstanceView'
 

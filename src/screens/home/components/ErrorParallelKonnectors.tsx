@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { Button } from '/ui/Button'
-import { ConfirmDialog } from '/ui/CozyDialogs/ConfirmDialog'
-import { Typography } from '/ui/Typography'
+import { Button } from '../../../components/Button'
+import { ConfirmDialog } from '../../../components/CozyDialogs/ConfirmDialog'
+import { Typography } from '../../../components/Typography'
 import { t } from '/core/tools/interpolate'
 import { translation } from '/locales'
 

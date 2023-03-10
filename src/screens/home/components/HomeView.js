@@ -11,12 +11,12 @@ import { useNativeIntent } from 'cozy-intent'
 
 import { AppState } from 'react-native'
 
-import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
+import { CozyProxyWebView } from '../../../componentsa/webviews/CozyProxyWebView'
 import { navigateToApp } from '/libs/functions/openApp'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { resetUIState } from '/libs/intents/setFlagshipUI'
-import { useSession } from '/hooks/useSession'
-import { routes } from '/constants/routes'
+import { useSession } from '../../../core/services/Session/useSession'
+import { routes } from '../../../core/constants/routes'
 import { navigate } from '/libs/RootNavigation'
 import { getData, StorageKeys } from '/libs/localStore/storage'
 

@@ -10,7 +10,7 @@ import { LauncherContext } from '/libs/konnectors/models'
 import { useLauncherWrapper } from '/screens/home/hooks/useLauncherWrapper'
 import { ErrorParallelKonnectors } from '/screens/home/components/ErrorParallelKonnectors'
 import { useKonnectors } from '/hooks/useKonnectors'
-import { LogObj } from '/redux/KonnectorState/KonnectorLogsSlice'
+import { LogObj } from '../../../core/state/KonnectorState/KonnectorLogsSlice'
 
 interface useLauncherContextReturn {
   LauncherDialog: JSX.Element | null

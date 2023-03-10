@@ -6,10 +6,10 @@ import { useClient } from 'cozy-client'
 
 import { LockViewProps, RouteProp } from '/screens/lock/LockScreenTypes'
 import { getData, StorageKeys } from '/libs/localStore/storage'
-import { getFqdnFromClient } from '/libs/client'
+import { getFqdnFromClient } from '../../../core/services/Session/client'
 import { getVaultInformation } from '/libs/keychain'
 import { navigate } from '/libs/RootNavigation'
-import { routes } from '/constants/routes'
+import { routes } from '../../../core/constants/routes'
 import {
   ensureLockScreenUi,
   getBiometryType,

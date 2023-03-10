@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { View, StatusBar } from 'react-native'
 
 import { lockScreenUi } from '/screens/lock/events/LockScreen.events'
-import { useDimensions } from '/libs/dimensions'
+import { useDimensions } from '../../../core/services/Device/dimensions'
 import {
   NormalisedFlagshipUI,
   StatusBarStyle

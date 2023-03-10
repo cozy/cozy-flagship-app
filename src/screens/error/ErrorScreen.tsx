@@ -4,9 +4,9 @@ import { Linking } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
 import { WebViewMessageEvent } from 'react-native-webview/lib/WebViewTypes'
 
-import { CozyNotFoundPage } from '/components/webviews/CozyNotFoundPage'
-import { OfflinePage } from '/components/webviews/OfflinePage'
-import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
+import { CozyNotFoundPage } from '../../componentsa/webviews/CozyNotFoundPage'
+import { OfflinePage } from '../../componentsa/webviews/OfflinePage'
+import { SupervisedWebView } from '../../componentsa/webviews/SupervisedWebView'
 import { goBack } from '/libs/RootNavigation'
 
 const log = Minilog('ErrorScreen')

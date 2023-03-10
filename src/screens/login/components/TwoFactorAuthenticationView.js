@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { KeyboardAvoidingView, Platform, View, StyleSheet } from 'react-native'
 
 import { getHtml } from './assets/TwoFactorAuthentication/htmlTwoFactorAuthentication'
+import { SupervisedWebView } from '../../../componentsa/webviews/SupervisedWebView'
+import { getColors } from '../../../components/colors'
 
-import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
-import { getColors } from '/ui/colors'
 import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
 
 /**

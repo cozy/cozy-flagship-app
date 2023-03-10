@@ -3,11 +3,11 @@ import { Animated, Dimensions, Easing, StyleSheet, View } from 'react-native'
 
 import log from 'cozy-logger'
 
-import { getDimensions } from '/libs/dimensions'
+import { getDimensions } from '../../../../core/services/Device/dimensions'
 
 import { CozyIcon } from './transitions-icons/CozyIcon'
 
-import { getColors } from '/ui/colors'
+import { getColors } from '../../../../components/colors'
 
 const webViewTopToNativeTop = top => top + getDimensions().statusBarHeight
 

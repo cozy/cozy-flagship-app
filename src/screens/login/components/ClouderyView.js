@@ -9,15 +9,19 @@ import {
 } from 'react-native'
 
 import strings from '/constants/strings.json'
-import { getColors } from '/ui/colors'
+
+import { getColors } from '../../../components/colors'
+
 import { getUriFromRequest } from '/libs/functions/getUriFromRequest'
 import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
 import { NetService } from '/libs/services/NetService'
-import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
-import { jsLogInterception } from '/components/webviews/jsInteractions/jsLogInterception'
-import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
+
+import { SupervisedWebView } from '../../../componentsa/webviews/SupervisedWebView'
+import { jsCozyGlobal } from '../../../componentsa/webviews/jsInteractions/jsCozyInjection'
+import { jsLogInterception } from '../../../componentsa/webviews/jsInteractions/jsLogInterception'
+
 import { navigate } from '/libs/RootNavigation'
-import { routes } from '/constants/routes'
+import { routes } from '../../../core/constants/routes'
 
 import { rootCozyUrl } from 'cozy-client'
 

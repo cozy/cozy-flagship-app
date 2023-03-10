@@ -1,34 +1,40 @@
 import React from 'react'
-import RnMaskInput from 'react-native-mask-input'
 import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback
 } from 'react-native'
+import RnMaskInput from 'react-native-mask-input'
 import { FullWindowOverlay } from 'react-native-screens'
 
-import { Button } from '/ui/Button'
-import { ConfirmDialog } from '/ui/CozyDialogs/ConfirmDialog'
-import { Container } from '/ui/Container'
-import { CozyCircle } from '/ui/Icons/CozyCircle'
-import { Eye } from '/ui/Icons/Eye'
-import { EyeClosed } from '/ui/Icons/EyeClosed'
-import { Grid } from '/ui/Grid'
-import { Icon } from '/ui/Icon'
-import { IconButton } from '/ui/IconButton'
-import { Link } from '/ui/Link'
+import { Button } from '../../components/Button'
+import { Container } from '../../components/Container'
+import { ConfirmDialog } from '../../components/CozyDialogs/ConfirmDialog'
+import { Grid } from '../../components/Grid'
+import { Icon } from '../../components/Icon'
+import { IconButton } from '../../components/IconButton'
+import { CozyCircle } from '../../components/Icons/CozyCircle'
+import { Eye } from '../../components/Icons/Eye'
+import { EyeClosed } from '../../components/Icons/EyeClosed'
+import { LogoutFlipped } from '../../components/Icons/LogoutFlipped'
+import { Link } from '../../components/Link'
+
 import { LockScreenBars } from '/screens/lock/view/LockScreenBars'
 import { LockScreenProps, LockViewProps } from '/screens/lock/LockScreenTypes'
-import { LogoutFlipped } from '/ui/Icons/LogoutFlipped'
-import { TextField } from '/ui/TextField'
-import { Tooltip } from '/ui/Tooltip'
-import { Typography } from '/ui/Typography'
+
+import { TextField } from '../../components/TextField'
+import { Tooltip } from '../../components/Tooltip'
+import { Typography } from '../../components/Typography'
+
 import { getBiometryIcon } from '/screens/lock/functions/lockScreenFunctions'
-import { palette } from '/ui/palette'
+
+import { palette } from '../../components/palette'
+
 import { translation } from '/locales'
 import { useLockScreenProps } from '/screens/lock/hooks/useLockScreen'
-import { ConditionalWrapper } from '/components/ConditionalWrapper'
+
+import { ConditionalWrapper } from '../../components/utils/ConditionalWrapper'
 
 const LockView = ({
   biometryEnabled,

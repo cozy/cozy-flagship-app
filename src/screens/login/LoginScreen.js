@@ -18,15 +18,15 @@ import {
   STATE_2FA_NEEDED,
   STATE_AUTHORIZE_NEEDED,
   STATE_INVALID_PASSWORD
-} from '/libs/client'
-import { useDimensions } from '/libs/dimensions'
+} from '../../core/services/Session/client'
+import { useDimensions } from '../../core/services/Device/dimensions'
 import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 import strings from '/constants/strings.json'
-import { getColors } from '/ui/colors'
+import { getColors } from '../../components/colors'
 import { NetService } from '/libs/services/NetService'
-import { routes } from '/constants/routes'
+import { routes } from '../../core/constants/routes'
 
 const log = Minilog('LoginScreen')
 

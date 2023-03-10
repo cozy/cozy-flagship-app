@@ -1,6 +1,6 @@
 {
   "extends": "cozy-tsconfig",
-  "include": ["./src/**/*", "./scripts/**/*", "./__mocks__/**/*"],
+  "include": ["./src/**/*", "./scripts/**/*", "./__mocks__/**/*", "__tests__/fixtures/expected-table.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "baseUrl": ".",

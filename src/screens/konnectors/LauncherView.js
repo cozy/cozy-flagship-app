@@ -8,10 +8,13 @@ import React, { Component } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { WebView } from 'react-native-webview'
 
-import { BackTo } from '/components/ui/icons/BackTo'
-import { getDimensions } from '/libs/dimensions'
+import { BackTo } from '../../components/Icons/BackTo'
+
+import { getDimensions } from '../../core/services/Device/dimensions'
 import ReactNativeLauncher from '/libs/ReactNativeLauncher'
-import { getColors } from '/ui/colors'
+
+import { getColors } from '../../components/colors'
+
 import strings from '/constants/strings.json'
 import {
   startTimeout,
