@@ -1,6 +1,7 @@
 import Minilog from '@cozy/minilog'
 
 import CozyClient, { Q } from 'cozy-client'
+import { CozyClientDocument } from 'cozy-client/types/types'
 
 import { TIMEOUT_KONNECTOR_ERROR } from '/libs/Launcher'
 
@@ -22,18 +23,24 @@ export const stopKonnectorJob = async (
 /**
  * Mark the given job as "context deadline exceeded"
  */
-const stopJob = (client: CozyClient, jobId: string): Promise<unknown> => {
-  return client.save({
-    _type: 'io.cozy.jobs',
-    _id: jobId,
-    _rev: true, // to force an update on Job collection
-    worker: 'client',
-    attributes: {
-      state: 'errored',
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      error: TIMEOUT_KONNECTOR_ERROR
-    }
-  })
+const stopJob = async (client: CozyClient, jobId: string): Promise<unknown> => {
+  const result = (await client.query(
+    Q('io.cozy.jobs').getById(jobId)
+  )) as CozyClientQueryGetResult
+
+  const job = result.data as IOCozyJob
+  if (job.attributes.state === 'running')
+    return client.save({
+      _type: 'io.cozy.jobs',
+      _id: jobId,
+      _rev: job._rev,
+      worker: 'client',
+      attributes: {
+        state: 'errored',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        error: TIMEOUT_KONNECTOR_ERROR
+      }
+    })
 }
 
 /**
@@ -43,19 +50,32 @@ const findJobStopTriggerAndRemove = async (
   client: CozyClient,
   jobId: string
 ): Promise<void> => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { data: triggers } = await client.query(
+  const { data: triggers } = (await client.query(
     Q('io.cozy.triggers').where({
       worker: 'service',
       type: '@at',
       'message.fields.cliskJobId': jobId
     })
-  )
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  )) as CozyClientQueryResult
   if (triggers.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     await client.destroy(triggers[0])
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     log.info(`Removed a job stop trigger : ${triggers[0]._id}`)
   }
 }
+
+interface CozyClientQueryGetResult {
+  data: CozyClientDocument
+}
+
+interface CozyClientQueryResult {
+  data: CozyClientDocument[]
+}
+
+interface JobDocument {
+  attributes: {
+    state: string
+  }
+}
+
+type IOCozyJob = CozyClientDocument & JobDocument
