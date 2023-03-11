@@ -12,7 +12,8 @@ const config = {
   },
   transformIgnorePatterns: [
     'node_modules/(?!((jest-)?react-native(-.*)?|@react-native(-community)?)/)'
-  ]
+  ],
+  rootDir: '../'
 }
 
 module.exports = config

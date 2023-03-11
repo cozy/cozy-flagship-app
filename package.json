@@ -16,7 +16,7 @@
     "postinstall": "patch-package && yarn install:home:registry",
     "pre-commit": "yarn lint",
     "start": "react-native start",
-    "test": "jest src/**/* scripts/* --detectOpenHandles --forceExit",
+    "test": "jest src/**/* scripts/* --detectOpenHandles --forceExit --config __tests__/jest.config.js",
     "token": "node scripts/token.js",
     "typecheck": "yarn tsc",
     "web": "webpack serve --open --config webpack.config.js --inline --hot --port=9999",
@@ -139,8 +139,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "resolutions": {
-    "@typescript-eslint/eslint-plugin": "5.36.0"
   }
 }
