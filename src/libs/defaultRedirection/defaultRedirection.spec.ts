@@ -26,7 +26,9 @@ const mockedFormatRedirectLink = formatRedirectLink as jest.MockedFunction<
 >
 
 const NAVIGATION_APP_URL = `http://${NAVIGATION_APP_SLUG}.mycozy.test/#/alan`
+const NAVIGATION_APP_URL_FLAT = `http://mycozy-${NAVIGATION_APP_SLUG}.test/#/alan`
 const DRIVE_URL = 'http://drive.mycozy.test/#/folder'
+const DRIVE_URL_FLAT = 'http://mycozy-drive.test/#/folder'
 const CONTACT_URL = 'http://contacts.mycozy.test/#/'
 
 describe('fetchDefaultRedirectionUrl', () => {
@@ -206,37 +208,73 @@ describe('getOrFetchDefaultRedirectionUrl', () => {
 })
 
 describe('getParamsWithDefaultRedirectionUrl', () => {
-  const client = createMockClient({}) as CozyClient
-  client.capabilities = {
-    flat_subdomains: false
-  }
-
   beforeAll(() => {
     jest.resetAllMocks()
   })
 
-  it('should return undefined urls if default redirection url is null', () => {
-    expect(getParamsWithDefaultRedirectionUrl(null, client)).toMatchObject({
-      mainAppFallbackURL: undefined,
-      cozyAppFallbackURL: undefined
-    })
-  })
+  describe('with nested subdomain', () => {
+    const client = createMockClient({}) as CozyClient
 
-  it('should return default redirection url for main app if default redirection url slug = navigation app slug', () => {
-    expect(
-      getParamsWithDefaultRedirectionUrl(NAVIGATION_APP_URL, client)
-    ).toMatchObject({
-      mainAppFallbackURL: NAVIGATION_APP_URL,
-      cozyAppFallbackURL: undefined
-    })
-  })
+    client.capabilities = {
+      flat_subdomains: false
+    }
 
-  it('should return default redirection url for main app if default redirection url slug = navigation app slug', () => {
-    expect(getParamsWithDefaultRedirectionUrl(DRIVE_URL, client)).toMatchObject(
-      {
+    it('should return undefined urls if default redirection url is null', () => {
+      expect(getParamsWithDefaultRedirectionUrl(null, client)).toMatchObject({
+        mainAppFallbackURL: undefined,
+        cozyAppFallbackURL: undefined
+      })
+    })
+
+    it('should return default redirection url for main app if default redirection url slug = navigation app slug', () => {
+      expect(
+        getParamsWithDefaultRedirectionUrl(NAVIGATION_APP_URL, client)
+      ).toMatchObject({
+        mainAppFallbackURL: NAVIGATION_APP_URL,
+        cozyAppFallbackURL: undefined
+      })
+    })
+
+    it('should return default redirection url for main app if default redirection url slug = navigation app slug', () => {
+      expect(
+        getParamsWithDefaultRedirectionUrl(DRIVE_URL, client)
+      ).toMatchObject({
         mainAppFallbackURL: undefined,
         cozyAppFallbackURL: DRIVE_URL
-      }
-    )
+      })
+    })
+  })
+
+  describe('with flat subdomain', () => {
+    const client = createMockClient({}) as CozyClient
+
+    client.capabilities = {
+      flat_subdomains: true
+    }
+
+    it('should return undefined urls if default redirection url is null', () => {
+      expect(getParamsWithDefaultRedirectionUrl(null, client)).toMatchObject({
+        mainAppFallbackURL: undefined,
+        cozyAppFallbackURL: undefined
+      })
+    })
+
+    it('should return default redirection url for main app if default redirection url slug = navigation app slug', () => {
+      expect(
+        getParamsWithDefaultRedirectionUrl(NAVIGATION_APP_URL_FLAT, client)
+      ).toMatchObject({
+        mainAppFallbackURL: NAVIGATION_APP_URL_FLAT,
+        cozyAppFallbackURL: undefined
+      })
+    })
+
+    it('should return default redirection url for main app if default redirection url slug = navigation app slug', () => {
+      expect(
+        getParamsWithDefaultRedirectionUrl(DRIVE_URL_FLAT, client)
+      ).toMatchObject({
+        mainAppFallbackURL: undefined,
+        cozyAppFallbackURL: DRIVE_URL_FLAT
+      })
+    })
   })
 })
