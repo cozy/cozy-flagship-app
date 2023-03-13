@@ -44,7 +44,7 @@ const stopJob = async (client: CozyClient, jobId: string): Promise<unknown> => {
 }
 
 /**
- * Remove the @at trigger which will mark the given job as context deadline exceeded since this work is already done
+ * Remove the @in trigger which will mark the given job as context deadline exceeded since this work is already done
  */
 const findJobStopTriggerAndRemove = async (
   client: CozyClient,
@@ -53,7 +53,7 @@ const findJobStopTriggerAndRemove = async (
   const { data: triggers } = (await client.query(
     Q('io.cozy.triggers').where({
       worker: 'service',
-      type: '@at',
+      type: '@in',
       'message.fields.cliskJobId': jobId
     })
   )) as CozyClientQueryResult
