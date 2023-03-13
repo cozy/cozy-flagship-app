@@ -21,8 +21,9 @@
   "clouderyProdBaseUri": "https://manager.cozycloud.cc",
   "clouderyIntBaseUri": "https://staging-manager.cozycloud.cc",
   "clouderyDevBaseUri": "https://manager-dev.cozycloud.cc",
-  "clouderyiOSRelativeUri": "/v2/cozy/start?redirect_after_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fonboarding%3Fflagship%3Dtrue&redirect_after_login=https%3A%2F%2Floginflagship",
-  "clouderyAndroidRelativeUri": "/v2/cozy/start?redirect_after_email=cozy%3A%2F%2Fonboarding%3Fflagship%3Dtrue&redirect_after_login=https%3A%2F%2Floginflagship",
+  "clouderyCozyRelativeUri": "/v2/cozy/start",
+  "clouderyiOSQueryString": "redirect_after_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fonboarding%3Fflagship%3Dtrue&redirect_after_login=https%3A%2F%2Floginflagship",
+  "clouderyAndroidQueryString": "redirect_after_email=cozy%3A%2F%2Fonboarding%3Fflagship%3Dtrue&redirect_after_login=https%3A%2F%2Floginflagship",
   "defaultHttpScheme": "https://",
   "emptyString": "",
   "environments": {

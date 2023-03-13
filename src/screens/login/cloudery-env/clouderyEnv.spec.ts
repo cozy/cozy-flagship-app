@@ -2,7 +2,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
 
 import { getClouderyUrl } from '/screens/login/cloudery-env/clouderyEnv'
+
 import strings from '/constants/strings.json'
+
+jest.mock(
+  '/screens/welcome/install-referrer/androidPlayInstallReferrer',
+  () => ({
+    getInstallReferrer: jest.fn()
+  })
+)
 
 describe('extractEnvFromUrl', () => {
   beforeEach(async () => {
@@ -17,7 +25,7 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyProdBaseUri + strings.clouderyAndroidRelativeUri
+      strings.clouderyProdBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyAndroidQueryString
     )
   })
 
@@ -27,7 +35,7 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyDevBaseUri + strings.clouderyAndroidRelativeUri
+      strings.clouderyDevBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyAndroidQueryString
     )
   })
 
@@ -37,7 +45,7 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyIntBaseUri + strings.clouderyAndroidRelativeUri
+      strings.clouderyIntBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyAndroidQueryString
     )
   })
 
@@ -48,7 +56,7 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyIntBaseUri + strings.clouderyiOSRelativeUri
+      strings.clouderyIntBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyiOSQueryString
     )
   })
 
@@ -56,7 +64,7 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyProdBaseUri + strings.clouderyAndroidRelativeUri
+      strings.clouderyProdBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyAndroidQueryString
     )
   })
 
@@ -66,7 +74,35 @@ describe('extractEnvFromUrl', () => {
     const result = await getClouderyUrl()
 
     expect(result).toBe(
-      strings.clouderyProdBaseUri + strings.clouderyAndroidRelativeUri
+      strings.clouderyProdBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyAndroidQueryString
+    )
+  })
+
+  it(`should return OnboardingPartner url if detected`, async () => {
+    await AsyncStorage.setItem(strings.CLOUDERY_ENV_STORAGE_KEY, 'PROD')
+    await AsyncStorage.setItem(
+      strings.ONBOARDING_PARTNER_STORAGE_KEY,
+      '{"source":"SOME_SOURCE","context":"SOME_CONTEXT","hasReferral":true}'
+    )
+
+    const result = await getClouderyUrl()
+
+    expect(result).toBe(
+      strings.clouderyProdBaseUri + '/v2/SOME_SOURCE/SOME_CONTEXT?' + strings.clouderyAndroidQueryString
+    )
+  })
+
+  it(`should return Cozy url if no OnboardingPartner is detected`, async () => {
+    await AsyncStorage.setItem(strings.CLOUDERY_ENV_STORAGE_KEY, 'PROD')
+    await AsyncStorage.setItem(
+      strings.ONBOARDING_PARTNER_STORAGE_KEY,
+      '{"hasReferral":false}'
+    )
+
+    const result = await getClouderyUrl()
+
+    expect(result).toBe(
+      strings.clouderyProdBaseUri + strings.clouderyCozyRelativeUri + '?' + strings.clouderyAndroidQueryString
     )
   })
 })
