@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { BackHandler, StyleSheet, View } from 'react-native'
 
 import { WelcomePage } from '/components/html/WelcomePage'
-import { makeHTML } from '/components/makeHTML'
+import { makeInvertedHTML } from '/components/makeHTML'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { makeHandlers } from '/libs/functions/makeHandlers'
 import { getColors } from '/ui/colors'
@@ -27,7 +27,7 @@ const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
           onContinue: () => setIsWelcomeModalDisplayed(false)
         })}
         originWhitelist={['*']}
-        source={{ html: makeHTML(WelcomePage), baseUrl: '' }}
+        source={{ html: makeInvertedHTML(WelcomePage), baseUrl: '' }}
         style={{
           backgroundColor: colors.primaryColor
         }}
