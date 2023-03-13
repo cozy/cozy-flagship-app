@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { BackHandler, StyleSheet, Text, View } from 'react-native'
+import { BackHandler, StyleSheet, View } from 'react-native'
 
 import { WelcomePage } from '/components/html/WelcomePage'
 import { makeHTML } from '/components/makeHTML'
@@ -40,16 +40,19 @@ const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
   )
 }
 
-export const CozyWelcomeScreen = ({ navigation, route, setClient }) => {
+export const WelcomeScreen = ({ navigation, route, setClient }) => {
   const [isWelcomeModalDisplayed, setIsWelcomeModalDisplayed] = useState(true)
+  const { isInitialized, onboardingPartner } = useInstallReferrer()
 
   const handleBackPress = () => {
-    if (isWelcomeModalDisplayed) {
+    if (isWelcomeModalDisplayed || !onboardingPartner?.hasReferral) {
       BackHandler.exitApp()
     } else {
       setIsWelcomeModalDisplayed(true)
     }
   }
+
+  if (!isInitialized) return null
 
   return (
     <>
@@ -61,44 +64,10 @@ export const CozyWelcomeScreen = ({ navigation, route, setClient }) => {
         setClient={setClient}
         goBack={handleBackPress}
       />
-      {isWelcomeModalDisplayed && (
+      {isWelcomeModalDisplayed && !onboardingPartner.hasReferral && (
         <WelcomeView setIsWelcomeModalDisplayed={setIsWelcomeModalDisplayed} />
       )}
     </>
-  )
-}
-
-export const OnboardingPartnerWelcomeScreen = ({ partner }) => {
-  return (
-    <View style={{ marginTop: 50, backgroundColor: '#000' }}>
-      <Text>ONBOARDING PARTNER:</Text>
-      <Text>- SOURCE: {partner.source}</Text>
-      <Text>- CONTEXT: {partner.context}</Text>
-    </View>
-  )
-}
-
-export const WelcomeScreen = ({ navigation, route, setClient }) => {
-  const { isInitialized, onboardingPartner } = useInstallReferrer()
-
-  if (!isInitialized) return null
-
-  if (onboardingPartner.hasReferral)
-    return (
-      <OnboardingPartnerWelcomeScreen
-        navigation={navigation}
-        partner={onboardingPartner}
-        route={route}
-        setClient={setClient}
-      />
-    )
-
-  return (
-    <CozyWelcomeScreen
-      navigation={navigation}
-      route={route}
-      setClient={setClient}
-    />
   )
 }
 
