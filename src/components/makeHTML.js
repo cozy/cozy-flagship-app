@@ -5,8 +5,10 @@ import { themeCss } from '/screens/login/components/assets/common/css/cssTheme'
 
 import { getLocalFonts } from './getLocalFonts'
 
-export const makeHTML = body => {
+const makeDOM = ({ body, isInverted }) => {
   const { navbarHeight, statusBarHeight } = getDimensions()
+
+  const theme = isInverted ? 'theme-inverted' : ''
 
   return `
   <!DOCTYPE html>
@@ -21,11 +23,19 @@ export const makeHTML = body => {
       <style type="text/css">${cirrusCss}</style>
     </head>
 
-    <body class="theme-inverted" style="padding-top: ${statusBarHeight}px; padding-bottom: ${navbarHeight}px;">
+    <body class="${theme}" style="padding-top: ${statusBarHeight}px; padding-bottom: ${navbarHeight}px;">
       <main class="wrapper">
         ${body}
       </main>
     </body>
   </html>
 `
+}
+
+export const makeHTML = body => {
+  return makeDOM({ body, isInverted: false })
+}
+
+export const makeInvertedHTML = body => {
+  return makeDOM({ body, isInverted: true })
 }
