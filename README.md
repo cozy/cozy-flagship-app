@@ -43,13 +43,15 @@ $ yarn
 $ yarn start # (must be started for the following commands)
 
 # Run on Android Device
-$ yarn android
+$ yarn android --variant=devDebug
 
 # Run on iOS Device
 $ cd ios && pod install # Only the first time
 $ yarn ios
 
 ```
+
+More information about Android variant [here](https://github.com/cozy/cozy-flagship-app/blob/master/docs/how-to-debug-notifications.md).
 
 ### Working with locally hosted webviews
 
@@ -169,7 +171,7 @@ d. Click on `Play` button to build app, that start simulator
     <summary>Starting Android emulator</summary>
 <p>
 a. Run Android app on emulator
-   `yarn android`
+   `yarn android --variant=devDebug`
 
 </p>
 </details>
