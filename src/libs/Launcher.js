@@ -387,10 +387,8 @@ export default class Launcher {
     const { data: timeoutTrigger } = await client.save({
       _type: 'io.cozy.triggers',
       worker: 'service',
-      type: '@at', // did not use @in because only @at triggers remove themselves after use
-      arguments: new Date(
-        Date.now() + constants.serviceTimeoutDuration
-      ).toISOString(),
+      type: '@in',
+      arguments: constants.serviceTimeoutDuration,
       message: {
         slug: 'home',
         name: 'cliskTimeout',

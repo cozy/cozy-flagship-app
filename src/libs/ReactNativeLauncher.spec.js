@@ -128,7 +128,7 @@ describe('ReactNativeLauncher', () => {
         4,
         expect.objectContaining({
           _type: 'io.cozy.triggers',
-          type: '@at',
+          type: '@in',
           worker: 'service',
           message: {
             slug: 'home',
@@ -182,7 +182,7 @@ describe('ReactNativeLauncher', () => {
       expect(client.destroy).toHaveBeenCalledWith(
         expect.objectContaining({
           _type: 'io.cozy.triggers',
-          type: '@at',
+          type: '@in',
           worker: 'service',
           message: {
             slug: 'home',
@@ -203,7 +203,7 @@ describe('ReactNativeLauncher', () => {
         2,
         expect.objectContaining({
           _type: 'io.cozy.triggers',
-          type: '@at',
+          type: '@in',
           worker: 'service',
           message: {
             slug: 'home',
