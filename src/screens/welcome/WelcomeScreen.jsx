@@ -6,13 +6,11 @@ import { makeInvertedHTML } from '/components/makeHTML'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { makeHandlers } from '/libs/functions/makeHandlers'
 import { getColors } from '/ui/colors'
-import { useDimensions } from '/libs/dimensions'
 import { LoginScreen } from '/screens/login/LoginScreen'
 import { useInstallReferrer } from '/screens/welcome/install-referrer/useInstallReferrer'
 
 const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
   const colors = getColors()
-  const dimensions = useDimensions()
   return (
     <View
       style={[
@@ -30,11 +28,6 @@ const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
         source={{ html: makeInvertedHTML(WelcomePage), baseUrl: '' }}
         style={{
           backgroundColor: colors.primaryColor
-        }}
-      />
-      <View
-        style={{
-          height: dimensions.navbarHeight
         }}
       />
     </View>
