@@ -1,4 +1,4 @@
-# 1.0.6
+# 1.0.7
 
 ## ✨ Features
 
@@ -8,6 +8,27 @@
 
 ## 🔧 Tech
 
+
+# 1.0.6
+
+## ✨ Features
+
+* Client Side Connectors now display a "loading" screen until they are initialized ([PR #647](https://github.com/cozy/cozy-react-native/pull/647))
+* The App now redirects to the urser's default cozy-app on startup ([PR #653](https://github.com/cozy/cozy-react-native/pull/653) and [PR #650](https://github.com/cozy/cozy-react-native/pull/650))
+
+## 🐛 Bug Fixes
+
+* Fix a bug that prevented cozy-home to be updated ([PR #651](https://github.com/cozy/cozy-react-native/pull/651))
+* Fix some scenario where the status bar was not displayed with the correct color ([PR #657](https://github.com/cozy/cozy-react-native/pull/657))
+* Fix a bug that prevented Client Side Connectors to be openned from cozy-store ([PR #656](https://github.com/cozy/cozy-react-native/pull/656))
+* Improve Client Side Connectors life-cycle ([PR #649](https://github.com/cozy/cozy-react-native/pull/649), [PR #636](https://github.com/cozy/cozy-react-native/pull/636), [PR #662](https://github.com/cozy/cozy-react-native/pull/662) and [PR #663](https://github.com/cozy/cozy-react-native/pull/663))
+
+## 🔧 Tech
+
+* Remove Client Side Connectors specific code since it has been moved into Clisk library ([PR #640](https://github.com/cozy/cozy-react-native/pull/640))
+* Fix casing in install:home script ([PR #625](https://github.com/cozy/cozy-react-native/pull/625))
+* Implement OnboardingPartner and ClouderyEnv override using links ([PR #654](https://github.com/cozy/cozy-react-native/pull/654))
+* Add documentation about Android debug with new variants ([PR #664](https://github.com/cozy/cozy-react-native/pull/664))
 
 # 1.0.5
 
