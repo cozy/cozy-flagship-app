@@ -37,9 +37,10 @@
       "title": "Pas de connexion internet"
     },
     "welcome": {
-      "body": "Le domicile numérique pour réunir toutes vos données",
-      "button": "C'est parti",
-      "title": "Bienvenue sur Cozy"
+      "body": "Accédez dès maintenant à votre Cloud Personnel, le domicile numérique pour réunir toutes vos données",
+      "buttonSignin": "Créer",
+      "buttonLogin": "J'ai déjà un Cloud Personnel",
+      "title": "Cloud Personnel"
     }
   },
   "software": {
