@@ -40,7 +40,7 @@ export const WelcomeScreen = ({ navigation, route, setClient }) => {
   const { isInitialized, onboardingPartner } = useInstallReferrer()
 
   const handleBackPress = () => {
-    if (isWelcomeModalDisplayed || !onboardingPartner?.hasReferral) {
+    if (isWelcomeModalDisplayed || onboardingPartner?.hasReferral) {
       BackHandler.exitApp()
     } else {
       setIsWelcomeModalDisplayed(true)
