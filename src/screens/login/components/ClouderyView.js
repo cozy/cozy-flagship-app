@@ -1,4 +1,3 @@
-import Minilog from '@cozy/minilog'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   BackHandler,
@@ -11,39 +10,12 @@ import {
 import strings from '/constants/strings.json'
 import { getColors } from '/ui/colors'
 import { getUriFromRequest } from '/libs/functions/getUriFromRequest'
-import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
-import { NetService } from '/libs/services/NetService'
-import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
-import { jsLogInterception } from '/components/webviews/jsInteractions/jsLogInterception'
-import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { useClouderyUrl } from '/screens/login/cloudery-env/useClouderyUrl'
+import { ClouderyViewSwitch } from '/screens/login/components/ClouderyViewSwitch'
 
 import { rootCozyUrl } from 'cozy-client'
-
-const log = Minilog('ClouderyView')
-
-const run = `
-    (function() {
-      ${jsCozyGlobal()}
-
-      ${jsLogInterception}
-
-      return true;
-    })();
-  `
-
-const handleError = async webviewErrorEvent => {
-  try {
-    const isOffline = await NetService.isOffline()
-    isOffline && NetService.handleOffline(routes.onboarding)
-  } catch (error) {
-    log.error(error)
-  } finally {
-    log.error(webviewErrorEvent)
-  }
-}
 
 /**
  * Displays the Cloudery web page where the user can log to their Cozy instance by specifying
@@ -59,7 +31,11 @@ const handleError = async webviewErrorEvent => {
  * @param {setInstanceData} props.setInstanceData
  * @returns {import('react').ComponentClass}
  */
-export const ClouderyView = ({ setInstanceData, disabledFocus }) => {
+export const ClouderyView = ({
+  clouderyMode,
+  setInstanceData,
+  disabledFocus
+}) => {
   const { uri } = useClouderyUrl()
   const [loading, setLoading] = useState(true)
   const [checkInstanceData, setCheckInstanceData] = useState()
@@ -102,9 +78,9 @@ export const ClouderyView = ({ setInstanceData, disabledFocus }) => {
   useEffect(() => {
     // add a parameter
     if (webviewRef && !loading && !disabledFocus) {
-      setFocusOnWebviewField(webviewRef.current, 'email')
+      webviewRef.current.setFocusOnField()
     }
-  }, [loading, webviewRef, disabledFocus])
+  }, [clouderyMode, loading, webviewRef, disabledFocus])
 
   const handleBackPress = useCallback(() => {
     if (!canGoBack) {
@@ -137,19 +113,12 @@ export const ClouderyView = ({ setInstanceData, disabledFocus }) => {
   return (
     <Wrapper style={styles.view} behavior="height">
       {uri && (
-        <SupervisedWebView
-          source={{ uri: uri }}
+        <ClouderyViewSwitch
+          handleNavigation={handleNavigation}
           ref={webviewRef}
-          onNavigationStateChange={event => {
-            setCanGoBack(event.canGoBack)
-          }}
-          onShouldStartLoadWithRequest={handleNavigation}
-          onLoadEnd={() => setLoading(false)}
-          injectedJavaScriptBeforeContentLoaded={run}
-          style={{
-            backgroundColor: colors.primaryColor
-          }}
-          onError={handleError}
+          setCanGoBack={setCanGoBack}
+          setLoading={setLoading}
+          uri={uri}
         />
       )}
       {displayOverlay && (
@@ -176,6 +145,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0
+    bottom: 0,
+    zIndex: 10
   }
 })
