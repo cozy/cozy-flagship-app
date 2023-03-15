@@ -206,7 +206,7 @@ export const useAppBootstrap = client => {
             const promiseResult = await uploadPromise.promise
             console.log('promiseResult', promiseResult) */
 
-            const headers = {
+            /*  const headers = {
               Accept: 'application/json',
               Authorization:
                 'Bearer ' + client.getStackClient().token.accessToken
@@ -219,7 +219,7 @@ export const useAppBootstrap = client => {
               (written, total) => {
                 console.log(written, total)
               }
-            )
+            ) */
             console.log('uploadResult', uploadResult)
           } catch (e) {
             console.log('error', e)
