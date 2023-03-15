@@ -77,10 +77,21 @@ export const ClouderyView = ({
 
   useEffect(() => {
     // add a parameter
-    if (webviewRef && !loading && !disabledFocus) {
+    if (
+      webviewRef &&
+      !loading &&
+      !disabledFocus &&
+      !urls?.isOnboardingPartner
+    ) {
       webviewRef.current.setFocusOnField()
     }
-  }, [clouderyMode, loading, webviewRef, disabledFocus])
+  }, [
+    clouderyMode,
+    loading,
+    webviewRef,
+    disabledFocus,
+    urls?.isOnboardingPartner
+  ])
 
   const handleBackPress = useCallback(() => {
     if (!canGoBack) {
