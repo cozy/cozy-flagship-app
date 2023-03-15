@@ -20,6 +20,7 @@ import { routes } from '/constants/routes'
 import { navigate } from '/libs/RootNavigation'
 import { getData, StorageKeys } from '/libs/localStore/storage'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
+import { launcherEvent } from '/libs/ReactNativeLauncher'
 
 const unzoomHomeView = webviewRef => {
   webviewRef?.injectJavaScript(
@@ -57,6 +58,22 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
     )
 
     return subscription.remove
+  }, [webviewRef])
+
+  useEffect(() => {
+    const handleLaunchResult = () => {
+      const payload = JSON.stringify({
+        type: 'Clisk',
+        message: 'launchResult',
+        param: {
+          message: 'abort'
+        }
+      })
+      webviewRef?.postMessage(payload)
+    }
+    launcherEvent.on('launchResult', handleLaunchResult)
+    return () =>
+      launcherEvent.removeListener('launchResult', handleLaunchResult)
   }, [webviewRef])
 
   useEffect(() => {
