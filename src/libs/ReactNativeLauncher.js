@@ -18,6 +18,12 @@ const log = Minilog('ReactNativeLauncher')
 
 Minilog.enable()
 
+function LauncherEvent() {}
+
+MicroEE.mixin(LauncherEvent)
+
+export const launcherEvent = new LauncherEvent()
+
 /**
  * This is the launcher implementation for a React native application
  */
@@ -111,6 +117,9 @@ class ReactNativeLauncher extends Launcher {
   async stop({ message } = {}) {
     const context = this.getStartContext()
     const client = context.client
+
+    launcherEvent.emit('launchResult', { cancel: true })
+
     await sendKonnectorsLogs(client)
     if (message) {
       await this.updateJobResult({
