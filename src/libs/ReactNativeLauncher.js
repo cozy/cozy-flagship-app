@@ -52,6 +52,9 @@ class ReactNativeLauncher extends Launcher {
       'ensureKonnectorIsInstalled'
     )
     this.restartWorkerConnection = wrapTimer(this, 'restartWorkerConnection')
+    this.waitForWorkerEvent = wrapTimer(this, 'waitForWorkerEvent', {
+      suffixFn: args => args?.[0]
+    })
     this.ensureAccountName = wrapTimer(this, 'ensureAccountName')
     this.ensureAccountTriggerAndLaunch = wrapTimer(
       this,
@@ -284,11 +287,21 @@ class ReactNativeLauncher extends Launcher {
     await this.pilot.call('storeFromWorker', obj)
   }
 
+  async waitForWorkerEvent(event) {
+    return new Promise(resolve => {
+      this.once(`worker:${event}`, () => {
+        resolve()
+      })
+    })
+  }
+
   /**
    * Reestablish the connection between launcher and the worker after a web page reload
    */
   async restartWorkerConnection(event) {
     log.info('restarting worker', event)
+    this.waitForWorkerEvent('load') // not awaited on purpose to make the restart the fastest possible
+    this.waitForWorkerEvent('DOMContentLoaded') // not awaited on purpose to make the restart the fastest possible
 
     try {
       await this.worker.close()
