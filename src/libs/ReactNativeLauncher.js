@@ -73,7 +73,6 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async init({ bridgeOptions, contentScript }) {
-    log.debug('bridges init start')
     const promises = [
       this.initPilotContentScriptBridge({
         webViewRef: bridgeOptions.pilotWebView,
@@ -102,7 +101,6 @@ class ReactNativeLauncher extends Launcher {
       })
     ]
     await Promise.all(promises)
-    log.debug('bridges init done')
   }
 
   async ensureKonnectorIsInstalled({ slug, client }) {
@@ -262,7 +260,6 @@ class ReactNativeLauncher extends Launcher {
    * @returns {any} the worker method return value
    */
   async runInWorker(method, ...args) {
-    log.debug('runInworker called')
     try {
       return await new Promise((resolve, reject) => {
         this.once('WORKER_WILL_RELOAD', () => {
@@ -273,7 +270,6 @@ class ReactNativeLauncher extends Launcher {
             reject('WORKER_RELOADED')
           })
         })
-        log.debug(`calling ${method} on worker`)
         // eslint-disable-next-line promise/catch-or-return
         this.worker.call(method, ...args).then(resolve)
       })
@@ -315,7 +311,6 @@ class ReactNativeLauncher extends Launcher {
       throw new Error(`worker bridge restart init error: ${err.message}`)
     }
     this.emit('WORKER_RELOADED')
-    log.info('webworker bridge connection restarted')
   }
 
   /**
