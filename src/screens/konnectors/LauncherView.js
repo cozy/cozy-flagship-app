@@ -271,6 +271,9 @@ class LauncherView extends Component {
           this.onWorkerWillReload(event)
         }
         return
+      } else if (['load', 'DOMContentLoaded'].includes(msg.message)) {
+        this.launcher.emit('worker:' + msg.message)
+        return
       }
     }
     if (this.launcher) {
