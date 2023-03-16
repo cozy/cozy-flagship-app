@@ -2,9 +2,9 @@ import { ParentHandshake } from 'post-me'
 
 import { Bridge } from 'cozy-clisk'
 
-import ReactNativeLauncherMessenger from './ReactNativeLauncherMessenger'
+import { shouldEnableKonnectorPostMeLogger } from '/core/tools/env'
 
-const DEBUG_BRIDGE = true
+import ReactNativeLauncherMessenger from './ReactNativeLauncherMessenger'
 
 /**
  * Bridge to the contentScript object via post-me
@@ -20,7 +20,7 @@ export default class ContentScriptBridge extends Bridge {
     exposedMethodsNames = [],
     listenedEventsNames = [],
     webViewRef,
-    debug = DEBUG_BRIDGE
+    debug = shouldEnableKonnectorPostMeLogger()
   } = {}) {
     if (root) {
       this.root = root
