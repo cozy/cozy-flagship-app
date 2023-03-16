@@ -361,7 +361,7 @@ export default class Launcher {
         )
       }
     }
-    log.info(entries, 'saveFiles entries')
+    log.debug(entries, 'saveFiles entries')
     const result = await saveFiles(
       client,
       entries,
@@ -375,7 +375,7 @@ export default class Launcher {
         sourceAccountIdentifier
       }
     )
-    log.info(result, 'saveFiles result')
+    log.debug(result, 'saveFiles result')
 
     return result
   }
