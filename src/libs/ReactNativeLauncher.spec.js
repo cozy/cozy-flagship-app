@@ -33,6 +33,7 @@ const fixtures = {
 describe('ReactNativeLauncher', () => {
   function setup() {
     const launcher = new ReactNativeLauncher()
+    launcher.setLogger(() => {})
     launcher.pilot = {
       call: jest.fn(),
       close: jest.fn()
