@@ -7,7 +7,6 @@ import {
   within
 } from '@testing-library/react-native'
 import React from 'react'
-import { Button as MockButton } from 'react-native'
 
 import {
   CLOUDERY_MODE_LOGIN,
@@ -33,9 +32,10 @@ jest.mock('react-native-webview', () => {
     render() {
       return (
         <>
-          <MockButton
+          <div
+            // eslint-disable-next-line react/no-unknown-property
             testID="triggerStartLoadWithRequest"
-            onPress={() => {
+            onClick={() => {
               const request = {
                 loading: true,
                 url: this.props.source.uri
@@ -44,9 +44,10 @@ jest.mock('react-native-webview', () => {
             }}
             title="WebView Button"
           />
-          <MockButton
+          <div
+            // eslint-disable-next-line react/no-unknown-property
             testID="triggerOnLoadEnd"
-            onPress={() => {
+            onClick={() => {
               this.props.onLoadEnd()
             }}
             title="WebView Button onLoadEnd"
@@ -94,7 +95,7 @@ describe('ClouderyView', () => {
         'triggerStartLoadWithRequest'
       )
 
-      fireEvent.press(button)
+      fireEvent(button, 'click')
 
       // Then
       await waitFor(() =>
@@ -114,7 +115,7 @@ describe('ClouderyView', () => {
         'triggerStartLoadWithRequest'
       )
 
-      fireEvent.press(button)
+      fireEvent(button, 'click')
 
       // Then
       await waitFor(() =>
@@ -134,7 +135,7 @@ describe('ClouderyView', () => {
         'triggerStartLoadWithRequest'
       )
 
-      fireEvent.press(button)
+      fireEvent(button, 'click')
 
       // Then
       await waitFor(() =>
@@ -217,8 +218,8 @@ describe('ClouderyView', () => {
     const button = getAllByTestId('triggerOnLoadEnd')
 
     // When
-    fireEvent.press(button[0]) // trigger onLoadEnd
-    fireEvent.press(button[1]) // trigger onLoadEnd
+    fireEvent(button[0], 'click') // trigger onLoadEnd
+    fireEvent(button[1], 'click') // trigger onLoadEnd
 
     await waitForElementToBeRemoved(() => getByTestId('overlay'))
     expect(queryByTestId('overlay')).toBeFalsy()
