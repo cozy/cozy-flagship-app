@@ -72,6 +72,8 @@ class LauncherView extends Component {
   /**
    * Run when an account is created by the flagship app
    * make the webview navigate to the the harvest route associated to the account
+   *
+   * @param {import('cozy-client/types/types').IOCozyAccount} - cozy account object
    */
   onCreatedAccount(account) {
     const { launcherContext } = this.props
@@ -79,6 +81,11 @@ class LauncherView extends Component {
     navigate('default', { konnector, account: account._id })
   }
 
+  /**
+   * Load konnector in memory from file system or cozy-stack
+   *
+   * @returns {Promise<void>}
+   */
   async initKonnector() {
     const { client, launcherContext } = this.props
     const slug = launcherContext.konnector.slug

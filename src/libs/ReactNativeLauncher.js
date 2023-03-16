@@ -63,10 +63,20 @@ class ReactNativeLauncher extends Launcher {
     )
   }
 
+  /**
+   * Set konnector logger
+   *
+   * @param {Function} onKonnectorLog - konnector logger
+   */
   setLogger(onKonnectorLog) {
     this.logger = onKonnectorLog
   }
 
+  /**
+   * Receive content script logs. This function is called by the content script via the bridge
+   *
+   * @param  {ContentScriptLogMessage} message - log message
+   */
   log(logContent) {
     const context = this.getStartContext()
     const slug = context.konnector.slug // konnector is available before manifest
@@ -104,6 +114,14 @@ class ReactNativeLauncher extends Launcher {
     await Promise.all(promises)
   }
 
+  /**
+   * Make sur that the konnector is correctly installed
+   *
+   * @param {object} options - options object
+   * @param {String} options.slug - konnector slug
+   * @param {import('cozy-client').default} options.client - CozyClient instance
+   * @returns {getKonnectorBundle}
+   */
   async ensureKonnectorIsInstalled({ slug, client }) {
     try {
       await updateCozyAppBundle({
@@ -134,6 +152,13 @@ class ReactNativeLauncher extends Launcher {
     }
   }
 
+  /**
+   * Finish the execution of the konnector. Sending logs and update current job state
+   *
+   * @param {object} options - options object
+   * @param {String} [options.message] - options object
+   * @returns {Promise<void>}
+   */
   async stop({ message } = {}) {
     const context = this.getStartContext()
     const client = context.client
@@ -283,10 +308,21 @@ class ReactNativeLauncher extends Launcher {
     }
   }
 
+  /**
+   * send any data from the worker to the pilot to allow the pilot to store this data between worker navigations
+   *
+   * @param {*} obj
+   */
   async sendToPilot(obj) {
     await this.pilot.call('storeFromWorker', obj)
   }
 
+  /**
+   * Resolve when a given event on the worker page has occured. This allow to measure the time between the initialization of the worker and this event
+   *
+   * @param {*} event - event name
+   * @returns {Promise<void>}
+   */
   async waitForWorkerEvent(event) {
     return new Promise(resolve => {
       this.once(`worker:${event}`, () => {
@@ -295,6 +331,11 @@ class ReactNativeLauncher extends Launcher {
     })
   }
 
+  /**
+   * Resolve when the worker is made visible by the pilot. This allow to measure the time between the initialization of the worker and this event
+   *
+   * @returns {Promise<void>}
+   */
   async waitForWorkerVisible() {
     return new Promise(resolve => {
       this.once('worker:visible', () => {
