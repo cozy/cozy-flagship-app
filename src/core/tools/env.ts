@@ -70,7 +70,8 @@ export const getEnforcedInstallReferrer = (): string => enforcedInstallReferrer
 export const shouldEnableReduxLogger = (): boolean =>
   enableReduxLogger && !isTest()
 
-export const shouldEnableKonnectorPostMeLogger = (): boolean => enableKonnectorPostMeLogger
+export const shouldEnableKonnectorPostMeLogger = (): boolean =>
+  enableKonnectorPostMeLogger
 
 export const EnvService = {
   name,

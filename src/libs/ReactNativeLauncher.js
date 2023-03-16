@@ -55,6 +55,7 @@ class ReactNativeLauncher extends Launcher {
     this.waitForWorkerEvent = wrapTimer(this, 'waitForWorkerEvent', {
       suffixFn: args => args?.[0]
     })
+    this.waitForWorkerVisible = wrapTimer(this, 'waitForWorkerVisible')
     this.ensureAccountName = wrapTimer(this, 'ensureAccountName')
     this.ensureAccountTriggerAndLaunch = wrapTimer(
       this,
@@ -241,6 +242,9 @@ class ReactNativeLauncher extends Launcher {
    */
   async setWorkerState(options) {
     this.emit('SET_WORKER_STATE', options)
+    if (options?.visible === true) {
+      this.emit('worker:visible')
+    }
   }
 
   /**
@@ -286,6 +290,14 @@ class ReactNativeLauncher extends Launcher {
   async waitForWorkerEvent(event) {
     return new Promise(resolve => {
       this.once(`worker:${event}`, () => {
+        resolve()
+      })
+    })
+  }
+
+  async waitForWorkerVisible() {
+    return new Promise(resolve => {
+      this.once('worker:visible', () => {
         resolve()
       })
     })
