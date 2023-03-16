@@ -1,11 +1,9 @@
-import MicroEE from 'microee'
 import Minilog from '@cozy/minilog'
-
-import ContentScriptBridge from './bridge/ContentScriptBridge'
-
 import CookieManager from '@react-native-cookies/cookies'
+import MicroEE from 'microee'
 
 import Launcher from './Launcher'
+import ContentScriptBridge from './bridge/ContentScriptBridge'
 
 import { getKonnectorBundle } from '/libs/cozyAppBundle/cozyAppBundle.functions'
 
@@ -13,6 +11,8 @@ import { saveCookie, getCookie, removeCookie } from './keychain'
 
 import { updateCozyAppBundle } from '/libs/cozyAppBundle/cozyAppBundle'
 import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
+
+import { wrapTimerFactory } from 'cozy-clisk'
 
 const log = Minilog('ReactNativeLauncher')
 
@@ -39,6 +39,24 @@ class ReactNativeLauncher extends Launcher {
     this.workerListenedEventsNames = ['log', 'workerEvent', 'workerReady']
 
     this.controller = new AbortController()
+
+    const wrapTimer = wrapTimerFactory({
+      logFn: msg => this.log({ level: 'info', msg })
+    })
+
+    this.init = wrapTimer(this, 'init', {
+      displayName: 'pilot and worker init'
+    })
+    this.ensureKonnectorIsInstalled = wrapTimer(
+      this,
+      'ensureKonnectorIsInstalled'
+    )
+    this.restartWorkerConnection = wrapTimer(this, 'restartWorkerConnection')
+    this.ensureAccountName = wrapTimer(this, 'ensureAccountName')
+    this.ensureAccountTriggerAndLaunch = wrapTimer(
+      this,
+      'ensureAccountTriggerAndLaunch'
+    )
   }
 
   setLogger(onKonnectorLog) {
@@ -47,7 +65,7 @@ class ReactNativeLauncher extends Launcher {
 
   log(logContent) {
     const context = this.getStartContext()
-    const slug = context.manifest.slug
+    const slug = context.konnector.slug // konnector is available before manifest
     this.logger({ ...logContent, slug })
   }
 
