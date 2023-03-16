@@ -109,6 +109,9 @@ class LauncherView extends Component {
 
   async componentDidMount() {
     this.launcher = new ReactNativeLauncher()
+    // made to measure the time between the launcher initialization and the display of the worker webview (when needed)
+    // this is not await not to block the initialization of the launcher
+    this.launcher.waitForWorkerVisible()
     this.launcher.setLogger(this.props.onKonnectorLog)
 
     this.launcher.setStartContext({
