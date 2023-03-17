@@ -1,45 +1,9 @@
 import React, { useState } from 'react'
-import { BackHandler, StyleSheet, View } from 'react-native'
+import { BackHandler, StyleSheet } from 'react-native'
 
-import { WelcomePage } from '/components/html/WelcomePage'
-import { makeHTML } from '/components/makeHTML'
-import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
-import { makeHandlers } from '/libs/functions/makeHandlers'
-import { getColors } from '/ui/colors'
-import { useDimensions } from '/libs/dimensions'
 import { LoginScreen } from '/screens/login/LoginScreen'
 import { useInstallReferrer } from '/screens/welcome/install-referrer/useInstallReferrer'
-
-const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
-  const colors = getColors()
-  const dimensions = useDimensions()
-  return (
-    <View
-      style={[
-        styles.view,
-        {
-          backgroundColor: colors.primaryColor
-        }
-      ]}
-    >
-      <SupervisedWebView
-        onMessage={makeHandlers({
-          onContinue: () => setIsWelcomeModalDisplayed(false)
-        })}
-        originWhitelist={['*']}
-        source={{ html: makeHTML(WelcomePage), baseUrl: '' }}
-        style={{
-          backgroundColor: colors.primaryColor
-        }}
-      />
-      <View
-        style={{
-          height: dimensions.navbarHeight
-        }}
-      />
-    </View>
-  )
-}
+import { WelcomeView } from '/screens/welcome/view/WelcomeView'
 
 export const WelcomeScreen = ({ navigation, route, setClient }) => {
   const [isWelcomeModalDisplayed, setIsWelcomeModalDisplayed] = useState(true)
@@ -66,7 +30,7 @@ export const WelcomeScreen = ({ navigation, route, setClient }) => {
         goBack={handleBackPress}
       />
       {isWelcomeModalDisplayed && !onboardingPartner.hasReferral && (
-        <WelcomeView setIsWelcomeModalDisplayed={setIsWelcomeModalDisplayed} />
+        <WelcomeView onContinue={setIsWelcomeModalDisplayed} />
       )}
     </>
   )

@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
     textAlign: 'center'
   },
   h1: { fontSize: 16 },
-  h2: { fontSize: 16 },
+  h2: { fontFamily: 'Lato-Bold', fontSize: 32, lineHeight: 37 },
   h3: {
     fontSize: 20,
     fontFamily: 'Lato-Bold',
