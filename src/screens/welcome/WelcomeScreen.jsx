@@ -26,7 +26,8 @@ const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
         onMessage={makeHandlers({
           onContinue: () => setIsWelcomeModalDisplayed(false)
         })}
-        source={{ html: makeHTML(WelcomePage) }}
+        originWhitelist={['*']}
+        source={{ html: makeHTML(WelcomePage), baseUrl: '' }}
         style={{
           backgroundColor: colors.primaryColor
         }}
