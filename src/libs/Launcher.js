@@ -4,7 +4,7 @@ import Minilog from '@cozy/minilog'
 import set from 'lodash/set'
 
 import { Q, models } from 'cozy-client'
-import { saveFiles, saveBills, saveIdentity } from 'cozy-clisk'
+import { getFileIfExists, saveFiles, saveBills, saveIdentity } from 'cozy-clisk'
 
 import { ensureKonnectorFolder } from './folder'
 import { saveCredential, getCredential, removeCredential } from './keychain'
@@ -341,9 +341,23 @@ export default class Launcher {
       konnector
     } = this.getStartContext() || {}
     const { sourceAccountIdentifier } = this.getUserData() || {}
+    // @ts-ignore
+    options.sourceAccountIdentifier = sourceAccountIdentifier
+    // @ts-ignore
+    const folderPath = await this.getFolderPath(trigger.message?.folder_to_save)
     for (const entry of entries) {
-      // TODO Filter existing entries
-      if (entry.fileurl) {
+      const file = await getFileIfExists({
+        client,
+        entry,
+        options,
+        folderPath,
+        slug: konnector.slug
+      })
+      if (file) {
+        log.debug('File found')
+        entry.fileDocument = file
+      }
+      if (!file && entry.fileurl) {
         // @ts-ignore
         entry.dataUri = await this.worker.call('downloadFileInWorker', entry)
         delete entry.fileurl
@@ -352,6 +366,7 @@ export default class Launcher {
         entry.filestream = dataURItoArrayBuffer(entry.dataUri).arrayBuffer
         delete entry.dataUri
       }
+      // TODO ADD QUALIFICATION WHEN NOT DOWNLOADING
       // Adding qualification here because of the need of models
       if (options.qualificationLabel) {
         set(
@@ -362,21 +377,13 @@ export default class Launcher {
       }
     }
     log.debug(entries, 'saveFiles entries')
-    const result = await saveFiles(
-      client,
-      entries,
+    const result = await saveFiles(client, entries, folderPath, {
+      ...options,
+      manifest: konnector,
       // @ts-ignore
-      await this.getFolderPath(trigger.message?.folder_to_save),
-      {
-        ...options,
-        manifest: konnector,
-        // @ts-ignore
-        sourceAccount: job.message.account,
-        sourceAccountIdentifier
-      }
-    )
-    log.debug(result, 'saveFiles result')
-
+      sourceAccount: job.message.account
+    })
+    log.info(result, 'saveFiles result')
     return result
   }
 
@@ -494,4 +501,5 @@ export default class Launcher {
  * @property {String} [dataUri]
  * @property {ArrayBuffer} [filestream]
  * @property {String} [fileurl]
+ * @property {any} [fileDocument]
  */
