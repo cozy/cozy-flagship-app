@@ -20,6 +20,7 @@ interface ErrorScreenProps {
 
 interface Source {
   html: ReturnType<(typeof HTML)[keyof typeof HTML]>
+  baseUrl: ReturnType<(typeof HTML)[keyof typeof HTML]>
 }
 
 type Handlers = Record<
@@ -73,7 +74,7 @@ const makeSource = (route: ErrorScreenProps['route']): Source => {
     throw new Error('The requested Page cannot be generated')
   }
 
-  return { html: htmlGenerator() }
+  return { html: htmlGenerator(), baseUrl: '' }
 }
 
 export const ErrorScreen = (props: ErrorScreenProps): JSX.Element => {
@@ -89,6 +90,7 @@ export const ErrorScreen = (props: ErrorScreenProps): JSX.Element => {
     <SupervisedWebView
       onMessage={handleMessage}
       source={makeSource(props.route)}
+      originWhitelist={['*']}
     />
   )
 }
