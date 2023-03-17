@@ -2,6 +2,8 @@
 /* This code should reflect cozy-stack/assets/templates/login.html */
 /********************************************************************/
 
+import { encode } from 'html-entities'
+
 import { handleErrorMessage } from './js/jsHandleErrorMessage'
 import { loginJs } from './js/jsLogin'
 import { passwordHelperJs } from './js/jsPasswordHelper'
@@ -62,8 +64,8 @@ export const getHtml = (title, fqdn, instance) => {
 
         <div class="d-flex flex-column align-items-center">
           <img src="${avatarSvgUrl}" alt="" id="avatar" class="avatar my-3 border border-primary border-2 rounded-circle" style="box-sizing: content-box;" />
-          <h1 class="h4 h2-md mb-0 text-center">${title}</h1>
-          <p class="mb-4 mb-md-5 text-muted">${fqdn}</p>
+          <h1 class="h4 h2-md mb-0 text-center">${encode(title)}</h1>
+          <p class="mb-4 mb-md-5 text-muted">${encode(fqdn)}</p>
           <div id="login-field" class="input-group form-floating has-validation w-100">
             <input type="password" class="form-control form-control-md-lg" id="password" name="passphrase" autofocus autocomplete="current-password" />
             <label for="password">${strPasswordField}</label>
