@@ -45,7 +45,14 @@ const interceptNavigation = ({
   client,
   setDownloadProgress
 }) => {
-  if (Platform.OS === 'ios' && !initialRequest.isTopFrame) {
+  const isPreviewableLink = checkIsPreviewableLink(initialRequest.url, client)
+  // We don't want to intecerpt iframe navigation excepts for iOS and the download
+  // Since we can download file from an iframe (intents)
+  if (
+    Platform.OS === 'ios' &&
+    !initialRequest.isTopFrame &&
+    !isPreviewableLink
+  ) {
     return true
   }
 
@@ -59,8 +66,6 @@ const interceptNavigation = ({
       return false
     }
   }
-
-  const isPreviewableLink = checkIsPreviewableLink(initialRequest.url, client)
 
   if (isPreviewableLink) {
     const fileExtension = getFileExtentionFromCozyDownloadUrl(
