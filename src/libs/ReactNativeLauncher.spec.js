@@ -291,7 +291,7 @@ describe('ReactNativeLauncher', () => {
       expect(launcher.worker.call).toHaveBeenCalledTimes(1)
       expect(result).toEqual('worker result')
     })
-    it('should return false WORKER_WILL_RELOAD event is emitted', async () => {
+    it('should return false when WORKER_WILL_RELOAD event is emitted', async () => {
       const { launcher } = setup()
       launcher.worker.call.mockImplementation(async () => {
         launcher.emit('WORKER_WILL_RELOAD')
@@ -300,6 +300,13 @@ describe('ReactNativeLauncher', () => {
       })
       const result = await launcher.runInWorker('toRunInworker')
       expect(result).toEqual(false)
+    })
+    it('should throw error if any other error occured in the worker', async () => {
+      const { launcher } = setup()
+      launcher.worker.call.mockRejectedValue(new Error('worker error'))
+      await expect(() => launcher.runInWorker('toRunInworker')).rejects.toThrow(
+        'worker error'
+      )
     })
   })
   describe('getCookiesByDomain', () => {
