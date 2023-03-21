@@ -17,6 +17,7 @@ import { openApp } from '/libs/functions/openApp'
 import { resetSessionToken } from '/libs/functions/session'
 import { routes } from '/constants/routes'
 import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
+import { setDefaultRedirection } from '/libs/defaultRedirection/defaultRedirection'
 import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { showInAppBrowser, closeInAppBrowser } from '/libs/intents/InAppBrowser'
 import { toggleSetting } from '/libs/intents/toggleSetting'
@@ -78,6 +79,19 @@ const openAppOSSettings = async (): Promise<null> => {
   return null
 }
 
+const setDefaultRedirectionWithClient = async (
+  defaultRedirection: string,
+  client?: CozyClient
+): Promise<null> => {
+  if (!client) {
+    return null
+  }
+
+  await setDefaultRedirection(defaultRedirection, client)
+
+  return null
+}
+
 export const internalMethods = {
   setFlagshipUI: (intent: FlagshipUI): Promise<null> => {
     const caller = (): string => {
@@ -123,6 +137,8 @@ export const localMethods = (
     openApp: (href, app, iconParams) =>
       openApp(client, RootNavigation, href, app, iconParams),
     toggleSetting,
+    setDefaultRedirection: defaultRedirection =>
+      setDefaultRedirectionWithClient(defaultRedirection, client),
     setFlagshipUI,
     showInAppBrowser,
     isBiometryDenied,
