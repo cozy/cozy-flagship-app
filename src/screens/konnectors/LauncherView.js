@@ -32,6 +32,7 @@ class LauncherView extends Component {
     super(props)
     this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
+    this.onWorkerError = this.onWorkerError.bind(this)
     this.onStopExecution = this.onStopExecution.bind(this)
     this.onCreatedAccount = this.onCreatedAccount.bind(this)
     this.onCreatedJob = this.onCreatedJob.bind(this)
