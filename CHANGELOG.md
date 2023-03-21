@@ -1,4 +1,4 @@
-# 1.0.7
+# 1.0.8
 
 ## ✨ Features
 
@@ -8,6 +8,24 @@
 
 ## 🔧 Tech
 
+
+# 1.0.7
+
+## ✨ Features
+
+* Improve Client Side Connectors performance when downloading files ([PR #633](https://github.com/cozy/cozy-react-native/pull/633))
+
+## 🐛 Bug Fixes
+
+* Fix a bug that makes Client Side Connectors hang after initialization ([PR #652](https://github.com/cozy/cozy-react-native/pull/652))
+* Fix a bug that prevents Client Side Connectors to stop if the user cancel the login step ([PR #659](https://github.com/cozy/cozy-react-native/pull/659))
+* Cozy's font is now correcly used on Welcome and Error screens ([PR #669](https://github.com/cozy/cozy-react-native/pull/669))
+
+## 🔧 Tech
+
+* Add performance logs on Client Side Connectors execution ([PR #668](https://github.com/cozy/cozy-react-native/pull/668))
+* Add foundations for OnboardingPartner onboarding ([PR #655](https://github.com/cozy/cozy-react-native/pull/655))
+* Prevent code injection on Password screen ([PR #672](https://github.com/cozy/cozy-react-native/pull/672))
 
 # 1.0.6
 
