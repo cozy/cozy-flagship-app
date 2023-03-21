@@ -296,14 +296,19 @@ class ReactNativeLauncher extends Launcher {
           // This way, the pilot can call the worker one more time
           // and be sure it is ready
           this.once('WORKER_RELOADED', () => {
-            reject('WORKER_RELOADED')
+            reject(new Error('WORKER_RELOADED'))
           })
         })
         // eslint-disable-next-line promise/catch-or-return
-        this.worker.call(method, ...args).then(resolve)
+        this.worker
+          .call(method, ...args)
+          .then(resolve)
+          .catch(err => reject(err))
       })
     } catch (err) {
-      log.info(`Got error in runInWorker ${err}`)
+      if (err.message !== 'WORKER_RELOADED') {
+        throw err
+      }
       return false
     }
   }
