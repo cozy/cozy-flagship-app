@@ -63,6 +63,15 @@ export const getDefaultRedirectionUrl =
     )
   }
 
+export const setDefaultRedirection = async (
+  defaultRedirection: string,
+  client: CozyClient
+): Promise<void> => {
+  const defaultRedirectionUrl = formatRedirectLink(defaultRedirection, client)
+
+  await setDefaultRedirectionUrl(defaultRedirectionUrl)
+}
+
 export const fetchAndSetDefaultRedirectionUrl = async (
   client: CozyClient
 ): Promise<DefaultRedirectionUrl> => {
