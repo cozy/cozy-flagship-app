@@ -11,6 +11,7 @@ import {
   fetchDefaultRedirectionUrl,
   setDefaultRedirectionUrl,
   getDefaultRedirectionUrl,
+  setDefaultRedirection,
   fetchAndSetDefaultRedirectionUrl,
   fetchAndSetDefaultRedirectionUrlInBackground,
   getOrFetchDefaultRedirectionUrl,
@@ -96,6 +97,23 @@ describe('getDefaultRedirectionUrl', () => {
     await getDefaultRedirectionUrl()
     expect(AsyncStorage.getItem).toHaveBeenCalledWith(
       strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY
+    )
+  })
+})
+
+describe('setDefaultRedirection', () => {
+  const client = createMockClient({}) as CozyClient
+
+  beforeAll(() => {
+    jest.resetAllMocks()
+  })
+
+  it('should set default redirection in async storage', async () => {
+    mockedFormatRedirectLink.mockReturnValue(DRIVE_URL)
+    await setDefaultRedirection('drive/', client)
+    expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+      strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY,
+      DRIVE_URL
     )
   })
 })
