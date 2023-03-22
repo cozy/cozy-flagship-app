@@ -6,14 +6,16 @@ To try notifications, you will need a Firebase project id (to target the good en
 
 Two Firebase projects have been created, one for development environnement (_cozy-flagship-app-push-dev_) and one for production environment (_cozy-flagship-app-push-prod_). These projects are automatically linked to the app build.
 
-Android (based on flavors)
+**Android (based on flavors)**
 
  - `yarn android --variant=devDebug` -> _cozy-flagship-app-push-dev_ and app in debug
  - `yarn android --variant=prodDebug` -> _cozy-flagship-app-push-prod_ and app in debug
  - `yarn android --variant=devRelease` -> _cozy-flagship-app-push-dev_ and app in release
  - `yarn android --variant=prodRelease` -> _cozy-flagship-app-push-prod_ and app in release
 
-iOS (based on targets)
+To build `devRelease` or `prodRelease` locally, you may need to uncomment `signingConfig` in _android/app/build.gradle_.
+
+**iOS (based on targets)**
 
  - Target CozyReactNativeDev -> _cozy-flagship-app-push-dev_
  - Target CozyReactNative -> _cozy-flagship-app-push-prod_
