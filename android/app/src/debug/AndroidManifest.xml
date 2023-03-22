@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <uses-sdk tools:overrideLibrary="androidx.core.splashscreen" />
 
@@ -16,8 +17,7 @@
       <meta-data android:name="google_analytics_ssaid_collection_enabled" android:value="false" />
       <meta-data
         android:name="com.google.firebase.messaging.default_notification_icon"
-        android:resource="@mipmap/ic_stat_ic_notification"
-      />
+        android:resource="@mipmap/ic_stat_ic_notification" />
       <meta-data
         android:name="com.google.firebase.messaging.default_notification_color"
         android:resource="@color/black"
