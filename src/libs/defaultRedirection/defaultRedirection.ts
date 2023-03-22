@@ -27,7 +27,7 @@ export type DefaultRedirectionUrl = string | null
 export const fetchDefaultRedirectionUrl = async (
   client: CozyClient
 ): Promise<DefaultRedirectionUrl> => {
-  let defaultRedirectionUrl: DefaultRedirectionUrl
+  let defaultRedirectionUrl
 
   try {
     const { data } = (await client.query(
