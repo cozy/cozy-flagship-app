@@ -99,8 +99,30 @@ class LauncherView extends Component {
         })
       })
     } catch (err) {
-      log.error({ err })
-      return 'UNKNOWN_ERROR'
+      this.launcher.log({
+        level: 'error',
+        msg:
+          'launcherView.initKonnector.ensureKonnectorIsInstalled: ' +
+          err.message
+      })
+      return new Error('UNKNOWN_ERROR.KONNECTOR_INSTALL')
+    }
+    try {
+      if (this.state.konnector) {
+        await this.launcher.init({
+          bridgeOptions: {
+            pilotWebView: this.pilotWebView,
+            workerWebview: this.workerWebview
+          },
+          contentScript: get(this, 'state.konnector.content')
+        })
+      }
+    } catch (err) {
+      this.launcher.log({
+        level: 'error',
+        msg: 'launcherView.initKonnector.HANDSHAKE: ' + err.message
+      })
+      return new Error('UNKNOWN_ERROR.HANDSHAKE_FAILED')
     }
   }
 
@@ -143,16 +165,6 @@ class LauncherView extends Component {
     this.launcher.on('CREATED_ACCOUNT', this.onCreatedAccount)
     this.launcher.on('CREATED_JOB', this.onCreatedJob)
     this.launcher.on('STOPPED_JOB', this.onStoppedJob)
-
-    if (this.state.konnector) {
-      await this.launcher.init({
-        bridgeOptions: {
-          pilotWebView: this.pilotWebView,
-          workerWebview: this.workerWebview
-        },
-        contentScript: get(this, 'state.konnector.content')
-      })
-    }
 
     startTimeout(() => {
       this.launcher.stop({ message: TIMEOUT_KONNECTOR_ERROR })
