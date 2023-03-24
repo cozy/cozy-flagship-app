@@ -31,7 +31,7 @@ export const fetchDefaultRedirectionUrl = async (
 
   try {
     const { data } = (await client.query(
-      Q('io.cozy.settings').getById('instance'),
+      Q('io.cozy.settings').getById('io.cozy.settings.instance'),
       {
         as: 'io.cozy.settings/instance'
       }
