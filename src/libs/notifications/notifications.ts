@@ -2,48 +2,59 @@ import { Platform } from 'react-native'
 import messaging, {
   FirebaseMessagingTypes
 } from '@react-native-firebase/messaging'
+import Minilog from '@cozy/minilog'
 
-import CozyClient, { generateWebLink } from 'cozy-client'
+import CozyClient, {
+  generateWebLink,
+  deconstructRedirectLink
+} from 'cozy-client'
 
 import { navigate } from '/libs/RootNavigation'
 import { navigateToApp } from '/libs/functions/openApp'
 import { saveNotificationDeviceToken } from '/libs/client'
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
+
+const log = Minilog('notifications')
 
 interface NotificationData {
-  pathname: string
-  url: string
-  slug: string
-  appName: string
+  redirectLink: string
 }
 
 export const navigateFromNotification = (
   client: CozyClient,
   notification: FirebaseMessagingTypes.RemoteMessage
 ): void => {
-  const { data: { pathname, url, slug } = {} as NotificationData } =
-    notification
+  const { data: { redirectLink } = {} as NotificationData } = notification
 
-  if (!pathname || !url || !slug) return
+  try {
+    const { slug, pathname, hash } = deconstructRedirectLink(redirectLink)
 
-  const subDomainType = client.getInstanceOptions().capabilities.flat_subdomains
-    ? 'flat'
-    : 'nested'
+    const subDomainType = client.getInstanceOptions().capabilities
+      .flat_subdomains
+      ? 'flat'
+      : 'nested'
 
-  const href = generateWebLink({
-    cozyUrl: client.getStackClient().uri,
-    subDomainType,
-    pathname,
-    hash: url,
-    slug,
-    searchParams: []
-  })
+    const href = generateWebLink({
+      cozyUrl: client.getStackClient().uri,
+      subDomainType,
+      slug,
+      pathname,
+      hash,
+      searchParams: []
+    })
 
-  navigateToApp({
-    navigation: { navigate },
-    href,
-    slug,
-    iconParams: undefined
-  })
+    navigateToApp({
+      navigation: { navigate },
+      slug,
+      href,
+      iconParams: undefined
+    })
+  } catch (error) {
+    const errorMessage = getErrorMessage(error)
+    log.error(
+      `Something went wrong while trying to navigate from notification: ${errorMessage}`
+    )
+  }
 }
 
 export const handleInitialNotification = async (
