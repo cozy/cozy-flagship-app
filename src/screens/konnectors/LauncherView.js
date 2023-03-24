@@ -8,7 +8,6 @@ import {
 } from '/components/webviews/jsInteractions/jsLogInterception'
 import { shouldEnableKonnectorExtensiveLog } from '/core/tools/env'
 
-import debounce from 'lodash/debounce'
 import get from 'lodash/get'
 import React, { Component } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
@@ -43,14 +42,12 @@ class LauncherView extends Component {
     this.onCreatedAccount = this.onCreatedAccount.bind(this)
     this.onCreatedJob = this.onCreatedJob.bind(this)
     this.onStoppedJob = this.onStoppedJob.bind(this)
-    this.onWorkerWillReload = debounce(this.onWorkerWillReload.bind(this), 1000)
     this.pilotWebView = null
     this.workerWebview = null
     this.state = {
       userAgent: undefined,
       konnector: null,
-      worker: {},
-      workerReady: false
+      worker: {}
     }
   }
 
@@ -164,9 +161,6 @@ class LauncherView extends Component {
 
     this.launcher.on('SET_USER_AGENT', userAgent => {
       this.setState({ userAgent })
-    })
-    this.launcher.on('WORKER_READY', () => {
-      this.setState({ workerReady: true })
     })
     this.launcher.on('CREATED_ACCOUNT', this.onCreatedAccount)
     this.launcher.on('CREATED_JOB', this.onCreatedJob)
@@ -302,9 +296,7 @@ class LauncherView extends Component {
     if (event.nativeEvent && event.nativeEvent.data) {
       const msg = JSON.parse(event.nativeEvent.data)
       if (msg.message === 'NEW_WORKER_INITIALIZING') {
-        if (this.state.workerReady) {
-          this.onWorkerWillReload(event)
-        }
+        this.launcher.emit('NEW_WORKER_INITIALIZING')
         return
       } else if (['load', 'DOMContentLoaded'].includes(msg.message)) {
         this.launcher.emit('worker:' + msg.message)
@@ -313,22 +305,6 @@ class LauncherView extends Component {
     }
     if (this.launcher) {
       this.launcher.onWorkerMessage(event)
-    }
-  }
-  /**
-   * Detection of a page reload in the worker webview
-   *
-   * @param {Object} [event={}]
-   */
-  onWorkerWillReload(event = {}) {
-    try {
-      if (this.launcher && this.workerWebview) {
-        this.setState({ workerReady: false })
-        return this.launcher.onWorkerWillReload(event)
-      }
-    } catch (e) {
-      log.error('Caught error in onWorkerWillReload', e.message)
-      throw e
     }
   }
 }
