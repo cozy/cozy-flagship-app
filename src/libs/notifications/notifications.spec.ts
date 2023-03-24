@@ -15,7 +15,7 @@ describe('navigateFromNotification', () => {
   it('should navigate to app to generated url', () => {
     // Given
     const notification = {
-      data: { pathname: '/', url: 'new', slug: 'contacts' }
+      data: { redirectLink: 'contacts/#/new' }
     }
 
     // When
