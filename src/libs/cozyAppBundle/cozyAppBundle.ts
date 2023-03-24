@@ -78,12 +78,18 @@ export const updateCozyAppBundle = async ({
     (await getCurrentAppConfigurationForFqdnAndSlug(fqdn, slug)) ?? {}
   const stackVersion = await fetchCozyAppVersion(slug, client, type)
 
+  const destinationPath = getCozyAppFolderPathForVersion({
+    client,
+    slug,
+    version: stackVersion
+  })
+
   log.debug(
     `Current local version for ${slug} is '${
       currentVersion ?? 'unknown'
     }', stack version is '${stackVersion}'`
   )
-
+  log.debug(`Current path for ${slug} is ${destinationPath}`)
   if (currentVersion === stackVersion) {
     log.debug(`Nothing to update`)
     return
@@ -94,12 +100,6 @@ export const updateCozyAppBundle = async ({
     stackVersion,
     client
   )
-
-  const destinationPath = getCozyAppFolderPathForVersion({
-    client,
-    slug,
-    version: stackVersion
-  })
 
   await deleteVersionBundleFromLocalFilesIfExists({
     client,
