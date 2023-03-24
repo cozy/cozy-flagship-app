@@ -4,6 +4,7 @@ import MicroEE from 'microee'
 
 import Launcher from './Launcher'
 import ContentScriptBridge from './bridge/ContentScriptBridge'
+import debounce from 'lodash/debounce'
 
 import { getKonnectorBundle } from '/libs/cozyAppBundle/cozyAppBundle.functions'
 
@@ -36,7 +37,7 @@ class ReactNativeLauncher extends Launcher {
       'getCookieByDomainAndName',
       'getCookieFromKeychainByName'
     ]
-    this.workerListenedEventsNames = ['log', 'workerEvent', 'workerReady']
+    this.workerListenedEventsNames = ['log', 'workerEvent']
 
     this.controller = new AbortController()
 
@@ -112,6 +113,13 @@ class ReactNativeLauncher extends Launcher {
       })
     ]
     await Promise.all(promises)
+
+    // we subscribe to this event only once both bridges are initialized or else we will
+    // receive this event also for the first worker page load
+    this.on(
+      'NEW_WORKER_INITIALIZING',
+      debounce(this.onWorkerWillReload.bind(this))
+    )
   }
 
   /**
@@ -362,7 +370,7 @@ class ReactNativeLauncher extends Launcher {
       await this.worker.init({
         exposedMethodsNames: this.workerMethodNames,
         listenedEventsNames: this.workerListenedEventsNames,
-        label: 'worker'
+        label: 'launcher => worker'
       })
       await this.worker.call('setContentScriptType', 'worker')
     } catch (err) {
@@ -386,7 +394,7 @@ class ReactNativeLauncher extends Launcher {
   }) {
     // the bridge must be exposed before the call to the ContentScriptBridge.init function or else the init sequence won't work
     // since the init sequence needs an already working bridge
-    this.pilot = new ContentScriptBridge({ label: 'pilot' })
+    this.pilot = new ContentScriptBridge({ label: 'launcher => pilot' })
     try {
       await this.pilot.init({
         root: this,
@@ -415,7 +423,7 @@ class ReactNativeLauncher extends Launcher {
   }) {
     // the bridge must be exposed before the call to the ContentScriptBridge.init function or else the init sequence won't work
     // since the init sequence needs an already working bridge
-    this.worker = new ContentScriptBridge({ label: 'worker' })
+    this.worker = new ContentScriptBridge({ label: 'launcher => worker' })
     try {
       await this.worker.init({
         root: this,
@@ -543,13 +551,6 @@ class ReactNativeLauncher extends Launcher {
   }
 
   /**
-   * Called when the worker is ready to be called
-   */
-  workerReady() {
-    this.emit('WORKER_READY')
-  }
-
-  /**
    * Relay between the pilot webview and the bridge to allow the bridge to work
    */
   onPilotMessage(event) {
@@ -572,10 +573,13 @@ class ReactNativeLauncher extends Launcher {
   /**
    * Actions to do before the worker reloads : restart the connection
    */
-  onWorkerWillReload(event) {
+  async onWorkerWillReload(event) {
     this.emit('WORKER_WILL_RELOAD')
-    this.restartWorkerConnection(event)
-    return true // allows the webview to load the new page
+    try {
+      await this.restartWorkerConnection(event)
+    } catch (err) {
+      log.error('Error while reloading the worker', err)
+    }
   }
 }
 
