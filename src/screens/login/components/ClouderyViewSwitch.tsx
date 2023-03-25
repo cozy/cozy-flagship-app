@@ -7,6 +7,7 @@ import React, {
   useState
 } from 'react'
 import { StyleSheet, View } from 'react-native'
+import type { WebView, WebViewNavigation } from 'react-native-webview'
 
 import { routes } from '/constants/routes'
 import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
@@ -22,24 +23,16 @@ const log = Minilog('ClouderyViewSwitchProps')
 export const CLOUDERY_MODE_LOGIN = 'CLOUDERY_MODE_LOGIN'
 export const CLOUDERY_MODE_SIGNING = 'CLOUDERY_MODE_SIGNING'
 
-interface WebViewRef {
-  goBack: () => void
-}
-
-interface NavState {
-  canGoBack: boolean
-}
-
 interface ClouderyViewSwitchProps {
   clouderyMode: 'CLOUDERY_MODE_LOGIN' | 'CLOUDERY_MODE_SIGNING'
-  handleNavigation: () => void
+  handleNavigation: (request: WebViewNavigation) => boolean
   setCanGoBack: (newState: boolean) => void
   urls: ClouderyUrls
   setLoading: (newState: boolean) => void
 }
 
 interface ClouderyWebViewProps {
-  handleNavigation: () => void
+  handleNavigation: (request: WebViewNavigation) => boolean
   onLoadEnd: () => void
   setCanGoBack: (newState: boolean) => void
   uri: string
@@ -64,8 +57,8 @@ export const ClouderyViewSwitch = forwardRef(
     }: ClouderyViewSwitchProps,
     ref
   ) => {
-    const webviewLoginRef = useRef<WebViewRef>()
-    const webviewSigninRef = useRef<WebViewRef>()
+    const webviewLoginRef = useRef<WebView>()
+    const webviewSigninRef = useRef<WebView>()
     const [loginLoaded, setLoginLoaded] = useState(false)
     const [signinLoaded, setSigninLoaded] = useState(false)
 
@@ -167,7 +160,7 @@ const ClouderyWebView = forwardRef(
       <SupervisedWebView
         source={{ uri: uri }}
         ref={ref}
-        onNavigationStateChange={(event: NavState): void => {
+        onNavigationStateChange={(event: WebViewNavigation): void => {
           setCanGoBack(event.canGoBack)
         }}
         onShouldStartLoadWithRequest={handleNavigation}
