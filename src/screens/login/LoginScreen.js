@@ -40,6 +40,7 @@ const ERROR_STEP = 'ERROR_STEP'
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
 const LoginSteps = ({
+  clouderyMode,
   disabledFocus,
   goBack,
   navigation,
@@ -328,6 +329,7 @@ const LoginSteps = ({
   if (state.step === CLOUDERY_STEP) {
     return (
       <ClouderyView
+        clouderyMode={clouderyMode}
         disabledFocus={disabledFocus}
         setInstanceData={setInstanceData}
       />
@@ -402,6 +404,7 @@ const LoginSteps = ({
 }
 
 export const LoginScreen = ({
+  clouderyMode,
   disabledFocus,
   goBack,
   navigation,
@@ -421,6 +424,7 @@ export const LoginScreen = ({
     >
       <View style={{ height: dimensions.statusBarHeight }} />
       <LoginSteps
+        clouderyMode={clouderyMode}
         navigation={navigation}
         route={route}
         setClient={setClient}
