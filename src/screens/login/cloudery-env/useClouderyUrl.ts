@@ -1,23 +1,26 @@
 import { useEffect, useState } from 'react'
 
-import { getClouderyUrl } from '/screens/login/cloudery-env/clouderyEnv'
+import {
+  ClouderyUrls,
+  getClouderyUrls
+} from '/screens/login/cloudery-env/clouderyEnv'
 
 export interface UseClouderyUrlHook {
-  uri?: string
+  urls?: ClouderyUrls
 }
 
 export const useClouderyUrl = (): UseClouderyUrlHook => {
-  const [uri, setUri] = useState<string | undefined>(undefined)
+  const [urls, setUrls] = useState<ClouderyUrls | undefined>(undefined)
 
   useEffect(function getClouderyUri() {
     const doAsync = async (): Promise<void> => {
-      const clouderyUrl = await getClouderyUrl()
+      const clouderyUrl = await getClouderyUrls()
 
-      setUri(clouderyUrl)
+      setUrls(clouderyUrl)
     }
 
     void doAsync()
   }, [])
 
-  return { uri }
+  return { urls }
 }

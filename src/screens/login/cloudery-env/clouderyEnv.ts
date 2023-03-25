@@ -9,6 +9,18 @@ const CLOUDERY_DEFAULT_ENV = 'PROD'
 type ClouderyEnvTuple = typeof ALL_CLOUDERY_ENV
 export type ClouderyEnv = ClouderyEnvTuple[number]
 
+interface PartnerClouderyUrls {
+  loginUrl: string
+  isOnboardingPartner: true
+}
+interface CozyClouderyUrls {
+  loginUrl: string
+  signinUrl: string
+  isOnboardingPartner: false
+}
+
+export type ClouderyUrls = CozyClouderyUrls | PartnerClouderyUrls
+
 export const isClouderyEnv = (value: string): value is ClouderyEnv => {
   return ALL_CLOUDERY_ENV.includes(value as ClouderyEnv)
 }
@@ -43,7 +55,7 @@ const getOnboardingPartnerRelativeUrl = async (): Promise<string | null> => {
   return `/v2/${source}/${context}`
 }
 
-export const getClouderyUrl = async (): Promise<string> => {
+export const getClouderyUrls = async (): Promise<ClouderyUrls> => {
   const clouderyEnv = await getClouderyEnvFromAsyncStorage()
 
   const baseUris: Record<ClouderyEnv, string> = {
@@ -54,12 +66,28 @@ export const getClouderyUrl = async (): Promise<string> => {
   const baseUri = baseUris[clouderyEnv]
 
   const onboardingPartnerPath = await getOnboardingPartnerRelativeUrl()
-  const relativeUri = onboardingPartnerPath ?? strings.cloudery.cozyRelativeUri
+  const relativeLoginUri =
+    onboardingPartnerPath ?? strings.cloudery.cozyLoginRelativeUri
+  const relativeSigninUri = strings.cloudery.cozySigninRelativeUri
 
   const queryString =
     Platform.OS === 'ios'
       ? strings.cloudery.iOSQueryString
       : strings.cloudery.androidQueryString
 
-  return `${baseUri}${relativeUri}?${queryString}`
+  const loginUrl = `${baseUri}${relativeLoginUri}?${queryString}`
+  const signinUrl = `${baseUri}${relativeSigninUri}?${queryString}`
+
+  if (onboardingPartnerPath) {
+    return {
+      isOnboardingPartner: true,
+      loginUrl
+    }
+  }
+
+  return {
+    loginUrl,
+    signinUrl,
+    isOnboardingPartner: false
+  }
 }
