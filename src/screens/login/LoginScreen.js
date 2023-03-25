@@ -272,7 +272,9 @@ const LoginSteps = ({
         }))
       } else {
         showSplashScreen()
-        await resetKeychainAndSaveLoginData(loginData)
+        if (!state.isOidc) {
+          await resetKeychainAndSaveLoginData(loginData)
+        }
         setClient(result.client)
       }
     } catch (error) {
@@ -316,7 +318,9 @@ const LoginSteps = ({
           }))
         } else {
           showSplashScreen()
-          await resetKeychainAndSaveLoginData(loginData)
+          if (!state.isOidc) {
+            await resetKeychainAndSaveLoginData(loginData)
+          }
           setClient(result.client)
         }
       } catch (error) {
@@ -339,7 +343,9 @@ const LoginSteps = ({
       })
 
       showSplashScreen()
-      await resetKeychainAndSaveLoginData(loginData)
+      if (!state.isOidc) {
+        await resetKeychainAndSaveLoginData(loginData)
+      }
       setClient(result.client)
     } catch (error) {
       if (error === OAUTH_USER_CANCELED_ERROR) {
