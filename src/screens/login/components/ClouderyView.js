@@ -44,9 +44,9 @@ export const ClouderyView = ({
   const [canGoBack, setCanGoBack] = useState(false)
 
   const handleNavigation = request => {
-    const instance = getUriFromRequest(request)
-
     if (request.loading) {
+      const instance = getUriFromRequest(request)
+
       if (instance) {
         const normalizedInstance = instance.toLowerCase()
         const fqdn = new URL(normalizedInstance).host
