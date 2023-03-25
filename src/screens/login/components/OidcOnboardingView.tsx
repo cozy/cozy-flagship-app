@@ -1,6 +1,13 @@
 import Minilog from '@cozy/minilog'
-import React, { useEffect, useState } from 'react'
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  BackHandler,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  View
+} from 'react-native'
+import type { WebView, WebViewNavigation } from 'react-native-webview'
 
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 
@@ -28,6 +35,8 @@ export const OidcOnboardingView = ({
 }: ClouderyWebViewProps): JSX.Element => {
   const [loading, setLoading] = useState(true)
   const [displayOverlay, setDisplayOverlay] = useState(true)
+  const webviewRef = useRef<WebView>()
+  const [canGoBack, setCanGoBack] = useState(false)
 
   const handleNavigation = (request: WebViewNavigation): boolean => {
     const createdInstance = parseOidcOnboardingFinishedUrl(request)
@@ -48,14 +57,34 @@ export const OidcOnboardingView = ({
     }
   }, [loading])
 
+  const handleBackPress = useCallback(() => {
+    if (!canGoBack) {
+      return false
+    }
+
+    webviewRef.current?.goBack()
+    return true
+  }, [canGoBack, webviewRef])
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+  }, [handleBackPress])
+
   const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
 
   return (
     <Wrapper style={styles.view} behavior="height">
       <SupervisedWebView
         source={{ uri: onboardUrl }}
+        ref={webviewRef}
         onShouldStartLoadWithRequest={handleNavigation}
         onLoadEnd={(): void => setLoading(false)}
+        onNavigationStateChange={(event: WebViewNavigation): void => {
+          setCanGoBack(event.canGoBack)
+        }}
         style={{
           backgroundColor: '#4b4b4b'
         }}
