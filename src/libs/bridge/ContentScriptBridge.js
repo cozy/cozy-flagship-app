@@ -2,7 +2,7 @@ import { ParentHandshake } from 'post-me'
 
 import { Bridge } from 'cozy-clisk'
 
-import { shouldEnableKonnectorPostMeLogger } from '/core/tools/env'
+import { shouldEnableKonnectorExtensiveLog } from '/core/tools/env'
 
 import ReactNativeLauncherMessenger from './ReactNativeLauncherMessenger'
 
@@ -20,7 +20,7 @@ export default class ContentScriptBridge extends Bridge {
     exposedMethodsNames = [],
     listenedEventsNames = [],
     webViewRef,
-    debug = shouldEnableKonnectorPostMeLogger()
+    debug = shouldEnableKonnectorExtensiveLog()
   } = {}) {
     if (root) {
       this.root = root

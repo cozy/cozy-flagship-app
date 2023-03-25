@@ -6,7 +6,7 @@ import {
   jsLogInterception,
   tryConsole
 } from '/components/webviews/jsInteractions/jsLogInterception'
-import { shouldEnableKonnectorPostMeLogger } from '/core/tools/env'
+import { shouldEnableKonnectorExtensiveLog } from '/core/tools/env'
 
 import debounce from 'lodash/debounce'
 import get from 'lodash/get'
@@ -197,7 +197,7 @@ class LauncherView extends Component {
         ? styles.workerVisible
         : styles.workerHidden
 
-    const debug = shouldEnableKonnectorPostMeLogger()
+    const debug = shouldEnableKonnectorExtensiveLog()
     const run = debug
       ? `
         (function() {
