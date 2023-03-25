@@ -149,17 +149,25 @@ const LoginSteps = ({
   )
 
   const cancelOauth = useCallback(() => {
-    setState(oldState => ({
-      ...oldState,
-      step: PASSWORD_STEP,
-      stepReadonly: false,
-      waitForTransition: false,
-      requestTransitionStart: false,
-      loginData: undefined,
-      sessionCode: undefined,
-      errorMessage: undefined,
-      errorMessage2FA: undefined
-    }))
+    setState(oldState => {
+      if (oldState.isOidc) {
+        return {
+          step: CLOUDERY_STEP
+        }
+      }
+
+      return {
+        ...oldState,
+        step: PASSWORD_STEP,
+        stepReadonly: false,
+        waitForTransition: false,
+        requestTransitionStart: false,
+        loginData: undefined,
+        sessionCode: undefined,
+        errorMessage: undefined,
+        errorMessage2FA: undefined
+      }
+    })
   }, [])
 
   const cancelLogin = useCallback(() => {
