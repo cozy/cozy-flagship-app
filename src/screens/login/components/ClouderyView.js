@@ -36,7 +36,7 @@ export const ClouderyView = ({
   setInstanceData,
   disabledFocus
 }) => {
-  const { uri } = useClouderyUrl()
+  const { urls } = useClouderyUrl()
   const [loading, setLoading] = useState(true)
   const [checkInstanceData, setCheckInstanceData] = useState()
   const webviewRef = useRef()
@@ -112,13 +112,14 @@ export const ClouderyView = ({
 
   return (
     <Wrapper style={styles.view} behavior="height">
-      {uri && (
+      {urls && (
         <ClouderyViewSwitch
+          clouderyMode={clouderyMode}
           handleNavigation={handleNavigation}
           ref={webviewRef}
           setCanGoBack={setCanGoBack}
           setLoading={setLoading}
-          uri={uri}
+          urls={urls}
         />
       )}
       {displayOverlay && (
