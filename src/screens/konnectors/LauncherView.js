@@ -2,6 +2,12 @@ import Minilog from '@cozy/minilog'
 
 import { withClient } from 'cozy-client'
 
+import {
+  jsLogInterception,
+  tryConsole
+} from '/components/webviews/jsInteractions/jsLogInterception'
+import { shouldEnableKonnectorPostMeLogger } from '/core/tools/env'
+
 import debounce from 'lodash/debounce'
 import get from 'lodash/get'
 import React, { Component } from 'react'
@@ -191,6 +197,16 @@ class LauncherView extends Component {
         ? styles.workerVisible
         : styles.workerHidden
 
+    const debug = shouldEnableKonnectorPostMeLogger()
+    const run = debug
+      ? `
+        (function() {
+         ${jsLogInterception}
+          return true;
+        })();
+        ${get(this, 'state.konnector.content')}
+      `
+      : get(this, 'state.konnector.content')
     return (
       <>
         {this.state.konnector ? (
@@ -209,10 +225,7 @@ class LauncherView extends Component {
                 sharedCookiesEnabled={true}
                 onMessage={this.onPilotMessage}
                 onError={this.onPilotError}
-                injectedJavaScriptBeforeContentLoaded={get(
-                  this,
-                  'state.konnector.content'
-                )}
+                injectedJavaScriptBeforeContentLoaded={run}
               />
             </View>
             <View style={workerStyle}>
@@ -241,10 +254,7 @@ class LauncherView extends Component {
                 sharedCookiesEnabled={true}
                 onMessage={this.onWorkerMessage}
                 onError={this.onWorkerError}
-                injectedJavaScriptBeforeContentLoaded={get(
-                  this,
-                  'state.konnector.content'
-                )}
+                injectedJavaScriptBeforeContentLoaded={run}
               />
             </View>
           </>
@@ -277,6 +287,7 @@ class LauncherView extends Component {
    * @param {Object} event
    */
   onPilotMessage(event) {
+    tryConsole(event, log, 'CONSOLE_PILOT')
     if (this.launcher) {
       this.launcher.onPilotMessage(event)
     }
@@ -287,6 +298,7 @@ class LauncherView extends Component {
    * @param {Object} event
    */
   onWorkerMessage(event) {
+    tryConsole(event, log, 'CONSOLE_WORKER')
     if (event.nativeEvent && event.nativeEvent.data) {
       const msg = JSON.parse(event.nativeEvent.data)
       if (msg.message === 'NEW_WORKER_INITIALIZING') {
