@@ -6,10 +6,14 @@ import { makeHTML } from '/components/makeHTML'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { makeHandlers } from '/libs/functions/makeHandlers'
 import { getColors } from '/ui/colors'
+import {
+  CLOUDERY_MODE_LOGIN,
+  CLOUDERY_MODE_SIGNING
+} from '/screens/login/components/ClouderyViewSwitch'
 import { LoginScreen } from '/screens/login/LoginScreen'
 import { useInstallReferrer } from '/screens/welcome/install-referrer/useInstallReferrer'
 
-const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
+const WelcomeView = ({ setIsWelcomeModalDisplayed, setClouderyMode }) => {
   const colors = getColors()
   return (
     <View
@@ -22,8 +26,14 @@ const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
     >
       <SupervisedWebView
         onMessage={makeHandlers({
-          onSignin: () => setIsWelcomeModalDisplayed(false),
-          onLogin: () => setIsWelcomeModalDisplayed(false)
+          onSignin: () => {
+            setClouderyMode(CLOUDERY_MODE_SIGNING)
+            setIsWelcomeModalDisplayed(false)
+          },
+          onLogin: () => {
+            setClouderyMode(CLOUDERY_MODE_LOGIN)
+            setIsWelcomeModalDisplayed(false)
+          }
         })}
         originWhitelist={['*']}
         source={{ html: makeHTML(WelcomePage), baseUrl: '' }}
@@ -38,6 +48,7 @@ const WelcomeView = ({ setIsWelcomeModalDisplayed }) => {
 export const WelcomeScreen = ({ navigation, route, setClient }) => {
   const [isWelcomeModalDisplayed, setIsWelcomeModalDisplayed] = useState(true)
   const { isInitialized, onboardingPartner } = useInstallReferrer()
+  const [clouderyMode, setClouderyMode] = useState(CLOUDERY_MODE_LOGIN)
 
   const handleBackPress = () => {
     if (isWelcomeModalDisplayed || onboardingPartner?.hasReferral) {
@@ -52,6 +63,7 @@ export const WelcomeScreen = ({ navigation, route, setClient }) => {
   return (
     <>
       <LoginScreen
+        clouderyMode={clouderyMode}
         style={styles.view}
         disabledFocus={isWelcomeModalDisplayed}
         navigation={navigation}
@@ -60,7 +72,10 @@ export const WelcomeScreen = ({ navigation, route, setClient }) => {
         goBack={handleBackPress}
       />
       {isWelcomeModalDisplayed && !onboardingPartner.hasReferral && (
-        <WelcomeView setIsWelcomeModalDisplayed={setIsWelcomeModalDisplayed} />
+        <WelcomeView
+          setIsWelcomeModalDisplayed={setIsWelcomeModalDisplayed}
+          setClouderyMode={setClouderyMode}
+        />
       )}
     </>
   )
