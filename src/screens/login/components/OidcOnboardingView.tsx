@@ -7,11 +7,19 @@ import {
   StyleSheet,
   View
 } from 'react-native'
-import type { WebView, WebViewNavigation } from 'react-native-webview'
+import type {
+  WebView,
+  WebViewMessageEvent,
+  WebViewNavigation
+} from 'react-native-webview'
 
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 
 import { parseOidcOnboardingFinishedUrl } from './functions/oidc'
+import {
+  fetchBackgroundOnLoad,
+  tryProcessClouderyBackgroundMessage
+} from './functions/clouderyBackgroundFetcher'
 
 import { NetService } from '/libs/services/NetService'
 import { routes } from '/constants/routes'
@@ -19,8 +27,10 @@ import { routes } from '/constants/routes'
 const log = Minilog('OidcOnboardingView')
 
 interface ClouderyWebViewProps {
+  backgroundColor: string
   code: string
   onboardUrl: string
+  setBackgroundColor: (color: string) => void
   startOidcOAuth: (fqdn: string, code: string) => void
 }
 
@@ -29,8 +39,10 @@ interface ClouderyWebViewProps {
  * navigation to OIDCInstanceCreationResult url occurs
  */
 export const OidcOnboardingView = ({
+  backgroundColor,
   code,
   onboardUrl,
+  setBackgroundColor,
   startOidcOAuth
 }: ClouderyWebViewProps): JSX.Element => {
   const [loading, setLoading] = useState(true)
@@ -73,6 +85,10 @@ export const OidcOnboardingView = ({
       BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
   }, [handleBackPress])
 
+  const processMessage = (event: WebViewMessageEvent): void => {
+    tryProcessClouderyBackgroundMessage(event, setBackgroundColor)
+  }
+
   const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
 
   return (
@@ -80,13 +96,15 @@ export const OidcOnboardingView = ({
       <SupervisedWebView
         source={{ uri: onboardUrl }}
         ref={webviewRef}
+        injectedJavaScriptBeforeContentLoaded={fetchBackgroundOnLoad}
         onShouldStartLoadWithRequest={handleNavigation}
         onLoadEnd={(): void => setLoading(false)}
+        onMessage={processMessage}
         onNavigationStateChange={(event: WebViewNavigation): void => {
           setCanGoBack(event.canGoBack)
         }}
         style={{
-          backgroundColor: '#4b4b4b'
+          backgroundColor: backgroundColor
         }}
         onError={handleError}
       />
@@ -96,7 +114,7 @@ export const OidcOnboardingView = ({
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: '#4b4b4b'
+              backgroundColor: backgroundColor
             }
           ]}
         />
