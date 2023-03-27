@@ -7,7 +7,12 @@ import React, {
   useState
 } from 'react'
 import { StyleSheet, View } from 'react-native'
-import type { WebView, WebViewNavigation } from 'react-native-webview'
+import type {
+  WebView,
+  WebViewMessageEvent,
+  WebViewNavigation,
+  WebViewProps
+} from 'react-native-webview'
 import type { WebViewOpenWindowEvent } from 'react-native-webview/lib/WebViewTypes'
 
 import { routes } from '/constants/routes'
@@ -18,7 +23,11 @@ import { showInAppBrowser } from '/libs/intents/InAppBrowser'
 import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
 import { NetService } from '/libs/services/NetService'
 import { ClouderyUrls } from '/screens/login/cloudery-env/clouderyEnv'
-import { getColors } from '/ui/colors'
+
+import {
+  fetchBackgroundOnLoad,
+  tryProcessClouderyBackgroundMessage
+} from './functions/clouderyBackgroundFetcher'
 
 const log = Minilog('ClouderyViewSwitchProps')
 
@@ -28,14 +37,17 @@ export const CLOUDERY_MODE_SIGNING = 'CLOUDERY_MODE_SIGNING'
 const LOGIN_FLAGSHIP_URL = 'https://loginflagship'
 
 interface ClouderyViewSwitchProps {
+  backgroundColor: string
   clouderyMode: 'CLOUDERY_MODE_LOGIN' | 'CLOUDERY_MODE_SIGNING'
   handleNavigation: (request: WebViewNavigation) => boolean
   setCanGoBack: (newState: boolean) => void
   urls: ClouderyUrls
+  setBackgroundColor: (color: string) => void
   setLoading: (newState: boolean) => void
 }
 
 interface ClouderyWebViewProps {
+  backgroundColor: string
   handleNavigation: (request: WebViewNavigation) => boolean
   onLoadEnd: () => void
   setCanGoBack: (newState: boolean) => void
@@ -53,10 +65,12 @@ interface ClouderyWebViewProps {
 export const ClouderyViewSwitch = forwardRef(
   (
     {
+      backgroundColor,
       clouderyMode,
       handleNavigation,
       setCanGoBack,
       urls,
+      setBackgroundColor,
       setLoading
     }: ClouderyViewSwitchProps,
     ref
@@ -100,6 +114,10 @@ export const ClouderyViewSwitch = forwardRef(
       }
     }
 
+    const processMessage = (event: WebViewMessageEvent): void => {
+      tryProcessClouderyBackgroundMessage(event, setBackgroundColor)
+    }
+
     return (
       <>
         {!urls.isOnboardingPartner && (
@@ -118,6 +136,8 @@ export const ClouderyViewSwitch = forwardRef(
               setCanGoBack={setCanGoBack}
               handleNavigation={handleNavigation}
               onLoadEnd={onSigninLoadEnd}
+              onMessage={processMessage}
+              backgroundColor={backgroundColor}
             />
           </View>
         )}
@@ -136,6 +156,8 @@ export const ClouderyViewSwitch = forwardRef(
             setCanGoBack={setCanGoBack}
             handleNavigation={handleNavigation}
             onLoadEnd={onLoginLoadEnd}
+            onMessage={processMessage}
+            backgroundColor={backgroundColor}
           />
         </View>
       </>
@@ -150,16 +172,15 @@ ClouderyViewSwitch.displayName = 'ClouderyViewSwitch'
 const ClouderyWebView = forwardRef(
   (
     {
+      backgroundColor,
       handleNavigation,
       onLoadEnd,
       setCanGoBack,
       uri,
       ...other
-    }: ClouderyWebViewProps,
+    }: ClouderyWebViewProps & WebViewProps,
     ref
   ) => {
-    const colors = getColors()
-
     const localHandleNavigation = (request: WebViewNavigation): boolean => {
       const baseUrl = new URL(uri)
       const targetUrl = new URL(request.url)
@@ -190,7 +211,7 @@ const ClouderyWebView = forwardRef(
         }}
         injectedJavaScriptBeforeContentLoaded={run}
         style={{
-          backgroundColor: colors.primaryColor
+          backgroundColor: backgroundColor
         }}
         onError={handleError}
         {...other}
@@ -200,7 +221,8 @@ const ClouderyWebView = forwardRef(
 )
 ClouderyWebView.displayName = 'WebView'
 
-const run = `
+const run =
+  `
     (function() {
       ${jsCozyGlobal()}
 
@@ -208,7 +230,7 @@ const run = `
 
       return true;
     })();
-  `
+  ` + fetchBackgroundOnLoad
 
 const handleError = async (webviewErrorEvent: unknown): Promise<void> => {
   try {

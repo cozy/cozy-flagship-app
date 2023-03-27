@@ -10,7 +10,6 @@ import {
 import { rootCozyUrl } from 'cozy-client'
 
 import strings from '/constants/strings.json'
-import { getColors } from '/ui/colors'
 import { getUriFromRequest } from '/libs/functions/getUriFromRequest'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
@@ -36,9 +35,11 @@ import {
  * @returns {import('react').ComponentClass}
  */
 export const ClouderyView = ({
+  backgroundColor,
   clouderyMode,
   setInstanceData,
   disabledFocus,
+  setBackgroundColor,
   setError,
   startOidcOAuth,
   startOidcOnboarding
@@ -47,7 +48,6 @@ export const ClouderyView = ({
   const [loading, setLoading] = useState(true)
   const [checkInstanceData, setCheckInstanceData] = useState()
   const webviewRef = useRef()
-  const colors = getColors()
   const [canGoBack, setCanGoBack] = useState(false)
 
   const handleNavigation = request => {
@@ -157,6 +157,8 @@ export const ClouderyView = ({
           setCanGoBack={setCanGoBack}
           setLoading={setLoading}
           urls={urls}
+          backgroundColor={backgroundColor}
+          setBackgroundColor={setBackgroundColor}
         />
       )}
       {displayOverlay && (
@@ -165,7 +167,7 @@ export const ClouderyView = ({
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: colors.primaryColor
+              backgroundColor: backgroundColor
             }
           ]}
         />
