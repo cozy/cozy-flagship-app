@@ -360,8 +360,8 @@ class ReactNativeLauncher extends Launcher {
   /**
    * Reestablish the connection between launcher and the worker after a web page reload
    */
-  async restartWorkerConnection(event) {
-    log.info('restarting worker', event)
+  async restartWorkerConnection() {
+    log.info('restarting worker')
     this.waitForWorkerEvent('load') // not awaited on purpose to make the restart the fastest possible
     this.waitForWorkerEvent('DOMContentLoaded') // not awaited on purpose to make the restart the fastest possible
 
