@@ -31,7 +31,14 @@ import {
  * then the instance data is returned to parent component through `setInstanceData()`
  *
  * @param {object} props
- * @param {setInstanceData} props.setInstanceData
+ * @param {string} props.backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
+ * @param {'CLOUDERY_MODE_LOGIN'|'CLOUDERY_MODE_SIGNING'} props.clouderyMode
+ * @param {setInstanceData} props.setInstanceData - Set instance data (fqdn and origin) to start the Login process
+ * @param {boolean} props.disabledFocus - Boolean stating if the Webview can get focus (used to trigger auto-focus on email field)
+ * @param {setBackgroundColor} props.setBackgroundColor - Set the LoginScreen's background color (used for overlay and navigation bars)
+ * @param {setErrorCallback} props.setError - Display the given error
+ * @param {startOidcOAuth} props.startOidcOAuth - Start the OIDC Oauth process
+ * @param {startOidcOnboarding} props.startOidcOnboarding - Start the OIDC Onboarding process
  * @returns {import('react').ComponentClass}
  */
 export const ClouderyView = ({
