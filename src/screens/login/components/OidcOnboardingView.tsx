@@ -14,15 +14,13 @@ import type {
 } from 'react-native-webview'
 
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
-
-import { parseOidcOnboardingFinishedUrl } from './functions/oidc'
+import { routes } from '/constants/routes'
+import { NetService } from '/libs/services/NetService'
 import {
   fetchBackgroundOnLoad,
   tryProcessClouderyBackgroundMessage
-} from './functions/clouderyBackgroundFetcher'
-
-import { NetService } from '/libs/services/NetService'
-import { routes } from '/constants/routes'
+} from '/screens/login/components/functions/clouderyBackgroundFetcher'
+import { parseOidcOnboardingFinishedUrl } from '/screens/login/components/functions/oidc'
 
 const log = Minilog('OidcOnboardingView')
 
