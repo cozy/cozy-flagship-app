@@ -43,11 +43,13 @@ const ERROR_STEP = 'ERROR_STEP'
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
 const LoginSteps = ({
+  backgroundColor,
   clouderyMode,
   disabledFocus,
   goBack,
   navigation,
   route,
+  setBackgroundColor,
   setClient
 }) => {
   const { showSplashScreen } = useSplashScreen()
@@ -395,8 +397,10 @@ const LoginSteps = ({
   if (state.step === CLOUDERY_STEP) {
     return (
       <ClouderyView
+        backgroundColor={backgroundColor}
         clouderyMode={clouderyMode}
         disabledFocus={disabledFocus}
+        setBackgroundColor={setBackgroundColor}
         setInstanceData={setInstanceData}
         startOidcOAuth={startOidcOAuth}
         startOidcOnboarding={startOidcOnboarding}
@@ -437,8 +441,10 @@ const LoginSteps = ({
     return (
       <>
         <OidcOnboardingView
+          backgroundColor={backgroundColor}
           onboardUrl={state.oidcOnboardUrl}
           code={state.oidcCode}
+          setBackgroundColor={setBackgroundColor}
           startOidcOAuth={startOidcOAuth}
         />
       </>
@@ -493,21 +499,24 @@ export const LoginScreen = ({
   setClient
 }) => {
   const colors = getColors()
+  const [backgroundColor, setBackgroundColor] = useState(colors.primaryColor)
   const dimensions = useDimensions()
   return (
     <View
       style={[
         styles.view,
         {
-          backgroundColor: colors.primaryColor
+          backgroundColor: backgroundColor
         }
       ]}
     >
       <View style={{ height: dimensions.statusBarHeight }} />
       <LoginSteps
+        backgroundColor={backgroundColor}
         clouderyMode={clouderyMode}
         navigation={navigation}
         route={route}
+        setBackgroundColor={setBackgroundColor}
         setClient={setClient}
         disabledFocus={disabledFocus}
         goBack={goBack}
