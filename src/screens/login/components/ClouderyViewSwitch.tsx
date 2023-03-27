@@ -23,11 +23,10 @@ import { showInAppBrowser } from '/libs/intents/InAppBrowser'
 import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
 import { NetService } from '/libs/services/NetService'
 import { ClouderyUrls } from '/screens/login/cloudery-env/clouderyEnv'
-
 import {
   fetchBackgroundOnLoad,
   tryProcessClouderyBackgroundMessage
-} from './functions/clouderyBackgroundFetcher'
+} from '/screens/login/components/functions/clouderyBackgroundFetcher'
 
 const log = Minilog('ClouderyViewSwitchProps')
 
