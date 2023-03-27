@@ -69,10 +69,7 @@ BODY
       "body": "Description"
     },
     "data": {
-      "url": "new",
-      "slug": "contacts",
-      "appName": "contacts",
-      "pathname": "/"
+      "redirectLink": "contacts/#/new" // the link to open when you click on the notification
     }
   }
 }
@@ -94,9 +91,6 @@ You can drag'n'drop on the iOS simulator a file called _test.apns_ with the cont
     }
   },
   "gcm.message_id": "123",
-  "url": "new",
-  "slug": "contacts",
-  "appName": "contacts",
-  "pathname": "/"
+  "redirectLink": "contacts/#/new" // the link to open when you click on the notification
 }
 ```
