@@ -97,6 +97,28 @@
  */
 
 /**
+ * Set the LoginScreen Background color.
+ * @callback setBackgroundColor
+ * @param {string} color
+ */
+
+/**
+ * Start OIDC Oauth process.
+ * @callback startOidcOAuth
+ * @param {string} fqdn
+ * @param {string} code
+ * @returns {Promise<void>}
+ */
+
+/**
+ * Start OIDC Onboarding process.
+ * @callback startOidcOnboarding
+ * @param {string} onboardUrl
+ * @param {string} code
+ * @returns {Promise<void>}
+ */
+
+/**
  * Set error.
  * @callback setErrorCallback
  * @param {object} error
