@@ -1,10 +1,10 @@
 import Minilog from '@cozy/minilog'
 import CookieManager from '@react-native-cookies/cookies'
+import debounce from 'lodash/debounce'
 import MicroEE from 'microee'
 
 import Launcher from './Launcher'
 import ContentScriptBridge from './bridge/ContentScriptBridge'
-import debounce from 'lodash/debounce'
 
 import { getKonnectorBundle } from '/libs/cozyAppBundle/cozyAppBundle.functions'
 
