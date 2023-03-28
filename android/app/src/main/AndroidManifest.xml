@@ -50,13 +50,13 @@
           <category android:name="android.intent.category.BROWSABLE" />
           <data android:scheme="cozy" />
         </intent-filter>
-        <intent-filter>
+        <intent-filter android:autoVerify="true">
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
-          <data android:scheme="https"
-            android:host="links.mycozy.cloud"
-            android:pathPrefix="/flagship" />
+          <data android:scheme="https" />
+          <data android:host="links.mycozy.cloud" />
+          <data android:pathPrefix="/flagship" />
         </intent-filter>
       </activity>
       <activity
