@@ -18,18 +18,22 @@ import { shouldDisableGetIndex } from '/core/tools/env'
 
 const log = Minilog('IndexGenerator')
 
-// The slug's allowlist should be use to list apps
+// The slug's allowlist should be used to list apps
 // that are proven to work correctly when injected using HttpServer
 // If not present in this list, then slug will be served from cozy-stack
+// We also choose to add a blocklist but use it as a last resort
 // Current known bugs are:
 // - mespapiers cannot be injected until we fix window.history bug on iOS
+// - drive cannot be injected until we fix window.history bug on iOS (bug in OnlyOffice)
 // - settings cannot be injected until we modernize it by doing all queries through
 //   cozy-client and correctly handle `https` override with `isSecureProtocol` parameter
-// - drive cannot be injected until we fix window.history bug on iOS (bug in OnlyOffice)
+// - cozy-pass-web cannot be injected because fetch with { mode: 'no-cors' } does not work
 const slugAllowList = [
   { platform: 'ALL', slug: 'home' },
   { platform: 'android', slug: 'ALL' }
 ]
+
+const slugBlockList = [{ platform: 'ALL', slug: 'passwords' }]
 
 const initLocalBundleIfNotExist = async (fqdn, slug) => {
   if (slug !== 'home') {
@@ -67,10 +71,17 @@ const isSlugInAllowlist = currentSlug =>
       (slug === currentSlug && platform === Platform.OS)
   )
 
+const isSlugInBlocklist = currentSlug =>
+  slugBlockList.some(
+    ({ slug, platform }) =>
+      (slug === currentSlug && platform === 'ALL') ||
+      (slug === currentSlug && platform === Platform.OS)
+  )
+
 export const getIndexForFqdnAndSlug = async (fqdn, slug) => {
   if (shouldDisableGetIndex()) return false // Make cozy-app hosted by webpack-dev-server work with HTTPServer
 
-  if (!isSlugInAllowlist(slug)) return false
+  if (!isSlugInAllowlist(slug) || isSlugInBlocklist(slug)) return false
 
   await initLocalBundleIfNotExist(fqdn, slug)
 
