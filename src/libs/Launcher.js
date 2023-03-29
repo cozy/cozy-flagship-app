@@ -6,6 +6,7 @@ import set from 'lodash/set'
 import { Q, models } from 'cozy-client'
 import { saveFiles, saveBills, saveIdentity } from 'cozy-clisk'
 
+import { cleanExistingAccountsForKonnector } from './Launcher.functions'
 import { ensureKonnectorFolder } from './folder'
 import { saveCredential, getCredential, removeCredential } from './keychain'
 import { dataURItoArrayBuffer } from './utils'
@@ -216,6 +217,9 @@ export default class Launcher {
       log.debug(
         `ensureAccountAndTriggerAndJob: found no account in start context. Creating one`
       )
+
+      await cleanExistingAccountsForKonnector(client, konnector.slug, log)
+
       const accountData = models.account.buildAccount(konnector, {})
       accountData._type = 'io.cozy.accounts'
       const accountResponse = await client.save(accountData)
