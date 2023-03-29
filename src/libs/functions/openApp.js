@@ -1,5 +1,7 @@
 import { Alert, Linking, Platform } from 'react-native'
 
+import { Q } from 'cozy-client'
+
 import { getDimensions } from '/libs/dimensions'
 import { isSameCozy, openUrlInAppBrowser } from '/libs/functions/urlHelpers'
 import { navigate } from '/libs/RootNavigation'
@@ -39,6 +41,41 @@ const slugFallbacks = {
     id_playstore: 'io.cozy.pass',
     id_appstore: 'cozy-pass/id1502262449'
   }
+}
+
+/**
+ * Manage custom behavior for mobile app
+ * Open the native mobile app if no custom behavior
+ * @param {import("cozy-client/dist/index").CozyClient} client - CozyClient instance
+ * @param {any} navigation - The React navigation context
+ * @param {string} href - The app web url
+ * @param {AppManifest} app - The app information
+ * @returns {Promise}
+ */
+const mobileDispatcher = async (client, navigation, href, app, iconParams) => {
+  if (app.slug === 'passwords') {
+    try {
+      const {
+        data: { extension_installed: isVaultConfigured }
+      } = await client.fetchQueryAndGetFromState({
+        definition: Q('io.cozy.settings').getById('io.cozy.settings.bitwarden'),
+        options: {
+          as: 'io.cozy.settings/io.cozy.settings.bitwarden',
+          singleDocData: true
+        }
+      })
+
+      if (isVaultConfigured) {
+        return openAppNative(app.mobile)
+      } else {
+        return navigateToApp({ navigation, href, slug: app.slug, iconParams })
+      }
+    } catch {
+      return openAppNative(app.mobile)
+    }
+  }
+
+  return openAppNative(app.mobile)
 }
 
 /**
@@ -134,7 +171,7 @@ export const openApp = (client, navigation, href, app, iconParams) => {
   }
 
   if (app?.mobile) {
-    return openAppNative(app.mobile)
+    return mobileDispatcher(client, navigation, href, app, iconParams)
   }
 
   if (app?.slug) {
