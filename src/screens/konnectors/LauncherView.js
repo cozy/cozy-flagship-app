@@ -22,7 +22,7 @@ import {
   startTimeout,
   stopTimeout
 } from '/screens/konnectors/core/handleTimeout'
-import { navigate } from '/libs/RootNavigation'
+import { navigationRef } from '/libs/RootNavigation'
 import { TIMEOUT_KONNECTOR_ERROR } from '/libs/Launcher'
 
 const log = Minilog('LauncherView')
@@ -79,10 +79,13 @@ class LauncherView extends Component {
    *
    * @param {import('cozy-client/types/types').IOCozyAccount} - cozy account object
    */
-  onCreatedAccount(account) {
-    const { launcherContext } = this.props
-    const konnector = launcherContext.konnector.slug
-    navigate('default', { konnector, account: account._id })
+  onCreatedAccount({ _id: account }) {
+    const konnector = this.props.launcherContext.konnector.slug
+
+    // We already are in the Home Screen if we reach this point, so we just need to set params, no need to navigate.
+    // It will trigger a re-render of the Home Screen and the Homeview uri will be updated
+    // with the new account id and the konnector slug, making Harvest function properly.
+    navigationRef.setParams({ account, konnector })
   }
 
   /**
