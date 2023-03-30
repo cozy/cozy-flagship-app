@@ -16,6 +16,7 @@ import type {
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { routes } from '/constants/routes'
 import { NetService } from '/libs/services/NetService'
+import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import {
   fetchBackgroundOnLoad,
   tryProcessClouderyBackgroundMessage
@@ -47,10 +48,12 @@ export const OidcOnboardingView = ({
   const [displayOverlay, setDisplayOverlay] = useState(true)
   const webviewRef = useRef<WebView>()
   const [canGoBack, setCanGoBack] = useState(false)
+  const { setOnboardedRedirection } = useHomeStateContext()
 
   const handleNavigation = (request: WebViewNavigation): boolean => {
     const createdInstance = parseOidcOnboardingFinishedUrl(request)
     if (createdInstance) {
+      setOnboardedRedirection(createdInstance.onboardedRedirection ?? '')
       startOidcOAuth(createdInstance.fqdn, code)
       return false
     }
