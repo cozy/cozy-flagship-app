@@ -4,6 +4,8 @@ import {
   removeNotificationDeviceToken
 } from '/libs/client'
 
+import packageJSON from '../../package.json'
+
 import CozyClient from 'cozy-client'
 
 jest.genMockFromModule('cozy-client')
@@ -49,7 +51,11 @@ describe('client', () => {
           shouldRequireFlagshipPermissions: true,
           softwareID: 'amiral'
         },
-        scope: ['*']
+        scope: ['*'],
+        appMetadata: {
+          slug: 'flagship',
+          version: packageJSON.version
+        }
       })
     })
 
