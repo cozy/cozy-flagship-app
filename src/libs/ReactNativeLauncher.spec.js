@@ -90,7 +90,10 @@ describe('ReactNativeLauncher', () => {
       const { launcher, client, launch } = setup()
       launcher.setStartContext({
         client,
-        konnector: { slug: 'konnectorslug', clientSide: true }
+        konnector: { slug: 'konnectorslug', clientSide: true },
+        launcherClient: {
+          setAppMetadata: () => null
+        }
       })
       launch.mockResolvedValue({ data: fixtures.job })
       client.query.mockResolvedValue({ data: fixtures.account })
@@ -148,7 +151,10 @@ describe('ReactNativeLauncher', () => {
         client,
         account: fixtures.account,
         trigger: fixtures.trigger,
-        konnector: { slug: 'konnectorslug', clientSide: true }
+        konnector: { slug: 'konnectorslug', clientSide: true },
+        launcherClient: {
+          setAppMetadata: () => null
+        }
       })
       launch.mockResolvedValue({ data: fixtures.job })
       client.query.mockResolvedValue({ data: fixtures.account })
@@ -168,7 +174,10 @@ describe('ReactNativeLauncher', () => {
         client,
         account: fixtures.account,
         trigger: fixtures.trigger,
-        konnector: { slug: 'konnectorslug', clientSide: true }
+        konnector: { slug: 'konnectorslug', clientSide: true },
+        launcherClient: {
+          setAppMetadata: () => null
+        }
       })
       client.query.mockResolvedValue({ data: fixtures.account })
       client.save.mockImplementation(async doc => ({ data: doc }))
@@ -249,6 +258,9 @@ describe('ReactNativeLauncher', () => {
         konnector: {
           slug: 'testkonnector',
           name: 'Test Konnector'
+        },
+        launcherClient: {
+          setAppMetadata: () => null
         }
       })
       client.query.mockResolvedValue({ data: fixtures.account })
@@ -271,7 +283,10 @@ describe('ReactNativeLauncher', () => {
       const { launcher, client, launch } = setup()
       launcher.setStartContext({
         client,
-        konnector: { slug: 'konnectorslug', clientSide: true }
+        konnector: { slug: 'konnectorslug', clientSide: true },
+        launcherClient: {
+          setAppMetadata: () => null
+        }
       })
       launcher.pilot.call.mockImplementation(() => {
         return new Promise(() => {
@@ -319,6 +334,9 @@ describe('ReactNativeLauncher', () => {
         },
         manifest: {
           cookie_domains: ['.cozy.io']
+        },
+        launcherClient: {
+          setAppMetadata: () => null
         }
       })
       const result = await launcher.getCookiesByDomain('.cozy.io')
@@ -332,7 +350,10 @@ describe('ReactNativeLauncher', () => {
         account: {
           id: 'cozyKonnector'
         },
-        manifest: {}
+        manifest: {},
+        launcherClient: {
+          setAppMetadata: () => null
+        }
       })
       await expect(launcher.getCookiesByDomain('.cozy.io')).rejects.toThrow(
         'getCookiesByDomain cannot be called without cookie_domains declared in manifest'
@@ -347,6 +368,9 @@ describe('ReactNativeLauncher', () => {
         },
         manifest: {
           cookie_domains: ['.somedomain']
+        },
+        launcherClient: {
+          setAppMetadata: () => null
         }
       })
       await expect(launcher.getCookiesByDomain('.cozy.io')).rejects.toThrow(
@@ -362,6 +386,9 @@ describe('ReactNativeLauncher', () => {
         },
         manifest: {
           cookie_domains: ['apeculiarsite.com']
+        },
+        launcherClient: {
+          setAppMetadata: () => null
         }
       })
       const result = await launcher.getCookiesByDomain('apeculiarsite.com')
@@ -381,6 +408,9 @@ describe('ReactNativeLauncher', () => {
         },
         manifest: {
           cookie_domains: ['.cozy.io']
+        },
+        launcherClient: {
+          setAppMetadata: () => null
         }
       })
       const result = await launcher.getCookieByDomainAndName(
@@ -400,7 +430,10 @@ describe('ReactNativeLauncher', () => {
         account: {
           id: 'cozyKonnector'
         },
-        manifest: {}
+        manifest: {},
+        launcherClient: {
+          setAppMetadata: () => null
+        }
       })
       await expect(
         launcher.getCookieByDomainAndName('.cozy.io', 'SOME_COOKIE_NAME')
@@ -420,6 +453,9 @@ describe('ReactNativeLauncher', () => {
         },
         manifest: {
           cookie_domains: ['.somedomain']
+        },
+        launcherClient: {
+          setAppMetadata: () => null
         }
       })
       await expect(
@@ -438,6 +474,9 @@ describe('ReactNativeLauncher', () => {
         },
         manifest: {
           cookie_domains: ['apeculiarsite.com']
+        },
+        launcherClient: {
+          setAppMetadata: () => null
         }
       })
       const result = await launcher.getCookieByDomainAndName(
@@ -460,6 +499,9 @@ describe('ReactNativeLauncher', () => {
       launcher.setStartContext({
         account: {
           id: 'cozyKonnector'
+        },
+        launcherClient: {
+          setAppMetadata: () => null
         }
       })
       const result = await launcher.getCookieFromKeychainByName('token')
@@ -481,6 +523,9 @@ describe('ReactNativeLauncher', () => {
       launcher.setStartContext({
         account: {
           id: 'cozyKonnector'
+        },
+        launcherClient: {
+          setAppMetadata: () => null
         }
       })
       const result = await launcher.getCookieFromKeychainByName('token')
@@ -494,6 +539,9 @@ describe('ReactNativeLauncher', () => {
       launcher.setStartContext({
         account: {
           id: 'cozyKonnector'
+        },
+        launcherClient: {
+          setAppMetadata: () => null
         }
       })
       await launcher.saveCookieToKeychain({
@@ -531,6 +579,9 @@ describe('ReactNativeLauncher', () => {
       launcher.setStartContext({
         account: {
           id: 'cozyKonnector'
+        },
+        launcherClient: {
+          setAppMetadata: () => null
         }
       })
       await launcher.saveCookieToKeychain({
