@@ -173,7 +173,7 @@ export default class Launcher {
    * @returns {Promise<import('cozy-client/types/types').IOCozyAccount>}
    */
   async ensureAccountName(account) {
-    const { client, konnector } = this.getStartContext()
+    const { client } = this.getStartContext()
     const { sourceAccountIdentifier } = this.getUserData() || {}
     if (!account._id) {
       throw new Error('ensureAccountName: no account to check')
@@ -209,8 +209,15 @@ export default class Launcher {
   async ensureAccountTriggerAndLaunch() {
     const result = {}
     const startContext = this.getStartContext()
-    let { trigger, account, konnector, client, job, ...restOfContext } =
-      startContext
+    let {
+      trigger,
+      account,
+      konnector,
+      client,
+      job,
+      launcherClient,
+      ...restOfContext
+    } = startContext
 
     if (!account) {
       log.debug(
@@ -224,6 +231,11 @@ export default class Launcher {
       result.createdAccount = account
     }
     account = await this.ensureAccountName(account)
+    // since we know the account, let's set it to the client used by the
+    // konnector.
+    launcherClient.setAppMetadata({
+      sourceAccount: account._id
+    })
     const folder = await ensureKonnectorFolder(client, {
       konnector,
       account
@@ -260,6 +272,7 @@ export default class Launcher {
       trigger,
       job,
       konnector,
+      launcherClient,
       ...restOfContext
     })
     return result

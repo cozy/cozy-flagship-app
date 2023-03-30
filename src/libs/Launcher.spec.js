@@ -13,6 +13,9 @@ describe('Launcher', () => {
       const job = { _id: 'testjob' }
       const client = {}
       const konnector = {}
+      const launcherClient = {
+        setAppMetadata: () => null
+      }
       launcher.ensureAccountName = jest.fn().mockResolvedValue(account)
       launcher.setStartContext({
         client,
@@ -20,8 +23,10 @@ describe('Launcher', () => {
         account,
         trigger,
         job,
-        manifest: { name: 'konnector' }
+        manifest: { name: 'konnector' },
+        launcherClient
       })
+
       await launcher.ensureAccountTriggerAndLaunch()
       expect(launcher.getStartContext()).toStrictEqual({
         account,
@@ -29,7 +34,8 @@ describe('Launcher', () => {
         job,
         client,
         konnector,
-        manifest: { name: 'konnector' }
+        manifest: { name: 'konnector' },
+        launcherClient
       })
     })
   })
