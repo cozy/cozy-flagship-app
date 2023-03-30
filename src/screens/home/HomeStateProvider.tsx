@@ -3,6 +3,8 @@ import React, { createContext, useContext, useState } from 'react'
 interface HomeStateContextInterface {
   shouldWaitCozyApp?: boolean
   setShouldWaitCozyApp: (value: boolean) => void
+  onboardedRedirection: string
+  setOnboardedRedirection: (value: string) => void
 }
 
 export const HomeStateContext = createContext<
@@ -29,12 +31,15 @@ export const HomeStateProvider: React.FC<Props> = ({ children, ...props }) => {
   const [shouldWaitCozyApp, setShouldWaitCozyApp] = useState<
     boolean | undefined
   >(undefined)
+  const [onboardedRedirection, setOnboardedRedirection] = useState<string>('')
 
   return (
     <HomeStateContext.Provider
       value={{
         shouldWaitCozyApp,
-        setShouldWaitCozyApp
+        setShouldWaitCozyApp,
+        onboardedRedirection,
+        setOnboardedRedirection
       }}
       {...props}
     >
