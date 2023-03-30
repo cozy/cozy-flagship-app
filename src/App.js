@@ -59,26 +59,10 @@ const App = ({ setClient }) => {
   return <RootNavigator initialRoute={initialRoute} setClient={setClient} />
 }
 
-const WrappedApp = () => {
-  const [client, setClient] = useState(undefined)
+const Nav = ({ client, setClient }) => {
+  const colors = getColors()
 
-  useEffect(() => {
-    const handleClientInit = async () => {
-      try {
-        const existingClient = await getClient()
-        if (existingClient) {
-          cleanKonnectorsOnBootInBackground(existingClient)
-        }
-        setClient(existingClient || null)
-      } catch {
-        setClient(null)
-      }
-    }
-
-    handleClientInit()
-  }, [])
-
-  const Nav = () => (
+  return (
     <NavigationContainer ref={RootNavigation.navigationRef}>
       <NativeIntentProvider localMethods={localMethods(client)}>
         <View
@@ -99,13 +83,33 @@ const WrappedApp = () => {
       </NativeIntentProvider>
     </NavigationContainer>
   )
+}
 
-  if (client === null) return <Nav />
+const WrappedApp = () => {
+  const [client, setClient] = useState(undefined)
+
+  useEffect(() => {
+    const handleClientInit = async () => {
+      try {
+        const existingClient = await getClient()
+        if (existingClient) {
+          cleanKonnectorsOnBootInBackground(existingClient)
+        }
+        setClient(existingClient || null)
+      } catch {
+        setClient(null)
+      }
+    }
+
+    handleClientInit()
+  }, [])
+
+  if (client === null) return <Nav client={client} setClient={setClient} />
 
   if (client)
     return (
       <CozyProvider client={client}>
-        <Nav />
+        <Nav client={client} setClient={setClient} />
       </CozyProvider>
     )
 
