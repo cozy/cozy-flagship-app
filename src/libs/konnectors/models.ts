@@ -32,7 +32,7 @@ interface UpdatedByApp {
   slug?: string
 }
 
-interface Konnector {
+export interface Konnector {
   type: string
   id?: string
   attributes?: Konnector

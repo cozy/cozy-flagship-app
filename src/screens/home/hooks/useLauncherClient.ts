@@ -20,9 +20,14 @@ export const useLauncherClient = (
 
     const slug = launcherContextValue?.konnector.slug
 
-    if (slug) void getLauncherClient(client, slug, setLauncherClient)
+    if (slug)
+      void getLauncherClient(
+        client,
+        launcherContextValue.konnector,
+        setLauncherClient
+      )
     else setLauncherClient(undefined)
-  }, [client, launcherContextValue?.konnector.slug])
+  }, [client, launcherContextValue?.konnector])
 
   return { launcherClient }
 }
