@@ -77,19 +77,6 @@ export const getClient = async () => {
 }
 
 /**
- * Initialize a new CozyClient instance from the given uri with user interaction
- *
- * @param {String} uri : cozy uri
- * @returns {CozyClient}
- */
-export const initClient = async (uri, options) => {
-  const client = new CozyClient(options)
-  await client.register(uri)
-  await client.login()
-  return client
-}
-
-/**
  * Create the OAuth connection for the given Cozy instance
  *
  * @param {object} param
