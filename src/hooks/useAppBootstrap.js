@@ -18,13 +18,14 @@ import {
   getOrFetchDefaultRedirectionUrl,
   getParamsWithDefaultRedirectionUrl
 } from '/libs/defaultRedirection/defaultRedirection'
-
-let OnboardingRedirection = ''
+import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
 export const useAppBootstrap = client => {
   const [initialRoute, setInitialRoute] = useState('fetching')
   const [isLoading, setIsLoading] = useState(true)
   const { hideSplashScreen } = useSplashScreen()
+  const { onboardedRedirection, setOnboardedRedirection } =
+    useHomeStateContext()
 
   // Handling initial URL init
   useEffect(() => {
@@ -35,10 +36,14 @@ export const useAppBootstrap = client => {
         const onboardingParams = parseOnboardingURL(onboardingUrl)
 
         if (onboardingParams) {
-          const { onboardUrl, onboardedRedirection, fqdn } = onboardingParams
+          const {
+            onboardUrl,
+            onboardedRedirection: onboardedRedirectionParam,
+            fqdn
+          } = onboardingParams
 
-          if (onboardedRedirection) {
-            OnboardingRedirection = onboardedRedirection
+          if (onboardedRedirectionParam) {
+            setOnboardedRedirection(onboardedRedirectionParam)
           }
 
           if (onboardUrl) {
@@ -61,13 +66,13 @@ export const useAppBootstrap = client => {
             route: routes.welcome
           })
         }
-      } else if (OnboardingRedirection) {
+      } else if (onboardedRedirection) {
         const onboardingRedirectionURL = formatRedirectLink(
-          OnboardingRedirection,
+          onboardedRedirection,
           client
         )
 
-        OnboardingRedirection = ''
+        setOnboardedRedirection('')
 
         return setInitialRoute({
           route: routes.home,
@@ -99,7 +104,13 @@ export const useAppBootstrap = client => {
     }
 
     initialRoute === 'fetching' && doAsync()
-  }, [client, initialRoute, hideSplashScreen])
+  }, [
+    client,
+    initialRoute,
+    hideSplashScreen,
+    onboardedRedirection,
+    setOnboardedRedirection
+  ])
 
   // Handling app readiness
   useEffect(() => {
@@ -124,10 +135,14 @@ export const useAppBootstrap = client => {
       const onboardingParams = parseOnboardingURL(url)
 
       if (onboardingParams) {
-        const { onboardUrl, onboardedRedirection, fqdn } = onboardingParams
+        const {
+          onboardUrl,
+          onboardedRedirection: onboardedRedirectionParam,
+          fqdn
+        } = onboardingParams
 
-        if (onboardedRedirection && !client) {
-          OnboardingRedirection = onboardedRedirection
+        if (onboardedRedirectionParam && !client) {
+          setOnboardedRedirection(onboardedRedirectionParam)
         }
 
         if (onboardUrl) {
@@ -163,7 +178,7 @@ export const useAppBootstrap = client => {
     return () => {
       subscription.remove()
     }
-  }, [client, isLoading])
+  }, [client, isLoading, setOnboardedRedirection])
 
   return {
     client,
