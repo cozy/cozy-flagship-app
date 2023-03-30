@@ -1,19 +1,20 @@
+import Minilog from '@cozy/minilog'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
+import { getDeviceName } from 'react-native-device-info'
 
 import CozyClient from 'cozy-client'
 
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import Minilog from '@cozy/minilog'
-import { getDeviceName } from 'react-native-device-info'
-
-import { queryResultToCrypto } from '../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
 import { loginFlagship } from './clientHelpers/loginFlagship'
-import { normalizeFqdn } from './functions/stringHelpers'
 import { SOFTWARE_ID, SOFTWARE_NAME } from './constants'
+import { normalizeFqdn } from './functions/stringHelpers'
 
 import strings from '/constants/strings.json'
 import { androidSafetyNetApiKey } from '/constants/api-keys'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
+
+import packageJSON from '../../package.json'
+import { queryResultToCrypto } from '../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
 
 const log = Minilog('LoginScreen')
 
@@ -60,7 +61,11 @@ export const getClient = async () => {
   const client = new CozyClient({
     uri,
     oauth: { token },
-    oauthOptions
+    oauthOptions,
+    appMetadata: {
+      slug: 'flagship',
+      version: packageJSON.version
+    }
   })
   listenTokenRefresh(client)
   client.getStackClient().setOAuthOptions(oauthOptions)
@@ -196,6 +201,10 @@ export const createClient = async instance => {
       clientName: `${SOFTWARE_NAME} (${await getDeviceName()})`,
       shouldRequireFlagshipPermissions: true,
       certificationConfig: { androidSafetyNetApiKey }
+    },
+    appMetadata: {
+      slug: 'flagship',
+      version: packageJSON.version
     }
   }
 
