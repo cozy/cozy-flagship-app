@@ -19,6 +19,8 @@ const OIDC_ONBOARD_CALLBACK_URL_PARAM = 'redirect'
 const OIDC_ONBOARD_CALLBACK_URL =
   'https://loginflagship/oidc_onboarding_finished'
 
+export const LOGIN_FLAGSHIP_URL = 'https://loginflagship'
+
 interface OidcLoginCallback {
   code: string
   fqdn: string

@@ -13,7 +13,6 @@ import type {
   WebViewNavigation,
   WebViewProps
 } from 'react-native-webview'
-import type { WebViewOpenWindowEvent } from 'react-native-webview/lib/WebViewTypes'
 
 import { routes } from '/constants/routes'
 import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
@@ -27,13 +26,16 @@ import {
   fetchBackgroundOnLoad,
   tryProcessClouderyBackgroundMessage
 } from '/screens/login/components/functions/clouderyBackgroundFetcher'
+import {
+  interceptExternalLinksAndOpenInAppBrowser,
+  openWindowWithInAppBrowser
+} from '/screens/login/components/functions/interceptExternalLinks'
+import { LOGIN_FLAGSHIP_URL } from '/screens/login/components/functions/oidc'
 
 const log = Minilog('ClouderyViewSwitchProps')
 
 export const CLOUDERY_MODE_LOGIN = 'CLOUDERY_MODE_LOGIN'
 export const CLOUDERY_MODE_SIGNING = 'CLOUDERY_MODE_SIGNING'
-
-const LOGIN_FLAGSHIP_URL = 'https://loginflagship'
 
 interface ClouderyViewSwitchProps {
   backgroundColor: string
@@ -180,21 +182,6 @@ const ClouderyWebView = forwardRef(
     }: ClouderyWebViewProps & WebViewProps,
     ref
   ) => {
-    const localHandleNavigation = (request: WebViewNavigation): boolean => {
-      const baseUrl = new URL(uri)
-      const targetUrl = new URL(request.url)
-
-      if (
-        baseUrl.origin !== targetUrl.origin &&
-        targetUrl.origin !== LOGIN_FLAGSHIP_URL
-      ) {
-        void showInAppBrowser({ url: request.url })
-        return false
-      }
-
-      return handleNavigation(request)
-    }
-
     return (
       <SupervisedWebView
         source={{ uri: uri }}
@@ -202,12 +189,13 @@ const ClouderyWebView = forwardRef(
         onNavigationStateChange={(event: WebViewNavigation): void => {
           setCanGoBack(event.canGoBack)
         }}
-        onShouldStartLoadWithRequest={localHandleNavigation}
+        onShouldStartLoadWithRequest={interceptExternalLinksAndOpenInAppBrowser(
+          uri,
+          [LOGIN_FLAGSHIP_URL],
+          handleNavigation
+        )}
         onLoadEnd={(): void => onLoadEnd()}
-        onOpenWindow={(syntheticEvent: WebViewOpenWindowEvent): void => {
-          const { nativeEvent } = syntheticEvent
-          void showInAppBrowser({ url: nativeEvent.targetUrl })
-        }}
+        onOpenWindow={openWindowWithInAppBrowser}
         injectedJavaScriptBeforeContentLoaded={run}
         style={{
           backgroundColor: backgroundColor
