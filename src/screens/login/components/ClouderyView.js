@@ -7,6 +7,8 @@ import {
   View
 } from 'react-native'
 
+import { rootCozyUrl } from 'cozy-client'
+
 import strings from '/constants/strings.json'
 import { getColors } from '/ui/colors'
 import { getUriFromRequest } from '/libs/functions/getUriFromRequest'
@@ -14,8 +16,10 @@ import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { useClouderyUrl } from '/screens/login/cloudery-env/useClouderyUrl'
 import { ClouderyViewSwitch } from '/screens/login/components/ClouderyViewSwitch'
-
-import { rootCozyUrl } from 'cozy-client'
+import {
+  isOidcNavigationRequest,
+  processOIDC
+} from '/screens/login/components/functions/oidc'
 
 /**
  * Displays the Cloudery web page where the user can log to their Cozy instance by specifying
@@ -34,7 +38,10 @@ import { rootCozyUrl } from 'cozy-client'
 export const ClouderyView = ({
   clouderyMode,
   setInstanceData,
-  disabledFocus
+  disabledFocus,
+  setError,
+  startOidcOAuth,
+  startOidcOnboarding
 }) => {
   const { urls } = useClouderyUrl()
   const [loading, setLoading] = useState(true)
@@ -56,6 +63,25 @@ export const ClouderyView = ({
         })
         return false
       }
+    }
+
+    const isOidc = isOidcNavigationRequest(request)
+    if (isOidc) {
+      processOIDC(request)
+        .then(oidcResult => {
+          if (oidcResult.fqdn) {
+            startOidcOAuth(oidcResult.fqdn, oidcResult.code)
+          } else if (oidcResult.onboardUrl) {
+            startOidcOnboarding(oidcResult.onboardUrl, oidcResult.code)
+          }
+          return
+        })
+        .catch(error => {
+          if (error !== 'USER_CANCELED') {
+            setError(error.message, error)
+          }
+        })
+      return false
     }
 
     return true

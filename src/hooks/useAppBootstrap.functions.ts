@@ -18,7 +18,7 @@ export const parseOnboardingURL = (
   url: string | null
 ): OnboardingParams | undefined => {
   try {
-    if (!url?.includes('onboarding')) {
+    if (!url?.includes('onboarding') || url.includes('oidc_result')) {
       return undefined
     }
 
