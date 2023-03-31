@@ -92,7 +92,7 @@
     "@babel/runtime": "^7.17.9",
     "@svgr/webpack": "5.5.0",
     "@testing-library/react-hooks": "8.0.1",
-    "@testing-library/react-native": "11.5.0",
+    "@testing-library/react-native": "11.5.4",
     "@types/fs-extra": "9.0.13",
     "@types/react-native": "0.66.4",
     "@types/redux-logger": "3.0.9",
