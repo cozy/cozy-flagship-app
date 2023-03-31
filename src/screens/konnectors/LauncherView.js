@@ -1,7 +1,5 @@
 import Minilog from '@cozy/minilog'
 
-import { withClient } from 'cozy-client'
-
 import {
   jsLogInterception,
   tryConsole
@@ -12,6 +10,10 @@ import get from 'lodash/get'
 import React, { Component } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { WebView } from 'react-native-webview'
+
+import { handleBackPress, stopExecIfVisible } from './core/handleBackPress'
+
+import { withClient } from 'cozy-client'
 
 import { BackTo } from '/components/ui/icons/BackTo'
 import { getDimensions } from '/libs/dimensions'
@@ -174,6 +176,8 @@ class LauncherView extends Component {
       this.props.setLauncherContext({ state: 'default' })
     })
 
+    this.removeBackPress = handleBackPress(this, [stopExecIfVisible])
+
     await this.launcher.start({ initKonnectorError })
 
     stopTimeout()
@@ -182,6 +186,8 @@ class LauncherView extends Component {
   }
 
   componentWillUnmount() {
+    this.removeBackPress()
+
     if (this.launcher.removeAllListener) {
       this.launcher.removeAllListener()
     }

@@ -1,6 +1,8 @@
 import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock'
 import mockRNCNetInfo from '@react-native-community/netinfo/jest/netinfo-mock.js'
+import mockBackHandler from 'react-native/Libraries/Utilities/__mocks__/BackHandler.js'
 import mockRNDeviceInfo from 'react-native-device-info/jest/react-native-device-info-mock'
+
 import { mockRNFS } from '../__mocks__/react-native-fs-mock'
 
 jest.mock('react-native-device-info', () => mockRNDeviceInfo)
@@ -31,3 +33,4 @@ jest.mock('@react-native-firebase/messaging', () => ({
   requestPermission: jest.fn(() => Promise.resolve(true)),
   getToken: jest.fn(() => Promise.resolve('myMockToken'))
 }))
+jest.mock('react-native/Libraries/Utilities/BackHandler', () => mockBackHandler)
