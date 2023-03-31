@@ -151,23 +151,6 @@ export default class Launcher {
   }
 
   /**
-   * Updates the account to send the LOGIN_SUCCESS message to harvest
-   */
-  async sendLoginSuccess() {
-    const { account, client } = this.getStartContext()
-    if (!account?._id) {
-      throw new Error('sendLoginSuccess: not account to update')
-    }
-    const updatedAccount = await client.query(
-      Q('io.cozy.accounts').getById(account._id)
-    )
-    await client.save({
-      ...updatedAccount.data,
-      state: 'LOGIN_SUCCESS'
-    })
-  }
-
-  /**
    * Ensures that that the account has the proper account name which is the sourceAccountIdentifier fetched by the konnector
    *
    * @param {import('cozy-client/types/types').IOCozyAccount} account - cozy account
