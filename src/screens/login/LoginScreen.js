@@ -4,6 +4,7 @@ import Minilog from '@cozy/minilog'
 
 import { ClouderyView } from './components/ClouderyView'
 import { ErrorView } from './components/ErrorView'
+import { OidcOnboardingView } from './components/OidcOnboardingView'
 import { PasswordView } from './components/PasswordView'
 import { TransitionToPasswordView } from './components/transitions/TransitionToPasswordView'
 import { TransitionToAuthorizeView } from './components/transitions/TransitionToAuthorizeView'
@@ -15,6 +16,7 @@ import {
   authorizeClient,
   createClient,
   fetchPublicData,
+  connectOidcClient,
   STATE_2FA_NEEDED,
   STATE_AUTHORIZE_NEEDED,
   STATE_INVALID_PASSWORD
@@ -33,6 +35,7 @@ const log = Minilog('LoginScreen')
 const LOADING_STEP = 'LOADING_STEP'
 const CLOUDERY_STEP = 'CLOUDERY_STEP'
 const PASSWORD_STEP = 'PASSWORD_STEP'
+const OIDC_ONBOARD_STEP = 'OIDC_ONBOARD_STEP'
 const TWO_FACTOR_AUTHENTICATION_STEP = 'TWO_FACTOR_AUTHENTICATION_STEP'
 const AUTHORIZE_TRANSITION_STEP = 'AUTHORIZE_TRANSITION_STEP'
 const ERROR_STEP = 'ERROR_STEP'
@@ -169,6 +172,55 @@ const LoginSteps = ({
     setState(oldState => ({
       ...oldState,
       loginData: loginData
+    }))
+  }
+
+  const startOidcOAuth = async (fqdn, code) => {
+    if (await NetService.isOffline())
+      NetService.handleOffline(routes.authenticate)
+
+    try {
+      const instance = 'https://' + fqdn
+      const client = await createClient(instance)
+
+      await client.certifyFlagship()
+
+      const result = await connectOidcClient(client, code)
+
+      if (result.state === STATE_2FA_NEEDED) {
+        setState(oldState => ({
+          ...oldState,
+          step: TWO_FACTOR_AUTHENTICATION_STEP,
+          isOidc: true,
+          stepReadonly: false,
+          client: result.client,
+          twoFactorToken: result.twoFactorToken
+        }))
+      } else if (result.state === STATE_AUTHORIZE_NEEDED) {
+        setState(oldState => ({
+          ...oldState,
+          step: AUTHORIZE_TRANSITION_STEP,
+          isOidc: true,
+          waitForTransition: true,
+          client: result.client,
+          sessionCode: result.sessionCode
+        }))
+      } else {
+        showSplashScreen()
+        setClient(result.client)
+      }
+    } catch (error) {
+      setError(error.message, error)
+    }
+  }
+
+  const startOidcOnboarding = (onboardUrl, code) => {
+    setState(oldState => ({
+      ...oldState,
+      step: OIDC_ONBOARD_STEP,
+      isOidc: true,
+      oidcOnboardUrl: onboardUrl,
+      oidcCode: code
     }))
   }
 
@@ -332,6 +384,9 @@ const LoginSteps = ({
         clouderyMode={clouderyMode}
         disabledFocus={disabledFocus}
         setInstanceData={setInstanceData}
+        startOidcOAuth={startOidcOAuth}
+        startOidcOnboarding={startOidcOnboarding}
+        setError={setError}
       />
     )
   }
@@ -360,6 +415,18 @@ const LoginSteps = ({
             passwordAvatarPosition={state.passwordAvatarPosition}
           />
         )}
+      </>
+    )
+  }
+
+  if (state.step === OIDC_ONBOARD_STEP) {
+    return (
+      <>
+        <OidcOnboardingView
+          onboardUrl={state.oidcOnboardUrl}
+          code={state.oidcCode}
+          startOidcOAuth={startOidcOAuth}
+        />
       </>
     )
   }
