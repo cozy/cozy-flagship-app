@@ -225,10 +225,6 @@ describe('ReactNativeLauncher', () => {
         })
       )
       expect(client.save).toHaveBeenNthCalledWith(3, {
-        _id: 'normal_account_id',
-        state: 'LOGIN_SUCCESS'
-      })
-      expect(client.save).toHaveBeenNthCalledWith(4, {
         _id: 'normal_job_id',
         attributes: {
           state: 'done'

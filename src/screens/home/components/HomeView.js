@@ -61,6 +61,21 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   }, [webviewRef])
 
   useEffect(() => {
+    const handleLoginSucess = accountId => {
+      const payload = JSON.stringify({
+        type: 'Clisk',
+        message: 'loginSuccess',
+        param: {
+          accountId
+        }
+      })
+      webviewRef?.postMessage(payload)
+    }
+    launcherEvent.on('loginSuccess', handleLoginSucess)
+    return () => launcherEvent.removeListener('loginSuccess', handleLoginSucess)
+  }, [webviewRef])
+
+  useEffect(() => {
     const handleLaunchResult = () => {
       const payload = JSON.stringify({
         type: 'Clisk',

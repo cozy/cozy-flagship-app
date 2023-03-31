@@ -222,7 +222,8 @@ class ReactNativeLauncher extends Launcher {
       if (ensureResult.createdJob) {
         this.emit('CREATED_JOB', ensureResult.createdJob)
       }
-      await this.sendLoginSuccess()
+
+      launcherEvent.emit('loginSuccess', ensureResult.createdAccount?._id)
 
       const pilotContext = []
       // FIXME not used at the moment since the fetched file will not have the proper "createdByApp"
