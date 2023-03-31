@@ -21,7 +21,14 @@ import {
   fetchBackgroundOnLoad,
   tryProcessClouderyBackgroundMessage
 } from '/screens/login/components/functions/clouderyBackgroundFetcher'
-import { parseOidcOnboardingFinishedUrl } from '/screens/login/components/functions/oidc'
+import {
+  interceptExternalLinksAndOpenInAppBrowser,
+  openWindowWithInAppBrowser
+} from '/screens/login/components/functions/interceptExternalLinks'
+import {
+  LOGIN_FLAGSHIP_URL,
+  parseOidcOnboardingFinishedUrl
+} from '/screens/login/components/functions/oidc'
 
 const log = Minilog('OidcOnboardingView')
 
@@ -98,12 +105,17 @@ export const OidcOnboardingView = ({
         source={{ uri: onboardUrl }}
         ref={webviewRef}
         injectedJavaScriptBeforeContentLoaded={fetchBackgroundOnLoad}
-        onShouldStartLoadWithRequest={handleNavigation}
+        onShouldStartLoadWithRequest={interceptExternalLinksAndOpenInAppBrowser(
+          onboardUrl,
+          [LOGIN_FLAGSHIP_URL],
+          handleNavigation
+        )}
         onLoadEnd={(): void => setLoading(false)}
         onMessage={processMessage}
         onNavigationStateChange={(event: WebViewNavigation): void => {
           setCanGoBack(event.canGoBack)
         }}
+        onOpenWindow={openWindowWithInAppBrowser}
         style={{
           backgroundColor: backgroundColor
         }}
