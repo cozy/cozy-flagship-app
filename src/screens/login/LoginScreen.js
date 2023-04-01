@@ -42,6 +42,8 @@ const ERROR_STEP = 'ERROR_STEP'
 
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
+const colors = getColors()
+
 const LoginSteps = ({
   backgroundColor,
   clouderyMode,
@@ -104,12 +106,16 @@ const LoginSteps = ({
       const normalizedFqdn = url.host.toLowerCase()
       const normalizedInstance = url.origin.toLowerCase()
 
+      // when receiving fqdn from route parameter, we don't have access to partner context
+      // so we enforce default Cozy color as background
+      setBackgroundColor(colors.primaryColor)
+
       setInstanceData({
         fqdn: normalizedFqdn,
         instance: normalizedInstance
       })
     }
-  }, [navigation, route, setInstanceData])
+  }, [navigation, route, setInstanceData, setBackgroundColor])
 
   const setStepReadonly = isReadOnly => {
     setState(oldState => ({
@@ -498,7 +504,6 @@ export const LoginScreen = ({
   route,
   setClient
 }) => {
-  const colors = getColors()
   const [backgroundColor, setBackgroundColor] = useState(colors.primaryColor)
   const dimensions = useDimensions()
   return (
