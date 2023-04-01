@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { BackHandler, StyleSheet, View } from 'react-native'
+import { BackHandler, StyleSheet, View, StatusBar } from 'react-native'
 import Minilog from '@cozy/minilog'
 
 import { ClouderyView } from './components/ClouderyView'
@@ -29,6 +29,7 @@ import strings from '/constants/strings.json'
 import { getColors } from '/ui/colors'
 import { NetService } from '/libs/services/NetService'
 import { routes } from '/constants/routes'
+import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 
 const log = Minilog('LoginScreen')
 
@@ -506,6 +507,12 @@ export const LoginScreen = ({
 }) => {
   const [backgroundColor, setBackgroundColor] = useState(colors.primaryColor)
   const dimensions = useDimensions()
+
+  const setBackgroundAndStatusBarColor = backgroundColor => {
+    setStatusBarColorToMatchBackground(backgroundColor)
+    setBackgroundColor(backgroundColor)
+  }
+
   return (
     <View
       style={[
@@ -521,7 +528,7 @@ export const LoginScreen = ({
         clouderyMode={clouderyMode}
         navigation={navigation}
         route={route}
-        setBackgroundColor={setBackgroundColor}
+        setBackgroundColor={setBackgroundAndStatusBarColor}
         setClient={setClient}
         disabledFocus={disabledFocus}
         goBack={goBack}
