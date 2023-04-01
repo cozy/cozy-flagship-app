@@ -108,6 +108,10 @@ export const internalMethods = {
   }
 }
 
+const isNativePassInstalledOnDevice = async (): Promise<boolean> => {
+  return await Linking.canOpenURL('cozypass://')
+}
+
 interface CustomMethods {
   fetchSessionCode: () => Promise<string | null>
   showInAppBrowser: (args: { url: string }) => Promise<BrowserResult>
@@ -142,6 +146,7 @@ export const localMethods = (
     setFlagshipUI,
     showInAppBrowser,
     isBiometryDenied,
-    openAppOSSettings
+    openAppOSSettings,
+    isNativePassInstalledOnDevice
   }
 }
