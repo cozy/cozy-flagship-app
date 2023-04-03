@@ -15,6 +15,7 @@ import {
 } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { openWindowWithInAppBrowser } from '/screens/login/components/functions/interceptExternalLinks'
 import { parseOnboardedRedirectionForEmailScenario } from '/screens/login/components/functions/oidc'
+import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
 const log = Minilog('ClouderyCreateInstanceView')
 
@@ -45,9 +46,11 @@ export const ClouderyCreateInstanceView = ({
 }) => {
   const [loading, setLoading] = useState(true)
   const webviewRef = useRef()
+  const { setOnboardedRedirection } = useHomeStateContext()
 
   const handleNavigation = request => {
-    const { fqdn, registerToken } = getOnboardingDataFromRequest(request)
+    const { fqdn, registerToken, onboardedRedirection } =
+      getOnboardingDataFromRequest(request)
 
     NetService.isOffline()
       .then(
@@ -60,6 +63,7 @@ export const ClouderyCreateInstanceView = ({
         log.debug(`Intercept onboarding's password URL on ${fqdn}`)
         const normalizedFqdn = fqdn.toLowerCase()
 
+        setOnboardedRedirection(onboardedRedirection ?? '')
         startOnboarding({
           fqdn: normalizedFqdn,
           registerToken
