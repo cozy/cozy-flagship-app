@@ -13,6 +13,7 @@ import {
   fetchBackgroundOnLoad,
   tryProcessClouderyBackgroundMessage
 } from '/screens/login/components/functions/clouderyBackgroundFetcher'
+import { openWindowWithInAppBrowser } from '/screens/login/components/functions/interceptExternalLinks'
 import { parseOnboardedRedirectionForEmailScenario } from '/screens/login/components/functions/oidc'
 
 const log = Minilog('ClouderyCreateInstanceView')
@@ -97,6 +98,7 @@ export const ClouderyCreateInstanceView = ({
         onShouldStartLoadWithRequest={handleNavigation}
         onLoadEnd={() => setLoading(false)}
         onMessage={processMessage}
+        onOpenWindow={openWindowWithInAppBrowser}
         injectedJavaScriptBeforeContentLoaded={run}
         style={{
           backgroundColor: backgroundColor
