@@ -30,6 +30,7 @@ const IAB_OPTIONS = {
 export const showInAppBrowser = (args: {
   url: string
 }): Promise<BrowserResult> => {
+  console.log('🤡 showInAppBrowser', args.url)
   return InAppBrowser.open(args.url, IAB_OPTIONS)
 }
 

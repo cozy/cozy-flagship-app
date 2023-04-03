@@ -127,6 +127,7 @@ export const processOIDC = (
 ): Promise<OidcCallback> => {
   return new Promise((resolve, reject) => {
     const oidcUrl = new URL(request.url)
+    console.log('🌈 oidcUrl', oidcUrl)
     const urlParam =
       Platform.OS === 'ios' ? OIDC_CALLBACK_URL : OIDC_CALLBACK_URL_ANDROID
     oidcUrl.searchParams.append(OIDC_CALLBACK_URL_PARAM, urlParam)
@@ -140,6 +141,8 @@ export const processOIDC = (
 
     const subscription = Linking.addEventListener('url', ({ url }) => {
       const oidcResult = parseOIDCResultUrl(url)
+      console.log('🌈 url', url)
+      console.log('🌈 oidcResult', oidcResult)
 
       if (!oidcResult) {
         return reject(INVALID_CALLBACK)

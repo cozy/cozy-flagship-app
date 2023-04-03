@@ -151,6 +151,7 @@ const LoginSteps = ({
           client: client
         })
       } catch (error) {
+        console.log('setError 4')
         setError(error.message, error)
       }
     },
@@ -205,6 +206,7 @@ const LoginSteps = ({
       const result = await connectOidcClient(client, code)
 
       if (result.state === STATE_2FA_NEEDED) {
+        console.log('🥐 startOidcOAuth 2')
         setState(oldState => ({
           ...oldState,
           step: TWO_FACTOR_AUTHENTICATION_STEP,
@@ -214,6 +216,7 @@ const LoginSteps = ({
           twoFactorToken: result.twoFactorToken
         }))
       } else if (result.state === STATE_AUTHORIZE_NEEDED) {
+        console.log('🥐 startOidcOAuth 3')
         setState(oldState => ({
           ...oldState,
           step: AUTHORIZE_TRANSITION_STEP,
@@ -223,10 +226,13 @@ const LoginSteps = ({
           sessionCode: result.sessionCode
         }))
       } else {
+        console.log('🥐 startOidcOAuth 4')
         showSplashScreen()
         setClient(result.client)
       }
     } catch (error) {
+      console.log('🥐 startOidcOAuth 5')
+      console.log('setError 5')
       setError(error.message, error)
     }
   }
@@ -287,6 +293,7 @@ const LoginSteps = ({
         setClient(result.client)
       }
     } catch (error) {
+      console.log('setError 1')
       setError(error.message, error)
     }
   }, [setError, state, setClient, showSplashScreen])
@@ -333,6 +340,7 @@ const LoginSteps = ({
           setClient(result.client)
         }
       } catch (error) {
+        console.log('setError 2')
         setError(error.message, error)
       }
     },
@@ -360,6 +368,7 @@ const LoginSteps = ({
       if (error === OAUTH_USER_CANCELED_ERROR) {
         cancelOauth()
       } else {
+        console.log('setError 3')
         setError(error.message, error)
       }
     }
@@ -367,6 +376,8 @@ const LoginSteps = ({
 
   const setError = useCallback(
     (errorMessage, error) => {
+      console.error('setError', errorMessage)
+      console.trace('setError')
       setState(oldState => ({
         ...oldState,
         step: ERROR_STEP,

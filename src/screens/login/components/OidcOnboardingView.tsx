@@ -58,8 +58,15 @@ export const OidcOnboardingView = ({
   const { setOnboardedRedirection } = useHomeStateContext()
 
   const handleNavigation = (request: WebViewNavigation): boolean => {
+    console.log('🥦 handleNavigation', request.url)
     const createdInstance = parseOidcOnboardingFinishedUrl(request)
     if (createdInstance) {
+      console.log(
+        '🥦 createdInstance',
+        createdInstance.fqdn,
+        code,
+        createdInstance.onboardedRedirection
+      )
       setOnboardedRedirection(createdInstance.onboardedRedirection ?? '')
       startOidcOAuth(createdInstance.fqdn, code)
       return false
@@ -137,6 +144,7 @@ export const OidcOnboardingView = ({
 }
 
 const handleError = async (webviewErrorEvent: unknown): Promise<void> => {
+  console.log('🚫handleError', webviewErrorEvent)
   try {
     const isOffline = await NetService.isOffline()
     isOffline && NetService.handleOffline(routes.onboarding)

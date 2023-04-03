@@ -76,6 +76,7 @@ export const ClouderyView = ({
     if (isOidc) {
       processOIDC(request)
         .then(oidcResult => {
+          console.log('🥥 oidcResult', oidcResult)
           if (oidcResult.fqdn) {
             startOidcOAuth(oidcResult.fqdn, oidcResult.code)
           } else if (oidcResult.onboardUrl) {
@@ -85,6 +86,7 @@ export const ClouderyView = ({
         })
         .catch(error => {
           if (error !== 'USER_CANCELED') {
+            console.log('setError 7')
             setError(error.message, error)
           }
         })
