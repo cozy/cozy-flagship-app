@@ -50,6 +50,7 @@ const slugFallbacks = {
  * @param {any} navigation - The React navigation context
  * @param {string} href - The app web url
  * @param {AppManifest} app - The app information
+ * @param {DOMRect | undefined} iconParams - Icon position and size
  * @returns {Promise}
  */
 const mobileDispatcher = async (client, navigation, href, app, iconParams) => {
@@ -149,6 +150,7 @@ const openKonnectorInHome = konnector => {
  * @param {any} navigation - The React navigation context
  * @param {string} href - The app web url
  * @param {AppManifest} app - The app information
+ * @param {DOMRect | undefined} iconParams - Icon position and size
  * @returns {Promise}
  */
 export const openApp = (client, navigation, href, app, iconParams) => {
