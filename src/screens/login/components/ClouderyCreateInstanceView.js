@@ -8,12 +8,17 @@ import { NetService } from '/libs/services/NetService'
 import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
 import { jsLogInterception } from '/components/webviews/jsInteractions/jsLogInterception'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
-import { getColors } from '/ui/colors'
 import { routes } from '/constants/routes'
+import {
+  fetchBackgroundOnLoad,
+  tryProcessClouderyBackgroundMessage
+} from '/screens/login/components/functions/clouderyBackgroundFetcher'
+import { parseOnboardedRedirectionForEmailScenario } from '/screens/login/components/functions/oidc'
 
 const log = Minilog('ClouderyCreateInstanceView')
 
-const run = `
+const run =
+  `
     (function() {
       ${jsCozyGlobal()}
 
@@ -21,7 +26,7 @@ const run = `
 
       return true;
     })();
-  `
+  ` + fetchBackgroundOnLoad
 
 /**
  * Displays the Cloudery web page where the user can onboard a new cozy from an onboarding email
@@ -33,11 +38,12 @@ const run = `
  */
 export const ClouderyCreateInstanceView = ({
   clouderyUrl,
-  startOnboarding
+  startOnboarding,
+  backgroundColor,
+  setBackgroundColor
 }) => {
   const [loading, setLoading] = useState(true)
   const webviewRef = useRef()
-  const colors = getColors()
 
   const handleNavigation = request => {
     const { fqdn, registerToken } = getOnboardingDataFromRequest(request)
@@ -71,18 +77,29 @@ export const ClouderyCreateInstanceView = ({
     }
   }, [loading, webviewRef])
 
+  const processMessage = event => {
+    tryProcessClouderyBackgroundMessage(event, setBackgroundColor)
+  }
+
   const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
 
   return (
-    <Wrapper style={styles.view} behavior="height">
+    <Wrapper
+      style={{
+        ...styles.view,
+        backgroundColor: backgroundColor
+      }}
+      behavior="height"
+    >
       <SupervisedWebView
         source={{ uri: clouderyUrl }}
         ref={webviewRef}
         onShouldStartLoadWithRequest={handleNavigation}
         onLoadEnd={() => setLoading(false)}
+        onMessage={processMessage}
         injectedJavaScriptBeforeContentLoaded={run}
         style={{
-          backgroundColor: colors.primaryColor
+          backgroundColor: backgroundColor
         }}
       />
       {loading && (
@@ -90,7 +107,7 @@ export const ClouderyCreateInstanceView = ({
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: colors.primaryColor
+              backgroundColor: backgroundColor
             }
           ]}
         />
@@ -101,8 +118,7 @@ export const ClouderyCreateInstanceView = ({
 
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
-    backgroundColor: getColors().primaryColor
+    flex: 1
   },
   loadingOverlay: {
     position: 'absolute',
