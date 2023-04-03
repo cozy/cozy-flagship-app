@@ -6,10 +6,13 @@ import { routes } from '/constants/routes'
 import { useDimensions } from '/libs/dimensions'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { getColors } from '/ui/colors'
+import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 
 import { ClouderyCreateInstanceView } from './components/ClouderyCreateInstanceView'
 
 const log = Minilog('CreateInstanceScreen')
+
+const colors = getColors()
 
 /**
  * Screen that should be displayed when openning an onboarding link from email
@@ -24,6 +27,12 @@ const log = Minilog('CreateInstanceScreen')
  */
 export const CreateInstanceScreen = ({ route, navigation }) => {
   const [clouderyUrl, setClouderyUrl] = useState()
+  const [backgroundColor, setBackgroundColor] = useState(colors.primaryColor)
+
+  const setBackgroundAndStatusBarColor = backgroundColor => {
+    setStatusBarColorToMatchBackground(backgroundColor)
+    setBackgroundColor(backgroundColor)
+  }
 
   const startOnboarding = onboardingData => {
     const { fqdn, registerToken } = onboardingData
@@ -45,12 +54,19 @@ export const CreateInstanceScreen = ({ route, navigation }) => {
   }, [navigation, route, setClouderyUrl])
   const dimensions = useDimensions()
   return (
-    <View style={styles.view}>
+    <View
+      style={{
+        ...styles.view,
+        backgroundColor: backgroundColor
+      }}
+    >
       <View style={{ height: dimensions.statusBarHeight }} />
       {clouderyUrl && (
         <ClouderyCreateInstanceView
           clouderyUrl={clouderyUrl}
           startOnboarding={startOnboarding}
+          backgroundColor={backgroundColor}
+          setBackgroundColor={setBackgroundAndStatusBarColor}
         />
       )}
       <View
@@ -64,7 +80,6 @@ export const CreateInstanceScreen = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
-    backgroundColor: getColors().primaryColor
+    flex: 1
   }
 })
