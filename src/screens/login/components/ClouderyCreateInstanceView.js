@@ -49,8 +49,7 @@ export const ClouderyCreateInstanceView = ({
   const { setOnboardedRedirection } = useHomeStateContext()
 
   const handleNavigation = request => {
-    const { fqdn, registerToken, onboardedRedirection } =
-      getOnboardingDataFromRequest(request)
+    const createdInstance = getOnboardingDataFromRequest(request)
 
     NetService.isOffline()
       .then(
@@ -59,7 +58,8 @@ export const ClouderyCreateInstanceView = ({
       .catch(error => log.error(error))
 
     if (request.loading) {
-      if (fqdn && registerToken) {
+      if (createdInstance) {
+        const { fqdn, registerToken, onboardedRedirection } = createdInstance
         log.debug(`Intercept onboarding's password URL on ${fqdn}`)
         const normalizedFqdn = fqdn.toLowerCase()
 

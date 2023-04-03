@@ -4,6 +4,7 @@ import type { WebViewNavigation } from 'react-native-webview'
 
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { closeInAppBrowser, showInAppBrowser } from '/libs/intents/InAppBrowser'
+import { getOnboardingDataFromRequest } from '/libs/functions/getOnboardingDataFromRequest'
 
 const log = Minilog('CozyWebView.functions')
 
@@ -160,6 +161,7 @@ export const parseOidcOnboardingFinishedUrl = (
   request: WebViewNavigation
 ): OidcOnboardingEndCallback | null => {
   try {
+    return getOnboardingDataFromRequest(request)
     const oidcUrl = new URL(request.url)
 
     const fqdn = oidcUrl.searchParams.get('fqdn')

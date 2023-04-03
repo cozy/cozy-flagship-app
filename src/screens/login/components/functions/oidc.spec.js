@@ -210,7 +210,7 @@ describe('ClouderyView', () => {
   describe('parseOidcOnboardingFinishedUrl', () => {
     it(`Should extract 'fqdn' param from URL`, async () => {
       const result = parseOidcOnboardingFinishedUrl({
-        url: 'https://links.mycozy.cloud/flagship/oidc_onboarding_finished?fqdn=claude.somepartner.fr'
+        url: 'http://claude.somepartner.fr/?onboarding=true&redirection=mespapiers&registerToken=SOME_REGISTER_TOKEN'
       })
 
       expect(result).toStrictEqual({
