@@ -104,6 +104,17 @@ const WrappedApp = () => {
     handleClientInit()
   }, [])
 
+  useEffect(
+    function clearClientOnLogout() {
+      const resetRoute = () => setClient(null)
+
+      client?.on('logout', resetRoute)
+
+      return () => client?.removeListener('logout', resetRoute)
+    },
+    [client]
+  )
+
   if (client === null) return <Nav client={client} setClient={setClient} />
 
   if (client)
