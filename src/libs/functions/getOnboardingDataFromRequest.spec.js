@@ -1,25 +1,23 @@
 import { getOnboardingDataFromRequest } from './getOnboardingDataFromRequest'
 
 describe('getOnboardingDataFromRequest', () => {
-  it('should correctly parse an URL with a registerToken', () => {
+  it(`should correctly parse an URL with a 'onboarding=true'`, () => {
     expect(
       getOnboardingDataFromRequest({
-        url: 'https://claude.mycozy.cloud/?registerToken=SOME_TOKEN'
+        url: 'https://claude.mycozy.cloud/?onboarding=true&redirection=mespapiers&registerToken=SOME_TOKEN'
       })
     ).toStrictEqual({
       fqdn: 'claude.mycozy.cloud',
+      onboardedRedirection: 'mespapiers',
       registerToken: 'SOME_TOKEN'
     })
   })
 
-  it('should return no registerToken if param is not set in URL', () => {
+  it(`should return null if URL has no 'onboarding=true' param`, () => {
     expect(
       getOnboardingDataFromRequest({
-        url: 'https://claude.mycozy.cloud/'
+        url: 'http://claude.mycozy.cloud/?redirection=mespapiers&registerToken=SOME_REGISTER_TOKEN'
       })
-    ).toStrictEqual({
-      fqdn: 'claude.mycozy.cloud',
-      registerToken: null
-    })
+    ).toBeNull()
   })
 })
