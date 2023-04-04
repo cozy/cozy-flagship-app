@@ -79,13 +79,13 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
       didBlurOnce.current = true
-      if (trackedWebviewInnerUri) {
+      if (trackedWebviewInnerUri && client.isLogged) {
         setUri(trackedWebviewInnerUri)
       }
     })
 
     return unsubscribe
-  }, [navigation, trackedWebviewInnerUri])
+  }, [navigation, trackedWebviewInnerUri, client])
 
   useFocusEffect(
     useCallback(() => {
