@@ -15,6 +15,7 @@ import type {
 
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { routes } from '/constants/routes'
+import { getOnboardingDataFromRequest } from '/libs/functions/getOnboardingDataFromRequest'
 import { NetService } from '/libs/services/NetService'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import {
@@ -25,10 +26,7 @@ import {
   interceptExternalLinksAndOpenInAppBrowser,
   openWindowWithInAppBrowser
 } from '/screens/login/components/functions/interceptExternalLinks'
-import {
-  LOGIN_FLAGSHIP_URL,
-  parseOidcOnboardingFinishedUrl
-} from '/screens/login/components/functions/oidc'
+import { LOGIN_FLAGSHIP_URL } from '/screens/login/components/functions/oidc'
 
 const log = Minilog('OidcOnboardingView')
 
@@ -58,7 +56,7 @@ export const OidcOnboardingView = ({
   const { setOnboardedRedirection } = useHomeStateContext()
 
   const handleNavigation = (request: WebViewNavigation): boolean => {
-    const createdInstance = parseOidcOnboardingFinishedUrl(request)
+    const createdInstance = getOnboardingDataFromRequest(request)
     if (createdInstance) {
       setOnboardedRedirection(createdInstance.onboardedRedirection ?? '')
       startOidcOAuth(createdInstance.fqdn, code)

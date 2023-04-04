@@ -3,11 +3,7 @@ import { Linking } from 'react-native'
 
 import { showInAppBrowser } from '/libs/intents/InAppBrowser'
 
-import {
-  isOidcNavigationRequest,
-  parseOidcOnboardingFinishedUrl,
-  processOIDC
-} from './oidc'
+import { isOidcNavigationRequest, processOIDC } from './oidc'
 
 const listeners = []
 const mockRemove = jest.fn().mockImplementation(listener => {
@@ -204,27 +200,6 @@ describe('ClouderyView', () => {
       const promise = processOIDC(request)
 
       await expect(promise).rejects.toEqual('USER_CANCELED')
-    })
-  })
-
-  describe('parseOidcOnboardingFinishedUrl', () => {
-    it(`Should extract 'fqdn' param from URL`, async () => {
-      const result = parseOidcOnboardingFinishedUrl({
-        url: 'https://links.mycozy.cloud/flagship/oidc_onboarding_finished?fqdn=claude.somepartner.fr'
-      })
-
-      expect(result).toStrictEqual({
-        fqdn: 'claude.somepartner.fr',
-        onboardedRedirection: null
-      })
-    })
-
-    it(`Should return null if URL has no 'fqdn' param`, async () => {
-      const result = parseOidcOnboardingFinishedUrl({
-        url: 'https://links.mycozy.cloud/flagship/oidc_onboarding_finished'
-      })
-
-      expect(result).toBeNull()
     })
   })
 })
