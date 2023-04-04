@@ -15,10 +15,6 @@ const OIDC_CALLBACK_URL_PARAM = 'redirect_after_oidc'
 const OIDC_CALLBACK_URL = 'https://links.mycozy.cloud/flagship/oidc_result'
 const OIDC_CALLBACK_URL_ANDROID = 'cozy://flagship/oidc_result'
 
-const OIDC_ONBOARD_CALLBACK_URL_PARAM = 'redirect'
-const OIDC_ONBOARD_CALLBACK_URL =
-  'https://loginflagship/oidc_onboarding_finished'
-
 export const LOGIN_FLAGSHIP_URL = 'https://loginflagship'
 
 interface OidcLoginCallback {
@@ -33,11 +29,6 @@ interface OidcOnboardingStartCallback {
 }
 
 type OidcCallback = OidcLoginCallback | OidcOnboardingStartCallback
-
-interface OidcOnboardingEndCallback {
-  fqdn: string
-  onboardedRedirection: string | null
-}
 
 /**
  * Check if the given NavigationRequest should trigger the OIDC scenario
@@ -74,13 +65,7 @@ const parseOIDCOnboardingStartUrl = (
       return null
     }
 
-    const onboardUrlWithRedirect = new URL(onboardUrl)
-    onboardUrlWithRedirect.searchParams.append(
-      OIDC_ONBOARD_CALLBACK_URL_PARAM,
-      OIDC_ONBOARD_CALLBACK_URL
-    )
-
-    return { code, onboardUrl: onboardUrlWithRedirect.toString() }
+    return { code, onboardUrl }
   } catch (error) {
     const errorMessage = getErrorMessage(error)
     log.error(
@@ -149,34 +134,4 @@ export const processOIDC = (
       void closeInAppBrowser()
     })
   })
-}
-
-/**
- * Extract created instance and onboarded_redirection from NavigationRequest
- * @param request - NavigationRequest called by the Cloudery after Onboarding has been finished
- * @returns Created instance info
- */
-export const parseOidcOnboardingFinishedUrl = (
-  request: WebViewNavigation
-): OidcOnboardingEndCallback | null => {
-  try {
-    const oidcUrl = new URL(request.url)
-
-    const fqdn = oidcUrl.searchParams.get('fqdn')
-    const onboardedRedirection = oidcUrl.searchParams.get(
-      'onboarded_redirection'
-    )
-
-    if (!fqdn) {
-      return null
-    }
-
-    return { fqdn, onboardedRedirection }
-  } catch (error) {
-    const errorMessage = getErrorMessage(error)
-    log.error(
-      `Something went wrong while trying to extract OIDC Instance creation info from ${request.url} URL: ${errorMessage}`
-    )
-    return null
-  }
 }
