@@ -107,7 +107,7 @@ export default class Launcher {
         }
       })
     } else {
-      log.info('Konnector execution stopped by user, no job to stop')
+      log.info('Error before login success, no job to stop')
     }
   }
 
@@ -183,7 +183,10 @@ export default class Launcher {
     let { data: accountGetResult } = await client.query(
       Q('io.cozy.accounts').getById(account._id)
     )
-    if (accountGetResult?.auth?.accountName !== sourceAccountIdentifier) {
+    if (
+      sourceAccountIdentifier &&
+      accountGetResult?.auth?.accountName !== sourceAccountIdentifier
+    ) {
       log.debug('Will update account accountName to ', sourceAccountIdentifier)
       const { data: accountSaveResult } = await client.save({
         ...accountGetResult,
@@ -240,10 +243,12 @@ export default class Launcher {
     launcherClient.setAppMetadata({
       sourceAccount: account._id
     })
-    const folder = await ensureKonnectorFolder(client, {
-      konnector,
-      account
-    })
+    const folder = models.accounts.getAccountName(account)
+      ? await ensureKonnectorFolder(client, {
+          konnector,
+          account
+        })
+      : null
     if (!trigger) {
       log.debug(
         `ensureAccountAndTriggerAndJob: found no trigger in start context. Creating one`

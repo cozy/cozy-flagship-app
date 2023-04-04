@@ -271,13 +271,51 @@ describe('ReactNativeLauncher', () => {
         .mockResolvedValueOnce(true)
         .mockRejectedValue(new Error('test error message'))
       await launcher.start()
-      expect(client.save).toHaveBeenNthCalledWith(2, {
+      expect(client.save).toHaveBeenNthCalledWith(1, {
         _id: 'normal_job_id',
         attributes: {
           state: 'errored',
           error: 'test error message'
         }
       })
+    })
+    it('should not update account with no account name before login success', async () => {
+      const { launcher, client, launch } = setup()
+      launcher.setStartContext({
+        client,
+        konnector: { slug: 'konnectorslug', clientSide: true },
+        launcherClient: {
+          setAppMetadata: () => null
+        },
+        account: {
+          _id: 'testaccountid',
+          auth: {
+            accountName: 'good account name'
+          }
+        },
+        trigger: {
+          _id: 'testtriggerid'
+        }
+      })
+      launcher.pilot.call.mockImplementation(async method => {
+        if (method === 'ensureAuthenticated') {
+          throw new Error('ensureAuthenticated test error')
+        } else return
+      })
+      client.query.mockResolvedValue({
+        data: {
+          _id: 'testaccountid',
+          auth: {
+            accountName: 'good account name'
+          }
+        }
+      })
+      launch.mockResolvedValue({ data: { _id: 'testjobid' } })
+      await Promise.all([launcher.start(), launcher.stop()])
+
+      expect(launcher.getStartContext().account.auth.accountName).toEqual(
+        'good account name'
+      )
     })
     it('should not create account and trigger if the user stops the execution before login success', async () => {
       const { launcher, client, launch } = setup()
