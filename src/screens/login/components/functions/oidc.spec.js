@@ -133,7 +133,7 @@ describe('ClouderyView', () => {
       expect(result).toStrictEqual({
         code: 'SOME_OIDC_CODE',
         onboardUrl:
-          'https://manager.cozycloud.cc/somepartner/onboard?onboarding_id=SOME_ONBOARDING_ID&redirect=https%3A%2F%2Floginflagship%2Foidc_onboarding_finished'
+          'https://manager.cozycloud.cc/somepartner/onboard?onboarding_id=SOME_ONBOARDING_ID'
       })
     })
 
