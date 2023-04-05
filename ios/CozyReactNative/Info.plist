@@ -2,6 +2,52 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundleAlternateIcons</key>
+		<dict>
+			<key>mespapiers</key>
+			<dict>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>mespapiers</string>
+				</array>
+			</dict>
+			<key>cozy</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>cozy</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+		</dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconName</key>
+			<string></string>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string></string>
+			</array>
+			<key>UIPrerenderedIcon</key>
+			<false/>
+		</dict>
+		<key>UINewsstandIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string></string>
+			</array>
+			<key>UINewsstandBindingType</key>
+			<string>UINewsstandBindingTypeMagazine</string>
+			<key>UINewsstandBindingEdge</key>
+			<string>UINewsstandBindingEdgeLeft</string>
+		</dict>
+	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -67,9 +113,9 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Afin de prendre des photos pour Drive ou MesPapiers afin d'importer des documents</string>
+	<string>Afin de prendre des photos pour Drive ou MesPapiers afin d&apos;importer des documents</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Permet le déverouillage de l'application en utilisant FaceID</string>
+	<string>Permet le déverouillage de l&apos;application en utilisant FaceID</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UIAppFonts</key>
