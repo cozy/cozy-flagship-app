@@ -33,6 +33,14 @@
 		E4924AB629963CAD00F415CE /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0572B798A7D41908174A427 /* Lato-Regular.ttf */; };
 		E4924AC12996437D00F415CE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4924AC02996437D00F415CE /* GoogleService-Info.plist */; };
 		E4924AC32996438600F415CE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4924AC22996438600F415CE /* GoogleService-Info.plist */; };
+		E4F8716029DDEC1E00C52A35 /* cozy@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715C29DDEC1E00C52A35 /* cozy@2x.png */; };
+		E4F8716129DDEC1E00C52A35 /* cozy@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715C29DDEC1E00C52A35 /* cozy@2x.png */; };
+		E4F8716229DDEC1E00C52A35 /* mespapiers@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715D29DDEC1E00C52A35 /* mespapiers@2x.png */; };
+		E4F8716329DDEC1E00C52A35 /* mespapiers@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715D29DDEC1E00C52A35 /* mespapiers@2x.png */; };
+		E4F8716429DDEC1E00C52A35 /* mespapiers@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715E29DDEC1E00C52A35 /* mespapiers@3x.png */; };
+		E4F8716529DDEC1E00C52A35 /* mespapiers@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715E29DDEC1E00C52A35 /* mespapiers@3x.png */; };
+		E4F8716629DDEC1E00C52A35 /* cozy@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715F29DDEC1E00C52A35 /* cozy@3x.png */; };
+		E4F8716729DDEC1E00C52A35 /* cozy@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715F29DDEC1E00C52A35 /* cozy@3x.png */; };
 		F3B83720E44641879E6927C6 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0572B798A7D41908174A427 /* Lato-Regular.ttf */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +88,10 @@
 		E4924ABF29963CAD00F415CE /* CozyReactNativeDev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "CozyReactNativeDev-Info.plist"; path = "/Users/theo/cozy/cozy-flagship-app/ios/CozyReactNativeDev-Info.plist"; sourceTree = "<absolute>"; };
 		E4924AC02996437D00F415CE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Dev/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E4924AC22996438600F415CE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Prod/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E4F8715C29DDEC1E00C52A35 /* cozy@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cozy@2x.png"; sourceTree = "<group>"; };
+		E4F8715D29DDEC1E00C52A35 /* mespapiers@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mespapiers@2x.png"; sourceTree = "<group>"; };
+		E4F8715E29DDEC1E00C52A35 /* mespapiers@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mespapiers@3x.png"; sourceTree = "<group>"; };
+		E4F8715F29DDEC1E00C52A35 /* cozy@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cozy@3x.png"; sourceTree = "<group>"; };
 		EBA740E658AB4C90BED7F6D9 /* Lato-Regular.woff2 */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.woff2"; path = "../assets/fonts/Lato-Regular.woff2"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FB7AC79E047043178F1289F7 /* Lato-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Bold.ttf"; path = "../assets/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
@@ -134,6 +146,7 @@
 		13B07FAE1A68108700A75B9A /* CozyReactNative */ = {
 			isa = PBXGroup;
 			children = (
+				E4F8715B29DDEB6C00C52A35 /* AppIcons */,
 				6B8CB25B2807246700E1F390 /* assets */,
 				2C7AA45028157D130052F4D8 /* HttpServer */,
 				99A26C682632A5AC00365D30 /* CozyReactNative.entitlements */,
@@ -216,6 +229,17 @@
 				79997E63AEB566EB66642538 /* Pods-CozyReactNative-CozyReactNativeDev.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		E4F8715B29DDEB6C00C52A35 /* AppIcons */ = {
+			isa = PBXGroup;
+			children = (
+				E4F8715C29DDEC1E00C52A35 /* cozy@2x.png */,
+				E4F8715F29DDEC1E00C52A35 /* cozy@3x.png */,
+				E4F8715D29DDEC1E00C52A35 /* mespapiers@2x.png */,
+				E4F8715E29DDEC1E00C52A35 /* mespapiers@3x.png */,
+			);
+			path = AppIcons;
 			sourceTree = "<group>";
 		};
 		E53BDF67B72C4FB3901AA686 /* Resources */ = {
@@ -352,10 +376,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				997B98B22769CFD100089037 /* BootSplash.storyboard in Resources */,
+				E4F8716029DDEC1E00C52A35 /* cozy@2x.png in Resources */,
 				6B8CB25C2807246700E1F390 /* assets in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				E4F8716629DDEC1E00C52A35 /* cozy@3x.png in Resources */,
+				E4F8716429DDEC1E00C52A35 /* mespapiers@3x.png in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				573255ED23C142D79968C840 /* Lato-Bold.ttf in Resources */,
+				E4F8716229DDEC1E00C52A35 /* mespapiers@2x.png in Resources */,
 				F3B83720E44641879E6927C6 /* Lato-Regular.ttf in Resources */,
 				E4924AC32996438600F415CE /* GoogleService-Info.plist in Resources */,
 			);
@@ -366,10 +394,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4924AB129963CAD00F415CE /* BootSplash.storyboard in Resources */,
+				E4F8716129DDEC1E00C52A35 /* cozy@2x.png in Resources */,
 				E4924AB229963CAD00F415CE /* assets in Resources */,
 				E4924AB329963CAD00F415CE /* LaunchScreen.storyboard in Resources */,
+				E4F8716729DDEC1E00C52A35 /* cozy@3x.png in Resources */,
+				E4F8716529DDEC1E00C52A35 /* mespapiers@3x.png in Resources */,
 				E4924AB429963CAD00F415CE /* Images.xcassets in Resources */,
 				E4924AB529963CAD00F415CE /* Lato-Bold.ttf in Resources */,
+				E4F8716329DDEC1E00C52A35 /* mespapiers@2x.png in Resources */,
 				E4924AB629963CAD00F415CE /* Lato-Regular.ttf in Resources */,
 				E4924AC12996437D00F415CE /* GoogleService-Info.plist in Resources */,
 			);
