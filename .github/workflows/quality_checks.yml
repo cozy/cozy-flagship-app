@@ -3,8 +3,6 @@ name: React-Native CI
 on:
   workflow_dispatch:
   pull_request:
-    branches:
-      - master
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
