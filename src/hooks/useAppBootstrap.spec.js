@@ -97,6 +97,14 @@ jest.mock('react-native', () => {
   }
 })
 
+let mockOnboardingRedirection = ''
+jest.mock('/screens/home/HomeStateProvider', () => ({
+  useHomeStateContext: jest.fn().mockReturnValue({
+    onboardedRedirection: mockOnboardingRedirection,
+    setOnboardedRedirection: value => (mockOnboardingRedirection = value)
+  })
+}))
+
 afterEach(() => {
   expect(mockRemove).toHaveBeenCalledTimes(1)
 })
