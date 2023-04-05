@@ -203,6 +203,7 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async _start({ initKonnectorError } = {}) {
+    const { account } = this.getStartContext()
     try {
       if (initKonnectorError) {
         log.info('Got initKonnectorError ' + initKonnectorError.message)
@@ -210,7 +211,7 @@ class ReactNativeLauncher extends Launcher {
       }
       await this.pilot.call('setContentScriptType', 'pilot')
       await this.worker.call('setContentScriptType', 'worker')
-      await this.pilot.call('ensureAuthenticated')
+      await this.pilot.call('ensureAuthenticated', { account })
 
       this.setUserData(await this.pilot.call('getUserDataFromWebsite'))
 
