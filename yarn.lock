@@ -14388,9 +14388,9 @@ react-native-web@0.17.7:
     normalize-css-color "^1.0.2"
     prop-types "^15.6.0"
 
-"react-native-webview@github:cozy/react-native-webview#1.0.1":
+"react-native-webview@github:cozy/react-native-webview#1.0.2":
   version "11.18.2"
-  resolved "https://codeload.github.com/cozy/react-native-webview/tar.gz/30ba29facb7d70cb03cb0832ce2ef32010d32dc9"
+  resolved "https://codeload.github.com/cozy/react-native-webview/tar.gz/d95f2b0a83bd2c7b8cc84c11e71effc78d8bc5ec"
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
