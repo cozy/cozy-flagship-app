@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { BackHandler, StyleSheet, View, StatusBar } from 'react-native'
+import { BackHandler, StyleSheet, View } from 'react-native'
 import Minilog from '@cozy/minilog'
 
 import { ClouderyView } from './components/ClouderyView'

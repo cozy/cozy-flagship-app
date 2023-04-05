@@ -14,7 +14,6 @@ import {
   tryProcessClouderyBackgroundMessage
 } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { openWindowWithInAppBrowser } from '/screens/login/components/functions/interceptExternalLinks'
-import { parseOnboardedRedirectionForEmailScenario } from '/screens/login/components/functions/oidc'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
 const log = Minilog('ClouderyCreateInstanceView')
