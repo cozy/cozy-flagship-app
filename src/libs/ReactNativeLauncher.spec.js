@@ -237,7 +237,8 @@ describe('ReactNativeLauncher', () => {
       )
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(
         2,
-        'ensureAuthenticated'
+        'ensureAuthenticated',
+        { account: fixtures.account }
       )
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(
         3,
