@@ -65,7 +65,7 @@ export const WelcomeScreen = ({ navigation, route, setClient }) => {
       <LoginScreen
         clouderyMode={clouderyMode}
         style={styles.view}
-        disabledFocus={isWelcomeModalDisplayed}
+        disableAutofocus={isWelcomeModalDisplayed}
         navigation={navigation}
         route={route}
         setClient={setClient}
