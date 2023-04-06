@@ -1,5 +1,6 @@
 import Minilog from '@cozy/minilog'
 import { StatusBar } from 'react-native'
+import { changeBarColors } from 'react-native-immersive-bars'
 import type { WebViewMessageEvent } from 'react-native-webview'
 
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
@@ -88,6 +89,7 @@ export const setStatusBarColorToMatchBackground = (
   try {
     const lightBackground = isLightBackground(backgroundColor)
     StatusBar.setBarStyle(lightBackground ? 'dark-content' : 'light-content')
+    changeBarColors(!lightBackground)
   } catch (error) {
     const errorMessage = getErrorMessage(error)
     log.error(
