@@ -205,7 +205,7 @@ export default class Launcher {
 
     if (!account) {
       log.debug(
-        `ensureAccountAndTriggerAndJob: found no account in start context. Creating one`
+        `ensureAccountAndTriggerAndLaunch: found no account in start context. Creating one`
       )
 
       await cleanExistingAccountsForKonnector(client, konnector.slug, log)
