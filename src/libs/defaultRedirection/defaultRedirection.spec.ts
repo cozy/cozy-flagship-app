@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { changeIcon as RNChangeIcon } from 'react-native-change-icon'
 
 import CozyClient, { createMockClient } from 'cozy-client'
 
@@ -11,6 +12,7 @@ import {
   fetchDefaultRedirectionUrl,
   setDefaultRedirectionUrl,
   getDefaultRedirectionUrl,
+  setDefaultRedirectionUrlAndAppIcon,
   setDefaultRedirection,
   fetchAndSetDefaultRedirectionUrl,
   fetchAndSetDefaultRedirectionUrlInBackground,
@@ -20,6 +22,7 @@ import {
 import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
 
 jest.mock('@react-native-async-storage/async-storage')
+jest.mock('react-native-change-icon')
 jest.mock('/libs/functions/formatRedirectLink')
 
 const mockedFormatRedirectLink = formatRedirectLink as jest.MockedFunction<
@@ -101,8 +104,33 @@ describe('getDefaultRedirectionUrl', () => {
   })
 })
 
+describe('setDefaultRedirectionUrlAndAppIcon', () => {
+  const client = createMockClient({}) as CozyClient
+
+  client.capabilities = {
+    flat_subdomains: false
+  }
+
+  beforeAll(() => {
+    jest.resetAllMocks()
+  })
+
+  it('should set default redirection url in async storage and app icon', async () => {
+    await setDefaultRedirectionUrlAndAppIcon(DRIVE_URL, client)
+    expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+      strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY,
+      DRIVE_URL
+    )
+    expect(RNChangeIcon).toHaveBeenCalledWith('cozy')
+  })
+})
+
 describe('setDefaultRedirection', () => {
   const client = createMockClient({}) as CozyClient
+
+  client.capabilities = {
+    flat_subdomains: false
+  }
 
   beforeAll(() => {
     jest.resetAllMocks()
@@ -121,6 +149,10 @@ describe('setDefaultRedirection', () => {
 describe('fetchAndSetDefaultRedirectionUrl', () => {
   const client = createMockClient({}) as CozyClient
 
+  client.capabilities = {
+    flat_subdomains: false
+  }
+
   beforeAll(() => {
     jest.resetAllMocks()
   })
@@ -130,7 +162,10 @@ describe('fetchAndSetDefaultRedirectionUrl', () => {
       .spyOn(DefaultRedirection, 'fetchDefaultRedirectionUrl')
       .mockReturnValue(Promise.resolve(DRIVE_URL))
 
-    const spy = jest.spyOn(DefaultRedirection, 'setDefaultRedirectionUrl')
+    const spy = jest.spyOn(
+      DefaultRedirection,
+      'setDefaultRedirectionUrlAndAppIcon'
+    )
     await fetchAndSetDefaultRedirectionUrl(client)
     expect(spy).toHaveBeenCalled()
   })
@@ -140,7 +175,10 @@ describe('fetchAndSetDefaultRedirectionUrl', () => {
       .spyOn(DefaultRedirection, 'fetchDefaultRedirectionUrl')
       .mockReturnValue(Promise.resolve(null))
 
-    const spy = jest.spyOn(DefaultRedirection, 'setDefaultRedirectionUrl')
+    const spy = jest.spyOn(
+      DefaultRedirection,
+      'setDefaultRedirectionUrlAndAppIcon'
+    )
     await fetchAndSetDefaultRedirectionUrl(client)
     expect(spy).not.toHaveBeenCalled()
   })
@@ -176,6 +214,10 @@ describe('fetchAndSetDefaultRedirectionUrlInBackground', () => {
 
 describe('getOrFetchDefaultRedirectionUrl', () => {
   const client = createMockClient({}) as CozyClient
+
+  client.capabilities = {
+    flat_subdomains: false
+  }
 
   let spyFetchAndSetDefaultRedirectionUrlInBackground: jest.SpyInstance<
     Promise<void>,
