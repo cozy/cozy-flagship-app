@@ -98,7 +98,7 @@ export const OidcOnboardingView = ({
       <SupervisedWebView
         source={{ uri: onboardUrl }}
         ref={webviewRef}
-        injectedJavaScriptBeforeContentLoaded={fetchBackgroundOnLoad}
+        injectedJavaScriptBeforeContentLoaded={run}
         onShouldStartLoadWithRequest={handleNavigation}
         onLoadEnd={(): void => setLoading(false)}
         onMessage={processMessage}
@@ -125,6 +125,14 @@ export const OidcOnboardingView = ({
     </Wrapper>
   )
 }
+
+const run = `
+  (function() {
+    ${fetchBackgroundOnLoad}
+
+    return true;
+  })();
+`
 
 const handleError = async (webviewErrorEvent: unknown): Promise<void> => {
   try {
