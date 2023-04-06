@@ -76,13 +76,11 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   }, [webviewRef])
 
   useEffect(() => {
-    const handleLaunchResult = () => {
+    const handleLaunchResult = param => {
       const payload = JSON.stringify({
         type: 'Clisk',
         message: 'launchResult',
-        param: {
-          message: 'abort'
-        }
+        param
       })
       webviewRef?.postMessage(payload)
     }

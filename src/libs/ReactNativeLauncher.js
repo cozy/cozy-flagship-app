@@ -168,21 +168,23 @@ class ReactNativeLauncher extends Launcher {
    * @returns {Promise<void>}
    */
   async stop({ message } = {}) {
-    const context = this.getStartContext()
-    const client = context.client
+    const { client, job } = this.getStartContext()
 
-    launcherEvent.emit('launchResult', { cancel: true })
-
-    await sendKonnectorsLogs(client)
-    if (message) {
-      await this.updateJobResult({
-        state: 'errored',
-        error: message
-      })
+    if (job) {
+      launcherEvent.emit('launchResult', { cancel: true })
+      await sendKonnectorsLogs(client)
+      if (message) {
+        await this.updateJobResult({
+          state: 'errored',
+          error: message
+        })
+      } else {
+        await this.updateJobResult()
+      }
+      this.emit('STOPPED_JOB')
     } else {
-      await this.updateJobResult()
+      launcherEvent.emit('launchResult', { errorMessage: message })
     }
-    this.emit('STOPPED_JOB')
     this.close()
   }
 
@@ -236,14 +238,6 @@ class ReactNativeLauncher extends Launcher {
       await this.stop()
     } catch (err) {
       log.error(err, 'start error')
-      // to create the job even if the error was raised before sendLoginSuccess
-      const ensureResult = await this.ensureAccountTriggerAndLaunch()
-      if (ensureResult.createdAccount) {
-        this.emit('CREATED_ACCOUNT', ensureResult.createdAccount)
-      }
-      if (ensureResult.createdJob) {
-        this.emit('CREATED_JOB', ensureResult.createdJob)
-      }
       await this.stop({ message: err.message })
     }
     this.emit('KONNECTOR_EXECUTION_END')

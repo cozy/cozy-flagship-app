@@ -18,7 +18,7 @@ jest.mock('./keychain', () => {
 })
 import CookieManager from '@react-native-cookies/cookies'
 
-import ReactNativeLauncher from './ReactNativeLauncher'
+import ReactNativeLauncher, { launcherEvent } from './ReactNativeLauncher'
 import { getCookie, saveCookie, removeCookie } from './keychain'
 
 const fixtures = {
@@ -32,6 +32,7 @@ const fixtures = {
 
 describe('ReactNativeLauncher', () => {
   function setup() {
+    jest.spyOn(launcherEvent, 'emit')
     const launcher = new ReactNativeLauncher()
     launcher.setLogger(() => {})
     launcher.pilot = {
@@ -245,6 +246,9 @@ describe('ReactNativeLauncher', () => {
         'getUserDataFromWebsite'
       )
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(4, 'fetch', [])
+      expect(launcherEvent.emit).toHaveBeenCalledWith('launchResult', {
+        cancel: true
+      })
     })
     it('should update job with error message on error', async () => {
       const { launcher, client, launch } = setup()
@@ -266,14 +270,20 @@ describe('ReactNativeLauncher', () => {
       launcher.pilot.call
         .mockResolvedValueOnce(true)
         .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce({
+          sourceAccountIdentifier: 'testsourceaccountidentifier'
+        })
         .mockRejectedValue(new Error('test error message'))
       await launcher.start()
-      expect(client.save).toHaveBeenNthCalledWith(2, {
+      expect(client.save).toHaveBeenNthCalledWith(3, {
         _id: 'normal_job_id',
         attributes: {
           state: 'errored',
           error: 'test error message'
         }
+      })
+      expect(launcherEvent.emit).toHaveBeenCalledWith('launchResult', {
+        cancel: true
       })
     })
     it('should not create account and trigger if the user stops the execution before login success', async () => {
@@ -285,14 +295,39 @@ describe('ReactNativeLauncher', () => {
           setAppMetadata: () => null
         }
       })
-      launcher.pilot.call.mockImplementation(() => {
-        return new Promise(() => {
-          return
-        })
+      launcher.pilot.call.mockImplementation(async method => {
+        if (method === 'ensureAuthenticated') {
+          launcher.controller.abort()
+        }
+        return
       })
-      await Promise.all([launcher.start(), launcher.stop()])
+      await Promise.all([launcher.start()])
 
       expect(launch).not.toHaveBeenCalled()
+      expect(launcherEvent.emit).not.toHaveBeenCalledWith('loginSuccess')
+    })
+    it('should send error message to harvest when error occurs before loginSuccess', async () => {
+      const { launcher, client, launch } = setup()
+      launcher.setStartContext({
+        client,
+        konnector: { slug: 'konnectorslug', clientSide: true },
+        launcherClient: {
+          setAppMetadata: () => null
+        }
+      })
+      launcher.pilot.call.mockImplementation(async method => {
+        if (method === 'ensureAuthenticated') {
+          throw new Error('test error message')
+        }
+        return
+      })
+      await launcher.start()
+
+      expect(launch).not.toHaveBeenCalled()
+      expect(launcherEvent.emit).toHaveBeenCalledWith('launchResult', {
+        errorMessage: 'test error message'
+      })
+      expect(launcherEvent.emit).not.toHaveBeenCalledWith('loginSuccess')
     })
   })
   describe('runInWorker', () => {
