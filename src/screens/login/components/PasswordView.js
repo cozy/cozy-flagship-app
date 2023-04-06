@@ -23,6 +23,7 @@ import { getColors } from '/ui/colors'
  * @param {string} props.name - The user's name as configured in the Cozy's settings
  * @param {Function} props.requestTransitionStart - Function to call when the component is ready to be displayed and the app should transition to it
  * @param {boolean} props.readonly - Specify if the form should be readonly
+ * @param {setBackgroundColor} props.setBackgroundColor - Set the LoginScreen's background color (used for overlay and navigation bars)
  * @param {setPasswordData} props.setPasswordData - Function to call to set the user's password
  * @param {setReadonly} props.setReadonly - Trigger change on the readonly state
  * @returns {import('react').ComponentClass}
@@ -35,6 +36,7 @@ const PasswordForm = ({
   name,
   requestTransitionStart,
   readonly,
+  setBackgroundColor,
   setPasswordData,
   setReadonly,
   waitForTransition
@@ -93,6 +95,7 @@ const PasswordForm = ({
 
       if (message.message === 'loaded') {
         setLoaded(message.avatarPosition)
+        setBackgroundColor(colors.primaryColor)
       } else if (message.message === 'setPassphrase') {
         setPassword(message.passphrase)
       } else if (message.message === 'forgotPassword') {
@@ -144,6 +147,7 @@ const PasswordForm = ({
  * @param {string} props.name - The user's name as configured in the Cozy's settings
  * @param {boolean} props.readonly - Specify if the form should be readonly
  * @param {Function} props.requestTransitionStart - Function to call when the component is ready to be displayed and the app should transition to it
+ * @param {setBackgroundColor} props.setBackgroundColor - Set the LoginScreen's background color (used for overlay and navigation bars)
  * @param {setLoginDataCallback} props.setKeys - Function to call to set the user's password and encryption keys
  * @param {setErrorCallback} props.setError - Function to call when an error is thrown by the component
  * @param {setReadonly} props.setReadonly - Trigger change on the readonly state
@@ -158,6 +162,7 @@ export const PasswordView = ({
   name,
   readonly,
   requestTransitionStart,
+  setBackgroundColor,
   setKeys,
   setError,
   setReadonly,
@@ -186,6 +191,7 @@ export const PasswordView = ({
       instance={instance}
       name={name}
       requestTransitionStart={requestTransitionStart}
+      setBackgroundColor={setBackgroundColor}
       setPasswordData={setPasswordData}
       readonly={readonly}
       setReadonly={setReadonly}
