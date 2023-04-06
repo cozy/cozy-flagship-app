@@ -14,7 +14,6 @@ interface ClouderyMessage {
 type SetBackgroundColorCallback = (color: string) => void
 
 export const fetchBackgroundOnLoad = `
-(function() {
   window.addEventListener("load", function(event) {
     const color = getComputedStyle(
       document.getElementsByTagName("main")[0]
@@ -25,7 +24,6 @@ export const fetchBackgroundOnLoad = `
       color: color
     }))
   })
-})();
 `
 
 export const tryProcessClouderyBackgroundMessage = (
