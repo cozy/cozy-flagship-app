@@ -207,16 +207,17 @@ const ClouderyWebView = forwardRef(
 )
 ClouderyWebView.displayName = 'WebView'
 
-const run =
-  `
-    (function() {
-      ${jsCozyGlobal()}
+const run = `
+  (function() {
+    ${jsCozyGlobal()}
 
-      ${jsLogInterception}
+    ${jsLogInterception}
 
-      return true;
-    })();
-  ` + fetchBackgroundOnLoad
+    ${fetchBackgroundOnLoad}
+
+    return true;
+  })();
+`
 
 const handleError = async (webviewErrorEvent: unknown): Promise<void> => {
   try {

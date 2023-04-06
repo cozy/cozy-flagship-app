@@ -18,16 +18,17 @@ import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
 const log = Minilog('ClouderyCreateInstanceView')
 
-const run =
-  `
-    (function() {
-      ${jsCozyGlobal()}
+const run = `
+  (function() {
+    ${jsCozyGlobal()}
 
-      ${jsLogInterception}
+    ${jsLogInterception}
 
-      return true;
-    })();
-  ` + fetchBackgroundOnLoad
+    ${fetchBackgroundOnLoad}
+
+    return true;
+  })();
+`
 
 /**
  * Displays the Cloudery web page where the user can onboard a new cozy from an onboarding email
