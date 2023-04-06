@@ -18,7 +18,11 @@ import { routes } from '/constants/routes'
 import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
 import { jsLogInterception } from '/components/webviews/jsInteractions/jsLogInterception'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
-import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
+import {
+  triggerAutofocusFocusOnWebview,
+  handleAutofocusFields,
+  tryProcessQueryKeyboardMessage
+} from '/libs/functions/keyboardHelper'
 import { NetService } from '/libs/services/NetService'
 import { ClouderyUrls } from '/screens/login/cloudery-env/clouderyEnv'
 import {
@@ -38,6 +42,7 @@ export const CLOUDERY_MODE_SIGNING = 'CLOUDERY_MODE_SIGNING'
 
 interface ClouderyViewSwitchProps {
   backgroundColor: string
+  disableAutofocus: boolean
   clouderyMode: 'CLOUDERY_MODE_LOGIN' | 'CLOUDERY_MODE_SIGNING'
   handleNavigation: (request: WebViewNavigation) => boolean
   setCanGoBack: (newState: boolean) => void
@@ -48,6 +53,7 @@ interface ClouderyViewSwitchProps {
 
 interface ClouderyWebViewProps {
   backgroundColor: string
+  disableAutofocus: boolean
   handleNavigation: (request: WebViewNavigation) => boolean
   onLoadEnd: () => void
   setCanGoBack: (newState: boolean) => void
@@ -66,6 +72,7 @@ export const ClouderyViewSwitch = forwardRef(
   (
     {
       backgroundColor,
+      disableAutofocus,
       clouderyMode,
       handleNavigation,
       setCanGoBack,
@@ -93,12 +100,6 @@ export const ClouderyViewSwitch = forwardRef(
         } else {
           webviewSigninRef.current?.goBack()
         }
-      },
-      setFocusOnField(): void {
-        const fieldName =
-          clouderyMode === CLOUDERY_MODE_LOGIN ? 'email' : 'postcode'
-
-        setFocusOnWebviewField(webviewLoginRef.current, fieldName)
       }
     }))
 
@@ -138,6 +139,9 @@ export const ClouderyViewSwitch = forwardRef(
               onLoadEnd={onSigninLoadEnd}
               onMessage={processMessage}
               backgroundColor={backgroundColor}
+              disableAutofocus={
+                disableAutofocus || clouderyMode !== CLOUDERY_MODE_SIGNING
+              }
             />
           </View>
         )}
@@ -158,6 +162,9 @@ export const ClouderyViewSwitch = forwardRef(
             onLoadEnd={onLoginLoadEnd}
             onMessage={processMessage}
             backgroundColor={backgroundColor}
+            disableAutofocus={
+              disableAutofocus || clouderyMode !== CLOUDERY_MODE_LOGIN
+            }
           />
         </View>
       </>
@@ -174,17 +181,36 @@ const ClouderyWebView = forwardRef(
     {
       backgroundColor,
       handleNavigation,
+      onMessage,
       onLoadEnd,
       setCanGoBack,
       uri,
+      disableAutofocus,
       ...other
     }: ClouderyWebViewProps & WebViewProps,
     ref
   ) => {
+    const webviewRef = useRef<WebView>()
+
+    useImperativeHandle(ref, () => webviewRef.current)
+
+    useEffect(() => {
+      if (!disableAutofocus && webviewRef.current) {
+        triggerAutofocusFocusOnWebview(webviewRef.current)
+      }
+    }, [disableAutofocus, webviewRef])
+
+    const processMessage = (event: WebViewMessageEvent): void => {
+      if (!disableAutofocus && webviewRef.current) {
+        tryProcessQueryKeyboardMessage(webviewRef.current, event)
+      }
+      onMessage?.(event)
+    }
+
     return (
       <SupervisedWebView
         source={{ uri: uri }}
-        ref={ref}
+        ref={webviewRef}
         onNavigationStateChange={(event: WebViewNavigation): void => {
           setCanGoBack(event.canGoBack)
         }}
@@ -194,6 +220,7 @@ const ClouderyWebView = forwardRef(
           handleNavigation
         )}
         onLoadEnd={(): void => onLoadEnd()}
+        onMessage={processMessage}
         onOpenWindow={openWindowWithInAppBrowser}
         injectedJavaScriptBeforeContentLoaded={run}
         style={{
@@ -214,6 +241,8 @@ const run = `
     ${jsLogInterception}
 
     ${fetchBackgroundOnLoad}
+    
+    ${handleAutofocusFields}
 
     return true;
   })();

@@ -1,9 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
 import Minilog from '@cozy/minilog'
 
 import { getOnboardingDataFromRequest } from '/libs/functions/getOnboardingDataFromRequest'
-import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
+import {
+  handleAutofocusFields,
+  tryProcessQueryKeyboardMessage
+} from '/libs/functions/keyboardHelper'
 import { NetService } from '/libs/services/NetService'
 import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
 import { jsLogInterception } from '/components/webviews/jsInteractions/jsLogInterception'
@@ -25,6 +28,8 @@ const run = `
     ${jsLogInterception}
 
     ${fetchBackgroundOnLoad}
+    
+    ${handleAutofocusFields}
 
     return true;
   })();
@@ -76,13 +81,8 @@ export const ClouderyCreateInstanceView = ({
     return true
   }
 
-  useEffect(() => {
-    if (webviewRef && !loading) {
-      setFocusOnWebviewField(webviewRef.current, 'slug')
-    }
-  }, [loading, webviewRef])
-
   const processMessage = event => {
+    tryProcessQueryKeyboardMessage(webviewRef.current, event)
     tryProcessClouderyBackgroundMessage(event, setBackgroundColor)
   }
 

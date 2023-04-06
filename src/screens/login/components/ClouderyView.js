@@ -34,7 +34,7 @@ import {
  * @param {string} props.backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
  * @param {'CLOUDERY_MODE_LOGIN'|'CLOUDERY_MODE_SIGNING'} props.clouderyMode
  * @param {setInstanceData} props.setInstanceData - Set instance data (fqdn and origin) to start the Login process
- * @param {boolean} props.disabledFocus - Boolean stating if the Webview can get focus (used to trigger auto-focus on email field)
+ * @param {boolean} props.disableAutofocus - Boolean stating if the Webview can get focus (used to trigger auto-focus on email field)
  * @param {setBackgroundColor} props.setBackgroundColor - Set the LoginScreen's background color (used for overlay and navigation bars)
  * @param {setErrorCallback} props.setError - Display the given error
  * @param {startOidcOAuth} props.startOidcOAuth - Start the OIDC Oauth process
@@ -45,7 +45,7 @@ export const ClouderyView = ({
   backgroundColor,
   clouderyMode,
   setInstanceData,
-  disabledFocus,
+  disableAutofocus,
   setBackgroundColor,
   setError,
   startOidcOAuth,
@@ -108,24 +108,6 @@ export const ClouderyView = ({
     checkInstanceData && asyncCore()
   }, [checkInstanceData, setInstanceData])
 
-  useEffect(() => {
-    // add a parameter
-    if (
-      webviewRef &&
-      !loading &&
-      !disabledFocus &&
-      !urls?.isOnboardingPartner
-    ) {
-      webviewRef.current.setFocusOnField()
-    }
-  }, [
-    clouderyMode,
-    loading,
-    webviewRef,
-    disabledFocus,
-    urls?.isOnboardingPartner
-  ])
-
   const handleBackPress = useCallback(() => {
     if (!canGoBack) {
       return false
@@ -166,6 +148,7 @@ export const ClouderyView = ({
           urls={urls}
           backgroundColor={backgroundColor}
           setBackgroundColor={setBackgroundColor}
+          disableAutofocus={disableAutofocus}
         />
       )}
       {displayOverlay && (
