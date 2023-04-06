@@ -48,7 +48,7 @@ const colors = getColors()
 const LoginSteps = ({
   backgroundColor,
   clouderyMode,
-  disabledFocus,
+  disableAutofocus,
   goBack,
   navigation,
   route,
@@ -406,7 +406,7 @@ const LoginSteps = ({
       <ClouderyView
         backgroundColor={backgroundColor}
         clouderyMode={clouderyMode}
-        disabledFocus={disabledFocus}
+        disableAutofocus={disableAutofocus}
         setBackgroundColor={setBackgroundColor}
         setInstanceData={setInstanceData}
         startOidcOAuth={startOidcOAuth}
@@ -499,7 +499,7 @@ const LoginSteps = ({
 
 export const LoginScreen = ({
   clouderyMode,
-  disabledFocus,
+  disableAutofocus,
   goBack,
   navigation,
   route,
@@ -530,7 +530,7 @@ export const LoginScreen = ({
         route={route}
         setBackgroundColor={setBackgroundAndStatusBarColor}
         setClient={setClient}
-        disabledFocus={disabledFocus}
+        disableAutofocus={disableAutofocus}
         goBack={goBack}
       />
       <View
