@@ -429,6 +429,7 @@ const LoginSteps = ({
           setError={setError}
           errorMessage={state.errorMessage}
           goBack={cancelLogin}
+          setBackgroundColor={setBackgroundColor}
           readonly={state.stepReadonly}
           setReadonly={setStepReadonly}
           waitForTransition={state.waitForTransition}
