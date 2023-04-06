@@ -6,6 +6,7 @@ import { Q, deconstructCozyWebLinkWithSlug } from 'cozy-client'
 import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
 import { logger } from '/libs/functions/logger'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
+import { changeIcon } from '/libs/icon/icon'
 import strings from '/constants/strings.json'
 
 export const log = logger('AppBundle')
@@ -63,6 +64,22 @@ export const getDefaultRedirectionUrl =
     )
   }
 
+export const setDefaultRedirectionUrlAndAppIcon = async (
+  defaultRedirectionUrl: string,
+  client: CozyClient
+): Promise<void> => {
+  await setDefaultRedirectionUrl(defaultRedirectionUrl)
+
+  const subdomainType = client.capabilities.flat_subdomains ? 'flat' : 'nested'
+
+  const { slug } = deconstructCozyWebLinkWithSlug(
+    defaultRedirectionUrl,
+    subdomainType
+  )
+
+  await changeIcon(slug)
+}
+
 export const setDefaultRedirection = async (
   defaultRedirection: string,
   client: CozyClient
@@ -72,7 +89,7 @@ export const setDefaultRedirection = async (
 
     if (defaultRedirectionUrl === null) return
 
-    await setDefaultRedirectionUrl(defaultRedirectionUrl)
+    await setDefaultRedirectionUrlAndAppIcon(defaultRedirectionUrl, client)
   } catch {
     return
   }
@@ -85,7 +102,7 @@ export const fetchAndSetDefaultRedirectionUrl = async (
 
   if (newDefaultRedirectionUrl === null) return null
 
-  await setDefaultRedirectionUrl(newDefaultRedirectionUrl)
+  await setDefaultRedirectionUrlAndAppIcon(newDefaultRedirectionUrl, client)
 
   return newDefaultRedirectionUrl
 }
