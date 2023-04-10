@@ -4,11 +4,11 @@ import { Platform } from 'react-native'
 
 import CozyClient from 'cozy-client'
 
-import { loginFlagship } from './clientHelpers/loginFlagship'
 import { normalizeFqdn } from './functions/stringHelpers'
 
 import strings from '/constants/strings.json'
 import { createPKCE } from '/libs/clientHelpers/authorizeClient'
+import { connectClient } from '/libs/clientHelpers/connectClient'
 import { createClient } from '/libs/clientHelpers/createClient'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import {
@@ -157,71 +157,6 @@ export const callOnboardingInitClient = async ({
   listenTokenRefresh(client)
 
   return client
-}
-
-/**
- * Process the OAuth dance for the given CozyClient
- *
- * @param {object} param
- * @param {LoginData} param.loginData - login data containing hashed password and encryption keys
- * @param {CozyClient} param.client - the CozyClient instance that will be authenticated through OAuth
- * @param {TwoFactorAuthenticationData} param.twoFactorAuthenticationData - the 2FA data containing a token and a passcode
- * @returns {CozyClientCreationContext} The CozyClient with its corresponding state (i.e: connected, waiting for 2FA, invalid password etc)
- */
-const connectClient = async ({
-  loginData,
-  client,
-  twoFactorAuthenticationData = undefined
-}) => {
-  const {
-    two_factor_token: twoFactorToken,
-    session_code: sessionCode,
-    invalidPassword,
-    ...token
-  } = await loginFlagship({
-    client,
-    loginData,
-    twoFactorAuthenticationData
-  })
-
-  if (invalidPassword) {
-    return {
-      client,
-      state: STATE_INVALID_PASSWORD
-    }
-  }
-
-  const need2FA = twoFactorToken !== undefined
-
-  if (need2FA) {
-    return {
-      client,
-      state: STATE_2FA_NEEDED,
-      twoFactorToken: twoFactorToken
-    }
-  }
-
-  const needFlagshipVerification = sessionCode !== undefined
-
-  if (needFlagshipVerification) {
-    return {
-      client: client,
-      state: STATE_AUTHORIZE_NEEDED,
-      sessionCode: sessionCode
-    }
-  }
-
-  const stackClient = client.getStackClient()
-  stackClient.setToken(token)
-
-  await client.login()
-  await saveClient(client)
-  listenTokenRefresh(client)
-
-  return {
-    client: client,
-    state: STATE_CONNECTED
-  }
 }
 
 export const authorizeClient = async ({ client, sessionCode }) => {
