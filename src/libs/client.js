@@ -11,10 +11,10 @@ import { normalizeFqdn } from './functions/stringHelpers'
 
 import strings from '/constants/strings.json'
 import { androidSafetyNetApiKey } from '/constants/api-keys'
+import { createPKCE } from '/libs/clientHelpers/authorizeClient'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 import packageJSON from '../../package.json'
-import { queryResultToCrypto } from '../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
 
 export { connectOidcClient } from '/libs/clientHelpers/oidc'
 
@@ -297,17 +297,6 @@ const listenTokenRefresh = client => {
     log.debug('Token has been refreshed')
     saveClient(client)
   })
-}
-
-/**
- * Create and return a couple of PKCE keys
- * To make the PKCE creation possible, a CryptoWebView must be present in the ReactNative component tree
- *
- * @returns {object} message result from the CryptoWebView's `computePKCE` method
- * throws
- */
-const createPKCE = async () => {
-  return await queryResultToCrypto('computePKCE')
 }
 
 /**
