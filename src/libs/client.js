@@ -11,10 +11,15 @@ import strings from '/constants/strings.json'
 import { createPKCE } from '/libs/clientHelpers/authorizeClient'
 import { createClient } from '/libs/clientHelpers/createClient'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
+import {
+  listenTokenRefresh,
+  saveClient
+} from '/libs/clientHelpers/persistClient'
 
 import packageJSON from '../../package.json'
 
 export { connectOidcClient } from '/libs/clientHelpers/oidc'
+export { clearClient } from '/libs/clientHelpers/persistClient'
 export { createClient } from '/libs/clientHelpers/createClient'
 
 const log = Minilog('LoginScreen')
@@ -23,29 +28,6 @@ export const STATE_CONNECTED = 'STATE_CONNECTED'
 export const STATE_AUTHORIZE_NEEDED = 'STATE_AUTHORIZE_NEEDED'
 export const STATE_2FA_NEEDED = 'STATE_2FA_NEEDED'
 export const STATE_INVALID_PASSWORD = 'STATE_INVALID_PASSWORD'
-
-/**
- * Clears the storage key related to client authentication
- */
-export const clearClient = () => {
-  return AsyncStorage.removeItem(strings.OAUTH_STORAGE_KEY)
-}
-
-/**
- * save cozy-client authentication information in mobile storage
- *
- * @param {CozyClient} client : client instance
- */
-export const saveClient = async client => {
-  const { uri, oauthOptions, token } = client.getStackClient()
-  const state = JSON.stringify({
-    oauthOptions,
-    token,
-    uri
-  })
-
-  return AsyncStorage.setItem(strings.OAUTH_STORAGE_KEY, state)
-}
 
 /**
  * Get a cozy client instance, initialized with authentication information from mobile storage
@@ -257,13 +239,6 @@ export const authorizeClient = async ({ client, sessionCode }) => {
     client: client,
     state: STATE_CONNECTED
   }
-}
-
-const listenTokenRefresh = client => {
-  client.on('tokenRefreshed', () => {
-    log.debug('Token has been refreshed')
-    saveClient(client)
-  })
 }
 
 /**
