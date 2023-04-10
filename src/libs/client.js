@@ -1,22 +1,21 @@
 import Minilog from '@cozy/minilog'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
-import { getDeviceName } from 'react-native-device-info'
 
 import CozyClient from 'cozy-client'
 
 import { loginFlagship } from './clientHelpers/loginFlagship'
-import { SOFTWARE_ID, SOFTWARE_NAME } from './constants'
 import { normalizeFqdn } from './functions/stringHelpers'
 
 import strings from '/constants/strings.json'
-import { androidSafetyNetApiKey } from '/constants/api-keys'
 import { createPKCE } from '/libs/clientHelpers/authorizeClient'
+import { createClient } from '/libs/clientHelpers/createClient'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 import packageJSON from '../../package.json'
 
 export { connectOidcClient } from '/libs/clientHelpers/oidc'
+export { createClient } from '/libs/clientHelpers/createClient'
 
 const log = Minilog('LoginScreen')
 
@@ -170,38 +169,6 @@ export const callOnboardingInitClient = async ({
   await client.login()
   await saveClient(client)
   listenTokenRefresh(client)
-
-  return client
-}
-
-/**
- * Create a CozyClient for the given Cozy instance and register it
- *
- * @param {string} instance - the Cozy instance used to create the client
- * @returns {CozyClient} - The created and registered CozyClient
- */
-export const createClient = async instance => {
-  const options = {
-    scope: ['*'],
-    oauth: {
-      redirectURI: strings.COZY_SCHEME,
-      softwareID: SOFTWARE_ID,
-      clientKind: 'mobile',
-      clientName: `${SOFTWARE_NAME} (${await getDeviceName()})`,
-      shouldRequireFlagshipPermissions: true,
-      certificationConfig: { androidSafetyNetApiKey }
-    },
-    appMetadata: {
-      slug: 'flagship',
-      version: packageJSON.version
-    }
-  }
-
-  const client = new CozyClient(options)
-
-  const stackClient = client.getStackClient()
-  stackClient.setUri(instance)
-  await stackClient.register(instance)
 
   return client
 }
