@@ -1,3 +1,4 @@
+import Minilog from '@cozy/minilog'
 import { Linking } from 'react-native'
 import { useEffect, useState } from 'react'
 
@@ -20,6 +21,8 @@ import {
 } from '/libs/defaultRedirection/defaultRedirection'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
+const log = Minilog('useAppBootstrap')
+
 export const useAppBootstrap = client => {
   const [initialRoute, setInitialRoute] = useState('fetching')
   const [isLoading, setIsLoading] = useState(true)
@@ -32,6 +35,7 @@ export const useAppBootstrap = client => {
     const doAsync = async () => {
       if (!client) {
         const onboardingUrl = await Linking.getInitialURL()
+        log.debug(`App's initialURL is ${onboardingUrl}`)
 
         const onboardingParams = parseOnboardingURL(onboardingUrl)
 
@@ -47,6 +51,7 @@ export const useAppBootstrap = client => {
           }
 
           if (onboardUrl) {
+            log.debug('Set initialRoute to instanceCreation screen')
             return setInitialRoute({
               route: routes.instanceCreation,
               params: {
@@ -54,6 +59,7 @@ export const useAppBootstrap = client => {
               }
             })
           } else {
+            log.debug('Set initialRoute to authenticate screen')
             return setInitialRoute({
               route: routes.authenticate,
               params: {
@@ -62,6 +68,7 @@ export const useAppBootstrap = client => {
             })
           }
         } else {
+          log.debug('Set initialRoute to welcome screen')
           return setInitialRoute({
             route: routes.welcome
           })
@@ -74,6 +81,9 @@ export const useAppBootstrap = client => {
 
         setOnboardedRedirection('')
 
+        log.debug(
+          `Set initialRoute to home screen with fallback on ${onboardingRedirectionURL}`
+        )
         return setInitialRoute({
           route: routes.home,
           params: {
@@ -85,6 +95,12 @@ export const useAppBootstrap = client => {
         const { mainAppFallbackURL, cozyAppFallbackURL } =
           parseFallbackURL(payload)
         if (mainAppFallbackURL || cozyAppFallbackURL) {
+          log.debug(
+            `Set initialRoute to home screen with fallback params from initialURL ${{
+              mainAppFallbackURL,
+              cozyAppFallbackURL
+            }}`
+          )
           return setInitialRoute({
             route: routes.home,
             params: {
@@ -96,6 +112,9 @@ export const useAppBootstrap = client => {
 
         const defaultRedirectUrl = await getOrFetchDefaultRedirectionUrl(client)
 
+        log.debug(
+          `Set initialRoute to home screen with fallback from database ${defaultRedirectUrl}`
+        )
         return setInitialRoute({
           route: routes.home,
           params: getParamsWithDefaultRedirectionUrl(defaultRedirectUrl, client)
@@ -132,6 +151,7 @@ export const useAppBootstrap = client => {
     client && setSentryTag(SentryCustomTags.Instance, client.stackClient?.uri)
 
     const subscription = Linking.addEventListener('url', ({ url }) => {
+      log.debug(`🔗 Linking URL is ${url}`)
       const onboardingParams = parseOnboardingURL(url)
 
       if (onboardingParams) {
@@ -146,9 +166,11 @@ export const useAppBootstrap = client => {
         }
 
         if (onboardUrl) {
+          log.debug(`🔗 Redirect to instanceCreation screen for ${onboardUrl}`)
           navigate(routes.instanceCreation, { onboardUrl })
           return
         } else {
+          log.debug(`🔗 Redirect to authenticate screen for ${fqdn}`)
           navigate(routes.authenticate, { fqdn })
           return
         }
@@ -166,7 +188,10 @@ export const useAppBootstrap = client => {
 
         const iconParams = getDefaultIconParams()
 
-        navigate(mainAppFallbackURL ? routes.home : routes.cozyapp, {
+        const route = mainAppFallbackURL ? routes.home : routes.cozyapp
+
+        log.debug(`🔗 Redirect to ${route} screen (fallback)`)
+        navigate(route, {
           href,
           slug,
           iconParams

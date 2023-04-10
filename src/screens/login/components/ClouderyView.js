@@ -1,3 +1,4 @@
+import Minilog from '@cozy/minilog'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   BackHandler,
@@ -19,6 +20,8 @@ import {
   isOidcNavigationRequest,
   processOIDC
 } from '/screens/login/components/functions/oidc'
+
+const log = Minilog('ClouderyView')
 
 /**
  * Displays the Cloudery web page where the user can log to their Cozy instance by specifying
@@ -58,6 +61,7 @@ export const ClouderyView = ({
   const [canGoBack, setCanGoBack] = useState(false)
 
   const handleNavigation = request => {
+    log.debug(`Navigation to ${request.url}`)
     if (request.loading) {
       const instance = getUriFromRequest(request)
 
