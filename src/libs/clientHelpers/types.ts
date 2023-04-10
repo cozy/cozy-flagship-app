@@ -6,7 +6,7 @@ export const STATE_AUTHORIZE_NEEDED = 'STATE_AUTHORIZE_NEEDED'
 export const STATE_2FA_NEEDED = 'STATE_2FA_NEEDED'
 export const STATE_INVALID_PASSWORD = 'STATE_INVALID_PASSWORD'
 
-export interface ConnectClientResult {
+export interface CozyClientCreationContext {
   client: CozyClient
   state:
     | 'STATE_CONNECTED'
