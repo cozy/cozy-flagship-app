@@ -42,6 +42,7 @@ declare module 'cozy-client' {
     register: (instance: string) => Promise<void>
     setToken: (token: AccessToken) => void
     setUri: (uri: string) => void
+    token: AccessToken
     uri: string
   }
 
