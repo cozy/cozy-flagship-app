@@ -39,7 +39,9 @@ declare module 'cozy-client' {
     fetchSessionCode: () => Promise<{ session_code: string }>
     getAuthorizationHeader: () => string
     oauthOptions: OAuthOptions
+    register: (instance: string) => Promise<void>
     setToken: (token: AccessToken) => void
+    setUri: (uri: string) => void
     uri: string
   }
 
