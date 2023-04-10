@@ -52,6 +52,7 @@ export const OidcOnboardingView = ({
   const { setOnboardedRedirection } = useHomeStateContext()
 
   const handleNavigation = (request: WebViewNavigation): boolean => {
+    log.debug(`Navigation to ${request.url}`)
     const createdInstance = getOnboardingDataFromRequest(request)
     if (createdInstance) {
       setOnboardedRedirection(createdInstance.onboardedRedirection ?? '')

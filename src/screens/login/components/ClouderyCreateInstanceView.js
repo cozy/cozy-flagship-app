@@ -54,6 +54,7 @@ export const ClouderyCreateInstanceView = ({
   const { setOnboardedRedirection } = useHomeStateContext()
 
   const handleNavigation = request => {
+    log.debug(`Navigation to ${request.url}`)
     const createdInstance = getOnboardingDataFromRequest(request)
 
     NetService.isOffline()
