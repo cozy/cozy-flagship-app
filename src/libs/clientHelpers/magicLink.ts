@@ -7,7 +7,7 @@ import {
   saveClient
 } from '/libs/clientHelpers/persistClient'
 import {
-  ConnectClientResult,
+  CozyClientCreationContext,
   FetchAccessTokenResult,
   STATE_2FA_NEEDED,
   STATE_AUTHORIZE_NEEDED,
@@ -17,7 +17,7 @@ import {
 export const connectMagicLinkClient = async (
   client: CozyClient,
   magicCode: string
-): Promise<ConnectClientResult> => {
+): Promise<CozyClientCreationContext> => {
   const stackClient = client.getStackClient()
 
   const oauthOptions = stackClient.oauthOptions
