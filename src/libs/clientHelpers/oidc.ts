@@ -1,7 +1,7 @@
 import type CozyClient from 'cozy-client'
 
 import {
-  ConnectClientResult,
+  CozyClientCreationContext,
   FetchAccessTokenResult,
   STATE_2FA_NEEDED,
   STATE_AUTHORIZE_NEEDED,
@@ -11,7 +11,7 @@ import {
 export const connectOidcClient = async (
   client: CozyClient,
   oidcCode: string
-): Promise<ConnectClientResult> => {
+): Promise<CozyClientCreationContext> => {
   const stackClient = client.getStackClient()
 
   const oauthOptions = stackClient.oauthOptions
