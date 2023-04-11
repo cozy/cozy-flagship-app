@@ -20,7 +20,7 @@ const getSaltForInstance = instance => {
  * @param {PasswordData} passwordData - the password data to hash
  * @param {string} instance - the Cozy instance used to generate the salt
  * @param {number} kdfIterations - the number of KDF iterations to be used for hashing the password
- * @returns {Promise<LoginData>} login data containing hashed password and encryption keys
+ * @returns {Promise<import('/screens/login/components/types').LoginData>} login data containing hashed password and encryption keys
  * @throws
  */
 export const doHashPassword = async (

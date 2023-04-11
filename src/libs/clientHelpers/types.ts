@@ -24,3 +24,22 @@ export interface FetchAccessTokenActionNeededResult {
 
 export type FetchAccessTokenResult = AccessToken &
   FetchAccessTokenActionNeededResult
+
+interface FetchError {
+  name: string
+  response: string
+  url: string
+  status: number
+  reason?: {
+    two_factor_token?: string
+  }
+}
+
+export const isFetchError = (error: unknown): error is FetchError => {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'status' in error &&
+    typeof (error as Record<string, unknown>).status === 'number'
+  )
+}
