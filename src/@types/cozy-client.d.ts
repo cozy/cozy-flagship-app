@@ -43,14 +43,28 @@ declare module 'cozy-client' {
     two_factor_token: string
   }
 
-  interface LoginFlagshipVerificationNeededResult {
+  interface FlagshipVerificationNeededResult {
     session_code: string
   }
 
   type LoginFlagshipResult =
     | AccessToken
     | LoginFlagship2faNeededResult
-    | LoginFlagshipVerificationNeededResult
+    | FlagshipVerificationNeededResult
+
+  interface SetPassphraseFlagshipParams {
+    registerToken: string
+    passwordHash: string
+    hint: string
+    iterations: number
+    key: string
+    publicKey: string
+    privateKey: string
+  }
+
+  type SetPassphraseFlagshipResult =
+    | AccessToken
+    | FlagshipVerificationNeededResult
 
   interface StackClient {
     fetchJSON: <T>(method: string, path: string, body?: unknown) => Promise<T>
@@ -64,6 +78,9 @@ declare module 'cozy-client' {
     setUri: (uri: string) => void
     token: AccessToken
     uri: string
+    setPassphraseFlagship: (
+      params: SetPassphraseFlagshipParams
+    ) => Promise<SetPassphraseFlagshipResult>
   }
 
   interface InstanceOptions {
