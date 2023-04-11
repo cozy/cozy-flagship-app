@@ -1,17 +1,15 @@
 import type CozyClient from 'cozy-client'
 
-import {
-  is2faNeededResult,
-  isFlagshipVerificationNeededResult,
-  isInvalidPasswordResult,
-  loginFlagship
-} from '/libs/clientHelpers/loginFlagship'
+import { loginFlagship } from '/libs/clientHelpers/loginFlagship'
 import {
   listenTokenRefresh,
   saveClient
 } from '/libs/clientHelpers/persistClient'
 import {
   CozyClientCreationContext,
+  is2faNeededResult,
+  isFlagshipVerificationNeededResult,
+  isInvalidPasswordResult,
   STATE_2FA_NEEDED,
   STATE_AUTHORIZE_NEEDED,
   STATE_CONNECTED,

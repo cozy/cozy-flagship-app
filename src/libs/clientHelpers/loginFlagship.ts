@@ -1,11 +1,6 @@
 import type CozyClient from 'cozy-client'
-import type {
-  LoginFlagship2faNeededResult,
-  LoginFlagshipResult as CozyClientLoginFlagshipResult,
-  LoginFlagshipVerificationNeededResult
-} from 'cozy-client'
 
-import { isFetchError } from '/libs/clientHelpers/types'
+import { isFetchError, LoginFlagshipResult } from '/libs/clientHelpers/types'
 import type {
   LoginData,
   TwoFactorAuthenticationData
@@ -16,14 +11,6 @@ interface LoginFlagshipParams {
   loginData: LoginData
   twoFactorAuthenticationData?: TwoFactorAuthenticationData
 }
-
-interface LoginFlagshipInvalidPasswordResult {
-  invalidPassword: true
-}
-
-type LoginFlagshipResult =
-  | CozyClientLoginFlagshipResult
-  | LoginFlagshipInvalidPasswordResult
 
 /**
  * Try to login cozy-client using Flagship dedicated route
@@ -79,22 +66,4 @@ export const loginFlagship = async ({
       throw e
     }
   }
-}
-
-export const isInvalidPasswordResult = (
-  result: LoginFlagshipResult
-): result is LoginFlagshipInvalidPasswordResult => {
-  return 'invalidPassword' in result
-}
-
-export const is2faNeededResult = (
-  result: LoginFlagshipResult
-): result is LoginFlagship2faNeededResult => {
-  return 'two_factor_token' in result && result.two_factor_token !== undefined
-}
-
-export const isFlagshipVerificationNeededResult = (
-  result: LoginFlagshipResult
-): result is LoginFlagshipVerificationNeededResult => {
-  return 'session_code' in result && result.session_code !== undefined
 }
