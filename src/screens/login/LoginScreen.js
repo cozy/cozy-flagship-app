@@ -17,11 +17,13 @@ import {
   createClient,
   fetchPublicData,
   connectMagicLinkClient,
-  connectOidcClient,
+  connectOidcClient
+} from '/libs/client'
+import {
   STATE_2FA_NEEDED,
   STATE_AUTHORIZE_NEEDED,
   STATE_INVALID_PASSWORD
-} from '/libs/client'
+} from '/libs/clientHelpers/types'
 import { useDimensions } from '/libs/dimensions'
 import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
