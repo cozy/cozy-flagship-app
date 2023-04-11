@@ -33,11 +33,31 @@ declare module 'cozy-client' {
     scope: string
   }
 
+  interface LoginFlagshipParams {
+    passwordHash: string
+    twoFactorToken?: string
+    twoFactorPasscode?: string
+  }
+
+  interface LoginFlagship2faNeededResult {
+    two_factor_token: string
+  }
+
+  interface LoginFlagshipVerificationNeededResult {
+    session_code: string
+  }
+
+  type LoginFlagshipResult =
+    | AccessToken
+    | LoginFlagship2faNeededResult
+    | LoginFlagshipVerificationNeededResult
+
   interface StackClient {
     fetchJSON: <T>(method: string, path: string, body?: unknown) => Promise<T>
     fetchKonnectorToken: (slug: string) => Promise<string>
     fetchSessionCode: () => Promise<{ session_code: string }>
     getAuthorizationHeader: () => string
+    loginFlagship: (params: LoginFlagshipParams) => Promise<LoginFlagshipResult>
     oauthOptions: OAuthOptions
     register: (instance: string) => Promise<void>
     setToken: (token: AccessToken) => void
