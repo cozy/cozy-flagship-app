@@ -31,11 +31,6 @@ export { call2FAInitClient } from '/libs/clientHelpers/twoFactorAuthentication'
 
 const log = Minilog('LoginScreen')
 
-export const STATE_CONNECTED = 'STATE_CONNECTED'
-export const STATE_AUTHORIZE_NEEDED = 'STATE_AUTHORIZE_NEEDED'
-export const STATE_2FA_NEEDED = 'STATE_2FA_NEEDED'
-export const STATE_INVALID_PASSWORD = 'STATE_INVALID_PASSWORD'
-
 /**
  * Get a cozy client instance, initialized with authentication information from mobile storage
  *

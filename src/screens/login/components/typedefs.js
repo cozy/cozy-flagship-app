@@ -17,10 +17,6 @@
  */
 
 /**
- * @typedef {('STATE_CONNECTED'|'STATE_2FA_NEEDED'|'STATE_INVALID_PASSWORD')} CozyClientCreationState
- */
-
-/**
  * @typedef {object} CozyPublicData
  * @property {string} name - The user's name as configured in the Cozy's settings
  * @property {string} kdfIterations - The number of KDF iterations that should be applied to the user's password in order to derivate encryption keys
