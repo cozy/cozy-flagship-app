@@ -7,7 +7,6 @@ import CozyClient from 'cozy-client'
 import { normalizeFqdn } from './functions/stringHelpers'
 
 import strings from '/constants/strings.json'
-import { createPKCE } from '/libs/clientHelpers/authorizeClient'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import {
   listenTokenRefresh,
@@ -20,6 +19,7 @@ export {
   callMagicLinkOnboardingInitClient,
   connectMagicLinkClient
 } from '/libs/clientHelpers/magicLink'
+export { authorizeClient } from '/libs/clientHelpers/authorizeClient'
 export { connectOidcClient } from '/libs/clientHelpers/oidc'
 export { clearClient } from '/libs/clientHelpers/persistClient'
 export { createClient } from '/libs/clientHelpers/createClient'
@@ -64,27 +64,6 @@ export const getClient = async () => {
     token
   })
   return client
-}
-
-export const authorizeClient = async ({ client, sessionCode }) => {
-  const { codeVerifier, codeChallenge } = await createPKCE()
-
-  await client.authorize({
-    sessionCode: sessionCode,
-    pkceCodes: {
-      codeVerifier,
-      codeChallenge
-    }
-  })
-
-  await client.login()
-  await saveClient(client)
-  listenTokenRefresh(client)
-
-  return {
-    client: client,
-    state: STATE_CONNECTED
-  }
 }
 
 /**
