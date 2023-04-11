@@ -21,13 +21,6 @@
  */
 
 /**
- * @typedef {object} CozyClientCreationContext
- * @property {CozyClient} client - The CozyClient instance
- * @property {CozyClientCreationState} state - The state of the CozyClient instance
- * @property {string} twoFactorToken - Token used for the 2FA workflow
- */
-
-/**
  * @typedef {object} CozyPublicData
  * @property {string} name - The user's name as configured in the Cozy's settings
  * @property {string} kdfIterations - The number of KDF iterations that should be applied to the user's password in order to derivate encryption keys

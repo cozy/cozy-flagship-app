@@ -8,8 +8,6 @@ import { normalizeFqdn } from './functions/stringHelpers'
 
 import strings from '/constants/strings.json'
 import { createPKCE } from '/libs/clientHelpers/authorizeClient'
-import { connectClient } from '/libs/clientHelpers/connectClient'
-import { createClient } from '/libs/clientHelpers/createClient'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import {
   listenTokenRefresh,
@@ -25,6 +23,11 @@ export {
 export { connectOidcClient } from '/libs/clientHelpers/oidc'
 export { clearClient } from '/libs/clientHelpers/persistClient'
 export { createClient } from '/libs/clientHelpers/createClient'
+export {
+  callInitClient,
+  callOnboardingInitClient
+} from '/libs/clientHelpers/initClient'
+export { call2FAInitClient } from '/libs/clientHelpers/twoFactorAuthentication'
 
 const log = Minilog('LoginScreen')
 
@@ -60,102 +63,6 @@ export const getClient = async () => {
     uri,
     token
   })
-  return client
-}
-
-/**
- * Create the OAuth connection for the given Cozy instance
- *
- * @param {object} param
- * @param {LoginData} param.loginData - login data containing hashed password and encryption keys
- * @param {string} param.instance - the Cozy instance used to create the client
- * @param {CozyClient} [param.client] - an optional CozyClient instance that can be used for the authentication. If not provided a new CozyClient will be created
- * @returns {CozyClientCreationContext} The CozyClient for the Cozy instance with its corresponding state (i.e: connected, waiting for 2FA, invalid password etc)
- */
-export const callInitClient = async ({
-  loginData,
-  instance,
-  client: clientParam
-}) => {
-  const client = clientParam || (await createClient(instance))
-
-  return await connectClient({
-    loginData,
-    client
-  })
-}
-
-/**
- * Continue the OAuth connection for the given Cozy instance when `callInitClient` has been called but returned a 2FA_NEEDED state
- *
- * @param {object} param
- * @param {LoginData} param.loginData - login data containing hashed password and encryption keys
- * @param {CozyClient} param.client - an optional CozyClient instance that can be used for the authentication. If not provided a new CozyClient will be created
- * @returns {CozyClientCreationContext} The CozyClient for the Cozy instance with its corresponding state (i.e: connected, waiting for 2FA, invalid password etc)
- */
-export const call2FAInitClient = async ({
-  loginData,
-  client,
-  twoFactorAuthenticationData
-}) => {
-  return await connectClient({
-    loginData,
-    client,
-    twoFactorAuthenticationData
-  })
-}
-
-/**
- * Onboard the Cozy instance by specifying its password and encryption keys
- *
- * @param {object} param
- * @param {LoginData} param.loginData - login data containing hashed password and encryption keys
- * @param {string} param.instance - the Cozy instance used to create the client
- * @param {string} param.registerToken - the registerToken from the onboarding link that should be used to log in the stack
- * @returns {CozyClient} The created and authenticated CozyClient for the newly onboarded Cozy instance
- */
-export const callOnboardingInitClient = async ({
-  loginData,
-  instance,
-  registerToken
-}) => {
-  const client = await createClient(instance)
-  const stackClient = client.getStackClient()
-
-  await client.certifyFlagship()
-
-  const { passwordHash, hint, iterations, key, publicKey, privateKey } =
-    loginData
-
-  const result = await stackClient.setPassphraseFlagship({
-    registerToken,
-    passwordHash,
-    hint,
-    iterations,
-    key,
-    publicKey,
-    privateKey
-  })
-
-  if (result.access_token) {
-    stackClient.setToken(result)
-  } else if (result.session_code) {
-    const { session_code } = result
-    const { codeVerifier, codeChallenge } = await createPKCE()
-
-    await client.authorize({
-      sessionCode: session_code,
-      pkceCodes: {
-        codeVerifier,
-        codeChallenge
-      }
-    })
-  }
-
-  await client.login()
-  await saveClient(client)
-  listenTokenRefresh(client)
-
   return client
 }
 
