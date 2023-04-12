@@ -1,6 +1,6 @@
 import CozyClient from 'cozy-client'
 
-import { createPKCE } from '/libs/clientHelpers/authorizeClient'
+import { authorizeClient } from '/libs/clientHelpers/authorizeClient'
 import { connectClient } from '/libs/clientHelpers/connectClient'
 import { createClient } from '/libs/clientHelpers/createClient'
 import {
@@ -83,16 +83,7 @@ export const callOnboardingInitClient = async ({
   if (isAccessToken(result)) {
     stackClient.setToken(result)
   } else if (isFlagshipVerificationNeededResult(result)) {
-    const { session_code } = result
-    const { codeVerifier, codeChallenge } = await createPKCE()
-
-    await client.authorize({
-      sessionCode: session_code,
-      pkceCodes: {
-        codeVerifier,
-        codeChallenge
-      }
-    })
+    await authorizeClient({ client, sessionCode: result.session_code })
   }
 
   await client.login()

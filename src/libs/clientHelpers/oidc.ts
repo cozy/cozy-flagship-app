@@ -1,8 +1,10 @@
 import type CozyClient from 'cozy-client'
+import type { LoginFlagshipResult } from 'cozy-client'
 
 import {
   CozyClientCreationContext,
-  FetchAccessTokenResult,
+  is2faNeededResult,
+  isFlagshipVerificationNeededResult,
   STATE_2FA_NEEDED,
   STATE_AUTHORIZE_NEEDED,
   STATE_CONNECTED
@@ -22,37 +24,29 @@ export const connectOidcClient = async (
     scope: '*'
   }
 
-  const {
-    two_factor_token: twoFactorToken,
-    session_code: sessionCode,
-    ...token
-  } = await stackClient.fetchJSON<FetchAccessTokenResult>(
+  const result = await stackClient.fetchJSON<LoginFlagshipResult>(
     'POST',
     '/oidc/access_token',
     data
   )
 
-  const need2FA = twoFactorToken !== undefined
-
-  if (need2FA) {
+  if (is2faNeededResult(result)) {
     return {
       client,
       state: STATE_2FA_NEEDED,
-      twoFactorToken: twoFactorToken
+      twoFactorToken: result.two_factor_token
     }
   }
 
-  const needFlagshipVerification = sessionCode !== undefined
-
-  if (needFlagshipVerification) {
+  if (isFlagshipVerificationNeededResult(result)) {
     return {
       client: client,
       state: STATE_AUTHORIZE_NEEDED,
-      sessionCode: sessionCode
+      sessionCode: result.session_code
     }
   }
 
-  stackClient.setToken(token)
+  stackClient.setToken(result)
 
   return {
     client: client,

@@ -19,7 +19,7 @@ export {
   callMagicLinkOnboardingInitClient,
   connectMagicLinkClient
 } from '/libs/clientHelpers/magicLink'
-export { authorizeClient } from '/libs/clientHelpers/authorizeClient'
+export { authorizeClientAndLogin } from '/libs/clientHelpers/authorizeClient'
 export { connectOidcClient } from '/libs/clientHelpers/oidc'
 export { clearClient } from '/libs/clientHelpers/persistClient'
 export { createClient } from '/libs/clientHelpers/createClient'
