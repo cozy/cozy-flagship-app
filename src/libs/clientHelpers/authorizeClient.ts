@@ -34,7 +34,7 @@ interface AuthorizeClientParams {
 export const authorizeClient = async ({
   client,
   sessionCode
-}: AuthorizeClientParams): Promise<CozyClientCreationContext> => {
+}: AuthorizeClientParams): Promise<void> => {
   const { codeVerifier, codeChallenge } = await createPKCE()
 
   await client.authorize({
@@ -44,6 +44,13 @@ export const authorizeClient = async ({
       codeChallenge
     }
   })
+}
+
+export const authorizeClientAndLogin = async ({
+  client,
+  sessionCode
+}: AuthorizeClientParams): Promise<CozyClientCreationContext> => {
+  await authorizeClient({ client, sessionCode })
 
   await client.login()
   await saveClient(client)
