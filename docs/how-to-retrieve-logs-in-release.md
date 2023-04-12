@@ -55,7 +55,7 @@ Then in order to retrieve the log:
 - Run the app to generate logs
 - Plug the iPhone to your mac
 - In the mac's Finder, select the iPhone in the left pane
-- In the `Files` tab, open `Cozy Cloud` element and find `logs.txt`
+- In the `Files` tab, open `Cloud Personnel` element and find `logs.txt`
 - Drag&drop the `logs.txt` file into a local folder
 
 ![](/docs/images/finder_iphone_files.png)
