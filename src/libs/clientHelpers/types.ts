@@ -10,6 +10,7 @@ import type {
 export const STATE_CONNECTED = 'STATE_CONNECTED'
 export const STATE_AUTHORIZE_NEEDED = 'STATE_AUTHORIZE_NEEDED'
 export const STATE_2FA_NEEDED = 'STATE_2FA_NEEDED'
+export const STATE_2FA_PASSWORD_NEEDED = 'STATE_2FA_PASSWORD_NEEDED'
 export const STATE_INVALID_PASSWORD = 'STATE_INVALID_PASSWORD'
 
 export interface CozyClientCreationContext {
@@ -18,6 +19,7 @@ export interface CozyClientCreationContext {
     | 'STATE_CONNECTED'
     | 'STATE_AUTHORIZE_NEEDED'
     | 'STATE_2FA_NEEDED'
+    | 'STATE_2FA_PASSWORD_NEEDED'
     | 'STATE_INVALID_PASSWORD'
   twoFactorToken?: string
   sessionCode?: string
@@ -30,6 +32,7 @@ interface FetchError extends Error {
   status: number
   reason?: {
     two_factor_token?: string
+    error?: string
   }
 }
 
@@ -46,9 +49,14 @@ interface LoginFlagshipInvalidPasswordResult {
   invalidPassword: true
 }
 
+interface LoginFlagship2faPasswordNeededResult {
+  twoFactorPasswordNeeded: true
+}
+
 export type LoginFlagshipResult =
   | CozyClientLoginFlagshipResult
   | LoginFlagshipInvalidPasswordResult
+  | LoginFlagship2faPasswordNeededResult
 
 export const isInvalidPasswordResult = (
   result: LoginFlagshipResult
@@ -60,6 +68,12 @@ export const is2faNeededResult = (
   result: LoginFlagshipResult
 ): result is LoginFlagship2faNeededResult => {
   return 'two_factor_token' in result && !!result.two_factor_token
+}
+
+export const is2faPasswordNeededResult = (
+  result: LoginFlagshipResult
+): result is LoginFlagship2faPasswordNeededResult => {
+  return 'twoFactorPasswordNeeded' in result
 }
 
 export const isFlagshipVerificationNeededResult = (

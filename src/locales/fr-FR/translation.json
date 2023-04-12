@@ -32,6 +32,9 @@
       "promptTitle": "S'authentifier",
       "title": "Entrez votre mot de passe"
     },
+    "login": {
+      "invalidMagicCode": "Le lien pour accéder à votre Cozy est tronqué ou a expiré"
+    },
     "offline": {
       "body": "Vérifier votre connexion internet pour accéder à votre Cozy.",
       "title": "Pas de connexion internet"
