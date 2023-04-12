@@ -23,14 +23,6 @@ export interface CozyClientCreationContext {
   sessionCode?: string
 }
 
-export interface FetchAccessTokenActionNeededResult {
-  two_factor_token?: string
-  session_code?: string
-}
-
-export type FetchAccessTokenResult = AccessToken &
-  FetchAccessTokenActionNeededResult
-
 interface FetchError extends Error {
   name: string
   response: string
@@ -77,7 +69,7 @@ export const isFlagshipVerificationNeededResult = (
 }
 
 export const isAccessToken = (
-  result: SetPassphraseFlagshipResult
+  result: LoginFlagshipResult | SetPassphraseFlagshipResult
 ): result is AccessToken => {
   return 'access_token' in result && !!result.access_token
 }

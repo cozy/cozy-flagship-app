@@ -1,6 +1,7 @@
 import type CozyClient from 'cozy-client'
+import type { LoginFlagshipResult } from 'cozy-client'
 
-import { createPKCE } from '/libs/clientHelpers/authorizeClient'
+import { authorizeClient } from '/libs/clientHelpers/authorizeClient'
 import { createClient } from '/libs/clientHelpers/createClient'
 import {
   listenTokenRefresh,
@@ -8,7 +9,9 @@ import {
 } from '/libs/clientHelpers/persistClient'
 import {
   CozyClientCreationContext,
-  FetchAccessTokenResult,
+  is2faNeededResult,
+  isAccessToken,
+  isFlagshipVerificationNeededResult,
   STATE_2FA_NEEDED,
   STATE_AUTHORIZE_NEEDED,
   STATE_CONNECTED
@@ -28,37 +31,29 @@ export const connectMagicLinkClient = async (
     scope: '*'
   }
 
-  const {
-    two_factor_token: twoFactorToken,
-    session_code: sessionCode,
-    ...token
-  } = await stackClient.fetchJSON<FetchAccessTokenResult>(
+  const result = await stackClient.fetchJSON<LoginFlagshipResult>(
     'POST',
     '/auth/magic_link/flagship',
     data
   )
 
-  const need2FA = twoFactorToken !== undefined
-
-  if (need2FA) {
+  if (is2faNeededResult(result)) {
     return {
       client,
       state: STATE_2FA_NEEDED,
-      twoFactorToken: twoFactorToken
+      twoFactorToken: result.two_factor_token
     }
   }
 
-  const needFlagshipVerification = sessionCode !== undefined
-
-  if (needFlagshipVerification) {
+  if (isFlagshipVerificationNeededResult(result)) {
     return {
       client: client,
       state: STATE_AUTHORIZE_NEEDED,
-      sessionCode: sessionCode
+      sessionCode: result.session_code
     }
   }
 
-  stackClient.setToken(token)
+  stackClient.setToken(result)
 
   return {
     client: client,
@@ -88,25 +83,16 @@ export const callMagicLinkOnboardingInitClient = async ({
     scope: '*'
   }
 
-  const result = await stackClient.fetchJSON<FetchAccessTokenResult>(
+  const result = await stackClient.fetchJSON<LoginFlagshipResult>(
     'POST',
     '/auth/magic_link/flagship',
     data
   )
 
-  if (result.access_token) {
+  if (isAccessToken(result)) {
     stackClient.setToken(result)
-  } else if (result.session_code) {
-    const { session_code } = result
-    const { codeVerifier, codeChallenge } = await createPKCE()
-
-    await client.authorize({
-      sessionCode: session_code,
-      pkceCodes: {
-        codeVerifier,
-        codeChallenge
-      }
-    })
+  } else if (isFlagshipVerificationNeededResult(result)) {
+    await authorizeClient({ client, sessionCode: result.session_code })
   }
 
   await client.login()
