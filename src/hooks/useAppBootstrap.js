@@ -40,6 +40,8 @@ export const useAppBootstrap = client => {
 
         const onboardingParams = parseOnboardingURL(onboardingUrl)
 
+        const magicLink = parseMagicLinkURL(onboardingUrl)
+
         if (onboardingParams) {
           const {
             onboardUrl,
@@ -68,6 +70,14 @@ export const useAppBootstrap = client => {
               }
             })
           }
+        } else if (magicLink) {
+          const { fqdn, magicCode } = magicLink
+
+          log.debug('Set initialRoute to authenticate screen with magic code')
+          return setInitialRoute({
+            route: routes.authenticate,
+            params: { fqdn, magicCode }
+          })
         } else {
           log.debug('Set initialRoute to welcome screen')
           return setInitialRoute({
