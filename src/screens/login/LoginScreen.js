@@ -13,7 +13,7 @@ import { TwoFactorAuthenticationView } from './components/TwoFactorAuthenticatio
 import {
   callInitClient,
   call2FAInitClient,
-  authorizeClient,
+  authorizeClientAndLogin,
   createClient,
   fetchPublicData,
   connectMagicLinkClient,
@@ -402,7 +402,7 @@ const LoginSteps = ({
     try {
       const { client, loginData, sessionCode } = state
 
-      const result = await authorizeClient({
+      const result = await authorizeClientAndLogin({
         sessionCode,
         client
       })
