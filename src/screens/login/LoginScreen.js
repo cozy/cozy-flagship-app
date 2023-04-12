@@ -21,6 +21,7 @@ import {
 } from '/libs/client'
 import {
   STATE_2FA_NEEDED,
+  STATE_2FA_PASSWORD_NEEDED,
   STATE_AUTHORIZE_NEEDED,
   STATE_INVALID_PASSWORD
 } from '/libs/clientHelpers/types'
@@ -41,6 +42,8 @@ const CLOUDERY_STEP = 'CLOUDERY_STEP'
 const PASSWORD_STEP = 'PASSWORD_STEP'
 const OIDC_ONBOARD_STEP = 'OIDC_ONBOARD_STEP'
 const TWO_FACTOR_AUTHENTICATION_STEP = 'TWO_FACTOR_AUTHENTICATION_STEP'
+const TWO_FACTOR_AUTHENTICATION_PASSWORD_STEP =
+  'TWO_FACTOR_AUTHENTICATION_PASSWORD_STEP'
 const AUTHORIZE_TRANSITION_STEP = 'AUTHORIZE_TRANSITION_STEP'
 const ERROR_STEP = 'ERROR_STEP'
 
@@ -258,20 +261,25 @@ const LoginSteps = ({
 
         const result = await connectMagicLinkClient(client, magicCode)
 
-        if (result.state === STATE_2FA_NEEDED) {
+        if (result.state === STATE_2FA_PASSWORD_NEEDED) {
+          const { kdfIterations, name } = await fetchPublicData(client)
           setState(oldState => ({
             ...oldState,
-            step: TWO_FACTOR_AUTHENTICATION_STEP,
-            isOidc: true,
-            stepReadonly: false,
+            step: TWO_FACTOR_AUTHENTICATION_PASSWORD_STEP,
             client: result.client,
-            twoFactorToken: result.twoFactorToken
+            fqdn: fqdn,
+            instance: instance,
+            kdfIterations: kdfIterations,
+            magicCode: magicCode,
+            name: name,
+            requestTransitionStart: false,
+            stepReadonly: false,
+            waitForTransition: true
           }))
         } else if (result.state === STATE_AUTHORIZE_NEEDED) {
           setState(oldState => ({
             ...oldState,
             step: AUTHORIZE_TRANSITION_STEP,
-            isOidc: true,
             waitForTransition: true,
             client: result.client,
             sessionCode: result.sessionCode
@@ -337,7 +345,7 @@ const LoginSteps = ({
         }))
       } else {
         showSplashScreen()
-        if (!state.isOidc) {
+        if (loginData) {
           await resetKeychainAndSaveLoginData(loginData)
         }
         setClient(result.client)
@@ -383,7 +391,59 @@ const LoginSteps = ({
           }))
         } else {
           showSplashScreen()
-          if (!state.isOidc) {
+          if (loginData) {
+            await resetKeychainAndSaveLoginData(loginData)
+          }
+          setClient(result.client)
+        }
+      } catch (error) {
+        setError(error.message, error)
+      }
+    },
+    [setError, state, showSplashScreen, setClient]
+  )
+
+  const continueMagicLinkOAuth = useCallback(
+    async loginData => {
+      if (await NetService.isOffline())
+        NetService.handleOffline(routes.authenticate)
+
+      try {
+        const { client, magicCode } = state
+
+        const result = await connectMagicLinkClient(
+          client,
+          magicCode,
+          loginData.passwordHash
+        )
+
+        if (result.state === STATE_INVALID_PASSWORD) {
+          setState(oldState => ({
+            ...oldState,
+            client: result.client,
+            errorMessage: strings.errors.invalidPassword,
+            stepReadonly: false
+          }))
+        } else if (result.state === STATE_2FA_PASSWORD_NEEDED) {
+          setState(oldState => ({
+            ...oldState,
+            step: TWO_FACTOR_AUTHENTICATION_PASSWORD_STEP,
+            client: result.client,
+            errorMessage: strings.errors.invalidPassword,
+            stepReadonly: false
+          }))
+        } else if (result.state === STATE_AUTHORIZE_NEEDED) {
+          setState(oldState => ({
+            ...oldState,
+            step: AUTHORIZE_TRANSITION_STEP,
+            client: result.client,
+            loginData,
+            sessionCode: result.sessionCode,
+            waitForTransition: true
+          }))
+        } else {
+          showSplashScreen()
+          if (loginData) {
             await resetKeychainAndSaveLoginData(loginData)
           }
           setClient(result.client)
@@ -408,7 +468,7 @@ const LoginSteps = ({
       })
 
       showSplashScreen()
-      if (!state.isOidc) {
+      if (loginData) {
         await resetKeychainAndSaveLoginData(loginData)
       }
       setClient(result.client)
@@ -525,6 +585,35 @@ const LoginSteps = ({
         readonly={state.stepReadonly}
         setReadonly={setStepReadonly}
       />
+    )
+  }
+
+  if (state.step === TWO_FACTOR_AUTHENTICATION_PASSWORD_STEP) {
+    return (
+      <>
+        <PasswordView
+          instance={state.instance}
+          fqdn={state.fqdn}
+          kdfIterations={state.kdfIterations}
+          name={state.name}
+          requestTransitionStart={startTransitionToPassword}
+          setKeys={continueMagicLinkOAuth}
+          setError={setError}
+          errorMessage={state.errorMessage}
+          goBack={cancelLogin}
+          setBackgroundColor={setBackgroundColor}
+          readonly={state.stepReadonly}
+          setReadonly={setStepReadonly}
+          waitForTransition={state.waitForTransition}
+        />
+        {state.waitForTransition && (
+          <TransitionToPasswordView
+            setTransitionEnded={endTransitionToPassword}
+            requestTransitionStart={state.requestTransitionStart}
+            passwordAvatarPosition={state.passwordAvatarPosition}
+          />
+        )}
+      </>
     )
   }
 

@@ -8,6 +8,7 @@ import {
 import {
   CozyClientCreationContext,
   is2faNeededResult,
+  is2faPasswordNeededResult,
   isFlagshipVerificationNeededResult,
   isInvalidPasswordResult,
   STATE_2FA_NEEDED,
@@ -59,6 +60,12 @@ export const connectClient = async ({
       state: STATE_2FA_NEEDED,
       twoFactorToken: result.two_factor_token
     }
+  }
+
+  if (is2faPasswordNeededResult(result)) {
+    throw new Error(
+      'Login should never return is2faPasswordNeededResult result (reserved for MagicLink scenario)'
+    )
   }
 
   if (isFlagshipVerificationNeededResult(result)) {
