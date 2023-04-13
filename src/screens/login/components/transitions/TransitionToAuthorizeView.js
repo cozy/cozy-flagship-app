@@ -18,10 +18,14 @@ import { getColors } from '/ui/colors'
  * Display a transition that should come before displaying the Authorize view
  *
  * @param {object} props
+ * @param {string} props.backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
  * @param {Function} props.setTransitionEnded - Function to call when the transition ends
  * @returns {import('react').ComponentClass}
  */
-export const TransitionToAuthorizeView = ({ setTransitionEnded }) => {
+export const TransitionToAuthorizeView = ({
+  backgroundColor,
+  setTransitionEnded
+}) => {
   const colors = getColors()
 
   const animationDelayInSecond = 400
@@ -87,7 +91,7 @@ export const TransitionToAuthorizeView = ({ setTransitionEnded }) => {
       style={[
         styles.background,
         {
-          backgroundColor: colors.primaryColor
+          backgroundColor: backgroundColor
         }
       ]}
     >
