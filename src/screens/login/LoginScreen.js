@@ -16,6 +16,7 @@ import {
   authorizeClient,
   createClient,
   fetchPublicData,
+  connectMagicLinkClient,
   connectOidcClient,
   STATE_2FA_NEEDED,
   STATE_AUTHORIZE_NEEDED,
@@ -96,6 +97,7 @@ const LoginSteps = ({
 
   useEffect(() => {
     const fqdn = consumeRouteParameter('fqdn', route, navigation)
+    const magicCode = consumeRouteParameter('magicCode', route, navigation)
     if (fqdn) {
       // fqdn string should never contain the protocol, but we may want to enforce it
       // when local debugging as this configuration uses `http` only
@@ -111,12 +113,22 @@ const LoginSteps = ({
       // so we enforce default Cozy color as background
       setBackgroundColor(colors.primaryColor)
 
-      setInstanceData({
-        fqdn: normalizedFqdn,
-        instance: normalizedInstance
-      })
+      if (magicCode) {
+        startMagicLinkOAuth(normalizedFqdn, magicCode)
+      } else {
+        setInstanceData({
+          fqdn: normalizedFqdn,
+          instance: normalizedInstance
+        })
+      }
     }
-  }, [navigation, route, setInstanceData, setBackgroundColor])
+  }, [
+    navigation,
+    route,
+    setInstanceData,
+    setBackgroundColor,
+    startMagicLinkOAuth
+  ])
 
   const setStepReadonly = isReadOnly => {
     setState(oldState => ({
@@ -230,6 +242,48 @@ const LoginSteps = ({
       setError(error.message, error)
     }
   }
+
+  const startMagicLinkOAuth = useCallback(
+    async (fqdn, magicCode) => {
+      if (await NetService.isOffline())
+        NetService.handleOffline(routes.authenticate)
+
+      try {
+        const instance = 'https://' + fqdn
+        const client = await createClient(instance)
+
+        await client.certifyFlagship()
+
+        const result = await connectMagicLinkClient(client, magicCode)
+
+        if (result.state === STATE_2FA_NEEDED) {
+          setState(oldState => ({
+            ...oldState,
+            step: TWO_FACTOR_AUTHENTICATION_STEP,
+            isOidc: true,
+            stepReadonly: false,
+            client: result.client,
+            twoFactorToken: result.twoFactorToken
+          }))
+        } else if (result.state === STATE_AUTHORIZE_NEEDED) {
+          setState(oldState => ({
+            ...oldState,
+            step: AUTHORIZE_TRANSITION_STEP,
+            isOidc: true,
+            waitForTransition: true,
+            client: result.client,
+            sessionCode: result.sessionCode
+          }))
+        } else {
+          showSplashScreen()
+          setClient(result.client)
+        }
+      } catch (error) {
+        setError(error.message, error)
+      }
+    },
+    [setClient, setError, showSplashScreen]
+  )
 
   const startOidcOnboarding = (onboardUrl, code) => {
     setState(oldState => ({

@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Text } from 'react-native'
 
 import { ErrorView } from './components/ErrorView'
 import { OnboardingPasswordView } from './components/OnboardingPasswordView'
 
 import Minilog from '@cozy/minilog'
 
-import { callOnboardingInitClient } from '/libs/client'
+import {
+  callMagicLinkOnboardingInitClient,
+  callOnboardingInitClient
+} from '/libs/client'
 import { useDimensions } from '/libs/dimensions'
 import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
@@ -20,6 +23,7 @@ Minilog.enable()
 
 const LOADING_STEP = 'LOADING_STEP'
 const PASSWORD_STEP = 'PASSWORD_STEP'
+const MAGIC_LINK_STEP = 'MAGIC_LINK_STEP'
 const ERROR_STEP = 'ERROR_STEP'
 
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
@@ -41,14 +45,21 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
   }, [state.loginData, startOAuth])
 
   useEffect(() => {
+    if (state?.onboardingData?.magicCode) {
+      startMagicLinkOAuth()
+    }
+  }, [state?.onboardingData?.magicCode, startMagicLinkOAuth])
+
+  useEffect(() => {
     const registerToken = consumeRouteParameter(
       'registerToken',
       route,
       navigation
     )
     const fqdn = consumeRouteParameter('fqdn', route, navigation)
+    const magicCode = consumeRouteParameter('magicCode', route, navigation)
 
-    if (registerToken && fqdn) {
+    if (fqdn) {
       // fqdn string should never contain the protocol, but we may want to enforce it
       // when local debugging as this configuration uses `http` only
       const url =
@@ -56,13 +67,21 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
           ? new URL(fqdn)
           : new URL(`https://${fqdn}`)
 
-      setOnboardingData({
-        fqdn: url.host,
-        instance: url.origin,
-        registerToken: registerToken
-      })
+      if (registerToken) {
+        setOnboardingData({
+          fqdn: url.host,
+          instance: url.origin,
+          registerToken: registerToken
+        })
+      } else if (magicCode) {
+        setMagicLinkOnboardingData({
+          fqdn: url.host,
+          instance: url.origin,
+          magicCode: magicCode
+        })
+      }
     }
-  }, [navigation, route, setOnboardingData])
+  }, [navigation, route, setOnboardingData, setMagicLinkOnboardingData])
 
   const setStepReadonly = isReadOnly => {
     setState(oldState => ({
@@ -77,6 +96,17 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
         ...state,
         step: PASSWORD_STEP,
         stepReadonly: false,
+        onboardingData: onboardingData
+      })
+    },
+    [state, setState]
+  )
+
+  const setMagicLinkOnboardingData = useCallback(
+    onboardingData => {
+      setState({
+        ...state,
+        step: MAGIC_LINK_STEP,
         onboardingData: onboardingData
       })
     },
@@ -138,6 +168,25 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
     }
   }, [setClient, setError, state, cancelOnboarding])
 
+  const startMagicLinkOAuth = useCallback(async () => {
+    try {
+      const { instance, magicCode } = state.onboardingData
+
+      const client = await callMagicLinkOnboardingInitClient({
+        instance,
+        magicCode
+      })
+
+      setClient(client)
+    } catch (error) {
+      if (error === OAUTH_USER_CANCELED_ERROR) {
+        cancelOnboarding()
+      } else {
+        setError(error.message, error)
+      }
+    }
+  }, [setClient, setError, state, cancelOnboarding])
+
   if (state.step === PASSWORD_STEP) {
     hideSplashScreen()
     const { fqdn, instance } = state.onboardingData
@@ -151,6 +200,16 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
         readonly={state.stepReadonly}
         setReadonly={setStepReadonly}
       />
+    )
+  }
+
+  if (state.step === MAGIC_LINK_STEP) {
+    hideSplashScreen()
+    const { fqdn } = state.onboardingData
+    return (
+      <View>
+        <Text>Magic Onboarding on {fqdn}</Text>
+      </View>
     )
   }
 
