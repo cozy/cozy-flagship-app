@@ -40,7 +40,8 @@ export const CreateInstanceScreen = ({ route, navigation }) => {
     navigation.navigate(routes.onboarding, {
       registerToken,
       magicCode,
-      fqdn
+      fqdn,
+      backgroundColor
     })
   }
 
