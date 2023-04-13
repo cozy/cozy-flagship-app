@@ -40,8 +40,7 @@ const loginMagicLink = async (
       magic_code: magicCode,
       passphrase: passwordHash,
       client_id: oauthOptions.clientID,
-      client_secret: oauthOptions.clientSecret,
-      scope: '*'
+      client_secret: oauthOptions.clientSecret
     }
 
     const loginResult = await stackClient.fetchJSON<LoginFlagshipResult>(
@@ -133,8 +132,7 @@ export const callMagicLinkOnboardingInitClient = async ({
   const data = {
     magic_code: magicCode,
     client_id: oauthOptions.clientID,
-    client_secret: oauthOptions.clientSecret,
-    scope: '*'
+    client_secret: oauthOptions.clientSecret
   }
 
   const result = await stackClient.fetchJSON<LoginFlagshipResult>(
