@@ -13,12 +13,14 @@ const getInstanceAndRegisterToken = uri => {
 
   const registerToken = url.searchParams.get(strings.registerToken)
   const onboardedRedirection = url.searchParams.get('redirection')
+  const magicCode = url.searchParams.get('magic_code')
 
   const fqdn = url.host
 
   return {
     fqdn,
     registerToken,
+    magicCode,
     onboardedRedirection
   }
 }

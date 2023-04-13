@@ -480,3 +480,81 @@ it('Should handle WITH client WITH redirect URL', async () => {
     isLoading: false
   })
 })
+
+it('Should handle magic link from email', async () => {
+  const { result, waitForValueToChange } = renderHook(() =>
+    useAppBootstrap(null)
+  )
+
+  await waitForValueToChange(() => result.current.isLoading)
+
+  expect(result.current).toStrictEqual({
+    client: null,
+    initialRoute: {
+      route: routes.welcome
+    },
+    isLoading: false
+  })
+
+  act(() => {
+    Linking.emit('url', {
+      url: 'https://links.mycozy.cloud/flagship/onboarding?flagship=true&fqdn=SOME_FQDN&magic_code=SOME_MAGIC_CODE'
+    })
+  })
+
+  expect(navigate).toHaveBeenCalledWith(routes.authenticate, {
+    fqdn: 'SOME_FQDN',
+    magicCode: 'SOME_MAGIC_CODE'
+  })
+})
+
+it('Should handle link from OIDC instance creation email', async () => {
+  const { result, waitForValueToChange } = renderHook(() =>
+    useAppBootstrap(null)
+  )
+
+  await waitForValueToChange(() => result.current.isLoading)
+
+  expect(result.current).toStrictEqual({
+    client: null,
+    initialRoute: {
+      route: routes.welcome
+    },
+    isLoading: false
+  })
+
+  act(() => {
+    Linking.emit('url', {
+      url: 'https://links.mycozy.cloud/flagship/onboarding?flagship=true&onboard_url=https%3A%2F%2Fmanager.cozycloud.cc%2Fv2%2FSOME_PARTNER%2Fonboard%3Femail%3Dclaude2%2540cozycloud.cc%26skip_email_step%3Dtrue'
+    })
+  })
+
+  expect(navigate).toHaveBeenCalledWith(routes.instanceCreation, {
+    onboardUrl:
+      'https://manager.cozycloud.cc/v2/SOME_PARTNER/onboard?email=claude2%40cozycloud.cc&skip_email_step=true'
+  })
+})
+
+it(`Should not intercept OIDC result from ClouderyView's InAppBrowser`, async () => {
+  const { result, waitForValueToChange } = renderHook(() =>
+    useAppBootstrap(null)
+  )
+
+  await waitForValueToChange(() => result.current.isLoading)
+
+  expect(result.current).toStrictEqual({
+    client: null,
+    initialRoute: {
+      route: routes.welcome
+    },
+    isLoading: false
+  })
+
+  act(() => {
+    Linking.emit('url', {
+      url: 'https://links.mycozy.cloud/flagship/oidc_result?code=SOME_CODE&fqdn=SOME_FQDN&default_redirection'
+    })
+  })
+
+  expect(navigate).not.toHaveBeenCalled()
+})
