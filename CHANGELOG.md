@@ -1,4 +1,4 @@
-# 1.0.8
+# 1.0.9
 
 ## ✨ Features
 
@@ -8,6 +8,37 @@
 
 ## 🔧 Tech
 
+
+# 1.0.8
+
+## ✨ Features
+
+* It is now possible to set default startup app from cozy-settings ([PR #682](https://github.com/cozy/cozy-react-native/pull/682), [PR #687](https://github.com/cozy/cozy-react-native/pull/687), [PR #693](https://github.com/cozy/cozy-react-native/pull/693), [PR #696](https://github.com/cozy/cozy-react-native/pull/696), [PR #729](https://github.com/cozy/cozy-react-native/pull/729) and [PR #744](https://github.com/cozy/cozy-react-native/pull/744))
+* It is now possible to create a Cozy Pass vault from this app ([PR #705](https://github.com/cozy/cozy-react-native/pull/705))
+* The Login UI has been reworked ([PR #700](https://github.com/cozy/cozy-react-native/pull/700))
+* It is now possible to login from our parteners accounts ([PR #700](https://github.com/cozy/cozy-react-native/pull/700))
+* It is now possible to create a cozy and then to log to it by using an email instead of a password thanks to Magic Links ([PR #700](https://github.com/cozy/cozy-react-native/pull/700))
+* The app has been renamed from `Cozy Cloud` to `Cozy` ([PR #735](https://github.com/cozy/cozy-react-native/pull/735) and [PR #752](https://github.com/cozy/cozy-react-native/pull/752))
+
+## 🐛 Bug Fixes
+
+* Fix a bug that prevents to download bills from cozy-banks ([PR #680](https://github.com/cozy/cozy-react-native/pull/680))
+* Fix Client Side Connectors stability issues ([PR #683](https://github.com/cozy/cozy-react-native/pull/683), [PR #685](https://github.com/cozy/cozy-react-native/pull/685), [PR #692](https://github.com/cozy/cozy-react-native/pull/692), [PR #697](https://github.com/cozy/cozy-react-native/pull/697), [PR #703](https://github.com/cozy/cozy-react-native/pull/703), [PR #704](https://github.com/cozy/cozy-react-native/pull/704), [PR #706](https://github.com/cozy/cozy-react-native/pull/706), [PR #709](https://github.com/cozy/cozy-react-native/pull/709), [PR #710](https://github.com/cozy/cozy-react-native/pull/710), [PR #724](https://github.com/cozy/cozy-react-native/pull/724), [PR #726](https://github.com/cozy/cozy-react-native/pull/726) and [PR #751](https://github.com/cozy/cozy-react-native/pull/751))
+* Received notifications now have the correct icon ([PR #688](https://github.com/cozy/cozy-react-native/pull/688))
+* Fix a bug that prevents Android app to be opened from Cozy links ([PR #702](https://github.com/cozy/cozy-react-native/pull/702))
+* Fix stability issues on Login and Logout scenario ([PR #707](https://github.com/cozy/cozy-react-native/pull/707), [PR #720](https://github.com/cozy/cozy-react-native/pull/720) and [PR #721](https://github.com/cozy/cozy-react-native/pull/721))
+* Fix a bug that displays some menus in English even if the phone is configured in French ([PR #749](https://github.com/cozy/cozy-react-native/pull/749))
+
+## 🔧 Tech
+
+* Fixing metadata deduplication by upgrading cozy-clisk ([PR #684](https://github.com/cozy/cozy-react-native/pull/684))
+* Matches project structure more closely compared to fresh 0.66.4 install ([PR #661](https://github.com/cozy/cozy-react-native/pull/661))
+* Add instructions to build app on dev environment ([PR #689](https://github.com/cozy/cozy-react-native/pull/689))
+* Add logs to ease debuging ([PR #694](https://github.com/cozy/cozy-react-native/pull/694), [PR #699](https://github.com/cozy/cozy-react-native/pull/699) and [PR #732](https://github.com/cozy/cozy-react-native/pull/732))
+* Use redirectLink in notification instead of separate values ([PR #695](https://github.com/cozy/cozy-react-native/pull/695) and [PR #701](https://github.com/cozy/cozy-react-native/pull/701))
+* Continuous Integration is now triggered on every PRs ([PR #723](https://github.com/cozy/cozy-react-native/pull/723))
+* Prevent queries to FirebaseLogging that appeared after implementing the Notification system ([PR #739](https://github.com/cozy/cozy-react-native/pull/739))
+* Split `client.js` into multiple files and add TS typing on them  ([PR #734](https://github.com/cozy/cozy-react-native/pull/734))
 
 # 1.0.7
 
