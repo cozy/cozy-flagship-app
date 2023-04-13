@@ -217,6 +217,7 @@ const OnboardingSteps = ({
         setKeys={setLoginData}
         setError={setError}
         readonly={state.stepReadonly}
+        setBackgroundColor={setBackgroundColor}
         setReadonly={setStepReadonly}
       />
     )
