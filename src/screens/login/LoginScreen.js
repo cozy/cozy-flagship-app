@@ -593,6 +593,7 @@ const LoginSteps = ({
         goBack={cancelOauth}
         errorMessage={state.errorMessage2FA}
         readonly={state.stepReadonly}
+        setBackgroundColor={setBackgroundColor}
         setReadonly={setStepReadonly}
       />
     )

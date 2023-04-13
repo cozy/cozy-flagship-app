@@ -17,6 +17,7 @@ import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
  * @param {boolean} props.readonly - Specify if the form should be readonly
  * @param {setReadonly} props.setReadonly - Trigger change on the readonly state
  * @param {setTwoFactorCode} props.setTwoFactorCode - Function to call to set the user's 2FA code
+ * @param {setBackgroundColor} props.setBackgroundColor - Set the LoginScreen's background color (used for overlay and navigation bars)
  * @returns {import('react').ComponentClass}
  */
 export const TwoFactorAuthenticationView = ({
@@ -24,6 +25,7 @@ export const TwoFactorAuthenticationView = ({
   goBack,
   instance,
   readonly,
+  setBackgroundColor,
   setReadonly,
   setTwoFactorCode
 }) => {
@@ -43,6 +45,10 @@ export const TwoFactorAuthenticationView = ({
       webView.postMessage(payload)
     }
   }, [webviewRef, readonly])
+
+  useEffect(() => {
+    setBackgroundColor(colors.primaryColor)
+  }, [setBackgroundColor, colors.primaryColor])
 
   useEffect(() => {
     if (webviewRef && !loading) {
