@@ -632,6 +632,7 @@ const LoginSteps = ({
     return (
       <TransitionToAuthorizeView
         setTransitionEnded={setTransitionToAuthorizeEnded}
+        backgroundColor={backgroundColor}
       />
     )
   }
