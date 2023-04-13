@@ -18,7 +18,11 @@ export const parseOnboardingURL = (
   url: string | null
 ): OnboardingParams | undefined => {
   try {
-    if (!url?.includes('onboarding') || url.includes('oidc_result')) {
+    if (
+      !url?.includes('onboarding') ||
+      url.includes('oidc_result') ||
+      url.includes('magic_code')
+    ) {
       return undefined
     }
 
@@ -80,5 +84,37 @@ export const parseFallbackURL = (url: string | null): FallbackUrl => {
       `Something went wrong while trying to parse fallback URL data: ${errorMessage}`
     )
     return defaultParse
+  }
+}
+
+interface MagicLinkUrl {
+  fqdn: string
+  magicCode: string
+}
+
+export const parseMagicLinkURL = (url: string | null): MagicLinkUrl | null => {
+  if (url === null) {
+    return null
+  }
+
+  try {
+    const makeURL = new URL(url)
+    const fqdn = makeURL.searchParams.get('fqdn')
+    const magicCode = makeURL.searchParams.get('magic_code')
+
+    if (!fqdn || !magicCode) {
+      return null
+    }
+
+    return {
+      fqdn,
+      magicCode
+    }
+  } catch (error) {
+    const errorMessage = getErrorMessage(error)
+    log.error(
+      `Something went wrong while trying to parse magic link URL data: ${errorMessage}`
+    )
+    return null
   }
 }

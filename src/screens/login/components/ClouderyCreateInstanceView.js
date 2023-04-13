@@ -65,14 +65,16 @@ export const ClouderyCreateInstanceView = ({
 
     if (request.loading) {
       if (createdInstance) {
-        const { fqdn, registerToken, onboardedRedirection } = createdInstance
+        const { fqdn, registerToken, onboardedRedirection, magicCode } =
+          createdInstance
         log.debug(`Intercept onboarding's password URL on ${fqdn}`)
         const normalizedFqdn = fqdn.toLowerCase()
 
         setOnboardedRedirection(onboardedRedirection ?? '')
         startOnboarding({
           fqdn: normalizedFqdn,
-          registerToken
+          magicCode: magicCode,
+          registerToken: registerToken
         })
 
         return false

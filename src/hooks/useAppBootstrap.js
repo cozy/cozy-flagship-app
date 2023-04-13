@@ -11,6 +11,7 @@ import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import {
   parseFallbackURL,
+  parseMagicLinkURL,
   parseOnboardingURL
 } from '/hooks/useAppBootstrap.functions'
 import { useSplashScreen } from '/hooks/useSplashScreen'
@@ -174,6 +175,17 @@ export const useAppBootstrap = client => {
           navigate(routes.authenticate, { fqdn })
           return
         }
+      }
+
+      const magicLink = parseMagicLinkURL(url)
+
+      if (magicLink) {
+        const { fqdn, magicCode } = magicLink
+        log.debug(
+          `🔗 Redirect to authenticate screen for ${fqdn} with magicCode`
+        )
+        navigate(routes.authenticate, { fqdn, magicCode })
+        return
       }
 
       const { mainAppFallbackURL, cozyAppFallbackURL } = parseFallbackURL(url)
