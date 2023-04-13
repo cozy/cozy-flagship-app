@@ -226,6 +226,8 @@ const LoginSteps = ({
           ...oldState,
           step: TWO_FACTOR_AUTHENTICATION_STEP,
           isOidc: true,
+          oidcCode: code,
+          instance: instance,
           stepReadonly: false,
           client: result.client,
           twoFactorToken: result.twoFactorToken
@@ -361,16 +363,24 @@ const LoginSteps = ({
         NetService.handleOffline(routes.authenticate)
 
       try {
-        const { loginData, client, twoFactorToken } = state
+        const { loginData, client, twoFactorToken, isOidc, oidcCode } = state
 
-        const result = await call2FAInitClient({
-          loginData,
-          client,
-          twoFactorAuthenticationData: {
+        let result
+        if (isOidc) {
+          result = await connectOidcClient(client, oidcCode, {
             token: twoFactorToken,
             passcode: twoFactorCode
-          }
-        })
+          })
+        } else {
+          result = await call2FAInitClient({
+            loginData,
+            client,
+            twoFactorAuthenticationData: {
+              token: twoFactorToken,
+              passcode: twoFactorCode
+            }
+          })
+        }
 
         if (result.state === STATE_2FA_NEEDED) {
           setState(oldState => ({
