@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { ErrorView } from './components/ErrorView'
 import { OnboardingPasswordView } from './components/OnboardingPasswordView'
@@ -15,7 +15,8 @@ import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { routes } from '/constants/routes'
 import { getColors } from '/ui/colors'
-import { useSplashScreen } from '/hooks/useSplashScreen'
+import { CozyLogoScreen } from '/screens/login/components/CozyLogoScreen'
+import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 
 const log = Minilog('OnboardingScreen')
 
@@ -28,11 +29,18 @@ const ERROR_STEP = 'ERROR_STEP'
 
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
-const OnboardingSteps = ({ setClient, route, navigation }) => {
+const colors = getColors()
+
+const OnboardingSteps = ({
+  backgroundColor,
+  navigation,
+  route,
+  setBackgroundColor,
+  setClient
+}) => {
   const [state, setState] = useState({
     step: LOADING_STEP
   })
-  const { showSplashScreen, hideSplashScreen } = useSplashScreen()
 
   useEffect(() => {
     log.debug(`Enter state ${state.step}`)
@@ -82,6 +90,18 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
       }
     }
   }, [navigation, route, setOnboardingData, setMagicLinkOnboardingData])
+
+  useEffect(() => {
+    const backgroundColorParam = consumeRouteParameter(
+      'backgroundColor',
+      route,
+      navigation
+    )
+
+    if (backgroundColorParam) {
+      setBackgroundColor(backgroundColorParam)
+    }
+  }, [navigation, setBackgroundColor, route])
 
   const setStepReadonly = isReadOnly => {
     setState(oldState => ({
@@ -188,7 +208,6 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
   }, [setClient, setError, state, cancelOnboarding])
 
   if (state.step === PASSWORD_STEP) {
-    hideSplashScreen()
     const { fqdn, instance } = state.onboardingData
     return (
       <OnboardingPasswordView
@@ -203,23 +222,11 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
     )
   }
 
-  if (state.step === MAGIC_LINK_STEP) {
-    hideSplashScreen()
-    const { fqdn } = state.onboardingData
-    return (
-      <View>
-        <Text>Magic Onboarding on {fqdn}</Text>
-      </View>
-    )
-  }
-
-  if (state.step === LOADING_STEP) {
-    showSplashScreen()
-    return null
+  if (state.step === LOADING_STEP || state.step === MAGIC_LINK_STEP) {
+    return <CozyLogoScreen backgroundColor={backgroundColor} />
   }
 
   if (state.step === ERROR_STEP) {
-    hideSplashScreen()
     return (
       <ErrorView
         errorMessage={state.errorMessage}
@@ -234,15 +241,30 @@ const OnboardingSteps = ({ setClient, route, navigation }) => {
 }
 
 export const OnboardingScreen = ({ setClient, route, navigation }) => {
+  const [backgroundColor, setBackgroundColor] = useState(colors.primaryColor)
   const dimensions = useDimensions()
 
+  const setBackgroundAndStatusBarColor = backgroundColor => {
+    setStatusBarColorToMatchBackground(backgroundColor)
+    setBackgroundColor(backgroundColor)
+  }
+
   return (
-    <View style={styles.view}>
+    <View
+      style={[
+        styles.view,
+        {
+          backgroundColor: backgroundColor
+        }
+      ]}
+    >
       <View style={{ height: dimensions.statusBarHeight }} />
       <OnboardingSteps
+        backgroundColor={backgroundColor}
         setClient={setClient}
         route={route}
         navigation={navigation}
+        setBackgroundColor={setBackgroundAndStatusBarColor}
       />
       <View style={{ height: dimensions.navbarHeight }} />
     </View>
@@ -251,7 +273,6 @@ export const OnboardingScreen = ({ setClient, route, navigation }) => {
 
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
-    backgroundColor: getColors().primaryColor
+    flex: 1
   }
 })
