@@ -58,7 +58,7 @@ const isHexaCode = (value: string): boolean => {
  * @param backgroundColor - the background color to analyse
  * @returns true if it is a light background or false if it is a dark background
  */
-const isLightBackground = (backgroundColor: string): boolean => {
+export const isLightBackground = (backgroundColor: string): boolean => {
   let color = backgroundColor.startsWith('#')
     ? backgroundColor.substring(1)
     : backgroundColor
