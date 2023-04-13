@@ -35,10 +35,11 @@ export const CreateInstanceScreen = ({ route, navigation }) => {
   }
 
   const startOnboarding = onboardingData => {
-    const { fqdn, registerToken } = onboardingData
+    const { fqdn, registerToken, magicCode } = onboardingData
 
     navigation.navigate(routes.onboarding, {
       registerToken,
+      magicCode,
       fqdn
     })
   }
