@@ -52,6 +52,7 @@ try {
 const {
   disableGetIndex,
   enableLocalSentry,
+  cliskKonnectorDevMode,
   enableReduxLogger,
   enforcedInstallReferrer,
   forceInstallReferrer,
@@ -63,6 +64,8 @@ if (enableLocalSentry) toggleLocalSentry(true)
 export const isSentryDebugMode = (): boolean => enableLocalSentry
 
 export const shouldDisableGetIndex = (): boolean => disableGetIndex
+
+export const shouldShowCliskDevMode = (): boolean => cliskKonnectorDevMode
 
 export const shouldForceInstallReferrer = (): boolean => forceInstallReferrer
 export const getEnforcedInstallReferrer = (): string => enforcedInstallReferrer

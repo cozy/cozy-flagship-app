@@ -32,8 +32,6 @@ const log = Minilog('LauncherView')
 const colors = getColors()
 const { statusBarHeight } = getDimensions()
 
-const DEBUG = false
-
 class LauncherView extends Component {
   constructor(props) {
     super(props)
@@ -54,6 +52,7 @@ class LauncherView extends Component {
       worker: {},
       workerKey: 0
     }
+    this.DEBUG = false
   }
 
   /**
@@ -100,6 +99,8 @@ class LauncherView extends Component {
    */
   async initKonnector() {
     const { client, launcherContext } = this.props
+    const { DEBUG = false } = launcherContext
+    this.DEBUG = DEBUG
     const slug = launcherContext.konnector.slug
 
     try {
@@ -197,7 +198,9 @@ class LauncherView extends Component {
 
     stopTimeout()
 
-    this.props.setLauncherContext({ state: 'default' })
+    // in DEBUG mode, do not hide the worker in the end of the konnector execution
+    // this allows to make it easier to try pilot commands in web inspector
+    if (!this.DEBUG) this.props.setLauncherContext({ state: 'default' })
   }
 
   componentWillUnmount() {
@@ -211,7 +214,7 @@ class LauncherView extends Component {
 
   render() {
     const workerStyle =
-      this.state.worker.visible || DEBUG
+      this.state.worker.visible || this.DEBUG
         ? styles.workerVisible
         : styles.workerHidden
 
