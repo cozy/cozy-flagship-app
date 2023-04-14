@@ -543,10 +543,11 @@ const LoginSteps = ({
   }
 
   if (state.step === PASSWORD_STEP) {
+    const enforcedCozyBlueBackground = colors.primaryColor
     return (
       <>
         <PasswordView
-          backgroundColor={backgroundColor}
+          backgroundColor={enforcedCozyBlueBackground}
           instance={state.instance}
           fqdn={state.fqdn}
           kdfIterations={state.kdfIterations}
@@ -563,7 +564,7 @@ const LoginSteps = ({
         />
         {state.waitForTransition && (
           <TransitionToPasswordView
-            backgroundColor={backgroundColor}
+            backgroundColor={enforcedCozyBlueBackground}
             setTransitionEnded={endTransitionToPassword}
             requestTransitionStart={state.requestTransitionStart}
             passwordAvatarPosition={state.passwordAvatarPosition}
@@ -602,10 +603,11 @@ const LoginSteps = ({
   }
 
   if (state.step === TWO_FACTOR_AUTHENTICATION_PASSWORD_STEP) {
+    const enforcedPartnerGreyBackground = '#4b4b4b'
     return (
       <>
         <PasswordView
-          backgroundColor={backgroundColor}
+          backgroundColor={enforcedPartnerGreyBackground}
           instance={state.instance}
           fqdn={state.fqdn}
           kdfIterations={state.kdfIterations}
@@ -622,7 +624,7 @@ const LoginSteps = ({
         />
         {state.waitForTransition && (
           <TransitionToPasswordView
-            backgroundColor={backgroundColor}
+            backgroundColor={enforcedPartnerGreyBackground}
             setTransitionEnded={endTransitionToPassword}
             requestTransitionStart={state.requestTransitionStart}
             passwordAvatarPosition={state.passwordAvatarPosition}
