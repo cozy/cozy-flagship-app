@@ -10,7 +10,7 @@ import { hideSplashScreen } from '/libs/services/SplashScreenService'
 export const initDev = async (isDev: boolean): Promise<void> => {
   if (!isDev) return
 
-  if (devConfig.forceHideSplashScreen) await hideSplashScreen()
+  if (hideSplashScreen) await hideSplashScreen()
 
   if (devConfig.forceOffline) {
     NetInfo.fetch = (): Promise<NetInfoState> =>

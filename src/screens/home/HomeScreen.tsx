@@ -8,8 +8,10 @@ import { StatusBar, View } from 'react-native'
 
 import HomeView from '/screens/home/components/HomeView'
 import LauncherView from '/screens/konnectors/LauncherView'
+import CliskDevView from '/screens/konnectors/CliskDevView'
 import { StatusBarStyle } from '/libs/intents/setFlagshipUI'
 import { useLauncherContext } from '/screens/home/hooks/useLauncherContext'
+import { shouldShowCliskDevMode } from '/core/tools/env'
 
 import { styles } from '/screens/home/HomeScreen.styles'
 
@@ -39,12 +41,16 @@ export const HomeScreen = ({
     <View style={styles.container}>
       <StatusBar barStyle={barStyle} />
 
-      <HomeView
-        navigation={navigation}
-        route={route}
-        setBarStyle={setBarStyle}
-        setLauncherContext={trySetLauncherContext}
-      />
+      {shouldShowCliskDevMode() ? (
+        <CliskDevView setLauncherContext={trySetLauncherContext} />
+      ) : (
+        <HomeView
+          navigation={navigation}
+          route={route}
+          setBarStyle={setBarStyle}
+          setLauncherContext={trySetLauncherContext}
+        />
+      )}
 
       {canDisplayLauncher() && (
         <LauncherView
