@@ -40,7 +40,7 @@ export const computePassFunctionDeclaration = `
       })
       .catch((err) => {
         const payloadResult = JSON.stringify({
-          message: 'answer___computePAss',
+          message: 'answer___computePass',
           messageId: messageId,
           param: {
             error: 'Something went wrong while computing PKCE keys: ' + err.message
