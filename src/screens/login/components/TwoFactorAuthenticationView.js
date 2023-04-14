@@ -4,35 +4,32 @@ import { KeyboardAvoidingView, Platform, View, StyleSheet } from 'react-native'
 import { getHtml } from './assets/TwoFactorAuthentication/htmlTwoFactorAuthentication'
 
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
-import { getColors } from '/ui/colors'
 import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
 
 /**
  * Show a 2FA form that asks the user for their 2FA code received by email/authenticator
  *
  * @param {object} props
+ * @param {string} props.backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
  * @param {string} [props.errorMessage] - Error message to display if defined
  * @param {Function} props.goBack - Function to call when the back button is clicked
  * @param {string} props.instance - The Cozy's url
  * @param {boolean} props.readonly - Specify if the form should be readonly
  * @param {setReadonly} props.setReadonly - Trigger change on the readonly state
  * @param {setTwoFactorCode} props.setTwoFactorCode - Function to call to set the user's 2FA code
- * @param {setBackgroundColor} props.setBackgroundColor - Set the LoginScreen's background color (used for overlay and navigation bars)
  * @returns {import('react').ComponentClass}
  */
 export const TwoFactorAuthenticationView = ({
+  backgroundColor,
   errorMessage,
   goBack,
   instance,
   readonly,
-  setBackgroundColor,
   setReadonly,
   setTwoFactorCode
 }) => {
   const [loading, setLoading] = useState(true)
   const webviewRef = useRef()
-
-  const colors = getColors()
 
   useEffect(() => {
     if (webviewRef) {
@@ -47,16 +44,12 @@ export const TwoFactorAuthenticationView = ({
   }, [webviewRef, readonly])
 
   useEffect(() => {
-    setBackgroundColor(colors.primaryColor)
-  }, [setBackgroundColor, colors.primaryColor])
-
-  useEffect(() => {
     if (webviewRef && !loading) {
       setFocusOnWebviewField(webviewRef.current, 'two-factor-passcode')
     }
   }, [loading, webviewRef])
 
-  const html = getHtml(instance, errorMessage)
+  const html = getHtml(instance, backgroundColor, errorMessage)
 
   const processMessage = event => {
     if (event.nativeEvent && event.nativeEvent.data) {
@@ -88,7 +81,7 @@ export const TwoFactorAuthenticationView = ({
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: colors.primaryColor
+              backgroundColor: backgroundColor
             }
           ]}
         />

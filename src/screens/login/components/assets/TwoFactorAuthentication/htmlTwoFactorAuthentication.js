@@ -29,7 +29,11 @@ const getCredentialsErrorJs = credentialsErrorMsg =>
 
 const locale = 'fr'
 
-export const getHtml = (instance, credentialsErrorMsg = undefined) => `
+export const getHtml = (
+  instance,
+  backgroundColor,
+  credentialsErrorMsg = undefined
+) => `
 <!DOCTYPE html>
 <html lang="${locale}">
   <head>
@@ -40,6 +44,22 @@ export const getHtml = (instance, credentialsErrorMsg = undefined) => `
     <style type="text/css">${cozyBsCss}</style>
     <style type="text/css">${themeCss}</style>
     <style type="text/css">${cirrusCss}</style>
+    <style type="text/css">
+    ${
+      backgroundColor === '#4b4b4b'
+        ? `
+        .theme-inverted {
+          --primaryColorDark: #eeeeee;
+          --primaryColorLightest: #626262;
+          --primaryTextContrastColor: #626262;
+          --secondaryColor: #a3a3a3;
+          --paperBackgroundColor: #4b4b4b;
+          --banner-color: #282828;
+          --btn-secondary-border-color: rgba(255, 255, 255, .48);
+        }`
+        : ''
+    }
+    </style>
   </head>
   <body class="theme-inverted">
     <form id="two-factor-form" method="POST" action="#" class="d-contents">
