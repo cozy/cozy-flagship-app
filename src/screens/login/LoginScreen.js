@@ -588,12 +588,12 @@ const LoginSteps = ({
   if (state.step === TWO_FACTOR_AUTHENTICATION_STEP) {
     return (
       <TwoFactorAuthenticationView
+        backgroundColor={backgroundColor}
         instance={state.instance}
         setTwoFactorCode={continueOAuth}
         goBack={cancelOauth}
         errorMessage={state.errorMessage2FA}
         readonly={state.stepReadonly}
-        setBackgroundColor={setBackgroundColor}
         setReadonly={setStepReadonly}
       />
     )
