@@ -32,16 +32,20 @@
       android:allowBackup="false"
       android:theme="@style/AppTheme"
       android:usesCleartextTraffic="true">
-      <activity
-        android:name=".MainActivity"
+      <activity android:name=".MainActivity"></activity>
+
+      <activity-alias
+        android:name="io.cozy.flagship.mobile.MainActivitycozy"
+        android:enabled="true"
+        android:exported="true"
         android:label="@string/app_name"
-        android:icon="@mipmap/cozy"
-        android:roundIcon="@mipmap/cozy_round"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
         android:launchMode="singleTask"
         android:windowSoftInputMode="adjustResize"
-        android:exported="true"
-        android:screenOrientation="portrait">
+        android:screenOrientation="portrait"
+        android:icon="@mipmap/cozy"
+        android:roundIcon="@mipmap/cozy_round"
+        android:targetActivity=".MainActivity">
         <intent-filter>
           <action android:name="android.intent.action.MAIN" />
           <category android:name="android.intent.category.LAUNCHER" />
@@ -60,31 +64,37 @@
           <data android:host="links.mycozy.cloud" />
           <data android:pathPrefix="/flagship" />
         </intent-filter>
-      </activity>
-
-      <activity-alias
-        android:name="io.cozy.flagship.mobile.MainActivitycozy"
-        android:enabled="false"
-        android:exported="true"
-        android:icon="@mipmap/cozy"
-        android:roundIcon="@mipmap/cozy_round"
-        android:targetActivity=".MainActivity">
-        <intent-filter>
-          <action android:name="android.intent.action.MAIN" />
-          <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
       </activity-alias>
 
       <activity-alias
         android:name="io.cozy.flagship.mobile.MainActivitymespapiers"
         android:enabled="false"
         android:exported="true"
+        android:label="@string/app_name"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
         android:icon="@mipmap/mespapiers"
         android:roundIcon="@mipmap/mespapiers_round"
         android:targetActivity=".MainActivity">
         <intent-filter>
           <action android:name="android.intent.action.MAIN" />
           <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="cozy" />
+        </intent-filter>
+        <intent-filter android:autoVerify="true">
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="https" />
+          <data android:host="links.mycozy.cloud" />
+          <data android:pathPrefix="/flagship" />
         </intent-filter>
       </activity-alias>
 
