@@ -1,53 +1,78 @@
 /* eslint-disable no-console */
-import React, { useState } from 'react'
-import { Button, TextInput, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Button, FlatList, Text, TouchableOpacity, View } from 'react-native'
 
 import { useClient, Q } from 'cozy-client'
 
 const CliskDevView = ({ setLauncherContext }) => {
   const client = useClient()
 
-  const [slug, setSlug] = useState('')
-  const [accountId, setAccountId] = useState('')
+  const [triggers, setTriggers] = useState([])
+  const [selected, setSelected] = useState(null)
 
   const handleRun = async () => {
+    const triggerId = selected
+    const { data: trigger } = await client.query(
+      Q('io.cozy.triggers').getById(triggerId)
+    )
+    const slug = trigger?.message?.konnector
     const { data: konnector } = await client.query(
       Q('io.cozy.konnectors').getById('io.cozy.konnectors/' + slug)
     )
+    const accountId = trigger?.message?.account
     const { data: account } = await client.query(
       Q('io.cozy.accounts').getById(accountId)
     )
-    const { data: triggers } = await client.query(
-      Q('io.cozy.triggers')
-        .where({
-          'message.account': accountId
-        })
-        .indexFields(['message.account'])
-    )
-
-    if (!konnector) return console.error('no konnector associated to ', slug)
-    if (!account) return console.error('no account associated to ', accountId)
-    if (!triggers || !triggers[0])
-      return console.error('no trigger associated to ', accountId)
 
     setLauncherContext({
       state: 'launch',
-      value: { konnector, account, trigger: triggers[0], DEBUG: true },
+      value: { konnector, account, trigger: triggers[0], DEBUG: true }
     })
   }
 
+  useEffect(() => {
+    const doEffect = async () => {
+      const { data } = await client.query(
+        Q('io.cozy.triggers').where({
+          type: '@client'
+        })
+      )
+
+      return data
+    }
+    doEffect()
+      .then(data => {
+        return setTriggers(data)
+      })
+      .catch(err => {
+        console.error('doEffect error : ', err.message)
+      })
+  }, [client])
+
+  const Item = ({ trigger }) => {
+    const fontWeight = trigger._id === selected ? '800' : '400'
+    return (
+      <TouchableOpacity
+        onPress={() => setSelected(trigger._id)}
+        style={{ padding: 10 }}
+      >
+        <Text style={{ fontSize: 20, fontWeight }}>
+          {trigger.message.konnector +
+            ': ' +
+            trigger.message.account.substr(0, 5)}
+        </Text>
+      </TouchableOpacity>
+    )
+  }
+
+  // todo lancer l'item sé
+
   return (
-    <View style={{ padding: 20 }}>
-      <TextInput
-        style={{ fontSize: 30 }}
-        placeholder="slug"
-        onChangeText={setSlug}
-      />
-      <TextInput
-        placeholder="account id"
-        style={{ fontSize: 30 }}
-        onChangeText={setAccountId}
-      />
+    <View style={{ padding: 20, backGroundColor: '#6e3b6e' }}>
+      <FlatList
+        data={triggers}
+        renderItem={({ item }) => <Item trigger={item} key={item._id} />}
+      ></FlatList>
       <Button title="run" onPress={handleRun} />
     </View>
   )
