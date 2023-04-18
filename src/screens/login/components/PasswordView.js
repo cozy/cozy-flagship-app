@@ -8,14 +8,13 @@ import { openForgotPasswordLink } from '/libs/functions/openForgotPasswordLink'
 
 import { getHtml } from './assets/PasswordView/htmlPasswordInjection'
 
-import { getColors } from '/ui/colors'
-
 /**
  * Show a password form that asks the user their password
  * When the user validate their password, the password is sent back to parent
  * by calling `setPasswordData`
  *
  * @param {object} props
+ * @param {string} props.backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
  * @param {string} [props.errorMessage] - Error message to display if defined
  * @param {string} props.fqdn - The Cozy's fqdn
  * @param {Function} props.goBack - Function to call when the back button is clicked
@@ -29,6 +28,7 @@ import { getColors } from '/ui/colors'
  * @returns {import('react').ComponentClass}
  */
 const PasswordForm = ({
+  backgroundColor,
   errorMessage,
   fqdn,
   goBack,
@@ -43,7 +43,6 @@ const PasswordForm = ({
 }) => {
   const [loading, setLoading] = useState(true)
   const webviewRef = useRef()
-  const colors = getColors()
 
   useEffect(() => {
     if (webviewRef) {
@@ -75,7 +74,7 @@ const PasswordForm = ({
     }
   }, [webviewRef, errorMessage])
 
-  const html = getHtml(name, fqdn, instance)
+  const html = getHtml(name, fqdn, instance, backgroundColor)
 
   const setLoaded = avatarPosition => {
     setLoading(false)
@@ -95,7 +94,7 @@ const PasswordForm = ({
 
       if (message.message === 'loaded') {
         setLoaded(message.avatarPosition)
-        setBackgroundColor(colors.primaryColor)
+        setBackgroundColor(backgroundColor)
       } else if (message.message === 'setPassphrase') {
         setPassword(message.passphrase)
       } else if (message.message === 'forgotPassword') {
@@ -116,14 +115,14 @@ const PasswordForm = ({
         onMessage={processMessage}
         originWhitelist={['*']}
         source={{ html }}
-        style={{ backgroundColor: colors.primaryColor }}
+        style={{ backgroundColor: backgroundColor }}
       />
       {loading && (
         <View
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: colors.primaryColor
+              backgroundColor: backgroundColor
             }
           ]}
         />
@@ -139,6 +138,7 @@ const PasswordForm = ({
  * If an error occurs, then `setError` is called
  *
  * @param {object} props
+ * @param {string} props.backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
  * @param {string} [props.errorMessage] - Error message to display if defined
  * @param {string} props.fqdn - The Cozy's fqdn
  * @param {Function} props.goBack - Function to call when the back button is clicked
@@ -154,6 +154,7 @@ const PasswordForm = ({
  * @returns {import('react').ComponentClass}
  */
 export const PasswordView = ({
+  backgroundColor,
   errorMessage,
   fqdn,
   goBack,
@@ -185,6 +186,7 @@ export const PasswordView = ({
 
   return (
     <PasswordForm
+      backgroundColor={backgroundColor}
       errorMessage={errorMessage}
       fqdn={fqdn}
       goBack={goBack}
