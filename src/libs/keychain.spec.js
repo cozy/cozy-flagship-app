@@ -5,6 +5,7 @@ import * as Keychain from 'react-native-keychain'
 import {
   saveCredential,
   getCredential,
+  getSlugAccountIds,
   GLOBAL_KEY,
   saveVaultInformation,
   getVaultInformation,
@@ -29,6 +30,28 @@ describe('keychain test suite', () => {
     console.log = jest.fn() // eslint-disable-line no-console
   })
   describe('credentials API', () => {
+    describe('getSlugAccountIds', () => {
+      it('should get the account ids associated to a given slug', async () => {
+        jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
+          username: GLOBAL_KEY,
+          password: JSON.stringify({
+            CSC_ACCOUNTS: {
+              0: {
+                slug: 'testslug1'
+              },
+              1: {
+                slug: 'testslug2'
+              },
+              2: {
+                slug: 'testslug1'
+              }
+            }
+          })
+        })
+        const accountIds = await getSlugAccountIds('testslug1')
+        expect(accountIds).toStrictEqual(['0', '2'])
+      })
+    })
     it('test get credentials methods', async () => {
       jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce(false)
       const cred = await getCredential(account)

@@ -2,13 +2,19 @@
 /* eslint-disable no-unused-vars */
 import Minilog from '@cozy/minilog'
 import set from 'lodash/set'
+import { getBuildId, getVersion } from 'react-native-device-info'
 
 import { Q, models } from 'cozy-client'
 import { saveFiles, saveBills, saveIdentity } from 'cozy-clisk'
 
 import { cleanExistingAccountsForKonnector } from './Launcher.functions'
 import { ensureKonnectorFolder } from './folder'
-import { saveCredential, getCredential, removeCredential } from './keychain'
+import {
+  saveCredential,
+  getCredential,
+  removeCredential,
+  getSlugAccountIds
+} from './keychain'
 import { dataURItoArrayBuffer } from './utils'
 
 import { constants } from '/screens/konnectors/constants/konnectors-constants'
@@ -118,12 +124,19 @@ export default class Launcher {
    * @returns {Promise<void>}
    */
   async saveCredentials(credentials) {
-    const { account } = this.getStartContext()
+    const { konnector } = this.getStartContext()
     const existingCredentials = await this.getCredentials()
     if (existingCredentials) {
       await this.removeCredentials()
     }
-    await saveCredential({ ...account, auth: credentials })
+    const result = {
+      version: 1,
+      createdByAppVersion: getVersion() + '-' + (await getBuildId()), // récupérer build number de l'app amirale
+      createdAt: new Date().toJSON(),
+      slug: konnector.slug,
+      credentials
+    }
+    await saveCredential(result)
   }
 
   /**
@@ -147,7 +160,35 @@ export default class Launcher {
       return null
     }
     const encAccount = await getCredential(account)
-    return encAccount ? encAccount.auth : null
+    return encAccount?.credentials || null
+  }
+
+  /**
+   * Try to find obsolete accounts in credentials which do not exist anymore in database and clean them
+   *
+   * @param {String} slug - konnector slug to check
+   * @returns {Promise<Boolean>} - returns true if some accounts have been removed or else false
+   */
+  async cleanCredentialsAccounts(slug) {
+    const { client } = this.getStartContext()
+    const accountIds = await getSlugAccountIds(slug)
+
+    if (accountIds.length === 0) return false
+
+    const { data: existingAccounts } = await client.query(
+      Q('io.cozy.accounts').getByIds(accountIds)
+    )
+    const existingAccountIds = existingAccounts.map(
+      (/** @type {{ _id: String; }} */ a) => a._id
+    )
+    let didRemoveAccountCredential = false
+    for (const accountId of accountIds) {
+      if (!existingAccountIds.includes(accountIds)) {
+        await removeCredential({ _id: accountId })
+        didRemoveAccountCredential = true
+      }
+    }
+    return didRemoveAccountCredential
   }
 
   /**

@@ -98,6 +98,25 @@ export async function removeCredential(account) {
 }
 
 /**
+ * Get account ids associated to the given slug in keychain
+ *
+ * @param {String} slug - konnector slug
+ * @returns {Promise<Array<String>>} - list of account ids associated to the given slug
+ */
+export async function getSlugAccountIds(slug) {
+  const password = await getDecodedGenericPasswords()
+  const credentials = password[CREDENTIALS_SCOPE] || {}
+  const result = []
+  for (const accountId in credentials) {
+    const account = credentials[accountId]
+    if (account.slug === slug) {
+      result.push(accountId)
+    }
+  }
+  return result
+}
+
+/**
  *
  * @param {String} key
  * @param {String|Object} value

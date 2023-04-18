@@ -2,6 +2,7 @@ import Minilog from '@cozy/minilog'
 import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
 import MicroEE from 'microee'
+import semverCompare from 'semver/functions/compare'
 
 import Launcher from './Launcher'
 import ContentScriptBridge from './bridge/ContentScriptBridge'
@@ -22,6 +23,8 @@ Minilog.enable()
 function LauncherEvent() {}
 
 MicroEE.mixin(LauncherEvent)
+
+const MIN_CLISK_SUPPORTED_VERSION = '0.10.0'
 
 export const launcherEvent = new LauncherEvent()
 
@@ -205,7 +208,7 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async _start({ initKonnectorError } = {}) {
-    const { account } = this.getStartContext()
+    const { account, konnector } = this.getStartContext()
     try {
       if (initKonnectorError) {
         log.info('Got initKonnectorError ' + initKonnectorError.message)
@@ -213,6 +216,22 @@ class ReactNativeLauncher extends Launcher {
       }
       await this.pilot.call('setContentScriptType', 'pilot')
       await this.worker.call('setContentScriptType', 'worker')
+      const shouldLogout = await this.cleanCredentialsAccounts(konnector.slug)
+      if (shouldLogout) {
+        log(
+          'info',
+          `Detected removed account: first ensure webview is not authenticated`
+        )
+        const cliskVersion = await this.pilot.call('getCliskVersion')
+        if (semverCompare(cliskVersion, MIN_CLISK_SUPPORTED_VERSION) === -1) {
+          log(
+            'warn',
+            `The cozy-clisk version of this konnector is too low: ${cliskVersion}. ${MIN_CLISK_SUPPORTED_VERSION} version should be used to be able to call ensureNotAuthenticated`
+          )
+        } else {
+          await this.pilot.call('ensureNotAuthenticated')
+        }
+      }
       await this.pilot.call('ensureAuthenticated', { account })
 
       this.setUserData(await this.pilot.call('getUserDataFromWebsite'))
