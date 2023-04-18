@@ -546,6 +546,7 @@ const LoginSteps = ({
     return (
       <>
         <PasswordView
+          backgroundColor={backgroundColor}
           instance={state.instance}
           fqdn={state.fqdn}
           kdfIterations={state.kdfIterations}
@@ -562,6 +563,7 @@ const LoginSteps = ({
         />
         {state.waitForTransition && (
           <TransitionToPasswordView
+            backgroundColor={backgroundColor}
             setTransitionEnded={endTransitionToPassword}
             requestTransitionStart={state.requestTransitionStart}
             passwordAvatarPosition={state.passwordAvatarPosition}
@@ -603,6 +605,7 @@ const LoginSteps = ({
     return (
       <>
         <PasswordView
+          backgroundColor={backgroundColor}
           instance={state.instance}
           fqdn={state.fqdn}
           kdfIterations={state.kdfIterations}
@@ -619,6 +622,7 @@ const LoginSteps = ({
         />
         {state.waitForTransition && (
           <TransitionToPasswordView
+            backgroundColor={backgroundColor}
             setTransitionEnded={endTransitionToPassword}
             requestTransitionStart={state.requestTransitionStart}
             passwordAvatarPosition={state.passwordAvatarPosition}
