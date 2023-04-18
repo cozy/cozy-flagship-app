@@ -18,12 +18,14 @@ const webViewTopToNativeTop = top => top + getDimensions().statusBarHeight
  * correctly translate the Cozy logo to the avatar's position
  *
  * @param {object} props
+ * @param {string} props.backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
  * @param {TransitionPasswordAvatarPosition} props.passwordAvatarPosition - The password form's avatar position
  * @param {boolean} props.requestTransitionStart - Boolean that define if the transition should start
  * @param {Function} props.setTransitionEnded - Function to call when the transition ends
  * @returns {import('react').ComponentClass}
  */
 export const TransitionToPasswordView = ({
+  backgroundColor,
   passwordAvatarPosition,
   requestTransitionStart,
   setTransitionEnded
@@ -114,7 +116,7 @@ export const TransitionToPasswordView = ({
           styles.background,
           {
             opacity: animatedOpacity,
-            backgroundColor: colors.primaryColor
+            backgroundColor: backgroundColor
           }
         ]}
       />

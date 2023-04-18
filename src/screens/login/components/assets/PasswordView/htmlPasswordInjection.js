@@ -30,9 +30,10 @@ const locale = 'fr'
  * @param {string} title - The title of the page - for example the user's name as configured in the Cozy's settings
  * @param {string} fqdn - The subtitle of the page - for example the Cozy's fqdn
  * @param {string} instance - The Cozy's url, used to get avatar and fonts css
+ * @param {string} backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
  * @returns {Element} HTML of Password form to inject inside Webview
  */
-export const getHtml = (title, fqdn, instance) => {
+export const getHtml = (title, fqdn, instance, backgroundColor) => {
   const avatarUrl = new URL(instance)
   avatarUrl.pathname = 'public/avatar'
 
@@ -50,6 +51,22 @@ export const getHtml = (title, fqdn, instance) => {
     <style type="text/css">${cozyBsCss}</style>
     <style type="text/css">${themeCss}</style>
     <style type="text/css">${cirrusCss}</style>
+    <style type="text/css">
+    ${
+      backgroundColor === '#4b4b4b'
+        ? `
+        .theme-inverted {
+          --primaryColorDark: #eeeeee;
+          --primaryColorLightest: #626262;
+          --primaryTextContrastColor: #626262;
+          --secondaryColor: #a3a3a3;
+          --paperBackgroundColor: #4b4b4b;
+          --banner-color: #282828;
+          --btn-secondary-border-color: rgba(255, 255, 255, .48);
+        }`
+        : ''
+    }
+    </style>
   </head>
   <body class="theme-inverted">
     <form id="login-form" method="POST" action="#" class="d-contents">
