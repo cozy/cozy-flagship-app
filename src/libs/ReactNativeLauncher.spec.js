@@ -13,13 +13,21 @@ jest.mock('./keychain', () => {
   return {
     getCookie: jest.fn(),
     saveCookie: jest.fn(),
-    removeCookie: jest.fn()
+    removeCookie: jest.fn(),
+    getSlugAccountIds: jest.fn(),
+    removeCredential: jest.fn()
   }
 })
 import CookieManager from '@react-native-cookies/cookies'
 
 import ReactNativeLauncher, { launcherEvent } from './ReactNativeLauncher'
-import { getCookie, saveCookie, removeCookie } from './keychain'
+import {
+  getCookie,
+  saveCookie,
+  removeCookie,
+  getSlugAccountIds,
+  removeCredential
+} from './keychain'
 
 const fixtures = {
   job: { _id: 'normal_job_id' },
@@ -43,6 +51,8 @@ describe('ReactNativeLauncher', () => {
       call: jest.fn(),
       close: jest.fn()
     }
+    getSlugAccountIds.mockResolvedValue([])
+    removeCredential.mockResolvedValue()
     const launch = jest.fn()
     const findReferencedBy = jest
       .fn()
@@ -246,6 +256,9 @@ describe('ReactNativeLauncher', () => {
         'getUserDataFromWebsite'
       )
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(4, 'fetch', [])
+      expect(launcher.pilot.call).not.toHaveBeenCalledWith(
+        'ensureNotAuthenticated'
+      )
       expect(launcherEvent.emit).toHaveBeenCalledWith('launchResult', {
         cancel: true
       })
@@ -328,6 +341,85 @@ describe('ReactNativeLauncher', () => {
         errorMessage: 'test error message'
       })
       expect(launcherEvent.emit).not.toHaveBeenCalledWith('loginSuccess')
+    })
+    it('should run ensureNotAuthenticated when an account has been removed from database', async () => {
+      const { launcher, client, launch } = setup()
+      launcher.setStartContext({
+        client,
+        account: fixtures.account,
+        trigger: fixtures.trigger,
+        konnector: { slug: 'konnectorslug', clientSide: true },
+        launcherClient: {
+          setAppMetadata: () => null
+        }
+      })
+      getSlugAccountIds.mockResolvedValue(['testaccountid1', 'testaccountid2'])
+      client.query.mockImplementation(async obj => {
+        if (obj.doctype === 'io.cozy.accounts' && obj.ids) {
+          return { data: [] }
+        }
+        return { data: fixtures.account }
+      })
+      client.save.mockImplementation(async doc => ({ data: doc }))
+      launch.mockResolvedValue({ data: fixtures.job })
+      launcher.pilot.call
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce('0.10.0')
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(true)
+      await launcher.start()
+      expect(launcher.pilot.call).toHaveBeenNthCalledWith(
+        1,
+        'setContentScriptType',
+        'pilot'
+      )
+      expect(launcher.pilot.call).toHaveBeenNthCalledWith(2, 'getCliskVersion')
+      expect(launcher.pilot.call).toHaveBeenNthCalledWith(
+        3,
+        'ensureNotAuthenticated'
+      )
+      expect(launcher.pilot.call).toHaveBeenNthCalledWith(
+        4,
+        'ensureAuthenticated',
+        { account: fixtures.account }
+      )
+    })
+    it('should not fail when clisk version is less than 0.10.0', async () => {
+      const { launcher, client, launch } = setup()
+      launcher.setStartContext({
+        client,
+        account: fixtures.account,
+        trigger: fixtures.trigger,
+        konnector: { slug: 'konnectorslug', clientSide: true },
+        launcherClient: {
+          setAppMetadata: () => null
+        }
+      })
+      getSlugAccountIds.mockResolvedValue(['testaccountid1', 'testaccountid2'])
+      client.query.mockImplementation(async obj => {
+        if (obj.doctype === 'io.cozy.accounts' && obj.ids) {
+          return { data: [] }
+        }
+        return { data: fixtures.account }
+      })
+      client.save.mockImplementation(async doc => ({ data: doc }))
+      launch.mockResolvedValue({ data: fixtures.job })
+      launcher.pilot.call
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce('0.8.0')
+        .mockResolvedValueOnce(true)
+      await launcher.start()
+      expect(launcher.pilot.call).toHaveBeenNthCalledWith(
+        1,
+        'setContentScriptType',
+        'pilot'
+      )
+      expect(launcher.pilot.call).toHaveBeenNthCalledWith(2, 'getCliskVersion')
+      expect(launcher.pilot.call).toHaveBeenNthCalledWith(
+        3,
+        'ensureAuthenticated',
+        { account: fixtures.account }
+      )
     })
   })
   describe('runInWorker', () => {
