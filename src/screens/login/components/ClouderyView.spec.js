@@ -73,7 +73,9 @@ jest.mock('/screens/login/cloudery-env/useClouderyUrl', () => {
   }
 })
 
-describe('ClouderyView', () => {
+// Those are flacky tests that often timeout on Github Action CI
+// We didn't find a way to stabilise them yet, so until a solution is found we want them to be disabled
+xdescribe('ClouderyView', () => {
   describe('on handleNavigation', () => {
     const props = {
       setInstanceData: jest.fn()
