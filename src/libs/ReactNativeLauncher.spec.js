@@ -17,6 +17,7 @@ jest.mock('./keychain', () => {
   }
 })
 import CookieManager from '@react-native-cookies/cookies'
+import { waitFor } from '@testing-library/react-native'
 
 import ReactNativeLauncher, { launcherEvent } from './ReactNativeLauncher'
 import { getCookie, saveCookie, removeCookie } from './keychain'
@@ -41,6 +42,7 @@ describe('ReactNativeLauncher', () => {
     }
     launcher.worker = {
       call: jest.fn(),
+      init: jest.fn(),
       close: jest.fn()
     }
     const launch = jest.fn()
@@ -353,6 +355,34 @@ describe('ReactNativeLauncher', () => {
       launcher.worker.call.mockRejectedValue(new Error('worker error'))
       await expect(() => launcher.runInWorker('toRunInworker')).rejects.toThrow(
         'worker error'
+      )
+    })
+  })
+  describe('restartWorkerConnection', () => {
+    it('should be triggered with new webview reference on NEW_WORKER_INITIALIZING event', async () => {
+      const { launcher, client } = setup()
+      launcher.setStartContext({
+        client,
+        konnector: { slug: 'konnectorslug', clientSide: true },
+        launcherClient: {
+          setAppMetadata: () => null
+        }
+      })
+      launcher.initPilotContentScriptBridge = jest.fn()
+      launcher.initWorkerContentScriptBridge = jest.fn()
+      await launcher.init({
+        bridgeOptions: {
+          pilotWebView: 'pilot webview ref',
+          workerWebView: 'worker webview ref'
+        }
+      })
+      launcher.emit('NEW_WORKER_INITIALIZING', 'new worker webview ref')
+      await waitFor(() => expect(launcher.worker.init).toHaveBeenCalled())
+      expect(launcher.worker.close).toHaveBeenCalled()
+      expect(launcher.worker.init).toHaveBeenCalledWith(
+        expect.objectContaining({
+          webViewRef: 'new worker webview ref'
+        })
       )
     })
   })

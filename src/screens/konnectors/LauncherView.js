@@ -51,7 +51,8 @@ class LauncherView extends Component {
       userAgent: undefined,
       konnector: null,
       workerInnerUrl: null,
-      worker: {}
+      worker: {},
+      workerKey: 0
     }
   }
 
@@ -163,7 +164,16 @@ class LauncherView extends Component {
     const initKonnectorError = await this.initKonnector()
 
     this.launcher.on('SET_WORKER_STATE', options => {
-      this.setState({ worker: { ...this.state.worker, ...options } })
+      // here we check the difference with worker inner url
+      const newUrl = options.url
+      const shouldForceWorkerReload =
+        newUrl === this.state.worker.url && newUrl !== this.state.workerInnerUrl
+      if (shouldForceWorkerReload) {
+        this.setState({ workerKey: Date.now() })
+      }
+      this.setState({
+        worker: { ...this.state.worker, ...options }
+      })
     })
 
     this.launcher.on('SET_USER_AGENT', userAgent => {
@@ -247,6 +257,7 @@ class LauncherView extends Component {
                 </TouchableOpacity>
               </View>
               <WebView
+                key={this.state.workerKey}
                 mediaPlaybackRequiresUserAction={true}
                 ref={ref => (this.workerWebview = ref)}
                 originWhitelist={['*']}
