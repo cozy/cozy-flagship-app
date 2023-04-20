@@ -62,6 +62,7 @@ class ReactNativeLauncher extends Launcher {
       this,
       'ensureAccountTriggerAndLaunch'
     )
+    this.onWorkerWillReload = debounce(this.onWorkerWillReload.bind(this))
   }
 
   /**
@@ -116,9 +117,8 @@ class ReactNativeLauncher extends Launcher {
 
     // we subscribe to this event only once both bridges are initialized or else we will
     // receive this event also for the first worker page load
-    this.on(
-      'NEW_WORKER_INITIALIZING',
-      debounce(this.onWorkerWillReload.bind(this))
+    this.on('NEW_WORKER_INITIALIZING', webviewRef =>
+      this.onWorkerWillReload(webviewRef)
     )
   }
 
@@ -356,7 +356,7 @@ class ReactNativeLauncher extends Launcher {
   /**
    * Reestablish the connection between launcher and the worker after a web page reload
    */
-  async restartWorkerConnection() {
+  async restartWorkerConnection(webViewRef) {
     log.info('restarting worker')
     this.waitForWorkerEvent('load') // not awaited on purpose to make the restart the fastest possible
     this.waitForWorkerEvent('DOMContentLoaded') // not awaited on purpose to make the restart the fastest possible
@@ -364,6 +364,7 @@ class ReactNativeLauncher extends Launcher {
     try {
       await this.worker.close()
       await this.worker.init({
+        webViewRef,
         exposedMethodsNames: this.workerMethodNames,
         listenedEventsNames: this.workerListenedEventsNames,
         label: 'launcher => worker'
@@ -568,11 +569,13 @@ class ReactNativeLauncher extends Launcher {
 
   /**
    * Actions to do before the worker reloads : restart the connection
+   *
+   * @param {Object} webViewRef - reference to the worker webview
    */
-  async onWorkerWillReload(event) {
+  async onWorkerWillReload(webViewRef) {
     this.emit('WORKER_WILL_RELOAD')
     try {
-      await this.restartWorkerConnection(event)
+      await this.restartWorkerConnection(webViewRef)
     } catch (err) {
       log.error('Error while reloading the worker', err)
     }
