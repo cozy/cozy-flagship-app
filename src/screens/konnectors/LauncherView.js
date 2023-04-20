@@ -40,6 +40,7 @@ class LauncherView extends Component {
     this.onPilotMessage = this.onPilotMessage.bind(this)
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
     this.onWorkerError = this.onWorkerError.bind(this)
+    this.onWorkerLoad = this.onWorkerLoad.bind(this)
     this.onStopExecution = this.onStopExecution.bind(this)
     this.onCreatedAccount = this.onCreatedAccount.bind(this)
     this.onCreatedJob = this.onCreatedJob.bind(this)
@@ -49,6 +50,7 @@ class LauncherView extends Component {
     this.state = {
       userAgent: undefined,
       konnector: null,
+      workerInnerUrl: null,
       worker: {}
     }
   }
@@ -248,6 +250,7 @@ class LauncherView extends Component {
                 mediaPlaybackRequiresUserAction={true}
                 ref={ref => (this.workerWebview = ref)}
                 originWhitelist={['*']}
+                onLoad={this.onWorkerLoad}
                 useWebKit={true}
                 javaScriptEnabled={true}
                 userAgent={this.state.userAgent}
@@ -264,6 +267,10 @@ class LauncherView extends Component {
         ) : null}
       </>
     )
+  }
+
+  onWorkerLoad(event) {
+    this.setState({ workerInnerUrl: event.nativeEvent.url })
   }
 
   /**
@@ -305,7 +312,7 @@ class LauncherView extends Component {
     if (event.nativeEvent && event.nativeEvent.data) {
       const msg = JSON.parse(event.nativeEvent.data)
       if (msg.message === 'NEW_WORKER_INITIALIZING') {
-        this.launcher.emit('NEW_WORKER_INITIALIZING')
+        this.launcher.emit('NEW_WORKER_INITIALIZING', this.workerWebview)
         return
       } else if (['load', 'DOMContentLoaded'].includes(msg.message)) {
         this.launcher.emit('worker:' + msg.message)
