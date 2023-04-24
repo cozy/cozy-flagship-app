@@ -9,11 +9,6 @@ interface OnboardingData {
   onboardedRedirection: string | null
 }
 
-const abort = 'https://urlwithnofqdn'
-
-const validateRequest = (request?: WebViewNavigation): string =>
-  !request ? abort : !request.url ? abort : request.url
-
 const getInstanceAndRegisterToken = (uri: string): OnboardingData | null => {
   const url = new URL(window.decodeURIComponent(uri))
 
@@ -40,5 +35,11 @@ const getInstanceAndRegisterToken = (uri: string): OnboardingData | null => {
 export const getOnboardingDataFromRequest = (
   request: WebViewNavigation
 ): OnboardingData | null => {
-  return getInstanceAndRegisterToken(validateRequest(request))
+  const navigationUrl = request.url
+
+  if (!navigationUrl) {
+    return null
+  }
+
+  return getInstanceAndRegisterToken(navigationUrl)
 }
