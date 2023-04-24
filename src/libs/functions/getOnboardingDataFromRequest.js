@@ -1,6 +1,9 @@
-import { validateRequest } from './getUriFromRequest'
-
 import strings from '/constants/strings.json'
+
+const abort = 'https://urlwithnofqdn'
+
+const validateRequest = request =>
+  !request ? abort : !request.url ? abort : request.url
 
 const getInstanceAndRegisterToken = uri => {
   const url = new URL(window.decodeURIComponent(uri))
