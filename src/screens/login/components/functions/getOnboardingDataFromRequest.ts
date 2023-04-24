@@ -1,11 +1,20 @@
+import { WebViewNavigation } from 'react-native-webview'
+
 import strings from '/constants/strings.json'
+
+interface OnboardingData {
+  fqdn: string
+  registerToken: string | null
+  magicCode: string | null
+  onboardedRedirection: string | null
+}
 
 const abort = 'https://urlwithnofqdn'
 
-const validateRequest = request =>
+const validateRequest = (request?: WebViewNavigation): string =>
   !request ? abort : !request.url ? abort : request.url
 
-const getInstanceAndRegisterToken = uri => {
+const getInstanceAndRegisterToken = (uri: string): OnboardingData | null => {
   const url = new URL(window.decodeURIComponent(uri))
 
   const isOnboarding = url.searchParams.get('onboarding')
@@ -28,5 +37,8 @@ const getInstanceAndRegisterToken = uri => {
   }
 }
 
-export const getOnboardingDataFromRequest = request =>
-  getInstanceAndRegisterToken(validateRequest(request))
+export const getOnboardingDataFromRequest = (
+  request: WebViewNavigation
+): OnboardingData | null => {
+  return getInstanceAndRegisterToken(validateRequest(request))
+}
