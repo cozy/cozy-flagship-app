@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
 import Minilog from '@cozy/minilog'
 
-import { getOnboardingDataFromRequest } from '/libs/functions/getOnboardingDataFromRequest'
 import {
   handleAutofocusFields,
   tryProcessQueryKeyboardMessage
@@ -12,12 +11,13 @@ import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjectio
 import { jsLogInterception } from '/components/webviews/jsInteractions/jsLogInterception'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { routes } from '/constants/routes'
+import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import {
   fetchBackgroundOnLoad,
   tryProcessClouderyBackgroundMessage
 } from '/screens/login/components/functions/clouderyBackgroundFetcher'
+import { getOnboardingDataFromRequest } from '/screens/login/components/functions/getOnboardingDataFromRequest'
 import { openWindowWithInAppBrowser } from '/screens/login/components/functions/interceptExternalLinks'
-import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
 const log = Minilog('ClouderyCreateInstanceView')
 

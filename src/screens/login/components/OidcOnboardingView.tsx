@@ -15,13 +15,13 @@ import type {
 
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { routes } from '/constants/routes'
-import { getOnboardingDataFromRequest } from '/libs/functions/getOnboardingDataFromRequest'
 import { NetService } from '/libs/services/NetService'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import {
   fetchBackgroundOnLoad,
   tryProcessClouderyBackgroundMessage
 } from '/screens/login/components/functions/clouderyBackgroundFetcher'
+import { getOnboardingDataFromRequest } from '/screens/login/components/functions/getOnboardingDataFromRequest'
 import { openWindowWithInAppBrowser } from '/screens/login/components/functions/interceptExternalLinks'
 
 const log = Minilog('OidcOnboardingView')
