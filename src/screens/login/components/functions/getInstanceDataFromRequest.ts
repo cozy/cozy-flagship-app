@@ -1,13 +1,12 @@
 import { WebViewNavigation } from 'react-native-webview'
 
 import strings from '/constants/strings.json'
+import { getInstanceFromFqdn } from '/screens/login/components/functions/getInstanceFromFqdn'
 
 interface CozyFqndAndInstance {
   fqdn: string
   instance: string
 }
-
-const UNSECURE_DOMAINS = ['cozy.tools', 'localhost', 'nip.io'] as const
 
 /**
  * Extract `fqdn` param from WebViewNavigation event and return `fqdn` and `instance` data
@@ -58,25 +57,6 @@ const getFqdnFromRequest = (req?: WebViewNavigation): string | null => {
   }
 
   return trimWhitespaces(fqdn).toLocaleLowerCase()
-}
-
-const getInstanceFromFqdn = (fqdn: string): string => {
-  const fqdnWithProtocol = hasProtocol(fqdn) ? fqdn : `https://${fqdn}`
-  const instance = new URL(fqdnWithProtocol)
-
-  if (UNSECURE_DOMAINS.some(domain => instance.hostname.endsWith(domain))) {
-    instance.protocol = 'http'
-  }
-
-  return removeTrailingSlash(instance.toString())
-}
-
-const hasProtocol = (url: string): boolean => {
-  return url.includes('://')
-}
-
-const removeTrailingSlash = (value: string): string => {
-  return value.replace(/\/$/, '')
 }
 
 const trimWhitespaces = (value: string): string => {

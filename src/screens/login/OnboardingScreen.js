@@ -17,6 +17,7 @@ import { routes } from '/constants/routes'
 import { getColors } from '/ui/colors'
 import { CozyLogoScreen } from '/screens/login/components/CozyLogoScreen'
 import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
+import { getInstanceFromFqdn } from '/screens/login/components/functions/getInstanceFromFqdn'
 
 const log = Minilog('OnboardingScreen')
 
@@ -68,12 +69,7 @@ const OnboardingSteps = ({
     const magicCode = consumeRouteParameter('magicCode', route, navigation)
 
     if (fqdn) {
-      // fqdn string should never contain the protocol, but we may want to enforce it
-      // when local debugging as this configuration uses `http` only
-      const url =
-        fqdn.startsWith('http://') || fqdn.startsWith('https://')
-          ? new URL(fqdn)
-          : new URL(`https://${fqdn}`)
+      const url = getInstanceFromFqdn(fqdn)
 
       if (registerToken) {
         setOnboardingData({

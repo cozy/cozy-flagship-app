@@ -34,6 +34,7 @@ import { getColors } from '/ui/colors'
 import { NetService } from '/libs/services/NetService'
 import { routes } from '/constants/routes'
 import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
+import { getInstanceFromFqdn } from '/screens/login/components/functions/getInstanceFromFqdn'
 
 const log = Minilog('LoginScreen')
 
@@ -104,12 +105,7 @@ const LoginSteps = ({
     const fqdn = consumeRouteParameter('fqdn', route, navigation)
     const magicCode = consumeRouteParameter('magicCode', route, navigation)
     if (fqdn) {
-      // fqdn string should never contain the protocol, but we may want to enforce it
-      // when local debugging as this configuration uses `http` only
-      const url =
-        fqdn.startsWith('http://') || fqdn.startsWith('https://')
-          ? new URL(fqdn)
-          : new URL(`https://${fqdn}`)
+      const url = getInstanceFromFqdn(fqdn)
 
       const normalizedFqdn = url.host.toLowerCase()
       const normalizedInstance = url.origin.toLowerCase()
@@ -214,7 +210,7 @@ const LoginSteps = ({
       NetService.handleOffline(routes.authenticate)
 
     try {
-      const instance = 'https://' + fqdn
+      const instance = getInstanceFromFqdn(fqdn)
       const client = await createClient(instance)
 
       await client.certifyFlagship()
@@ -256,7 +252,7 @@ const LoginSteps = ({
         NetService.handleOffline(routes.authenticate)
 
       try {
-        const instance = 'https://' + fqdn
+        const instance = getInstanceFromFqdn(fqdn)
         const client = await createClient(instance)
 
         await client.certifyFlagship()
