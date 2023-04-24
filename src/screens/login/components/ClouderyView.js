@@ -11,11 +11,11 @@ import {
 import { rootCozyUrl } from 'cozy-client'
 
 import strings from '/constants/strings.json'
-import { getUriFromRequest } from '/libs/functions/getUriFromRequest'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { useClouderyUrl } from '/screens/login/cloudery-env/useClouderyUrl'
 import { ClouderyViewSwitch } from '/screens/login/components/ClouderyViewSwitch'
+import { getInstanceDataFromRequest } from '/screens/login/components/functions/getInstanceDataFromRequest'
 import {
   isOidcNavigationRequest,
   processOIDC
@@ -63,15 +63,11 @@ export const ClouderyView = ({
   const handleNavigation = request => {
     log.debug(`Navigation to ${request.url}`)
     if (request.loading) {
-      const instance = getUriFromRequest(request)
+      const instanceData = getInstanceDataFromRequest(request)
 
-      if (instance) {
-        const normalizedInstance = instance.toLowerCase()
-        const fqdn = new URL(normalizedInstance).host
-        setCheckInstanceData({
-          instance: normalizedInstance,
-          fqdn
-        })
+      if (instanceData) {
+        log.debug('Set checkInstanceData', instanceData)
+        setCheckInstanceData(instanceData)
         return false
       }
     }
