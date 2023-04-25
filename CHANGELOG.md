@@ -1,4 +1,4 @@
-# 1.0.9
+# 1.0.10
 
 ## ✨ Features
 
@@ -8,6 +8,22 @@
 
 ## 🔧 Tech
 
+
+# 1.0.9
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* Fix a bug that displays some menus in English even if the phone is configured in French ([PR #756](https://github.com/cozy/cozy-react-native/pull/756))
+* Fix a bug that prevents login with OIDC or with manual Flagship certification on Android ([PR #758](https://github.com/cozy/cozy-react-native/pull/758))
+* Fix a bug that changes the app's icon too often on iOS ([PR #759](https://github.com/cozy/cozy-react-native/pull/759))
+* Fix a bug that crashed the app when canceling MagicLink login ([PR #762](https://github.com/cozy/cozy-react-native/pull/762))
+
+## 🔧 Tech
+
+* Login and Onboarding scenario now automatically handle unsecure HTTP protocol on `cozy.tools`, `localhost` and `nip.io` domains ([PR #757](https://github.com/cozy/cozy-react-native/pull/757) and [PR #763](https://github.com/cozy/cozy-react-native/pull/763))
 
 # 1.0.8
 
