@@ -172,7 +172,7 @@ const LoginSteps = ({
 
   const cancelOauth = useCallback(() => {
     setState(oldState => {
-      if (oldState.isOidc) {
+      if (oldState.isOidc || oldState.isMagicLink) {
         return {
           step: CLOUDERY_STEP
         }
@@ -264,6 +264,7 @@ const LoginSteps = ({
           setState(oldState => ({
             ...oldState,
             step: TWO_FACTOR_AUTHENTICATION_PASSWORD_STEP,
+            isMagicLink: true,
             client: result.client,
             fqdn: fqdn,
             instance: instance,
@@ -278,6 +279,7 @@ const LoginSteps = ({
           setState(oldState => ({
             ...oldState,
             step: AUTHORIZE_TRANSITION_STEP,
+            isMagicLink: true,
             waitForTransition: true,
             client: result.client,
             sessionCode: result.sessionCode
