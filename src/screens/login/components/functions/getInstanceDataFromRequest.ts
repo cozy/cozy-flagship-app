@@ -30,6 +30,12 @@ export const getInstanceDataFromRequest = (
     return null
   }
 
+  return getInstanceDataFromFqdn(fqdnParam)
+}
+
+export const getInstanceDataFromFqdn = (
+  fqdnParam: string
+): CozyFqndAndInstance | null => {
   const instance = getInstanceFromFqdn(fqdnParam)
 
   // since fqdnParam may contain a protocol, we use URL to remove it

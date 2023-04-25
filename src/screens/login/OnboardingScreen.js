@@ -17,7 +17,7 @@ import { routes } from '/constants/routes'
 import { getColors } from '/ui/colors'
 import { CozyLogoScreen } from '/screens/login/components/CozyLogoScreen'
 import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
-import { getInstanceFromFqdn } from '/screens/login/components/functions/getInstanceFromFqdn'
+import { getInstanceDataFromFqdn } from '/screens/login/components/functions/getInstanceDataFromRequest'
 
 const log = Minilog('OnboardingScreen')
 
@@ -69,18 +69,18 @@ const OnboardingSteps = ({
     const magicCode = consumeRouteParameter('magicCode', route, navigation)
 
     if (fqdn) {
-      const url = getInstanceFromFqdn(fqdn)
+      const instanceData = getInstanceDataFromFqdn(fqdn)
 
       if (registerToken) {
         setOnboardingData({
-          fqdn: url.host,
-          instance: url.origin,
+          fqdn: instanceData.fqdn,
+          instance: instanceData.instance,
           registerToken: registerToken
         })
       } else if (magicCode) {
         setMagicLinkOnboardingData({
-          fqdn: url.host,
-          instance: url.origin,
+          fqdn: instanceData.fqdn,
+          instance: instanceData.instance,
           magicCode: magicCode
         })
       }
