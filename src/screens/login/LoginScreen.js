@@ -35,6 +35,7 @@ import { NetService } from '/libs/services/NetService'
 import { routes } from '/constants/routes'
 import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { getInstanceFromFqdn } from '/screens/login/components/functions/getInstanceFromFqdn'
+import { getInstanceDataFromFqdn } from '/screens/login/components/functions/getInstanceDataFromRequest'
 
 const log = Minilog('LoginScreen')
 
@@ -105,22 +106,16 @@ const LoginSteps = ({
     const fqdn = consumeRouteParameter('fqdn', route, navigation)
     const magicCode = consumeRouteParameter('magicCode', route, navigation)
     if (fqdn) {
-      const url = getInstanceFromFqdn(fqdn)
-
-      const normalizedFqdn = url.host.toLowerCase()
-      const normalizedInstance = url.origin.toLowerCase()
+      const instanceData = getInstanceDataFromFqdn(fqdn)
 
       // when receiving fqdn from route parameter, we don't have access to partner context
       // so we enforce default Cozy color as background
       setBackgroundColor(colors.primaryColor)
 
       if (magicCode) {
-        startMagicLinkOAuth(normalizedFqdn, magicCode)
+        startMagicLinkOAuth(instanceData.fqdn, magicCode)
       } else {
-        setInstanceData({
-          fqdn: normalizedFqdn,
-          instance: normalizedInstance
-        })
+        setInstanceData(instanceData)
       }
     }
   }, [
