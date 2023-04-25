@@ -13,6 +13,7 @@ import { rootCozyUrl } from 'cozy-client'
 import strings from '/constants/strings.json'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
+import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import { useClouderyUrl } from '/screens/login/cloudery-env/useClouderyUrl'
 import { ClouderyViewSwitch } from '/screens/login/components/ClouderyViewSwitch'
 import { getInstanceDataFromRequest } from '/screens/login/components/functions/getInstanceDataFromRequest'
@@ -59,6 +60,7 @@ export const ClouderyView = ({
   const [checkInstanceData, setCheckInstanceData] = useState()
   const webviewRef = useRef()
   const [canGoBack, setCanGoBack] = useState(false)
+  const { setOnboardedRedirection } = useHomeStateContext()
 
   const handleNavigation = request => {
     log.debug(`Navigation to ${request.url}`)
@@ -76,6 +78,7 @@ export const ClouderyView = ({
     if (isOidc) {
       processOIDC(request)
         .then(oidcResult => {
+          setOnboardedRedirection(oidcResult.defaultRedirection ?? '')
           if (oidcResult.fqdn) {
             startOidcOAuth(oidcResult.fqdn, oidcResult.code)
           } else if (oidcResult.onboardUrl) {
