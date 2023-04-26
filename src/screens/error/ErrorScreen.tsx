@@ -4,6 +4,7 @@ import { Linking } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
 import { WebViewMessageEvent } from 'react-native-webview/lib/WebViewTypes'
 
+import { CozyBlockedPage } from '/components/webviews/CozyBlockedPage'
 import { CozyNotFoundPage } from '/components/webviews/CozyNotFoundPage'
 import { OfflinePage } from '/components/webviews/OfflinePage'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
@@ -40,6 +41,7 @@ type Handlers = Record<
  * Implementations
  */
 const HTML: Record<string, () => string> = {
+  cozyBlocked: CozyBlockedPage,
   cozyNotFound: CozyNotFoundPage,
   offline: OfflinePage
 }
