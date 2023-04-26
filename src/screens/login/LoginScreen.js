@@ -649,6 +649,7 @@ const LoginSteps = ({
           callback: cancelLogin,
           title: 'Restart login'
         }}
+        backgroundColor={backgroundColor}
       />
     )
   }

@@ -232,6 +232,7 @@ const OnboardingSteps = ({
           callback: cancelLogin,
           title: 'Cancel OAuth'
         }}
+        backgroundColor={backgroundColor}
       />
     )
   }
