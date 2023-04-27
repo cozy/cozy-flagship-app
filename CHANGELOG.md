@@ -1,3 +1,14 @@
+# 1.0.11
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+
 # 1.0.10
 
 ## ✨ Features
@@ -5,6 +16,8 @@
 
 ## 🐛 Bug Fixes
 
+* Fix a bug that prevented a Connector to be opened from cozy-store ([PR #766](https://github.com/cozy/cozy-react-native/pull/766))
+* Fix a bug that would re-send a new 2FA email every time the user enters the wrong 2FA code on OIDC login ([PR #767](https://github.com/cozy/cozy-react-native/pull/767))
 
 ## 🔧 Tech
 
