@@ -1,3 +1,8 @@
+import {
+  NavigationProp,
+  ParamListBase,
+  RouteProp
+} from '@react-navigation/native'
 import { get } from 'lodash'
 
 /**
@@ -7,8 +12,12 @@ import { get } from 'lodash'
  * @param {*} navigation - Application's navigation
  * @returns the route parameter's value
  */
-export const consumeRouteParameter = (paramName, route, navigation) => {
-  const param = get(route, `params.${paramName}`)
+export const consumeRouteParameter = <T>(
+  paramName: string,
+  route: RouteProp<ParamListBase>,
+  navigation: NavigationProp<ParamListBase>
+): T | undefined => {
+  const param = get(route, `params.${paramName}`) as T | undefined
 
   if (param !== undefined) {
     navigation.setParams({ [paramName]: undefined })
