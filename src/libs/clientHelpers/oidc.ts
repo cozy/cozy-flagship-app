@@ -48,7 +48,7 @@ const loginOidc = async (
       throw e
     }
 
-    if (e.status === 401 || e.status === 403) {
+    if (e.status === 401) {
       if (e.reason?.two_factor_token) {
         return {
           two_factor_token: e.reason.two_factor_token
@@ -57,6 +57,10 @@ const loginOidc = async (
         return {
           invalidPassword: true
         }
+      }
+    } else if (e.status === 403 && twoFactorAuthenticationData) {
+      return {
+        two_factor_token: twoFactorAuthenticationData.token
       }
     } else {
       throw e
