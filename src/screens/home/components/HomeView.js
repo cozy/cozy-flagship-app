@@ -13,7 +13,10 @@ import { AppState } from 'react-native'
 
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { navigateToApp } from '/libs/functions/openApp'
-import { consumeRouteParameter } from '/libs/functions/routeHelpers'
+import {
+  consumeRouteParameter,
+  useInitialParam
+} from '/libs/functions/routeHelpers'
 import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { useSession } from '/hooks/useSession'
 import { routes } from '/constants/routes'
@@ -50,6 +53,16 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   const session = useSession()
   const didBlurOnce = useRef(false)
   const [webviewRef, setParentRef] = useState()
+  const mainAppFallbackURLInitialParam = useInitialParam(
+    'mainAppFallbackURL',
+    route,
+    navigation
+  )
+  const cozyAppFallbackURLInitialParam = useInitialParam(
+    'cozyAppFallbackURL',
+    route,
+    navigation
+  )
 
   useEffect(() => {
     const subscription = AppState.addEventListener(
@@ -140,11 +153,7 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
 
   useEffect(() => {
     const href = consumeRouteParameter('href', route, navigation)
-    const mainAppFallbackURL = consumeRouteParameter(
-      'mainAppFallbackURL',
-      route,
-      navigation
-    )
+    const mainAppFallbackURL = mainAppFallbackURLInitialParam.consume()
     const deepLink = href || mainAppFallbackURL
 
     if (deepLink) {
@@ -176,16 +185,12 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
     if (!uri && session.subDomainType) {
       getHomeUri()
     }
-  }, [uri, client, route, navigation, session])
+  }, [uri, client, route, mainAppFallbackURLInitialParam, navigation, session])
 
   useEffect(
     function handleCozyAppFallback() {
       if (uri) {
-        const cozyAppFallbackURL = consumeRouteParameter(
-          'cozyAppFallbackURL',
-          route,
-          navigation
-        )
+        const cozyAppFallbackURL = cozyAppFallbackURLInitialParam.consume()
 
         if (cozyAppFallbackURL) {
           setShouldWaitCozyApp(true)
@@ -207,7 +212,14 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
         }
       }
     },
-    [uri, client, route, navigation, setShouldWaitCozyApp, shouldWaitCozyApp]
+    [
+      client,
+      cozyAppFallbackURLInitialParam,
+      navigation,
+      setShouldWaitCozyApp,
+      shouldWaitCozyApp,
+      uri
+    ]
   )
 
   useEffect(() => {
