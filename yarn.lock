@@ -2816,6 +2816,11 @@
   dependencies:
     merge-options "^3.0.4"
 
+"@react-native-camera-roll/camera-roll@^5.6.0":
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/@react-native-camera-roll/camera-roll/-/camera-roll-5.6.0.tgz#385082d57d694f3fd5ae386f8b8ce24b0969c5f9"
+  integrity sha512-a/GYwnBTxj1yKWB9m/qy8GzjowSocML8NbLT81wdMh0JzZYXCLze51BR2cb8JNDgRPzA9xe7KpD3j9qQOSOjag==
+
 "@react-native-community/cli-debugger-ui@^6.0.0-rc.0":
   version "6.0.0-rc.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-6.0.0-rc.0.tgz#774378626e4b70f5e1e2e54910472dcbaffa1536"
@@ -14226,6 +14231,11 @@ react-is@^17.0.1, react-is@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
+
+react-native-background-upload@^6.6.0:
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-background-upload/-/react-native-background-upload-6.6.0.tgz#7c081f4260d16e7a416522c3622b81938ad799c8"
+  integrity sha512-adfOJmeO3GmPmc53cdHYWp5eTGKagk/AhkraSoQ89BHRwBWrtRQ29NN9sm2CLezBYrSQWg0W47C8TaowtYZ1LQ==
 
 react-native-biometrics@3.0.1:
   version "3.0.1"
