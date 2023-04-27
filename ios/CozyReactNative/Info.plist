@@ -144,5 +144,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pour faire un backup de vos photos</string>
 </dict>
 </plist>
