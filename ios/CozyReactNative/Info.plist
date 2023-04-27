@@ -146,5 +146,9 @@
 	<array>
 		<string>fr</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pour faire un backup de vos photos</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Pour faire un backup de vos photos</string>
 </dict>
 </plist>
