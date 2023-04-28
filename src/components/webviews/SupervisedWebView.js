@@ -3,6 +3,8 @@ import { View } from 'react-native'
 import { WebView } from 'react-native-webview'
 import Minilog from '@cozy/minilog'
 
+import { BackupPhotos } from '../../../BackupPhotos'
+
 import { useClient } from 'cozy-client'
 
 import ProgressBar from '/components/Bar'
@@ -131,6 +133,7 @@ export const SupervisedWebView = React.forwardRef((props, ref) => {
 
   return (
     <>
+      <BackupPhotos />
       <WebView
         {...otherProps}
         ref={ref}
