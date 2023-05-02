@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 
 import { routes } from '/constants/routes'
-import { useDimensions } from '/libs/dimensions'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { getColors } from '/ui/colors'
 import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
@@ -54,7 +53,6 @@ export const CreateInstanceScreen = ({ route, navigation }) => {
       setClouderyUrl(onboardUrl)
     }
   }, [navigation, route, setClouderyUrl])
-  const dimensions = useDimensions()
   return (
     <View
       style={{
@@ -62,7 +60,6 @@ export const CreateInstanceScreen = ({ route, navigation }) => {
         backgroundColor: backgroundColor
       }}
     >
-      <View style={{ height: dimensions.statusBarHeight }} />
       {clouderyUrl && (
         <ClouderyCreateInstanceView
           clouderyUrl={clouderyUrl}
@@ -71,11 +68,6 @@ export const CreateInstanceScreen = ({ route, navigation }) => {
           setBackgroundColor={setBackgroundAndStatusBarColor}
         />
       )}
-      <View
-        style={{
-          height: dimensions.navbarHeight
-        }}
-      />
     </View>
   )
 }

@@ -15,6 +15,8 @@ import { themeCss } from '../common/css/cssTheme'
 import { cirrusJs } from '../common/js/jsCirrus'
 import { readonlyJs } from '../common/js/jsReadonly'
 
+import { cssPadding } from '/screens/login/components/functions/webViewPaddingInjection'
+
 const strBackButton = "Revenir à l'écran précédent"
 const strPasswordField = 'Mot de passe'
 const strPasswordHide = 'Cacher le mot de passe'
@@ -51,6 +53,7 @@ export const getHtml = (title, fqdn, instance, backgroundColor) => {
     <style type="text/css">${cozyBsCss}</style>
     <style type="text/css">${themeCss}</style>
     <style type="text/css">${cirrusCss}</style>
+    <style type="text/css">${cssPadding}</style>
     <style type="text/css">
     ${
       backgroundColor === '#4b4b4b'

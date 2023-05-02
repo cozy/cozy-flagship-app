@@ -13,6 +13,8 @@ import { themeCss } from '../common/css/cssTheme'
 import { cirrusJs } from '../common/js/jsCirrus'
 import { readonlyJs } from '../common/js/jsReadonly'
 
+import { cssPadding } from '/screens/login/components/functions/webViewPaddingInjection'
+
 const strBackButton = "Revenir à l'écran précédent"
 const strTitle = 'Choisir un mot de passe'
 const strPasswordField = 'Mot de passe'
@@ -50,6 +52,7 @@ export const getHtml = (instance, credentialsErrorMsg = undefined) => `
     <style type="text/css">${cozyBsCss}</style>
     <style type="text/css">${themeCss}</style>
     <style type="text/css">${cirrusCss}</style>
+    <style type="text/css">${cssPadding}</style>
   </head>
   <body class="theme-inverted">
     <form id="new-pass-form" method="POST" action="#" class="d-contents" data-salt="{{.Salt}}" data-hint-error="${strHintError}" data-pass-error="${strPasswordError}">

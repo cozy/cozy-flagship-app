@@ -10,7 +10,6 @@ import {
   callMagicLinkOnboardingInitClient,
   callOnboardingInitClient
 } from '/libs/client'
-import { useDimensions } from '/libs/dimensions'
 import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { routes } from '/constants/routes'
@@ -239,7 +238,6 @@ const OnboardingSteps = ({
 
 export const OnboardingScreen = ({ setClient, route, navigation }) => {
   const [backgroundColor, setBackgroundColor] = useState(colors.primaryColor)
-  const dimensions = useDimensions()
 
   const setBackgroundAndStatusBarColor = backgroundColor => {
     setStatusBarColorToMatchBackground(backgroundColor)
@@ -255,7 +253,6 @@ export const OnboardingScreen = ({ setClient, route, navigation }) => {
         }
       ]}
     >
-      <View style={{ height: dimensions.statusBarHeight }} />
       <OnboardingSteps
         backgroundColor={backgroundColor}
         setClient={setClient}
@@ -263,7 +260,6 @@ export const OnboardingScreen = ({ setClient, route, navigation }) => {
         navigation={navigation}
         setBackgroundColor={setBackgroundAndStatusBarColor}
       />
-      <View style={{ height: dimensions.navbarHeight }} />
     </View>
   )
 }
