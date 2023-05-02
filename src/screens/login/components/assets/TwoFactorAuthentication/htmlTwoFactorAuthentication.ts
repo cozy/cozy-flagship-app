@@ -19,7 +19,7 @@ const strLoginTwoFactorHelp =
 const strLoginTwoFactorField = 'Code (6 chiffres)'
 const strSubmit = 'CONFIRMER'
 
-const getCredentialsErrorJs = credentialsErrorMsg =>
+const getCredentialsErrorJs = (credentialsErrorMsg?: string): string =>
   credentialsErrorMsg
     ? `
       <script>
@@ -32,10 +32,10 @@ const getCredentialsErrorJs = credentialsErrorMsg =>
 const locale = 'fr'
 
 export const getHtml = (
-  instance,
-  backgroundColor,
-  credentialsErrorMsg = undefined
-) => `
+  instance: string,
+  backgroundColor: string,
+  credentialsErrorMsg?: string
+): string => `
 <!DOCTYPE html>
 <html lang="${locale}">
   <head>

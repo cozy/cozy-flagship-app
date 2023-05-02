@@ -35,7 +35,12 @@ const locale = 'fr'
  * @param {string} backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
  * @returns {Element} HTML of Password form to inject inside Webview
  */
-export const getHtml = (title, fqdn, instance, backgroundColor) => {
+export const getHtml = (
+  title: string,
+  fqdn: string,
+  instance: string,
+  backgroundColor: string
+): string => {
   const avatarUrl = new URL(instance)
   avatarUrl.pathname = 'public/avatar'
 

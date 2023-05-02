@@ -29,7 +29,7 @@ const strHintHelp =
 const strHintError = 'Votre indice doit être différent de votre mot de passe !'
 const strSubmit = 'ENREGISTRER'
 
-const getCredentialsErrorJs = credentialsErrorMsg =>
+const getCredentialsErrorJs = (credentialsErrorMsg?: string): string =>
   credentialsErrorMsg
     ? `
       <script>
@@ -41,7 +41,10 @@ const getCredentialsErrorJs = credentialsErrorMsg =>
 
 const locale = 'fr'
 
-export const getHtml = (instance, credentialsErrorMsg = undefined) => `
+export const getHtml = (
+  instance: string,
+  credentialsErrorMsg?: string
+): string => `
 <!DOCTYPE html>
 <html lang${locale}">
   <head>
