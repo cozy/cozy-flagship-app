@@ -25,7 +25,6 @@ import {
   STATE_AUTHORIZE_NEEDED,
   STATE_INVALID_PASSWORD
 } from '/libs/clientHelpers/types'
-import { useDimensions } from '/libs/dimensions'
 import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { useSplashScreen } from '/hooks/useSplashScreen'
@@ -663,7 +662,6 @@ export const LoginScreen = ({
   setClient
 }) => {
   const [backgroundColor, setBackgroundColor] = useState(colors.primaryColor)
-  const dimensions = useDimensions()
 
   const setBackgroundAndStatusBarColor = backgroundColor => {
     setStatusBarColorToMatchBackground(backgroundColor)
@@ -679,7 +677,6 @@ export const LoginScreen = ({
         }
       ]}
     >
-      <View style={{ height: dimensions.statusBarHeight }} />
       <LoginSteps
         backgroundColor={backgroundColor}
         clouderyMode={clouderyMode}
@@ -689,11 +686,6 @@ export const LoginScreen = ({
         setClient={setClient}
         disableAutofocus={disableAutofocus}
         goBack={goBack}
-      />
-      <View
-        style={{
-          height: dimensions.navbarHeight
-        }}
       />
     </View>
   )

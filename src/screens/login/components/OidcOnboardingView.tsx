@@ -23,6 +23,7 @@ import {
 } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { getOnboardingDataFromRequest } from '/screens/login/components/functions/getOnboardingDataFromRequest'
 import { openWindowWithInAppBrowser } from '/screens/login/components/functions/interceptExternalLinks'
+import { jsPaddingInjection } from '/screens/login/components/functions/webViewPaddingInjection'
 
 const log = Minilog('OidcOnboardingView')
 
@@ -130,6 +131,8 @@ export const OidcOnboardingView = ({
 const run = `
   (function() {
     ${fetchBackgroundOnLoad}
+
+    ${jsPaddingInjection}
 
     return true;
   })();

@@ -34,6 +34,7 @@ import {
   openWindowWithInAppBrowser
 } from '/screens/login/components/functions/interceptExternalLinks'
 import { LOGIN_FLAGSHIP_URL } from '/screens/login/components/functions/oidc'
+import { jsPaddingInjection } from '/screens/login/components/functions/webViewPaddingInjection'
 
 const log = Minilog('ClouderyViewSwitchProps')
 
@@ -243,6 +244,8 @@ const run = `
     ${fetchBackgroundOnLoad}
     
     ${handleAutofocusFields}
+
+    ${jsPaddingInjection}
 
     return true;
   })();

@@ -10,6 +10,8 @@ import { themeCss } from '../common/css/cssTheme'
 import { cirrusJs } from '../common/js/jsCirrus'
 import { readonlyJs } from '../common/js/jsReadonly'
 
+import { cssPadding } from '/screens/login/components/functions/webViewPaddingInjection'
+
 const strBackButton = "Revenir à l'écran précédent"
 const strLoginTwoFactorTitle = 'Authentification en 2 étapes'
 const strLoginTwoFactorHelp =
@@ -44,6 +46,7 @@ export const getHtml = (
     <style type="text/css">${cozyBsCss}</style>
     <style type="text/css">${themeCss}</style>
     <style type="text/css">${cirrusCss}</style>
+    <style type="text/css">${cssPadding}</style>
     <style type="text/css">
     ${
       backgroundColor === '#4b4b4b'
