@@ -791,6 +791,7 @@
 				CODE_SIGN_ENTITLEMENTS = CozyReactNative/CozyReactNative.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3AKXFMV43J;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 3AKXFMV43J;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = CozyReactNative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -804,6 +805,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.cozy.flagship.mobile;
 				PRODUCT_NAME = CozyReactNative;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "amiral-dev-profile";
 				SWIFT_OBJC_BRIDGING_HEADER = "CozyReactNative-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
