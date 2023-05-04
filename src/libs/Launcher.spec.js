@@ -45,14 +45,21 @@ describe('Launcher', () => {
     it('should save credentials with proper attributes', async () => {
       const launcher = new Launcher()
       const konnector = { slug: 'testkonnectorslug' }
+      const client = {
+        getStackClient: () => ({
+          uri: 'http://cozy.localhost:8080'
+        })
+      }
       launcher.setStartContext({
-        konnector
+        konnector,
+        client
       })
       await launcher.saveCredentials({
         login: 'testlogin',
         password: 'testpassword'
       })
       expect(saveCredential).toHaveBeenCalledWith(
+        'cozy.localhost_8080',
         expect.objectContaining({
           credentials: {
             login: 'testlogin',
@@ -69,6 +76,9 @@ describe('Launcher', () => {
       const launcher = new Launcher()
       const konnector = { slug: 'testkonnectorslug' }
       const client = {
+        getStackClient: () => ({
+          uri: 'http://cozy.localhost:8080'
+        }),
         query: jest.fn().mockResolvedValueOnce({
           data: [
             { _id: 'testaccountid1' },
@@ -89,7 +99,10 @@ describe('Launcher', () => {
       const result = await launcher.cleanCredentialsAccounts('testslug1')
 
       expect(result).toBe(true)
-      expect(getSlugAccountIds).toHaveBeenCalledWith('testslug1')
+      expect(getSlugAccountIds).toHaveBeenCalledWith(
+        'cozy.localhost_8080',
+        'testslug1'
+      )
       expect(client.query).toHaveBeenCalledWith(
         expect.objectContaining({ ids: ['testaccountid1', 'testaccountid3'] })
       )
@@ -98,7 +111,10 @@ describe('Launcher', () => {
       const launcher = new Launcher()
       const konnector = { slug: 'testkonnectorslug' }
       const client = {
-        query: jest.fn()
+        query: jest.fn(),
+        getStackClient: () => ({
+          uri: 'http://cozy.localhost:8080'
+        })
       }
       getSlugAccountIds.mockResolvedValueOnce([])
       launcher.setStartContext({
@@ -109,7 +125,10 @@ describe('Launcher', () => {
       const result = await launcher.cleanCredentialsAccounts('testslug1')
 
       expect(result).toBe(false)
-      expect(getSlugAccountIds).toHaveBeenCalledWith('testslug1')
+      expect(getSlugAccountIds).toHaveBeenCalledWith(
+        'cozy.localhost_8080',
+        'testslug1'
+      )
       expect(client.query).not.toHaveBeenCalled()
     })
   })

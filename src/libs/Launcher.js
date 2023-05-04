@@ -8,6 +8,7 @@ import { Q, models } from 'cozy-client'
 import { saveFiles, saveBills, saveIdentity } from 'cozy-clisk'
 
 import { cleanExistingAccountsForKonnector } from './Launcher.functions'
+import { getFqdnFromClient } from './client'
 import { ensureKonnectorFolder } from './folder'
 import {
   saveCredential,
@@ -124,7 +125,7 @@ export default class Launcher {
    * @returns {Promise<void>}
    */
   async saveCredentials(credentials) {
-    const { konnector } = this.getStartContext()
+    const { konnector, client } = this.getStartContext()
     const existingCredentials = await this.getCredentials()
     if (existingCredentials) {
       await this.removeCredentials()
@@ -136,7 +137,8 @@ export default class Launcher {
       slug: konnector.slug,
       credentials
     }
-    await saveCredential(result)
+    const fqdn = getFqdnFromClient(client).normalizedFqdn
+    await saveCredential(fqdn, result)
   }
 
   /**
@@ -145,8 +147,9 @@ export default class Launcher {
    * @returns {Promise<void>}
    */
   async removeCredentials() {
-    const { account } = this.getStartContext()
-    await removeCredential(account)
+    const { account, client } = this.getStartContext()
+    const fqdn = getFqdnFromClient(client).normalizedFqdn
+    await removeCredential(fqdn, account)
   }
 
   /**
@@ -155,11 +158,12 @@ export default class Launcher {
    * @returns {Promise<null|Object>}
    */
   async getCredentials() {
-    const { account } = this.getStartContext()
+    const { account, client } = this.getStartContext()
     if (!account) {
       return null
     }
-    const encAccount = await getCredential(account)
+    const fqdn = getFqdnFromClient(client).normalizedFqdn
+    const encAccount = await getCredential(fqdn, account)
     return encAccount?.credentials || null
   }
 
@@ -171,7 +175,8 @@ export default class Launcher {
    */
   async cleanCredentialsAccounts(slug) {
     const { client } = this.getStartContext()
-    const accountIds = await getSlugAccountIds(slug)
+    const fqdn = getFqdnFromClient(client).normalizedFqdn
+    const accountIds = await getSlugAccountIds(fqdn, slug)
 
     if (accountIds.length === 0) return false
 
@@ -184,7 +189,7 @@ export default class Launcher {
     let didRemoveAccountCredential = false
     for (const accountId of accountIds) {
       if (!existingAccountIds.includes(accountIds)) {
-        await removeCredential({ _id: accountId })
+        await removeCredential(fqdn, { _id: accountId })
         didRemoveAccountCredential = true
       }
     }
