@@ -12,7 +12,8 @@ import {
   removeVaultInformation,
   getCookie,
   saveCookie,
-  removeCookie
+  removeCookie,
+  removeCredential
 } from './keychain'
 
 const account = {
@@ -31,100 +32,148 @@ describe('keychain test suite', () => {
   })
   describe('credentials API', () => {
     describe('getSlugAccountIds', () => {
-      it('should get the account ids associated to a given slug', async () => {
+      it('should get the account ids associated to a given slug and given fqdn', async () => {
         jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
           username: GLOBAL_KEY,
           password: JSON.stringify({
             CSC_ACCOUNTS: {
-              0: {
-                slug: 'testslug1'
+              'cozy.localhost_8088': {
+                5: {
+                  slug: 'testslug1'
+                }
               },
-              1: {
-                slug: 'testslug2'
-              },
-              2: {
-                slug: 'testslug1'
+              'cozy.localhost_8080': {
+                0: {
+                  slug: 'testslug1'
+                },
+                1: {
+                  slug: 'testslug2'
+                },
+                2: {
+                  slug: 'testslug1'
+                }
               }
             }
           })
         })
-        const accountIds = await getSlugAccountIds('testslug1')
+        const accountIds = await getSlugAccountIds(
+          'cozy.localhost_8080',
+          'testslug1'
+        )
         expect(accountIds).toStrictEqual(['0', '2'])
       })
     })
-    it('test get credentials methods', async () => {
+    it('should get credentials', async () => {
       jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce(false)
-      const cred = await getCredential(account)
+      const cred = await getCredential('cozy.localhost_8080', account)
       expect(cred).toBe(null)
       jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
         username: GLOBAL_KEY,
         password: JSON.stringify({
           CSC_ACCOUNTS: {
-            1: {
-              ...account
+            'cozy.localhost_8080': {
+              1: {
+                ...account
+              }
             }
           }
         })
       })
-      const cred2 = await getCredential(account)
+      const cred2 = await getCredential('cozy.localhost_8080', account)
       expect(cred2).toEqual(account)
     })
 
-    it('returns the right cred even if there is several creds', async () => {
+    it('returns the right cred even if there are several creds', async () => {
       jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
         username: GLOBAL_KEY,
         password: JSON.stringify({
           CSC_ACCOUNTS: {
-            1: {
-              ...account
+            'cozy.localhost_8088': {
+              2: {
+                ...account2
+              }
             },
-            2: {
-              ...account2
+            'cozy.localhost_8080': {
+              1: {
+                ...account
+              },
+              2: {
+                ...account2
+              }
             }
           }
         })
       })
-      const cred2 = await getCredential(account2)
+      const cred2 = await getCredential('cozy.localhost_8080', account2)
       expect(cred2).toEqual(account2)
     })
 
-    it('add a credential when there is no cred yet', async () => {
+    it('adds a credential when there is no cred yet', async () => {
       jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce(false)
-      await saveCredential(account)
+      await saveCredential('cozy.localhost_8080', account)
       expect(Keychain.setGenericPassword).toHaveBeenCalledWith(
         GLOBAL_KEY,
         JSON.stringify({
           CSC_ACCOUNTS: {
-            1: {
-              ...account
+            'cozy.localhost_8080': {
+              1: {
+                ...account
+              }
             }
           }
         })
       )
     })
 
-    it('adds a new credentials', async () => {
+    it('adds a new credential', async () => {
       jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
         username: GLOBAL_KEY,
         password: JSON.stringify({
           CSC_ACCOUNTS: {
-            1: {
-              ...account
+            'cozy.localhost_8080': {
+              1: {
+                ...account
+              }
             }
           }
         })
       })
-      await saveCredential(account2)
+      await saveCredential('cozy.localhost_8080', account2)
       expect(Keychain.setGenericPassword).toHaveBeenCalledWith(
         GLOBAL_KEY,
         JSON.stringify({
           CSC_ACCOUNTS: {
-            1: {
-              ...account
-            },
-            2: {
-              ...account2
+            'cozy.localhost_8080': {
+              1: {
+                ...account
+              },
+              2: {
+                ...account2
+              }
             }
+          }
+        })
+      )
+    })
+    it('removes a given credential with fqdn', async () => {
+      jest.spyOn(Keychain, 'getGenericPassword').mockResolvedValueOnce({
+        username: GLOBAL_KEY,
+        password: JSON.stringify({
+          CSC_ACCOUNTS: {
+            'cozy.localhost_8080': {
+              1: {
+                ...account
+              }
+            }
+          }
+        })
+      })
+      await removeCredential('cozy.localhost_8080', account)
+      expect(Keychain.setGenericPassword).toHaveBeenCalledWith(
+        GLOBAL_KEY,
+        JSON.stringify({
+          CSC_ACCOUNTS: {
+            'cozy.localhost_8080': {}
           }
         })
       )

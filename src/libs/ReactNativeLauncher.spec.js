@@ -69,6 +69,9 @@ describe('ReactNativeLauncher', () => {
       create: jest.fn(),
       query: jest.fn(),
       destroy: jest.fn(),
+      getStackClient: () => ({
+        uri: 'http://cozy.localhost:8080'
+      }),
       collection: () => ({
         launch,
         findReferencedBy,

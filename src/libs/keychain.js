@@ -48,15 +48,22 @@ function unlockKeychain(reason) {
   isLocked = false
 }
 /**
+ * Save a given credential in the keychain
  *
+ * @param {String} fqdn - current cozy fqdn
  * @param {AccountsDoctype} account - io.cozy.accounts
  */
-export async function saveCredential(account) {
+export async function saveCredential(fqdn, account) {
   lockKeychain("saveCredential: You can't save while the keychain is locked")
   try {
     const passwords = await getDecodedGenericPasswords()
     const newJSON = addItem(
-      { scope: CREDENTIALS_SCOPE, key: account._id, value: account },
+      {
+        scope: CREDENTIALS_SCOPE,
+        fqdn,
+        key: account._id,
+        value: account
+      },
       passwords
     )
     await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
@@ -66,12 +73,13 @@ export async function saveCredential(account) {
 }
 /**
  *
+ * @param {String} fqdn - current cozy fqdn
  * @param {AccountsDoctype} account - io.cozy.accounts
  * @returns {null|AccountsDoctype}
  */
-export async function getCredential(account) {
+export async function getCredential(fqdn, account) {
   const password = await getDecodedGenericPasswords()
-  const credentialsKeyChain = password[CREDENTIALS_SCOPE] || {}
+  const credentialsKeyChain = password[CREDENTIALS_SCOPE]?.[fqdn] || {}
   if (!credentialsKeyChain[account._id]) {
     return null
   }
@@ -79,16 +87,17 @@ export async function getCredential(account) {
 }
 /**
  *
+ * @param {String} fqdn - current cozy fqdn
  * @param {AccountsDoctype} account
  */
-export async function removeCredential(account) {
+export async function removeCredential(fqdn, account) {
   lockKeychain(
     "removeCredential: You can't remove while the keychain is locked"
   )
   try {
     const passwords = await getDecodedGenericPasswords()
     const newJSON = removeItem(
-      { scope: CREDENTIALS_SCOPE, key: account._id },
+      { fqdn, scope: CREDENTIALS_SCOPE, key: account._id },
       passwords
     )
     await Keychain.setGenericPassword(GLOBAL_KEY, JSON.stringify(newJSON))
@@ -100,12 +109,13 @@ export async function removeCredential(account) {
 /**
  * Get account ids associated to the given slug in keychain
  *
+ * @param {String} fqdn - current cozy fqdn
  * @param {String} slug - konnector slug
  * @returns {Promise<Array<String>>} - list of account ids associated to the given slug
  */
-export async function getSlugAccountIds(slug) {
+export async function getSlugAccountIds(fqdn, slug) {
   const password = await getDecodedGenericPasswords()
-  const credentials = password[CREDENTIALS_SCOPE] || {}
+  const credentials = password[CREDENTIALS_SCOPE]?.[fqdn] || {}
   const result = []
   for (const accountId in credentials) {
     const account = credentials[accountId]
@@ -167,18 +177,40 @@ export async function deleteKeychain() {
   await Keychain.resetGenericPassword()
 }
 
-function addItem({ scope, key, value }, existingJSON = {}) {
+/**
+ * Add an item to the keychain
+ *
+ * @param {Object} options - options object
+ * @param {String} options.scope - keychain scope string
+ * @param {String} [options.fqdn] - current cozy fqdn
+ * @param {String} options.key - unique key associated to the item to add
+ * @param {Object} existingJSON - current keychain json value
+ * @returns {Object}
+ */
+function addItem({ scope, fqdn, key, value }, existingJSON = {}) {
   const clonedJSON = { ...existingJSON }
 
   if (!clonedJSON[scope]) {
     clonedJSON[scope] = {}
   }
-  if (clonedJSON[scope][key]) {
-    throw new Error(
-      `${key} is already saved in ${scope}. You can't add it again.`
-    )
+  if (fqdn) {
+    if (!clonedJSON[scope][fqdn]) {
+      clonedJSON[scope][fqdn] = {}
+    }
+    if (clonedJSON[scope][fqdn][key]) {
+      throw new Error(
+        `${key} is already saved in ${scope}. You can't add it again.`
+      )
+    }
+    clonedJSON[scope][fqdn][key] = value
+  } else {
+    if (clonedJSON[scope][key]) {
+      throw new Error(
+        `${key} is already saved in ${scope}. You can't add it again.`
+      )
+    }
+    clonedJSON[scope][key] = value
   }
-  clonedJSON[scope][key] = value
   return clonedJSON
 }
 
@@ -204,19 +236,43 @@ function addCookieItem({ accountId, cookieObject }, existingJSON = {}) {
   return clonedJSON
 }
 
-function removeItem({ scope, key }, existingJSON = {}) {
+/**
+ * Remove an item from the keychain
+ *
+ * @param {Object} options - options object
+ * @param {String} options.scope - keychain scope string
+ * @param {String} [options.fqdn] - current cozy fqdn
+ * @param {String} options.key - unique key associated to the item to add
+ * @param {Object} existingJSON - current keychain json value
+ * @returns {Object}
+ */
+function removeItem({ fqdn, scope, key }, existingJSON = {}) {
   const clonedJSON = { ...existingJSON }
   if (!clonedJSON[scope]) {
     throw new Error(
       `removeItem: can't remove ${key} from ${scope} since ${scope} doesn't exist`
     )
   }
-  if (!clonedJSON[scope][key]) {
-    throw new Error(
-      `removeItem: can't remove ${key} from ${scope}. ${key} is not there.`
-    )
+  if (fqdn) {
+    if (!clonedJSON[scope][fqdn]) {
+      throw new Error(
+        `removeItem: can't remove ${key} from ${scope}.${fqdn}. ${fqdn} is not there.`
+      )
+    }
+    if (!clonedJSON[scope][fqdn][key]) {
+      throw new Error(
+        `removeItem: can't remove ${key} from ${scope}.${fqdn}. ${key} is not there.`
+      )
+    }
+    delete clonedJSON[scope][fqdn][key]
+  } else {
+    if (!clonedJSON[scope][key]) {
+      throw new Error(
+        `removeItem: can't remove ${key} from ${scope}. ${key} is not there.`
+      )
+    }
+    delete clonedJSON[scope][key]
   }
-  delete clonedJSON[scope][key]
   return clonedJSON
 }
 
