@@ -1,30 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { StatusBar, View } from 'react-native'
 
-import { Animation } from './CozyAppScreen.Animation'
-import { styles } from './CozyAppScreen.styles'
-import { CozyProxyWebView } from '../../components/webviews/CozyProxyWebView'
-
+import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { NetService } from '/libs/services/NetService'
-
-import { flagshipUI } from '../../libs/intents/setFlagshipUI'
-
 import { useDimensions } from '/libs/dimensions'
-
-import { internalMethods } from '../../libs/intents/localMethods'
-
 import { routes } from '/constants/routes'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
+import { Animation } from '/screens/cozy-app/CozyAppScreen.Animation'
 
-const firstHalfUI = () =>
-  internalMethods.setFlagshipUI({
-    bottomBackground: 'white',
-    bottomTheme: 'dark',
-    bottomOverlay: 'transparent',
-    topBackground: 'white',
-    topTheme: 'dark',
-    topOverlay: 'transparent'
-  })
+import useUIState from './useUIState'
+
+import { styles } from '/screens/cozy-app/CozyAppScreen.styles'
 
 const handleError = ({ nativeEvent }) => {
   const { code, description } = nativeEvent
@@ -33,8 +19,25 @@ const handleError = ({ nativeEvent }) => {
     NetService.handleOffline(routes.stack)
 }
 
+/**
+ * CozyAppScreen component.
+ * Renders the main screen for a Cozy app, managing UI state and animations.
+ * @param {{
+ *   route: RouteProps,
+ *   navigation: NavigationProp,
+ * }} props - The props for the component, containing the route and navigation objects.
+ * @returns {ReactElement} The rendered CozyAppScreen component.
+ */
 export const CozyAppScreen = ({ route, navigation }) => {
-  const [UIState, setUIState] = useState({})
+  const {
+    UIState,
+    isFirstHalf,
+    isReady,
+    setFirstHalf,
+    setReady,
+    shouldExitAnimation,
+    setShouldExitAnimation
+  } = useUIState(route)
   const {
     bottomBackground,
     bottomOverlay,
@@ -42,34 +45,14 @@ export const CozyAppScreen = ({ route, navigation }) => {
     topTheme,
     topOverlay
   } = UIState
-  const [isReady, setReady] = useState(false)
-  const [isFirstHalf, setFirstHalf] = useState(false)
-  const [shouldExitAnimation, setShouldExitAnimation] = useState(false)
   const { setShouldWaitCozyApp } = useHomeStateContext()
 
-  useEffect(() => {
-    flagshipUI.on('change', state => {
-      setUIState({ ...UIState, ...state })
-    })
-
-    return () => {
-      flagshipUI.removeAllListeners()
-    }
-  }, [UIState, route])
-
-  useEffect(() => {
-    if (isReady) return // We don't want to trigger the animation UI changes twice (in case of app unlock for instance)
-
-    !route.params.iconParams && setReady(true)
-
-    isFirstHalf && firstHalfUI()
-  }, [isFirstHalf, isReady, route.params.iconParams])
   const dimensions = useDimensions()
 
   const onLoadEnd = useCallback(() => {
     setShouldExitAnimation(true)
     setShouldWaitCozyApp(false)
-  }, [setShouldWaitCozyApp])
+  }, [setShouldExitAnimation, setShouldWaitCozyApp])
 
   const webViewStyle = useMemo(
     () => ({ ...styles[isFirstHalf ? 'ready' : 'notReady'] }),
