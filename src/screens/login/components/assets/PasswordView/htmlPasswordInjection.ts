@@ -15,6 +15,7 @@ import { themeCss } from '../common/css/cssTheme'
 import { cirrusJs } from '../common/js/jsCirrus'
 import { readonlyJs } from '../common/js/jsReadonly'
 
+import { getDimensions } from '/libs/dimensions'
 import type { ClouderyTheme } from '/screens/login/components/functions/clouderyThemeFetcher'
 import { cssPadding } from '/screens/login/components/functions/webViewPaddingInjection'
 
@@ -26,6 +27,8 @@ const strForgotPassword = "J'ai oublié mon mot de passe"
 const strSubmit = 'SE CONNECTER'
 
 const locale = 'fr'
+
+const dimensions = getDimensions()
 
 const getCustomThemeLink = (clouderyTheme: ClouderyTheme): string =>
   clouderyTheme.themeUrl
@@ -122,7 +125,7 @@ export const getHtml = (
           postMessage(JSON.stringify({
             message: 'loaded',
             avatarPosition: {
-              top: avatarPosition.top,
+              top: avatarPosition.top - ${dimensions.statusBarHeight},
               left: avatarPosition.left,
               height: height,
               width: width,
