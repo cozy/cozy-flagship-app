@@ -18,6 +18,8 @@ import { wrapTimerFactory } from 'cozy-clisk'
 
 const log = Minilog('ReactNativeLauncher')
 
+const SET_WORKER_STATE_TIMEOUT_MS = 30 * 1000
+
 Minilog.enable()
 
 function LauncherEvent() {}
@@ -288,11 +290,21 @@ class ReactNativeLauncher extends Launcher {
    *
    * @param {SetWorkerStateOptions} options
    */
-  async setWorkerState(options) {
-    this.emit('SET_WORKER_STATE', options)
-    if (options?.visible === true) {
-      this.emit('worker:visible')
-    }
+  setWorkerState(options) {
+    return new Promise((resolve, reject) => {
+      let timerId = null
+      this.emit('SET_WORKER_STATE', options)
+      this.once('worker:webview:ready', () => {
+        clearTimeout(timerId)
+        if (options?.visible === true) {
+          this.emit('worker:visible')
+        }
+        resolve()
+      })
+      timerId = setTimeout(() => {
+        reject('ReactNativeLauncher.setWorkerState took more than 30000 ms')
+      }, options?.timeout || SET_WORKER_STATE_TIMEOUT_MS)
+    })
   }
 
   /**

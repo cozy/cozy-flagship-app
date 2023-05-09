@@ -170,6 +170,9 @@ class LauncherView extends Component {
         newUrl === this.state.worker.url && newUrl !== this.state.workerInnerUrl
       if (shouldForceWorkerReload) {
         this.setState({ workerKey: Date.now() })
+      } else {
+        // if we don't force worker reload, the reference to the worker webview won't change. Then we can resolve this promise directly.
+        this.launcher.emit('worker:webview:ready')
       }
       this.setState({
         worker: { ...this.state.worker, ...options }
@@ -259,7 +262,10 @@ class LauncherView extends Component {
               <WebView
                 key={this.state.workerKey}
                 mediaPlaybackRequiresUserAction={true}
-                ref={ref => (this.workerWebview = ref)}
+                ref={ref => {
+                  this.workerWebview = ref
+                  this.launcher.emit('worker:webview:ready')
+                }}
                 originWhitelist={['*']}
                 onLoad={this.onWorkerLoad}
                 useWebKit={true}
