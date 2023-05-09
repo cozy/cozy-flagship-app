@@ -4,7 +4,8 @@ import { version } from '../../../../package.json'
 
 import { getDimensions } from '/libs/dimensions'
 
-const immersiveRoutes = ['home']
+// This will have the effect of reverting OS icons to white when closing UI modals
+const immersiveRoutes = ['home', 'default']
 
 const makeMetadata = routeName => {
   const { navbarHeight, statusBarHeight } = getDimensions()
