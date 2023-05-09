@@ -583,8 +583,7 @@ class ReactNativeLauncher extends Launcher {
    */
   onPilotMessage(event) {
     if (this.pilot) {
-      const messenger = this.pilot.messenger
-      messenger.onMessage.bind(messenger)(event)
+      this.pilot.messenger.onMessage.apply(this.pilot.messenger, [event])
     }
   }
 
@@ -593,8 +592,7 @@ class ReactNativeLauncher extends Launcher {
    */
   onWorkerMessage(event) {
     if (this.worker) {
-      const messenger = this.worker.messenger
-      messenger.onMessage.bind(messenger)(event)
+      this.worker.messenger.onMessage.apply(this.worker.messenger, [event])
     }
   }
 
