@@ -600,6 +600,7 @@ const LoginSteps = ({
   if (state.step === TWO_FACTOR_AUTHENTICATION_PASSWORD_STEP) {
     const enforcedPartnerTheme = {
       backgroundColor: colors.paperBackgroundColor,
+      themeUrl: `${state.instance}/assets/styles/theme.css`
     }
     return (
       <>
