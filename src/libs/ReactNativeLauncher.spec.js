@@ -765,4 +765,18 @@ describe('ReactNativeLauncher', () => {
       })
     })
   })
+  describe('setWorkerState', () => {
+    it('should resolve when the webview is ready if reloaded', async () => {
+      const { launcher } = setup()
+      const promise = launcher.setWorkerState({ url: 'https://cozy.io' })
+      launcher.emit('worker:webview:ready')
+      expect(await promise).toBe(undefined)
+    })
+    it('should throw after 30s if not resolved', async () => {
+      const { launcher } = setup()
+      await expect(() =>
+        launcher.setWorkerState({ url: 'https://cozy.io', timeout: 1 })
+      ).rejects.toMatch('ReactNativeLauncher.setWorkerState took more')
+    })
+  })
 })
