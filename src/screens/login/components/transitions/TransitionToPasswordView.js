@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Animated, Dimensions, Easing, StyleSheet, View } from 'react-native'
 
 import log from 'cozy-logger'
@@ -7,9 +7,12 @@ import { getDimensions } from '/libs/dimensions'
 
 import { CozyIcon } from './transitions-icons/CozyIcon'
 
+import { isLightBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { getColors } from '/ui/colors'
 
 const webViewTopToNativeTop = top => top + getDimensions().statusBarHeight
+
+const colors = getColors()
 
 /**
  * Display a transition that should come before displaying the PasswordView
@@ -30,8 +33,6 @@ export const TransitionToPasswordView = ({
   requestTransitionStart,
   setTransitionEnded
 }) => {
-  const colors = getColors()
-
   const animationDelayInSecond = 200
   const animationDurationInSecond = 400
   const fadeOutDurationInSecond = 200
@@ -46,6 +47,10 @@ export const TransitionToPasswordView = ({
   const animatedScale = useRef(new Animated.Value(1)).current
   const animatedOpacity = useRef(new Animated.Value(1)).current
 
+  const [foregroundColor, setForegroundColor] = useState(
+    colors.paperBackgroundColor
+  )
+
   useEffect(() => {
     if (requestTransitionStart) {
       transitionToFinal(passwordAvatarPosition)
@@ -58,6 +63,16 @@ export const TransitionToPasswordView = ({
     setTransitionEnded,
     transitionToFinal
   ])
+
+  useEffect(() => {
+    const shouldUsePrimaryColor = isLightBackground(backgroundColor)
+
+    const color = shouldUsePrimaryColor
+      ? colors.primaryColor
+      : colors.paperBackgroundColor
+
+    setForegroundColor(color)
+  }, [backgroundColor])
 
   const transitionToFinal = useCallback(
     targetPosition => {
@@ -137,7 +152,7 @@ export const TransitionToPasswordView = ({
         ]}
       >
         <View style={[styles.avatarContainer]}>
-          <CozyIcon color={colors.paperBackgroundColor} />
+          <CozyIcon color={foregroundColor} />
         </View>
       </Animated.View>
     </Animated.View>
