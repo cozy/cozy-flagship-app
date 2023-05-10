@@ -17,7 +17,9 @@ export const sendKonnectorsLogs = async (client: CozyClient): Promise<void> => {
 
     const slugs = Object.keys(logs)
     for (const slug of slugs) {
-      log.debug(`🐟 Sending ${slug} logs batch : ${logs[slug]?.length} items`)
+      log.debug(
+        `🐟 Sending ${slug} logs batch : ${logs[slug]?.length ?? 0} items`
+      )
       // Clean slug property in LogObj
 
       // Locally disable the rule because we delete the slug property with a destructuring assignment
