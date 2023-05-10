@@ -26,9 +26,10 @@ import {
 import { NetService } from '/libs/services/NetService'
 import { ClouderyUrls } from '/screens/login/cloudery-env/clouderyEnv'
 import {
-  fetchBackgroundOnLoad,
-  tryProcessClouderyBackgroundMessage
-} from '/screens/login/components/functions/clouderyBackgroundFetcher'
+  fetchThemeOnLoad,
+  tryProcessClouderyThemeMessage
+} from '/screens/login/components/functions/clouderyThemeFetcher'
+import type { ClouderyTheme } from '/screens/login/components/functions/clouderyThemeFetcher'
 import {
   interceptExternalLinksAndOpenInAppBrowser,
   openWindowWithInAppBrowser
@@ -42,18 +43,18 @@ export const CLOUDERY_MODE_LOGIN = 'CLOUDERY_MODE_LOGIN'
 export const CLOUDERY_MODE_SIGNING = 'CLOUDERY_MODE_SIGNING'
 
 interface ClouderyViewSwitchProps {
-  backgroundColor: string
+  clouderyTheme: ClouderyTheme
   disableAutofocus: boolean
   clouderyMode: 'CLOUDERY_MODE_LOGIN' | 'CLOUDERY_MODE_SIGNING'
   handleNavigation: (request: WebViewNavigation) => boolean
   setCanGoBack: (newState: boolean) => void
   urls: ClouderyUrls
-  setBackgroundColor: (color: string) => void
+  setClouderyTheme: (theme: ClouderyTheme) => void
   setLoading: (newState: boolean) => void
 }
 
 interface ClouderyWebViewProps {
-  backgroundColor: string
+  clouderyTheme: ClouderyTheme
   disableAutofocus: boolean
   handleNavigation: (request: WebViewNavigation) => boolean
   onLoadEnd: () => void
@@ -72,13 +73,13 @@ interface ClouderyWebViewProps {
 export const ClouderyViewSwitch = forwardRef(
   (
     {
-      backgroundColor,
+      clouderyTheme,
       disableAutofocus,
       clouderyMode,
       handleNavigation,
       setCanGoBack,
       urls,
-      setBackgroundColor,
+      setClouderyTheme,
       setLoading
     }: ClouderyViewSwitchProps,
     ref
@@ -117,7 +118,7 @@ export const ClouderyViewSwitch = forwardRef(
     }
 
     const processMessage = (event: WebViewMessageEvent): void => {
-      tryProcessClouderyBackgroundMessage(event, setBackgroundColor)
+      tryProcessClouderyThemeMessage(event, setClouderyTheme)
     }
 
     return (
@@ -139,7 +140,7 @@ export const ClouderyViewSwitch = forwardRef(
               handleNavigation={handleNavigation}
               onLoadEnd={onSigninLoadEnd}
               onMessage={processMessage}
-              backgroundColor={backgroundColor}
+              clouderyTheme={clouderyTheme}
               disableAutofocus={
                 disableAutofocus || clouderyMode !== CLOUDERY_MODE_SIGNING
               }
@@ -162,7 +163,7 @@ export const ClouderyViewSwitch = forwardRef(
             handleNavigation={handleNavigation}
             onLoadEnd={onLoginLoadEnd}
             onMessage={processMessage}
-            backgroundColor={backgroundColor}
+            clouderyTheme={clouderyTheme}
             disableAutofocus={
               disableAutofocus || clouderyMode !== CLOUDERY_MODE_LOGIN
             }
@@ -180,7 +181,7 @@ ClouderyViewSwitch.displayName = 'ClouderyViewSwitch'
 const ClouderyWebView = forwardRef(
   (
     {
-      backgroundColor,
+      clouderyTheme,
       handleNavigation,
       onMessage,
       onLoadEnd,
@@ -225,7 +226,7 @@ const ClouderyWebView = forwardRef(
         onOpenWindow={openWindowWithInAppBrowser}
         injectedJavaScriptBeforeContentLoaded={run}
         style={{
-          backgroundColor: backgroundColor
+          backgroundColor: clouderyTheme?.backgroundColor
         }}
         onError={handleError}
         {...other}
@@ -241,7 +242,7 @@ const run = `
 
     ${jsLogInterception}
 
-    ${fetchBackgroundOnLoad}
+    ${fetchThemeOnLoad}
     
     ${handleAutofocusFields}
 

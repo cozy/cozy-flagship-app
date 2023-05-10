@@ -33,7 +33,10 @@ describe('PasswordView', () => {
   it('should render component with webview and view', () => {
     const props = {
       instance: 'http://cozy.192-168-1-102.nip.io:8080',
-      backgroundColor: '#4b4b4b'
+      clouderyTheme: {
+        backgroundColor: '#4b4b4b',
+        themeUrl: 'SOME8URL'
+      }
     }
     // When
     const { toJSON } = render(<PasswordView {...props} />)
@@ -46,7 +49,11 @@ describe('PasswordView', () => {
     it('should post error message', () => {
       const errorMessage = 'wrong password'
       const props = {
-        instance: 'http://cozy.192-168-1-102.nip.io:8080'
+        instance: 'http://cozy.192-168-1-102.nip.io:8080',
+        clouderyTheme: {
+          backgroundColor: '#4b4b4b',
+          themeUrl: 'SOME8URL'
+        }
       }
       expect(mockSpy).toHaveBeenCalledTimes(0)
 

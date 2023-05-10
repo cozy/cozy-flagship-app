@@ -32,10 +32,10 @@ const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 const colors = getColors()
 
 const OnboardingSteps = ({
-  backgroundColor,
+  clouderyTheme,
   navigation,
   route,
-  setBackgroundColor,
+  setClouderyTheme,
   setClient
 }) => {
   const [state, setState] = useState({
@@ -87,16 +87,16 @@ const OnboardingSteps = ({
   }, [navigation, route, setOnboardingData, setMagicLinkOnboardingData])
 
   useEffect(() => {
-    const backgroundColorParam = consumeRouteParameter(
-      'backgroundColor',
+    const clouderyThemeParam = consumeRouteParameter(
+      'clouderyTheme',
       route,
       navigation
     )
 
-    if (backgroundColorParam) {
-      setBackgroundColor(backgroundColorParam)
+    if (clouderyThemeParam) {
+      setClouderyTheme(clouderyThemeParam)
     }
-  }, [navigation, setBackgroundColor, route])
+  }, [navigation, route, setClouderyTheme])
 
   const setStepReadonly = isReadOnly => {
     setState(oldState => ({
@@ -212,14 +212,13 @@ const OnboardingSteps = ({
         setKeys={setLoginData}
         setError={setError}
         readonly={state.stepReadonly}
-        setBackgroundColor={setBackgroundColor}
         setReadonly={setStepReadonly}
       />
     )
   }
 
   if (state.step === LOADING_STEP || state.step === MAGIC_LINK_STEP) {
-    return <CozyLogoScreen backgroundColor={backgroundColor} />
+    return <CozyLogoScreen backgroundColor={clouderyTheme.backgroundColor} />
   }
 
   if (state.step === ERROR_STEP) {
@@ -237,11 +236,13 @@ const OnboardingSteps = ({
 }
 
 export const OnboardingScreen = ({ setClient, route, navigation }) => {
-  const [backgroundColor, setBackgroundColor] = useState(colors.primaryColor)
+  const [clouderyTheme, setClouderyTheme] = useState({
+    backgroundColor: colors.primaryColor
+  })
 
-  const setBackgroundAndStatusBarColor = backgroundColor => {
-    setStatusBarColorToMatchBackground(backgroundColor)
-    setBackgroundColor(backgroundColor)
+  const setClouderyThemeAndStatusBarColor = theme => {
+    setStatusBarColorToMatchBackground(theme?.backgroundColor)
+    setClouderyTheme(theme)
   }
 
   return (
@@ -249,16 +250,16 @@ export const OnboardingScreen = ({ setClient, route, navigation }) => {
       style={[
         styles.view,
         {
-          backgroundColor: backgroundColor
+          backgroundColor: clouderyTheme.backgroundColor
         }
       ]}
     >
       <OnboardingSteps
-        backgroundColor={backgroundColor}
+        clouderyTheme={clouderyTheme}
         setClient={setClient}
         route={route}
         navigation={navigation}
-        setBackgroundColor={setBackgroundAndStatusBarColor}
+        setClouderyTheme={setClouderyThemeAndStatusBarColor}
       />
     </View>
   )
