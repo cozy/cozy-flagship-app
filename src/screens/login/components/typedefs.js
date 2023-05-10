@@ -63,9 +63,9 @@
  */
 
 /**
- * Set the LoginScreen Background color.
- * @callback setBackgroundColor
- * @param {string} color
+ * Set the LoginScreen theme.
+ * @callback setClouderyTheme
+ * @param {import('/screens/login/components/functions/clouderyThemeFetcher').ClouderyTheme} theme
  */
 
 /**

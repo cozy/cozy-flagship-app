@@ -10,7 +10,7 @@ import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
  * Show a 2FA form that asks the user for their 2FA code received by email/authenticator
  *
  * @param {object} props
- * @param {string} props.backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
+ * @param {import('/screens/login/components/functions/clouderyThemeFetcher').ClouderyTheme} props.clouderyTheme - The LoginScreen's theme (used for overlay)
  * @param {string} [props.errorMessage] - Error message to display if defined
  * @param {Function} props.goBack - Function to call when the back button is clicked
  * @param {string} props.instance - The Cozy's url
@@ -20,7 +20,7 @@ import { setFocusOnWebviewField } from '/libs/functions/keyboardHelper'
  * @returns {import('react').ComponentClass}
  */
 export const TwoFactorAuthenticationView = ({
-  backgroundColor,
+  clouderyTheme,
   errorMessage,
   goBack,
   instance,
@@ -49,7 +49,7 @@ export const TwoFactorAuthenticationView = ({
     }
   }, [loading, webviewRef])
 
-  const html = getHtml(instance, backgroundColor, errorMessage)
+  const html = getHtml(instance, clouderyTheme, errorMessage)
 
   const processMessage = event => {
     if (event.nativeEvent && event.nativeEvent.data) {
@@ -81,7 +81,7 @@ export const TwoFactorAuthenticationView = ({
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: backgroundColor
+              backgroundColor: clouderyTheme.backgroundColor
             }
           ]}
         />

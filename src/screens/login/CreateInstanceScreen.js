@@ -26,11 +26,13 @@ const colors = getColors()
  */
 export const CreateInstanceScreen = ({ route, navigation }) => {
   const [clouderyUrl, setClouderyUrl] = useState()
-  const [backgroundColor, setBackgroundColor] = useState(colors.primaryColor)
+  const [clouderyTheme, setClouderyTheme] = useState({
+    backgroundColor: colors.primaryColor
+  })
 
-  const setBackgroundAndStatusBarColor = backgroundColor => {
-    setStatusBarColorToMatchBackground(backgroundColor)
-    setBackgroundColor(backgroundColor)
+  const setClouderyThemeAndStatusBarColor = theme => {
+    setStatusBarColorToMatchBackground(theme?.backgroundColor)
+    setClouderyTheme(theme)
   }
 
   const startOnboarding = onboardingData => {
@@ -40,7 +42,7 @@ export const CreateInstanceScreen = ({ route, navigation }) => {
       registerToken,
       magicCode,
       fqdn,
-      backgroundColor
+      clouderyTheme
     })
   }
 
@@ -57,15 +59,15 @@ export const CreateInstanceScreen = ({ route, navigation }) => {
     <View
       style={{
         ...styles.view,
-        backgroundColor: backgroundColor
+        backgroundColor: clouderyTheme.backgroundColor
       }}
     >
       {clouderyUrl && (
         <ClouderyCreateInstanceView
           clouderyUrl={clouderyUrl}
           startOnboarding={startOnboarding}
-          backgroundColor={backgroundColor}
-          setBackgroundColor={setBackgroundAndStatusBarColor}
+          clouderyTheme={clouderyTheme}
+          setClouderyTheme={setClouderyThemeAndStatusBarColor}
         />
       )}
     </View>

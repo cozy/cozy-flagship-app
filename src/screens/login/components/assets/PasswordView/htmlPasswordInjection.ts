@@ -15,6 +15,7 @@ import { themeCss } from '../common/css/cssTheme'
 import { cirrusJs } from '../common/js/jsCirrus'
 import { readonlyJs } from '../common/js/jsReadonly'
 
+import type { ClouderyTheme } from '/screens/login/components/functions/clouderyThemeFetcher'
 import { cssPadding } from '/screens/login/components/functions/webViewPaddingInjection'
 
 const strBackButton = "Revenir à l'écran précédent"
@@ -26,6 +27,11 @@ const strSubmit = 'SE CONNECTER'
 
 const locale = 'fr'
 
+const getCustomThemeLink = (clouderyTheme: ClouderyTheme): string =>
+  clouderyTheme.themeUrl
+    ? `<link rel="stylesheet" media="screen" href="${clouderyTheme.themeUrl}">`
+    : ''
+
 /**
  * Generate password specific HTML to provide to webview
  *
@@ -33,13 +39,13 @@ const locale = 'fr'
  * @param {string} fqdn - The subtitle of the page - for example the Cozy's fqdn
  * @param {string} instance - The Cozy's url, used to get avatar and fonts css
  * @param {string} backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
- * @returns {Element} HTML of Password form to inject inside Webview
+ * @returns {string} HTML of Password form to inject inside Webview
  */
 export const getHtml = (
   title: string,
   fqdn: string,
   instance: string,
-  backgroundColor: string
+  clouderyTheme: ClouderyTheme
 ): string => {
   const avatarUrl = new URL(instance)
   avatarUrl.pathname = 'public/avatar'
@@ -59,22 +65,7 @@ export const getHtml = (
     <style type="text/css">${themeCss}</style>
     <style type="text/css">${cirrusCss}</style>
     <style type="text/css">${cssPadding}</style>
-    <style type="text/css">
-    ${
-      backgroundColor === '#4b4b4b'
-        ? `
-        .theme-inverted {
-          --primaryColorDark: #eeeeee;
-          --primaryColorLightest: #626262;
-          --primaryTextContrastColor: #626262;
-          --secondaryColor: #a3a3a3;
-          --paperBackgroundColor: #4b4b4b;
-          --banner-color: #282828;
-          --btn-secondary-border-color: rgba(255, 255, 255, .48);
-        }`
-        : ''
-    }
-    </style>
+    ${getCustomThemeLink(clouderyTheme)}
   </head>
   <body class="theme-inverted">
     <form id="login-form" method="POST" action="#" class="d-contents">

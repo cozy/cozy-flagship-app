@@ -35,22 +35,22 @@ const log = Minilog('ClouderyView')
  * then the instance data is returned to parent component through `setInstanceData()`
  *
  * @param {object} props
- * @param {string} props.backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
+ * @param {import('/screens/login/components/functions/clouderyThemeFetcher').ClouderyTheme} props.clouderyTheme - The LoginScreen's theme (used for overlay)
  * @param {'CLOUDERY_MODE_LOGIN'|'CLOUDERY_MODE_SIGNING'} props.clouderyMode
  * @param {setInstanceData} props.setInstanceData - Set instance data (fqdn and origin) to start the Login process
  * @param {boolean} props.disableAutofocus - Boolean stating if the Webview can get focus (used to trigger auto-focus on email field)
- * @param {setBackgroundColor} props.setBackgroundColor - Set the LoginScreen's background color (used for overlay and navigation bars)
+ * @param {setClouderyTheme} props.setClouderyTheme - Set the LoginScreen's theme (used for overlay and local UI)
  * @param {setErrorCallback} props.setError - Display the given error
  * @param {startOidcOAuth} props.startOidcOAuth - Start the OIDC Oauth process
  * @param {startOidcOnboarding} props.startOidcOnboarding - Start the OIDC Onboarding process
  * @returns {import('react').ComponentClass}
  */
 export const ClouderyView = ({
-  backgroundColor,
+  clouderyTheme,
   clouderyMode,
   setInstanceData,
   disableAutofocus,
-  setBackgroundColor,
+  setClouderyTheme,
   setError,
   startOidcOAuth,
   startOidcOnboarding
@@ -144,13 +144,13 @@ export const ClouderyView = ({
       {urls && (
         <ClouderyViewSwitch
           clouderyMode={clouderyMode}
+          clouderyTheme={clouderyTheme}
           handleNavigation={handleNavigation}
           ref={webviewRef}
           setCanGoBack={setCanGoBack}
           setLoading={setLoading}
           urls={urls}
-          backgroundColor={backgroundColor}
-          setBackgroundColor={setBackgroundColor}
+          setClouderyTheme={setClouderyTheme}
           disableAutofocus={disableAutofocus}
         />
       )}
@@ -160,7 +160,7 @@ export const ClouderyView = ({
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: backgroundColor
+              backgroundColor: clouderyTheme?.backgroundColor
             }
           ]}
         />

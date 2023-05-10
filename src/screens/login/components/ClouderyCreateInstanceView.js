@@ -13,9 +13,9 @@ import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { routes } from '/constants/routes'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import {
-  fetchBackgroundOnLoad,
-  tryProcessClouderyBackgroundMessage
-} from '/screens/login/components/functions/clouderyBackgroundFetcher'
+  fetchThemeOnLoad,
+  tryProcessClouderyThemeMessage
+} from '/screens/login/components/functions/clouderyThemeFetcher'
 import { getOnboardingDataFromRequest } from '/screens/login/components/functions/getOnboardingDataFromRequest'
 import { openWindowWithInAppBrowser } from '/screens/login/components/functions/interceptExternalLinks'
 import { jsPaddingInjection } from '/screens/login/components/functions/webViewPaddingInjection'
@@ -28,7 +28,7 @@ const run = `
 
     ${jsLogInterception}
 
-    ${fetchBackgroundOnLoad}
+    ${fetchThemeOnLoad}
     
     ${handleAutofocusFields}
 
@@ -44,13 +44,15 @@ const run = `
  * @param {object} props
  * @param {string} props.clouderyUrl - the onboarding URL as retrieve from the email's link
  * @param {startOnboarding} props.startOnboarding - method to call when onboarding redirection is intercepted by the webview
+ * @param {import('/screens/login/components/functions/clouderyThemeFetcher').ClouderyTheme} props.clouderyTheme - The LoginScreen's theme (used for overlay)
+ * @param {setClouderyTheme} props.setClouderyTheme - Set the LoginScreen's theme (used for overlay and local UI)
  * @returns {import('react').ComponentClass}
  */
 export const ClouderyCreateInstanceView = ({
   clouderyUrl,
   startOnboarding,
-  backgroundColor,
-  setBackgroundColor
+  clouderyTheme,
+  setClouderyTheme
 }) => {
   const [loading, setLoading] = useState(true)
   const webviewRef = useRef()
@@ -89,7 +91,7 @@ export const ClouderyCreateInstanceView = ({
 
   const processMessage = event => {
     tryProcessQueryKeyboardMessage(webviewRef.current, event)
-    tryProcessClouderyBackgroundMessage(event, setBackgroundColor)
+    tryProcessClouderyThemeMessage(event, setClouderyTheme)
   }
 
   const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
@@ -98,7 +100,7 @@ export const ClouderyCreateInstanceView = ({
     <Wrapper
       style={{
         ...styles.view,
-        backgroundColor: backgroundColor
+        backgroundColor: clouderyTheme.backgroundColor
       }}
       behavior="height"
     >
@@ -111,7 +113,7 @@ export const ClouderyCreateInstanceView = ({
         onOpenWindow={openWindowWithInAppBrowser}
         injectedJavaScriptBeforeContentLoaded={run}
         style={{
-          backgroundColor: backgroundColor
+          backgroundColor: clouderyTheme.backgroundColor
         }}
       />
       {loading && (
@@ -119,7 +121,7 @@ export const ClouderyCreateInstanceView = ({
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: backgroundColor
+              backgroundColor: clouderyTheme.backgroundColor
             }
           ]}
         />

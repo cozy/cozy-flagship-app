@@ -14,7 +14,7 @@ import { getHtml } from './assets/PasswordView/htmlPasswordInjection'
  * by calling `setPasswordData`
  *
  * @param {object} props
- * @param {string} props.backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
+ * @param {import('/screens/login/components/functions/clouderyThemeFetcher').ClouderyTheme} props.clouderyTheme - The LoginScreen's theme (used for overlay)
  * @param {string} [props.errorMessage] - Error message to display if defined
  * @param {string} props.fqdn - The Cozy's fqdn
  * @param {Function} props.goBack - Function to call when the back button is clicked
@@ -22,13 +22,12 @@ import { getHtml } from './assets/PasswordView/htmlPasswordInjection'
  * @param {string} props.name - The user's name as configured in the Cozy's settings
  * @param {Function} props.requestTransitionStart - Function to call when the component is ready to be displayed and the app should transition to it
  * @param {boolean} props.readonly - Specify if the form should be readonly
- * @param {setBackgroundColor} props.setBackgroundColor - Set the LoginScreen's background color (used for overlay and navigation bars)
  * @param {setPasswordData} props.setPasswordData - Function to call to set the user's password
  * @param {setReadonly} props.setReadonly - Trigger change on the readonly state
  * @returns {import('react').ComponentClass}
  */
 const PasswordForm = ({
-  backgroundColor,
+  clouderyTheme,
   errorMessage,
   fqdn,
   goBack,
@@ -36,7 +35,6 @@ const PasswordForm = ({
   name,
   requestTransitionStart,
   readonly,
-  setBackgroundColor,
   setPasswordData,
   setReadonly,
   waitForTransition
@@ -74,7 +72,7 @@ const PasswordForm = ({
     }
   }, [webviewRef, errorMessage])
 
-  const html = getHtml(name, fqdn, instance, backgroundColor)
+  const html = getHtml(name, fqdn, instance, clouderyTheme)
 
   const setLoaded = avatarPosition => {
     setLoading(false)
@@ -94,7 +92,6 @@ const PasswordForm = ({
 
       if (message.message === 'loaded') {
         setLoaded(message.avatarPosition)
-        setBackgroundColor(backgroundColor)
       } else if (message.message === 'setPassphrase') {
         setPassword(message.passphrase)
       } else if (message.message === 'forgotPassword') {
@@ -115,14 +112,14 @@ const PasswordForm = ({
         onMessage={processMessage}
         originWhitelist={['*']}
         source={{ html }}
-        style={{ backgroundColor: backgroundColor }}
+        style={{ backgroundColor: clouderyTheme?.backgroundColor }}
       />
       {loading && (
         <View
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: backgroundColor
+              backgroundColor: clouderyTheme?.backgroundColor
             }
           ]}
         />
@@ -138,7 +135,7 @@ const PasswordForm = ({
  * If an error occurs, then `setError` is called
  *
  * @param {object} props
- * @param {string} props.backgroundColor - The LoginScreen's background color (used for overlay and navigation bars)
+ * @param {import('/screens/login/components/functions/clouderyThemeFetcher').ClouderyTheme} props.clouderyTheme - The LoginScreen's theme (used for overlay)
  * @param {string} [props.errorMessage] - Error message to display if defined
  * @param {string} props.fqdn - The Cozy's fqdn
  * @param {Function} props.goBack - Function to call when the back button is clicked
@@ -147,14 +144,13 @@ const PasswordForm = ({
  * @param {string} props.name - The user's name as configured in the Cozy's settings
  * @param {boolean} props.readonly - Specify if the form should be readonly
  * @param {Function} props.requestTransitionStart - Function to call when the component is ready to be displayed and the app should transition to it
- * @param {setBackgroundColor} props.setBackgroundColor - Set the LoginScreen's background color (used for overlay and navigation bars)
  * @param {setLoginDataCallback} props.setKeys - Function to call to set the user's password and encryption keys
  * @param {setErrorCallback} props.setError - Function to call when an error is thrown by the component
  * @param {setReadonly} props.setReadonly - Trigger change on the readonly state
  * @returns {import('react').ComponentClass}
  */
 export const PasswordView = ({
-  backgroundColor,
+  clouderyTheme,
   errorMessage,
   fqdn,
   goBack,
@@ -163,7 +159,6 @@ export const PasswordView = ({
   name,
   readonly,
   requestTransitionStart,
-  setBackgroundColor,
   setKeys,
   setError,
   setReadonly,
@@ -186,14 +181,13 @@ export const PasswordView = ({
 
   return (
     <PasswordForm
-      backgroundColor={backgroundColor}
+      clouderyTheme={clouderyTheme}
       errorMessage={errorMessage}
       fqdn={fqdn}
       goBack={goBack}
       instance={instance}
       name={name}
       requestTransitionStart={requestTransitionStart}
-      setBackgroundColor={setBackgroundColor}
       setPasswordData={setPasswordData}
       readonly={readonly}
       setReadonly={setReadonly}

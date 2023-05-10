@@ -53,14 +53,14 @@ const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 const colors = getColors()
 
 const LoginSteps = ({
-  backgroundColor,
   clouderyMode,
+  clouderyTheme,
   disableAutofocus,
   goBack,
   navigation,
   route,
-  setBackgroundColor,
-  setClient
+  setClient,
+  setClouderyTheme
 }) => {
   const { showSplashScreen } = useSplashScreen()
   const [state, setState] = useState({
@@ -109,7 +109,9 @@ const LoginSteps = ({
 
       // when receiving fqdn from route parameter, we don't have access to partner context
       // so we enforce default Cozy color as background
-      setBackgroundColor(colors.primaryColor)
+      setClouderyTheme({
+        backgroundColor: colors.primaryColor
+      })
 
       if (magicCode) {
         startMagicLinkOAuth(instanceData.fqdn, magicCode)
@@ -120,8 +122,8 @@ const LoginSteps = ({
   }, [
     navigation,
     route,
+    setClouderyTheme,
     setInstanceData,
-    setBackgroundColor,
     startMagicLinkOAuth
   ])
 
@@ -522,10 +524,10 @@ const LoginSteps = ({
   if (state.step === CLOUDERY_STEP) {
     return (
       <ClouderyView
-        backgroundColor={backgroundColor}
+        clouderyTheme={clouderyTheme}
         clouderyMode={clouderyMode}
         disableAutofocus={disableAutofocus}
-        setBackgroundColor={setBackgroundColor}
+        setClouderyTheme={setClouderyTheme}
         setInstanceData={setInstanceData}
         startOidcOAuth={startOidcOAuth}
         startOidcOnboarding={startOidcOnboarding}
@@ -535,11 +537,13 @@ const LoginSteps = ({
   }
 
   if (state.step === PASSWORD_STEP) {
-    const enforcedCozyBlueBackground = colors.primaryColor
+    const enforcedCozyBlueBackground = {
+      backgroundColor: colors.primaryColor
+    }
     return (
       <>
         <PasswordView
-          backgroundColor={enforcedCozyBlueBackground}
+          clouderyTheme={enforcedCozyBlueBackground}
           instance={state.instance}
           fqdn={state.fqdn}
           kdfIterations={state.kdfIterations}
@@ -549,14 +553,13 @@ const LoginSteps = ({
           setError={setError}
           errorMessage={state.errorMessage}
           goBack={cancelLogin}
-          setBackgroundColor={setBackgroundColor}
           readonly={state.stepReadonly}
           setReadonly={setStepReadonly}
           waitForTransition={state.waitForTransition}
         />
         {state.waitForTransition && (
           <TransitionToPasswordView
-            backgroundColor={enforcedCozyBlueBackground}
+            backgroundColor={enforcedCozyBlueBackground.backgroundColor}
             setTransitionEnded={endTransitionToPassword}
             requestTransitionStart={state.requestTransitionStart}
             passwordAvatarPosition={state.passwordAvatarPosition}
@@ -570,10 +573,10 @@ const LoginSteps = ({
     return (
       <>
         <OidcOnboardingView
-          backgroundColor={backgroundColor}
+          clouderyTheme={clouderyTheme}
           onboardUrl={state.oidcOnboardUrl}
           code={state.oidcCode}
-          setBackgroundColor={setBackgroundColor}
+          setClouderyTheme={setClouderyTheme}
           startOidcOAuth={startOidcOAuth}
         />
       </>
@@ -583,7 +586,7 @@ const LoginSteps = ({
   if (state.step === TWO_FACTOR_AUTHENTICATION_STEP) {
     return (
       <TwoFactorAuthenticationView
-        backgroundColor={backgroundColor}
+        clouderyTheme={clouderyTheme}
         instance={state.instance}
         setTwoFactorCode={continueOAuth}
         goBack={cancelOauth}
@@ -595,11 +598,13 @@ const LoginSteps = ({
   }
 
   if (state.step === TWO_FACTOR_AUTHENTICATION_PASSWORD_STEP) {
-    const enforcedPartnerGreyBackground = '#4b4b4b'
+    const enforcedPartnerTheme = {
+      backgroundColor: colors.paperBackgroundColor,
+    }
     return (
       <>
         <PasswordView
-          backgroundColor={enforcedPartnerGreyBackground}
+          clouderyTheme={enforcedPartnerTheme}
           instance={state.instance}
           fqdn={state.fqdn}
           kdfIterations={state.kdfIterations}
@@ -609,14 +614,14 @@ const LoginSteps = ({
           setError={setError}
           errorMessage={state.errorMessage}
           goBack={cancelLogin}
-          setBackgroundColor={setBackgroundColor}
+          setClouderyTheme={setClouderyTheme}
           readonly={state.stepReadonly}
           setReadonly={setStepReadonly}
           waitForTransition={state.waitForTransition}
         />
         {state.waitForTransition && (
           <TransitionToPasswordView
-            backgroundColor={enforcedPartnerGreyBackground}
+            backgroundColor={enforcedPartnerTheme.backgroundColor}
             setTransitionEnded={endTransitionToPassword}
             requestTransitionStart={state.requestTransitionStart}
             passwordAvatarPosition={state.passwordAvatarPosition}
@@ -630,7 +635,7 @@ const LoginSteps = ({
     return (
       <TransitionToAuthorizeView
         setTransitionEnded={setTransitionToAuthorizeEnded}
-        backgroundColor={backgroundColor}
+        backgroundColor={clouderyTheme.backgroundColor}
       />
     )
   }
@@ -661,11 +666,13 @@ export const LoginScreen = ({
   route,
   setClient
 }) => {
-  const [backgroundColor, setBackgroundColor] = useState(colors.primaryColor)
+  const [clouderyTheme, setClouderyTheme] = useState({
+    backgroundColor: colors.primaryColor
+  })
 
-  const setBackgroundAndStatusBarColor = backgroundColor => {
-    setStatusBarColorToMatchBackground(backgroundColor)
-    setBackgroundColor(backgroundColor)
+  const setClouderyThemeAndStatusBarColor = theme => {
+    setStatusBarColorToMatchBackground(theme?.backgroundColor)
+    setClouderyTheme(theme)
   }
 
   return (
@@ -673,17 +680,17 @@ export const LoginScreen = ({
       style={[
         styles.view,
         {
-          backgroundColor: backgroundColor
+          backgroundColor: clouderyTheme.backgroundColor
         }
       ]}
     >
       <LoginSteps
-        backgroundColor={backgroundColor}
         clouderyMode={clouderyMode}
+        clouderyTheme={clouderyTheme}
         navigation={navigation}
         route={route}
-        setBackgroundColor={setBackgroundAndStatusBarColor}
         setClient={setClient}
+        setClouderyTheme={setClouderyThemeAndStatusBarColor}
         disableAutofocus={disableAutofocus}
         goBack={goBack}
       />

@@ -18,9 +18,10 @@ import { routes } from '/constants/routes'
 import { NetService } from '/libs/services/NetService'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import {
-  fetchBackgroundOnLoad,
-  tryProcessClouderyBackgroundMessage
-} from '/screens/login/components/functions/clouderyBackgroundFetcher'
+  fetchThemeOnLoad,
+  tryProcessClouderyThemeMessage
+} from '/screens/login/components/functions/clouderyThemeFetcher'
+import type { ClouderyTheme } from '/screens/login/components/functions/clouderyThemeFetcher'
 import { getOnboardingDataFromRequest } from '/screens/login/components/functions/getOnboardingDataFromRequest'
 import { openWindowWithInAppBrowser } from '/screens/login/components/functions/interceptExternalLinks'
 import { jsPaddingInjection } from '/screens/login/components/functions/webViewPaddingInjection'
@@ -28,10 +29,10 @@ import { jsPaddingInjection } from '/screens/login/components/functions/webViewP
 const log = Minilog('OidcOnboardingView')
 
 interface ClouderyWebViewProps {
-  backgroundColor: string
+  clouderyTheme: ClouderyTheme
   code: string
   onboardUrl: string
-  setBackgroundColor: (color: string) => void
+  setClouderyTheme: (theme: ClouderyTheme) => void
   startOidcOAuth: (fqdn: string, code: string) => void
 }
 
@@ -40,10 +41,10 @@ interface ClouderyWebViewProps {
  * navigation to OIDCInstanceCreationResult url occurs
  */
 export const OidcOnboardingView = ({
-  backgroundColor,
+  clouderyTheme,
   code,
   onboardUrl,
-  setBackgroundColor,
+  setClouderyTheme,
   startOidcOAuth
 }: ClouderyWebViewProps): JSX.Element => {
   const [loading, setLoading] = useState(true)
@@ -90,7 +91,7 @@ export const OidcOnboardingView = ({
   }, [handleBackPress])
 
   const processMessage = (event: WebViewMessageEvent): void => {
-    tryProcessClouderyBackgroundMessage(event, setBackgroundColor)
+    tryProcessClouderyThemeMessage(event, setClouderyTheme)
   }
 
   const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
@@ -109,7 +110,7 @@ export const OidcOnboardingView = ({
         }}
         onOpenWindow={openWindowWithInAppBrowser}
         style={{
-          backgroundColor: backgroundColor
+          backgroundColor: clouderyTheme.backgroundColor
         }}
         onError={handleError}
       />
@@ -119,7 +120,7 @@ export const OidcOnboardingView = ({
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: backgroundColor
+              backgroundColor: clouderyTheme.backgroundColor
             }
           ]}
         />
@@ -130,7 +131,7 @@ export const OidcOnboardingView = ({
 
 const run = `
   (function() {
-    ${fetchBackgroundOnLoad}
+    ${fetchThemeOnLoad}
 
     ${jsPaddingInjection}
 

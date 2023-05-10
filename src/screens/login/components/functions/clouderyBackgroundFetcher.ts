@@ -1,42 +1,10 @@
 import Minilog from '@cozy/minilog'
 import { StatusBar } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
-import type { WebViewMessageEvent } from 'react-native-webview'
 
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
-const log = Minilog('useAppBootstrap.functions')
-
-interface ClouderyMessage {
-  message: string
-  color?: string
-}
-
-type SetBackgroundColorCallback = (color: string) => void
-
-export const fetchBackgroundOnLoad = `
-  window.addEventListener("load", function(event) {
-    const color = getComputedStyle(
-      document.getElementsByTagName("main")[0]
-    ).getPropertyValue('--paperBackgroundColor')
-
-    window.ReactNativeWebView.postMessage(JSON.stringify({
-      message: 'setBackgroundColor',
-      color: color
-    }))
-  })
-`
-
-export const tryProcessClouderyBackgroundMessage = (
-  event: WebViewMessageEvent,
-  setBackgroundColor: SetBackgroundColorCallback
-): void => {
-  const message = JSON.parse(event.nativeEvent.data) as ClouderyMessage
-
-  if (message.message === 'setBackgroundColor' && message.color !== undefined) {
-    setBackgroundColor(message.color.trim())
-  }
-}
+const log = Minilog('clouderyBackgroundFetcher')
 
 const isHexaCode = (value: string): boolean => {
   const hexaChar = '[0-9A-Fa-f]'
