@@ -264,7 +264,9 @@ class LauncherView extends Component {
                 mediaPlaybackRequiresUserAction={true}
                 ref={ref => {
                   this.workerWebview = ref
-                  this.launcher.emit('worker:webview:ready')
+                  if (ref !== null) {
+                    this.launcher.emit('worker:webview:ready')
+                  }
                 }}
                 originWhitelist={['*']}
                 onLoad={this.onWorkerLoad}
