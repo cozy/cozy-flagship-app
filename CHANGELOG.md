@@ -1,4 +1,4 @@
-# 1.0.11
+# 1.1.1
 
 ## ✨ Features
 
@@ -8,6 +8,22 @@
 
 ## 🔧 Tech
 
+
+# 1.1.0
+
+## ✨ Features
+
+* Improve login and onboarding screens theming capabilities for our partners ([PR #776](https://github.com/cozy/cozy-react-native/pull/776))
+* Logout locally configured Client Side Connectors when they are removed from another device ([PR #748](https://github.com/cozy/cozy-react-native/pull/748))
+
+## 🐛 Bug Fixes
+
+* Fix some scenario where the status bar was not displayed with the correct color ([PR #775](https://github.com/cozy/cozy-react-native/pull/775))
+
+## 🔧 Tech
+
+* Change OS icon for `mespapiers` app ([PR #778](https://github.com/cozy/cozy-react-native/pull/778))
+* Remove UINewsstandIcon from Info.plist ([PR #780](https://github.com/cozy/cozy-react-native/pull/780))
 
 # 1.0.10
 
