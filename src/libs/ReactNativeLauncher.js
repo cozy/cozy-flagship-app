@@ -20,6 +20,11 @@ const log = Minilog('ReactNativeLauncher')
 
 const SET_WORKER_STATE_TIMEOUT_MS = 30 * 1000
 
+export const ERRORS = {
+  SET_WORKER_STATE_TOO_LONG_TO_INIT:
+    'ReactNativeLauncher.setWorkerState took more than 30000 ms'
+}
+
 Minilog.enable()
 
 function LauncherEvent() {}
@@ -302,7 +307,7 @@ class ReactNativeLauncher extends Launcher {
         resolve()
       })
       timerId = setTimeout(() => {
-        reject('ReactNativeLauncher.setWorkerState took more than 30000 ms')
+        reject(ERRORS.SET_WORKER_STATE_TOO_LONG_TO_INIT)
       }, options?.timeout || SET_WORKER_STATE_TIMEOUT_MS)
     })
   }

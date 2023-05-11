@@ -21,7 +21,10 @@ jest.mock('./keychain', () => {
 import CookieManager from '@react-native-cookies/cookies'
 import { waitFor } from '@testing-library/react-native'
 
-import ReactNativeLauncher, { launcherEvent } from './ReactNativeLauncher'
+import ReactNativeLauncher, {
+  launcherEvent,
+  ERRORS
+} from './ReactNativeLauncher'
 import {
   getCookie,
   saveCookie,
@@ -776,7 +779,7 @@ describe('ReactNativeLauncher', () => {
       const { launcher } = setup()
       await expect(() =>
         launcher.setWorkerState({ url: 'https://cozy.io', timeout: 1 })
-      ).rejects.toMatch('ReactNativeLauncher.setWorkerState took more')
+      ).rejects.toEqual(ERRORS.SET_WORKER_STATE_TOO_LONG_TO_INIT)
     })
   })
 })
