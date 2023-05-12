@@ -41,8 +41,13 @@ export default class ReactNativeLauncherMessenger extends MessengerInterface {
    */
   onMessage(event) {
     const data = JSON.parse(event.nativeEvent.data)
-    this.listener({ data })
-    if (this.debug && data.type === '@post-me') {
+    if (this.listener) {
+      // in scenarios where we watch the flagship app with hot reload I found this.listener to be null sometimes.
+      // As addMessageListener is directly called by post-me, I don't know why, it may be null but this avoids some headaches
+      // when developing on flagship app.
+      this.listener({ data })
+    }
+    if (this.debug && data.type === '@post-me' && data.eventName !== 'log') {
       let debugMessage = '⬅️  received message'
       const { label, rest } = formatIds(data)
       debugMessage += ' ' + label
