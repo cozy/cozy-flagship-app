@@ -298,7 +298,7 @@ class ReactNativeLauncher extends Launcher {
   setWorkerState(options) {
     return new Promise((resolve, reject) => {
       let timerId = null
-      this.emit('SET_WORKER_STATE', options)
+
       this.once('worker:webview:ready', () => {
         clearTimeout(timerId)
         if (options?.visible === true) {
@@ -309,6 +309,7 @@ class ReactNativeLauncher extends Launcher {
       timerId = setTimeout(() => {
         reject(ERRORS.SET_WORKER_STATE_TOO_LONG_TO_INIT)
       }, options?.timeout || SET_WORKER_STATE_TIMEOUT_MS)
+      this.emit('SET_WORKER_STATE', options)
     })
   }
 
@@ -410,6 +411,7 @@ class ReactNativeLauncher extends Launcher {
       throw new Error(`worker bridge restart init error: ${err.message}`)
     }
     this.emit('WORKER_RELOADED')
+    this.emit('worker:webview:ready')
   }
 
   /**
