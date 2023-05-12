@@ -19,7 +19,11 @@ export default class ReactNativeLauncherMessenger extends MessengerInterface {
       let debugMessage = '➡️  sending message'
       const { label, rest } = formatIds(message)
       debugMessage += ' ' + label
-      this.log.debug(debugMessage, rest)
+      if (rest.action === 'handshake-request') {
+        this.log.debug(label, 'handshake request 👊')
+      } else {
+        this.log.debug(debugMessage, rest)
+      }
     }
     const script = `window.postMessage(${JSON.stringify(message)})`
     this.webViewRef.injectJavaScript(script)
@@ -51,7 +55,11 @@ export default class ReactNativeLauncherMessenger extends MessengerInterface {
       let debugMessage = '⬅️  received message'
       const { label, rest } = formatIds(data)
       debugMessage += ' ' + label
-      this.log.debug(debugMessage, rest)
+      if (rest.action === 'handshake-response') {
+        this.log.debug(label, 'handshake response 👊 ✅')
+      } else {
+        this.log.debug(debugMessage, rest)
+      }
     }
   }
 }
