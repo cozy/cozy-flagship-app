@@ -15,7 +15,7 @@ export default class ReactNativeLauncherMessenger extends MessengerInterface {
   }
 
   postMessage(message) {
-    if (this.debug) {
+    if (this.debug && message.type === '@post-me') {
       let debugMessage = '➡️  sending message'
       const { label, rest } = formatIds(message)
       debugMessage += ' ' + label
@@ -42,7 +42,7 @@ export default class ReactNativeLauncherMessenger extends MessengerInterface {
   onMessage(event) {
     const data = JSON.parse(event.nativeEvent.data)
     this.listener({ data })
-    if (this.debug) {
+    if (this.debug && data.type === '@post-me') {
       let debugMessage = '⬅️  received message'
       const { label, rest } = formatIds(data)
       debugMessage += ' ' + label
@@ -52,7 +52,8 @@ export default class ReactNativeLauncherMessenger extends MessengerInterface {
 }
 
 function formatIds(message) {
-  const { sessionId, requestId, ...rest } = message
+  // eslint-disable-next-line no-unused-vars
+  const { sessionId, requestId, type, ...rest } = message
   let label = 'sessionId=' + sessionId
   if (requestId) {
     label += ' requestId=' + requestId
