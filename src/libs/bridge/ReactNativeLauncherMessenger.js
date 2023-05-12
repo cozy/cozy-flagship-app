@@ -60,7 +60,7 @@ function formatIds(message) {
   // eslint-disable-next-line no-unused-vars
   const { sessionId, requestId, type, ...rest } = message
   let label = 'sessionId=' + sessionId
-  if (requestId) {
+  if (requestId !== undefined) {
     label += ' requestId=' + requestId
   }
   return { label, rest }
