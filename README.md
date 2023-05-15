@@ -10,24 +10,9 @@ This notably includes the possiblity to run client-side konnectors, to get your 
 - install XCode and Android Studio (or Android SDK)
 - Node 16
 
-## Sentry configuration (REQUIRED, DO NOT SKIP)
+## Sentry configuration
 
-This application will not run without a Sentry configuration, even in development mode.
-
-### Getting the configuration
-
-If you are a Cozy developer, please get the actual Sentry configuration. For this, you need to decrypt the `cozy-react-native/sentry.properties` file in the `password-store-team` repository.
-
-If you are not a Cozy developer and you do not care about Sentry, you can just take the following example: https://github.com/getsentry/examples/blob/master/react-native/sentry.properties
-
-Either way, you should now have a file similar to `android/sentry.properties.example`.
-
-### Installing the configuration
-
-Put the Sentry configuration into the following files:
-
-- `android/sentry.properties`
-- `ios/sentry.properties`
+If you are a Cozy developer, please get the actual Sentry configuration. For this, you need to decrypt the `cozy-react-native/sentry.properties` file in the `password-store-team` repository and add it in `.env` file as `SENTRY_AUTH_TOKEN`.
 
 ## Run the Cozy Flagship App
 
