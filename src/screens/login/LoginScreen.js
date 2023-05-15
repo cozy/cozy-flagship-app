@@ -113,6 +113,11 @@ const LoginSteps = ({
         backgroundColor: colors.primaryColor
       })
 
+      setState(oldState => ({
+        ...oldState,
+        step: LOADING_STEP
+      }))
+
       if (magicCode) {
         startMagicLinkOAuth(instanceData.fqdn, magicCode)
       } else {
