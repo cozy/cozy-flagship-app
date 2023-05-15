@@ -359,6 +359,8 @@ PODS:
     - React-Core
   - react-native-cookies (6.0.7):
     - React-Core
+  - react-native-document-scanner-plugin (0.7.3):
+    - React-Core
   - react-native-flipper (0.146.1):
     - React-Core
   - react-native-gzip (2.0.0):
@@ -528,6 +530,7 @@ DEPENDENCIES:
   - react-native-change-icon (from `../node_modules/react-native-change-icon`)
   - react-native-config (from `../node_modules/react-native-config`)
   - "react-native-cookies (from `../node_modules/@react-native-cookies/cookies`)"
+  - react-native-document-scanner-plugin (from `../node_modules/react-native-document-scanner-plugin`)
   - react-native-flipper (from `../node_modules/react-native-flipper`)
   - "react-native-gzip (from `../node_modules/@fengweichong/react-native-gzip`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -636,6 +639,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-config"
   react-native-cookies:
     :path: "../node_modules/@react-native-cookies/cookies"
+  react-native-document-scanner-plugin:
+    :path: "../node_modules/react-native-document-scanner-plugin"
   react-native-flipper:
     :path: "../node_modules/react-native-flipper"
   react-native-gzip:
@@ -749,6 +754,7 @@ SPEC CHECKSUMS:
   react-native-change-icon: ea9bb7255b09e89f41cbf282df16eade91ab1833
   react-native-config: 5330c8258265c1e5fdb8c009d2cabd6badd96727
   react-native-cookies: 6004d512ffc6f2c498c5b70cda0bc040350c0585
+  react-native-document-scanner-plugin: df5b82df67ff612262c40c26ef2c8239c5af5c55
   react-native-flipper: 4bfe0a324e663f1ae2f76ad0da75673de6895efe
   react-native-gzip: 5ffb84bf191c7cd135338eca748317bc466d41a1
   react-native-netinfo: 2517ad504b3d303e90d7a431b0fcaef76d207983
@@ -784,6 +790,6 @@ SPEC CHECKSUMS:
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: a2c223e4d2ea601c5de467600be03d9ccfbdc548
+PODFILE CHECKSUM: 56d1ccb4200baeadc1d8b0ced69acbd953a8c45e
 
 COCOAPODS: 1.11.3
