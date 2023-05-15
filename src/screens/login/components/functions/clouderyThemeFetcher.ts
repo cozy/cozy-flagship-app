@@ -38,7 +38,7 @@ export const tryProcessClouderyThemeMessage = (
   if (message.message === 'setTheme' && message.color !== undefined) {
     setTheme({
       themeUrl: message.url,
-      backgroundColor: message.color
+      backgroundColor: message.color.trim()
     })
   }
 }
