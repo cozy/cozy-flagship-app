@@ -1,14 +1,16 @@
+import Minilog from '@cozy/minilog'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Animated, Dimensions, Easing, StyleSheet, View } from 'react-native'
-
-import log from 'cozy-logger'
 
 import { getDimensions } from '/libs/dimensions'
 
 import { CozyIcon } from './transitions-icons/CozyIcon'
 
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { isLightBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { getColors } from '/ui/colors'
+
+const log = Minilog('TransitionToPasswordView')
 
 const webViewTopToNativeTop = top => top + getDimensions().statusBarHeight
 
@@ -65,13 +67,20 @@ export const TransitionToPasswordView = ({
   ])
 
   useEffect(() => {
-    const shouldUsePrimaryColor = isLightBackground(backgroundColor)
+    try {
+      const shouldUsePrimaryColor = isLightBackground(backgroundColor)
 
-    const color = shouldUsePrimaryColor
-      ? colors.primaryColor
-      : colors.paperBackgroundColor
+      const color = shouldUsePrimaryColor
+        ? colors.primaryColor
+        : colors.paperBackgroundColor
 
-    setForegroundColor(color)
+      setForegroundColor(color)
+    } catch (error) {
+      const errorMessage = getErrorMessage(error)
+      log.error(
+        `Something went wrong while trying to check if isLightBackground: ${errorMessage}`
+      )
+    }
   }, [backgroundColor])
 
   const transitionToFinal = useCallback(
