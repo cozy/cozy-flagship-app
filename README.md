@@ -54,7 +54,7 @@ You can then connect to your local stack using the following URL : `http://fooba
 #### On iOS simulator
 
 - Create a cozy instance with the \*.cozy.tools:8080 format
-- Disable the local httpServer by setting to `true` disableGetIndex in `dev.js`
+- Disable the local httpServer by setting to `true` disableGetIndex in `src/constants/dev-config.ts`
 - Your webview browser should now be able to use a locally hosted cozy-app in development/hot-reload mode
 
 ### Run App tests
