@@ -28,7 +28,7 @@ $ yarn
 $ yarn start # (must be started for the following commands)
 
 # Run on Android Device
-$ yarn android --variant=devDebug
+$ yarn android
 
 # Run on iOS Device
 $ cd ios && pod install # Only the first time

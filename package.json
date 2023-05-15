@@ -3,7 +3,7 @@
   "version": "1.1.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "android": "react-native run-android --variant=devDebug --main-activity=MainActivitycozy",
     "build": "react-app-rewired build",
     "build:android:debug": "./scripts/build-debug-offline-apk.sh",
     "generate-boot-icon": "yarn react-native generate-bootsplash src/assets/icon-cozy.png --background-color=297EF2 --logo-width=160 --assets-path=src/assets --flavor=main",
