@@ -1,7 +1,10 @@
 import { Linking, Platform } from 'react-native'
 import { BrowserResult } from 'react-native-inappbrowser-reborn'
 
-import { scanDocument } from '/app/domain/scanner/services/scanner'
+import {
+  scanDocument,
+  isScannerAvailable
+} from '/app/domain/scanner/services/scanner'
 
 import CozyClient from 'cozy-client'
 import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
@@ -150,6 +153,7 @@ export const localMethods = (
     isBiometryDenied,
     openAppOSSettings,
     isNativePassInstalledOnDevice,
-    scanDocument
+    scanDocument,
+    isScannerAvailable: () => Promise.resolve(isScannerAvailable())
   }
 }
