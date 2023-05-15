@@ -1,9 +1,13 @@
+import Minilog from '@cozy/minilog'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { SvgXml } from 'react-native-svg'
 
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { isLightBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { getColors } from '/ui/colors'
+
+const log = Minilog('CozyLogoScreen')
 
 const colors = getColors()
 
@@ -19,13 +23,20 @@ export const CozyLogoScreen = ({
   )
 
   useEffect(() => {
-    const shouldUsePrimaryColor = isLightBackground(backgroundColor)
+    try {
+      const shouldUsePrimaryColor = isLightBackground(backgroundColor)
 
-    const color = shouldUsePrimaryColor
-      ? colors.primaryColor
-      : colors.paperBackgroundColor
+      const color = shouldUsePrimaryColor
+        ? colors.primaryColor
+        : colors.paperBackgroundColor
 
-    setForegroundColor(color)
+      setForegroundColor(color)
+    } catch (error) {
+      const errorMessage = getErrorMessage(error)
+      log.error(
+        `Something went wrong while trying to check if isLightBackground: ${errorMessage}`
+      )
+    }
   }, [backgroundColor])
 
   return (
