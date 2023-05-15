@@ -1,3 +1,14 @@
+# 1.1.2
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+
 # 1.1.1
 
 ## ✨ Features
@@ -5,6 +16,9 @@
 
 ## 🐛 Bug Fixes
 
+* Fix Client Side Connectors stability issues ([PR #777](https://github.com/cozy/cozy-react-native/pull/777) and [PR #781](https://github.com/cozy/cozy-react-native/pull/781))
+* Show a loading screen after opening a MagicLink and until the login is complete ([PR #785](https://github.com/cozy/cozy-react-native/pull/785))
+* Fix an app crash that happens on some devices on Onboarding end ([PR #787](https://github.com/cozy/cozy-react-native/pull/787))
 
 ## 🔧 Tech
 
