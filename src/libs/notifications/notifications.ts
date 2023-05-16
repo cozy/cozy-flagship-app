@@ -74,10 +74,17 @@ export const handleNotificationOpening = (client: CozyClient): (() => void) => {
 }
 
 export const handleInitialToken = async (client: CozyClient): Promise<void> => {
-  const initialToken = await messaging().getToken()
+  try {
+    const initialToken = await messaging().getToken()
 
-  if (initialToken) {
-    void saveNotificationDeviceToken(client, initialToken)
+    if (initialToken) {
+      void saveNotificationDeviceToken(client, initialToken)
+    }
+  } catch (e) {
+    /*
+      When Google Play Services are not installed on Android, getToken throws errors.
+      We can do nothing about it so we catch them silently.
+    */
   }
 }
 
