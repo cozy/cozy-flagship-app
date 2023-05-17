@@ -125,14 +125,15 @@ export default class Launcher {
    * @returns {Promise<void>}
    */
   async saveCredentials(credentials) {
-    const { konnector, client } = this.getStartContext()
+    const { konnector, client, account } = this.getStartContext()
     const existingCredentials = await this.getCredentials()
     if (existingCredentials) {
       await this.removeCredentials()
     }
     const result = {
       version: 1,
-      createdByAppVersion: getVersion() + '-' + (await getBuildId()), // récupérer build number de l'app amirale
+      _id: account._id,
+      createdByAppVersion: getVersion() + '-' + (await getBuildId()),
       createdAt: new Date().toJSON(),
       slug: konnector.slug,
       credentials
@@ -188,7 +189,7 @@ export default class Launcher {
     )
     let didRemoveAccountCredential = false
     for (const accountId of accountIds) {
-      if (!existingAccountIds.includes(accountIds)) {
+      if (!existingAccountIds.includes(accountId)) {
         await removeCredential(fqdn, { _id: accountId })
         didRemoveAccountCredential = true
       }

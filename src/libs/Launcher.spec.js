@@ -45,6 +45,9 @@ describe('Launcher', () => {
     it('should save credentials with proper attributes', async () => {
       const launcher = new Launcher()
       const konnector = { slug: 'testkonnectorslug' }
+      const account = {
+        _id: 'testaccountid'
+      }
       const client = {
         getStackClient: () => ({
           uri: 'http://cozy.localhost:8080'
@@ -52,7 +55,8 @@ describe('Launcher', () => {
       }
       launcher.setStartContext({
         konnector,
-        client
+        client,
+        account
       })
       await launcher.saveCredentials({
         login: 'testlogin',
@@ -61,6 +65,7 @@ describe('Launcher', () => {
       expect(saveCredential).toHaveBeenCalledWith(
         'cozy.localhost_8080',
         expect.objectContaining({
+          _id: 'testaccountid',
           credentials: {
             login: 'testlogin',
             password: 'testpassword'
@@ -80,15 +85,12 @@ describe('Launcher', () => {
           uri: 'http://cozy.localhost:8080'
         }),
         query: jest.fn().mockResolvedValueOnce({
-          data: [
-            { _id: 'testaccountid1' },
-            { _id: 'testaccountid2' },
-            { _id: 'testaccountid3' }
-          ]
+          data: [{ _id: 'testaccountid1' }, { _id: 'testaccountid3' }]
         })
       }
       getSlugAccountIds.mockResolvedValueOnce([
         'testaccountid1',
+        'testaccountid2',
         'testaccountid3'
       ])
       launcher.setStartContext({
@@ -104,7 +106,9 @@ describe('Launcher', () => {
         'testslug1'
       )
       expect(client.query).toHaveBeenCalledWith(
-        expect.objectContaining({ ids: ['testaccountid1', 'testaccountid3'] })
+        expect.objectContaining({
+          ids: ['testaccountid1', 'testaccountid2', 'testaccountid3']
+        })
       )
     })
     it('should return false if nothing was cleaned', async () => {
