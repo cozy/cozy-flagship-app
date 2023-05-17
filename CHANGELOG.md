@@ -1,4 +1,4 @@
-# 1.1.2
+# 1.1.3
 
 ## ✨ Features
 
@@ -8,6 +8,23 @@
 
 ## 🔧 Tech
 
+
+# 1.1.2
+
+## ✨ Features
+
+* The app will now drive the user to set a password or a PIN code if their phone is not secured ([PR #788](https://github.com/cozy/cozy-react-native/pull/788))
+
+## 🐛 Bug Fixes
+
+* Fix Client Side Connectors stability issues ([PR #791](https://github.com/cozy/cozy-react-native/pull/791) and [PR #793](https://github.com/cozy/cozy-react-native/pull/793))
+* Fix error when trying to get notification for an on-premise Cozy ([PR #790](https://github.com/cozy/cozy-react-native/pull/790))
+* Fix a bug that displayed some button too close to the screen's borders on small screens ([PR #792](https://github.com/cozy/cozy-react-native/pull/792))
+
+## 🔧 Tech
+
+* Add foundations for document scanning capabilities ([PR #783](https://github.com/cozy/cozy-react-native/pull/783) and [PR #795](https://github.com/cozy/cozy-react-native/pull/795))
+* Add configuration for debuging on a real iOS device ([PR #773](https://github.com/cozy/cozy-react-native/pull/773))
 
 # 1.1.1
 
