@@ -23,8 +23,8 @@ const makeDOM = ({ body, isInverted }) => {
       <style type="text/css">${cirrusCss}</style>
     </head>
 
-    <body class="${theme}" style="padding-top: ${statusBarHeight}px; padding-bottom: ${navbarHeight}px;">
-      <main class="wrapper">
+    <body class="${theme}">
+      <main class="wrapper" style="padding-top: ${statusBarHeight}px; padding-bottom: ${navbarHeight}px;">
         ${body}
       </main>
     </body>
