@@ -4,6 +4,8 @@ import Minilog from '@cozy/minilog'
 import set from 'lodash/set'
 import { getBuildId, getVersion } from 'react-native-device-info'
 
+// @ts-ignore
+import flag from 'cozy-flags'
 import { Q, models } from 'cozy-client'
 import { saveFiles, saveBills, saveIdentity } from 'cozy-clisk'
 
@@ -140,6 +142,27 @@ export default class Launcher {
     }
     const fqdn = getFqdnFromClient(client).normalizedFqdn
     await saveCredential(fqdn, result)
+  }
+
+  /**
+   * Injects credentials found in io.cozy.test.credentials/slug document in
+   * the "value" attribute. Only for testing purpose. Needs to have
+   * test.flagship.clisk.credentials.injecter flag set to true.
+   * Credentientials are then removed from io.cozy.test.credentials/current.
+   *
+   * @returns {Promise<void>}
+   */
+  async injectCredentials() {
+    const { client, account, konnector } = this.getStartContext()
+    if (!flag('test.flagship.clisk.credentials.injecter') || !account) return
+
+    const { data: credentialsToInject } = await client.query(
+      Q('io.cozy.test.credentials').getById(konnector.slug)
+    )
+    if (credentialsToInject) {
+      await this.saveCredentials(credentialsToInject.value)
+      await client.destroy(credentialsToInject)
+    }
   }
 
   /**
