@@ -3,6 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
 
 import CozyClient from 'cozy-client'
+// @ts-ignore
+import flag from 'cozy-flags'
 
 import { normalizeFqdn } from './functions/stringHelpers'
 
@@ -58,6 +60,10 @@ export const getClient = async () => {
     uri,
     token
   })
+
+  await client.registerPlugin(flag.plugin)
+  await client.plugins.flags.initializing
+
   return client
 }
 
