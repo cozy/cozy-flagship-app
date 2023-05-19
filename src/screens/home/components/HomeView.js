@@ -19,19 +19,15 @@ import {
 } from '/libs/functions/routeHelpers'
 import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { useSession } from '/hooks/useSession'
-import { routes } from '/constants/routes'
-import { navigate } from '/libs/RootNavigation'
-import { getData, StorageKeys } from '/libs/localStore/storage'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import { launcherEvent } from '/libs/ReactNativeLauncher'
+import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
 
 const unzoomHomeView = webviewRef => {
   webviewRef?.injectJavaScript(
     'window.dispatchEvent(new Event("closeApp"));true;'
   )
 }
-
-let hasRenderedOnce = false
 
 /**
  * @typedef Props
@@ -224,13 +220,11 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
 
   useEffect(() => {
     const lockRedirect = async () => {
-      const shouldRedirect = await getData(StorageKeys.AutoLockEnabled)
-      shouldRedirect && navigate(routes.lock)
-      hasRenderedOnce = true
+      client && determineSecurityFlow(client)
     }
 
-    !hasRenderedOnce && void lockRedirect()
-  }, [])
+    void lockRedirect()
+  }, [client])
 
   const handleTrackWebviewInnerUri = webviewInneruri => {
     if (webviewInneruri !== trackedWebviewInnerUri) {

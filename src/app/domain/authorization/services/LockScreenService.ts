@@ -1,5 +1,5 @@
-import ReactNativeBiometrics, { BiometryType } from 'react-native-biometrics'
 import { Platform } from 'react-native'
+import ReactNativeBiometrics, { BiometryType } from 'react-native-biometrics'
 
 import CozyClient from 'cozy-client'
 
@@ -10,8 +10,9 @@ import { doHashPassword } from '/libs/functions/passwordHelpers'
 import { getFqdnFromClient } from '/libs/client'
 import { getVaultInformation } from '/libs/keychain'
 import { hideSplashScreen } from '/libs/services/SplashScreenService'
-import { setLockScreenUI } from '/screens/lock/events/LockScreen.events'
 import { translation } from '/locales'
+import { setLockScreenUI } from '/app/domain/authorization/events/LockScreenUiManager'
+import { UnlockWithPassword } from '/app/domain/authentication/models/User'
 
 const rnBiometrics = new ReactNativeBiometrics()
 
@@ -62,13 +63,6 @@ export const getBiometryType = async (
   callback: (type?: BiometryType) => void
 ): Promise<void> =>
   callback((await rnBiometrics.isSensorAvailable()).biometryType)
-
-interface UnlockWithPassword {
-  client: CozyClient
-  input: string
-  onSuccess: () => void
-  onFailure: (reason: string) => void
-}
 
 export const tryUnlockWithPassword = async ({
   client,

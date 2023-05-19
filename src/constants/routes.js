@@ -8,5 +8,10 @@ export const routes = {
   lock: 'lock',
   onboarding: 'onboarding',
   stack: 'stack',
-  welcome: 'welcome'
+  welcome: 'welcome',
+  securize: 'securize',
+  setPin: 'setPin',
+  setPassword: 'setPassword',
+  promptPassword: 'promptPassword',
+  promptPin: 'promptPin'
 }

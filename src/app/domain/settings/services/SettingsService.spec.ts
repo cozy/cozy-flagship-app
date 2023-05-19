@@ -1,8 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import { StorageKeys } from '../localStore/storage'
-
-import { ensureAutoLockIsEnabled } from '/libs/intents/toggleSetting'
+import { ensureAutoLockIsEnabled } from '/app/domain/settings/services/SettingsService'
+import { StorageKeys } from '/libs/localStore/storage'
 
 jest.mock('@react-native-cookies/cookies', () => ({
   clearAll: jest.fn()

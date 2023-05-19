@@ -119,7 +119,7 @@ const PasswordForm = ({
  * @param {setErrorCallback} props.setError - Function to call when an error is thrown by the component
  * @param {setLoginDataCallback} props.setKeys - Function to call to set the user's password and encryption keys
  * @param {setReadonly} props.setReadonly - Trigger change on the readonly state
- * @returns {import('react').ComponentClass}
+ * @returns {import('react').JSXElementConstructor}
  */
 export const OnboardingPasswordView = ({
   errorMessage,

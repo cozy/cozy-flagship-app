@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import { View, StatusBar } from 'react-native'
+import { View, StatusBar, StyleSheet } from 'react-native'
 
-import { lockScreenUi } from '/screens/lock/events/LockScreen.events'
+import { lockScreenUi } from '/app/domain/authorization/events/LockScreenUiManager'
 import { useDimensions } from '/libs/dimensions'
 import {
   NormalisedFlagshipUI,
   StatusBarStyle
 } from '/libs/intents/setFlagshipUI'
 
-import { styles } from '/screens/lock/view/LockScreenBars.styles'
+const styles = StyleSheet.create({
+  top: { position: 'absolute', width: '100%', left: 0, top: 0 },
+  bottom: { position: 'absolute', width: '100%', left: 0, bottom: 0 },
+  innerOverlay: {
+    zIndex: 1
+  }
+})
 
 export const LockScreenBars = ({
   initialUi = {

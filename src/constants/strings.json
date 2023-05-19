@@ -13,6 +13,7 @@
   "USER_AGENT": "io.cozy.flagship.mobile",
   "appTouched": "appTouched",
   "authLogin": "/auth/login?redirect=",
+  "KDF_ITERATIONS": 65e4,
   "konnectors": {
     "worker": {
       "backButton": "RETOUR À MON COZY"

@@ -17,7 +17,6 @@ import { clearCookies } from '/libs/httpserver/httpCookieManager'
 import { clearData } from '/libs/localStore/storage'
 import { deleteKeychain } from '/libs/keychain'
 import { hideSplashScreen } from '/libs/services/SplashScreenService'
-import { isBiometryDenied } from '/libs/intents/setBiometryState'
 import { openApp } from '/libs/functions/openApp'
 import { resetSessionToken } from '/libs/functions/session'
 import { routes } from '/constants/routes'
@@ -25,7 +24,8 @@ import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 import { setDefaultRedirection } from '/libs/defaultRedirection/defaultRedirection'
 import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { showInAppBrowser, closeInAppBrowser } from '/libs/intents/InAppBrowser'
-import { toggleSetting } from '/libs/intents/toggleSetting'
+import { isBiometryDenied } from '/app/domain/authentication/services/BiometryService'
+import { toggleSetting } from '/app/domain/settings/services/SettingsService'
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {

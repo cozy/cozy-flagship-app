@@ -1,12 +1,13 @@
-import { StorageKeys, storeData } from '/libs/localStore/storage'
-import {
-  BiometryEmitter,
-  isBiometryDenied,
-  makeFlagshipMetadataInjection,
-  updateBiometrySetting
-} from '/libs/intents/setBiometryState'
+import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
+
+import {
+  makeFlagshipMetadataInjection,
+  isBiometryDenied,
+  BiometryEmitter,
+  updateBiometrySetting
+} from '/app/domain/authentication/services/BiometryService'
 
 const mockIsSensorAvailable = jest.fn().mockResolvedValue({
   biometryType: 'FaceID',
@@ -130,13 +131,8 @@ describe('updateBiometrySetting', () => {
     BiometryEmitter.once(eventName, value => expect(value).toBe(expectedValue))
 
     const result = await updateBiometrySetting(expectedValue)
-
-    expect(await AsyncStorage.getItem(StorageKeys.BiometryActivated)).toBe(
-      expectedValue.toString()
-    )
-    expect(await AsyncStorage.getItem(StorageKeys.AutoLockEnabled)).toBe(
-      expectedValue.toString()
-    )
+    expect(await getData(StorageKeys.BiometryActivated)).toBe(expectedValue)
+    expect(await getData(StorageKeys.AutoLockEnabled)).toBe(expectedValue)
     expect(result).toBe(expectedValue)
   })
 
@@ -152,12 +148,8 @@ describe('updateBiometrySetting', () => {
 
     const result = await updateBiometrySetting(expectedValue)
 
-    expect(await AsyncStorage.getItem(StorageKeys.BiometryActivated)).toBe(
-      expectedValue.toString()
-    )
-    expect(await AsyncStorage.getItem(StorageKeys.AutoLockEnabled)).toBe(
-      expectedValue.toString()
-    )
+    expect(await getData(StorageKeys.BiometryActivated)).toBe(expectedValue)
+    expect(await getData(StorageKeys.AutoLockEnabled)).toBe(expectedValue)
     expect(result).toBe(expectedValue)
   })
 
