@@ -27,7 +27,7 @@ import { useIsSecureProtocol } from '/hooks/useIsSecureProtocol'
 import {
   BiometryEmitter,
   makeFlagshipMetadataInjection
-} from '/libs/intents/setBiometryState'
+} from '/app/domain/authentication/services/BiometryService'
 
 const log = Minilog('CozyWebView')
 

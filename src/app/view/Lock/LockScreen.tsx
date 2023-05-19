@@ -1,14 +1,15 @@
 import React from 'react'
-import RnMaskInput from 'react-native-mask-input'
 import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback
 } from 'react-native'
+import RnMaskInput from 'react-native-mask-input'
 import { FullWindowOverlay } from 'react-native-screens'
 
 import { Button } from '/ui/Button'
+import { ConditionalWrapper } from '/components/ConditionalWrapper'
 import { ConfirmDialog } from '/ui/CozyDialogs/ConfirmDialog'
 import { Container } from '/ui/Container'
 import { CozyCircle } from '/ui/Icons/CozyCircle'
@@ -18,17 +19,16 @@ import { Grid } from '/ui/Grid'
 import { Icon } from '/ui/Icon'
 import { IconButton } from '/ui/IconButton'
 import { Link } from '/ui/Link'
-import { LockScreenBars } from '/screens/lock/view/LockScreenBars'
-import { LockScreenProps, LockViewProps } from '/screens/lock/LockScreenTypes'
+import { LockScreenBars } from '/app/view/Lock/LockScreenBars'
+import { LockViewProps, LockScreenProps } from '/app/view/Lock/LockScreenTypes'
 import { LogoutFlipped } from '/ui/Icons/LogoutFlipped'
 import { TextField } from '/ui/TextField'
 import { Tooltip } from '/ui/Tooltip'
 import { Typography } from '/ui/Typography'
-import { getBiometryIcon } from '/screens/lock/functions/lockScreenFunctions'
+import { getBiometryIcon } from '/app/domain/authorization/services/LockScreenService'
 import { palette } from '/ui/palette'
 import { translation } from '/locales'
-import { useLockScreenProps } from '/screens/lock/hooks/useLockScreen'
-import { ConditionalWrapper } from '/components/ConditionalWrapper'
+import { useLockScreenProps } from '/app/view/Lock/useLockScreen'
 
 const LockView = ({
   biometryEnabled,

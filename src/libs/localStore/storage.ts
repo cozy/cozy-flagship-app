@@ -27,7 +27,10 @@ export const storeData = async (
   value: StorageItems[keyof StorageItems]
 ): Promise<void> => {
   try {
-    await setItem(name, JSON.stringify(value))
+    // Convert value to a string before storing it
+    const stringValue =
+      typeof value === 'boolean' ? String(value) : JSON.stringify(value)
+    await setItem(name, stringValue)
   } catch (error) {
     log.error(`Failed to store key "${name}" to persistent storage`, error)
   }
@@ -36,6 +39,9 @@ export const storeData = async (
 export const getData = async <T>(name: StorageKeys): Promise<T | null> => {
   try {
     const value = await getItem(name)
+
+    if (value === 'true') return true as unknown as T
+    if (value === 'false') return false as unknown as T
 
     return value !== null ? (JSON.parse(value) as T) : null
   } catch (error) {

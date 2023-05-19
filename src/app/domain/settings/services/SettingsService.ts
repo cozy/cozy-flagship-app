@@ -1,10 +1,10 @@
 import Minilog from '@cozy/minilog'
 
-import { removeVaultInformation, saveVaultInformation } from '/libs/keychain'
 import {
   openSettingBiometry,
   BiometryEmitter
-} from '/libs/intents/setBiometryState'
+} from '/app/domain/authentication/services/BiometryService'
+import { removeVaultInformation, saveVaultInformation } from '/libs/keychain'
 import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
 
 const log = Minilog('toggleSetting.ts')
@@ -26,12 +26,16 @@ const toggleStorageSetting = async (
   return null
 }
 
-export const ensureAutoLockIsEnabled = async (): Promise<void> => {
+export const ensureAutoLockIsEnabled = async (): Promise<boolean> => {
   const autoLockEnabled = await getData(StorageKeys.AutoLockEnabled)
 
   if (!autoLockEnabled) {
     await storeData(StorageKeys.AutoLockEnabled, true)
   }
+
+  const autoLockValue = Boolean(await getData(StorageKeys.AutoLockEnabled))
+
+  return autoLockValue
 }
 
 export const toggleSetting = async (

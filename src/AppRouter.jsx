@@ -1,15 +1,20 @@
-import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
+import React from 'react'
 
 import { CozyAppScreen } from '/screens/cozy-app/CozyAppScreen'
 import { CreateInstanceScreen } from '/screens/login/CreateInstanceScreen'
 import { ErrorScreen } from '/screens/error/ErrorScreen'
 import { HomeScreen } from '/screens/home/HomeScreen'
-import { LockScreen } from '/screens/lock/LockScreen'
+import { LockScreen } from '/app/view/Lock/LockScreen'
 import { LoginScreen } from '/screens/login/LoginScreen'
 import { OnboardingScreen } from '/screens/login/OnboardingScreen'
 import { WelcomeScreen } from '/screens/welcome/WelcomeScreen'
 import { routes } from '/constants/routes.js'
+
+import { PasswordPrompt } from './app/view/Secure/PasswordPrompt'
+import { PinPrompt } from './app/view/Secure/PinPrompt'
+import { SetPasswordView } from './app/view/Secure/SetPasswordView'
+import { SetPinView } from './app/view/Secure/SetPinView'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -91,5 +96,10 @@ export const RootNavigator = ({ initialRoute, setClient }) => (
         animationEnabled: false
       }}
     />
+
+    <Root.Screen name={routes.promptPassword} component={PasswordPrompt} />
+    <Root.Screen name={routes.promptPin} component={PinPrompt} />
+    <Root.Screen name={routes.setPin} component={SetPinView} />
+    <Root.Screen name={routes.setPassword} component={SetPasswordView} />
   </Root.Navigator>
 )

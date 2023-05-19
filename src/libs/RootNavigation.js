@@ -25,7 +25,7 @@ export const navigate = (name, params) => {
   }
 }
 
-export const reset = (name, params) => {
+export const reset = (name, params = {}) => {
   try {
     if (isReady())
       return navigationRef.dispatch(
