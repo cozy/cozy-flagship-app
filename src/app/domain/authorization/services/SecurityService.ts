@@ -32,12 +32,12 @@ const fns = getDevModeFunctions(
   {
     isDeviceSecured,
     isAutoLockEnabled,
-    shouldCreatePassword: hasDefinedPassword
+    hasDefinedPassword
   },
   {
     isDeviceSecured: undefined,
     isAutoLockEnabled: undefined,
-    shouldCreatePassword: undefined
+    hasDefinedPassword: undefined
   }
 )
 
@@ -73,28 +73,26 @@ export const getSecFlowInitParams = async (
 ): Promise<{
   createPassword: boolean
 }> => {
-  const isCreatePasswordFlow = await fns.shouldCreatePassword(client)
+  const isCreatePinFlow = await fns.hasDefinedPassword(client)
 
   devlog(
     '🔓',
     `User ${
-      isCreatePasswordFlow
-        ? 'does not have a password set'
-        : 'has a password set'
+      isCreatePinFlow ? 'has a password set' : 'does not have a password set'
     } `
   )
 
-  if (isCreatePasswordFlow) {
-    devlog('🔓', 'User should create a password')
-
-    return {
-      createPassword: true
-    }
-  } else {
+  if (isCreatePinFlow) {
     devlog('🔓', 'User should set a PIN code method')
 
     return {
       createPassword: false
+    }
+  } else {
+    devlog('🔓', 'User should create a password')
+
+    return {
+      createPassword: true
     }
   }
 }

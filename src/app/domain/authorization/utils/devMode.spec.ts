@@ -14,7 +14,7 @@ describe('getDevModeFunctions', () => {
     isDeviceSecured: async (): Promise<boolean> => Promise.resolve(true),
     isAutoLockEnabled: async (): Promise<boolean> => Promise.resolve(true),
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    shouldCreatePassword: async (_client: CozyClient): Promise<boolean> =>
+    hasDefinedPassword: async (_client: CozyClient): Promise<boolean> =>
       Promise.resolve(true),
     getBiometricType: async (): Promise<IsSensorAvailableResult> =>
       Promise.resolve({ available: true })
@@ -41,6 +41,6 @@ describe('getDevModeFunctions', () => {
 
     expect(await fns.isDeviceSecured()).toBe(false) // Dev value used
     expect(await fns.isAutoLockEnabled()).toBe(true) // Prod value still returned
-    expect(await fns.shouldCreatePassword({} as CozyClient)).toBe(true) // Prod value still returned
+    expect(await fns.hasDefinedPassword({} as CozyClient)).toBe(true) // Prod value still returned
   })
 })

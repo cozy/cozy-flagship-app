@@ -5,13 +5,13 @@ import { isDev } from '/core/tools/env'
 // Function types for all the features we need to mock in development mode
 type IsDeviceSecuredFn = () => Promise<boolean>
 type IsAutoLockEnabledFn = () => Promise<boolean>
-type ShouldCreatePasswordFn = (client: CozyClient) => Promise<boolean>
+type hasDefinedPassword = (client: CozyClient) => Promise<boolean>
 
 // Mapping of function names to function types
 interface FunctionSet {
   isDeviceSecured: IsDeviceSecuredFn
   isAutoLockEnabled: IsAutoLockEnabledFn
-  shouldCreatePassword: ShouldCreatePasswordFn
+  hasDefinedPassword: hasDefinedPassword
 }
 
 // Same as FunctionSet, but allows functions to be optional

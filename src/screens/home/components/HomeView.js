@@ -29,6 +29,8 @@ const unzoomHomeView = webviewRef => {
   )
 }
 
+let hasRenderedOnce = false
+
 /**
  * @typedef Props
  * @prop {(arg: import('/libs/konnectors/models').LauncherContext) => void} setLauncherContext
@@ -220,10 +222,11 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
 
   useEffect(() => {
     const lockRedirect = async () => {
+      hasRenderedOnce = true
       client && determineSecurityFlow(client)
     }
 
-    void lockRedirect()
+    !hasRenderedOnce && void lockRedirect()
   }, [client])
 
   const handleTrackWebviewInnerUri = webviewInneruri => {
