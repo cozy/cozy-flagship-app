@@ -1,9 +1,7 @@
 type AsyncVoidFunction<T extends unknown[]> = (...args: T) => Promise<void>
 
 /**
- * @description `safePromise()` is a wrapper for an async function that will catch any errors
- * it is mandatory to implement error handling in the async function you're wrapping,
- * otherwise the error handling will be brittle, possibly leading to big issues
+ * @description `safePromise()` is a wrapper to be placed arround promises that already handle their own errors internally. With this wrapper Typescript would allow to call them without a surrounding try...catch
  *
  * @param asyncFn Safe wrapper for an async function
  *

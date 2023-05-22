@@ -5,7 +5,7 @@ import { logger } from '/libs/functions/logger'
 import {
   fetchCozyAppArchiveInfoForVersion,
   fetchCozyAppVersion,
-  getFqdnFromClient
+  getInstanceAndFqdnFromClient
 } from '/libs/client'
 import { getBaseFolderForFqdnAndSlug } from '/libs/httpserver/httpPaths'
 import {
@@ -72,7 +72,7 @@ export const updateCozyAppBundle = async ({
   type?: AppType
 }): Promise<void> => {
   log.debug(`Check updates for '${slug}'`)
-  const { fqdn } = getFqdnFromClient(client)
+  const { fqdn } = getInstanceAndFqdnFromClient(client)
 
   const { version: currentVersion } =
     (await getCurrentAppConfigurationForFqdnAndSlug(fqdn, slug)) ?? {}
@@ -159,7 +159,7 @@ const getCozyAppFolderPathForVersion = ({
   slug,
   version
 }: AppInfo & { version: string }): string => {
-  const { fqdn } = getFqdnFromClient(client)
+  const { fqdn } = getInstanceAndFqdnFromClient(client)
 
   const baseFolderForFqdnAndSlug = getBaseFolderForFqdnAndSlug(fqdn, slug)
 
@@ -171,7 +171,7 @@ const getCozyAppArchivePathForVersion = ({
   slug,
   version
 }: AppInfo & { version: string }): string => {
-  const { fqdn } = getFqdnFromClient(client)
+  const { fqdn } = getInstanceAndFqdnFromClient(client)
 
   const baseFolderForFqdnAndSlug = getBaseFolderForFqdnAndSlug(fqdn, slug)
 

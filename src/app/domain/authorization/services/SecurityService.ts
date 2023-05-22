@@ -8,7 +8,7 @@ import {
   PasswordParams,
   savePassword,
   SetKeys,
-  shouldCreatePassword
+  hasDefinedPassword
 } from '/app/domain/authentication/models/User'
 import {
   ensureAutoLockIsEnabled,
@@ -18,7 +18,7 @@ import { getDevModeFunctions } from '/app/domain/authorization/utils/devMode'
 import { routes } from '/constants/routes'
 import { devlog } from '/core/tools/env'
 import { navigate, navigationRef, reset } from '/libs/RootNavigation'
-import { getFqdnFromClient } from '/libs/client'
+import { getInstanceAndFqdnFromClient } from '/libs/client'
 
 import { getErrorMessage } from 'cozy-intent'
 
@@ -26,17 +26,13 @@ import { authConstants } from '../constants'
 
 import { safePromise } from '/utils/safePromise'
 
-const showLockView = (): void => {
-  reset(routes.lock)
-}
-
 // Can use mock functions in dev environment
 // async (): Promise<boolean> => Promise.resolve(false)
 const fns = getDevModeFunctions(
   {
     isDeviceSecured,
     isAutoLockEnabled,
-    shouldCreatePassword
+    shouldCreatePassword: hasDefinedPassword
   },
   {
     isDeviceSecured: undefined,
@@ -52,7 +48,7 @@ export const determineSecurityFlow = async (
     devlog('🔒', 'Application has autolock activated')
     devlog('🔒', 'Device should be secured or autolock would not work')
 
-    showLockView()
+    reset(routes.lock)
   } else if (await fns.isDeviceSecured()) {
     devlog('🔓', 'Application does not have autolock activated')
     devlog('🔒', 'Device is secured')
@@ -143,7 +139,8 @@ async function safeSetKeysAsync(
 }
 
 export const getPasswordParams = (client: CozyClient): PasswordParams => {
-  const { uri: instance, normalizedFqdn: fqdn } = getFqdnFromClient(client)
+  const { uri: instance, normalizedFqdn: fqdn } =
+    getInstanceAndFqdnFromClient(client)
 
   return {
     fqdn,

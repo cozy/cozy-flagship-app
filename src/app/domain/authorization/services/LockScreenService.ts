@@ -7,7 +7,7 @@ import { FaceId } from '/ui/Icons/FaceId'
 import { Fingerprint } from '/ui/Icons/Fingerprint'
 import { asyncLogout } from '/libs/intents/localMethods'
 import { doHashPassword } from '/libs/functions/passwordHelpers'
-import { getFqdnFromClient } from '/libs/client'
+import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { getVaultInformation } from '/libs/keychain'
 import { hideSplashScreen } from '/libs/services/SplashScreenService'
 import { translation } from '/locales'
@@ -27,7 +27,7 @@ export const validatePassword = async ({
   onSuccess: () => void
   onFailure: (reason: string) => void
 }): Promise<void> => {
-  const { fqdn } = getFqdnFromClient(client)
+  const { fqdn } = getInstanceAndFqdnFromClient(client)
 
   const { KdfIterations } = await client
     .getStackClient()
