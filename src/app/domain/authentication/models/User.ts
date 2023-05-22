@@ -8,29 +8,36 @@ export const canAuthWithOIDC = (client: CozyClient): boolean | undefined => {
   return isOidcAuth(client)
 }
 
-export const shouldCreatePassword = async (
+const isPasswordLessCozy = (client: CozyClient): boolean => {
+  return isOidcAuth(client) || isMagicLinkAuth(client)
+}
+
+export const hasDefinedPassword = async (
   client: CozyClient
 ): Promise<boolean> => {
   const passwordDefined = await isPasswordDefined(client)
+  const vaultInstalled = await IsVaultInstalled(client)
 
-  return (
-    !(await IsVaultInstalled(client)) &&
-    (isOidcAuth(client) || isMagicLinkAuth(client)) &&
-    !passwordDefined
-  )
+  return (vaultInstalled || passwordDefined) ?? !isPasswordLessCozy(client)
+}
+
+interface QueryResult {
+  extension_installed: boolean
 }
 
 const IsVaultInstalled = async (client: CozyClient): Promise<boolean> => {
   try {
-    const vault = await client
-      .getStackClient()
-      .fetchJSON<{ extension_installed?: boolean }>(
-        'GET',
-        '/data/io.cozy.settings/io.cozy.settings.bitwarden',
-        []
-      )
+    const {
+      data: { extension_installed }
+    } = (await client.fetchQueryAndGetFromState({
+      definition: Q('io.cozy.settings').getById('io.cozy.settings.bitwarden'),
+      options: {
+        as: 'io.cozy.settings/io.cozy.settings.bitwarden',
+        singleDocData: true
+      }
+    })) as { data: QueryResult }
 
-    return Boolean(vault.extension_installed)
+    return extension_installed
   } catch {
     return false
   }

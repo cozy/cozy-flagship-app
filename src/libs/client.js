@@ -127,9 +127,9 @@ export const fetchCozyDataForSlug = async (slug, client, cookie) => {
 }
 
 /**
- * @typedef {Object} getFqdnFromClient
+ * @typedef {Object} getInstanceAndFqdnFromClient
  * @property {string} fqdn - The fqdn is the raw host of the cozy instance (usually you don't want to use it)
- * @property {string} normalizedFqdn - The normalizedFqdn is the fqdn without the port or other parts of the url (usually you want to use it)
+ * @property {string} normalizedFqdn - The normalizedFqdn is the fqdn with special characters replaced by underscores
  * @property {string} uri - The uri is the root url of the cozy instance
  */
 
@@ -138,15 +138,15 @@ export const fetchCozyDataForSlug = async (slug, client, cookie) => {
  * 
  * @description  Get The uri, fqdn and normalizedFqdn of a cozy instance
  *
- * @returns {getFqdnFromClient}
+ * @returns {getInstanceAndFqdnFromClient}
 
  * @example
- * const { uri, fqdn, normalizedFqdn } = await getFqdnFromClient(client)
+ * const { uri, fqdn, normalizedFqdn } = await getInstanceAndFqdnFromClient(client)
  * // uri: https://cozy.tools:8080
  * // fqdn: cozy.tools:8080
- * // normalizedFqdn: cozy.tools
+ * // normalizedFqdn: cozy.tools_8080
  */
-export const getFqdnFromClient = client => {
+export const getInstanceAndFqdnFromClient = client => {
   const rootURL = client.getStackClient().uri
   const { host: fqdn } = new URL(rootURL)
 

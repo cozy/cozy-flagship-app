@@ -40,7 +40,7 @@ jest.mock('/libs/functions/logger', () => ({
 jest.mock('../client', () => ({
   fetchCozyAppVersion: jest.fn(),
   fetchCozyAppArchiveInfoForVersion: jest.fn(),
-  getFqdnFromClient: jest.requireActual('../client').getFqdnFromClient
+  getInstanceAndFqdnFromClient: jest.requireActual('../client').getInstanceAndFqdnFromClient
 }))
 
 jest.mock('./cozyAppBundleConfiguration', () => ({

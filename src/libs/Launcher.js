@@ -10,7 +10,7 @@ import { Q, models } from 'cozy-client'
 import { saveFiles, saveBills, saveIdentity } from 'cozy-clisk'
 
 import { cleanExistingAccountsForKonnector } from './Launcher.functions'
-import { getFqdnFromClient } from './client'
+import { getInstanceAndFqdnFromClient } from './client'
 import { ensureKonnectorFolder } from './folder'
 import {
   saveCredential,
@@ -140,7 +140,7 @@ export default class Launcher {
       slug: konnector.slug,
       credentials
     }
-    const fqdn = getFqdnFromClient(client).normalizedFqdn
+    const fqdn = getInstanceAndFqdnFromClient(client).normalizedFqdn
     await saveCredential(fqdn, result)
   }
 
@@ -172,7 +172,7 @@ export default class Launcher {
    */
   async removeCredentials() {
     const { account, client } = this.getStartContext()
-    const fqdn = getFqdnFromClient(client).normalizedFqdn
+    const fqdn = getInstanceAndFqdnFromClient(client).normalizedFqdn
     await removeCredential(fqdn, account)
   }
 
@@ -186,7 +186,7 @@ export default class Launcher {
     if (!account) {
       return null
     }
-    const fqdn = getFqdnFromClient(client).normalizedFqdn
+    const fqdn = getInstanceAndFqdnFromClient(client).normalizedFqdn
     const encAccount = await getCredential(fqdn, account)
     return encAccount?.credentials || null
   }
@@ -199,7 +199,7 @@ export default class Launcher {
    */
   async cleanCredentialsAccounts(slug) {
     const { client } = this.getStartContext()
-    const fqdn = getFqdnFromClient(client).normalizedFqdn
+    const fqdn = getInstanceAndFqdnFromClient(client).normalizedFqdn
     const accountIds = await getSlugAccountIds(fqdn, slug)
 
     if (accountIds.length === 0) return false

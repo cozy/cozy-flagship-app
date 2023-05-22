@@ -5,7 +5,7 @@ import {
   getBaseFolderForFqdnAndSlug,
   getBaseFolderForFqdnAndSlugAndCurrentVersion
 } from '/libs/httpserver/httpPaths'
-import { getFqdnFromClient } from '/libs/client'
+import { getInstanceAndFqdnFromClient } from '/libs/client'
 
 import { getErrorMessage } from 'cozy-intent'
 
@@ -24,7 +24,7 @@ export const getKonnectorBundle = async ({
   client,
   slug
 }: AppInfo): Promise<KonnectorBundle> => {
-  const { fqdn } = getFqdnFromClient(client)
+  const { fqdn } = getInstanceAndFqdnFromClient(client)
   const path = await getBaseFolderForFqdnAndSlugAndCurrentVersion(fqdn, slug)
 
   try {
@@ -60,7 +60,7 @@ export const handleCleanup = async ({
   slug,
   versionsToKeep
 }: AppInfo & { versionsToKeep: string[] }): Promise<void> => {
-  const { fqdn } = getFqdnFromClient(client)
+  const { fqdn } = getInstanceAndFqdnFromClient(client)
   const path = getBaseFolderForFqdnAndSlug(fqdn, slug)
   const dirs = (await RNFS.readDir(path)) as RNFS.ReadDirItem[] | undefined
 

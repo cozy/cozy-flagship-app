@@ -1,13 +1,13 @@
 import { AppState } from 'react-native'
 import { BiometryType } from 'react-native-biometrics'
-import { Route } from '@react-navigation/native'
+import type { Route } from '@react-navigation/native'
 import { useCallback, useEffect, useState } from 'react'
 
 import { useClient } from 'cozy-client'
 
 import { LockViewProps } from '/app/view/Lock/LockScreenTypes'
 import { getData, StorageKeys } from '/libs/localStore/storage'
-import { getFqdnFromClient } from '/libs/client'
+import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { getVaultInformation } from '/libs/keychain'
 import { navigate } from '/libs/RootNavigation'
 import { openForgotPasswordLink } from '/libs/functions/openForgotPasswordLink'
@@ -38,7 +38,7 @@ export const useLockScreenProps = (
   const [uiError, setUiError] = useState('')
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know that the client is defined
   const client = useClient()!
-  const { fqdn } = getFqdnFromClient(client)
+  const { fqdn } = getInstanceAndFqdnFromClient(client)
 
   const onUnlock = useCallback((): void => {
     if (!route) return navigate(routes.home)
