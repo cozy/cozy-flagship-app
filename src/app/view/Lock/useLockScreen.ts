@@ -41,7 +41,7 @@ export const useLockScreenProps = (
   const { fqdn } = getInstanceAndFqdnFromClient(client)
 
   const onUnlock = useCallback((): void => {
-    if (!route) return navigate(routes.home)
+    if (!route || Object.keys(route).length === 0) return navigate(routes.home)
 
     return navigate(route.name, route.params)
   }, [route])

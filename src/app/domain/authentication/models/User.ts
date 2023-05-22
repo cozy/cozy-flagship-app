@@ -17,8 +17,9 @@ export const hasDefinedPassword = async (
 ): Promise<boolean> => {
   const passwordDefined = await isPasswordDefined(client)
   const vaultInstalled = await IsVaultInstalled(client)
+  const isPasswordLessCozyInst = isPasswordLessCozy(client)
 
-  return (vaultInstalled || passwordDefined) ?? !isPasswordLessCozy(client)
+  return vaultInstalled || passwordDefined || !isPasswordLessCozyInst
 }
 
 interface QueryResult {
@@ -37,7 +38,7 @@ const IsVaultInstalled = async (client: CozyClient): Promise<boolean> => {
       }
     })) as { data: QueryResult }
 
-    return extension_installed
+    return Boolean(extension_installed)
   } catch {
     return false
   }
@@ -59,9 +60,7 @@ const isOidcAuth = (client: CozyClient): boolean => {
   return (client.capabilities as MyClientCapabilities).can_auth_with_oidc
 }
 
-const isPasswordDefined = async (
-  client: CozyClient
-): Promise<boolean | undefined> => {
+const isPasswordDefined = async (client: CozyClient): Promise<boolean> => {
   const result = (await client.query(
     Q('io.cozy.settings').getById('io.cozy.settings.instance'),
     {
@@ -75,7 +74,7 @@ const isPasswordDefined = async (
     )
   }
 
-  return result.data.attributes.password_defined
+  return Boolean(result.data.attributes.password_defined)
 }
 
 const isInstanceSettingsData = (obj: unknown): obj is InstanceSettingsData => {
