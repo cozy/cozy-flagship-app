@@ -29,10 +29,15 @@ export const konnectorLogsSlice = createSlice({
   initialState,
   reducers: {
     addLog: (state, action: PayloadAction<LogObj>) => {
-      if (state.logs[action.payload.slug] === undefined) {
-        state.logs[action.payload.slug] = []
+      const log = { ...action.payload }
+      if (state.logs[log.slug] === undefined) {
+        state.logs[log.slug] = []
       }
-      state.logs[action.payload.slug]?.push(action.payload)
+      if (typeof log.msg !== 'string') {
+        log.msg = JSON.stringify(log.msg)
+      }
+
+      state.logs[log.slug]?.push(log)
     },
     removeLogs: (state, action: PayloadAction<removeLogInfo>) => {
       const result = state.logs[action.payload.slug]?.slice(
