@@ -23,20 +23,23 @@ import { TextField } from '/ui/TextField'
 import { ConditionalWrapper } from '/components/ConditionalWrapper'
 import { palette } from '/ui/palette'
 
-const SetPinViewSimple = (): JSX.Element => {
+interface SetPinProps {
+  onSuccess: () => void
+}
+
+const SetPinViewSimple = (props: SetPinProps): JSX.Element => {
   const [step, setStep] = useState(1)
   const [firstInput, setFirstInput] = useState('')
   const [secondInput, setSecondInput] = useState('')
   const [error, setError] = useState('')
   const [passwordVisibility, togglePasswordVisibility] = useState(false)
-
   const handleFirstInputSubmit = (): void => {
     setStep(2)
   }
 
   const handleSecondInputSubmit = (): void => {
     if (secondInput === firstInput) {
-      void savePinCode(secondInput)
+      void savePinCode(secondInput, props.onSuccess)
     } else {
       setError(translation.screens.SecureScreen.confirm_pin_error)
     }
@@ -151,7 +154,7 @@ const SetPinViewSimple = (): JSX.Element => {
   )
 }
 
-export const SetPinView = (): JSX.Element => (
+export const SetPinView = (props: SetPinProps): JSX.Element => (
   <ConditionalWrapper
     condition={Platform.OS === 'ios'}
     wrapper={(children): JSX.Element => (
@@ -165,7 +168,7 @@ export const SetPinView = (): JSX.Element => (
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <SetPinViewSimple />
+        <SetPinViewSimple {...props} />
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   </ConditionalWrapper>

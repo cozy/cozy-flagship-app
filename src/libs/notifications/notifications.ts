@@ -20,10 +20,10 @@ interface NotificationData {
   redirectLink: string
 }
 
-export const navigateFromNotification = (
+export const navigateFromNotification = async (
   client: CozyClient,
   notification: FirebaseMessagingTypes.RemoteMessage
-): void => {
+): Promise<void> => {
   const { data: { redirectLink } = {} as NotificationData } = notification
 
   try {
@@ -43,7 +43,7 @@ export const navigateFromNotification = (
       searchParams: []
     })
 
-    navigateToApp({
+    await navigateToApp({
       navigation: { navigate },
       slug,
       href,
@@ -63,13 +63,13 @@ export const handleInitialNotification = async (
   const initialNotification = await messaging().getInitialNotification()
 
   if (initialNotification) {
-    navigateFromNotification(client, initialNotification)
+    await navigateFromNotification(client, initialNotification)
   }
 }
 
 export const handleNotificationOpening = (client: CozyClient): (() => void) => {
-  return messaging().onNotificationOpenedApp(notification => {
-    navigateFromNotification(client, notification)
+  return messaging().onNotificationOpenedApp(async notification => {
+    await navigateFromNotification(client, notification)
   })
 }
 

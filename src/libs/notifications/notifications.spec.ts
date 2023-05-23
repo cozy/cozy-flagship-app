@@ -12,14 +12,14 @@ describe('navigateFromNotification', () => {
     getStackClient: () => ({ uri: 'http://alice.mycozy.cloud' })
   } as CozyClient
 
-  it('should navigate to app to generated url', () => {
+  it('should navigate to app to generated url', async () => {
     // Given
     const notification = {
       data: { redirectLink: 'contacts/#/new' }
     }
 
     // When
-    navigateFromNotification(client, notification)
+    await navigateFromNotification(client, notification)
 
     // Then
     expect(navigateToApp).toHaveBeenCalledWith({
@@ -30,12 +30,12 @@ describe('navigateFromNotification', () => {
     })
   })
 
-  it('should do nothing if no data in notification', () => {
+  it('should do nothing if no data in notification', async () => {
     // Given
     const notification = {}
 
     // When
-    navigateFromNotification(client, notification)
+    await navigateFromNotification(client, notification)
 
     // Then
     expect(navigateToApp).not.toHaveBeenCalled()

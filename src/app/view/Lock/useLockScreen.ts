@@ -1,15 +1,14 @@
 import { AppState } from 'react-native'
 import { BiometryType } from 'react-native-biometrics'
-import type { Route } from '@react-navigation/native'
 import { useCallback, useEffect, useState } from 'react'
 
 import { useClient } from 'cozy-client'
 
-import { LockViewProps } from '/app/view/Lock/LockScreenTypes'
+import { LockScreenProps, LockViewProps } from '/app/view/Lock/LockScreenTypes'
 import { getData, StorageKeys } from '/libs/localStore/storage'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { getVaultInformation } from '/libs/keychain'
-import { navigate } from '/libs/RootNavigation'
+import { reset } from '/libs/RootNavigation'
 import { openForgotPasswordLink } from '/libs/functions/openForgotPasswordLink'
 import { routes } from '/constants/routes'
 import { translation } from '/locales'
@@ -22,12 +21,7 @@ import {
   validatePin
 } from '/app/domain/authorization/services/LockScreenService'
 
-export const useLockScreenProps = (
-  route?: Route<
-    string,
-    Readonly<{ key: string; name: string; path?: string | undefined }>
-  >
-): LockViewProps => {
+export const useLockScreenProps = (props: LockScreenProps): LockViewProps => {
   const [biometryEnabled, setBiometryEnabled] = useState(false)
   const [biometryType, setBiometryType] = useState<BiometryType | null>(null)
   const [hasLogoutDialog, toggleLogoutDialog] = useState(false)
@@ -41,10 +35,10 @@ export const useLockScreenProps = (
   const { fqdn } = getInstanceAndFqdnFromClient(client)
 
   const onUnlock = useCallback((): void => {
-    if (!route || Object.keys(route).length === 0) return navigate(routes.home)
+    if (!props.route.params?.onSuccess) return reset(routes.home)
 
-    return navigate(route.name, route.params)
-  }, [route])
+    props.route.params.onSuccess()
+  }, [props.route.params])
 
   const tryBiometry = useCallback((): Promise<void> => {
     const handleBiometryParam = async (): Promise<void> => {

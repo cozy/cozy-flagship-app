@@ -12,7 +12,6 @@ import { useNativeIntent } from 'cozy-intent'
 import { AppState } from 'react-native'
 
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
-import { navigateToApp } from '/libs/functions/openApp'
 import {
   consumeRouteParameter,
   useInitialParam
@@ -185,8 +184,10 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
     }
   }, [uri, client, route, mainAppFallbackURLInitialParam, navigation, session])
 
-  useEffect(
-    function handleCozyAppFallback() {
+  useEffect(() => {
+    async function handleSecurityFlowAndCozyAppFallback() {
+      let navigationObject = null
+
       if (uri) {
         const cozyAppFallbackURL = cozyAppFallbackURLInitialParam.consume()
 
@@ -200,34 +201,34 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
             subdomainType
           )
 
-          navigateToApp({
+          navigationObject = {
             navigation,
             href: cozyAppFallbackURL,
             slug
-          })
+          }
         } else {
-          if (shouldWaitCozyApp === undefined) setShouldWaitCozyApp(false)
+          if (shouldWaitCozyApp === undefined) {
+            setShouldWaitCozyApp(false)
+          }
         }
       }
-    },
-    [
-      client,
-      cozyAppFallbackURLInitialParam,
-      navigation,
-      setShouldWaitCozyApp,
-      shouldWaitCozyApp,
-      uri
-    ]
-  )
 
-  useEffect(() => {
-    const lockRedirect = async () => {
-      hasRenderedOnce = true
-      client && determineSecurityFlow(client)
+      // If client exists and this is the first render, determine the security flow.
+      if (uri && client && !hasRenderedOnce) {
+        hasRenderedOnce = true
+        await determineSecurityFlow(client, navigationObject)
+      }
     }
 
-    !hasRenderedOnce && void lockRedirect()
-  }, [client])
+    void handleSecurityFlowAndCozyAppFallback()
+  }, [
+    client,
+    cozyAppFallbackURLInitialParam,
+    navigation,
+    shouldWaitCozyApp,
+    setShouldWaitCozyApp,
+    uri
+  ])
 
   const handleTrackWebviewInnerUri = webviewInneruri => {
     if (webviewInneruri !== trackedWebviewInnerUri) {

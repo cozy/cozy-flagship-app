@@ -198,6 +198,17 @@ export const getDefaultIconParams = () => {
   }
 }
 
+/**
+ * Open the app in the Home view
+ * @param {any} navigation - The React navigation context
+ * @param {string} href - The app web url
+ * @param {string} slug - The app slug
+ * @param {DOMRect | undefined} iconParams - Icon position and size
+ * @returns {Promise}
+ * @example
+ * navigateToApp({ navigation, href: 'https://drive.cozy.tools', slug: 'drive' })
+ *
+ * */
 export const navigateToApp = ({ navigation, href, slug, iconParams }) => {
   return navigation.navigate('cozyapp', {
     href,
