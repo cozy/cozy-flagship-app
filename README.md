@@ -41,12 +41,12 @@ More information about Android variant [here](https://github.com/cozy/cozy-flags
 ### Working with locally hosted webviews
 
 The easiest way to develop on locally hosted webviews (like any Cozy apps like Drive or Contacts) is to :
-- build your app
-- change the version number in build/manifest.webapp
-- go to home app
-- go to your app => flagship app will download the just builded version in background
-- go to home app
-- go to your app => you will be on the just builded version
+- build your cozy-app
+- change the version number in the cozy-app's build/manifest.webapp
+- open the flagship app and go to home cozy-app
+- go to your cozy-app and wait 10s => flagship app will download the just builded version in background
+- go to home cozy-app
+- go to your cozy-app => you will be on the just builded version
 
 Alternatively, you can also see the following sections to work with hot reload. It is not guaranteed to work and we strongly advice to try at least one time without hot reload.
 
