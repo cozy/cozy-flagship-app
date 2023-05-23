@@ -1,14 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
-import { routes } from '/constants/routes'
+import { PromptingPage } from '/components/templates/PromptingPage'
 import { navigate } from '/libs/RootNavigation'
-import { Container } from '/ui/Container'
-import { Grid } from '/ui/Grid'
-import { Icon } from '/ui/Icon'
-import { CozyCircle } from '/ui/Icons/CozyCircle'
-import { Typography } from '/ui/Typography'
-import { Button } from '/ui/Button'
+import { routes } from '/constants/routes'
 import { translation } from '/locales'
+import { startPinCode } from '/app/domain/authorization/services/SecurityService'
 
 export const PinPrompt = (): JSX.Element => {
   const handleSetPinCode = (): void => {
@@ -19,40 +15,22 @@ export const PinPrompt = (): JSX.Element => {
     navigate(routes.home)
   }
 
+  useEffect(() => {
+    void startPinCode()
+  }, [])
+
   return (
-    <Container>
-      <Grid container direction="column" justifyContent="space-between">
-        <Grid justifyContent="space-between"></Grid>
-        <Grid alignItems="center" direction="column">
-          <Icon icon={CozyCircle} style={{ marginBottom: 14 }} />
-
-          <Typography variant="h4" color="secondary">
-            {translation.screens.SecureScreen.pinprompt_title}
-          </Typography>
-
-          <Typography
-            color="secondary"
-            style={{ opacity: 0.64, marginBottom: 24, textAlign: 'center' }}
-            variant="body2"
-          >
-            {translation.screens.SecureScreen.pinprompt_body}
-          </Typography>
-        </Grid>
-
-        <Grid direction="column">
-          <Button onPress={handleSetPinCode}>
-            <Typography color="primary" variant="button">
-              {translation.screens.SecureScreen.pinprompt_cta}
-            </Typography>
-          </Button>
-
-          <Button variant="secondary" onPress={handleIgnorePinCode}>
-            <Typography color="secondary" variant="button">
-              {translation.screens.SecureScreen.pinprompt_refusal}
-            </Typography>
-          </Button>
-        </Grid>
-      </Grid>
-    </Container>
+    <PromptingPage
+      title={translation.screens.SecureScreen.pinprompt_title}
+      body={translation.screens.SecureScreen.pinprompt_body}
+      button1={{
+        label: translation.screens.SecureScreen.pinprompt_cta,
+        onPress: handleSetPinCode
+      }}
+      button2={{
+        label: translation.screens.SecureScreen.pinprompt_refusal,
+        onPress: handleIgnorePinCode
+      }}
+    />
   )
 }

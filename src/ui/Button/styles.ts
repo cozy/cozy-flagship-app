@@ -11,10 +11,12 @@ export const styles = StyleSheet.create({
   },
   primary: {
     backgroundColor: palette.Common.white,
-    borderColor: 'rgba(29, 33, 42, 0.16)',
+    borderColor: 'rgba(255, 255, 255, 1)',
     borderWidth: 1
   },
   secondary: {
-    backgroundColor: palette.Primary['600']
+    backgroundColor: palette.Primary['600'],
+    borderColor: 'rgba(255, 255, 255, 0.24)',
+    borderWidth: 1
   }
 })
