@@ -1,9 +1,11 @@
-import { Route } from '@react-navigation/native'
+import { RouteProp } from '@react-navigation/native'
 import { TextInputProps, TouchableWithoutFeedbackProps } from 'react-native'
 import { BiometryType } from 'react-native-biometrics'
 
+type RootStackParamList = Record<string, undefined | { onSuccess: () => void }>
+
 export interface LockScreenProps {
-  route: CallbackRouteProp
+  route: RouteProp<RootStackParamList, 'lock'>
 }
 
 export interface LockViewProps {
@@ -24,22 +26,3 @@ export interface LockViewProps {
     TextInputProps['onSubmitEditing']
   uiError?: string
 }
-
-export type CallbackRouteProp =
-  | Route<
-      string,
-      Readonly<{
-        key: string
-        name: string
-        path?: string | undefined
-        params: Readonly<
-          Readonly<{ key: string; name: string; path?: string | undefined }>
-        >
-      }>
-    >
-  | undefined
-
-export type RouteProp = Route<
-  string,
-  Readonly<{ key: string; name: string; path?: string | undefined }>
->

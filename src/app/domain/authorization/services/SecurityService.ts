@@ -1,4 +1,7 @@
+import { NavigationContainerRef } from '@react-navigation/native'
+
 import CozyClient from 'cozy-client'
+import { getErrorMessage } from 'cozy-intent'
 
 import {
   isAutoLockEnabled,
@@ -17,14 +20,11 @@ import {
 import { getDevModeFunctions } from '/app/domain/authorization/utils/devMode'
 import { routes } from '/constants/routes'
 import { devlog } from '/core/tools/env'
-import { navigate, navigationRef, reset } from '/libs/RootNavigation'
+import { navigate, navigationRef } from '/libs/RootNavigation'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
-
-import { getErrorMessage } from 'cozy-intent'
-
-import { authConstants } from '../constants'
-
+import { authConstants } from '/app/domain/authorization/constants'
 import { safePromise } from '/utils/safePromise'
+import { navigateToApp } from '/libs/functions/openApp'
 
 // Can use mock functions in dev environment
 // async (): Promise<boolean> => Promise.resolve(false)
@@ -42,18 +42,33 @@ const fns = getDevModeFunctions(
 )
 
 export const determineSecurityFlow = async (
-  client: CozyClient
+  client: CozyClient,
+  navigationObject?: {
+    navigation: NavigationContainerRef<Record<string, unknown>>
+    href: string
+    slug: string
+  }
 ): Promise<void> => {
+  const callbackNav = async (): Promise<void> => {
+    try {
+      if (navigationObject) await navigateToApp(navigationObject)
+      else navigate(routes.home)
+    } catch (error) {
+      devlog('🔓', 'Error navigating to app, defaulting to home', error)
+      navigate(routes.home)
+    }
+  }
+
   if (await fns.isAutoLockEnabled()) {
     devlog('🔒', 'Application has autolock activated')
     devlog('🔒', 'Device should be secured or autolock would not work')
-
-    reset(routes.lock)
+    navigate(routes.lock, { onSuccess: callbackNav })
   } else if (await fns.isDeviceSecured()) {
     devlog('🔓', 'Application does not have autolock activated')
     devlog('🔒', 'Device is secured')
+    devlog('🔒', 'No security action taken')
 
-    navigate(routes.home)
+    if (navigationObject) await navigateToApp(navigationObject)
   } else {
     devlog('🔓', 'Application does not have autolock activated')
     devlog('🔓', 'Device is unsecured')
@@ -61,9 +76,9 @@ export const determineSecurityFlow = async (
     const params = await getSecFlowInitParams(client)
 
     if (params.createPassword) {
-      return reset(routes.promptPassword)
+      return navigate(routes.promptPassword, { onSuccess: callbackNav })
     } else {
-      return reset(routes.promptPin)
+      return navigate(routes.promptPin, { onSuccess: callbackNav })
     }
   }
 }
@@ -97,14 +112,19 @@ export const getSecFlowInitParams = async (
   }
 }
 
-export const savePinCode = async (pinCode: string): Promise<void> => {
+export const savePinCode = async (
+  pinCode: string,
+  onSuccess: () => void
+): Promise<void> => {
   try {
     await toggleSetting('PINLock', { pinCode })
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!onSuccess) throw new Error('No success callback provided')
+    onSuccess()
   } catch (error) {
-    devlog('🔓', 'Error saving pin code', error)
-  } finally {
-    devlog('🔓', 'PIN code saved, navigating to home')
-    reset(routes.home)
+    devlog('🔓', 'Error saving pin code, fallback navigation to home', error)
+    navigate(routes.home)
   }
 }
 

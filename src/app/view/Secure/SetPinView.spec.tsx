@@ -38,12 +38,12 @@ jest.mock('/locales', () => ({
 
 describe('SetPinView', () => {
   it('renders correctly', () => {
-    const { getByTestId } = render(<SetPinView />)
+    const { getByTestId } = render(<SetPinView onSuccess={jest.fn()} />)
     expect(getByTestId('pin-input')).toBeTruthy()
   })
 
   it('advances to the next step when the Next button is pressed', () => {
-    const { getByTestId } = render(<SetPinView />)
+    const { getByTestId } = render(<SetPinView onSuccess={jest.fn()} />)
 
     fireEvent.changeText(getByTestId('pin-input'), '1234')
     fireEvent.press(getByTestId('pin-next'))

@@ -179,7 +179,7 @@ export const LockScreen = (props: LockScreenProps): React.ReactNode => (
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <LockView {...useLockScreenProps(props.route?.params)} />
+          <LockView {...useLockScreenProps(props)} />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </>
