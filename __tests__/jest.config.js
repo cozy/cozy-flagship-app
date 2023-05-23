@@ -11,9 +11,10 @@ const config = {
     '^.+\\.(js|jsx)$': 'babel-jest'
   },
   transformIgnorePatterns: [
-    'node_modules/(?!((jest-)?react-native(-.*)?|@react-native(-community)?)/)'
+    'node_modules/(?!((jest-)?react-native(-.*)?|@react-native(-community)?|p-timeout?|p-wait-for?)/)'
   ],
   rootDir: '../'
 }
 
 module.exports = config
+  transformIgnorePatterns: ['/node_modules/(?!(p-timeout|p-wait-for))']
