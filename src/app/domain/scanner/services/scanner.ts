@@ -12,7 +12,11 @@ export const scanDocument = async (): Promise<Base64 | undefined> => {
       maxNumDocuments: 1
     })
 
-    return scannedImages?.[0]
+    if (scannedImages) {
+      return scannedImages[scannedImages.length - 1]
+    } else {
+      return undefined
+    }
   } catch {
     return undefined
   }
