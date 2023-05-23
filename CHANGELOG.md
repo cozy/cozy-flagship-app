@@ -1,4 +1,4 @@
-# 1.1.3
+# 1.1.4
 
 ## ✨ Features
 
@@ -8,6 +8,22 @@
 
 ## 🔧 Tech
 
+
+# 1.1.3
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* Fix UI issues on password and PIN prompts ([PR #799](https://github.com/cozy/cozy-react-native/pull/799), [PR #801](https://github.com/cozy/cozy-react-native/pull/801), [PR #805](https://github.com/cozy/cozy-react-native/pull/805), [PR #806](https://github.com/cozy/cozy-react-native/pull/806), [PR #807](https://github.com/cozy/cozy-react-native/pull/807) and [PR #808](https://github.com/cozy/cozy-react-native/pull/808))
+* Fix a bug that prevented CLient Side Connectors logs to be handled correctly ([PR #802](https://github.com/cozy/cozy-react-native/pull/802))
+* Document scanning now correctly returns the last scan when multiple tries are done ([PR #803](https://github.com/cozy/cozy-react-native/pull/803))
+
+## 🔧 Tech
+
+* Update `cozy-clisk` to `0.12.2` ([PR #800](https://github.com/cozy/cozy-react-native/pull/800))
+* Improve developers documentation ([PR #784](https://github.com/cozy/cozy-react-native/pull/784))
 
 # 1.1.2
 
