@@ -6353,17 +6353,17 @@ cozy-client@^37.2.0:
     sift "^6.0.0"
     url-search-params-polyfill "^8.0.0"
 
-cozy-clisk@^0.9.4:
-  version "0.9.4"
-  resolved "https://registry.yarnpkg.com/cozy-clisk/-/cozy-clisk-0.9.4.tgz#dc2ac3abd3529d0866b8a230963aee2495cb9ca9"
-  integrity sha512-sNSXSfkJvCOjusjqAVJ0gnLtTQOzdv1+qWiZiHm/kHmRDIDqmEmq/RPLsH3fxOTQV3juFHiSFEZxq6OooQfmQQ==
+cozy-clisk@^0.12.2:
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/cozy-clisk/-/cozy-clisk-0.12.2.tgz#6c1588f91e13649a6f629cc9e5b44b467fb861f7"
+  integrity sha512-6k1fD7Mw+bkhkghYHI11WzQ+lDENdNIXtqKFt/f7s7WRitmJ3r53Wq2iszS1pWbqAS4GdvW6+Sf1Nd4dgz2dDw==
   dependencies:
     "@cozy/minilog" "^1.0.0"
     bluebird-retry "^0.11.0"
     cozy-client "^34.11.0"
     ky "^0.25.1"
     lodash "^4.17.21"
-    p-wait-for "^3.0.0"
+    p-wait-for "^5.0.1"
     post-me "^0.4.5"
 
 cozy-device-helper@^2.7.0:
@@ -12738,12 +12738,10 @@ p-retry@^3.0.1:
   dependencies:
     retry "^0.12.0"
 
-p-timeout@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/p-timeout/-/p-timeout-3.2.0.tgz#c7e17abc971d2a7962ef83626b35d635acf23dfe"
-  integrity sha512-rhIwUycgwwKcP9yTOOFK/AKsAopjjCakVqLHePO3CC6Mir1Z99xT+R63jZxAT5lFZLa2inS5h+ZS2GvR99/FBg==
-  dependencies:
-    p-finally "^1.0.0"
+p-timeout@^6.0.0:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/p-timeout/-/p-timeout-6.1.1.tgz#bcee5e37d730f5474d973b6ff226751a1a5e6ff1"
+  integrity sha512-yqz2Wi4fiFRpMmK0L2pGAU49naSUaP23fFIQL2Y6YT+qDGPoFwpvgQM/wzc6F8JoenUkIlAFa4Ql7NguXBxI7w==
 
 p-try@^1.0.0:
   version "1.0.0"
@@ -12755,12 +12753,12 @@ p-try@^2.0.0:
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
 
-p-wait-for@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/p-wait-for/-/p-wait-for-3.2.0.tgz#640429bcabf3b0dd9f492c31539c5718cb6a3f1f"
-  integrity sha512-wpgERjNkLrBiFmkMEjuZJEWKKDrNfHCKA1OhyN1wg1FrLkULbviEy6py1AyJUgZ72YWFbZ38FIpnqvVqAlDUwA==
+p-wait-for@^5.0.1:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/p-wait-for/-/p-wait-for-5.0.2.tgz#1546a15e64accf1897377cb1507fa4c756fffe96"
+  integrity sha512-lwx6u1CotQYPVju77R+D0vFomni/AqRfqLmqQ8hekklqZ6gAY9rONh7lBQ0uxWMkC2AuX9b2DVAl8To0NyP1JA==
   dependencies:
-    p-timeout "^3.0.0"
+    p-timeout "^6.0.0"
 
 pako@^1.0.5, pako@~1.0.5:
   version "1.0.11"
