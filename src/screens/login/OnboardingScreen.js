@@ -13,6 +13,7 @@ import {
 import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
 import { consumeRouteParameter } from '/libs/functions/routeHelpers'
 import { routes } from '/constants/routes'
+import { useSplashScreen } from '/hooks/useSplashScreen'
 import { getColors } from '/ui/colors'
 import { CozyLogoScreen } from '/screens/login/components/CozyLogoScreen'
 import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
@@ -38,6 +39,7 @@ const OnboardingSteps = ({
   setClouderyTheme,
   setClient
 }) => {
+  const { showSplashScreen } = useSplashScreen()
   const [state, setState] = useState({
     step: LOADING_STEP
   })
@@ -177,6 +179,7 @@ const OnboardingSteps = ({
         registerToken
       })
 
+      showSplashScreen()
       await resetKeychainAndSaveLoginData(loginData)
       setClient(client)
     } catch (error) {
@@ -186,7 +189,7 @@ const OnboardingSteps = ({
         setError(error.message, error)
       }
     }
-  }, [setClient, setError, state, cancelOnboarding])
+  }, [setClient, setError, state, cancelOnboarding, showSplashScreen])
 
   const startMagicLinkOAuth = useCallback(async () => {
     try {
@@ -197,6 +200,7 @@ const OnboardingSteps = ({
         magicCode
       })
 
+      showSplashScreen()
       setClient(client)
     } catch (error) {
       if (error === OAUTH_USER_CANCELED_ERROR) {
@@ -205,7 +209,7 @@ const OnboardingSteps = ({
         setError(error.message, error)
       }
     }
-  }, [setClient, setError, state, cancelOnboarding])
+  }, [setClient, setError, state, cancelOnboarding, showSplashScreen])
 
   if (state.step === PASSWORD_STEP) {
     const { fqdn, instance } = state.onboardingData
