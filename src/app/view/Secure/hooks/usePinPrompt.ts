@@ -1,30 +1,51 @@
+import { useEffect } from 'react'
+
+import { devlog } from '/core/tools/env'
+import { doPinCodeAutoLock } from '/app/domain/authorization/services/SecurityService'
+import { hideSplashScreen } from '/libs/services/SplashScreenService'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
-import { devlog } from '/core/tools/env'
 
 export const usePinPrompt = (
   onSuccess?: () => void
 ): { handleSetPinCode: () => void; handleIgnorePinCode: () => void } => {
-  // Function to handle setting the pin code
+  // The HomeView should have called hideSplashScreen() already,
+  // but in case it didn't, we do it here as a fallback as it is critical
+  useEffect(() => {
+    void hideSplashScreen()
+  }, [])
+
   const handleSetPinCode = (): void => {
-    navigate(routes.setPin, { onSuccess })
+    try {
+      void doPinCodeAutoLock()
+
+      navigate(routes.setPin, { onSuccess })
+    } catch (error) {
+      devlog(error)
+
+      // Navigate to the setPin route as a fallback
+      // with a dummy onSuccess callback returning to the home route
+      navigate(routes.setPin, { onSuccess: () => navigate(routes.home) })
+    }
   }
 
-  // Function to handle ignoring the pin code
   const handleIgnorePinCode = (): void => {
     try {
-      // Check if onSuccess callback is provided
       if (!onSuccess)
         throw new Error('No onSuccess callback given to PinPrompt')
+
+      void doPinCodeAutoLock()
       onSuccess()
     } catch (error) {
-      // Log the error
       devlog(error)
+
       // Navigate to the home route as a fallback
       navigate(routes.home)
     }
   }
 
-  // Return the functions for external use
-  return { handleSetPinCode, handleIgnorePinCode }
+  return {
+    handleSetPinCode,
+    handleIgnorePinCode
+  }
 }

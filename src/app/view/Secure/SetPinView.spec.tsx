@@ -5,7 +5,7 @@ import { SetPinView } from '/app/view/Secure/SetPinView'
 
 jest.mock('/app/domain/authorization/services/SecurityService', () => ({
   savePinCode: jest.fn(),
-  startPinCode: jest.fn()
+  doPinCodeAutoLock: jest.fn()
 }))
 
 jest.mock('/locales', () => ({

@@ -1,9 +1,8 @@
 import { RouteProp } from '@react-navigation/native'
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { PromptingPage } from '/components/templates/PromptingPage'
 import { translation } from '/locales'
-import { startPinCode } from '/app/domain/authorization/services/SecurityService'
 import { usePinPrompt } from '/app/view/Secure/hooks/usePinPrompt'
 
 type RootStackParamList = Record<string, undefined | { onSuccess: () => void }>
@@ -16,10 +15,6 @@ export const PinPrompt = (props: PinPromptProps): JSX.Element => {
   const { handleSetPinCode, handleIgnorePinCode } = usePinPrompt(
     props.route.params?.onSuccess
   )
-
-  useEffect(() => {
-    void startPinCode()
-  }, [])
 
   return (
     <PromptingPage

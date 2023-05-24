@@ -53,3 +53,8 @@ jest.mock('@react-native-cookies/cookies', () => {
     get: jest.fn()
   }
 })
+
+jest.mock('react-native-bootsplash', () => ({
+  hide: jest.fn(),
+  show: jest.fn()
+}))

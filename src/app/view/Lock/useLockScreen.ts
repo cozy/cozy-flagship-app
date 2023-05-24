@@ -8,8 +8,9 @@ import { LockScreenProps, LockViewProps } from '/app/view/Lock/LockScreenTypes'
 import { getData, StorageKeys } from '/libs/localStore/storage'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { getVaultInformation } from '/libs/keychain'
-import { reset } from '/libs/RootNavigation'
+import { hideSplashScreen } from '/libs/services/SplashScreenService'
 import { openForgotPasswordLink } from '/libs/functions/openForgotPasswordLink'
+import { reset } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { translation } from '/locales'
 import {
@@ -110,6 +111,13 @@ export const useLockScreenProps = (props: LockScreenProps): LockViewProps => {
         ))(),
     [biometryEnabled]
   )
+
+  // The HomeView should have called hideSplashScreen() already,
+  // but in case it didn't, we do it here as a fallback as it is critical.
+  // We're using it last because might as well wait for the other hooks to be done.
+  useEffect(() => {
+    void hideSplashScreen()
+  }, [])
 
   const handleInput = (text: string): void => {
     resetError()

@@ -1,8 +1,17 @@
+import { useEffect } from 'react'
+
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { devlog } from '/core/tools/env'
+import { hideSplashScreen } from '/libs/services/SplashScreenService'
 
 export const usePasswordPrompt = (onSuccess: () => void): (() => void) => {
+  // The HomeView should have called hideSplashScreen() already,
+  // but in case it didn't, we do it here as a fallback as it is critical
+  useEffect(() => {
+    void hideSplashScreen()
+  }, [])
+
   const handleSetPassword = (): void => {
     try {
       // It should be impossible according to the typings for onSuccess to be undefined,
