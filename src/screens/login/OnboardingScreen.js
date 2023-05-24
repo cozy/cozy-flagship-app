@@ -70,6 +70,11 @@ const OnboardingSteps = ({
     if (fqdn) {
       const instanceData = getInstanceDataFromFqdn(fqdn)
 
+      setState(oldState => ({
+        ...oldState,
+        step: LOADING_STEP
+      }))
+
       if (registerToken) {
         setOnboardingData({
           fqdn: instanceData.fqdn,
