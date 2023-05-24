@@ -27,7 +27,6 @@ import { safePromise } from '/utils/safePromise'
 import { navigateToApp } from '/libs/functions/openApp'
 
 // Can use mock functions in dev environment
-// async (): Promise<boolean> => Promise.resolve(false)
 const fns = getDevModeFunctions(
   {
     isDeviceSecured,
@@ -35,9 +34,9 @@ const fns = getDevModeFunctions(
     hasDefinedPassword
   },
   {
-    isDeviceSecured: undefined,
-    isAutoLockEnabled: undefined,
-    hasDefinedPassword: undefined
+    isDeviceSecured: undefined, // async (): Promise<boolean> => Promise.resolve(false),
+    isAutoLockEnabled: undefined, // async (): Promise<boolean> => Promise.resolve(false),
+    hasDefinedPassword: undefined // async (): Promise<boolean> => Promise.resolve(false)
   }
 )
 
@@ -128,7 +127,7 @@ export const savePinCode = async (
   }
 }
 
-export const startPinCode = async (): Promise<void> => {
+export const doPinCodeAutoLock = async (): Promise<void> => {
   try {
     const autoLockStatus = await ensureAutoLockIsEnabled()
     devlog('🔓', `AutoLock status is ${String(autoLockStatus)}`)
@@ -145,6 +144,7 @@ async function safeSetKeysAsync(
     devlog('🔓', 'Saving password', keys)
 
     await savePassword(client, keys)
+
     navigate(routes.promptPin)
   } catch (error) {
     devlog('🔓', 'Error saving password')
