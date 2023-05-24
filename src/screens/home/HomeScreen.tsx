@@ -12,6 +12,7 @@ import CliskDevView from '/screens/konnectors/CliskDevView'
 import { StatusBarStyle } from '/libs/intents/setFlagshipUI'
 import { useLauncherContext } from '/screens/home/hooks/useLauncherContext'
 import { shouldShowCliskDevMode } from '/core/tools/env'
+import { getColors } from '/ui/colors'
 
 import { styles } from '/screens/home/HomeScreen.styles'
 
@@ -36,9 +37,17 @@ export const HomeScreen = ({
     setLauncherContext,
     trySetLauncherContext
   } = useLauncherContext()
+  const colors = getColors()
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: colors.primaryColor
+        }
+      ]}
+    >
       <StatusBar barStyle={barStyle} />
 
       {shouldShowCliskDevMode() ? (
