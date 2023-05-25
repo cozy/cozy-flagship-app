@@ -95,10 +95,22 @@ export const useAppBootstrap = client => {
         log.debug(
           `Set initialRoute to home screen with fallback on ${onboardingRedirectionURL}`
         )
+
+        // Temporary code to fix onboarding redirection = 'home%2Fintro'
+        // We should find a cleaner way to do this
+        let cozyAppFallbackURL = null
+        let mainAppFallbackURL = null
+        if (onboardedRedirection.startsWith('home/')) {
+          mainAppFallbackURL = onboardingRedirectionURL
+        } else {
+          cozyAppFallbackURL = onboardingRedirectionURL
+        }
+
         return setInitialRoute({
           route: routes.home,
           params: {
-            cozyAppFallbackURL: onboardingRedirectionURL
+            mainAppFallbackURL,
+            cozyAppFallbackURL
           }
         })
       } else {
