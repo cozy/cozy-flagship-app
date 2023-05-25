@@ -1,3 +1,3 @@
 export const authConstants = {
-  kdfIterations: 65000
+  kdfIterations: 650000
 }

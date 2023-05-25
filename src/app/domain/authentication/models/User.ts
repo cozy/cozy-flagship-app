@@ -2,6 +2,7 @@ import CozyClient, { Q } from 'cozy-client'
 import { ClientCapabilities } from 'cozy-client/types/types'
 import flag from 'cozy-flags'
 
+import { authConstants } from '/app/domain/authorization/constants'
 import { devlog } from '/core/tools/env'
 
 export const canAuthWithOIDC = (client: CozyClient): boolean | undefined => {
@@ -110,7 +111,7 @@ export const savePassword = async (
     key: keys.key,
     publicKey: keys.publicKey,
     privateKey: keys.privateKey,
-    iterations: 650000,
+    iterations: authConstants.kdfIterations,
     force: true
   })
 
