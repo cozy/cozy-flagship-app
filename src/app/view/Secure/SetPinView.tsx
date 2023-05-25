@@ -1,3 +1,4 @@
+import { RouteProp } from '@react-navigation/native'
 import React, { useState } from 'react'
 import RnMaskInput from 'react-native-mask-input'
 import {
@@ -23,11 +24,11 @@ import { TextField } from '/ui/TextField'
 import { ConditionalWrapper } from '/components/ConditionalWrapper'
 import { palette } from '/ui/palette'
 
-interface SetPinProps {
+const SetPinViewSimple = ({
+  onSuccess
+}: {
   onSuccess: () => void
-}
-
-const SetPinViewSimple = (props: SetPinProps): JSX.Element => {
+}): JSX.Element => {
   const [step, setStep] = useState(1)
   const [firstInput, setFirstInput] = useState('')
   const [secondInput, setSecondInput] = useState('')
@@ -39,7 +40,7 @@ const SetPinViewSimple = (props: SetPinProps): JSX.Element => {
 
   const handleSecondInputSubmit = (): void => {
     if (secondInput === firstInput) {
-      void savePinCode(secondInput, props.onSuccess)
+      void savePinCode(secondInput, onSuccess)
     } else {
       setError(translation.screens.SecureScreen.confirm_pin_error)
     }
@@ -154,6 +155,12 @@ const SetPinViewSimple = (props: SetPinProps): JSX.Element => {
   )
 }
 
+type RootStackParamList = Record<string, { onSuccess: () => void }>
+
+interface SetPinProps {
+  route: RouteProp<RootStackParamList, 'pinView'>
+}
+
 export const SetPinView = (props: SetPinProps): JSX.Element => (
   <ConditionalWrapper
     condition={Platform.OS === 'ios'}
@@ -168,7 +175,7 @@ export const SetPinView = (props: SetPinProps): JSX.Element => (
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <SetPinViewSimple {...props} />
+        <SetPinViewSimple {...props} onSuccess={props.route.params.onSuccess} />
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   </ConditionalWrapper>
