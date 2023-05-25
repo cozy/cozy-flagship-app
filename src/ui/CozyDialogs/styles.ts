@@ -36,7 +36,8 @@ export const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     paddingBottom: 24,
-    paddingHorizontal: 32
+    paddingHorizontal: 16,
+    width: '100%'
   },
   header: {
     alignItems: 'center',
