@@ -5,7 +5,7 @@ import { normalizeFqdn } from '/libs/functions/stringHelpers'
 import { storeData, getData } from './storage'
 
 export enum UserPersistedStorageKeys {
-  BackupConfig = 'AmiralAppBackupConfig'
+  LocalBackupConfig = 'AmiralAppLocalBackupConfig'
 }
 
 interface UserPersistedStorageItems {
