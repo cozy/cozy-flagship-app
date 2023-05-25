@@ -26,6 +26,7 @@ const renderActions = (
       <View style={styles.footer}>
         {actions.props.children.map((child, index, array) =>
           React.cloneElement(child, {
+            key: `ConfirmDialogButton-${index}`,
             style: {
               ...styles.actions,
               ...(index + 1 === array.length ? styles.actionsLast : {})
