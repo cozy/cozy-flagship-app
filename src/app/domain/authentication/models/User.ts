@@ -4,6 +4,7 @@ import flag from 'cozy-flags'
 
 import { authConstants } from '/app/domain/authorization/constants'
 import { devlog } from '/core/tools/env'
+import { resetKeychainAndSaveLoginData } from '/libs/functions/passwordHelpers'
 
 export const canAuthWithOIDC = (client: CozyClient): boolean | undefined => {
   return isOidcAuth(client)
@@ -114,6 +115,8 @@ export const savePassword = async (
     iterations: authConstants.kdfIterations,
     force: true
   })
+
+  await resetKeychainAndSaveLoginData(keys)
 
   devlog('🔑', 'Password saved')
 }
