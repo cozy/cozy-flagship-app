@@ -1,17 +1,18 @@
+import { RouteProp } from '@react-navigation/native'
 import React from 'react'
 
 import { usePasswordPrompt } from '/app/view/Secure/hooks/usePasswordPrompt'
 import { PromptingPage } from '/components/templates/PromptingPage'
 import { translation } from '/locales'
 
-export interface PasswordPromptProps {
-  onSuccess: () => void
+type RootStackParamList = Record<string, { onSuccess: () => void }>
+
+interface PasswordPromptProps {
+  route: RouteProp<RootStackParamList, 'pinPrompt'>
 }
 
-export const PasswordPrompt = ({
-  onSuccess
-}: PasswordPromptProps): JSX.Element => {
-  const handleSetPassword = usePasswordPrompt(onSuccess)
+export const PasswordPrompt = ({ route }: PasswordPromptProps): JSX.Element => {
+  const handleSetPassword = usePasswordPrompt(route.params.onSuccess)
 
   return (
     <PromptingPage

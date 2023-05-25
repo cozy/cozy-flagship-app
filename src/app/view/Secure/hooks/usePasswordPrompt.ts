@@ -19,7 +19,7 @@ export const usePasswordPrompt = (onSuccess: () => void): (() => void) => {
       // it will cause critical errors at a later point which can not be allowed.
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!onSuccess)
-        throw new Error('No onSuccess callback given to PinPrompt')
+        throw new Error('No onSuccess callback given to PasswordPrompt')
 
       // User acknowledged the prompt, so we can navigate to the password setting screen
       // We pass the onSuccess callback to the password setting screen so that it can be called when the password is set

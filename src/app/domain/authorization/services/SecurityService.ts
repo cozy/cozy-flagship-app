@@ -138,14 +138,15 @@ export const doPinCodeAutoLock = async (): Promise<void> => {
 
 async function safeSetKeysAsync(
   client: CozyClient,
-  keys: SetKeys
+  keys: SetKeys,
+  onSuccess?: () => void
 ): Promise<void> {
   try {
     devlog('🔓', 'Saving password', keys)
 
     await savePassword(client, keys)
 
-    navigate(routes.promptPin)
+    navigate(routes.promptPin, { onSuccess })
   } catch (error) {
     devlog('🔓', 'Error saving password')
     devlog(getErrorMessage(error))
@@ -156,7 +157,10 @@ async function safeSetKeysAsync(
   }
 }
 
-export const getPasswordParams = (client: CozyClient): PasswordParams => {
+export const getPasswordParams = (
+  client: CozyClient,
+  onSuccess?: () => void
+): PasswordParams => {
   const { uri: instance, normalizedFqdn: fqdn } =
     getInstanceAndFqdnFromClient(client)
 
@@ -170,7 +174,7 @@ export const getPasswordParams = (client: CozyClient): PasswordParams => {
     setKeys: (keys: SetKeys): void => {
       // Errors to be handled in `safeSetKeysAsync()`
       const setKeys = safePromise(safeSetKeysAsync)
-      setKeys(client, keys)
+      setKeys(client, keys, onSuccess)
     }
   }
 }

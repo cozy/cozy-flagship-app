@@ -23,7 +23,11 @@ describe('PasswordPrompt', () => {
   it('handleSetPassword navigates to setPassword route', () => {
     const onSuccess = jest.fn()
 
-    const { getByText } = render(<PasswordPrompt onSuccess={onSuccess} />)
+    const { getByText } = render(
+      <PasswordPrompt
+        route={{ params: { onSuccess }, key: '', name: 'pinPrompt' }}
+      />
+    )
 
     fireEvent.press(
       getByText(translation.screens.SecureScreen.passwordprompt_cta)
@@ -42,7 +46,11 @@ describe('PasswordPrompt', () => {
       throw new Error('No onSuccess callback given to PinPrompt')
     })
 
-    const { getByText } = render(<PasswordPrompt onSuccess={onSuccess} />)
+    const { getByText } = render(
+      <PasswordPrompt
+        route={{ params: { onSuccess }, key: '', name: 'pinPrompt' }}
+      />
+    )
 
     fireEvent.press(
       getByText(translation.screens.SecureScreen.passwordprompt_cta)
