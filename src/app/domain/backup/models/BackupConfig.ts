@@ -11,3 +11,14 @@ export interface LocalBackupConfig {
   lastBackupDate: number
   backupedMedias: BackupedMedia[]
 }
+
+/**
+ * A remote backup config representing a backup in Cozy Drive
+ * @member {object} backupFolder
+ */
+export interface RemoteBackupConfig {
+  backupFolder: {
+    name: string
+    path: string
+  }
+}
