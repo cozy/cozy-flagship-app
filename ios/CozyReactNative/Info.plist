@@ -21,6 +21,15 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
+			<key>mabulle</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>mabulle</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>mespapiers</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -106,9 +115,9 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Afin de prendre des photos pour Drive ou MesPapiers afin d'importer des documents</string>
+	<string>Afin de prendre des photos pour Drive ou MesPapiers afin d&apos;importer des documents</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Permet le déverouillage de l'application en utilisant FaceID</string>
+	<string>Permet le déverouillage de l&apos;application en utilisant FaceID</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UIAppFonts</key>
