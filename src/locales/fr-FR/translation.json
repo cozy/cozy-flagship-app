@@ -62,6 +62,11 @@
       "title": "Cloud Personnel"
     }
   },
+  "modals": {
+    "IconChangedModal": {
+      "description": "L'icône de l'application «Cozy» a été modifiée."
+    }
+  },
   "software": {
     "id": "amiral",
     "name": "Cloud Personnel"

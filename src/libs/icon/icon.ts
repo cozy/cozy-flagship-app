@@ -1,7 +1,10 @@
+import { Platform } from 'react-native'
 import {
   changeIcon as RNChangeIcon,
   getIcon as RNGetIcon
 } from 'react-native-change-icon'
+
+import { toggleIconChangedModal } from '/libs/icon/IconChangedModal'
 
 import { DEFAULT_ICON, ALLOWED_ICONS, DEFAULT_VALUE } from './config'
 
@@ -24,7 +27,13 @@ export const changeIcon = async (slug: string): Promise<string> => {
   }
 
   try {
-    return await RNChangeIcon(iconName)
+    const newIconName = await RNChangeIcon(iconName)
+
+    if (Platform.OS === 'android') {
+      toggleIconChangedModal(newIconName)
+    }
+
+    return newIconName
   } catch (e) {
     if (e instanceof Error && e.message === 'ICON_ALREADY_USED') {
       return iconName
