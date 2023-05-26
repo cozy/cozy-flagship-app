@@ -95,6 +95,32 @@
         </intent-filter>
       </activity-alias>
 
+      <activity-alias
+        android:name="io.cozy.flagship.mobile.MainActivitymabulle"
+        android:enabled="false"
+        android:exported="true"
+        android:icon="@mipmap/mabulle"
+        android:targetActivity=".MainActivity">
+        <intent-filter>
+          <action android:name="android.intent.action.MAIN" />
+          <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="cozy" />
+        </intent-filter>
+        <intent-filter android:autoVerify="true">
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="https" />
+          <data android:host="links.mycozy.cloud" />
+          <data android:pathPrefix="/flagship" />
+        </intent-filter>
+      </activity-alias>
+
       <activity
         android:name="com.zoontek.rnbootsplash.RNBootSplashActivity"
         android:theme="@style/BootTheme"
