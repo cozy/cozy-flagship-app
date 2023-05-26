@@ -93,10 +93,21 @@ declare module 'cozy-client' {
 
   export const useClient = (): CozyClient => CozyClient as CozyClient
 
+  interface Collection {
+    findReferencedBy: (
+      params: object
+    ) => Promise<{ included: { attributes: unknown }[] }>
+    ensureDirectoryExists: (path: string) => Promise<string>
+    addReferencesTo: (references: object, dirs: object[]) => Promise<void>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    launch: (trigger: any) => any
+  }
+
   export default class CozyClient {
     constructor(rawOptions?: ClientOptions)
     getStackClient(): StackClient
     getInstanceOptions(): InstanceOptions
+    collection(doctype: string): Collection
     isLogged: boolean
     on: (event: string, callback: () => void) => void
     removeListener: (event: string, callback: () => void) => void
