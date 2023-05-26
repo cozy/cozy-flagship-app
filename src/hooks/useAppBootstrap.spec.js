@@ -51,6 +51,10 @@ jest.mock('/libs/functions/openApp', () => ({
   getDefaultIconParams: jest.fn().mockReturnValue({})
 }))
 
+jest.mock('/libs/icon/icon', () => ({
+  changeIcon: jest.fn()
+}))
+
 jest.mock('/libs/defaultRedirection/defaultRedirection', () => ({
   ...jest.requireActual('/libs/defaultRedirection/defaultRedirection'),
   getOrFetchDefaultRedirectionUrl: jest.fn()

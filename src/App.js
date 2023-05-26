@@ -14,6 +14,7 @@ import { NativeIntentProvider } from 'cozy-intent'
 import { RootNavigator } from '/AppRouter'
 import * as RootNavigation from '/libs/RootNavigation'
 import NetStatusBoundary from '/libs/services/NetStatusBoundary'
+import { IconChangedModal } from '/libs/icon/IconChangedModal'
 import { CryptoWebView } from '/components/webviews/CryptoWebView/CryptoWebView'
 import { HomeStateProvider } from '/screens/home/HomeStateProvider'
 import { HttpServerProvider } from '/libs/httpserver/httpServerProvider'
@@ -78,6 +79,7 @@ const Nav = ({ client, setClient }) => {
             backgroundColor="transparent"
             translucent
           />
+          <IconChangedModal />
           <App setClient={setClient} />
         </View>
       </NativeIntentProvider>
