@@ -17,4 +17,3 @@ const config = {
 }
 
 module.exports = config
-  transformIgnorePatterns: ['/node_modules/(?!(p-timeout|p-wait-for))']
