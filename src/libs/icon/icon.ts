@@ -17,13 +17,13 @@ const isSameIcon = (firstIconName: string, secondIconName: string): boolean => {
   )
 }
 
-export const changeIcon = async (slug: string): Promise<string> => {
+export const changeIcon = async (slug: string): Promise<void> => {
   const iconName = ALLOWED_ICONS.includes(slug) ? slug : DEFAULT_ICON
 
   const currentIconName = await RNGetIcon()
 
   if (isSameIcon(iconName, currentIconName)) {
-    return iconName
+    return
   }
 
   try {
@@ -33,10 +33,10 @@ export const changeIcon = async (slug: string): Promise<string> => {
       toggleIconChangedModal(newIconName)
     }
 
-    return newIconName
+    return
   } catch (e) {
     if (e instanceof Error && e.message === 'ICON_ALREADY_USED') {
-      return iconName
+      return
     } else {
       throw e
     }

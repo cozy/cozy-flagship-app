@@ -21,12 +21,12 @@ describe('icon', () => {
     expect(mockedRNChangeIcon).toHaveBeenCalledWith('cozy')
   })
 
-  it('should return icon name and not throw if icon already used error', async () => {
+  it('should not throw if icon already used error', async () => {
     mockedRNChangeIcon.mockImplementation(() => {
       throw new Error('ICON_ALREADY_USED')
     })
 
-    expect(await changeIcon('mespapiers')).toBe('mespapiers')
+    await changeIcon('mespapiers')
   })
 
   it('should throw if other error', async () => {
