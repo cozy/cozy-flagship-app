@@ -8,7 +8,9 @@ const config = {
   setupFiles: ['<rootDir>/__tests__/jestSetupFile.js'],
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', { diagnostics: { exclude: ['**'] } }],
-    '^.+\\.(js|jsx)$': 'babel-jest'
+    '^.+\\.(js|jsx)$': 'babel-jest',
+    '^.+\\.(jpg|jpeg|png|gif|webp|svg)$':
+      '<rootDir>/__tests__/transformer/imageTransformer.js'
   },
   transformIgnorePatterns: [
     'node_modules/(?!((jest-)?react-native(-.*)?|@react-native(-community)?|p-timeout?|p-wait-for?)/)'
