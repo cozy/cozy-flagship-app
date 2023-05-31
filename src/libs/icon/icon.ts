@@ -4,6 +4,8 @@ import {
   getIcon as RNGetIcon
 } from 'react-native-change-icon'
 
+import flag from 'cozy-flags'
+
 import { toggleIconChangedModal } from '/libs/icon/IconChangedModal'
 
 import { DEFAULT_ICON, ALLOWED_ICONS, DEFAULT_VALUE } from './config'
@@ -18,7 +20,15 @@ const isSameIcon = (firstIconName: string, secondIconName: string): boolean => {
 }
 
 export const changeIcon = async (slug: string): Promise<void> => {
-  const iconName = ALLOWED_ICONS.includes(slug) ? slug : DEFAULT_ICON
+  const changeAllowed = flag('flagship.icon.changeAllowed')
+  const defaultIcon =
+    (flag('flagship.icon.defaultIcon') as unknown as string) || DEFAULT_ICON
+
+  if (!changeAllowed) {
+    return
+  }
+
+  const iconName = ALLOWED_ICONS.includes(slug) ? slug : defaultIcon
 
   const currentIconName = await RNGetIcon()
 
