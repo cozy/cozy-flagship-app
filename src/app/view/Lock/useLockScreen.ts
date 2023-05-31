@@ -21,6 +21,7 @@ import {
   tryUnlockWithPassword,
   validatePin
 } from '/app/domain/authorization/services/LockScreenService'
+import { devlog } from '/core/tools/env'
 
 export const useLockScreenProps = (props: LockScreenProps): LockViewProps => {
   const [biometryEnabled, setBiometryEnabled] = useState(false)
@@ -116,6 +117,7 @@ export const useLockScreenProps = (props: LockScreenProps): LockViewProps => {
   // but in case it didn't, we do it here as a fallback as it is critical.
   // We're using it last because might as well wait for the other hooks to be done.
   useEffect(() => {
+    devlog('🔓', 'useLockScreen', 'hiding splash screen')
     void hideSplashScreen()
   }, [])
 

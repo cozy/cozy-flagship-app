@@ -21,14 +21,13 @@ import { useSession } from '/hooks/useSession'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import { launcherEvent } from '/libs/ReactNativeLauncher'
 import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
+import { devlog } from '/core/tools/env'
 
 const unzoomHomeView = webviewRef => {
   webviewRef?.injectJavaScript(
     'window.dispatchEvent(new Event("closeApp"));true;'
   )
 }
-
-let hasRenderedOnce = false
 
 /**
  * @typedef Props
@@ -60,6 +59,7 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
     route,
     navigation
   )
+  const hasRenderedOnce = useRef(false)
 
   useEffect(() => {
     const subscription = AppState.addEventListener(
@@ -185,6 +185,10 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   }, [uri, client, route, mainAppFallbackURLInitialParam, navigation, session])
 
   useEffect(() => {
+    devlog(
+      `HomeView: determineSecurityFlowHook, hasRenderedOnce.current: "${hasRenderedOnce.current}"`
+    )
+
     async function handleSecurityFlowAndCozyAppFallback() {
       let navigationObject = null
 
@@ -214,8 +218,11 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
       }
 
       // If client exists and this is the first render, determine the security flow.
-      if (uri && client && !hasRenderedOnce) {
-        hasRenderedOnce = true
+      if (uri && client && !hasRenderedOnce.current) {
+        devlog(
+          `HomeView: setting hasRenderedOnce.current set to "true" and calling determineSecurityFlowHook()`
+        )
+        hasRenderedOnce.current = true
         await determineSecurityFlow(client, navigationObject)
       }
     }
