@@ -2,6 +2,7 @@ import Minilog from '@cozy/minilog'
 
 import { managePermissions } from '/app/domain/backup/services/managePermissions'
 import {
+  getLocalBackupConfig,
   hasLocalBackupConfig,
   initiazeLocalBackupConfig,
   setBackupAsDone
@@ -10,6 +11,8 @@ import { getMediasToBackup } from '/app/domain/backup/services/getMedias'
 import { uploadMedias } from '/app/domain/backup/services/uploadMedias'
 
 import type CozyClient from 'cozy-client'
+
+import { BackupInfo } from '/app/domain/backup/models'
 
 const log = Minilog('💿 Backup')
 
@@ -28,6 +31,17 @@ export const startBackup = async (client: CozyClient): Promise<void> => {
   await setBackupAsDone(client)
 
   log.debug('Backup finished')
+}
+
+export const getBackupInfo = async (
+  client: CozyClient
+): Promise<BackupInfo> => {
+  const backupConfig = await getLocalBackupConfig(client)
+
+  return {
+    lastBackupDate: backupConfig.lastBackupDate,
+    backupedMediasCount: backupConfig.backupedMedias.length
+  }
 }
 
 const initializeBackup = async (client: CozyClient): Promise<void> => {

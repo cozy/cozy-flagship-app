@@ -26,6 +26,10 @@ import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { showInAppBrowser, closeInAppBrowser } from '/libs/intents/InAppBrowser'
 import { isBiometryDenied } from '/app/domain/authentication/services/BiometryService'
 import { toggleSetting } from '/app/domain/settings/services/SettingsService'
+import {
+  startBackup,
+  getBackupInfo
+} from '/app/domain/backup/services/manageBackup'
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {
@@ -154,6 +158,8 @@ export const localMethods = (
     openAppOSSettings,
     isNativePassInstalledOnDevice,
     scanDocument,
-    isScannerAvailable: () => Promise.resolve(isScannerAvailable())
+    isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
+    startBackup: () => startBackup(client),
+    getBackupInfo: () => getBackupInfo(client)
   }
 }
