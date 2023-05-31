@@ -29,6 +29,10 @@ import { showInAppBrowser, closeInAppBrowser } from '/libs/intents/InAppBrowser'
 import { isBiometryDenied } from '/app/domain/authentication/services/BiometryService'
 import { toggleSetting } from '/app/domain/settings/services/SettingsService'
 import { HomeThemeType } from '/app/theme/models'
+import {
+  startBackup,
+  getBackupInfo
+} from '/app/domain/backup/services/manageBackup'
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {
@@ -160,6 +164,8 @@ export const localMethods = (
     scanDocument,
     isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
     // For now setTheme is only used for the home theme
-    setTheme: setHomeThemeIntent
+    setTheme: setHomeThemeIntent,
+    startBackup: () => startBackup(client),
+    getBackupInfo: () => getBackupInfo(client)
   }
 }

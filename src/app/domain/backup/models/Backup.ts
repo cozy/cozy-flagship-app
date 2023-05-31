@@ -22,3 +22,13 @@ export interface RemoteBackupConfig {
     path: string
   }
 }
+
+/**
+ * An object representing everything a front end need to know about a backup
+ * @member {number} lastBackupDate
+ * @member {number} backupedMediasCount
+ */
+export interface BackupInfo {
+  lastBackupDate: number
+  backupedMediasCount: number
+}
