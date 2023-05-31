@@ -75,3 +75,11 @@ export const setMediaAsBackuped = async (
 
   await setLocalBackupConfig(client, localBackupConfig)
 }
+
+export const setBackupAsDone = async (client: CozyClient): Promise<void> => {
+  const localBackupConfig = await getLocalBackupConfig(client)
+
+  localBackupConfig.lastBackupDate = Date.now()
+
+  await setLocalBackupConfig(client, localBackupConfig)
+}
