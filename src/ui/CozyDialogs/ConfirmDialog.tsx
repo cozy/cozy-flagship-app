@@ -13,9 +13,10 @@ interface ConfirmDialogProps {
         children: ReactElement<{ style: StyleProp<ViewStyle> }>[]
       }>
     | ReactElement<{ style: StyleProp<ViewStyle> }>
-  content: string
+  content: string | ReactElement
   onClose: () => void
-  title: string
+  title?: string
+  headerStyle?: StyleProp<ViewStyle>
 }
 
 const renderActions = (
@@ -44,12 +45,13 @@ export const ConfirmDialog = ({
   actions,
   content,
   onClose,
-  title
+  title,
+  headerStyle
 }: ConfirmDialogProps): JSX.Element => (
   <Modal onRequestClose={onClose} statusBarTranslucent transparent>
     <Pressable style={styles.dialogContainer} onPress={onClose}>
       <View style={styles.dialog}>
-        <View style={styles.header}>
+        <View style={[styles.header, headerStyle]}>
           <Typography variant="h3">{title}</Typography>
 
           <IconButton onPress={onClose}>
@@ -58,7 +60,11 @@ export const ConfirmDialog = ({
         </View>
 
         <View style={styles.content}>
-          <Typography>{content}</Typography>
+          {typeof content === 'string' ? (
+            <Typography>{content}</Typography>
+          ) : (
+            content
+          )}
         </View>
 
         <View style={styles.footer}>{renderActions(actions)}</View>
