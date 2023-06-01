@@ -4,13 +4,17 @@ import NetInfo, {
 } from '@react-native-community/netinfo'
 import { LogBox } from 'react-native'
 
+import { devlog } from '/core/tools/env'
 import { devConfig } from '/constants/dev-config'
 import { hideSplashScreen } from '/libs/services/SplashScreenService'
 
 export const initDev = async (isDev: boolean): Promise<void> => {
   if (!isDev) return
 
-  if (devConfig.forceHideSplashScreen) await hideSplashScreen()
+  if (devConfig.forceHideSplashScreen) {
+    devlog('⚠️ devConfig.forceHideSplashScreen')
+    await hideSplashScreen()
+  }
 
   if (devConfig.forceOffline) {
     NetInfo.fetch = (): Promise<NetInfoState> =>

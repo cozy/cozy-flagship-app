@@ -159,6 +159,7 @@ export const useAppBootstrap = client => {
     if (initialRoute !== 'fetching' && isLoading) {
       setIsLoading(false)
       if (initialRoute.route !== routes.home) {
+        log.debug('useAppBootstrap: hideSplashScreen')
         hideSplashScreen()
       }
     }
