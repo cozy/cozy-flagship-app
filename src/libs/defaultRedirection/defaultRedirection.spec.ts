@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { changeIcon as RNChangeIcon } from 'react-native-change-icon'
 
 import CozyClient, { createMockClient } from 'cozy-client'
 
@@ -19,10 +18,11 @@ import {
   getOrFetchDefaultRedirectionUrl,
   getParamsWithDefaultRedirectionUrl
 } from '/libs/defaultRedirection/defaultRedirection'
+import { changeIcon } from '/libs/icon/icon'
 import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
 
 jest.mock('@react-native-async-storage/async-storage')
-jest.mock('react-native-change-icon')
+jest.mock('/libs/icon/icon')
 jest.mock('/libs/functions/formatRedirectLink')
 
 const mockedFormatRedirectLink = formatRedirectLink as jest.MockedFunction<
@@ -121,7 +121,7 @@ describe('setDefaultRedirectionUrlAndAppIcon', () => {
       strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY,
       DRIVE_URL
     )
-    expect(RNChangeIcon).toHaveBeenCalledWith('cozy')
+    expect(changeIcon).toHaveBeenCalledWith('drive')
   })
 })
 
