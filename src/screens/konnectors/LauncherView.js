@@ -26,6 +26,7 @@ import {
 } from '/screens/konnectors/core/handleTimeout'
 import { navigationRef } from '/libs/RootNavigation'
 import { TIMEOUT_KONNECTOR_ERROR } from '/libs/Launcher'
+import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 
 const log = Minilog('LauncherView')
 
@@ -163,7 +164,9 @@ class LauncherView extends Component {
     this.launcher = new ReactNativeLauncher()
     // made to measure the time between the launcher initialization and the display of the worker webview (when needed)
     // this is not await not to block the initialization of the launcher
-    this.launcher.waitForWorkerVisible()
+    this.launcher.waitForWorkerVisible(() =>
+      setFlagshipUI({ topTheme: 'dark' })
+    )
     this.launcher.setLogger(this.props.onKonnectorLog)
 
     this.launcher.setStartContext({
@@ -368,11 +371,12 @@ const styles = StyleSheet.create({
     flex: 0
   },
   headerStyle: {
-    flexDirection: 'row',
     alignContent: 'center',
+    backgroundColor: '#fff', // We do not want the default background color of <View /> which is blue in the app
+    flexDirection: 'row',
+    paddingBottom: 8,
     paddingHorizontal: 8,
-    paddingTop: statusBarHeight + 8,
-    paddingBottom: 8
+    paddingTop: statusBarHeight + 8
   },
   headerTouchableStyle: {
     flexDirection: 'row',
