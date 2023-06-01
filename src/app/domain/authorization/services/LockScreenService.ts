@@ -13,6 +13,7 @@ import { hideSplashScreen } from '/libs/services/SplashScreenService'
 import { translation } from '/locales'
 import { setLockScreenUI } from '/app/domain/authorization/events/LockScreenUiManager'
 import { UnlockWithPassword } from '/app/domain/authentication/models/User'
+import { devlog } from '/core/tools/env'
 
 const rnBiometrics = new ReactNativeBiometrics()
 
@@ -123,5 +124,6 @@ export const ensureLockScreenUi = async (): Promise<void> => {
     topOverlay: 'transparent'
   })
 
+  devlog('🔏 ensureLockScreenUi() hiding splash screen')
   await hideSplashScreen()
 }

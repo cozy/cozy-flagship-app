@@ -1,4 +1,4 @@
-import { NavigationContainerRef } from '@react-navigation/native'
+import type { NavigationContainerRef } from '@react-navigation/native'
 
 import CozyClient from 'cozy-client'
 import { getErrorMessage } from 'cozy-intent'
@@ -25,6 +25,7 @@ import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { authConstants } from '/app/domain/authorization/constants'
 import { safePromise } from '/utils/safePromise'
 import { navigateToApp } from '/libs/functions/openApp'
+import { hideSplashScreen } from '/libs/services/SplashScreenService'
 
 // Can use mock functions in dev environment
 const fns = getDevModeFunctions(
@@ -50,8 +51,9 @@ export const determineSecurityFlow = async (
 ): Promise<void> => {
   const callbackNav = async (): Promise<void> => {
     try {
-      if (navigationObject) await navigateToApp(navigationObject)
-      else navigate(routes.home)
+      if (navigationObject) {
+        await navigateToApp(navigationObject)
+      } else navigate(routes.home)
     } catch (error) {
       devlog('🔓', 'Error navigating to app, defaulting to home', error)
       navigate(routes.home)
@@ -62,6 +64,7 @@ export const determineSecurityFlow = async (
     devlog('🔒', 'Application has autolock activated')
     devlog('🔒', 'Device should be secured or autolock would not work')
     navigate(routes.lock, { onSuccess: callbackNav })
+    void hideSplashScreen()
   } else if (await fns.isDeviceSecured()) {
     devlog('🔓', 'Application does not have autolock activated')
     devlog('🔒', 'Device is secured')

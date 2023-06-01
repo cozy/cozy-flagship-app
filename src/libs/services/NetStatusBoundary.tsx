@@ -3,6 +3,7 @@ import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { ErrorScreen } from '/screens/error/ErrorScreen'
 import { useSplashScreen } from '/hooks/useSplashScreen'
+import { devlog } from '/core/tools/env'
 
 interface Props {
   children: ReactNode
@@ -25,6 +26,7 @@ const NetStatusBoundary = ({
       else {
         setIsConnected(false)
 
+        devlog('NetStatusBoundary hiding splashscreen')
         await hideSplashScreen()
 
         subscription.current = NetInfo.addEventListener(state => {
