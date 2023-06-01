@@ -379,12 +379,13 @@ class ReactNativeLauncher extends Launcher {
 
   /**
    * Resolve when the worker is made visible by the pilot. This allow to measure the time between the initialization of the worker and this event
-   *
+   * @param {Function} [callback] - Optional callback to call when the worker is visible
    * @returns {Promise<void>}
    */
-  async waitForWorkerVisible() {
+  async waitForWorkerVisible(callback) {
     return new Promise(resolve => {
       this.once('worker:visible', () => {
+        callback?.()
         resolve()
       })
     })
