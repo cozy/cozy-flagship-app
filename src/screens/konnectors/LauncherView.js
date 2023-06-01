@@ -255,7 +255,6 @@ class LauncherView extends Component {
                 }}
                 useWebKit={true}
                 javaScriptEnabled={true}
-                userAgent={this.state.userAgent}
                 sharedCookiesEnabled={true}
                 onMessage={this.onPilotMessage}
                 onError={this.onPilotError}
