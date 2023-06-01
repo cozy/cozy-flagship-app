@@ -1,12 +1,12 @@
 diff --git a/node_modules/react-native-change-icon/android/src/main/java/com/reactnativechangeicon/ChangeIconModule.java b/node_modules/react-native-change-icon/android/src/main/java/com/reactnativechangeicon/ChangeIconModule.java
-index 07402bc..d44f29d 100644
+index 07402bc..19fd137 100644
 --- a/node_modules/react-native-change-icon/android/src/main/java/com/reactnativechangeicon/ChangeIconModule.java
 +++ b/node_modules/react-native-change-icon/android/src/main/java/com/reactnativechangeicon/ChangeIconModule.java
-@@ -82,6 +82,7 @@ public class ChangeIconModule extends ReactContextBaseJavaModule implements Appl
-             promise.reject("ICON_INVALID");
+@@ -83,6 +83,7 @@ public class ChangeIconModule extends ReactContextBaseJavaModule implements Appl
              return;
          }
-+        this.classesToKill.clear();
          this.classesToKill.add(this.componentClass);
++        this.classesToKill.remove(activeClass); // remove the new icon from the list of classes to kill to avoid being unable to start the app
          this.componentClass = activeClass;
          activity.getApplication().registerActivityLifecycleCallbacks(this);
+         iconChanged = true;
