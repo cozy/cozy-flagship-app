@@ -47,7 +47,8 @@ export const determineSecurityFlow = async (
     navigation: NavigationContainerRef<Record<string, unknown>>
     href: string
     slug: string
-  }
+  },
+  isCallerHandlingSplashscreen?: boolean
 ): Promise<void> => {
   const callbackNav = async (): Promise<void> => {
     try {
@@ -72,7 +73,24 @@ export const determineSecurityFlow = async (
     devlog('🔒', 'No security action taken')
 
     if (navigationObject) await navigateToApp(navigationObject)
-    void hideSplashScreen() // This might be redundant but some cases require a hideSplashScreen() failsafe
+
+    // This might be redundant but some cases require a hideSplashScreen() failsafe
+    // @TODO: should be refactored into a proper app-wide splashscreen handling service
+    if (isCallerHandlingSplashscreen) {
+      devlog(
+        '🔏',
+        'determineSecurityFlow received Splashscreen instruction from its caller, therefore will not hide it'
+      )
+    }
+
+    if (!isCallerHandlingSplashscreen) {
+      devlog(
+        '🔏',
+        "determineSecurityFlow didn't receive Splashscreen instruction from its caller, defaulting to hiding it"
+      )
+
+      void hideSplashScreen()
+    }
   } else {
     devlog('🔓', 'Application does not have autolock activated')
     devlog('🔓', 'Device is unsecured')

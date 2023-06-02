@@ -223,7 +223,7 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
           `HomeView: setting hasRenderedOnce.current set to "true" and calling determineSecurityFlowHook()`
         )
         hasRenderedOnce.current = true
-        await determineSecurityFlow(client, navigationObject)
+        await determineSecurityFlow(client, navigationObject, true)
       }
     }
 
