@@ -63,6 +63,7 @@ export const determineSecurityFlow = async (
   if (await fns.isAutoLockEnabled()) {
     devlog('🔒', 'Application has autolock activated')
     devlog('🔒', 'Device should be secured or autolock would not work')
+
     navigate(routes.lock, { onSuccess: callbackNav })
     void hideSplashScreen()
   } else if (await fns.isDeviceSecured()) {
@@ -71,6 +72,7 @@ export const determineSecurityFlow = async (
     devlog('🔒', 'No security action taken')
 
     if (navigationObject) await navigateToApp(navigationObject)
+    void hideSplashScreen() // This might be redundant but some cases require a hideSplashScreen() failsafe
   } else {
     devlog('🔓', 'Application does not have autolock activated')
     devlog('🔓', 'Device is unsecured')
@@ -78,8 +80,12 @@ export const determineSecurityFlow = async (
     const params = await getSecFlowInitParams(client)
 
     if (params.createPassword) {
+      void hideSplashScreen() // This might be redundant but some cases require a hideSplashScreen() failsafe
+
       return navigate(routes.promptPassword, { onSuccess: callbackNav })
     } else {
+      void hideSplashScreen() // This might be redundant but some cases require a hideSplashScreen() failsafe
+
       return navigate(routes.promptPin, { onSuccess: callbackNav })
     }
   }
