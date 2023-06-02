@@ -100,6 +100,7 @@
         android:enabled="false"
         android:exported="true"
         android:icon="@mipmap/mabulle"
+        android:roundIcon="@mipmap/mabulle_round"
         android:targetActivity=".MainActivity">
         <intent-filter>
           <action android:name="android.intent.action.MAIN" />
