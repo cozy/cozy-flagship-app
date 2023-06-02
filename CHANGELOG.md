@@ -1,3 +1,25 @@
+# 1.1.5
+
+## ✨ Features
+
+* Display a modal to show when app icon changed [PR #816](https://github.com/cozy/cozy-flagship-app/pull/816)
+* Customize default icon remotely [PR #816](https://github.com/cozy/cozy-flagship-app/pull/816)
+
+## 🐛 Bug Fixes
+
+* Ensure that the Application splash screen is correctly hidden in all scenarios [PR #819](https://github.com/cozy/cozy-flagship-app/pull/819)
+
+# 1.1.4
+
+## ✨ Features
+
+* Upgrade cozy-clisk to `0.13.0` to get subPath [PR #814](https://github.com/cozy/cozy-flagship-app/pull/814)
+
+## 🐛 Bug Fixes
+
+* Enhancing app lockingmechanism and handling edge cases by @acezard [PR #815](https://github.com/cozy/cozy-flagship-app/pull/815)
+* Set launcherview header to display dark icons on white background [PR #817](https://github.com/cozy/cozy-flagship-app/pull/817)
+
 # 1.1.3
 
 ## ✨ Features
@@ -5,9 +27,14 @@
 
 ## 🐛 Bug Fixes
 
+* Fix UI issues on password and PIN prompts ([PR #799](https://github.com/cozy/cozy-react-native/pull/799), [PR #801](https://github.com/cozy/cozy-react-native/pull/801), [PR #805](https://github.com/cozy/cozy-react-native/pull/805), [PR #806](https://github.com/cozy/cozy-react-native/pull/806), [PR #807](https://github.com/cozy/cozy-react-native/pull/807) and [PR #808](https://github.com/cozy/cozy-react-native/pull/808))
+* Fix a bug that prevented CLient Side Connectors logs to be handled correctly ([PR #802](https://github.com/cozy/cozy-react-native/pull/802))
+* Document scanning now correctly returns the last scan when multiple tries are done ([PR #803](https://github.com/cozy/cozy-react-native/pull/803))
 
 ## 🔧 Tech
 
+* Update `cozy-clisk` to `0.12.2` ([PR #800](https://github.com/cozy/cozy-react-native/pull/800))
+* Improve developers documentation ([PR #784](https://github.com/cozy/cozy-react-native/pull/784))
 
 # 1.1.2
 
@@ -764,3 +791,4 @@
 * Add dependabot configuration
 * Move android Main files inside correct path for react-native link usage
 * Remove unused library @react-native-community/masked-view
+  
