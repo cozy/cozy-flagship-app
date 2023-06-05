@@ -27,6 +27,7 @@ import { showInAppBrowser, closeInAppBrowser } from '/libs/intents/InAppBrowser'
 import { isBiometryDenied } from '/app/domain/authentication/services/BiometryService'
 import { toggleSetting } from '/app/domain/settings/services/SettingsService'
 import {
+  prepareBackup,
   startBackup,
   getBackupInfo
 } from '/app/domain/backup/services/manageBackup'
@@ -159,6 +160,7 @@ export const localMethods = (
     isNativePassInstalledOnDevice,
     scanDocument,
     isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
+    prepareBackup: () => prepareBackup(client),
     startBackup: () => startBackup(client),
     getBackupInfo: () => getBackupInfo(client)
   }
