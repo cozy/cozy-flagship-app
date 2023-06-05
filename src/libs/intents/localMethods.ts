@@ -30,6 +30,7 @@ import { isBiometryDenied } from '/app/domain/authentication/services/BiometrySe
 import { toggleSetting } from '/app/domain/settings/services/SettingsService'
 import { HomeThemeType } from '/app/theme/models'
 import {
+  prepareBackup,
   startBackup,
   getBackupInfo
 } from '/app/domain/backup/services/manageBackup'
@@ -165,6 +166,7 @@ export const localMethods = (
     isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
     // For now setTheme is only used for the home theme
     setTheme: setHomeThemeIntent,
+    prepareBackup: () => prepareBackup(client),
     startBackup: () => startBackup(client),
     getBackupInfo: () => getBackupInfo(client)
   }
