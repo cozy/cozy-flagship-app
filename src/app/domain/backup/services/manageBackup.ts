@@ -5,6 +5,9 @@ import {
   getLocalBackupConfig,
   hasLocalBackupConfig,
   initiazeLocalBackupConfig,
+  setBackupAsInitializing,
+  setBackupAsReady,
+  setBackupAsRunning,
   setBackupAsDone
 } from '/app/domain/backup/services/manageLocalBackupConfig'
 import { getMediasToBackup } from '/app/domain/backup/services/getMedias'
@@ -16,21 +19,36 @@ import { BackupInfo } from '/app/domain/backup/models'
 
 const log = Minilog('💿 Backup')
 
-export const startBackup = async (client: CozyClient): Promise<void> => {
-  log.debug('Backup started')
+export const prepareBackup = async (
+  client: CozyClient
+): Promise<BackupInfo> => {
+  log.debug('Backup preparation started')
 
   await managePermissions()
 
   await initializeBackup(client)
 
+  await setBackupAsInitializing(client)
+
   const mediasToBackup = await getMediasToBackup(client)
-  log.debug(`${mediasToBackup.length} medias to backup`)
 
-  await uploadMedias(client, mediasToBackup)
+  await setBackupAsReady(client, mediasToBackup)
 
-  await setBackupAsDone(client)
+  return await getBackupInfo(client)
+}
 
-  log.debug('Backup finished')
+export const startBackup = async (client: CozyClient): Promise<BackupInfo> => {
+  log.debug('Backup started')
+
+  const {
+    currentBackup: { mediasToBackup }
+  } = await getLocalBackupConfig(client)
+
+  await setBackupAsRunning(client)
+
+  void uploadMedias(client, mediasToBackup).then(() => setBackupAsDone(client))
+
+  return await getBackupInfo(client)
 }
 
 export const getBackupInfo = async (
@@ -40,7 +58,11 @@ export const getBackupInfo = async (
 
   return {
     lastBackupDate: backupConfig.lastBackupDate,
-    backupedMediasCount: backupConfig.backupedMedias.length
+    backupedMediasCount: backupConfig.backupedMedias.length,
+    currentBackup: {
+      status: backupConfig.currentBackup.status,
+      mediasToBackupCount: backupConfig.currentBackup.mediasToBackup.length
+    }
   }
 }
 
