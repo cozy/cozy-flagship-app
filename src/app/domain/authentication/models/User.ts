@@ -118,7 +118,7 @@ export const savePassword = async (
 
   await resetKeychainAndSaveLoginData(keys)
 
-  devlog('🔑', 'Password saved')
+  devlog('🔏', 'Password saved')
 }
 
 export interface SetKeys {

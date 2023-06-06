@@ -12,7 +12,7 @@ export const usePinPrompt = (
   // The HomeView should have called hideSplashScreen() already,
   // but in case it didn't, we do it here as a fallback as it is critical
   useEffect(() => {
-    devlog('🔓', 'usePinPrompt', 'hiding splash screen')
+    devlog('🔏', 'usePinPrompt', 'hiding splash screen')
     void hideSplashScreen()
   }, [])
 
