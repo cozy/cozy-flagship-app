@@ -9,7 +9,7 @@ export const usePasswordPrompt = (onSuccess: () => void): (() => void) => {
   // The HomeView should have called hideSplashScreen() already,
   // but in case it didn't, we do it here as a fallback as it is critical
   useEffect(() => {
-    devlog('🔓', 'usePasswordPrompt', 'hiding splash screen')
+    devlog('🔏', 'usePasswordPrompt', 'hiding splash screen')
     void hideSplashScreen()
   }, [])
 

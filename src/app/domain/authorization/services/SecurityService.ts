@@ -26,6 +26,7 @@ import { authConstants } from '/app/domain/authorization/constants'
 import { safePromise } from '/utils/safePromise'
 import { navigateToApp } from '/libs/functions/openApp'
 import { hideSplashScreen } from '/libs/services/SplashScreenService'
+import { SecurityNavigationService } from '/app/domain/authorization/services/SecurityNavigationService'
 
 // Can use mock functions in dev environment
 const fns = getDevModeFunctions(
@@ -50,27 +51,31 @@ export const determineSecurityFlow = async (
   },
   isCallerHandlingSplashscreen?: boolean
 ): Promise<void> => {
+  SecurityNavigationService.startListening()
+
   const callbackNav = async (): Promise<void> => {
     try {
       if (navigationObject) {
         await navigateToApp(navigationObject)
       } else navigate(routes.home)
     } catch (error) {
-      devlog('🔓', 'Error navigating to app, defaulting to home', error)
+      devlog('🔏', 'Error navigating to app, defaulting to home', error)
       navigate(routes.home)
+    } finally {
+      SecurityNavigationService.stopListening()
     }
   }
 
   if (await fns.isAutoLockEnabled()) {
-    devlog('🔒', 'Application has autolock activated')
-    devlog('🔒', 'Device should be secured or autolock would not work')
+    devlog('🔏', 'Application has autolock activated')
+    devlog('🔏', 'Device should be secured or autolock would not work')
 
     navigate(routes.lock, { onSuccess: callbackNav })
     void hideSplashScreen()
   } else if (await fns.isDeviceSecured()) {
-    devlog('🔓', 'Application does not have autolock activated')
-    devlog('🔒', 'Device is secured')
-    devlog('🔒', 'No security action taken')
+    devlog('🔏', 'Application does not have autolock activated')
+    devlog('🔏', 'Device is secured')
+    devlog('🔏', 'No security action taken')
 
     if (navigationObject) await navigateToApp(navigationObject)
 
@@ -89,11 +94,12 @@ export const determineSecurityFlow = async (
         "determineSecurityFlow didn't receive Splashscreen instruction from its caller, defaulting to hiding it"
       )
 
+      SecurityNavigationService.stopListening()
       void hideSplashScreen()
     }
   } else {
-    devlog('🔓', 'Application does not have autolock activated')
-    devlog('🔓', 'Device is unsecured')
+    devlog('🔏', 'Application does not have autolock activated')
+    devlog('🔏', 'Device is unsecured')
 
     const params = await getSecFlowInitParams(client)
 
@@ -124,13 +130,13 @@ export const getSecFlowInitParams = async (
   )
 
   if (isCreatePinFlow) {
-    devlog('🔓', 'User should set a PIN code method')
+    devlog('🔏', 'User should set a PIN code method')
 
     return {
       createPassword: false
     }
   } else {
-    devlog('🔓', 'User should create a password')
+    devlog('🔏', 'User should create a password')
 
     return {
       createPassword: true
@@ -149,7 +155,7 @@ export const savePinCode = async (
     if (!onSuccess) throw new Error('No success callback provided')
     onSuccess()
   } catch (error) {
-    devlog('🔓', 'Error saving pin code, fallback navigation to home', error)
+    devlog('🔏', 'Error saving pin code, fallback navigation to home', error)
     navigate(routes.home)
   }
 }
@@ -157,9 +163,9 @@ export const savePinCode = async (
 export const doPinCodeAutoLock = async (): Promise<void> => {
   try {
     const autoLockStatus = await ensureAutoLockIsEnabled()
-    devlog('🔓', `AutoLock status is ${String(autoLockStatus)}`)
+    devlog('🔏', `AutoLock status is ${String(autoLockStatus)}`)
   } catch (error) {
-    devlog('🔓', 'Error saving autoLock', error)
+    devlog('🔏', 'Error saving autoLock', error)
   }
 }
 
@@ -169,13 +175,13 @@ async function safeSetKeysAsync(
   onSuccess?: () => void
 ): Promise<void> {
   try {
-    devlog('🔓', 'Saving password', keys)
+    devlog('🔏', 'Saving password', keys)
 
     await savePassword(client, keys)
 
     navigate(routes.promptPin, { onSuccess })
   } catch (error) {
-    devlog('🔓', 'Error saving password')
+    devlog('🔏', 'Error saving password')
     devlog(getErrorMessage(error))
 
     // TODO-CRITICAL: Handle network errors on savePassword
