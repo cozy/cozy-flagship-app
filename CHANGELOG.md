@@ -1,3 +1,9 @@
+# 1.1.7
+
+## 🐛 Bug Fixes
+
+* Ensure that the user can't go back to the home from a LockScreen/Pin/Password view [PR #824](https://github.com/cozy/cozy-flagship-app/pull/824)
+
 # 1.1.6
 
 ## 🐛 Bug Fixes
