@@ -34,7 +34,9 @@ export const styles = StyleSheet.create({
     flex: 1, // Allows full height for loading animation
     opacity: 1
   },
-  immersiveHeight: 0,
+  immersiveHeight: {
+    height: 0
+  },
   progressBarContainer: {
     width: '60%',
     display: 'flex'
