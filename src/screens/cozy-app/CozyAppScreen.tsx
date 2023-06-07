@@ -1,40 +1,21 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { StatusBar, View } from 'react-native'
 
-import { Animation } from './CozyAppScreen.Animation'
-import { styles } from './CozyAppScreen.styles'
-import { CozyProxyWebView } from '../../components/webviews/CozyProxyWebView'
-
-import { NetService } from '/libs/services/NetService'
-
-import { flagshipUI } from '../../libs/intents/setFlagshipUI'
-
+import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
+import { flagshipUI, NormalisedFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { useDimensions } from '/libs/dimensions'
-
-import { internalMethods } from '../../libs/intents/localMethods'
-
-import { routes } from '/constants/routes'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
-const firstHalfUI = () =>
-  internalMethods.setFlagshipUI({
-    bottomBackground: 'white',
-    bottomTheme: 'dark',
-    bottomOverlay: 'transparent',
-    topBackground: 'white',
-    topTheme: 'dark',
-    topOverlay: 'transparent'
-  })
+import { Animation } from './CozyAppScreen.Animation'
+import { firstHalfUI, handleError } from './CozyAppScreen.functions'
+import { styles } from './CozyAppScreen.styles'
+import { CozyAppScreenProps } from './CozyAppScreen.types'
 
-const handleError = ({ nativeEvent }) => {
-  const { code, description } = nativeEvent
-
-  if (code === -2 && description === 'net::ERR_INTERNET_DISCONNECTED')
-    NetService.handleOffline(routes.stack)
-}
-
-export const CozyAppScreen = ({ route, navigation }) => {
-  const [UIState, setUIState] = useState({})
+export const CozyAppScreen = ({
+  route,
+  navigation
+}: CozyAppScreenProps): JSX.Element => {
+  const [UIState, setUIState] = useState<NormalisedFlagshipUI>({})
   const {
     bottomBackground,
     bottomOverlay,
@@ -48,7 +29,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
   const { setShouldWaitCozyApp } = useHomeStateContext()
 
   useEffect(() => {
-    flagshipUI.on('change', state => {
+    flagshipUI.on('change', (state: NormalisedFlagshipUI) => {
       setUIState({ ...UIState, ...state })
     })
 
@@ -60,9 +41,10 @@ export const CozyAppScreen = ({ route, navigation }) => {
   useEffect(() => {
     if (isReady) return // We don't want to trigger the animation UI changes twice (in case of app unlock for instance)
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     !route.params.iconParams && setReady(true)
 
-    isFirstHalf && firstHalfUI()
+    isFirstHalf && void firstHalfUI()
   }, [isFirstHalf, isReady, route.params.iconParams])
   const dimensions = useDimensions()
 
@@ -84,7 +66,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
         style={{
           height: isFirstHalf
             ? dimensions.statusBarHeight
-            : styles.immersiveHeight,
+            : styles.immersiveHeight.height,
           backgroundColor: topBackground
         }}
       >
@@ -97,15 +79,18 @@ export const CozyAppScreen = ({ route, navigation }) => {
       </View>
 
       <View style={styles.mainView}>
-        {route.params.iconParams && !isReady && (
-          <Animation
-            onFirstHalf={setFirstHalf}
-            onFinished={setReady}
-            shouldExit={shouldExitAnimation}
-            params={route.params.iconParams}
-            slug={route.params.slug}
-          />
-        )}
+        {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          route.params.iconParams && !isReady && (
+            <Animation
+              onFirstHalf={setFirstHalf}
+              onFinished={setReady}
+              shouldExit={shouldExitAnimation}
+              params={route.params.iconParams}
+              slug={route.params.slug}
+            />
+          )
+        }
 
         <CozyProxyWebView
           style={webViewStyle}
@@ -123,7 +108,7 @@ export const CozyAppScreen = ({ route, navigation }) => {
         style={{
           height: isFirstHalf
             ? dimensions.navbarHeight
-            : styles.immersiveHeight,
+            : styles.immersiveHeight.height,
           backgroundColor: bottomBackground
         }}
       >

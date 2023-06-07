@@ -4,63 +4,17 @@ import { SvgXml } from 'react-native-svg'
 
 import ProgressBar from '/components/Bar'
 import { iconTable, iconFallback } from '/libs/functions/iconTable'
-import { getDimensions } from '/libs/dimensions'
-import { palette } from '/ui/palette'
 
+import {
+  config,
+  containerAnimConfig,
+  getScaleInput,
+  getTranslateInput,
+  progressBarAnimConfig,
+  progressBarConfig
+} from './CozyAppScreen.functions'
 import { styles } from './CozyAppScreen.styles'
-
-const { screenHeight, screenWidth } = getDimensions()
-
-const config = {
-  duration: 300,
-  width: '44%',
-  height: '44%',
-  driver: true
-}
-
-const progressBarConfig = {
-  width: null,
-  indeterminate: true,
-  unfilledColor: palette.Grey[200],
-  color: palette.Primary[600],
-  borderWidth: 0,
-  height: 8,
-  borderRadius: 100,
-  indeterminateAnimationDuration: 1500
-}
-
-const progressBarAnimConfig = {
-  fadeIn: {
-    toValue: 1,
-    duration: 50,
-    useNativeDriver: config.driver
-  },
-  fadeOut: {
-    toValue: 0,
-    duration: 50,
-    useNativeDriver: config.driver
-  }
-}
-
-const containerAnimConfig = {
-  fadeOut: {
-    toValue: 0,
-    duration: 300,
-    useNativeDriver: config.driver
-  }
-}
-
-const getTranslateInput = params => ({
-  x:
-    params.x - styles.fadingContainer.left - (screenWidth - params.width) * 0.5,
-  y:
-    params.y - styles.fadingContainer.top - (screenHeight - params.height) * 0.5
-})
-
-const getScaleInput = params => ({
-  x: params.width / screenWidth,
-  y: params.height / screenHeight
-})
+import { CozyAppScreenAnimationProps } from './CozyAppScreen.types'
 
 export const Animation = ({
   onFirstHalf,
@@ -68,7 +22,7 @@ export const Animation = ({
   shouldExit,
   params,
   slug
-}) => {
+}: CozyAppScreenAnimationProps): JSX.Element => {
   const animateTranslate = useRef(
     new Animated.ValueXY(getTranslateInput(params))
   ).current
@@ -79,9 +33,10 @@ export const Animation = ({
   const animateBarOpacity = useRef(new Animated.Value(0)).current
 
   class SVG extends React.Component {
-    render() {
+    render(): JSX.Element {
       return (
         <SvgXml
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           xml={iconTable[slug]?.xml || iconFallback}
           width={config.width}
           height={config.height}

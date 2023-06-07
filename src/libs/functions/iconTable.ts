@@ -11,7 +11,7 @@ import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 const log = Minilog('Icon Table')
 
-export let iconTable = {}
+export let iconTable: Record<string, { version: string; xml: string }> = {}
 
 export type IconsCache = Record<string, { version: string; xml: string }>
 
