@@ -31,6 +31,7 @@ import {
   startBackup,
   getBackupInfo
 } from '/app/domain/backup/services/manageBackup'
+import { BackupInfo } from '/app/domain/backup/models'
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {
@@ -125,6 +126,39 @@ const isNativePassInstalledOnDevice = async (): Promise<boolean> => {
 interface CustomMethods {
   fetchSessionCode: () => Promise<string | null>
   showInAppBrowser: (args: { url: string }) => Promise<BrowserResult>
+  prepareBackup: () => Promise<BackupInfo>
+  startBackup: () => Promise<BackupInfo>
+  getBackupInfo: () => Promise<BackupInfo>
+}
+
+const prepareBackupWithClient = (
+  client: CozyClient | undefined
+): Promise<BackupInfo> => {
+  if (!client) {
+    throw new Error('You must be logged in to use backup feature')
+  }
+
+  return prepareBackup(client)
+}
+
+const startBackupWithClient = (
+  client: CozyClient | undefined
+): Promise<BackupInfo> => {
+  if (!client) {
+    throw new Error('You must be logged in to use backup feature')
+  }
+
+  return startBackup(client)
+}
+
+const getBackupInfoWithClient = (
+  client: CozyClient | undefined
+): Promise<BackupInfo> => {
+  if (!client) {
+    throw new Error('You must be logged in to use backup feature')
+  }
+
+  return getBackupInfo(client)
 }
 
 /**
@@ -160,8 +194,8 @@ export const localMethods = (
     isNativePassInstalledOnDevice,
     scanDocument,
     isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
-    prepareBackup: () => prepareBackup(client),
-    startBackup: () => startBackup(client),
-    getBackupInfo: () => getBackupInfo(client)
+    prepareBackup: () => prepareBackupWithClient(client),
+    startBackup: () => startBackupWithClient(client),
+    getBackupInfo: () => getBackupInfoWithClient(client)
   }
 }
