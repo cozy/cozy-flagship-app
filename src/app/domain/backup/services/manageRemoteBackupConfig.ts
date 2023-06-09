@@ -17,6 +17,10 @@ interface BackupFolder {
   }
 }
 
+const isInTrash = (path: string): boolean => {
+  return path.startsWith('/.cozy_trash')
+}
+
 export const fetchRemoteBackupConfigs = async (
   client: CozyClient
 ): Promise<RemoteBackupConfig[]> => {
@@ -27,15 +31,15 @@ export const fetchRemoteBackupConfigs = async (
 
   const backupFolders = included as BackupFolder[]
 
-  const remoteBackupConfigs: RemoteBackupConfig[] = backupFolders.map(
-    backupFolder => ({
+  const remoteBackupConfigs: RemoteBackupConfig[] = backupFolders
+    .filter(folder => !isInTrash(folder.attributes.path))
+    .map(backupFolder => ({
       backupFolder: {
         id: backupFolder._id,
         name: backupFolder.attributes.name,
         path: backupFolder.attributes.path
       }
-    })
-  )
+    }))
 
   return remoteBackupConfigs
 }
