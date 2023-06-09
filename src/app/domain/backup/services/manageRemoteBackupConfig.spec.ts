@@ -53,7 +53,7 @@ describe('fetchRemoteBackupConfigs', () => {
 describe('isRemoteBackupConfigFromDevice', () => {
   test('returns true when the remote backup config does correspond to device name', () => {
     const remoteBackupConfig = {
-      backupFolder: { name: 'Device 1', path: '/Backup/Device 1' }
+      backupFolder: { id: '1', name: 'Device 1', path: '/Backup/Device 1' }
     }
     const deviceName = 'Device 1'
 
@@ -67,7 +67,7 @@ describe('isRemoteBackupConfigFromDevice', () => {
 
   test('returns false when the remote backup config does not correspond to device name', () => {
     const remoteBackupConfig = {
-      backupFolder: { name: 'Device 1', path: '/Backup/Device 1' }
+      backupFolder: { id: '2', name: 'Device 1', path: '/Backup/Device 1' }
     }
     const deviceName = 'Device 2'
 
@@ -85,14 +85,26 @@ describe('fetchDeviceRemoteBackupConfig', () => {
     jest
       .spyOn(manageRemoteBackupConfig, 'fetchRemoteBackupConfigs')
       .mockResolvedValue([
-        { backupFolder: { name: 'Device 1', path: '/Backup/Device 1' } }
+        {
+          backupFolder: { id: '1', name: 'Device 1', path: '/Backup/Device 1' }
+        }
       ])
     jest
       .spyOn(manageLocalBackupConfig, 'getLocalBackupConfig')
       .mockResolvedValue({
-        remotePath: '/Backup/Device 1',
+        remoteBackupConfig: {
+          backupFolder: {
+            id: '1',
+            name: 'Device 1',
+            path: '/Backup/Device 1'
+          }
+        },
         lastBackupDate: 0,
-        backupedMedias: []
+        backupedMedias: [],
+        currentBackup: {
+          status: 'to_do',
+          mediasToBackup: []
+        }
       })
     jest
       .spyOn(manageRemoteBackupConfig, 'isRemoteBackupConfigFromDevice')
@@ -110,14 +122,26 @@ describe('fetchDeviceRemoteBackupConfig', () => {
     jest
       .spyOn(manageRemoteBackupConfig, 'fetchRemoteBackupConfigs')
       .mockResolvedValue([
-        { backupFolder: { name: 'Device 1', path: '/Backup/Device 1' } }
+        {
+          backupFolder: { id: '1', name: 'Device 1', path: '/Backup/Device 1' }
+        }
       ])
     jest
       .spyOn(manageLocalBackupConfig, 'getLocalBackupConfig')
       .mockResolvedValue({
-        remotePath: '/Backup/Device 1',
+        remoteBackupConfig: {
+          backupFolder: {
+            id: '1',
+            name: 'Device 1',
+            path: '/Backup/Device 1'
+          }
+        },
         lastBackupDate: 0,
-        backupedMedias: []
+        backupedMedias: [],
+        currentBackup: {
+          status: 'to_do',
+          mediasToBackup: []
+        }
       })
     jest
       .spyOn(manageRemoteBackupConfig, 'isRemoteBackupConfigFromDevice')

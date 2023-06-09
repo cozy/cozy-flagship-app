@@ -1,6 +1,10 @@
 import Minilog from '@cozy/minilog'
 
-import { Media, LocalBackupConfig } from '/app/domain/backup/models'
+import {
+  Media,
+  LocalBackupConfig,
+  RemoteBackupConfig
+} from '/app/domain/backup/models'
 import {
   getUserPersistedData,
   storeUserPersistedData,
@@ -12,7 +16,13 @@ import type CozyClient from 'cozy-client'
 const log = Minilog('💿 Backup')
 
 const INITIAL_BACKUP_CONFIG: LocalBackupConfig = {
-  remotePath: '',
+  remoteBackupConfig: {
+    backupFolder: {
+      id: '',
+      name: '',
+      path: ''
+    }
+  },
   lastBackupDate: 0,
   backupedMedias: [],
   currentBackup: {
@@ -48,9 +58,15 @@ export const setLocalBackupConfig = async (
 }
 
 export const initiazeLocalBackupConfig = async (
-  client: CozyClient
+  client: CozyClient,
+  remoteBackupConfig: RemoteBackupConfig
 ): Promise<void> => {
-  await setLocalBackupConfig(client, INITIAL_BACKUP_CONFIG)
+  const newLocalBackupConfig = {
+    ...INITIAL_BACKUP_CONFIG,
+    remoteBackupConfig: remoteBackupConfig
+  }
+
+  await setLocalBackupConfig(client, newLocalBackupConfig)
 }
 
 export const hasLocalBackupConfig = async (

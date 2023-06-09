@@ -21,11 +21,14 @@ interface UploadMediaResult {
 
 export const uploadMedias = async (
   client: CozyClient,
+  backupFolderId: string,
   mediasToUpload: Media[]
 ): Promise<boolean> => {
   for (const mediaToUpload of mediasToUpload) {
     try {
-      const { success } = await uploadMedia(client, mediaToUpload)
+      const uploadUrl = getUploadUrl(client, backupFolderId, mediaToUpload)
+
+      const { success } = await uploadMedia(client, uploadUrl, mediaToUpload)
 
       if (success) {
         log.debug(`✅ ${mediaToUpload.name} uploaded`)
@@ -44,12 +47,13 @@ export const uploadMedias = async (
 
 const uploadMedia = async (
   client: CozyClient,
+  uploadUrl: string,
   media: Media
 ): Promise<UploadMediaResult> => {
   if (Platform.OS === 'android') {
-    return await uploadMediaAndroid(client, media)
+    return await uploadMediaAndroid(client, uploadUrl, media)
   } else if (Platform.OS === 'ios') {
-    return await uploadMediaIOS(client, media)
+    return await uploadMediaIOS(client, uploadUrl, media)
   }
 
   return { success: false }
@@ -57,13 +61,14 @@ const uploadMedia = async (
 
 const uploadMediaAndroid = async (
   client: CozyClient,
+  uploadUrl: string,
   media: Media
 ): Promise<UploadMediaResult> => {
   const filepath = media.path.replace('file://', '')
 
   return new Promise((resolve, reject) => {
     const options = {
-      url: getDriveUrl(client, media),
+      url: uploadUrl,
       path: filepath,
       method: 'POST',
       type: 'raw',
@@ -104,6 +109,7 @@ const uploadMediaAndroid = async (
 
 const uploadMediaIOS = async (
   client: CozyClient,
+  uploadUrl: string,
   media: Media
 ): Promise<UploadMediaResult> => {
   let filepath: string
@@ -133,7 +139,7 @@ const uploadMediaIOS = async (
 
   return new Promise((resolve, reject) => {
     RNFileSystem.uploadFiles({
-      toUrl: getDriveUrl(client, media),
+      toUrl: uploadUrl,
       files: [
         {
           name: media.name,
@@ -166,12 +172,17 @@ const uploadMediaIOS = async (
   })
 }
 
-const getDriveUrl = (client: CozyClient, media: Media): string => {
+const getUploadUrl = (
+  client: CozyClient,
+  backupFolderId: string,
+  media: Media
+): string => {
   const createdAt = new Date(media.creationDate).toISOString()
 
   const toURL =
     client.getStackClient().uri +
-    '/files/io.cozy.files.root-dir' +
+    '/files/' +
+    backupFolderId +
     '?Name=' +
     encodeURIComponent(media.name) +
     '&Type=file&Tags=library&Executable=false&CreatedAt=' +
