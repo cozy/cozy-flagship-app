@@ -14,12 +14,13 @@ import { getMediasToBackup } from '/app/domain/backup/services/getMedias'
 import { uploadMedias } from '/app/domain/backup/services/uploadMedias'
 import {
   fetchDeviceRemoteBackupConfig,
+  fetchBackupedMedias,
   createRemoteBackupFolder
 } from '/app/domain/backup/services/manageRemoteBackupConfig'
 
 import type CozyClient from 'cozy-client'
 
-import { BackupInfo } from '/app/domain/backup/models'
+import { BackupInfo, BackupedMedia } from '/app/domain/backup/models'
 
 const log = Minilog('💿 Backup')
 
@@ -80,13 +81,22 @@ const initializeBackup = async (client: CozyClient): Promise<void> => {
 
   if (!hasLocalBackup) {
     let deviceRemoteBackupConfig = await fetchDeviceRemoteBackupConfig(client)
+    let backupedMedias
 
-    if (!deviceRemoteBackupConfig) {
+    if (deviceRemoteBackupConfig) {
+      backupedMedias = await fetchBackupedMedias(
+        client,
+        deviceRemoteBackupConfig
+      )
+    } else {
       deviceRemoteBackupConfig = await createRemoteBackupFolder(client)
+      backupedMedias = [] as BackupedMedia[]
     }
 
-    // here we will need later to save already backuped medias in local backup config to restore correctly a backup
-
-    await initiazeLocalBackupConfig(client, deviceRemoteBackupConfig)
+    await initiazeLocalBackupConfig(
+      client,
+      deviceRemoteBackupConfig,
+      backupedMedias
+    )
   }
 }
