@@ -93,6 +93,14 @@ declare module 'cozy-client' {
 
   export const useClient = (): CozyClient => CozyClient as CozyClient
 
+  interface FileCollectionGetResult {
+    data: {
+      _id: string
+      name: string
+      path: string
+    }
+  }
+
   interface Collection {
     findReferencedBy: (
       params: object
@@ -101,6 +109,7 @@ declare module 'cozy-client' {
     addReferencesTo: (references: object, dirs: object[]) => Promise<void>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     launch: (trigger: any) => any
+    get: (id: string) => Promise<FileCollectionGetResult>
   }
 
   export default class CozyClient {

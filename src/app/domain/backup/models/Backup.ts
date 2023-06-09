@@ -4,13 +4,13 @@ type BackupStatus = 'to_do' | 'initializing' | 'ready' | 'running' | 'done'
 
 /**
  * A local backup config representing the current backup of the device
- * @member {string} remotePath
+ * @member {RemoteBackupConfig} remoteBackupConfig
  * @member {number} lastBackupDate
  * @member {BackupedMedia[]} backupedMedias
  * @member {object} currentBackup
  */
 export interface LocalBackupConfig {
-  remotePath: string
+  remoteBackupConfig: RemoteBackupConfig
   lastBackupDate: number
   backupedMedias: BackupedMedia[]
   currentBackup: {
@@ -25,6 +25,7 @@ export interface LocalBackupConfig {
  */
 export interface RemoteBackupConfig {
   backupFolder: {
+    id: string
     name: string
     path: string
   }

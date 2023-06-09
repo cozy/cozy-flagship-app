@@ -10,6 +10,7 @@ const BACKUP_REF = `io.cozy.apps/photos/mobile`
 const BACKUP_ROOT_PATH = '/Sauvegardé depuis mon mobile'
 
 interface BackupFolder {
+  _id: string
   attributes: {
     name: string
     path: string
@@ -29,6 +30,7 @@ export const fetchRemoteBackupConfigs = async (
   const remoteBackupConfigs: RemoteBackupConfig[] = backupFolders.map(
     backupFolder => ({
       backupFolder: {
+        id: backupFolder._id,
         name: backupFolder.attributes.name,
         path: backupFolder.attributes.path
       }
@@ -61,7 +63,7 @@ export const fetchDeviceRemoteBackupConfig = async (
 
 export const createRemoteBackupFolder = async (
   client: CozyClient
-): Promise<string> => {
+): Promise<RemoteBackupConfig> => {
   const backupFolderPath = `${BACKUP_ROOT_PATH}/${await getDeviceName()}`
 
   const backupFolderId: string = await client
@@ -80,7 +82,19 @@ export const createRemoteBackupFolder = async (
     ]
   )
 
-  return backupFolderId
+  const { data: backupFolder } = await client
+    .collection(DOCTYPE_FILES)
+    .get(backupFolderId)
+
+  const remoteBackupConfig = {
+    backupFolder: {
+      id: backupFolder._id,
+      name: backupFolder.name,
+      path: backupFolder.path
+    }
+  }
+
+  return remoteBackupConfig
 }
 
 export const getDeviceName = async (): Promise<string> => {
