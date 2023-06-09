@@ -22,7 +22,7 @@ export const handleError = ({ nativeEvent }: WebViewErrorEvent): void => {
   const { code, description } = nativeEvent
 
   if (code === -2 && description === 'net::ERR_INTERNET_DISCONNECTED')
-    NetService.handleOffline(routes.stack)
+    NetService.handleOffline(routes.home)
 }
 
 const { screenHeight, screenWidth } = getDimensions()

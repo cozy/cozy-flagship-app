@@ -1,17 +1,17 @@
+import Minilog from '@cozy/minilog'
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo'
 import { useEffect } from 'react'
 
 import CozyClient from 'cozy-client'
 
-import Minilog from '@cozy/minilog'
-
 import strings from '/constants/strings.json'
-import { reset } from '/libs/RootNavigation'
+import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { showSplashScreen } from '/libs/services/SplashScreenService'
 
 const log = Minilog('NetService')
 
+// Function to configure NetInfo service with the given client
 const configureService = (client?: CozyClient): void => {
   NetInfo.configure({
     reachabilityUrl: client?.isLogged
@@ -20,6 +20,7 @@ const configureService = (client?: CozyClient): void => {
   })
 }
 
+// React hook to handle re-configuration of service on client's logout
 export const useNetService = (client?: CozyClient): void =>
   useEffect(() => {
     const configure = (): void => {
@@ -38,33 +39,35 @@ export const useNetService = (client?: CozyClient): void =>
 const waitForOnline = (callbackRoute: string): void => {
   log.debug('Adding NetInfo listener')
 
-  const callback = (state: NetInfoState): void => {
+  // Define the unsubscribe function inside the listener
+  const unsubscribe = NetInfo.addEventListener(state => {
     if (state.isConnected) {
-      log.debug('Removing NetInfo listener')
+      log.debug('NetService is online, navigating to callback route')
 
       callbackRoute === routes.stack && showSplashScreen().catch(log.error)
 
       try {
-        reset(callbackRoute)
+        navigate(callbackRoute)
       } catch (error) {
         log.error(error)
       }
 
+      log.debug('NetService redirect done, removing NetInfo listener')
       unsubscribe()
     }
-  }
-
-  const unsubscribe = NetInfo.addEventListener(callback)
+  })
 }
 
+// Functions to fetch current connection state
 const isConnected = async (): Promise<NetInfoState['isConnected']> =>
   (await NetInfo.fetch()).isConnected
 
 const isOffline = async (): Promise<NetInfoState['isConnected']> =>
   (await NetInfo.fetch()).isConnected === false
 
+// Function to handle offline state by navigating to an error route and setting up listener for online state
 const handleOffline = (callbackRoute: string): void => {
-  reset(routes.error, { type: strings.errorScreens.offline })
+  navigate(routes.error, { type: strings.errorScreens.offline })
 
   waitForOnline(callbackRoute)
 }

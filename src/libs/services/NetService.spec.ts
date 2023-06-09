@@ -1,12 +1,10 @@
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo'
 
 import strings from '/constants/strings.json'
-
-import { NetService } from './NetService'
-
+import { NetService } from '/libs/services/NetService'
 import { routes } from '/constants/routes'
 
-const mockReset = jest.fn<jest.Mock, unknown[]>()
+const mockNavigate = jest.fn<jest.Mock, unknown[]>()
 const callbackRoute = 'foo'
 const mockedNetInfo = NetInfo as jest.Mocked<typeof NetInfo>
 
@@ -18,7 +16,7 @@ const mockedListener = mockedNetInfo.addEventListener as unknown as jest.Mock<
 const mockedFetch = NetInfo.fetch as jest.Mock
 
 jest.mock('../RootNavigation', () => ({
-  reset: (...args: unknown[]): jest.Mock => mockReset(...args)
+  navigate: (...args: unknown[]): jest.Mock => mockNavigate(...args)
 }))
 
 afterEach(() => {
@@ -68,11 +66,11 @@ it('handles imperative offline fallback', async () => {
 
   await new Promise(resolve => setTimeout(resolve, timeBeforeReconnect))
 
-  expect(mockReset).toHaveBeenNthCalledWith(1, routes.error, {
+  expect(mockNavigate).toHaveBeenNthCalledWith(1, routes.error, {
     type: strings.errorScreens.offline
   })
 
-  expect(mockReset).toHaveBeenNthCalledWith(2, callbackRoute)
+  expect(mockNavigate).toHaveBeenNthCalledWith(2, callbackRoute)
 
   expect(mockUnsubscribe).toHaveBeenCalledTimes(1)
 })
