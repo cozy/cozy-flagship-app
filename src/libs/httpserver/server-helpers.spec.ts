@@ -1,7 +1,8 @@
 import {
   addBodyClasses,
   addBarStyles,
-  addMetaAttributes
+  addMetaAttributes,
+  addColorSchemeMetaIfNecessary
 } from '/libs/httpserver/server-helpers'
 
 jest.mock('react-native-safe-area-context', () => ({
@@ -45,4 +46,16 @@ it('should return a stringified HTML with added meta tags', () => {
   const expected = `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" /></head><body></body></html>`
 
   expect(addMetaAttributes(html)).toEqual(expected)
+})
+
+it('should add color-scheme meta tag if not present', () => {
+  const html = `<html><head></head><body></body></html>`
+  const expected = `<html><head><meta name="color-scheme" content="light only"/></head><body></body></html>`
+  expect(addColorSchemeMetaIfNecessary(html)).toEqual(expected)
+})
+
+it('should not add color-scheme meta tag if already present', () => {
+  const html = `<html><head><meta name="color-scheme" content="dark only"/></head><body></body></html>`
+  const expected = `<html><head><meta name="color-scheme" content="dark only"/></head><body></body></html>`
+  expect(addColorSchemeMetaIfNecessary(html)).toEqual(expected)
 })
