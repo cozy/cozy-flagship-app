@@ -176,62 +176,67 @@ export const useAppBootstrap = client => {
 
     const subscription = Linking.addEventListener('url', ({ url }) => {
       log.debug(`🔗 Linking URL is ${url}`)
-      const onboardingParams = parseOnboardingURL(url)
 
-      if (onboardingParams) {
-        const {
-          onboardUrl,
-          onboardedRedirection: onboardedRedirectionParam,
-          fqdn
-        } = onboardingParams
+      if (!client) {
+        const onboardingParams = parseOnboardingURL(url)
 
-        if (onboardedRedirectionParam && !client) {
-          setOnboardedRedirection(onboardedRedirectionParam)
+        if (onboardingParams) {
+          const {
+            onboardUrl,
+            onboardedRedirection: onboardedRedirectionParam,
+            fqdn
+          } = onboardingParams
+
+          if (onboardedRedirectionParam && !client) {
+            setOnboardedRedirection(onboardedRedirectionParam)
+          }
+
+          if (onboardUrl) {
+            log.debug(
+              `🔗 Redirect to instanceCreation screen for ${onboardUrl}`
+            )
+            navigate(routes.instanceCreation, { onboardUrl })
+            return
+          } else {
+            log.debug(`🔗 Redirect to authenticate screen for ${fqdn}`)
+            navigate(routes.authenticate, { fqdn })
+            return
+          }
         }
 
-        if (onboardUrl) {
-          log.debug(`🔗 Redirect to instanceCreation screen for ${onboardUrl}`)
-          navigate(routes.instanceCreation, { onboardUrl })
-          return
-        } else {
-          log.debug(`🔗 Redirect to authenticate screen for ${fqdn}`)
-          navigate(routes.authenticate, { fqdn })
+        const magicLink = parseMagicLinkURL(url)
+
+        if (magicLink) {
+          const { fqdn, magicCode } = magicLink
+          log.debug(
+            `🔗 Redirect to authenticate screen for ${fqdn} with magicCode`
+          )
+          navigate(routes.authenticate, { fqdn, magicCode })
           return
         }
-      }
+      } else {
+        const { mainAppFallbackURL, cozyAppFallbackURL } = parseFallbackURL(url)
 
-      const magicLink = parseMagicLinkURL(url)
+        if (mainAppFallbackURL || cozyAppFallbackURL) {
+          const href = mainAppFallbackURL || cozyAppFallbackURL
 
-      if (magicLink) {
-        const { fqdn, magicCode } = magicLink
-        log.debug(
-          `🔗 Redirect to authenticate screen for ${fqdn} with magicCode`
-        )
-        navigate(routes.authenticate, { fqdn, magicCode })
-        return
-      }
+          const subdomainType = client.capabilities?.flat_subdomains
+            ? 'flat'
+            : 'nested'
+          const { slug } = deconstructCozyWebLinkWithSlug(href, subdomainType)
 
-      const { mainAppFallbackURL, cozyAppFallbackURL } = parseFallbackURL(url)
+          const iconParams = getDefaultIconParams()
 
-      if (mainAppFallbackURL || cozyAppFallbackURL) {
-        const href = mainAppFallbackURL || cozyAppFallbackURL
+          const route = mainAppFallbackURL ? routes.home : routes.cozyapp
 
-        const subdomainType = client.capabilities?.flat_subdomains
-          ? 'flat'
-          : 'nested'
-        const { slug } = deconstructCozyWebLinkWithSlug(href, subdomainType)
-
-        const iconParams = getDefaultIconParams()
-
-        const route = mainAppFallbackURL ? routes.home : routes.cozyapp
-
-        log.debug(`🔗 Redirect to ${route} screen (fallback)`)
-        navigate(route, {
-          href,
-          slug,
-          iconParams
-        })
-        return
+          log.debug(`🔗 Redirect to ${route} screen (fallback)`)
+          navigate(route, {
+            href,
+            slug,
+            iconParams
+          })
+          return
+        }
       }
     })
 
