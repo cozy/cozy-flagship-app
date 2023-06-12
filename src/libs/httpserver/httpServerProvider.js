@@ -16,7 +16,8 @@ import { setCookie } from '/libs/httpserver/httpCookieManager'
 import {
   addBodyClasses,
   addMetaAttributes,
-  addBarStyles
+  addBarStyles,
+  addColorSchemeMetaIfNecessary
 } from './server-helpers'
 
 import {
@@ -105,6 +106,7 @@ export const HttpServerProvider = props => {
       })
       if (slug === 'home') {
         return flow(
+          addColorSchemeMetaIfNecessary,
           addBarStyles,
           addBodyClasses,
           addMetaAttributes
@@ -112,7 +114,11 @@ export const HttpServerProvider = props => {
       } else {
         // We do not need the bar styles for other app. We only need it for
         // the Home application since this is the only "immersive app"
-        return flow(addBodyClasses, addMetaAttributes)(computedHtml)
+        return flow(
+          addColorSchemeMetaIfNecessary,
+          addBodyClasses,
+          addMetaAttributes
+        )(computedHtml)
       }
     } catch (err) {
       log.error(

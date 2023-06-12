@@ -35,3 +35,18 @@ export const addMetaAttributes = (HTMLstring: string): string => {
 
   return HTMLstring.replace('</head>', metaAttributes + '</head>')
 }
+
+export const addColorSchemeMetaIfNecessary = (HTMLstring: string): string => {
+  const metaColorScheme = `<meta name="color-scheme" content="light only"/>`
+
+  // Check if color-scheme meta tag is already present
+  const colorSchemeRegex = /<meta[^>]*name=['"]?color-scheme['"]?[^>]*>/i
+  const colorSchemeExists = colorSchemeRegex.test(HTMLstring)
+
+  // Add the meta tag before the closing </head> tag if not present
+  if (!colorSchemeExists) {
+    return HTMLstring.replace('</head>', `${metaColorScheme}</head>`)
+  }
+
+  return HTMLstring
+}
