@@ -7,11 +7,11 @@ export const routes = {
   instanceCreation: 'instanceCreation',
   lock: 'lock',
   onboarding: 'onboarding',
-  stack: 'stack',
-  welcome: 'welcome',
-  securize: 'securize',
-  setPin: 'setPin',
-  setPassword: 'setPassword',
   promptPassword: 'promptPassword',
-  promptPin: 'promptPin'
+  promptPin: 'promptPin',
+  securize: 'securize',
+  setPassword: 'setPassword',
+  setPin: 'setPin',
+  stack: 'stack',
+  welcome: 'welcome'
 }
