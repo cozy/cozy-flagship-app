@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { devlog } from '/core/tools/env'
 import { doPinCodeAutoLock } from '/app/domain/authorization/services/SecurityService'
-import { hideSplashScreen } from '/libs/services/SplashScreenService'
+import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 

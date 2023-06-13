@@ -7,7 +7,7 @@ import CozyClient from 'cozy-client'
 import strings from '/constants/strings.json'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
-import { showSplashScreen } from '/libs/services/SplashScreenService'
+import { showSplashScreen } from '/app/theme/SplashScreenService'
 
 const log = Minilog('NetService')
 

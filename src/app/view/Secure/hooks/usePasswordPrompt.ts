@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { devlog } from '/core/tools/env'
-import { hideSplashScreen } from '/libs/services/SplashScreenService'
+import { hideSplashScreen } from '/app/theme/SplashScreenService'
 
 export const usePasswordPrompt = (onSuccess: () => void): (() => void) => {
   // The HomeView should have called hideSplashScreen() already,

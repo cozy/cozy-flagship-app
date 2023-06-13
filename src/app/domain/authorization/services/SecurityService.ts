@@ -25,7 +25,7 @@ import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { authConstants } from '/app/domain/authorization/constants'
 import { safePromise } from '/utils/safePromise'
 import { navigateToApp } from '/libs/functions/openApp'
-import { hideSplashScreen } from '/libs/services/SplashScreenService'
+import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { SecurityNavigationService } from '/app/domain/authorization/services/SecurityNavigationService'
 
 // Can use mock functions in dev environment
