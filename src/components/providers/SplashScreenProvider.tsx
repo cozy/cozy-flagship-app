@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { SplashScreenService } from '/libs/services/SplashScreenService'
+import { SplashScreenService } from '/app/theme/SplashScreenService'
 import { SplashScreenContext } from '/libs/contexts/SplashScreenContext'
 
 export const SplashScreenProvider = (props: {

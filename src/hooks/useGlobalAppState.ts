@@ -15,7 +15,7 @@ import { routes } from '/constants/routes'
 import {
   showSplashScreen,
   hideSplashScreen
-} from '/libs/services/SplashScreenService'
+} from '/app/theme/SplashScreenService'
 import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
 
 import CozyClient, { useClient } from 'cozy-client'

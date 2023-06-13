@@ -6,7 +6,7 @@ import { LogBox } from 'react-native'
 
 import { devlog } from '/core/tools/env'
 import { devConfig } from '/constants/dev-config'
-import { hideSplashScreen } from '/libs/services/SplashScreenService'
+import { hideSplashScreen } from '/app/theme/SplashScreenService'
 
 export const initDev = async (isDev: boolean): Promise<void> => {
   if (!isDev) return
