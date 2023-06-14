@@ -27,6 +27,7 @@ import {
 import { navigationRef } from '/libs/RootNavigation'
 import { TIMEOUT_KONNECTOR_ERROR } from '/libs/Launcher'
 import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
+import { deactivateKeepAwake } from '/app/domain/sleep/services/sleep'
 
 const log = Minilog('LauncherView')
 
@@ -217,6 +218,7 @@ class LauncherView extends Component {
   }
 
   componentWillUnmount() {
+    deactivateKeepAwake('clisk')
     this.removeBackPress()
 
     if (this.launcher.removeAllListener) {

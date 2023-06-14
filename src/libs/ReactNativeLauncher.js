@@ -16,6 +16,11 @@ import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 
 import { wrapTimerFactory } from 'cozy-clisk'
 
+import {
+  activateKeepAwake,
+  deactivateKeepAwake
+} from '/app/domain/sleep/services/sleep'
+
 const log = Minilog('ReactNativeLauncher')
 
 const SET_WORKER_STATE_TIMEOUT_MS = 30 * 1000
@@ -178,6 +183,7 @@ class ReactNativeLauncher extends Launcher {
    * @returns {Promise<void>}
    */
   async stop({ message } = {}) {
+    deactivateKeepAwake('clisk')
     const { client, job } = this.getStartContext()
 
     if (job) {
@@ -215,6 +221,7 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async _start({ initKonnectorError } = {}) {
+    activateKeepAwake('clisk')
     const { account, konnector } = this.getStartContext()
     try {
       if (initKonnectorError) {
