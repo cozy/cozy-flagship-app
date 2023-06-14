@@ -16,6 +16,10 @@ import {
 import { routes } from '/constants/routes'
 import { reset } from '/libs/RootNavigation'
 import { NetService } from '/libs/services/NetService'
+import {
+  hideSplashScreen,
+  showSplashScreen
+} from '/libs/services/SplashScreenService'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
 const log = Minilog('useManagerScreen')
@@ -47,6 +51,7 @@ const handleUniversalLink = async (
 
   log.debug(`🔗 Redirect to ${action.route} screen`)
 
+  await hideSplashScreen()
   reset(action.route, action.params)
 }
 
@@ -61,10 +66,12 @@ export const useManagerScreenProps = (
     function handleOffline() {
       const checkOffline = async (): Promise<void> => {
         if (await NetService.isOffline()) {
+          await hideSplashScreen()
           NetService.handleOffline(routes.manager, {
             managerUrl: props.route.params?.managerUrl
           })
         } else {
+          await showSplashScreen()
           setDisplay(true)
         }
       }
@@ -80,6 +87,7 @@ export const useManagerScreenProps = (
     try {
       const isOffline = await NetService.isOffline()
       if (isOffline) {
+        await hideSplashScreen()
         NetService.handleOffline(routes.manager, {
           managerUrl: props.route.params?.managerUrl
         })
