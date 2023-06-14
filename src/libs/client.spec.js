@@ -46,7 +46,7 @@ describe('client', () => {
             androidSafetyNetApiKey: expect.any(String)
           },
           clientKind: 'mobile',
-          clientName: "Cloud Personnel (Becca's iPhone 6)",
+          clientName: "Application Mobile Cozy (Becca's iPhone 6)",
           redirectURI: 'cozy://',
           shouldRequireFlagshipPermissions: true,
           softwareID: 'amiral'
