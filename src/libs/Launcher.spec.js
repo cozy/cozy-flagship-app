@@ -1,8 +1,11 @@
+import { saveFiles } from 'cozy-clisk'
+
 import Launcher from './Launcher'
 import { saveCredential, getSlugAccountIds } from './keychain'
 
 jest.mock('./folder')
 jest.mock('./keychain')
+jest.mock('cozy-clisk')
 
 describe('Launcher', () => {
   describe('ensureAccountTriggerAndLaunch', () => {
@@ -134,6 +137,61 @@ describe('Launcher', () => {
         'testslug1'
       )
       expect(client.query).not.toHaveBeenCalled()
+    })
+  })
+  describe('saveFiles', () => {
+    it('should create an index of existing files and pass it to cozy-clisk saveFiles', async () => {
+      const launcher = new Launcher()
+      launcher.setUserData({
+        sourceAccountIdentifier: 'testsourceaccountidentifier'
+      })
+
+      const konnector = { slug: 'testkonnectorslug' }
+      const trigger = {
+        message: {
+          folder_to_save: 'testfolderid',
+          account: 'testaccountid'
+        }
+      }
+      const job = {
+        message: { account: 'testaccountid', folder_to_save: 'testfolderid' }
+      }
+      const client = {
+        queryAll: jest.fn().mockResolvedValue([
+          {
+            metadata: {
+              fileIdAttributes: 'fileidattribute'
+            }
+          }
+        ]),
+        query: jest.fn().mockResolvedValue({ data: { path: 'folderPath' } })
+      }
+      launcher.setStartContext({
+        konnector,
+        client,
+        launcherClient: client,
+        trigger,
+        job
+      })
+
+      await launcher.saveFiles([{}], {})
+
+      expect(saveFiles).toHaveBeenCalledWith(
+        client,
+        [{}],
+        'folderPath',
+        expect.objectContaining({
+          existingFilesIndex: new Map([
+            [
+              'fileidattribute',
+              { metadata: { fileIdAttributes: 'fileidattribute' } }
+            ]
+          ]),
+          sourceAccount: 'testaccountid',
+          sourceAccountIdentifier: 'testsourceaccountidentifier'
+        })
+      )
+      //
     })
   })
 })

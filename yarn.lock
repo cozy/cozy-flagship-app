@@ -6353,10 +6353,10 @@ cozy-client@^38.6.0:
     sift "^6.0.0"
     url-search-params-polyfill "^8.0.0"
 
-cozy-clisk@^0.13.0:
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/cozy-clisk/-/cozy-clisk-0.13.0.tgz#31b6faab5ba357024ccdf0e7afbdfa59e2436740"
-  integrity sha512-APuaQqPRTpSjkpaS9IvkSv7Ru8zfpUPCb+7dkdRnKv/M4b9IdhM+PSJogBpBJPXy8a9MzZ4iZjXmCfJ5GzAwxA==
+cozy-clisk@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/cozy-clisk/-/cozy-clisk-0.15.0.tgz#4223aa36c09a75461bd493e5f643824f6a4ea175"
+  integrity sha512-7eqiT+4MDkFH6aIVrX/O0srgEnPZ7BmXrOm2YDoDohL/96hypO6mctgXyE4xFBrLeF+GlI+oi5RfWssltFHTNw==
   dependencies:
     "@cozy/minilog" "^1.0.0"
     bluebird-retry "^0.11.0"
