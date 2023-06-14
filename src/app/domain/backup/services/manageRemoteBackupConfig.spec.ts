@@ -30,10 +30,20 @@ describe('fetchRemoteBackupConfigs', () => {
     const client = mockClientWithFindReferencedByResult({
       included: [
         {
-          attributes: { name: 'Device 1', path: '/Backup/Device 1' }
+          _id: '1',
+          attributes: {
+            name: 'Device 1',
+            path: '/Backup/Device 1',
+            metadata: { backupDeviceIds: ['A'] }
+          }
         },
         {
-          attributes: { name: 'Device 2', path: '/Backup/Device 2' }
+          _id: '2',
+          attributes: {
+            name: 'Device 2',
+            path: '/Backup/Device 2',
+            metadata: { backupDeviceIds: ['B'] }
+          }
         }
       ]
     })
@@ -44,37 +54,45 @@ describe('fetchRemoteBackupConfigs', () => {
 
     // Then
     expect(remoteBackupConfigs).toEqual([
-      { backupFolder: { name: 'Device 1', path: '/Backup/Device 1' } },
-      { backupFolder: { name: 'Device 2', path: '/Backup/Device 2' } }
+      {
+        backupFolder: { id: '1', name: 'Device 1', path: '/Backup/Device 1' },
+        backupDeviceIds: ['A']
+      },
+      {
+        backupFolder: { id: '2', name: 'Device 2', path: '/Backup/Device 2' },
+        backupDeviceIds: ['B']
+      }
     ])
   })
 })
 
 describe('isRemoteBackupConfigFromDevice', () => {
-  test('returns true when the remote backup config does correspond to device name', () => {
+  test('returns true when the remote backup config does correspond to device', () => {
     const remoteBackupConfig = {
-      backupFolder: { id: '1', name: 'Device 1', path: '/Backup/Device 1' }
+      backupFolder: { id: '1', name: 'Device 1', path: '/Backup/Device 1' },
+      backupDeviceIds: ['A']
     }
-    const deviceName = 'Device 1'
+    const deviceId = 'A'
 
     expect(
       manageRemoteBackupConfig.isRemoteBackupConfigFromDevice(
         remoteBackupConfig,
-        deviceName
+        deviceId
       )
     ).toBe(true)
   })
 
-  test('returns false when the remote backup config does not correspond to device name', () => {
+  test('returns false when the remote backup config does not correspond to device', () => {
     const remoteBackupConfig = {
-      backupFolder: { id: '2', name: 'Device 1', path: '/Backup/Device 1' }
+      backupFolder: { id: '2', name: 'Device 1', path: '/Backup/Device 1' },
+      backupDeviceIds: ['A']
     }
-    const deviceName = 'Device 2'
+    const deviceId = 'B'
 
     expect(
       manageRemoteBackupConfig.isRemoteBackupConfigFromDevice(
         remoteBackupConfig,
-        deviceName
+        deviceId
       )
     ).toBe(false)
   })
@@ -86,7 +104,8 @@ describe('fetchDeviceRemoteBackupConfig', () => {
       .spyOn(manageRemoteBackupConfig, 'fetchRemoteBackupConfigs')
       .mockResolvedValue([
         {
-          backupFolder: { id: '1', name: 'Device 1', path: '/Backup/Device 1' }
+          backupFolder: { id: '1', name: 'Device 1', path: '/Backup/Device 1' },
+          backupDeviceIds: ['A']
         }
       ])
     jest
@@ -97,7 +116,8 @@ describe('fetchDeviceRemoteBackupConfig', () => {
             id: '1',
             name: 'Device 1',
             path: '/Backup/Device 1'
-          }
+          },
+          backupDeviceIds: ['A']
         },
         lastBackupDate: 0,
         backupedMedias: [],
@@ -123,7 +143,8 @@ describe('fetchDeviceRemoteBackupConfig', () => {
       .spyOn(manageRemoteBackupConfig, 'fetchRemoteBackupConfigs')
       .mockResolvedValue([
         {
-          backupFolder: { id: '1', name: 'Device 1', path: '/Backup/Device 1' }
+          backupFolder: { id: '1', name: 'Device 1', path: '/Backup/Device 1' },
+          backupDeviceIds: ['A']
         }
       ])
     jest
@@ -134,7 +155,8 @@ describe('fetchDeviceRemoteBackupConfig', () => {
             id: '1',
             name: 'Device 1',
             path: '/Backup/Device 1'
-          }
+          },
+          backupDeviceIds: ['A']
         },
         lastBackupDate: 0,
         backupedMedias: [],

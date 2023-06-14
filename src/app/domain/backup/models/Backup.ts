@@ -22,6 +22,7 @@ export interface LocalBackupConfig {
 /**
  * A remote backup config representing a backup in Cozy Drive
  * @member {object} backupFolder
+ * @member {string[]} backupDevicesIds
  */
 export interface RemoteBackupConfig {
   backupFolder: {
@@ -29,6 +30,7 @@ export interface RemoteBackupConfig {
     name: string
     path: string
   }
+  backupDeviceIds: string[]
 }
 
 /**

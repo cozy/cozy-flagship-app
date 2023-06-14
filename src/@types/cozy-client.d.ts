@@ -98,6 +98,9 @@ declare module 'cozy-client' {
       _id: string
       name: string
       path: string
+      metadata?: {
+        backupDeviceIds: string[]
+      }
     }
   }
 
@@ -105,7 +108,7 @@ declare module 'cozy-client' {
     findReferencedBy: (
       params: object
     ) => Promise<{ included: { attributes: unknown }[] }>
-    ensureDirectoryExists: (path: string) => Promise<string>
+    createDirectoryByPath: (path: string) => Promise<FileCollectionGetResult>
     addReferencesTo: (references: object, dirs: object[]) => Promise<void>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     launch: (trigger: any) => any
