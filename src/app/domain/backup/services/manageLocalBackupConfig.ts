@@ -18,6 +18,7 @@ const log = Minilog('💿 Backup')
 
 const INITIAL_BACKUP_CONFIG: LocalBackupConfig = {
   remoteBackupConfig: {
+    backupDeviceIds: [],
     backupFolder: {
       id: '',
       name: '',
