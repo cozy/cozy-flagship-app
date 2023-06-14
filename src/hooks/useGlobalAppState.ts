@@ -21,6 +21,8 @@ import { determineSecurityFlow } from '/app/domain/authorization/services/Securi
 import CozyClient, { useClient } from 'cozy-client'
 
 import { devlog } from '/core/tools/env'
+import { synchronizeDevice } from '/app/domain/authentication/services/SynchronizeService'
+import { safePromise } from '/utils/safePromise'
 
 const log = Minilog('useGlobalAppState')
 
@@ -123,7 +125,10 @@ const onStateChange = (
 ): void => {
   if (isGoingToSleep(nextAppState)) handleSleep()
 
-  if (isGoingToWakeUp(nextAppState)) handleWakeUp(client)
+  if (isGoingToWakeUp(nextAppState)) {
+    handleWakeUp(client)
+    safePromise(synchronizeDevice)(client)
+  }
 
   appState = nextAppState
 }
@@ -144,6 +149,12 @@ export const useGlobalAppState = (): void => {
     // If there's no client, we don't need to listen to app state changes
     // because we can't lock the app anyway
     if (client && !subscription) {
+      devlog(
+        'useGlobalAppState: subscribing to AppState changes, synchronizing device'
+      )
+
+      safePromise(synchronizeDevice)(client)
+
       subscription = AppState.addEventListener('change', e =>
         onStateChange(e, client)
       )
