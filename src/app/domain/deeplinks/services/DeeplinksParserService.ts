@@ -1,14 +1,11 @@
 import Minilog from '@cozy/minilog'
 
+import { FallbackUrl } from '/app/domain/deeplinks/models/FallbackUrl'
+import { MagicLinkUrl } from '/app/domain/deeplinks/models/MagicLinkUrl'
+import { OnboardingParams } from '/app/domain/deeplinks/models/OnboardingParams'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
-const log = Minilog('useAppBootstrap.functions')
-
-interface OnboardingParams {
-  onboardUrl: string | null
-  onboardedRedirection: string | null
-  fqdn: string | null
-}
+const log = Minilog('DeeplinksParserService')
 
 const MAIN_APP = 'home'
 const FALLBACK_PARAM = 'fallback'
@@ -51,11 +48,6 @@ export const parseOnboardingURL = (
   }
 }
 
-interface FallbackUrl {
-  mainAppFallbackURL: string | undefined
-  cozyAppFallbackURL: string | undefined
-}
-
 export const parseFallbackURL = (url: string | null): FallbackUrl => {
   const defaultParse = {
     mainAppFallbackURL: undefined,
@@ -85,11 +77,6 @@ export const parseFallbackURL = (url: string | null): FallbackUrl => {
     )
     return defaultParse
   }
-}
-
-interface MagicLinkUrl {
-  fqdn: string
-  magicCode: string
 }
 
 export const parseMagicLinkURL = (url: string | null): MagicLinkUrl | null => {

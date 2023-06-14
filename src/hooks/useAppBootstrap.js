@@ -13,7 +13,7 @@ import {
   parseFallbackURL,
   parseMagicLinkURL,
   parseOnboardingURL
-} from '/hooks/useAppBootstrap.functions'
+} from '/app/domain/deeplinks/services/DeeplinksParserService'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
 import {
