@@ -60,18 +60,25 @@ export const makeErrorPage = ({ icon, title, body, footer, header, reset }) => {
 
       <script>
         window.addEventListener("load", function(event) {
-          document.getElementById('backButton').onclick = () => {
-            window.ReactNativeWebView.postMessage(JSON.stringify({
-              message: 'backButton'
-            }))
+          const backButton = document.getElementById('mailto')
+          if (backButton) {
+            backButton.onclick = () => {
+              window.ReactNativeWebView.postMessage(JSON.stringify({
+                message: 'backButton'
+              }))
+            }
           }
 
-          document.getElementById('mailto').onclick = (e) => {
-            e.preventDefault();
-
-            window.ReactNativeWebView.postMessage(JSON.stringify({
-              message: 'mailto'
-            }))
+          const mailToLink = document.getElementById('mailto')
+          if (mailToLink) {
+            mailToLink.onclick = (e) => {
+              e.preventDefault();
+  
+              window.ReactNativeWebView.postMessage(JSON.stringify({
+                message: 'mailto'
+              }))
+            }
+          }
 
           const resetButton = document.getElementById('resetButton')
           if (resetButton) {
