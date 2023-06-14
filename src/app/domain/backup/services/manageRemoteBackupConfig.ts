@@ -19,6 +19,9 @@ interface BackupFolder {
   attributes: {
     name: string
     path: string
+    metadata?: {
+      backupDeviceIds: string[]
+    }
   }
 }
 
@@ -43,28 +46,28 @@ export const fetchRemoteBackupConfigs = async (
         id: backupFolder._id,
         name: backupFolder.attributes.name,
         path: backupFolder.attributes.path
-      }
+      },
+      backupDeviceIds: backupFolder.attributes.metadata?.backupDeviceIds ?? []
     }))
 
   return remoteBackupConfigs
 }
 
-// isRemoteBackupConfigFromDevice will later take into account a unique device id stored in folder metadata to be more robust
 export const isRemoteBackupConfigFromDevice = (
   remoteBackupConfig: RemoteBackupConfig,
-  deviceName: string
+  deviceId: string
 ): boolean => {
-  return remoteBackupConfig.backupFolder.name === deviceName
+  return remoteBackupConfig.backupDeviceIds.includes(deviceId)
 }
 
 export const fetchDeviceRemoteBackupConfig = async (
   client: CozyClient
 ): Promise<RemoteBackupConfig | undefined> => {
   const remoteBackupConfigs = await fetchRemoteBackupConfigs(client)
-  const deviceName = await getDeviceName()
+  const deviceId = await getDeviceId()
 
   const remoteBackupConfig = remoteBackupConfigs.find(remoteBackupConfig =>
-    isRemoteBackupConfigFromDevice(remoteBackupConfig, deviceName)
+    isRemoteBackupConfigFromDevice(remoteBackupConfig, deviceId)
   )
 
   return remoteBackupConfig
@@ -73,11 +76,26 @@ export const fetchDeviceRemoteBackupConfig = async (
 export const createRemoteBackupFolder = async (
   client: CozyClient
 ): Promise<RemoteBackupConfig> => {
-  const backupFolderPath = `${BACKUP_ROOT_PATH}/${await getDeviceName()}`
+  const deviceName = await getDeviceName()
+  const deviceId = await getDeviceId()
 
-  const backupFolderId: string = await client
+  const {
+    data: { _id: backupRootId }
+  } = await client
     .collection(DOCTYPE_FILES)
-    .ensureDirectoryExists(backupFolderPath)
+    .createDirectoryByPath(BACKUP_ROOT_PATH)
+
+  const backupFolderAttributes = {
+    type: 'directory',
+    _type: 'io.cozy.files',
+    name: deviceName,
+    dirId: backupRootId,
+    metadata: { backupDeviceIds: [deviceId] }
+  }
+
+  const {
+    data: { _id: backupFolderId }
+  } = (await client.save(backupFolderAttributes)) as FileCollectionGetResult
 
   await client.collection(DOCTYPE_FILES).addReferencesTo(
     {
@@ -100,7 +118,8 @@ export const createRemoteBackupFolder = async (
       id: backupFolder._id,
       name: backupFolder.name,
       path: backupFolder.path
-    }
+    },
+    backupDeviceIds: backupFolder.metadata?.backupDeviceIds ?? []
   }
 
   return remoteBackupConfig
@@ -125,4 +144,8 @@ export const fetchBackupedMedias = async (
 
 export const getDeviceName = async (): Promise<string> => {
   return await DeviceInfo.getDeviceName()
+}
+
+export const getDeviceId = async (): Promise<string> => {
+  return await DeviceInfo.getUniqueId()
 }
