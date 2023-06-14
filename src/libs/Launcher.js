@@ -1,7 +1,6 @@
 // @ts-check
 /* eslint-disable no-unused-vars */
 import Minilog from '@cozy/minilog'
-import set from 'lodash/set'
 import { getBuildId, getVersion } from 'react-native-device-info'
 
 // @ts-ignore
@@ -363,13 +362,17 @@ export default class Launcher {
       konnector
     } = this.getStartContext() || {}
     const { sourceAccountIdentifier } = this.getUserData() || {}
+
+    const existingFilesIndex = await this.getExistingFilesIndex()
+
     const result = await saveBills(entries, {
       ...options,
       client,
       manifest: konnector,
       // @ts-ignore
       sourceAccount: job.message.account,
-      sourceAccountIdentifier
+      sourceAccountIdentifier,
+      existingFilesIndex
     })
     return result
   }
@@ -396,11 +399,63 @@ export default class Launcher {
   }
 
   /**
+   * Get the index of existing files for the current konnector and the current sourceAccountIdentifier
+   * The result is cached in this.existingFilesIndex to optimize the response time for multiple calls to saveFiles
+   *
+   * @return {Promise<Map<String, import('cozy-client/types/types').FileDocument>>} - index of existing files
+   */
+  async getExistingFilesIndex() {
+    if (this.existingFilesIndex) {
+      return this.existingFilesIndex
+    }
+
+    const { sourceAccountIdentifier } = this.getUserData() || {}
+    const { konnector, client } = this.getStartContext()
+    const createdByApp = konnector.slug
+    if (!sourceAccountIdentifier) {
+      throw new Error(
+        'createExistingFileIndex: unexpected undefined sourceAccountIdentifier'
+      )
+    }
+
+    const existingFiles = await client.queryAll(
+      Q('io.cozy.files')
+        .where({
+          trashed: false,
+          cozyMetadata: {
+            sourceAccountIdentifier,
+            createdByApp
+          }
+        })
+        .indexFields([
+          'cozyMetadata.createdByApp',
+          'cozyMetadata.sourceAccountIdentifier',
+          'trashed'
+        ])
+        .select([
+          'metadata',
+          'cozyMetadata',
+          'name',
+          'dir_id',
+          'size',
+          'md5sum',
+          'mime',
+          'trashed'
+        ])
+    )
+    // @ts-ignore
+    const existingFilesIndex = existingFiles.reduce((map, file) => {
+      map.set(file.metadata.fileIdAttributes, file)
+      return map
+    }, new Map())
+    return (this.existingFilesIndex = existingFilesIndex)
+  }
+
+  /**
    * Calls cozy-konnector-libs' saveFiles function
    *
    * @param {Array<FileDocument>} entries - list of file entries to save
-   * @param {object} options - options object
-   * @param {String} options.qualificationLabel - file qualification label
+   * @param {saveFilesOptions} options - options object
    * @returns {Promise<Array<object>>} list of saved files
    */
   async saveFiles(entries, options) {
@@ -411,40 +466,31 @@ export default class Launcher {
       konnector
     } = this.getStartContext() || {}
     const { sourceAccountIdentifier } = this.getUserData() || {}
-    for (const entry of entries) {
-      // TODO Filter existing entries
-      if (entry.fileurl) {
-        // @ts-ignore
-        entry.dataUri = await this.worker.call('downloadFileInWorker', entry)
-        delete entry.fileurl
-      }
-      if (entry.dataUri) {
-        entry.filestream = dataURItoArrayBuffer(entry.dataUri).arrayBuffer
-        delete entry.dataUri
-      }
-      // Adding qualification here because of the need of models
-      if (options.qualificationLabel) {
-        set(
-          entry,
-          'fileAttributes.metadata.qualification',
-          models.document.Qualification.getByLabel(options.qualificationLabel)
-        )
-      }
-    }
-    log.debug(entries, 'saveFiles entries')
-    const result = await saveFiles(
-      client,
-      entries,
+
+    // @ts-ignore
+    const folderPath = await this.getFolderPath(trigger.message?.folder_to_save)
+
+    const existingFilesIndex = await this.getExistingFilesIndex()
+
+    const result = await saveFiles(client, entries, folderPath, {
+      ...options,
+      manifest: konnector,
       // @ts-ignore
-      await this.getFolderPath(trigger.message?.folder_to_save),
-      {
-        ...options,
-        manifest: konnector,
+      sourceAccount: job.message.account,
+      sourceAccountIdentifier,
+      // @ts-ignore
+      downloadAndFormatFile: async entry => {
         // @ts-ignore
-        sourceAccount: job.message.account,
-        sourceAccountIdentifier
-      }
-    )
+        const dataUri = await this.worker.call('downloadFileInWorker', entry)
+        const test = dataURItoArrayBuffer(dataUri)
+        const filestream = test.arrayBuffer
+        return {
+          ...entry,
+          filestream
+        }
+      },
+      existingFilesIndex
+    })
     log.debug(result, 'saveFiles result')
 
     return result
@@ -564,4 +610,20 @@ export default class Launcher {
  * @property {String} [dataUri]
  * @property {ArrayBuffer} [filestream]
  * @property {String} [fileurl]
+ */
+
+/**
+ * @typedef saveFilesOptions
+ * @property {string} sourceAccount - id of the associated cozy account
+ * @property {string} sourceAccountIdentifier - unique identifier of the website account
+ * @property {import('cozy-client/types/types').Manifest} manifest - name of the file
+ * @property {Array<string>} fileIdAttributes - List of entry attributes considered as unique deduplication key
+ * @property {string} [subPath] - subPath of the destination folder path where to put the downloaded file
+ * @property {Function} [postProcess] - callback called after the file is download to further modify it
+ * @property {string} [contentType] - will force the contentType of the file if any
+ * @property {Function} [shouldReplaceFile] - Function which will define if the file should be replaced or not
+ * @property {Function} [validateFile] - this function will check if the downloaded file is correct (by default, error if file size is 0)
+ * @property {Function} [downloadAndFormatFile] - this callback will download the file and format to be useable by cozy-client
+ * @property {string} [qualificationLabel] - qualification label defined in cozy-client which will be used on all given files
+ * @property {number} [retry] - number of retries if the download of a file failes. No retry by default
  */

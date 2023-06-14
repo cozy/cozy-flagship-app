@@ -60,6 +60,7 @@ class ReactNativeLauncher extends Launcher {
       logFn: msg => this.log({ level: 'info', msg })
     })
 
+    this.getExistingFilesIndex = wrapTimer(this, 'getExistingFilesIndex')
     this.init = wrapTimer(this, 'init', {
       displayName: 'pilot and worker init'
     })

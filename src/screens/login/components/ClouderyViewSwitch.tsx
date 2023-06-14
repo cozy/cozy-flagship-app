@@ -243,7 +243,7 @@ const run = `
     ${jsLogInterception}
 
     ${fetchThemeOnLoad}
-    
+
     ${handleAutofocusFields}
 
     ${jsPaddingInjection}
