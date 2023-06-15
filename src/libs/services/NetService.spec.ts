@@ -70,7 +70,7 @@ it('handles imperative offline fallback', async () => {
     type: strings.errorScreens.offline
   })
 
-  expect(mockNavigate).toHaveBeenNthCalledWith(2, callbackRoute)
+  expect(mockNavigate).toHaveBeenNthCalledWith(2, callbackRoute, undefined)
 
   expect(mockUnsubscribe).toHaveBeenCalledTimes(1)
 })

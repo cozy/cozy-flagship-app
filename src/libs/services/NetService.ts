@@ -36,7 +36,7 @@ export const useNetService = (client?: CozyClient): void =>
     }
   }, [client])
 
-const waitForOnline = (callbackRoute: string): void => {
+const waitForOnline = (callbackRoute: string, params?: unknown): void => {
   log.debug('Adding NetInfo listener')
 
   // Define the unsubscribe function inside the listener
@@ -47,7 +47,7 @@ const waitForOnline = (callbackRoute: string): void => {
       callbackRoute === routes.stack && showSplashScreen().catch(log.error)
 
       try {
-        navigate(callbackRoute)
+        navigate(callbackRoute, params)
       } catch (error) {
         log.error(error)
       }
@@ -66,10 +66,10 @@ const isOffline = async (): Promise<NetInfoState['isConnected']> =>
   (await NetInfo.fetch()).isConnected === false
 
 // Function to handle offline state by navigating to an error route and setting up listener for online state
-const handleOffline = (callbackRoute: string): void => {
+const handleOffline = (callbackRoute: string, params?: unknown): void => {
   navigate(routes.error, { type: strings.errorScreens.offline })
 
-  waitForOnline(callbackRoute)
+  waitForOnline(callbackRoute, params)
 }
 
 export const NetService = {

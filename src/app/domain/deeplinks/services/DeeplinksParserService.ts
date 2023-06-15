@@ -1,19 +1,40 @@
 import Minilog from '@cozy/minilog'
 
+import { BootstrapAction } from '/app/domain/bootsrap/model/BootstrapAction'
 import { FallbackUrl } from '/app/domain/deeplinks/models/FallbackUrl'
 import { MagicLinkUrl } from '/app/domain/deeplinks/models/MagicLinkUrl'
 import { OnboardingParams } from '/app/domain/deeplinks/models/OnboardingParams'
-import { getErrorMessage } from '/libs/functions/getErrorMessage'
-
-import { BootstrapAction } from '../../bootsrap/model/BootstrapAction'
-
 import { routes } from '/constants/routes'
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 const log = Minilog('DeeplinksParserService')
 
 const MAIN_APP = 'home'
 const FALLBACK_PARAM = 'fallback'
 const UNIVERSAL_LINK_BASE_PATH = 'flagship'
+
+const parseManagerURL = (url: string | null): string | undefined => {
+  try {
+    if (!url?.includes('manager?fallback')) {
+      return undefined
+    }
+
+    const universalLink = new URL(url)
+    const managerUrl = universalLink.searchParams.get('fallback')
+
+    if (!managerUrl) {
+      return undefined
+    }
+
+    return managerUrl
+  } catch (error) {
+    const errorMessage = getErrorMessage(error)
+    log.error(
+      `Something went wrong while trying to parse manager URL data: ${errorMessage}`
+    )
+    return undefined
+  }
+}
 
 export const parseOnboardingURL = (
   url: string | null
@@ -115,6 +136,17 @@ export const parseOnboardLink = (
 ): BootstrapAction | null => {
   if (deeplink === null) {
     return null
+  }
+
+  const managerUrl = parseManagerURL(deeplink)
+
+  if (managerUrl) {
+    return {
+      route: routes.manager,
+      params: {
+        managerUrl
+      }
+    }
   }
 
   const onboardingParams = parseOnboardingURL(deeplink)

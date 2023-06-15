@@ -54,5 +54,19 @@ describe('DeeplinksParserService', () => {
 
       expect(result).toBeNull()
     })
+
+    it('should handle Manager deeplinks', () => {
+      const deeplink =
+        'https://links.mycozy.cloud/flagship/manager?fallback=SOME_FALLBACK'
+
+      const result = parseOnboardLink(deeplink)
+
+      expect(result).toStrictEqual({
+        route: routes.manager,
+        params: {
+          managerUrl: 'SOME_FALLBACK'
+        }
+      })
+    })
   })
 })

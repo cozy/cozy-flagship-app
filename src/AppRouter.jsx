@@ -7,6 +7,7 @@ import { ErrorScreen } from '/screens/error/ErrorScreen'
 import { HomeScreen } from '/screens/home/HomeScreen'
 import { LockScreen } from '/app/view/Lock/LockScreen'
 import { LoginScreen } from '/screens/login/LoginScreen'
+import { ManagerScreen } from '/app/view/Manager/ManagerScreen'
 import { OnboardingScreen } from '/screens/login/OnboardingScreen'
 import { WelcomeScreen } from '/screens/welcome/WelcomeScreen'
 import { routes } from '/constants/routes.js'
@@ -56,6 +57,10 @@ export const RootNavigator = ({ initialRoute, setClient }) => (
       initialParams={initialRoute.params}
     >
       {params => <LoginScreen setClient={setClient} {...params} />}
+    </Stack.Screen>
+
+    <Stack.Screen name={routes.manager} initialParams={initialRoute.params}>
+      {params => <ManagerScreen {...params} />}
     </Stack.Screen>
 
     <Stack.Screen name={routes.onboarding} initialParams={initialRoute.params}>
