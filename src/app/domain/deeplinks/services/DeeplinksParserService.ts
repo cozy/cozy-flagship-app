@@ -13,6 +13,9 @@ const MAIN_APP = 'home'
 const FALLBACK_PARAM = 'fallback'
 const UNIVERSAL_LINK_BASE_PATH = 'flagship'
 
+/**
+ * Parse the given deeplink (universal link or app scheme) and extract the Manager URL if any
+ */
 const parseManagerURL = (url: string | null): string | undefined => {
   try {
     if (!url?.includes('manager?fallback')) {
@@ -36,6 +39,9 @@ const parseManagerURL = (url: string | null): string | undefined => {
   }
 }
 
+/**
+ * Parse the given deeplink (universal link or app scheme) and extract the Onboarding data if any
+ */
 export const parseOnboardingURL = (
   url: string | null
 ): OnboardingParams | undefined => {
@@ -73,6 +79,10 @@ export const parseOnboardingURL = (
   }
 }
 
+/**
+ * Parse the given deeplink (universal link or app scheme) and extract the fallback data if any
+ * (used to redirect the app to cozy-home specific path or to a cozy-app)
+ */
 export const parseFallbackURL = (url: string | null): FallbackUrl => {
   const defaultParse = {
     mainAppFallbackURL: undefined,
@@ -104,6 +114,9 @@ export const parseFallbackURL = (url: string | null): FallbackUrl => {
   }
 }
 
+/**
+ * Parse the given deeplink (universal link or app scheme) and extract the MagicLink data if any
+ */
 export const parseMagicLinkURL = (url: string | null): MagicLinkUrl | null => {
   if (url === null) {
     return null
@@ -131,6 +144,10 @@ export const parseMagicLinkURL = (url: string | null): MagicLinkUrl | null => {
   }
 }
 
+/**
+ * Parse the given deeplink (universal link or app scheme) and return the
+ * expected screen to be displayed (with route params)
+ */
 export const parseOnboardLink = (
   deeplink: string | null
 ): BootstrapAction | null => {
