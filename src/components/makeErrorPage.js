@@ -60,7 +60,7 @@ export const makeErrorPage = ({ icon, title, body, footer, header, reset }) => {
 
       <script>
         window.addEventListener("load", function(event) {
-          const backButton = document.getElementById('mailto')
+          const backButton = document.getElementById('backButton')
           if (backButton) {
             backButton.onclick = () => {
               window.ReactNativeWebView.postMessage(JSON.stringify({
