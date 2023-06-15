@@ -2,6 +2,7 @@ import Minilog from '@cozy/minilog'
 import { useEffect, useState } from 'react'
 import type {
   WebViewErrorEvent,
+  WebViewHttpErrorEvent,
   WebViewNavigation
 } from 'react-native-webview/lib/WebViewTypes'
 
@@ -14,6 +15,7 @@ import {
   ManagerViewProps
 } from '/app/view/Manager/ManagerScreenTypes'
 import { routes } from '/constants/routes'
+import strings from '/constants/strings.json'
 import { reset } from '/libs/RootNavigation'
 import { NetService } from '/libs/services/NetService'
 import {
@@ -99,6 +101,15 @@ export const useManagerScreenProps = (
     }
   }
 
+  const handleHttpError = (webviewErrorEvent: WebViewHttpErrorEvent): void => {
+    const { nativeEvent } = webviewErrorEvent
+
+    log.error(nativeEvent)
+
+    void hideSplashScreen()
+    reset(routes.error, { type: strings.errorScreens.managerError })
+  }
+
   const onShouldStartLoadWithRequest = (
     initialRequest: WebViewNavigation
   ): boolean => {
@@ -116,6 +127,7 @@ export const useManagerScreenProps = (
   return {
     display,
     handleError,
+    handleHttpError,
     managerUrl: props.route.params?.managerUrl ?? '',
     onShouldStartLoadWithRequest
   }

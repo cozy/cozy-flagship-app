@@ -18,7 +18,13 @@ const footerTemplate = `
   </p>
 `
 
-export const makeErrorPage = ({ icon, title, body, footer, header }) => {
+const resetTemplate = `
+  <button id="resetButton" class="btn btn-primary mt-3 mb-2">
+    ${translation.errors.reset}
+  </button>
+`
+
+export const makeErrorPage = ({ icon, title, body, footer, header, reset }) => {
   const dimensions = getDimensions()
   const navbarHeight = dimensions.navbarHeight
   const statusBarHeight = dimensions.statusBarHeight
@@ -46,6 +52,7 @@ export const makeErrorPage = ({ icon, title, body, footer, header }) => {
           <div class="mb-3">${icon}</div>
           <h1 class="h4 h2-md mb-3 text-center">${title}</h1>
           <p class="text-center">${body}</p>
+          ${reset ? resetTemplate : ''}
         </div>
 
         <footer>${footer ? footerTemplate : ''}</footer>
@@ -65,6 +72,14 @@ export const makeErrorPage = ({ icon, title, body, footer, header }) => {
             window.ReactNativeWebView.postMessage(JSON.stringify({
               message: 'mailto'
             }))
+
+          const resetButton = document.getElementById('resetButton')
+          if (resetButton) {
+            resetButton.onclick = (e) => {
+              window.ReactNativeWebView.postMessage(JSON.stringify({
+                message: 'reset'
+              }))
+            }
           }
         })
       </script>

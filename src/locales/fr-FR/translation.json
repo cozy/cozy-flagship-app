@@ -10,7 +10,8 @@
     "badUnlockPassword": "Les identifiants que vous avez saisis sont incorrects, veuillez ré-essayer.",
     "badUnlockPin": "Le code PIN que vous avez saisi est incorrect, veuillez ré-essayer",
     "contactUs": "Un problème, une suggestion ? Contactez-nous à",
-    "unknown_error": "Une erreur inattendue s'est produite, veuillez ré-essayer."
+    "unknown_error": "Une erreur inattendue s'est produite, veuillez ré-essayer.",
+    "reset": "Revenir à l'accueil"
   },
   "logout_dialog": {
     "cancel": "Annuler",
@@ -22,6 +23,10 @@
     "cozyNotFound": {
       "body": "Nous n'avons trouvé aucun Cozy à cette adresse. Il s'agit peut-être d'une erreur de frappe. Pour le savoir, vérifiez l'adresse de votre Cozy dans l'e-mail que nous vous avons envoyé au moment de sa création.",
       "title": "L'adresse de ce Cozy n'existe pas."
+    },
+    "managerError": {
+      "body": "Une erreur est survenue lors du traitement de votre lien de connexion",
+      "title": "Un problème est survenu"
     },
     "lock": {
       "password_label": "Mot de passe",

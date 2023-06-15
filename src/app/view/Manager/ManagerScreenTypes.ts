@@ -1,6 +1,7 @@
 import { RouteProp } from '@react-navigation/native'
 import type {
   WebViewErrorEvent,
+  WebViewHttpErrorEvent,
   WebViewNavigation
 } from 'react-native-webview/lib/WebViewTypes'
 
@@ -13,6 +14,7 @@ export interface ManagerScreenProps {
 export interface ManagerViewProps {
   display: boolean
   handleError: (webviewErrorEvent: WebViewErrorEvent) => Promise<void>
+  handleHttpError: (event: WebViewHttpErrorEvent) => void
   managerUrl: string
   onShouldStartLoadWithRequest: (initialRequest: WebViewNavigation) => boolean
 }

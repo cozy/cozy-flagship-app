@@ -6,8 +6,10 @@ import { WebViewMessageEvent } from 'react-native-webview/lib/WebViewTypes'
 
 import { CozyNotFoundPage } from '/components/webviews/CozyNotFoundPage'
 import { OfflinePage } from '/components/webviews/OfflinePage'
+import { ManagerErrorPage } from '/components/webviews/ManagerErrorPage'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
-import { goBack } from '/libs/RootNavigation'
+import { routes } from '/constants/routes'
+import { goBack, reset } from '/libs/RootNavigation'
 
 const log = Minilog('ErrorScreen')
 
@@ -33,7 +35,8 @@ type Handlers = Record<
  */
 const HTML: Record<string, () => string> = {
   cozyNotFound: CozyNotFoundPage,
-  offline: OfflinePage
+  offline: OfflinePage,
+  managerError: ManagerErrorPage
 }
 
 const handlers: Handlers = {
@@ -41,6 +44,10 @@ const handlers: Handlers = {
   mailto: {
     call: () => Linking.openURL('mailto:contact@cozycloud.cc'),
     shouldCatch: true
+  },
+  reset: {
+    call: () => reset(routes.welcome),
+    shouldCatch: false
   }
 }
 

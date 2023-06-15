@@ -36,7 +36,8 @@
   "errorAppendParamsFail": "Could not handle url, it is neither a valid URL string nor a string",
   "errorScreens": {
     "cozyNotFound": "cozyNotFound",
-    "offline": "offline"
+    "offline": "offline",
+    "managerError": "managerError"
   },
   "errors": {
     "cozyClientMismatch": "Could not validate redirect url, Cozy Client mismatch",
