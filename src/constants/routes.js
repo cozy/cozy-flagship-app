@@ -6,6 +6,7 @@ export const routes = {
   home: 'home',
   instanceCreation: 'instanceCreation',
   lock: 'lock',
+  manager: 'manager',
   onboarding: 'onboarding',
   promptPassword: 'promptPassword',
   promptPin: 'promptPin',
