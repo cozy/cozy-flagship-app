@@ -11,8 +11,7 @@ import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import {
   parseFallbackURL,
-  parseMagicLinkURL,
-  parseOnboardingURL
+  parseOnboardLink
 } from '/app/domain/deeplinks/services/DeeplinksParserService'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
@@ -38,45 +37,24 @@ export const useAppBootstrap = client => {
         const onboardingUrl = await Linking.getInitialURL()
         log.debug(`App's initialURL is ${onboardingUrl}`)
 
-        const onboardingParams = parseOnboardingURL(onboardingUrl)
+        const action = parseOnboardLink(onboardingUrl)
 
-        const magicLink = parseMagicLinkURL(onboardingUrl)
-
-        if (onboardingParams) {
-          const {
-            onboardUrl,
-            onboardedRedirection: onboardedRedirectionParam,
-            fqdn
-          } = onboardingParams
-
-          if (onboardedRedirectionParam) {
-            setOnboardedRedirection(onboardedRedirectionParam)
+        if (action) {
+          if (action.onboardedRedirection) {
+            log.debug(
+              `Set OnboardedRedirection to ${action.onboardedRedirection}`
+            )
+            setOnboardedRedirection(action.onboardedRedirection)
           }
 
-          if (onboardUrl) {
-            log.debug('Set initialRoute to instanceCreation screen')
-            return setInitialRoute({
-              route: routes.instanceCreation,
-              params: {
-                onboardUrl
-              }
-            })
-          } else {
-            log.debug('Set initialRoute to authenticate screen')
-            return setInitialRoute({
-              route: routes.authenticate,
-              params: {
-                fqdn
-              }
-            })
-          }
-        } else if (magicLink) {
-          const { fqdn, magicCode } = magicLink
-
-          log.debug('Set initialRoute to authenticate screen with magic code')
+          log.debug(
+            `Set initialRoute to ${action.route} screen, ${
+              action.params.magicCode ? 'with magic code' : ''
+            }`
+          )
           return setInitialRoute({
-            route: routes.authenticate,
-            params: { fqdn, magicCode }
+            route: action.route,
+            params: action.params
           })
         } else {
           log.debug('Set initialRoute to welcome screen')
@@ -178,40 +156,18 @@ export const useAppBootstrap = client => {
       log.debug(`🔗 Linking URL is ${url}`)
 
       if (!client) {
-        const onboardingParams = parseOnboardingURL(url)
+        const action = parseOnboardLink(url)
 
-        if (onboardingParams) {
-          const {
-            onboardUrl,
-            onboardedRedirection: onboardedRedirectionParam,
-            fqdn
-          } = onboardingParams
-
-          if (onboardedRedirectionParam && !client) {
-            setOnboardedRedirection(onboardedRedirectionParam)
-          }
-
-          if (onboardUrl) {
+        if (action) {
+          if (action.onboardedRedirection) {
             log.debug(
-              `🔗 Redirect to instanceCreation screen for ${onboardUrl}`
+              `Set OnboardedRedirection to ${action.onboardedRedirection}`
             )
-            navigate(routes.instanceCreation, { onboardUrl })
-            return
-          } else {
-            log.debug(`🔗 Redirect to authenticate screen for ${fqdn}`)
-            navigate(routes.authenticate, { fqdn })
-            return
+            setOnboardedRedirection(action.onboardedRedirection)
           }
-        }
 
-        const magicLink = parseMagicLinkURL(url)
-
-        if (magicLink) {
-          const { fqdn, magicCode } = magicLink
-          log.debug(
-            `🔗 Redirect to authenticate screen for ${fqdn} with magicCode`
-          )
-          navigate(routes.authenticate, { fqdn, magicCode })
+          log.debug(`🔗 Redirect to ${action.route} screen`)
+          navigate(action.route, action.params)
           return
         }
       } else {

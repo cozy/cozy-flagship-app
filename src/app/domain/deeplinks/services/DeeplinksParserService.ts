@@ -5,6 +5,10 @@ import { MagicLinkUrl } from '/app/domain/deeplinks/models/MagicLinkUrl'
 import { OnboardingParams } from '/app/domain/deeplinks/models/OnboardingParams'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
+import { BootstrapAction } from '../../bootsrap/model/BootstrapAction'
+
+import { routes } from '/constants/routes'
+
 const log = Minilog('DeeplinksParserService')
 
 const MAIN_APP = 'home'
@@ -104,4 +108,56 @@ export const parseMagicLinkURL = (url: string | null): MagicLinkUrl | null => {
     )
     return null
   }
+}
+
+export const parseOnboardLink = (
+  deeplink: string | null
+): BootstrapAction | null => {
+  if (deeplink === null) {
+    return null
+  }
+
+  const onboardingParams = parseOnboardingURL(deeplink)
+
+  if (onboardingParams) {
+    const {
+      onboardUrl,
+      onboardedRedirection: onboardedRedirectionParam,
+      fqdn
+    } = onboardingParams
+
+    if (onboardUrl) {
+      log.debug(`Deeplink is instanceCreation for ${onboardUrl}`)
+      return {
+        route: routes.instanceCreation,
+        params: {
+          onboardUrl
+        },
+        onboardedRedirection: onboardedRedirectionParam
+      }
+    } else if (fqdn) {
+      log.debug(`Deeplink is authenticate for ${fqdn}`)
+      return {
+        route: routes.authenticate,
+        params: {
+          fqdn
+        },
+        onboardedRedirection: onboardedRedirectionParam
+      }
+    }
+  }
+
+  const magicLink = parseMagicLinkURL(deeplink)
+
+  if (magicLink) {
+    const { fqdn, magicCode } = magicLink
+
+    log.debug(`Deeplink is authenticate with magic code for ${fqdn}`)
+    return {
+      route: routes.authenticate,
+      params: { fqdn, magicCode }
+    }
+  }
+
+  return null
 }
