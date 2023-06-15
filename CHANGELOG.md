@@ -1,3 +1,31 @@
+# 1.1.9
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+
+# 1.1.8
+
+## ✨ Features
+
+* Rework onboarding by link and login by link processes to improve compatibility for user with non-default email clients or web browsers ([PR #834](https://github.com/cozy/cozy-flagship-app/pull/834) and [PR #836](https://github.com/cozy/cozy-flagship-app/pull/836))
+
+## 🐛 Bug Fixes
+
+* Improve offline detection when opening cozy-apps ([PR #826](https://github.com/cozy/cozy-flagship-app/pull/826))
+* Fix Client Side Connectors stability issues ([PR #818](https://github.com/cozy/cozy-react-native/pull/818))
+* Fix a bug that breaks the app when the user click an onboarding link when the app is already connected to an account ([PR #830](https://github.com/cozy/cozy-react-native/pull/830))
+* Enforce Light theme on the app to prevent issues on some Android devices ([PR #829](https://github.com/cozy/cozy-react-native/pull/829))
+
+## 🔧 Tech
+
+* Improve Sentry's log reporting ([PR #837](https://github.com/cozy/cozy-react-native/pull/837))
+
 # 1.1.7
 
 ## 🐛 Bug Fixes
