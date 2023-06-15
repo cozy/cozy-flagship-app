@@ -20,6 +20,7 @@ export const ManagerScreen = (props: ManagerScreenProps): React.ReactNode => {
             managerProps.onShouldStartLoadWithRequest
           }
           onError={managerProps.handleError}
+          onHttpError={managerProps.handleHttpError}
           style={{
             backgroundColor: colors.primaryColor
           }}
