@@ -1,4 +1,4 @@
-import { Platform, PermissionsAndroid } from 'react-native'
+import { Platform, PermissionsAndroid, Permission } from 'react-native'
 
 const PLATFORM_VERSION =
   typeof Platform.Version === 'number'
@@ -7,7 +7,7 @@ const PLATFORM_VERSION =
 
 const ANDROID_PERMISSION =
   PLATFORM_VERSION >= 33
-    ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+    ? ('android.permission.READ_MEDIA_IMAGES' as Permission) // PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES is only available starting RN 0.70
     : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
 
 export const hasMediaPermissions = async (): Promise<boolean> => {
