@@ -29,9 +29,8 @@ const name =
 
 const nameIs = (envName: string): boolean => envName === name
 
-const hasSentryEnabled = enableSentryOn.some(
-  environment => environment === name
-)
+const hasSentryEnabled = (): boolean =>
+  enableSentryOn.some(environment => environment === name)
 
 export const isDev = (): boolean => nameIs(strings.environments.test)
 
@@ -41,7 +40,7 @@ export const isTest = (): boolean => process.env.NODE_ENV === 'test'
  * because its color is more visible than minilog's color
  */
 // eslint-disable-next-line no-console
-export const devlog = isDev() && !isTest() ? console.debug : (): void => void 0
+export const devlog = console.debug
 
 try {
   void initDev(isDev())
