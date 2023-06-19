@@ -3080,6 +3080,11 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
+"@sayem314/react-native-keep-awake@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@sayem314/react-native-keep-awake/-/react-native-keep-awake-1.1.0.tgz#852f9f8481c0ab38a54d6f0b85324f3024eb6031"
+  integrity sha512-1k57PXJIfhZrjA4ZQr+goTEYer8MBhe1At6XjVYJq1oBuhG/CIu0gX1EH9fU9exC65e5uDs/zAwjl6Ps+3lCgg==
+
 "@sentry/browser@6.19.2":
   version "6.19.2"
   resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-6.19.2.tgz#c0f6df07584f3b36fa037067aea20b2c8c2095a3"
