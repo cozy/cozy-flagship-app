@@ -3,7 +3,6 @@ import Minilog from '@cozy/minilog'
 import { managePermissions } from '/app/domain/backup/services/managePermissions'
 import {
   getLocalBackupConfig,
-  hasLocalBackupConfig,
   initiazeLocalBackupConfig,
   setBackupAsInitializing,
   setBackupAsReady,
@@ -20,7 +19,11 @@ import {
 
 import type CozyClient from 'cozy-client'
 
-import { BackupInfo, BackupedMedia } from '/app/domain/backup/models'
+import {
+  BackupInfo,
+  BackupedMedia,
+  LocalBackupConfig
+} from '/app/domain/backup/models'
 
 const log = Minilog('💿 Backup')
 
@@ -31,7 +34,11 @@ export const prepareBackup = async (
 
   await managePermissions()
 
-  await initializeBackup(client)
+  const backupConfig = await initializeBackup(client)
+
+  if (backupConfig.currentBackup.status === 'running') {
+    return await getBackupInfo(client)
+  }
 
   await setBackupAsInitializing(client)
 
@@ -76,10 +83,15 @@ export const getBackupInfo = async (
   }
 }
 
-const initializeBackup = async (client: CozyClient): Promise<void> => {
-  const hasLocalBackup = await hasLocalBackupConfig(client)
+const initializeBackup = async (
+  client: CozyClient
+): Promise<LocalBackupConfig> => {
+  try {
+    const backupConfig = await getLocalBackupConfig(client)
 
-  if (!hasLocalBackup) {
+    return backupConfig
+  } catch {
+    // if there is no local backup config
     let deviceRemoteBackupConfig = await fetchDeviceRemoteBackupConfig(client)
     let backupedMedias
 
@@ -93,10 +105,12 @@ const initializeBackup = async (client: CozyClient): Promise<void> => {
       backupedMedias = [] as BackupedMedia[]
     }
 
-    await initiazeLocalBackupConfig(
+    const backupConfig = await initiazeLocalBackupConfig(
       client,
       deviceRemoteBackupConfig,
       backupedMedias
     )
+
+    return backupConfig
   }
 }
