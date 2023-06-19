@@ -16,6 +16,10 @@ import {
   fetchBackupedMedias,
   createRemoteBackupFolder
 } from '/app/domain/backup/services/manageRemoteBackupConfig'
+import {
+  activateKeepAwake,
+  deactivateKeepAwake
+} from '/app/domain/sleep/services/sleep'
 
 import type CozyClient from 'cozy-client'
 
@@ -61,9 +65,13 @@ export const startBackup = async (client: CozyClient): Promise<BackupInfo> => {
 
   await setBackupAsRunning(client)
 
-  void uploadMedias(client, backupFolderId, mediasToBackup).then(() =>
-    setBackupAsDone(client)
-  )
+  activateKeepAwake()
+
+  void uploadMedias(client, backupFolderId, mediasToBackup)
+    .then(() => setBackupAsDone(client))
+    .finally(() => {
+      deactivateKeepAwake()
+    })
 
   return await getBackupInfo(client)
 }
