@@ -63,7 +63,7 @@ export const initiazeLocalBackupConfig = async (
   client: CozyClient,
   remoteBackupConfig: RemoteBackupConfig,
   backupedMedias: BackupedMedia[]
-): Promise<void> => {
+): Promise<LocalBackupConfig> => {
   const newLocalBackupConfig = {
     ...INITIAL_BACKUP_CONFIG,
     remoteBackupConfig: remoteBackupConfig,
@@ -71,18 +71,8 @@ export const initiazeLocalBackupConfig = async (
   }
 
   await setLocalBackupConfig(client, newLocalBackupConfig)
-}
 
-export const hasLocalBackupConfig = async (
-  client: CozyClient
-): Promise<boolean> => {
-  try {
-    await getLocalBackupConfig(client)
-
-    return true
-  } catch {
-    return false
-  }
+  return newLocalBackupConfig
 }
 
 export const setMediaAsBackuped = async (
