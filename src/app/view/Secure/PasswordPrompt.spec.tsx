@@ -9,6 +9,7 @@ import { translation } from '/locales'
 
 // Mock the navigation and logging dependencies
 jest.mock('/libs/RootNavigation', () => ({
+  ...jest.requireActual('/libs/RootNavigation'),
   navigate: jest.fn()
 }))
 

@@ -31,6 +31,7 @@ import { useCozyEnvironmentOverride } from '/hooks/useCozyEnvironmentOverride'
 import { useNotifications } from '/hooks/useNotifications'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
+import { ThemeProvider } from '/app/theme/ThemeProvider'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -147,7 +148,9 @@ const Wrapper = () => {
               <HomeStateProvider>
                 <SplashScreenProvider>
                   <NetStatusBoundary>
-                    <WrappedApp />
+                    <ThemeProvider>
+                      <WrappedApp />
+                    </ThemeProvider>
                   </NetStatusBoundary>
                 </SplashScreenProvider>
               </HomeStateProvider>

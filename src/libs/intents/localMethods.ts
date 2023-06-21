@@ -1,22 +1,22 @@
 import { Linking, Platform } from 'react-native'
 import { BrowserResult } from 'react-native-inappbrowser-reborn'
 
-import {
-  scanDocument,
-  isScannerAvailable
-} from '/app/domain/scanner/services/scanner'
-
 import CozyClient from 'cozy-client'
 import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
 
 import * as RootNavigation from '/libs/RootNavigation'
+import {
+  scanDocument,
+  isScannerAvailable
+} from '/app/domain/scanner/services/scanner'
+import { setHomeThemeIntent } from '/libs/intents/setTheme'
 import strings from '/constants/strings.json'
 import { EnvService } from '/core/tools/env'
 import { clearClient } from '/libs/client'
 import { clearCookies } from '/libs/httpserver/httpCookieManager'
 import { clearData } from '/libs/localStore/storage'
 import { deleteKeychain } from '/libs/keychain'
-import { hideSplashScreen } from '/libs/services/SplashScreenService'
+import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { openApp } from '/libs/functions/openApp'
 import { resetSessionToken } from '/libs/functions/session'
 import { routes } from '/constants/routes'
@@ -26,6 +26,7 @@ import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { showInAppBrowser, closeInAppBrowser } from '/libs/intents/InAppBrowser'
 import { isBiometryDenied } from '/app/domain/authentication/services/BiometryService'
 import { toggleSetting } from '/app/domain/settings/services/SettingsService'
+import { HomeThemeType } from '/app/theme/models'
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {
@@ -120,6 +121,7 @@ const isNativePassInstalledOnDevice = async (): Promise<boolean> => {
 interface CustomMethods {
   fetchSessionCode: () => Promise<string | null>
   showInAppBrowser: (args: { url: string }) => Promise<BrowserResult>
+  setTheme: (theme: HomeThemeType) => Promise<boolean>
 }
 
 /**
@@ -154,6 +156,7 @@ export const localMethods = (
     openAppOSSettings,
     isNativePassInstalledOnDevice,
     scanDocument,
-    isScannerAvailable: () => Promise.resolve(isScannerAvailable())
+    isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
+    setTheme: setHomeThemeIntent
   }
 }

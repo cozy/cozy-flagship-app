@@ -1,12 +1,19 @@
 import { EventEmitter } from 'events'
 
+import Minilog from '@cozy/minilog'
 import { Platform, StatusBar } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
-import Minilog from '@cozy/minilog'
 
 import { FlagshipUI } from 'cozy-intent'
 
 import { urlHasKonnectorOpen } from '/libs/functions/urlHasKonnector'
+import {
+  getHomeThemeAsStatusBarStyle,
+  getHomeThemeAsThemeInput,
+  themeLog
+} from '/app/theme/themeManager'
+import { navigationRef } from '/libs/RootNavigation'
+import { routes } from '/constants/routes'
 
 const log = Minilog('SET_FLAGSHIP_UI')
 
@@ -99,7 +106,55 @@ export const updateStatusBarAndBottomBar = (
   }
 }
 
+const ON_OPEN_UNMOUNT = 'onOpenUnmount'
+
 export const formatTheme = (
+  key: keyof Partial<FlagshipUI>,
+  input?: ThemeInput,
+  callerName?: string
+): StatusBarStyle | undefined => {
+  const currentRouteName = navigationRef.current?.getCurrentRoute()?.name
+
+  // Check if the current route name is 'default' (home)
+  if (currentRouteName === routes.default) {
+    return formatBasedOnGlobalTheme(key, input, callerName)
+  }
+
+  // If the current route name is not 'default', or there's no global theme set, use the input
+  return formatBasedOnInput(input)
+}
+
+/**
+ * Format theme based on global theme settings.
+ * @param key - Theme key ('bottomTheme' or 'topTheme')
+ * @param input - The ThemeInput value
+ * @param callerName - The caller name, used to determine specific behaviors
+ */
+const formatBasedOnGlobalTheme = (
+  key: keyof Partial<FlagshipUI>,
+  input?: ThemeInput,
+  callerName?: string
+): StatusBarStyle | undefined => {
+  const homeTheme = getHomeThemeAsStatusBarStyle()
+
+  if (callerName?.includes(ON_OPEN_UNMOUNT)) {
+    themeLog.info(
+      `formatBasedOnGlobalTheme uses home theme "${homeTheme}" for ${key} instead of "${String(
+        input
+      )}" because of callerName "${callerName}"`
+    )
+
+    return homeTheme
+  }
+
+  return input ? formatBasedOnInput(input) : homeTheme
+}
+
+/**
+ * Format theme based on input.
+ * @param input - The ThemeInput value
+ */
+const formatBasedOnInput = (
   input?: ThemeInput | string
 ): StatusBarStyle | undefined =>
   input?.includes(ThemeInput.Light)
@@ -120,8 +175,16 @@ export const setFlagshipUI = (
     Object.fromEntries(
       Object.entries({
         ...intent,
-        bottomTheme: formatTheme(intent.bottomTheme as ThemeInput),
-        topTheme: formatTheme(intent.topTheme as ThemeInput)
+        bottomTheme: formatTheme(
+          'bottomTheme',
+          intent.bottomTheme as ThemeInput,
+          callerName
+        ),
+        topTheme: formatTheme(
+          'topTheme',
+          intent.topTheme as ThemeInput,
+          callerName
+        )
       })
         .filter(([, v]) => v)
         .map(([k, v]) => [k, v?.trim()])
@@ -135,7 +198,11 @@ export const resetUIState = (
   uri: string,
   callback?: (theme: StatusBarStyle) => void
 ): void => {
-  const theme = urlHasKonnectorOpen(uri) ? ThemeInput.Dark : ThemeInput.Light
+  const theme = urlHasKonnectorOpen(uri)
+    ? ThemeInput.Dark
+    : getHomeThemeAsThemeInput()
+
+  themeLog.info('resetUIState', { uri, theme })
 
   void setFlagshipUI({ bottomTheme: theme, topTheme: theme }, 'resetUIState')
 

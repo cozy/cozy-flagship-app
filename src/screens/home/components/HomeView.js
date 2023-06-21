@@ -113,7 +113,12 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   useFocusEffect(
     useCallback(() => {
       if (didBlurOnce.current) {
+        devlog(
+          'HomeView: useFocusEffect, didBlurOnce.current: true, unzoom Home View, resetting UI State'
+        )
+
         unzoomHomeView(webviewRef)
+
         resetUIState(uri, setBarStyle)
       }
     }, [setBarStyle, uri, webviewRef])
