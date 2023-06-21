@@ -1,11 +1,11 @@
 import DeviceInfo from 'react-native-device-info'
 
+import CozyClient, { FileCollectionGetResult } from 'cozy-client'
+
 import { BackupedMedia, RemoteBackupConfig } from '/app/domain/backup/models'
-
-import type CozyClient from 'cozy-client'
-
 import {
   buildFilesQuery,
+  buildFileQuery,
   FilesQueryAllResult
 } from '/app/domain/backup/queries'
 
@@ -109,9 +109,11 @@ export const createRemoteBackupFolder = async (
     ]
   )
 
-  const { data: backupFolder } = await client
-    .collection(DOCTYPE_FILES)
-    .get(backupFolderId)
+  const fileQuery = buildFileQuery(backupFolderId)
+
+  const { data: backupFolder } = (await client.query(
+    fileQuery
+  )) as FileCollectionGetResult
 
   const remoteBackupConfig = {
     backupFolder: {

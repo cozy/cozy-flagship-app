@@ -12,6 +12,10 @@ export const buildFilesQuery = (dirId: string): QueryDefinition => {
     .select(['name', 'dir_id', 'type'])
 }
 
+export const buildFileQuery = (id: string): QueryDefinition => {
+  return Q(DOCTYPE_FILES).getById(id)
+}
+
 interface File {
   id: string
   name: string
