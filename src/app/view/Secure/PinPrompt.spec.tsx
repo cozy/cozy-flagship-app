@@ -17,6 +17,7 @@ jest.mock('/app/domain/authorization/utils/devMode.ts', () => {
   }
 })
 jest.mock('/libs/RootNavigation', () => ({
+  ...jest.requireActual('/libs/RootNavigation'),
   navigate: jest.fn()
 }))
 jest.mock('/core/tools/env', () => ({

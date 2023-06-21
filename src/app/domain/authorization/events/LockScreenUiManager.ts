@@ -24,8 +24,11 @@ export const setLockScreenUI = (intent: FlagshipUI): Promise<null> => {
     Object.fromEntries(
       Object.entries({
         ...intent,
-        bottomTheme: formatTheme(intent.bottomTheme as ThemeInput),
-        topTheme: formatTheme(intent.topTheme as ThemeInput)
+        bottomTheme: formatTheme(
+          'bottomTheme',
+          intent.bottomTheme as ThemeInput
+        ),
+        topTheme: formatTheme('topTheme', intent.topTheme as ThemeInput)
       })
     )
   )

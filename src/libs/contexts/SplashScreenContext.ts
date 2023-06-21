@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { SplashScreenService } from '../services/SplashScreenService'
+import { SplashScreenService } from '/app/theme/SplashScreenService'
 
 export const SplashScreenContext = React.createContext<SplashScreenService>(
   {} as SplashScreenService
