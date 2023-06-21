@@ -93,7 +93,7 @@ declare module 'cozy-client' {
 
   export const useClient = (): CozyClient => CozyClient as CozyClient
 
-  interface FileCollectionGetResult {
+  export interface FileCollectionGetResult {
     data: {
       _id: string
       name: string
@@ -112,7 +112,6 @@ declare module 'cozy-client' {
     addReferencesTo: (references: object, dirs: object[]) => Promise<void>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     launch: (trigger: any) => any
-    get: (id: string) => Promise<FileCollectionGetResult>
   }
 
   export default class CozyClient {
