@@ -1,3 +1,4 @@
+import Minilog from '@cozy/minilog'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { StatusBar, View } from 'react-native'
 
@@ -10,6 +11,8 @@ import { Animation } from './CozyAppScreen.Animation'
 import { firstHalfUI, handleError } from './CozyAppScreen.functions'
 import { styles } from './CozyAppScreen.styles'
 import { CozyAppScreenProps } from './CozyAppScreen.types'
+
+const log = Minilog('📐 CozyAppScreen')
 
 export const CozyAppScreen = ({
   route,
@@ -27,6 +30,14 @@ export const CozyAppScreen = ({
   const [isFirstHalf, setFirstHalf] = useState(false)
   const [shouldExitAnimation, setShouldExitAnimation] = useState(false)
   const { setShouldWaitCozyApp } = useHomeStateContext()
+
+  useEffect(() => {
+    log.debug('CozyAppScreen mount')
+
+    return () => {
+      log.debug('CozyAppScreen unmount')
+    }
+  }, [])
 
   useEffect(() => {
     flagshipUI.on('change', (state: NormalisedFlagshipUI) => {
