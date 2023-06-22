@@ -13,7 +13,7 @@
     "install:home:registry": "yarn tsc --project scripts && node scripts/dist/install-home-registry.cmd.js",
     "ios": "react-native run-ios",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
-    "postinstall": "patch-package && yarn install:home:registry",
+    "postinstall": "patch-package && yarn install:home:registry && react-native setup-ios-permissions && pod-install",
     "pre-commit": "yarn lint",
     "start": "react-native start",
     "test": "jest src/**/* scripts/* --detectOpenHandles --forceExit --config __tests__/jest.config.js",
@@ -71,6 +71,7 @@
     "react-native-ios11-devicecheck": "https://github.com/cozy/react-native-devicecheck#app-attest-v0.1",
     "react-native-keychain": "^8.0.0",
     "react-native-mask-input": "1.2.1",
+    "react-native-permissions": "^3.8.0",
     "react-native-play-install-referrer": "^1.1.8",
     "react-native-safe-area-context": "^4.5.0",
     "react-native-screens": "3.18.2",
@@ -134,7 +135,8 @@
     "url-loader": "4.1.1",
     "webpack": "5.75.0",
     "webpack-cli": "4.7.2",
-    "webpack-dev-server": "3.11.2"
+    "webpack-dev-server": "3.11.2",
+    "pod-install": "0.1.38"
   },
   "browserslist": {
     "production": [
@@ -147,5 +149,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "reactNativePermissionsIOS": [
+    "PhotoLibrary"
+  ]
 }
