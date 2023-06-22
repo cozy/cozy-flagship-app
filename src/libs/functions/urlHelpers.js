@@ -127,7 +127,7 @@ export const isSameCozy = ({
  * @param {string} params.currentUrl - the current URL
  * @param {string} params.destinationUrl - the URL we want to navigate to
  * @param {'flat' | 'nested'} params.subdomainType - the Cozy's subdomain type
- * @returns false if no slug switch is detected, otherwise the slug's value
+ * @returns {false | string} false if no slug switch is detected, otherwise the slug's value
  */
 export const checkIsSlugSwitch = ({
   currentUrl,

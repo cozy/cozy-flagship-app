@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react'
-import { BackHandler, Linking } from 'react-native'
+import { BackHandler } from 'react-native'
 import { useIsFocused } from '@react-navigation/native'
 import Minilog from '@cozy/minilog'
 
@@ -155,19 +155,6 @@ export const CozyWebView = ({
       TEST_ONLY_setRef={setWebviewRef}
       decelerationRate="normal" // https://github.com/react-native-webview/react-native-webview/issues/1070
       onShouldStartLoadWithRequest={initialRequest => {
-        if (
-          initialRequest.url.startsWith('tel:') ||
-          initialRequest.url.startsWith('mailto:') ||
-          initialRequest.url.startsWith('maps:') ||
-          initialRequest.url.startsWith('geo:') ||
-          initialRequest.url.startsWith('sms:')
-        ) {
-          Linking.openURL(initialRequest.url).catch(error => {
-            log.error('Failed to open Link: ' + error.message)
-          })
-          return false
-        }
-
         if (shouldInterceptAuth(initialRequest.url)) {
           const asyncRedirect = async () => {
             const authLink = await handleInterceptAuth(initialRequest.url)
