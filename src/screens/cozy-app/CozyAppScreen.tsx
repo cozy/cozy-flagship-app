@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { StatusBar, View } from 'react-native'
 
-import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
+import { CozyAppWebView } from '/components/webviews/ComposedWebView'
 import { flagshipUI, NormalisedFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { useDimensions } from '/libs/dimensions'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
@@ -92,7 +92,7 @@ export const CozyAppScreen = ({
           )
         }
 
-        <CozyProxyWebView
+        <CozyAppWebView
           style={webViewStyle}
           slug={route.params.slug}
           href={route.params.href}

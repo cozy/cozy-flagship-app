@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { BackHandler } from 'react-native'
+import { WebView } from 'react-native-webview'
 import { useIsFocused } from '@react-navigation/native'
 import Minilog from '@cozy/minilog'
 
@@ -21,7 +22,6 @@ import {
 import { postMessageFunctionDeclaration } from '/components/webviews/CryptoWebView/jsInteractions/jsFunctions/jsMessaging'
 import { jsSubscribers } from '/components/webviews/jsInteractions/jsSubscribers'
 import { useSession } from '/hooks/useSession'
-import ReloadInterceptorWebView from '/components/webviews/ReloadInterceptorWebView'
 import { getHostname } from '/libs/functions/getHostname'
 import { useIsSecureProtocol } from '/hooks/useIsSecureProtocol'
 import {
@@ -33,7 +33,9 @@ const log = Minilog('CozyWebView')
 
 Minilog.enable()
 
-export const CozyWebView = ({
+export const CozyWebView = React.forwardRef(
+  (
+    {
   onMessage: parentOnMessage,
   logId = '',
   source,
@@ -41,16 +43,28 @@ export const CozyWebView = ({
   route,
   injectedJavaScriptBeforeContentLoaded,
   setParentRef,
+      ChildWebview = WebView,
   ...rest
-}) => {
+    },
+    webviewRef
+  ) => {
   const isSecureProtocol = useIsSecureProtocol()
-  const [webviewRef, setWebviewRef] = useState()
+    // const [webviewRef, setWebviewRef] = useState()
   const [uri, setUri] = useState()
   const [innerUri, setInnerUri] = useState()
   const nativeIntent = useNativeIntent()
   const { shouldInterceptAuth, handleInterceptAuth, consumeSessionToken } =
     useSession()
   const isFocused = useIsFocused()
+
+    useEffect(() => {
+      log.debug('CozyWebView mount')
+
+      return () => {
+        log.debug('CozyWebView unmount')
+      }
+    }, [])
+
   /**
    * First render: no uri
    * Second render: use uri from props
@@ -68,7 +82,7 @@ export const CozyWebView = ({
       return false
     }
 
-    webviewRef.goBack()
+      webviewRef.current.goBack()
     return true
   }, [canGoBack, isFocused, webviewRef])
 
@@ -82,7 +96,7 @@ export const CozyWebView = ({
   useEffect(() => {
     innerUri &&
       webviewRef &&
-      nativeIntent?.registerWebview(innerUri, webviewRef)
+        nativeIntent?.registerWebview(innerUri, webviewRef.current)
 
     return () =>
       innerUri && webviewRef && nativeIntent?.unregisterWebview(innerUri)
@@ -96,7 +110,7 @@ export const CozyWebView = ({
         param: response
       })
 
-      webviewRef.postMessage(payload)
+        webviewRef.current.postMessage(payload)
     },
     [webviewRef]
   )
@@ -125,10 +139,10 @@ export const CozyWebView = ({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const injectSettings = async () =>
-    webviewRef.injectJavaScript(await makeFlagshipMetadataInjection())
+      webviewRef.current.injectJavaScript(await makeFlagshipMetadataInjection())
 
   useEffect(() => {
-    webviewRef && injectSettings()
+      webviewRef.current && injectSettings()
 
     BiometryEmitter.on('change', injectSettings)
 
@@ -136,7 +150,7 @@ export const CozyWebView = ({
   }, [injectSettings, webviewRef])
 
   return uri ? (
-    <ReloadInterceptorWebView
+      <ChildWebview
       {...rest}
       onNavigationStateChange={event => {
         const isValidUri = getHostname(event)
@@ -148,11 +162,13 @@ export const CozyWebView = ({
       originWhitelist={['http://*', 'https://*', 'intent://*']}
       useWebKit={true}
       javaScriptEnabled={true}
-      ref={ref => {
-        setWebviewRef(ref)
-        setParentRef?.(ref)
-      }}
-      TEST_ONLY_setRef={setWebviewRef}
+        ref={webviewRef}
+        // ref={wref => {
+        //   setWebviewRef(wref)
+        //   setParentRef?.(wref)
+        //   // ref.current = wref
+        // }}
+        // TEST_ONLY_setRef={setWebviewRef}
       decelerationRate="normal" // https://github.com/react-native-webview/react-native-webview/issues/1070
       onShouldStartLoadWithRequest={initialRequest => {
         if (shouldInterceptAuth(initialRequest.url)) {
@@ -190,5 +206,7 @@ export const CozyWebView = ({
     />
   ) : null
 }
+)
+CozyWebView.displayName = 'CozyWebView'
 
 export default CozyWebView

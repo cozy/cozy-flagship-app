@@ -1,14 +1,17 @@
+import Minilog from '@cozy/minilog'
 import React, { useState, useEffect } from 'react'
 import { Platform, View } from 'react-native'
+import { WebView } from 'react-native-webview'
 
 import { useClient } from 'cozy-client'
 
 import { styles } from './CozyProxyWebView.styles'
-import { CozyWebView } from './CozyWebView'
 
 import { updateCozyAppBundleInBackground } from '/libs/cozyAppBundle/cozyAppBundle'
 import { useHttpServerContext } from '/libs/httpserver/httpServerProvider'
 import { IndexInjectionWebviewComponent } from '/components/webviews/webViewComponents/IndexInjectionWebviewComponent'
+
+const log = Minilog('CozyProxyWebView')
 
 const NO_INJECTED_HTML = 'NO_INJECTED_HTML'
 
@@ -64,7 +67,8 @@ const getPlaformSpecificConfig = (uri, html) => {
   }
 }
 
-export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
+export const CozyProxyWebView = React.forwardRef(
+  ({ slug, href, style, ChildWebview = WebView, ...props }, ref) => {
   const client = useClient()
   const httpServerContext = useHttpServerContext()
   const [state, dispatch] = useState({
@@ -72,6 +76,14 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
     html: undefined,
     nativeConfig: undefined
   })
+
+    useEffect(() => {
+      log.debug('CozyProxyWebView mount')
+
+      return () => {
+        log.debug('CozyProxyWebView unmount')
+      }
+    }, [])
 
   useEffect(() => {
     if (httpServerContext.isRunning()) {
@@ -111,13 +123,16 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
   return (
     <View style={{ ...styles.view, ...style }}>
       {state.source ? (
-        <CozyWebView
+          <ChildWebview
           source={state.source}
           nativeConfig={state.nativeConfig}
           injectedIndex={state.html}
+            ref={ref}
           {...props}
         />
       ) : null}
     </View>
   )
 }
+)
+CozyProxyWebView.displayName = 'CozyProxyWebView'

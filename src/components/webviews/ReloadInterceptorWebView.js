@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
+import { WebView } from 'react-native-webview'
 
 import { useClient } from 'cozy-client'
 
-import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { userAgentDefault } from '/constants/userAgent'
 import { ProgressContainer } from '/components/ProgressContainer'
 import {
@@ -23,14 +23,15 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
     source,
     onShouldStartLoadWithRequest,
     userAgent = userAgentDefault,
-    navigation
+    navigation,
+    ChildWebview = WebView
   } = props
 
   if (!source.html) {
     // Blocking this feature, when source={{ uri }} is set
     return (
       <ProgressContainer progress={progress}>
-        <SupervisedWebView
+        <ChildWebview
           {...props}
           ref={ref}
           {...userAgent}
@@ -63,7 +64,7 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
 
   return (
     <ProgressContainer progress={progress}>
-      <SupervisedWebView
+      <ChildWebview
         {...props}
         {...userAgent}
         ref={ref}

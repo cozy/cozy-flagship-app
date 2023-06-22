@@ -11,7 +11,7 @@ import { useNativeIntent } from 'cozy-intent'
 
 import { AppState } from 'react-native'
 
-import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
+import { CozyAppWebView } from '/components/webviews/ComposedWebView'
 import {
   consumeRouteParameter,
   useInitialParam
@@ -244,7 +244,7 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   }
 
   return uri && shouldWaitCozyApp !== undefined && !shouldWaitCozyApp ? (
-    <CozyProxyWebView
+    <CozyAppWebView
       setParentRef={setParentRef}
       slug="home"
       href={uri}
