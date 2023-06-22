@@ -3,6 +3,7 @@ import mockRNCameraRoll from '@react-native-camera-roll/camera-roll/src/__mocks_
 import mockRNCNetInfo from '@react-native-community/netinfo/jest/netinfo-mock.js'
 import mockBackHandler from 'react-native/Libraries/Utilities/__mocks__/BackHandler.js'
 import mockRNDeviceInfo from 'react-native-device-info/jest/react-native-device-info-mock'
+import mockRNPermissions from 'react-native-permissions/mock'
 
 import { mockRNFS } from '../__mocks__/react-native-fs-mock'
 
@@ -66,3 +67,5 @@ jest.mock('@sayem314/react-native-keep-awake', () => ({
 }))
 
 jest.mock('@react-native-camera-roll/camera-roll', () => mockRNCameraRoll)
+
+jest.mock('react-native-permissions', () => mockRNPermissions)
