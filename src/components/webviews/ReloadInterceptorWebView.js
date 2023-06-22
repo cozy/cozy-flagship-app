@@ -79,7 +79,13 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
             navigation,
             onShouldStartLoadWithRequest,
             interceptReload: true,
-            onReloadInterception: () => setTimestamp(Date.now()),
+            onReloadInterception: () => {
+              if (props.reloadProxyWebView) {
+                props.reloadProxyWebView()
+              } else {
+                setTimestamp(Date.now())
+              }
+            },
             isFirstCall,
             client,
             setDownloadProgress
