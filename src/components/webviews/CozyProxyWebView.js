@@ -1,3 +1,4 @@
+import Minilog from '@cozy/minilog'
 import React, { useState, useEffect } from 'react'
 import { Platform, View } from 'react-native'
 
@@ -9,6 +10,8 @@ import { CozyWebView } from './CozyWebView'
 import { updateCozyAppBundleInBackground } from '/libs/cozyAppBundle/cozyAppBundle'
 import { useHttpServerContext } from '/libs/httpserver/httpServerProvider'
 import { IndexInjectionWebviewComponent } from '/components/webviews/webViewComponents/IndexInjectionWebviewComponent'
+
+const log = Minilog('CozyProxyWebView')
 
 const NO_INJECTED_HTML = 'NO_INJECTED_HTML'
 
@@ -71,6 +74,7 @@ const initHtmlContent = async ({
   client,
   dispatch
 }) => {
+  log.debug('Call to initHtmlContent()')
   const htmlContent = await httpServerContext.getIndexHtmlForSlug(slug, client)
 
   const { source: sourceActual, nativeConfig: nativeConfigActual } =

@@ -82,6 +82,7 @@ export const HttpServerProvider = props => {
   const isRunning = () => serverInstance?.isRunning()
 
   const getIndexHtmlForSlug = async (slug, client) => {
+    log.debug(`Call to getIndexHtmlForSlug() with slug ${slug}`)
     try {
       const rootURL = client.getStackClient().uri
 

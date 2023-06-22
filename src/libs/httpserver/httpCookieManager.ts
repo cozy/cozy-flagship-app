@@ -1,3 +1,4 @@
+import Minilog from '@cozy/minilog'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import CookieManager, { Cookie, Cookies } from '@react-native-cookies/cookies'
 
@@ -6,6 +7,8 @@ import CozyClient from 'cozy-client'
 import { isSecureProtocol } from '../functions/isSecureProtocol'
 
 import strings from '/constants/strings.json'
+
+const log = Minilog('🍪 HttpCookieManager')
 
 type CookieRecord = Record<string, string>
 
@@ -89,6 +92,7 @@ export const setCookie = async (
   cookieString: string,
   client: CozyClient
 ): Promise<boolean> => {
+  log.debug('Call to setCookie()')
   const cookie = parseCookie(cookieString)
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
@@ -118,6 +122,7 @@ export const setCookie = async (
 export const getCookie = async (
   client: CozyClient
 ): Promise<Cookie | undefined> => {
+  log.debug('Call to getCookie()')
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const appUrl: string = client.getStackClient().uri
 
@@ -133,6 +138,7 @@ export const getCookie = async (
  * @returns {Promise<boolean>}
  */
 export const resyncCookies = async (client: CozyClient): Promise<void> => {
+  log.debug('Call to resyncCookies()')
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const appUrl: string = client.getStackClient().uri
 
@@ -147,6 +153,7 @@ export const resyncCookies = async (client: CozyClient): Promise<void> => {
 }
 
 export const clearCookies = async (): Promise<void> => {
+  log.debug('Call to clearCookies()')
   await AsyncStorage.removeItem(strings.COOKIE_STORAGE_KEY)
 
   await CookieManager.clearAll()

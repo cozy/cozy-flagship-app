@@ -31,7 +31,7 @@ export {
 } from '/libs/clientHelpers/initClient'
 export { call2FAInitClient } from '/libs/clientHelpers/twoFactorAuthentication'
 
-const log = Minilog('LoginScreen')
+const log = Minilog('⛅ Client.js')
 
 /**
  * Get a cozy client instance, initialized with authentication information from mobile storage
@@ -39,6 +39,7 @@ const log = Minilog('LoginScreen')
  * @returns {CozyClient}
  */
 export const getClient = async () => {
+  log.debug('Call to getClient()')
   const val = await AsyncStorage.getItem(strings.OAUTH_STORAGE_KEY)
   if (!val) {
     return false
@@ -79,6 +80,7 @@ export const getClient = async () => {
  * @returns {CozyPublicData}
  */
 export const fetchPublicData = async client => {
+  log.debug('Call to fetchPublicData()')
   const stackClient = client.getStackClient()
 
   const { KdfIterations: kdfIterations, name } = await stackClient.fetchJSON(
@@ -103,6 +105,7 @@ export const fetchPublicData = async client => {
  */
 
 export const fetchCozyDataForSlug = async (slug, client, cookie) => {
+  log.debug(`Call to fetchCozyDataForSlug() with slug ${slug}`)
   const stackClient = client.getStackClient()
 
   const options = cookie
@@ -165,6 +168,7 @@ export const getInstanceAndFqdnFromClient = client => {
  * @returns {Promise<string>} - The version of the cozy-app
  */
 export const fetchCozyAppVersion = async (slug, client, type = 'apps') => {
+  log.debug(`Call to fetchCozyAppVersion() with slug ${slug} and type ${type}`)
   const stackClient = client.getStackClient()
 
   const result = await stackClient.fetchJSON('GET', `/${type}/${slug}`)
@@ -192,6 +196,9 @@ export const fetchCozyAppArchiveInfoForVersion = async (
   version,
   client
 ) => {
+  log.debug(
+    `Call to fetchCozyAppArchiveInfoForVersion() with slug ${slug} and version ${version}`
+  )
   const stackClient = client.getStackClient()
 
   try {
@@ -219,6 +226,7 @@ export const fetchCozyAppArchiveInfoForVersion = async (
 }
 
 export const saveNotificationDeviceToken = async (client, token) => {
+  log.debug('Call to saveNotificationDeviceToken()')
   const oauthOptions = client.getStackClient().oauthOptions
 
   if (oauthOptions?.notification_device_token === token) return
@@ -232,6 +240,7 @@ export const saveNotificationDeviceToken = async (client, token) => {
 }
 
 export const removeNotificationDeviceToken = async client => {
+  log.debug('Call to removeNotificationDeviceToken()')
   const oauthOptions = client.getStackClient().oauthOptions
 
   if (oauthOptions?.notification_device_token === '') return

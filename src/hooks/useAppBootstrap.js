@@ -21,7 +21,7 @@ import {
 } from '/libs/defaultRedirection/defaultRedirection'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
-const log = Minilog('useAppBootstrap')
+const log = Minilog('📦 useAppBootstrap')
 
 export const useAppBootstrap = client => {
   const [initialRoute, setInitialRoute] = useState('fetching')

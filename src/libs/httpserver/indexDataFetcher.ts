@@ -1,3 +1,5 @@
+import Minilog from '@cozy/minilog'
+
 import CozyClient from 'cozy-client'
 
 import { AppData, AppAttributes } from '/libs/httpserver/models'
@@ -5,6 +7,8 @@ import { fetchCozyDataForSlug } from '/libs/client'
 import { getCookie } from '/libs/httpserver/httpCookieManager'
 import { logToSentry } from '/libs/monitoring/Sentry'
 import { replaceAll } from '/libs/functions/stringHelpers'
+
+const log = Minilog('👉 IndexDataFetcher')
 
 interface FetchAppDataForSlugResult {
   cookie: AppAttributes['Cookie']
@@ -17,6 +21,7 @@ export const fetchAppDataForSlug = async (
   slug: string,
   client: CozyClient
 ): Promise<FetchAppDataForSlugResult | undefined> => {
+  log.debug(`Call to fetchAppDataForSlug() with slug ${slug}`)
   try {
     const storedCookie = await getCookie(client)
     const cozyDataResult = await fetchCozyDataForSlug<{ data: AppData }>(

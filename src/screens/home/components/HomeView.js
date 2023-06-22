@@ -1,3 +1,4 @@
+import Minilog from '@cozy/minilog'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { get } from 'lodash'
 import { useFocusEffect } from '@react-navigation/native'
@@ -22,6 +23,8 @@ import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import { launcherEvent } from '/libs/ReactNativeLauncher'
 import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
+
+const log = Minilog('🏠 HomeView')
 
 const unzoomHomeView = webviewRef => {
   webviewRef?.injectJavaScript(
@@ -60,6 +63,14 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
     navigation
   )
   const hasRenderedOnce = useRef(false)
+
+  useEffect(() => {
+    log.debug('HomeView mount')
+
+    return () => {
+      log.debug('HomeView unmount')
+    }
+  }, [])
 
   useEffect(() => {
     const subscription = AppState.addEventListener(
