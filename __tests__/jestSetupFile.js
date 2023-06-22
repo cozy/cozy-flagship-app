@@ -59,7 +59,6 @@ jest.mock('react-native-bootsplash', () => ({
   show: jest.fn()
 }))
 
-jest.mock('@sayem314/react-native-keep-awake', () => ({
-  activateKeepAwake: jest.fn(),
-  deactivateKeepAwake: jest.fn()
+jest.mock('react-native-idle-timer', () => ({
+  setIdleTimerDisabled: jest.fn()
 }))
