@@ -64,6 +64,30 @@ const getPlaformSpecificConfig = (uri, html) => {
   }
 }
 
+const initHtmlContent = async ({
+  httpServerContext,
+  slug,
+  href,
+  client,
+  dispatch
+}) => {
+  const htmlContent = await httpServerContext.getIndexHtmlForSlug(slug, client)
+
+  const { source: sourceActual, nativeConfig: nativeConfigActual } =
+    getPlaformSpecificConfig(href, htmlContent || NO_INJECTED_HTML)
+
+  dispatch({
+    html: htmlContent,
+    nativeConfig: nativeConfigActual,
+    source: sourceActual
+  })
+
+  updateCozyAppBundleInBackground({
+    slug,
+    client
+  })
+}
+
 export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
   const client = useClient()
   const httpServerContext = useHttpServerContext()
@@ -73,31 +97,29 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
     nativeConfig: undefined
   })
 
+  const reload = () => {
+    dispatch({
+      source: undefined
+    })
+    initHtmlContent({
+      httpServerContext,
+      slug,
+      href,
+      client,
+      dispatch
+    })
+  }
+
   useEffect(() => {
     if (httpServerContext.isRunning()) {
-      const initHtmlContent = async () => {
-        const htmlContent = await httpServerContext.getIndexHtmlForSlug(
-          slug,
-          client
-        )
-
-        const { source: sourceActual, nativeConfig: nativeConfigActual } =
-          getPlaformSpecificConfig(href, htmlContent || NO_INJECTED_HTML)
-
-        dispatch({
-          html: htmlContent,
-          nativeConfig: nativeConfigActual,
-          source: sourceActual
-        })
-
-        updateCozyAppBundleInBackground({
-          slug,
-          client
-        })
-      }
-
       if (slug) {
-        initHtmlContent()
+        initHtmlContent({
+          httpServerContext,
+          slug,
+          href,
+          client,
+          dispatch
+        })
       } else {
         dispatch({
           html: undefined,
@@ -115,6 +137,7 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
           source={state.source}
           nativeConfig={state.nativeConfig}
           injectedIndex={state.html}
+          reloadProxyWebView={reload}
           {...props}
         />
       ) : null}
