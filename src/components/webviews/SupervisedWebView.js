@@ -76,7 +76,12 @@ export const SupervisedWebView = React.forwardRef((props, ref) => {
     key: 0
   })
 
-  const { onLoad, supervisionShowProgress = true, ...otherProps } = props
+  const {
+    onLoad,
+    supervisionShowProgress = true,
+    ChildWebview = WebView,
+    ...otherProps
+  } = props
   const { isReloading, isLoaded, shouldBeLoaded, key, reloadDelay } = state
 
   useEffect(
@@ -131,7 +136,7 @@ export const SupervisedWebView = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <WebView
+      <ChildWebview
         {...otherProps}
         ref={ref}
         key={key}
