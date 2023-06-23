@@ -1,6 +1,6 @@
 import CozyClient from 'cozy-client'
 
-import { sendKonnectorsLogs } from './sendKonnectorsLogs'
+import { sendKonnectorsLogs, sortLogsById } from './sendKonnectorsLogs'
 
 import { store } from '/redux/store'
 
@@ -58,7 +58,7 @@ describe('Konnectors logs', () => {
     await sendKonnectorsLogs(client)
     expect(mockFetchJSON).toHaveBeenCalledWith(
       'POST',
-      '/konnectors/myslug/logs',
+      '/konnectors/myslug/logs?job_id=',
       [
         {
           level: 'debug',
@@ -98,7 +98,7 @@ describe('Konnectors logs', () => {
     await sendKonnectorsLogs(client)
     expect(mockFetchJSON).toHaveBeenCalledWith(
       'POST',
-      '/konnectors/myslug/logs',
+      '/konnectors/myslug/logs?job_id=',
       [
         {
           level: 'error',
@@ -145,7 +145,7 @@ describe('Konnectors logs', () => {
     await sendKonnectorsLogs(client)
     expect(mockFetchJSON).toHaveBeenCalledWith(
       'POST',
-      '/konnectors/myslug/logs',
+      '/konnectors/myslug/logs?job_id=',
       [
         {
           level: 'debug',
@@ -157,7 +157,7 @@ describe('Konnectors logs', () => {
     expect(mockFetchJSON).toHaveBeenNthCalledWith(
       2,
       'POST',
-      '/konnectors/myslug2/logs',
+      '/konnectors/myslug2/logs?job_id=',
       [
         {
           level: 'debug',
@@ -174,6 +174,190 @@ describe('Konnectors logs', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       payload: { number: 1, slug: 'myslug2' },
       type: 'konnectorLogs/removeLogs'
+    })
+  })
+
+  it('Should send logs for 2 job ids and without', async () => {
+    const client = new CozyClient()
+
+    store.getState.mockReturnValue({
+      konnectorLogs: {
+        logs: {
+          myslug: [
+            {
+              jobId: 'jobIdA',
+              level: 'debug',
+              msg: 'Log MessageA',
+              timestamp: '2023-01-05T10:12:32Z'
+            },
+            {
+              jobId: 'jobIdB',
+              level: 'debug',
+              msg: 'Log MessageB',
+              timestamp: '2023-01-05T10:12:32Z'
+            },
+            {
+              level: 'debug',
+              msg: 'Log Message',
+              timestamp: '2023-01-05T10:12:32Z'
+            }
+          ]
+        }
+      }
+    })
+
+    await sendKonnectorsLogs(client)
+    expect(mockFetchJSON).toHaveBeenCalledWith(
+      'POST',
+      '/konnectors/myslug/logs?job_id=jobIdA',
+      [
+        {
+          jobId: 'jobIdA',
+          level: 'debug',
+          msg: 'Log MessageA',
+          timestamp: '2023-01-05T10:12:32Z'
+        }
+      ]
+    )
+    expect(mockFetchJSON).toHaveBeenNthCalledWith(
+      2,
+      'POST',
+      '/konnectors/myslug/logs?job_id=jobIdB',
+      [
+        {
+          jobId: 'jobIdB',
+          level: 'debug',
+          msg: 'Log MessageB',
+          timestamp: '2023-01-05T10:12:32Z'
+        }
+      ]
+    )
+    expect(mockFetchJSON).toHaveBeenNthCalledWith(
+      3,
+      'POST',
+      '/konnectors/myslug/logs?job_id=',
+      [
+        {
+          level: 'debug',
+          msg: 'Log Message',
+          timestamp: '2023-01-05T10:12:32Z'
+        }
+      ]
+    )
+
+    expect(store.dispatch).toHaveBeenCalledWith({
+      payload: { number: 3, slug: 'myslug' },
+      type: 'konnectorLogs/removeLogs'
+    })
+  })
+
+  it('Should send logs in group for one job_id', async () => {
+    const client = new CozyClient()
+
+    store.getState.mockReturnValue({
+      konnectorLogs: {
+        logs: {
+          myslug: [
+            {
+              jobId: 'jobIdA',
+              level: 'debug',
+              msg: 'Log MessageA',
+              timestamp: '2023-01-05T10:12:32Z'
+            },
+            {
+              jobId: 'jobIdA',
+              level: 'debug',
+              msg: 'Log MessageB',
+              timestamp: '2023-01-05T10:13:33Z'
+            },
+            {
+              jobId: 'jobIdA',
+              level: 'debug',
+              msg: 'Log MessageC',
+              timestamp: '2023-01-05T10:14:34Z'
+            }
+          ]
+        }
+      }
+    })
+
+    await sendKonnectorsLogs(client)
+    expect(mockFetchJSON).toHaveBeenCalledWith(
+      'POST',
+      '/konnectors/myslug/logs?job_id=jobIdA',
+      [
+        {
+          jobId: 'jobIdA',
+          level: 'debug',
+          msg: 'Log MessageA',
+          timestamp: '2023-01-05T10:12:32Z'
+        },
+        {
+          jobId: 'jobIdA',
+          level: 'debug',
+          msg: 'Log MessageB',
+          timestamp: '2023-01-05T10:13:33Z'
+        },
+        {
+          jobId: 'jobIdA',
+          level: 'debug',
+          msg: 'Log MessageC',
+          timestamp: '2023-01-05T10:14:34Z'
+        }
+      ]
+    )
+
+    expect(store.dispatch).toHaveBeenCalledWith({
+      payload: { number: 3, slug: 'myslug' },
+      type: 'konnectorLogs/removeLogs'
+    })
+  })
+
+  it('Should sort logs message by job id', async () => {
+    const cleanedLogs = [
+      {
+        jobId: 'jobIdA',
+        level: 'debug',
+        msg: 'Log MessageA',
+        timestamp: '2023-01-05T10:12:32Z'
+      },
+      {
+        jobId: 'jobIdB',
+        level: 'debug',
+        msg: 'Log MessageB',
+        timestamp: '2023-01-05T10:12:32Z'
+      },
+      {
+        level: 'debug',
+        msg: 'Log Message',
+        timestamp: '2023-01-05T10:12:32Z'
+      }
+    ]
+
+    expect(sortLogsById(cleanedLogs)).toStrictEqual({
+      jobIdA: [
+        {
+          jobId: 'jobIdA',
+          level: 'debug',
+          msg: 'Log MessageA',
+          timestamp: '2023-01-05T10:12:32Z'
+        }
+      ],
+      jobIdB: [
+        {
+          jobId: 'jobIdB',
+          level: 'debug',
+          msg: 'Log MessageB',
+          timestamp: '2023-01-05T10:12:32Z'
+        }
+      ],
+      undefinedId: [
+        {
+          level: 'debug',
+          msg: 'Log Message',
+          timestamp: '2023-01-05T10:12:32Z'
+        }
+      ]
     })
   })
 })

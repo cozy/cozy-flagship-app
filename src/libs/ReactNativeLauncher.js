@@ -97,8 +97,12 @@ class ReactNativeLauncher extends Launcher {
    */
   log(logContent) {
     const context = this.getStartContext()
-    const slug = context.konnector.slug // konnector is available before manifest
-    this.logger({ ...logContent, slug })
+    const slug = context.konnector.slug // konnector attribut is available before manifest one
+    let jobId
+    if (context.job) {
+      jobId = context.job.id
+    }
+    this.logger({ ...logContent, slug, jobId })
   }
 
   async init({ bridgeOptions, contentScript }) {
