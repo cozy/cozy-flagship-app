@@ -226,7 +226,7 @@ const ClouderyWebView = forwardRef(
         onOpenWindow={openWindowWithInAppBrowser}
         injectedJavaScriptBeforeContentLoaded={run}
         style={{
-          backgroundColor: clouderyTheme?.backgroundColor
+          backgroundColor: clouderyTheme.backgroundColor
         }}
         onError={handleError}
         {...other}
