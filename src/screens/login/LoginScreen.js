@@ -242,6 +242,8 @@ const LoginSteps = ({
         }))
       } else {
         showSplashScreen()
+        await result.client.registerPlugin(flag.plugin)
+        await result.client.plugins.flags.initializing
         setClient(result.client)
       }
     } catch (error) {
@@ -289,6 +291,8 @@ const LoginSteps = ({
           }))
         } else {
           showSplashScreen()
+          await result.client.registerPlugin(flag.plugin)
+          await result.client.plugins.flags.initializing
           setClient(result.client)
         }
       } catch (error) {
