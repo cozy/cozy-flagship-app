@@ -1,3 +1,4 @@
+import { getVisibilityStatus } from 'react-native-bootsplash'
 import { changeIcon as RNChangeIcon } from 'react-native-change-icon'
 
 import flag from 'cozy-flags'
@@ -8,6 +9,9 @@ jest.mock('react-native-change-icon')
 jest.mock('cozy-flags')
 
 const mockFlag = flag as jest.MockedFunction<typeof flag>
+const mockGetVisibilityStatus = getVisibilityStatus as jest.MockedFunction<
+  typeof getVisibilityStatus
+>
 
 const mockedRNChangeIcon = RNChangeIcon as jest.MockedFunction<
   typeof RNChangeIcon
@@ -29,6 +33,12 @@ const ICON_CHANGE_UNDEFINED_FLAGS = {
 type Flags = Record<string, boolean | string>
 
 describe('icon', () => {
+  beforeEach(() => {
+    mockFlag.mockReset()
+    mockedRNChangeIcon.mockReset()
+    mockGetVisibilityStatus.mockResolvedValue('hidden')
+  })
+
   const mockFlags = (flags: Flags): void => {
     // @ts-expect-error flag is not correctly typed for the moment
     mockFlag.mockImplementation(flagName => {
@@ -51,6 +61,7 @@ describe('icon', () => {
   })
 
   it('should not throw if icon already used error', async () => {
+    mockFlags(ICON_CHANGE_ALLOWED_FLAGS)
     mockedRNChangeIcon.mockImplementation(() => {
       throw new Error('ICON_ALREADY_USED')
     })
@@ -59,6 +70,7 @@ describe('icon', () => {
   })
 
   it('should throw if other error', async () => {
+    mockFlags(ICON_CHANGE_ALLOWED_FLAGS)
     mockedRNChangeIcon.mockImplementation(() => {
       throw new Error('ICON_INVALID')
     })

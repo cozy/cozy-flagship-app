@@ -56,7 +56,8 @@ jest.mock('@react-native-cookies/cookies', () => {
 
 jest.mock('react-native-bootsplash', () => ({
   hide: jest.fn(),
-  show: jest.fn()
+  show: jest.fn(),
+  getVisibilityStatus: jest.fn()
 }))
 
 jest.mock('react-native-idle-timer', () => ({

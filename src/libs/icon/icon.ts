@@ -6,6 +6,7 @@ import {
 
 import flag from 'cozy-flags'
 
+import { getSplashScreenStatus } from '/app/theme/SplashScreenService'
 import { toggleIconChangedModal } from '/libs/icon/IconChangedModal'
 
 import { DEFAULT_ICON, ALLOWED_ICONS, DEFAULT_VALUE } from './config'
@@ -20,6 +21,19 @@ const isSameIcon = (firstIconName: string, secondIconName: string): boolean => {
 }
 
 export const changeIcon = async (slug: string): Promise<void> => {
+  // Changing icon and using splash screen do not work well together.
+  // If we call hideSplashScreen when iOS native popup "Icon has changed" is displayed,
+  // hideSplashScreen hides iOS native popup instead of splash screen. So here we avoid
+  // to call changeIcon when splash screen is displayed.
+  const status = await getSplashScreenStatus()
+  if (status === 'visible') {
+    setTimeout(() => {
+      void changeIcon(slug)
+    }, 1000)
+
+    return
+  }
+
   const changeAllowed = flag('flagship.icon.changeAllowed')
   const defaultIcon =
     (flag('flagship.icon.defaultIcon') as unknown as string) || DEFAULT_ICON
