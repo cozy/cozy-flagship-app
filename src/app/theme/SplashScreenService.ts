@@ -1,4 +1,4 @@
-import RNBootSplash from 'react-native-bootsplash'
+import RNBootSplash, { VisibilityStatus } from 'react-native-bootsplash'
 
 import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { navigationRef } from '/libs/RootNavigation'
@@ -28,4 +28,8 @@ export const hideSplashScreen = (): Promise<void> => {
   }
 
   return RNBootSplash.hide({ fade: true })
+}
+
+export const getSplashScreenStatus = (): Promise<VisibilityStatus> => {
+  return RNBootSplash.getVisibilityStatus()
 }
