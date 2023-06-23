@@ -7,7 +7,10 @@ export interface LogObj {
   timestamp: string
   level: string
   slug: string
+  jobId: string
 }
+
+export type LogObjWithoutSlug = Omit<LogObj, 'slug'>
 
 type LogDict = Record<string, LogObj[] | undefined>
 
