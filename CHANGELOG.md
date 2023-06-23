@@ -1,4 +1,4 @@
-# 1.1.9
+# 1.1.10
 
 ## ✨ Features
 
@@ -8,6 +8,23 @@
 
 ## 🔧 Tech
 
+
+# 1.1.9
+
+## ✨ Features
+
+* The app now appear in the `Connected device` section as `Application Mobile Cozy` and displays the last app usage date ([PR #832](https://github.com/cozy/cozy-react-native/pull/832))
+
+## 🐛 Bug Fixes
+
+* Fix a bug that prevented email links to be opened from cozy-apps ([PR #841](https://github.com/cozy/cozy-react-native/pull/841))
+* Status and navigation bar should now adapt to cozy-home theme ([PR #831](https://github.com/cozy/cozy-react-native/pull/831))
+* Fix a bug that prevented the app's OS icon to be updated after a login by magic link ([PR #847](https://github.com/cozy/cozy-react-native/pull/847))
+* Fix a bug that prevented the app to load after updating the app's OS icon ([PR #847](https://github.com/cozy/cozy-react-native/pull/847))
+
+## 🔧 Tech
+
+* Add keep awake API for future synchronisation service and for Client Side Connectors ([PR #838](https://github.com/cozy/cozy-react-native/pull/838), [PR #839](https://github.com/cozy/cozy-react-native/pull/839), [PR #842](https://github.com/cozy/cozy-react-native/pull/842))
 
 # 1.1.8
 
