@@ -27,7 +27,7 @@ export function getHomeTheme(): HomeThemeType {
 }
 
 /**
- * The setTheme function is used to update the current theme. When the theme is updated,
+ * The setHomeTheme function is used to update the current theme. When the theme is updated,
  * it emits a 'themeChanged' event. This event-based approach allows different parts of
  * the application to respond to theme changes without having to be directly aware of
  * where and how the theme is changed.

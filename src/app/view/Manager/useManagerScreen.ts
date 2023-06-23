@@ -21,7 +21,7 @@ import { NetService } from '/libs/services/NetService'
 import {
   hideSplashScreen,
   showSplashScreen
-} from '/libs/services/SplashScreenService'
+} from '/app/theme/SplashScreenService'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
 const log = Minilog('useManagerScreen')

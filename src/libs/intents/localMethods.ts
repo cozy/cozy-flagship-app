@@ -9,7 +9,9 @@ import {
   scanDocument,
   isScannerAvailable
 } from '/app/domain/scanner/services/scanner'
-import { setHomeThemeIntent } from '/libs/intents/setTheme'
+
+import { setHomeThemeIntent } from './setHomeThemeIntent'
+
 import strings from '/constants/strings.json'
 import { EnvService } from '/core/tools/env'
 import { clearClient } from '/libs/client'
@@ -157,6 +159,7 @@ export const localMethods = (
     isNativePassInstalledOnDevice,
     scanDocument,
     isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
+    // For now setTheme is only used for the home theme
     setTheme: setHomeThemeIntent
   }
 }
