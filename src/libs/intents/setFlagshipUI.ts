@@ -107,6 +107,8 @@ export const updateStatusBarAndBottomBar = (
 }
 
 const ON_OPEN_UNMOUNT = 'onOpenUnmount'
+const FULLSCREEN = 'fullScreen'
+const IMMERSIVE = 'immersive'
 
 export const formatTheme = (
   key: keyof Partial<FlagshipUI>,
@@ -137,7 +139,15 @@ const formatBasedOnGlobalTheme = (
 ): StatusBarStyle | undefined => {
   const homeTheme = getHomeThemeAsStatusBarStyle()
 
-  if (callerName?.includes(ON_OPEN_UNMOUNT)) {
+  /**
+   * If the caller is onOpenUnmount (meaning a closing dialog),
+   * and the dialog was fullscreen and or immersive,
+   * we want to use the home theme instead of the input.
+   */
+  if (
+    callerName?.includes(ON_OPEN_UNMOUNT) &&
+    (callerName.includes(FULLSCREEN) || callerName.includes(IMMERSIVE))
+  ) {
     themeLog.info(
       `formatBasedOnGlobalTheme uses home theme "${homeTheme}" for ${key} instead of "${String(
         input

@@ -12,8 +12,8 @@ describe('themeManager', () => {
     expect(getHomeTheme()).toBe(HomeThemeType.Inverted)
   })
 
-  // Test if the setTheme function updates the theme
-  test('should update the theme when setTheme is called', () => {
+  // Test if the setHomeTheme function updates the theme
+  test('should update the theme when setHomeTheme is called', () => {
     setHomeTheme(HomeThemeType.Normal)
     expect(getHomeTheme()).toBe(HomeThemeType.Normal)
   })
