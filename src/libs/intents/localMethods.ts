@@ -32,11 +32,10 @@ import { HomeThemeType } from '/app/theme/models'
 import {
   prepareBackup,
   startBackup,
-  getBackupInfo,
   checkBackupPermissions,
   requestBackupPermissions
 } from '/app/domain/backup/services/manageBackup'
-import { BackupInfo } from '/app/domain/backup/models'
+import { BackupInfo, ProgressCallback } from '/app/domain/backup/models'
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {
@@ -132,41 +131,32 @@ interface CustomMethods {
   fetchSessionCode: () => Promise<string | null>
   showInAppBrowser: (args: { url: string }) => Promise<BrowserResult>
   setTheme: (theme: HomeThemeType) => Promise<boolean>
-  prepareBackup: () => Promise<BackupInfo>
-  startBackup: () => Promise<BackupInfo>
-  getBackupInfo: () => Promise<BackupInfo>
+  prepareBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
+  startBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
   checkBackupPermissions: typeof checkBackupPermissions
   requestBackupPermissions: typeof requestBackupPermissions
 }
 
 const prepareBackupWithClient = (
-  client: CozyClient | undefined
+  client: CozyClient | undefined,
+  onProgress: ProgressCallback
 ): Promise<BackupInfo> => {
   if (!client) {
     throw new Error('You must be logged in to use backup feature')
   }
 
-  return prepareBackup(client)
+  return prepareBackup(client, onProgress)
 }
 
 const startBackupWithClient = (
-  client: CozyClient | undefined
+  client: CozyClient | undefined,
+  onProgress: ProgressCallback
 ): Promise<BackupInfo> => {
   if (!client) {
     throw new Error('You must be logged in to use backup feature')
   }
 
-  return startBackup(client)
-}
-
-const getBackupInfoWithClient = (
-  client: CozyClient | undefined
-): Promise<BackupInfo> => {
-  if (!client) {
-    throw new Error('You must be logged in to use backup feature')
-  }
-
-  return getBackupInfo(client)
+  return startBackup(client, onProgress)
 }
 
 /**
@@ -204,9 +194,10 @@ export const localMethods = (
     isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
     // For now setTheme is only used for the home theme
     setTheme: setHomeThemeIntent,
-    prepareBackup: () => prepareBackupWithClient(client),
-    startBackup: () => startBackupWithClient(client),
-    getBackupInfo: () => getBackupInfoWithClient(client),
+    prepareBackup: (onProgress: ProgressCallback) =>
+      prepareBackupWithClient(client, onProgress),
+    startBackup: (onProgress: ProgressCallback) =>
+      startBackupWithClient(client, onProgress),
     checkBackupPermissions,
     requestBackupPermissions
   }
