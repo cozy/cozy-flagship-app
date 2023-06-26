@@ -47,3 +47,5 @@ export interface BackupInfo {
     mediasToBackupCount: number
   }
 }
+
+export type ProgressCallback = (backupInfo: BackupInfo) => void
