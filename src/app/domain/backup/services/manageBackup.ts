@@ -24,6 +24,7 @@ import type CozyClient from 'cozy-client'
 
 import {
   BackupInfo,
+  ProgressCallback,
   BackupedMedia,
   LocalBackupConfig
 } from '/app/domain/backup/models'
@@ -36,7 +37,8 @@ export {
 } from '/app/domain/backup/services/managePermissions'
 
 export const prepareBackup = async (
-  client: CozyClient
+  client: CozyClient,
+  onProgress: ProgressCallback
 ): Promise<BackupInfo> => {
   log.debug('Backup preparation started')
 
@@ -48,14 +50,21 @@ export const prepareBackup = async (
 
   await setBackupAsInitializing(client)
 
+  onProgress(await getBackupInfo(client))
+
   const mediasToBackup = await getMediasToBackup(client)
 
   await setBackupAsReady(client, mediasToBackup)
 
+  onProgress(await getBackupInfo(client))
+
   return await getBackupInfo(client)
 }
 
-export const startBackup = async (client: CozyClient): Promise<BackupInfo> => {
+export const startBackup = async (
+  client: CozyClient,
+  onProgress: ProgressCallback
+): Promise<BackupInfo> => {
   log.debug('Backup started')
 
   const {
@@ -67,13 +76,17 @@ export const startBackup = async (client: CozyClient): Promise<BackupInfo> => {
 
   await setBackupAsRunning(client)
 
+  onProgress(await getBackupInfo(client))
+
   activateKeepAwake()
 
-  void uploadMedias(client, backupFolderId, mediasToBackup)
-    .then(() => setBackupAsDone(client))
-    .finally(() => {
-      deactivateKeepAwake()
-    })
+  await uploadMedias(client, backupFolderId, mediasToBackup, onProgress)
+
+  deactivateKeepAwake()
+
+  await setBackupAsDone(client)
+
+  onProgress(await getBackupInfo(client))
 
   return await getBackupInfo(client)
 }

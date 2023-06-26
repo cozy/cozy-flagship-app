@@ -3,7 +3,8 @@ import Minilog from '@cozy/minilog'
 
 import { uploadMedia } from '/app/domain/backup/services/uploadMedia'
 import { setMediaAsBackuped } from '/app/domain/backup/services/manageLocalBackupConfig'
-import { Media } from '/app/domain/backup/models/Media'
+import { Media, ProgressCallback } from '/app/domain/backup/models'
+import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
 
 import type CozyClient from 'cozy-client'
 
@@ -12,7 +13,8 @@ const log = Minilog('💿 Backup')
 export const uploadMedias = async (
   client: CozyClient,
   backupFolderId: string,
-  mediasToUpload: Media[]
+  mediasToUpload: Media[],
+  onProgress: ProgressCallback
 ): Promise<boolean> => {
   for (const mediaToUpload of mediasToUpload) {
     try {
@@ -23,6 +25,8 @@ export const uploadMedias = async (
       if (success) {
         log.debug(`✅ ${mediaToUpload.name} uploaded`)
         await setMediaAsBackuped(client, mediaToUpload)
+
+        onProgress(await getBackupInfo(client))
       } else {
         log.debug(`❌ ${mediaToUpload.name} not uploaded`)
       }
