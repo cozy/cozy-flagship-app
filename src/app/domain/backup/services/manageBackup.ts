@@ -1,6 +1,5 @@
 import Minilog from '@cozy/minilog'
 
-import { managePermissions } from '/app/domain/backup/services/managePermissions'
 import {
   getLocalBackupConfig,
   initiazeLocalBackupConfig,
@@ -31,12 +30,15 @@ import {
 
 const log = Minilog('💿 Backup')
 
+export {
+  checkBackupPermissions,
+  requestBackupPermissions
+} from '/app/domain/backup/services/managePermissions'
+
 export const prepareBackup = async (
   client: CozyClient
 ): Promise<BackupInfo> => {
   log.debug('Backup preparation started')
-
-  await managePermissions()
 
   const backupConfig = await initializeBackup(client)
 
