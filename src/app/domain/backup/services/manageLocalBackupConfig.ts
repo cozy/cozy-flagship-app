@@ -112,7 +112,7 @@ export const setBackupAsInitializing = async (
 
   await setLocalBackupConfig(client, localBackupConfig)
 
-  log.debug('Backup initialized')
+  log.debug('Backup set as initialized')
 }
 
 export const setBackupAsReady = async (
@@ -126,7 +126,7 @@ export const setBackupAsReady = async (
 
   await setLocalBackupConfig(client, localBackupConfig)
 
-  log.debug('Backup ready')
+  log.debug('Backup set as ready')
   log.debug(`  ${mediasToBackup.length}  medias to backup`)
 }
 
@@ -137,7 +137,7 @@ export const setBackupAsRunning = async (client: CozyClient): Promise<void> => {
 
   await setLocalBackupConfig(client, localBackupConfig)
 
-  log.debug('Backup running')
+  log.debug('Backup set as running')
 }
 
 export const setBackupAsDone = async (client: CozyClient): Promise<void> => {
@@ -147,5 +147,5 @@ export const setBackupAsDone = async (client: CozyClient): Promise<void> => {
 
   await setLocalBackupConfig(client, localBackupConfig)
 
-  log.debug('Backup done')
+  log.debug('Backup set as done')
 }
