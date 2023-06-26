@@ -58,6 +58,8 @@ export const prepareBackup = async (
 
   onProgress(await getBackupInfo(client))
 
+  log.debug('Backup preparation done')
+
   return await getBackupInfo(client)
 }
 
@@ -86,6 +88,8 @@ export const startBackup = async (
 
   await setBackupAsDone(client)
 
+  log.debug('Backup done')
+
   onProgress(await getBackupInfo(client))
 
   return await getBackupInfo(client)
@@ -112,6 +116,8 @@ const initializeBackup = async (
   try {
     const backupConfig = await getLocalBackupConfig(client)
 
+    log.debug('Backup found')
+
     return backupConfig
   } catch {
     // if there is no local backup config
@@ -119,11 +125,14 @@ const initializeBackup = async (
     let backupedMedias
 
     if (deviceRemoteBackupConfig) {
+      log.debug('Backup will be restored')
+
       backupedMedias = await fetchBackupedMedias(
         client,
         deviceRemoteBackupConfig
       )
     } else {
+      log.debug('Backup will be created')
       deviceRemoteBackupConfig = await createRemoteBackupFolder(client)
       backupedMedias = [] as BackupedMedia[]
     }

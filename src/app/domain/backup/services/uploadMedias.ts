@@ -24,7 +24,10 @@ export const uploadMedias = async (
 
       if (success) {
         log.debug(`✅ ${mediaToUpload.name} uploaded`)
+
         await setMediaAsBackuped(client, mediaToUpload)
+
+        log.debug(`✅ ${mediaToUpload.name} set as backuped`)
 
         onProgress(await getBackupInfo(client))
       } else {
