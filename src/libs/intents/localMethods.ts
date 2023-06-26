@@ -29,7 +29,9 @@ import { toggleSetting } from '/app/domain/settings/services/SettingsService'
 import {
   prepareBackup,
   startBackup,
-  getBackupInfo
+  getBackupInfo,
+  checkBackupPermissions,
+  requestBackupPermissions
 } from '/app/domain/backup/services/manageBackup'
 import { BackupInfo } from '/app/domain/backup/models'
 
@@ -129,6 +131,8 @@ interface CustomMethods {
   prepareBackup: () => Promise<BackupInfo>
   startBackup: () => Promise<BackupInfo>
   getBackupInfo: () => Promise<BackupInfo>
+  checkBackupPermissions: typeof checkBackupPermissions
+  requestBackupPermissions: typeof requestBackupPermissions
 }
 
 const prepareBackupWithClient = (
@@ -194,8 +198,7 @@ export const localMethods = (
     isNativePassInstalledOnDevice,
     scanDocument,
     isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
-    prepareBackup: () => prepareBackupWithClient(client),
-    startBackup: () => startBackupWithClient(client),
-    getBackupInfo: () => getBackupInfoWithClient(client)
+    checkBackupPermissions,
+    requestBackupPermissions
   }
 }
