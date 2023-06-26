@@ -20,19 +20,15 @@ export const uploadMedias = async (
     try {
       const uploadUrl = getUploadUrl(client, backupFolderId, mediaToUpload)
 
-      const { success } = await uploadMedia(client, uploadUrl, mediaToUpload)
+      await uploadMedia(client, uploadUrl, mediaToUpload)
 
-      if (success) {
-        log.debug(`✅ ${mediaToUpload.name} uploaded`)
+      log.debug(`✅ ${mediaToUpload.name} uploaded`)
 
-        await setMediaAsBackuped(client, mediaToUpload)
+      await setMediaAsBackuped(client, mediaToUpload)
 
-        log.debug(`✅ ${mediaToUpload.name} set as backuped`)
+      log.debug(`✅ ${mediaToUpload.name} set as backuped`)
 
-        onProgress(await getBackupInfo(client))
-      } else {
-        log.debug(`❌ ${mediaToUpload.name} not uploaded`)
-      }
+      onProgress(await getBackupInfo(client))
     } catch (e) {
       log.debug(`❌ ${mediaToUpload.name} not uploaded`)
       log.debug(e)
