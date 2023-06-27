@@ -8,6 +8,7 @@ import { useClient } from 'cozy-client'
 import { styles } from './CozyProxyWebView.styles'
 import { CozyWebView } from './CozyWebView'
 
+import { RemountProgress } from '/app/view/Loading/RemountProgress'
 import { updateCozyAppBundleInBackground } from '/libs/cozyAppBundle/cozyAppBundle'
 import { useHttpServerContext } from '/libs/httpserver/httpServerProvider'
 import { IndexInjectionWebviewComponent } from '/components/webviews/webViewComponents/IndexInjectionWebviewComponent'
@@ -84,11 +85,12 @@ const initHtmlContent = async ({
     getPlaformSpecificConfig(href, htmlContent || NO_INJECTED_HTML)
 
   setHtmlContentCreationDate(Date.now())
-  dispatch({
+  dispatch(oldState => ({
+    ...oldState,
     html: htmlContent,
     nativeConfig: nativeConfigActual,
     source: sourceActual
-  })
+  }))
 
   updateCozyAppBundleInBackground({
     slug,
@@ -96,13 +98,20 @@ const initHtmlContent = async ({
   })
 }
 
-export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
+export const CozyProxyWebView = ({
+  slug,
+  href,
+  onLoad = undefined,
+  style,
+  ...props
+}) => {
   const client = useClient()
   const httpServerContext = useHttpServerContext()
   const [state, dispatch] = useState({
     source: undefined,
     html: undefined,
-    nativeConfig: undefined
+    nativeConfig: undefined,
+    isLoading: false
   })
   const [htmlContentCreationDate, setHtmlContentCreationDate] = useState(
     Date.now()
@@ -111,7 +120,8 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
   const reload = useCallback(() => {
     log.debug('Reloading CozyProxyWebView')
     dispatch({
-      source: undefined
+      source: undefined,
+      isLoading: true
     })
     initHtmlContent({
       httpServerContext,
@@ -181,9 +191,14 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
           nativeConfig={state.nativeConfig}
           injectedIndex={state.html}
           reloadProxyWebView={reload}
+          onLoad={syntheticEvent => {
+            dispatch(oldState => ({ ...oldState, isLoading: false }))
+            onLoad?.(syntheticEvent)
+          }}
           {...props}
         />
       ) : null}
+      {state.isLoading && <RemountProgress />}
     </View>
   )
 }
