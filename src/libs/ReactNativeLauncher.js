@@ -61,6 +61,7 @@ class ReactNativeLauncher extends Launcher {
     })
 
     this.getExistingFilesIndex = wrapTimer(this, 'getExistingFilesIndex')
+    this.queryAll = wrapTimer(this, 'queryAll')
     this.init = wrapTimer(this, 'init', {
       displayName: 'pilot and worker init'
     })
@@ -116,6 +117,7 @@ class ReactNativeLauncher extends Launcher {
           'saveFiles',
           'saveBills',
           'saveIdentity',
+          'queryAll',
           'setUserAgent',
           'getCredentials',
           'saveCredentials',

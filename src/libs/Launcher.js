@@ -5,7 +5,7 @@ import { getBuildId, getVersion } from 'react-native-device-info'
 
 // @ts-ignore
 import flag from 'cozy-flags'
-import { Q, models } from 'cozy-client'
+import { Q, QueryDefinition, models } from 'cozy-client'
 import { saveFiles, saveBills, saveIdentity } from 'cozy-clisk'
 
 import { cleanExistingAccountsForKonnector } from './Launcher.functions'
@@ -494,6 +494,25 @@ export default class Launcher {
     log.debug(result, 'saveFiles result')
 
     return result
+  }
+
+  /**
+   * Fetch all documents according to given query definition
+   *
+   * @param {import('cozy-client').QueryDefinition} queryDefinition - object which can be passed to QueryDefinition constructor
+   * @param {import('cozy-client/types/types').QueryOptions} options - query options
+   * @returns {Promise<import('cozy-client/types/types').QueryResult>} - query result
+   */
+  async queryAll(queryDefinition, options) {
+    const { launcherClient: client } = this.getStartContext() || {}
+
+    // undefined is converted to null in post-me interface and null
+    // is not supported by cozy-client
+    const queryOption = options === null ? undefined : options
+    return await client.queryAll(
+      new QueryDefinition(queryDefinition),
+      queryOption
+    )
   }
 
   /**
