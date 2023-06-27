@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { Platform, View } from 'react-native'
+import Minilog from '@cozy/minilog'
+import { useFocusEffect } from '@react-navigation/native'
+import React, { useCallback, useState, useEffect } from 'react'
+import { AppState, Platform, View } from 'react-native'
 
 import { useClient } from 'cozy-client'
 
@@ -10,7 +12,11 @@ import { updateCozyAppBundleInBackground } from '/libs/cozyAppBundle/cozyAppBund
 import { useHttpServerContext } from '/libs/httpserver/httpServerProvider'
 import { IndexInjectionWebviewComponent } from '/components/webviews/webViewComponents/IndexInjectionWebviewComponent'
 
+const log = Minilog('CozyProxyWebView')
+
 const NO_INJECTED_HTML = 'NO_INJECTED_HTML'
+
+const HTML_CONTENT_EXPIRATION_DELAY_IN_MS = 23 * 60 * 60 * 1000
 
 const getHttpUnsecureUrl = uri => {
   if (uri) {
@@ -69,13 +75,15 @@ const initHtmlContent = async ({
   slug,
   href,
   client,
-  dispatch
+  dispatch,
+  setHtmlContentCreationDate
 }) => {
   const htmlContent = await httpServerContext.getIndexHtmlForSlug(slug, client)
 
   const { source: sourceActual, nativeConfig: nativeConfigActual } =
     getPlaformSpecificConfig(href, htmlContent || NO_INJECTED_HTML)
 
+  setHtmlContentCreationDate(Date.now())
   dispatch({
     html: htmlContent,
     nativeConfig: nativeConfigActual,
@@ -96,8 +104,12 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
     html: undefined,
     nativeConfig: undefined
   })
+  const [htmlContentCreationDate, setHtmlContentCreationDate] = useState(
+    Date.now()
+  )
 
-  const reload = () => {
+  const reload = useCallback(() => {
+    log.debug('Reloading CozyProxyWebView')
     dispatch({
       source: undefined
     })
@@ -106,9 +118,22 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
       slug,
       href,
       client,
-      dispatch
+      dispatch,
+      setHtmlContentCreationDate
     })
-  }
+  }, [client, href, httpServerContext, slug])
+
+  const reloadIfTooOld = useCallback(() => {
+    if (
+      Date.now() - htmlContentCreationDate >
+      HTML_CONTENT_EXPIRATION_DELAY_IN_MS
+    ) {
+      log.debug(
+        'CozyProxyWebView is too old and should be reloaded to refresh tokens'
+      )
+      reload()
+    }
+  }, [htmlContentCreationDate, reload])
 
   useEffect(() => {
     if (httpServerContext.isRunning()) {
@@ -118,7 +143,8 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
           slug,
           href,
           client,
-          dispatch
+          dispatch,
+          setHtmlContentCreationDate
         })
       } else {
         dispatch({
@@ -129,6 +155,23 @@ export const CozyProxyWebView = ({ slug, href, style, ...props }) => {
       }
     }
   }, [client, httpServerContext, slug, href])
+
+  useFocusEffect(
+    useCallback(() => {
+      reloadIfTooOld()
+    }, [reloadIfTooOld])
+  )
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (nextAppState === 'active') {
+        reloadIfTooOld()
+      }
+    })
+    return () => {
+      subscription?.remove()
+    }
+  })
 
   return (
     <View style={{ ...styles.view, ...style }}>
