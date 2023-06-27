@@ -1,3 +1,4 @@
+import Minilog from '@cozy/minilog'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { get } from 'lodash'
 import { useFocusEffect } from '@react-navigation/native'
@@ -23,10 +24,20 @@ import { launcherEvent } from '/libs/ReactNativeLauncher'
 import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
 
+const log = Minilog('🏠 HomeView')
+
 const unzoomHomeView = webviewRef => {
-  webviewRef?.injectJavaScript(
-    'window.dispatchEvent(new Event("closeApp"));true;'
-  )
+  try {
+    webviewRef?.injectJavaScript(
+      'window.dispatchEvent(new Event("closeApp"));true;'
+    )
+  } catch (e) {
+    // When reloading the CozyProxyWebView after HTML_CONTENT_EXPIRATION_DELAY_IN_MS
+    // then this JS injection can fail due to a race condition (during the reload process the WebView is unmount)
+    // This is not problematic as the newly refreshed WebView is already zoomed out
+    // However we still want to log this as an error to keep track of unexpected scenario
+    log.error('Error while calling unzoomHomeView', e.message)
+  }
 }
 
 /**
