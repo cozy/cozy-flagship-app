@@ -567,36 +567,6 @@ export default class Launcher {
       }
     }
   }
-
-  /**
-   * Fetches data already imported by the konnector with the current sourceAccountIdentifier
-   * This allows the konnector to only fetch new data
-   *
-   * @param {object} options                         - options object
-   * @param {String} options.sourceAccountIdentifier - current account unique identifier
-   * @param {String} options.slug - konnector slug
-   * @returns {Promise<Object>}
-   */
-  async getPilotContext({ sourceAccountIdentifier, slug }) {
-    const { launcherClient: client } = this.getStartContext()
-    const result = await client.queryAll(
-      Q('io.cozy.files')
-        .where({
-          trashed: false,
-          cozyMetadata: {
-            sourceAccountIdentifier,
-            createdByApp: slug
-          }
-        })
-        .indexFields([
-          'trashed',
-          'cozyMetadata.sourceAccountIdentifier',
-          'cozyMetadata.createdByApp'
-        ])
-    )
-
-    return result
-  }
 }
 
 /**

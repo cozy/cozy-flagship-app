@@ -189,11 +189,13 @@ describe('ReactNativeLauncher', () => {
     })
     it('should work normaly in nominal case', async () => {
       const { launcher, client, launch } = setup()
+      const konnector = { slug: 'konnectorslug', clientSide: true }
       launcher.setStartContext({
         client,
         account: fixtures.account,
         trigger: fixtures.trigger,
-        konnector: { slug: 'konnectorslug', clientSide: true },
+        konnector,
+        manifest: konnector,
         launcherClient: {
           setAppMetadata: () => null
         }
@@ -263,7 +265,18 @@ describe('ReactNativeLauncher', () => {
         3,
         'getUserDataFromWebsite'
       )
-      expect(launcher.pilot.call).toHaveBeenNthCalledWith(4, 'fetch', [])
+      expect(launcher.pilot.call).toHaveBeenNthCalledWith(4, 'fetch', {
+        account: {
+          ...fixtures.account,
+          auth: { accountName: 'testsourceaccountidentifier' }
+        },
+        trigger: fixtures.trigger,
+        job: {
+          _id: 'normal_job_id'
+        },
+        sourceAccountIdentifier: 'testsourceaccountidentifier',
+        manifest: konnector
+      })
       expect(launcher.pilot.call).not.toHaveBeenCalledWith(
         'ensureNotAuthenticated'
       )
