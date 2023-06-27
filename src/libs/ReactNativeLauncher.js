@@ -229,7 +229,7 @@ class ReactNativeLauncher extends Launcher {
 
   async _start({ initKonnectorError } = {}) {
     activateKeepAwake('clisk')
-    const { account, konnector } = this.getStartContext()
+    const { account: prevAccount, konnector } = this.getStartContext()
     try {
       if (initKonnectorError) {
         log.info('Got initKonnectorError ' + initKonnectorError.message)
@@ -253,7 +253,7 @@ class ReactNativeLauncher extends Launcher {
           await this.pilot.call('ensureNotAuthenticated')
         }
       }
-      await this.pilot.call('ensureAuthenticated', { account })
+      await this.pilot.call('ensureAuthenticated', { account: prevAccount })
 
       this.setUserData(await this.pilot.call('getUserDataFromWebsite'))
 
@@ -268,12 +268,16 @@ class ReactNativeLauncher extends Launcher {
 
       launcherEvent.emit('loginSuccess', ensureResult.createdAccount?._id)
 
-      const pilotContext = []
-      // FIXME not used at the moment since the fetched file will not have the proper "createdByApp"
-      // const pilotContext = await this.getPilotContext({
-      //   sourceAccountIdentifier: userData.sourceAccountIdentifier,
-      //   slug: manifest.slug,
-      // })
+      const { account, trigger, job, manifest } = this.getStartContext()
+      const { sourceAccountIdentifier } = this.getUserData()
+
+      const pilotContext = {
+        manifest,
+        account,
+        trigger,
+        job,
+        sourceAccountIdentifier
+      }
       await this.pilot.call('fetch', pilotContext)
       await this.stop()
     } catch (err) {
