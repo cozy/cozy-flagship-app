@@ -1,15 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { View } from 'react-native'
 import { WebView } from 'react-native-webview'
 import Minilog from '@cozy/minilog'
 
 import { useClient } from 'cozy-client'
 
-import ProgressBar from '/components/Bar'
-import { palette } from '/ui/palette'
-
-import { styles } from './SupervisedWebView.styles'
-
+import { RemountProgress } from '/app/view/Loading/RemountProgress'
 import { resyncCookies } from '/libs/httpserver/httpCookieManager'
 
 const log = Minilog('SupervisedWebView')
@@ -18,25 +13,6 @@ Minilog.enable()
 
 const RELOAD_DELAY_IN_MS = 2000
 const RELOAD_MAX_DELAY_IN_MS = 10000
-
-const progressBarConfig = {
-  width: null,
-  indeterminate: true,
-  unfilledColor: palette.Grey[200],
-  color: palette.Primary[600],
-  borderWidth: 0,
-  height: 8,
-  borderRadius: 100,
-  indeterminateAnimationDuration: 1500
-}
-
-const RemountProgress = () => {
-  return (
-    <View style={styles.progressBarContainer}>
-      <ProgressBar {...progressBarConfig} />
-    </View>
-  )
-}
 
 const initialState = {
   isReloading: false,
