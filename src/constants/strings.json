@@ -1,5 +1,4 @@
 {
-  "APPS_ICONS": "@cozy_AmiralAppIcons",
   "BUNDLE_STORAGE_KEY": "@cozy_AmiralAppBundleConfig",
   "COOKIE_STORAGE_KEY": "@cozy_AmiralAppCookieConfig",
   "COZY_SCHEME": "cozy://",

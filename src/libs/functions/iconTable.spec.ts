@@ -2,15 +2,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import CozyClient from 'cozy-client'
 
-import strings from '/constants/strings.json'
 import { expectedTable } from '/tests/fixtures/expected-table'
 import { getApps } from '/tests/fixtures/get-apps'
 import {
-  IconsCache,
   TESTING_ONLY_clearIconTable,
   iconTable,
   manageIconCache
 } from '/libs/functions/iconTable'
+import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
+import type { IconsCache } from '/libs/localStore/storage'
 
 const client = {
   getStackClient: (): { fetchJSON: jest.Mock } => ({
@@ -22,7 +22,7 @@ const client = {
 afterEach(async () => {
   jest.clearAllMocks()
   TESTING_ONLY_clearIconTable()
-  await AsyncStorage.removeItem(strings.APPS_ICONS)
+  await AsyncStorage.removeItem(StorageKeys.IconsTable)
 })
 
 it('works with an empty cache', async () => {
@@ -30,105 +30,87 @@ it('works with an empty cache', async () => {
 
   expect(iconTable).toStrictEqual(expectedTable)
 
-  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
+  const item = await getData<IconsCache>(StorageKeys.IconsTable)
 
   if (!item) throw new Error('No item found in AsyncStorage.')
 
-  const cache = JSON.parse(item) as IconsCache
-
-  expect(cache).toStrictEqual(expectedTable)
+  expect(item).toStrictEqual(expectedTable)
 })
 
 it('works with an incomplete cache', async () => {
-  await AsyncStorage.setItem(
-    strings.APPS_ICONS,
-    JSON.stringify({ store: { version: '1.9.11', xml: '<svg></svg>' } })
-  )
+  await storeData(StorageKeys.IconsTable, {
+    store: { version: '1.9.11', xml: '<svg></svg>' }
+  })
 
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual(expectedTable)
 
-  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
-
+  const item = await getData<IconsCache>(StorageKeys.IconsTable)
   if (!item) throw new Error('No item found in AsyncStorage.')
 
-  const cache = JSON.parse(item) as IconsCache
-
-  expect(cache).toStrictEqual(expectedTable)
+  expect(item).toStrictEqual(expectedTable)
 })
 
 it('works with a broken cache', async () => {
-  await AsyncStorage.setItem(
-    strings.APPS_ICONS,
-    JSON.stringify({ drive: 'bar' })
-  )
+  // @ts-expect-error Since we want to break stuff
+  await storeData(StorageKeys.IconsTable, { drive: 'bar' })
 
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual(expectedTable)
 
-  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
+  const item = await getData<IconsCache>(StorageKeys.IconsTable)
 
   if (!item) throw new Error('No item found in AsyncStorage.')
 
-  const cache = JSON.parse(item) as IconsCache
-
-  expect(cache).toStrictEqual(expectedTable)
+  expect(item).toStrictEqual(expectedTable)
 })
 
 it('works with a complete cache', async () => {
-  await AsyncStorage.setItem(strings.APPS_ICONS, JSON.stringify(expectedTable))
+  await storeData(StorageKeys.IconsTable, expectedTable)
 
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual(expectedTable)
 
-  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
+  const item = await getData<IconsCache>(StorageKeys.IconsTable)
 
   if (!item) throw new Error('No item found in AsyncStorage.')
 
-  const cache = JSON.parse(item) as IconsCache
-
-  expect(cache).toStrictEqual(expectedTable)
+  expect(item).toStrictEqual(expectedTable)
 })
 
 it('works with an obsolete cache', async () => {
-  await AsyncStorage.setItem(
-    strings.APPS_ICONS,
-    JSON.stringify({
-      banks: { version: '0.0.0', xml: '<svg></svg>' },
-      coachco2: { version: '0.0.0', xml: '<svg></svg>' },
-      contacts: { version: '0.0.0', xml: '<svg></svg>' },
-      drive: { version: '0.0.0', xml: '<svg></svg>' },
-      home: { version: '0.0.0', xml: '<svg></svg>' },
-      mespapiers: { version: '0.0.0', xml: '<svg></svg>' },
-      notes: { version: '0.0.0', xml: '<svg></svg>' },
-      passwords: { version: '0.0.0', xml: '<svg></svg>' },
-      photos: { version: '0.0.0', xml: '<svg></svg>' },
-      settings: { version: '0.0.0', xml: '<svg></svg>' },
-      store: { version: '0.0.0', xml: '<svg></svg>' }
-    })
-  )
+  await storeData(StorageKeys.IconsTable, {
+    banks: { version: '0.0.0', xml: '<svg></svg>' },
+    coachco2: { version: '0.0.0', xml: '<svg></svg>' },
+    contacts: { version: '0.0.0', xml: '<svg></svg>' },
+    drive: { version: '0.0.0', xml: '<svg></svg>' },
+    home: { version: '0.0.0', xml: '<svg></svg>' },
+    mespapiers: { version: '0.0.0', xml: '<svg></svg>' },
+    notes: { version: '0.0.0', xml: '<svg></svg>' },
+    passwords: { version: '0.0.0', xml: '<svg></svg>' },
+    photos: { version: '0.0.0', xml: '<svg></svg>' },
+    settings: { version: '0.0.0', xml: '<svg></svg>' },
+    store: { version: '0.0.0', xml: '<svg></svg>' }
+  })
 
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual(expectedTable)
 
-  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
+  const item = await getData<IconsCache>(StorageKeys.IconsTable)
 
   if (!item) throw new Error('No item found in AsyncStorage.')
 
-  const cache = JSON.parse(item) as IconsCache
-
-  expect(cache).toStrictEqual(expectedTable)
+  expect(item).toStrictEqual(expectedTable)
 })
 
 it('works with unusual semver', async () => {
-  await AsyncStorage.setItem(
-    strings.APPS_ICONS,
-    JSON.stringify({ store: { version: '1.0.0', xml: '<svg></svg>' } })
-  )
+  await storeData(StorageKeys.IconsTable, {
+    store: { version: '1.0.0', xml: '<svg></svg>' }
+  })
 
   const client = {
     getStackClient: (): { fetchJSON: jest.Mock } => ({
@@ -145,40 +127,33 @@ it('works with unusual semver', async () => {
     store: { version: '1.0.0-beta.1', xml: '<svg></svg>' }
   })
 
-  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
+  const item = await getData<IconsCache>(StorageKeys.IconsTable)
 
   if (!item) throw new Error('No item found in AsyncStorage.')
 
-  const cache = JSON.parse(item) as IconsCache
-
-  expect(cache).toStrictEqual({
+  expect(item).toStrictEqual({
     store: { version: '1.0.0-beta.1', xml: '<svg></svg>' }
   })
 })
 
 it('works with an incomplete and obsolete cache', async () => {
-  await AsyncStorage.setItem(
-    strings.APPS_ICONS,
-    JSON.stringify({
-      banks: { version: '0.0.0', xml: '<svg></svg>' },
-      coachco2: { version: '0.0.0', xml: '<svg></svg>' },
-      contacts: { version: '0.0.0', xml: '<svg></svg>' },
-      drive: { version: '0.0.0', xml: '<svg></svg>' },
-      home: { version: '0.0.0', xml: '<svg></svg>' }
-    })
-  )
+  await storeData(StorageKeys.IconsTable, {
+    banks: { version: '0.0.0', xml: '<svg></svg>' },
+    coachco2: { version: '0.0.0', xml: '<svg></svg>' },
+    contacts: { version: '0.0.0', xml: '<svg></svg>' },
+    drive: { version: '0.0.0', xml: '<svg></svg>' },
+    home: { version: '0.0.0', xml: '<svg></svg>' }
+  })
 
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual(expectedTable)
 
-  const item = await AsyncStorage.getItem(strings.APPS_ICONS)
+  const item = await getData<IconsCache>(StorageKeys.IconsTable)
 
   if (!item) throw new Error('No item found in AsyncStorage.')
 
-  const cache = JSON.parse(item) as IconsCache
-
-  expect(cache).toStrictEqual(expectedTable)
+  expect(item).toStrictEqual(expectedTable)
 })
 
 it('works offline or with network issues without cache', async () => {
@@ -192,7 +167,7 @@ it('works offline or with network issues without cache', async () => {
 
   expect(iconTable).toStrictEqual({})
 
-  expect(await AsyncStorage.getItem(strings.APPS_ICONS)).toStrictEqual(null)
+  expect(await getData<IconsCache>(StorageKeys.IconsTable)).toStrictEqual(null)
 })
 
 it('works offline or with network issues with cache', async () => {
@@ -202,10 +177,9 @@ it('works offline or with network issues with cache', async () => {
     })
   } as unknown as CozyClient
 
-  await AsyncStorage.setItem(
-    strings.APPS_ICONS,
-    JSON.stringify({ store: { version: '1.9.11', xml: '<svg></svg>' } })
-  )
+  await storeData(StorageKeys.IconsTable, {
+    store: { version: '1.9.11', xml: '<svg></svg>' }
+  })
 
   await manageIconCache(client)
 
@@ -213,7 +187,7 @@ it('works offline or with network issues with cache', async () => {
     store: { version: '1.9.11', xml: '<svg></svg>' }
   })
 
-  expect(await AsyncStorage.getItem(strings.APPS_ICONS)).toStrictEqual(
-    '{"store":{"version":"1.9.11","xml":"<svg></svg>"}}'
+  expect(await getData<IconsCache>(StorageKeys.IconsTable)).toStrictEqual(
+    JSON.parse('{"store":{"version":"1.9.11","xml":"<svg></svg>"}}')
   )
 })

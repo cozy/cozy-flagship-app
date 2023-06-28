@@ -8,12 +8,11 @@ import strings from '/constants/strings.json'
 import iconFallbackJson from '/assets/iconFallback.json'
 import { clearClient } from '/libs/client'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
-
+import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
+import type { IconsCache } from '/libs/localStore/storage'
 const log = Minilog('Icon Table')
 
 export let iconTable: Record<string, { version: string; xml: string }> = {}
-
-export type IconsCache = Record<string, { version: string; xml: string }>
 
 const setIconTable = (table: IconsCache): void => {
   iconTable = table
@@ -139,8 +138,8 @@ const attemptFetchIcons = async (
 
 const getPersistentIconTable = async (): Promise<IconsCache | null> => {
   try {
-    const table = await AsyncStorage.getItem(strings.APPS_ICONS)
-    return table ? (JSON.parse(table) as IconsCache) : null
+    const table = await getData<IconsCache>(StorageKeys.IconsTable)
+    return table
   } catch (error) {
     log.error(strings.errors.getPersistentIconTable, error)
     return null
@@ -151,7 +150,7 @@ const setPersistentIconTable = async (table: IconsCache): Promise<void> => {
   try {
     setIconTable(table)
     Object.entries(table).length > 0 &&
-      (await AsyncStorage.setItem(strings.APPS_ICONS, JSON.stringify(table)))
+      (await storeData(StorageKeys.IconsTable, table))
   } catch (error) {
     log.error(strings.errors.setPersistentIconTable, error)
   }
@@ -159,7 +158,7 @@ const setPersistentIconTable = async (table: IconsCache): Promise<void> => {
 
 const clearPersistentIconTable = async (): Promise<void> => {
   try {
-    await AsyncStorage.removeItem(strings.APPS_ICONS)
+    await AsyncStorage.removeItem(StorageKeys.IconsTable)
   } catch (error) {
     log.error(strings.errors.clearPersistentIconTable, error)
   }
