@@ -35,6 +35,7 @@ import {
   checkBackupPermissions,
   requestBackupPermissions
 } from '/app/domain/backup/services/manageBackup'
+import { sendProgressToWebview } from '/app/domain/backup/services/manageProgress'
 import { BackupInfo, ProgressCallback } from '/app/domain/backup/models'
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
@@ -138,23 +139,27 @@ interface CustomMethods {
 }
 
 const prepareBackupWithClient = (
-  client: CozyClient | undefined,
-  onProgress: ProgressCallback
+  client: CozyClient | undefined
 ): Promise<BackupInfo> => {
   if (!client) {
     throw new Error('You must be logged in to use backup feature')
   }
+
+  const onProgress = (backupInfo: BackupInfo): void =>
+    sendProgressToWebview(client, backupInfo)
 
   return prepareBackup(client, onProgress)
 }
 
 const startBackupWithClient = (
-  client: CozyClient | undefined,
-  onProgress: ProgressCallback
+  client: CozyClient | undefined
 ): Promise<BackupInfo> => {
   if (!client) {
     throw new Error('You must be logged in to use backup feature')
   }
+
+  const onProgress = (backupInfo: BackupInfo): void =>
+    sendProgressToWebview(client, backupInfo)
 
   return startBackup(client, onProgress)
 }
@@ -194,10 +199,8 @@ export const localMethods = (
     isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
     // For now setTheme is only used for the home theme
     setTheme: setHomeThemeIntent,
-    prepareBackup: (onProgress: ProgressCallback) =>
-      prepareBackupWithClient(client, onProgress),
-    startBackup: (onProgress: ProgressCallback) =>
-      startBackupWithClient(client, onProgress),
+    prepareBackup: () => prepareBackupWithClient(client),
+    startBackup: () => startBackupWithClient(client),
     checkBackupPermissions,
     requestBackupPermissions
   }
