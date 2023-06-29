@@ -114,6 +114,7 @@ const LockView = ({
               returnKeyType="go"
               secureTextEntry={!passwordVisibility}
               value={input}
+              autoCapitalize="none"
             />
           ) : null}
 
