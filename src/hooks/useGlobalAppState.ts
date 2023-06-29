@@ -153,8 +153,6 @@ export const useGlobalAppState = (): void => {
         'useGlobalAppState: subscribing to AppState changes, synchronizing device'
       )
 
-      safePromise(synchronizeDevice)(client)
-
       subscription = AppState.addEventListener('change', e =>
         onStateChange(e, client)
       )

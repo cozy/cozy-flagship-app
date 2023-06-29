@@ -29,6 +29,7 @@ import { useGlobalAppState } from '/hooks/useGlobalAppState'
 import { useCookieResyncOnResume } from '/hooks/useCookieResyncOnResume'
 import { useCozyEnvironmentOverride } from '/hooks/useCozyEnvironmentOverride'
 import { useNotifications } from '/hooks/useNotifications'
+import { useSynchronizeOnInit } from '/hooks/useSynchronizeOnInit'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
 import { ThemeProvider } from '/app/theme/ThemeProvider'
@@ -45,6 +46,7 @@ if (!global.atob) {
 const App = ({ setClient }) => {
   const client = useClient()
 
+  useSynchronizeOnInit()
   useNetService(client)
 
   const { initialRoute, isLoading } = useAppBootstrap(client)

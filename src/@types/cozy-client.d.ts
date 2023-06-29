@@ -23,6 +23,7 @@ declare module 'cozy-client' {
 
   interface OAuthOptions {
     clientID: string
+    clientName: string
     clientSecret: string
   }
 
@@ -81,6 +82,7 @@ declare module 'cozy-client' {
     setPassphraseFlagship: (
       params: SetPassphraseFlagshipParams
     ) => Promise<SetPassphraseFlagshipResult>
+    updateInformation: (options: OAuthOptions) => Promise<OAuthOptions>
   }
 
   interface InstanceOptions {

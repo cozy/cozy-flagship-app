@@ -1,10 +1,9 @@
-import { getDeviceName } from 'react-native-device-info'
-
 import CozyClient from 'cozy-client'
 
 import { androidSafetyNetApiKey } from '/constants/api-keys'
 import strings from '/constants/strings.json'
-import { SOFTWARE_ID, SOFTWARE_NAME } from '/libs/constants'
+import { SOFTWARE_ID } from '/libs/constants'
+import { getClientName } from '/app/domain/authentication/services/SynchronizeService'
 
 import packageJSON from '../../../package.json'
 
@@ -21,7 +20,7 @@ export const createClient = async (instance: string): Promise<CozyClient> => {
       redirectURI: strings.COZY_SCHEME,
       softwareID: SOFTWARE_ID,
       clientKind: 'mobile',
-      clientName: `${SOFTWARE_NAME} (${await getDeviceName()})`,
+      clientName: await getClientName(),
       shouldRequireFlagshipPermissions: true,
       certificationConfig: { androidSafetyNetApiKey }
     },
