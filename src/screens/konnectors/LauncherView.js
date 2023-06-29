@@ -33,6 +33,10 @@ const log = Minilog('LauncherView')
 
 const colors = getColors()
 const { statusBarHeight } = getDimensions()
+const HEADER_PADDING_TOP = statusBarHeight + 8
+const HEADER_PADDING_BOTTOM = 8
+const HEADER_LINE_HEIGHT = 16
+const TOUCHABLE_VERTICAL_PADDING = 8
 
 class LauncherView extends Component {
   constructor(props) {
@@ -386,26 +390,30 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     backgroundColor: '#fff', // We do not want the default background color of <View /> which is blue in the app
     flexDirection: 'row',
-    paddingBottom: 8,
+    paddingBottom: HEADER_PADDING_BOTTOM,
     paddingHorizontal: 8,
-    paddingTop: statusBarHeight + 8
+    paddingTop: HEADER_PADDING_TOP
   },
   headerTouchableStyle: {
     flexDirection: 'row',
-    paddingVertical: 8,
+    paddingVertical: TOUCHABLE_VERTICAL_PADDING,
     paddingHorizontal: 6
   },
   headerTextStyle: {
     marginLeft: 10,
     fontSize: 13,
     fontFamily: 'Lato-Bold',
-    lineHeight: 16,
+    lineHeight: HEADER_LINE_HEIGHT,
     color: colors.primaryColor
   },
   workerInteractionBlockerStyle: {
     position: 'absolute',
     backgroundColor: 'red',
-    top: statusBarHeight + 48,
+    top:
+      HEADER_PADDING_BOTTOM +
+      HEADER_PADDING_TOP +
+      HEADER_LINE_HEIGHT +
+      TOUCHABLE_VERTICAL_PADDING * 2,
     width: '100%',
     height: '100%',
     opacity: 0.01
