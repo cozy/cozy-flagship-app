@@ -308,7 +308,14 @@ class LauncherView extends Component {
                 injectedJavaScriptBeforeContentLoaded={run}
               />
               {workerVisible && this.state.workerInteractionBlockerVisible ? (
-                <View style={styles.workerInteractionBlockerStyle} />
+                <View
+                  style={[
+                    styles.workerInteractionBlockerStyle,
+                    this.DEBUG
+                      ? styles.workerInteractionBlockerDebugStyle
+                      : null
+                  ]}
+                />
               ) : null}
             </View>
           </>
@@ -417,6 +424,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     opacity: 0.01
+  },
+  workerInteractionBlockerDebugStyle: {
+    opacity: 0.1
   }
 })
 
