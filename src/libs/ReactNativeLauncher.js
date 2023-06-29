@@ -112,6 +112,8 @@ class ReactNativeLauncher extends Launcher {
         contentScript,
         exposedMethodsNames: [
           'setWorkerState',
+          'blockWorkerInteractions',
+          'unblockWorkerInteractions',
           'runInWorker',
           'saveFiles',
           'saveBills',
@@ -323,6 +325,14 @@ class ReactNativeLauncher extends Launcher {
       }, options?.timeout || SET_WORKER_STATE_TIMEOUT_MS)
       this.emit('SET_WORKER_STATE', options)
     })
+  }
+
+  async blockWorkerInteractions() {
+    this.emit('BLOCK_WORKER_INTERACTIONS')
+  }
+
+  async unblockWorkerInteractions() {
+    this.emit('UNBLOCK_WORKER_INTERACTIONS')
   }
 
   /**

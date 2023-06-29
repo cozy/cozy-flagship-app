@@ -52,7 +52,8 @@ class LauncherView extends Component {
       konnector: null,
       workerInnerUrl: null,
       worker: {},
-      workerKey: 0
+      workerKey: 0,
+      workerInteractionBlockerVisible: false
     }
     this.DEBUG = false
   }
@@ -194,6 +195,13 @@ class LauncherView extends Component {
       })
     })
 
+    this.launcher.on('BLOCK_WORKER_INTERACTIONS', () =>
+      this.setState({ workerInteractionBlockerVisible: true })
+    )
+    this.launcher.on('UNBLOCK_WORKER_INTERACTIONS', () =>
+      this.setState({ workerInteractionBlockerVisible: false })
+    )
+
     this.launcher.on('SET_USER_AGENT', userAgent => {
       this.setState({ userAgent })
     })
@@ -228,10 +236,10 @@ class LauncherView extends Component {
   }
 
   render() {
-    const workerStyle =
-      this.state.worker.visible || this.DEBUG
-        ? styles.workerVisible
-        : styles.workerHidden
+    const workerVisible = this.state.worker.visible || this.DEBUG
+    const workerStyle = workerVisible
+      ? styles.workerVisible
+      : styles.workerHidden
 
     const debug = shouldEnableKonnectorExtensiveLog()
     const run = debug
@@ -295,6 +303,9 @@ class LauncherView extends Component {
                 onError={this.onWorkerError}
                 injectedJavaScriptBeforeContentLoaded={run}
               />
+              {workerVisible && this.state.workerInteractionBlockerVisible ? (
+                <View style={styles.workerInteractionBlockerStyle} />
+              ) : null}
             </View>
           </>
         ) : null}
@@ -390,6 +401,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Lato-Bold',
     lineHeight: 16,
     color: colors.primaryColor
+  },
+  workerInteractionBlockerStyle: {
+    position: 'absolute',
+    backgroundColor: 'red',
+    top: statusBarHeight + 48,
+    width: '100%',
+    height: '100%',
+    opacity: 0.01
   }
 })
 
