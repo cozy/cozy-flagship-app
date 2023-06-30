@@ -29,7 +29,8 @@ const INITIAL_BACKUP_CONFIG: LocalBackupConfig = {
   backupedMedias: [],
   currentBackup: {
     status: 'to_do',
-    mediasToBackup: []
+    mediasToBackup: [],
+    totalMediasToBackupCount: 0
   }
 }
 
@@ -122,6 +123,8 @@ export const setBackupAsReady = async (
   const localBackupConfig = await getLocalBackupConfig(client)
 
   localBackupConfig.currentBackup.mediasToBackup = mediasToBackup
+  localBackupConfig.currentBackup.totalMediasToBackupCount =
+    mediasToBackup.length
   localBackupConfig.currentBackup.status = 'ready'
 
   await setLocalBackupConfig(client, localBackupConfig)
