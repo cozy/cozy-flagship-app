@@ -16,6 +16,7 @@ export interface LocalBackupConfig {
   currentBackup: {
     status: BackupStatus
     mediasToBackup: Media[]
+    totalMediasToBackupCount: number
   }
 }
 
@@ -45,6 +46,7 @@ export interface BackupInfo {
   currentBackup: {
     status: BackupStatus
     mediasToBackupCount: number
+    totalMediasToBackupCount: number
   }
 }
 

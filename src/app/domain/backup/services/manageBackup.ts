@@ -105,7 +105,9 @@ export const getBackupInfo = async (
     backupedMediasCount: backupConfig.backupedMedias.length,
     currentBackup: {
       status: backupConfig.currentBackup.status,
-      mediasToBackupCount: backupConfig.currentBackup.mediasToBackup.length
+      mediasToBackupCount: backupConfig.currentBackup.mediasToBackup.length,
+      totalMediasToBackupCount:
+        backupConfig.currentBackup.totalMediasToBackupCount
     }
   }
 }
