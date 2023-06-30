@@ -123,7 +123,8 @@ describe('fetchDeviceRemoteBackupConfig', () => {
         backupedMedias: [],
         currentBackup: {
           status: 'to_do',
-          mediasToBackup: []
+          mediasToBackup: [],
+          totalMediasToBackupCount: 0
         }
       })
     jest
@@ -162,7 +163,8 @@ describe('fetchDeviceRemoteBackupConfig', () => {
         backupedMedias: [],
         currentBackup: {
           status: 'to_do',
-          mediasToBackup: []
+          mediasToBackup: [],
+          totalMediasToBackupCount: 0
         }
       })
     jest
