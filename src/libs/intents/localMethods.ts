@@ -1,4 +1,4 @@
-import { Linking, Platform } from 'react-native'
+import { Linking } from 'react-native'
 import { BrowserResult } from 'react-native-inappbrowser-reborn'
 
 import {
@@ -82,13 +82,7 @@ const fetchSessionCodeWithClient = (
 }
 
 const openAppOSSettings = async (): Promise<null> => {
-  if (Platform.OS === 'android') {
-    throw new Error(
-      `openAppOSSettings shouldn't be called from Android as no authorization is needed for biometry`
-    )
-  }
-
-  await Linking.openURL('app-settings:')
+  await Linking.openSettings()
   return null
 }
 
