@@ -253,7 +253,7 @@ class LauncherView extends Component {
                 ref={ref => (this.pilotWebView = ref)}
                 originWhitelist={['*']}
                 source={{
-                  uri: get(this, 'state.konnector.manifest.vendor_link')
+                  uri: 'about:blank'
                 }}
                 useWebKit={true}
                 javaScriptEnabled={true}
