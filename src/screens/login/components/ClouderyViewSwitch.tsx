@@ -36,7 +36,7 @@ import {
 } from '/screens/login/components/functions/interceptExternalLinks'
 import { LOGIN_FLAGSHIP_URL } from '/screens/login/components/functions/oidc'
 import { jsPaddingInjection } from '/screens/login/components/functions/webViewPaddingInjection'
-import { userAgentDefault } from '/constants/userAgent'
+import { APPLICATION_NAME_FOR_USER_AGENT } from '/constants/userAgent'
 
 const log = Minilog('ClouderyViewSwitchProps')
 
@@ -134,7 +134,7 @@ export const ClouderyViewSwitch = forwardRef(
             testID="ViewSignin"
           >
             <ClouderyWebView
-              {...userAgentDefault}
+              applicationNameForUserAgent={APPLICATION_NAME_FOR_USER_AGENT}
               ref={webviewSigninRef}
               uri={urls.signinUrl}
               key="WebViewSignin"
@@ -158,7 +158,7 @@ export const ClouderyViewSwitch = forwardRef(
           testID="ViewLogin"
         >
           <ClouderyWebView
-            {...userAgentDefault}
+            applicationNameForUserAgent={APPLICATION_NAME_FOR_USER_AGENT}
             ref={webviewLoginRef}
             uri={urls.loginUrl}
             key="WebViewLogin"
@@ -214,7 +214,7 @@ const ClouderyWebView = forwardRef(
 
     return (
       <SupervisedWebView
-        userAgent={userAgentDefault}
+        applicationNameForUserAgent={APPLICATION_NAME_FOR_USER_AGENT}
         source={{ uri: uri }}
         ref={webviewRef}
         onNavigationStateChange={(event: WebViewNavigation): void => {
