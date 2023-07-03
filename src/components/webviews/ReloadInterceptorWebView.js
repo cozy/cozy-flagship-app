@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useClient } from 'cozy-client'
 
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
-import { userAgentDefault } from '/constants/userAgent'
+import { APPLICATION_NAME_FOR_USER_AGENT } from '/constants/userAgent'
 import { ProgressContainer } from '/components/ProgressContainer'
 import {
   interceptNavigation,
@@ -18,13 +18,7 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
 
   const [progress, setDownloadProgress] = useState(0)
 
-  const {
-    targetUri,
-    source,
-    onShouldStartLoadWithRequest,
-    userAgent = userAgentDefault,
-    navigation
-  } = props
+  const { targetUri, source, onShouldStartLoadWithRequest, navigation } = props
 
   if (!source.html) {
     // Blocking this feature, when source={{ uri }} is set
@@ -32,8 +26,8 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
       <ProgressContainer progress={progress}>
         <SupervisedWebView
           {...props}
+          applicationNameForUserAgent={APPLICATION_NAME_FOR_USER_AGENT}
           ref={ref}
-          {...userAgent}
           onShouldStartLoadWithRequest={initialRequest => {
             return interceptNavigation({
               initialRequest,
@@ -65,7 +59,7 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
     <ProgressContainer progress={progress}>
       <SupervisedWebView
         {...props}
-        {...userAgent}
+        applicationNameForUserAgent={APPLICATION_NAME_FOR_USER_AGENT}
         ref={ref}
         key={timestamp}
         onShouldStartLoadWithRequest={initialRequest => {
