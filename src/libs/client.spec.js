@@ -23,7 +23,8 @@ const mockCozyClient = {
     setUri: mockSetUri,
     register: mockRegister,
     updateInformation: mockUpdateInformation
-  })
+  }),
+  registerPlugin: jest.fn()
 }
 
 CozyClient.mockImplementation(() => mockCozyClient)

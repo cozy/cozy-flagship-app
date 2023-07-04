@@ -2,11 +2,10 @@ import CozyClient from 'cozy-client'
 
 import { authorizeClient } from '/libs/clientHelpers/authorizeClient'
 import { connectClient } from '/libs/clientHelpers/connectClient'
-import { createClient } from '/libs/clientHelpers/createClient'
 import {
-  listenTokenRefresh,
-  saveClient
-} from '/libs/clientHelpers/persistClient'
+  createClient,
+  finalizeClientCreation
+} from '/libs/clientHelpers/createClient'
 import {
   CozyClientCreationContext,
   isAccessToken,
@@ -86,9 +85,7 @@ export const callOnboardingInitClient = async ({
     await authorizeClient({ client, sessionCode: result.session_code })
   }
 
-  await client.login()
-  await saveClient(client)
-  listenTokenRefresh(client)
+  await finalizeClientCreation(client)
 
   return client
 }

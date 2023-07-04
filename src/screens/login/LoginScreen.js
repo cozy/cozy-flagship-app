@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { BackHandler, StyleSheet, View } from 'react-native'
 import Minilog from '@cozy/minilog'
 
-import flag from 'cozy-flags'
-
 import { ClouderyView } from './components/ClouderyView'
 import { ErrorView } from './components/ErrorView'
 import { OidcOnboardingView } from './components/OidcOnboardingView'
@@ -242,8 +240,6 @@ const LoginSteps = ({
         }))
       } else {
         showSplashScreen()
-        await result.client.registerPlugin(flag.plugin)
-        await result.client.plugins.flags.initializing
         setClient(result.client)
       }
     } catch (error) {
@@ -291,8 +287,6 @@ const LoginSteps = ({
           }))
         } else {
           showSplashScreen()
-          await result.client.registerPlugin(flag.plugin)
-          await result.client.plugins.flags.initializing
           setClient(result.client)
         }
       } catch (error) {
@@ -355,8 +349,6 @@ const LoginSteps = ({
         if (loginData) {
           await resetKeychainAndSaveLoginData(loginData)
         }
-        await result.client.registerPlugin(flag.plugin)
-        await result.client.plugins.flags.initializing
         setClient(result.client)
       }
     } catch (error) {
@@ -411,8 +403,6 @@ const LoginSteps = ({
           if (loginData) {
             await resetKeychainAndSaveLoginData(loginData)
           }
-          await result.client.registerPlugin(flag.plugin)
-          await result.client.plugins.flags.initializing
           setClient(result.client)
         }
       } catch (error) {
@@ -465,8 +455,6 @@ const LoginSteps = ({
           if (loginData) {
             await resetKeychainAndSaveLoginData(loginData)
           }
-          await result.client.registerPlugin(flag.plugin)
-          await result.client.plugins.flags.initializing
           setClient(result.client)
         }
       } catch (error) {
@@ -492,8 +480,6 @@ const LoginSteps = ({
       if (loginData) {
         await resetKeychainAndSaveLoginData(loginData)
       }
-      await result.client.registerPlugin(flag.plugin)
-      await result.client.plugins.flags.initializing
       setClient(result.client)
     } catch (error) {
       if (error === OAUTH_USER_CANCELED_ERROR) {
