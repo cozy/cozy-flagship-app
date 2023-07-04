@@ -38,7 +38,7 @@ const HEADER_PADDING_BOTTOM = 8
 const HEADER_LINE_HEIGHT = 16
 const TOUCHABLE_VERTICAL_PADDING = 8
 
-class LauncherView extends Component {
+export class LauncherView extends Component {
   constructor(props) {
     super(props)
     this.onPilotMessage = this.onPilotMessage.bind(this)
@@ -157,7 +157,7 @@ class LauncherView extends Component {
   }
 
   async componentDidMount() {
-    this.launcher = new ReactNativeLauncher()
+    this.launcher = this.props.launcher || new ReactNativeLauncher()
     // made to measure the time between the launcher initialization and the display of the worker webview (when needed)
     // this is not await not to block the initialization of the launcher
     this.launcher.waitForWorkerVisible(() =>
@@ -265,7 +265,7 @@ class LauncherView extends Component {
                 injectedJavaScriptBeforeContentLoaded={run}
               />
             </View>
-            <View style={workerStyle}>
+            <View testID="workerView" style={workerStyle}>
               <View style={styles.headerStyle}>
                 <TouchableOpacity
                   activeOpacity={0.5}
@@ -299,6 +299,7 @@ class LauncherView extends Component {
               />
               {workerVisible && this.state.workerInteractionBlockerVisible ? (
                 <View
+                  testID="workerInteractionBlocker"
                   style={[
                     styles.workerInteractionBlockerStyle,
                     this.DEBUG
