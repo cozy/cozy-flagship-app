@@ -1,4 +1,4 @@
-# 1.1.10
+# 1.1.11
 
 ## ✨ Features
 
@@ -8,6 +8,26 @@
 
 ## 🔧 Tech
 
+
+# 1.1.10
+
+## ✨ Features
+
+* Client Side Connectors now keep the device awake when running to prevent interuption ([PR #840](https://github.com/cozy/cozy-react-native/pull/840))
+* Client Side Connectors now download files in a more optimized way ([PR #833](https://github.com/cozy/cozy-react-native/pull/833))
+
+## 🐛 Bug Fixes
+
+* Fix cozy-apps lifecycle ([PR #843](https://github.com/cozy/cozy-react-native/pull/843) and [PR #849](https://github.com/cozy/cozy-react-native/pull/849))
+* Cozy-apps icons should now update correctly when switching between multiple Cozy ([PR #852](https://github.com/cozy/cozy-react-native/pull/852))
+* The Lock screen shouldn't auto-capitalize the user's password anymore ([PR #854](https://github.com/cozy/cozy-react-native/pull/854))
+* The app should be updated in the `Connected device` section as `Application Mobile Cozy` for old sessions ([PR #851](https://github.com/cozy/cozy-react-native/pull/851))
+* Fix login issues for OIDC and MagicLink ([PR #860](https://github.com/cozy/cozy-react-native/pull/860))
+
+## 🔧 Tech
+
+* Improve Client Side Connectors logs and API ([PR #846](https://github.com/cozy/cozy-react-native/pull/846) and [PR #850](https://github.com/cozy/cozy-react-native/pull/850))
+* Add Flagship app's user-agent on Cloudery webviews to improve debugging ([PR #855](https://github.com/cozy/cozy-react-native/pull/855) and [PR #858](https://github.com/cozy/cozy-react-native/pull/858))
 
 # 1.1.9
 
