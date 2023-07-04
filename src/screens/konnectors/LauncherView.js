@@ -143,16 +143,6 @@ class LauncherView extends Component {
       })
       return new Error('UNKNOWN_ERROR.HANDSHAKE_FAILED')
     }
-
-    try {
-      await this.launcher.injectCredentials()
-    } catch (err) {
-      this.launcher.log({
-        level: 'error',
-        msg: 'launcherView.initKonnector.injectCredentials: ' + err.message
-      })
-      return new Error('UNKNOWN_ERROR.INJECT_CREDENTIALS')
-    }
   }
 
   async componentDidUpdate() {
