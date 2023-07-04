@@ -1,11 +1,10 @@
 import type CozyClient from 'cozy-client'
 
 import { authorizeClient } from '/libs/clientHelpers/authorizeClient'
-import { createClient } from '/libs/clientHelpers/createClient'
 import {
-  listenTokenRefresh,
-  saveClient
-} from '/libs/clientHelpers/persistClient'
+  createClient,
+  finalizeClientCreation
+} from '/libs/clientHelpers/createClient'
 import {
   CozyClientCreationContext,
   is2faNeededResult,
@@ -107,9 +106,7 @@ export const connectMagicLinkClient = async (
   }
 
   stackClient.setToken(result)
-  await client.login()
-  await saveClient(client)
-  listenTokenRefresh(client)
+  await finalizeClientCreation(client)
 
   return {
     client: client,
@@ -150,9 +147,7 @@ export const callMagicLinkOnboardingInitClient = async ({
     await authorizeClient({ client, sessionCode: result.session_code })
   }
 
-  await client.login()
-  await saveClient(client)
-  listenTokenRefresh(client)
+  await finalizeClientCreation(client)
 
   return client
 }

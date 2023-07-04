@@ -1,7 +1,12 @@
 import CozyClient from 'cozy-client'
+import flag from 'cozy-flags'
 
 import { androidSafetyNetApiKey } from '/constants/api-keys'
 import strings from '/constants/strings.json'
+import {
+  listenTokenRefresh,
+  saveClient
+} from '/libs/clientHelpers/persistClient'
 import { SOFTWARE_ID } from '/libs/constants'
 import { getClientName } from '/app/domain/authentication/services/SynchronizeService'
 
@@ -31,10 +36,32 @@ export const createClient = async (instance: string): Promise<CozyClient> => {
   }
 
   const client = new CozyClient(options)
+  await registerPlugins(client)
 
   const stackClient = client.getStackClient()
   stackClient.setUri(instance)
   await stackClient.register(instance)
 
   return client
+}
+
+export const finalizeClientCreation = async (
+  client: CozyClient
+): Promise<void> => {
+  await client.login()
+  await saveClient(client)
+  listenTokenRefresh(client)
+
+  await initializePlugins(client)
+}
+
+const registerPlugins = async (client: CozyClient): Promise<void> => {
+  // @ts-expect-error Plugins are not typed yet
+  await client.registerPlugin(flag.plugin, null)
+}
+
+const initializePlugins = async (client: CozyClient): Promise<void> => {
+  // @ts-expect-error Plugins are not typed yet
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  await client.plugins.flags.initializing
 }

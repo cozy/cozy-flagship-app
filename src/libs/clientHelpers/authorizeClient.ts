@@ -1,10 +1,7 @@
 import type CozyClient from 'cozy-client'
 
 import { queryResultToCrypto } from '/components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
-import {
-  listenTokenRefresh,
-  saveClient
-} from '/libs/clientHelpers/persistClient'
+import { finalizeClientCreation } from '/libs/clientHelpers/createClient'
 import {
   CozyClientCreationContext,
   STATE_CONNECTED
@@ -52,9 +49,7 @@ export const authorizeClientAndLogin = async ({
 }: AuthorizeClientParams): Promise<CozyClientCreationContext> => {
   await authorizeClient({ client, sessionCode })
 
-  await client.login()
-  await saveClient(client)
-  listenTokenRefresh(client)
+  await finalizeClientCreation(client)
 
   return {
     client: client,
