@@ -1,6 +1,10 @@
 import type CozyClient from 'cozy-client'
 
 import {
+  listenTokenRefresh,
+  saveClient
+} from '/libs/clientHelpers/persistClient'
+import {
   CozyClientCreationContext,
   is2faNeededResult,
   is2faPasswordNeededResult,
@@ -105,6 +109,9 @@ export const connectOidcClient = async (
 
   const stackClient = client.getStackClient()
   stackClient.setToken(result)
+  await client.login()
+  await saveClient(client)
+  listenTokenRefresh(client)
 
   return {
     client: client,

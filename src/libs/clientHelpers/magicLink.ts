@@ -107,6 +107,9 @@ export const connectMagicLinkClient = async (
   }
 
   stackClient.setToken(result)
+  await client.login()
+  await saveClient(client)
+  listenTokenRefresh(client)
 
   return {
     client: client,
