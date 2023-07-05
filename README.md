@@ -9,6 +9,10 @@ This notably includes the possiblity to run client-side konnectors, to get your 
   - Please follow the React Native CLI part and make sure all the requirements are met with the correct versions.
 - install XCode and Android Studio (or Android SDK)
 - Node 16
+- Copy the Android's `debug.keystore` from Cozy's password-store into `android/app/debug.keystore`
+  - Run `pass show app-amirale/Certificates/debug.keystore > android/app/debug.keystore`
+  - If you don't have access to Cozy's password-store, just generate a new `debug.keystore` file
+    - Run `keytool -genkey -v -keystore android/app/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000`
 
 ## Sentry configuration
 
