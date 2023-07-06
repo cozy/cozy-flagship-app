@@ -1,6 +1,11 @@
 import DeviceInfo from 'react-native-device-info'
 
-import CozyClient, { FileCollectionGetResult } from 'cozy-client'
+import CozyClient, {
+  FileCollectionGetResult,
+  FileCollectionGetError,
+  SplitFilenameResult,
+  models
+} from 'cozy-client'
 
 import { BackupedMedia, RemoteBackupConfig } from '/app/domain/backup/models'
 import {
@@ -8,6 +13,8 @@ import {
   buildFileQuery,
   FilesQueryAllResult
 } from '/app/domain/backup/queries'
+
+import { IOCozyFile } from 'cozy-client/types/types'
 
 const DOCTYPE_APPS = 'io.cozy.apps'
 const DOCTYPE_FILES = 'io.cozy.files'
@@ -23,6 +30,14 @@ interface BackupFolder {
       backupDeviceIds: string[]
     }
   }
+}
+
+interface BackupFolderAttributes {
+  type: string
+  _type: string
+  name: string
+  dirId: string
+  metadata: { backupDeviceIds: string[] }
 }
 
 const isInTrash = (path: string): boolean => {
@@ -73,6 +88,35 @@ export const fetchDeviceRemoteBackupConfig = async (
   return remoteBackupConfig
 }
 
+const createRemoteBackupFolderWithConflictStrategy = async (
+  client: CozyClient,
+  backupFolderAttributes: BackupFolderAttributes
+): Promise<FileCollectionGetResult> => {
+  try {
+    return (await client.save(
+      backupFolderAttributes
+    )) as FileCollectionGetResult
+  } catch (e) {
+    if (e instanceof Error) {
+      const { errors } = JSON.parse(e.message) as FileCollectionGetError
+
+      if (errors.find(e => e.status === '409')) {
+        const { filename } = models.file.splitFilename({
+          type: 'file',
+          name: backupFolderAttributes.name
+        } as IOCozyFile) as SplitFilenameResult
+
+        return await createRemoteBackupFolderWithConflictStrategy(client, {
+          ...backupFolderAttributes,
+          name: models.file.generateNewFileNameOnConflict(filename)
+        })
+      }
+    }
+
+    throw e
+  }
+}
+
 export const createRemoteBackupFolder = async (
   client: CozyClient
 ): Promise<RemoteBackupConfig> => {
@@ -95,7 +139,10 @@ export const createRemoteBackupFolder = async (
 
   const {
     data: { _id: backupFolderId }
-  } = (await client.save(backupFolderAttributes)) as FileCollectionGetResult
+  } = await createRemoteBackupFolderWithConflictStrategy(
+    client,
+    backupFolderAttributes
+  )
 
   await client.collection(DOCTYPE_FILES).addReferencesTo(
     {
