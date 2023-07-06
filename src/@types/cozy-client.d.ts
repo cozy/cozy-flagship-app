@@ -93,6 +93,11 @@ declare module 'cozy-client' {
 
   export const useClient = (): CozyClient => CozyClient as CozyClient
 
+  export interface SplitFilenameResult {
+    filename: string
+    extension: string
+  }
+
   export interface FileCollectionGetResult {
     data: {
       _id: string
@@ -102,6 +107,10 @@ declare module 'cozy-client' {
         backupDeviceIds: string[]
       }
     }
+  }
+
+  export interface FileCollectionGetError {
+    errors: { status: string }[]
   }
 
   interface Collection {
