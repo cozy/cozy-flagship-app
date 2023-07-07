@@ -1,3 +1,5 @@
+import { StackErrors, IOCozyFile } from 'cozy-client'
+
 /**
  * A media on the device
  * @member {string} name
@@ -19,4 +21,14 @@ export interface Media {
  */
 export interface BackupedMedia {
   name: string
+}
+
+export type UploadMediaError = {
+  statusCode: number
+} & StackErrors
+
+// These type is incomplete there is more information in data
+export interface UploadMediaResult {
+  statusCode: number
+  data: IOCozyFile
 }

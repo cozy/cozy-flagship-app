@@ -2,14 +2,9 @@
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
 import RNFileSystem from 'react-native-fs'
 
-import { Media } from '/app/domain/backup/models/Media'
+import { Media, UploadMediaResult } from '/app/domain/backup/models/Media'
 
-import type CozyClient from 'cozy-client'
-
-interface UploadMediaResult {
-  success: boolean
-  data?: object
-}
+import CozyClient, { StackErrors, IOCozyFile } from 'cozy-client'
 
 const getVideoPathFromLivePhoto = (photoPath: string): string => {
   return photoPath.substring(0, photoPath.lastIndexOf('.')) + '.mov'
@@ -66,13 +61,24 @@ export const uploadMedia = async (
     })
       .promise.then(response => {
         if (response.statusCode == 201) {
-          resolve({ success: true, data: response })
+          const { data } = JSON.parse(response.body) as {
+            data: IOCozyFile
+          }
+          resolve({
+            statusCode: response.statusCode,
+            data
+          })
         } else {
-          reject({ success: false, data: response })
+          const { errors } = JSON.parse(response.body) as StackErrors
+
+          reject({
+            statusCode: response.statusCode,
+            errors
+          })
         }
       })
       .catch(e => {
-        reject({ status: false, data: e as unknown })
+        reject(e)
       })
   })
 }
