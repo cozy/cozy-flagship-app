@@ -2,7 +2,7 @@ import DeviceInfo from 'react-native-device-info'
 
 import CozyClient, {
   FileCollectionGetResult,
-  FileCollectionGetError,
+  StackErrors,
   SplitFilenameResult,
   models
 } from 'cozy-client'
@@ -98,7 +98,7 @@ const createRemoteBackupFolderWithConflictStrategy = async (
     )) as FileCollectionGetResult
   } catch (e) {
     if (e instanceof Error) {
-      const { errors } = JSON.parse(e.message) as FileCollectionGetError
+      const { errors } = JSON.parse(e.message) as StackErrors
 
       if (errors.find(e => e.status === '409')) {
         const { filename } = models.file.splitFilename({

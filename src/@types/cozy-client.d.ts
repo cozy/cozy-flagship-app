@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import 'cozy-client'
+import { FileDocument, CozyClientDocument } from 'cozy-client/types/types'
+
 declare module 'cozy-client' {
   interface ClientOptions {
     appMetadata?: AppMetadata
@@ -109,9 +111,17 @@ declare module 'cozy-client' {
     }
   }
 
-  export interface FileCollectionGetError {
-    errors: { status: string }[]
+  export interface StackErrors {
+    errors: {
+      status: string
+      title: string
+      detail: string
+    }[]
   }
+
+  type IOCozyFile = {
+    attributes: FileDocument
+  } & CozyClientDocument
 
   interface Collection {
     findReferencedBy: (

@@ -3,14 +3,9 @@ import RNBackgroundUpload, {
   UploadOptions
 } from 'react-native-background-upload'
 
-import { Media } from '/app/domain/backup/models/Media'
+import { Media, UploadMediaResult } from '/app/domain/backup/models/Media'
 
-import type CozyClient from 'cozy-client'
-
-interface UploadMediaResult {
-  success: boolean
-  data?: object
-}
+import CozyClient, { IOCozyFile } from 'cozy-client'
 
 export const uploadMedia = async (
   client: CozyClient,
@@ -41,21 +36,41 @@ export const uploadMedia = async (
     RNBackgroundUpload.startUpload(options)
       .then(uploadId => {
         RNBackgroundUpload.addListener('error', uploadId, error => {
-          reject({ success: false, data: error })
+          // RNBackgroundUpload does not return status code and response body...
+          reject({
+            statusCode: -1,
+            errors: [
+              {
+                status: -1,
+                title: error.error,
+                detail: error.error
+              }
+            ]
+          })
         })
         RNBackgroundUpload.addListener('cancelled', uploadId, data => {
           reject({ success: false, data })
         })
-        RNBackgroundUpload.addListener('completed', uploadId, data => {
-          if (data.responseCode === 201) {
-            resolve({ success: true, data })
+        RNBackgroundUpload.addListener('completed', uploadId, response => {
+          const { data } = JSON.parse(response.responseBody) as {
+            data: IOCozyFile
+          }
+
+          if (response.responseCode === 201) {
+            resolve({
+              statusCode: response.responseCode,
+              data
+            })
           } else {
-            reject({ success: false, data })
+            reject({
+              statusCode: response.responseCode,
+              data
+            })
           }
         })
       })
       .catch(e => {
-        reject({ status: false, data: e as unknown })
+        reject(e)
       })
   })
 }
