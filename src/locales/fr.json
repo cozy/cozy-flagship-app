@@ -99,6 +99,11 @@
   "modals": {
     "IconChangedModal": {
       "description": "L'icône de l'application «Cozy» a été modifiée."
+    },
+    "ErrorToken": {
+      "title": "Accès révoqué",
+      "body": "Vous semblez avoir révoqué cet appareil depuis votre Cozy. Pour accéder à nouveau à vos données, veuillez vous reconnecter.Si cette action ne vient pas de vous, n’hésitez pas à nous contacter à support@cozycloud.cc.",
+      "button": "Se reconnecter"
     }
   },
   "software": {
