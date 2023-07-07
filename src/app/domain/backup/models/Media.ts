@@ -9,6 +9,7 @@ export interface Media {
   name: string
   path: string
   type: 'image' | 'video'
+  subType?: 'PhotoLive'
   creationDate: number
 }
 

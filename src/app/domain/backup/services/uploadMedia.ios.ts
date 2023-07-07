@@ -11,18 +11,36 @@ interface UploadMediaResult {
   data?: object
 }
 
+const getVideoPathFromLivePhoto = (photoPath: string): string => {
+  return photoPath.substring(0, photoPath.lastIndexOf('.')) + '.mov'
+}
+
+const getRealFilepath = async (media: Media): Promise<string> => {
+  const data = await CameraRoll.iosGetImageDataById(media.path)
+
+  let filepath = data.node.image.filepath
+
+  if (filepath === null) {
+    throw new Error('Impossible to get a real filepath')
+  }
+
+  filepath = filepath.replace('file://', '')
+
+  if (media.type === 'image') {
+    return filepath
+  } else if (media.type === 'video' && media.subType === 'PhotoLive') {
+    return getVideoPathFromLivePhoto(filepath)
+  }
+
+  throw new Error('Impossible to get a real filepath')
+}
+
 export const uploadMedia = async (
   client: CozyClient,
   uploadUrl: string,
   media: Media
 ): Promise<UploadMediaResult> => {
-  const data = await CameraRoll.iosGetImageDataById(media.path)
-
-  if (data.node.image.filepath === null) {
-    return { success: false }
-  }
-
-  const filepath = data.node.image.filepath.replace('file://', '')
+  const filepath = await getRealFilepath(media)
 
   return new Promise((resolve, reject) => {
     RNFileSystem.uploadFiles({
