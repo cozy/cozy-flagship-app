@@ -1,6 +1,7 @@
 import {
   CameraRoll,
-  PhotoIdentifiersPage
+  PhotoIdentifiersPage,
+  PhotoIdentifier
 } from '@react-native-camera-roll/camera-roll'
 
 import { Media, BackupedMedia } from '/app/domain/backup/models/Media'
@@ -24,6 +25,49 @@ const getPhotoIdentifiersPage = async (
   return photoIdentifiersPage
 }
 
+const formatMediasFromPhotoIdentifier = (
+  photoIdentifier: PhotoIdentifier
+): Media[] => {
+  const {
+    node: {
+      image: { filename, uri },
+      type,
+      subTypes,
+      timestamp
+    }
+  } = photoIdentifier
+
+  if (filename === null) return []
+
+  if (subTypes.includes('PhotoLive')) {
+    return [
+      {
+        name: filename.substring(0, filename.lastIndexOf('.')) + '.MOV',
+        path: uri,
+        type: 'video',
+        subType: 'PhotoLive',
+        creationDate: timestamp * 1000
+      },
+      {
+        name: filename,
+        path: uri,
+        type: 'image',
+        subType: 'PhotoLive',
+        creationDate: timestamp * 1000
+      }
+    ]
+  }
+
+  return [
+    {
+      name: filename,
+      path: uri,
+      type: type.includes('image') ? 'image' : 'video',
+      creationDate: timestamp * 1000
+    }
+  ]
+}
+
 export const getAllMedias = async (): Promise<Media[]> => {
   const allMedias = []
 
@@ -33,15 +77,9 @@ export const getAllMedias = async (): Promise<Media[]> => {
   while (hasNextPage) {
     const photoIdentifiersPage = await getPhotoIdentifiersPage(endCursor)
 
-    const newMedias = photoIdentifiersPage.edges.map(
-      ({ node }) =>
-        ({
-          name: node.image.filename,
-          path: node.image.uri,
-          type: node.type.includes('image') ? 'image' : 'video',
-          creationDate: node.timestamp * 1000
-        } as Media)
-    )
+    const newMedias = photoIdentifiersPage.edges
+      .map(photoIdentifier => formatMediasFromPhotoIdentifier(photoIdentifier))
+      .flat()
     allMedias.push(...newMedias)
 
     hasNextPage = photoIdentifiersPage.page_info.has_next_page
