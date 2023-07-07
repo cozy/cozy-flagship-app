@@ -353,7 +353,7 @@ PODS:
     - React
   - react-native-biometrics (3.0.1):
     - React-Core
-  - react-native-cameraroll (5.6.0):
+  - react-native-cameraroll (5.7.2):
     - React-Core
   - react-native-change-icon (4.0.0):
     - React-Core
@@ -772,7 +772,7 @@ SPEC CHECKSUMS:
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
   react-native-background-upload: 7c608537f87106c93530a3a19a853afd55466823
   react-native-biometrics: 352e5a794bfffc46a0c86725ea7dc62deb085bdc
-  react-native-cameraroll: 755bcc628148a90a7c9cf3f817a252be3a601bc5
+  react-native-cameraroll: 134805127580aed23403b8c2cb1548920dd77b3a
   react-native-change-icon: ea9bb7255b09e89f41cbf282df16eade91ab1833
   react-native-config: 5330c8258265c1e5fdb8c009d2cabd6badd96727
   react-native-cookies: 6004d512ffc6f2c498c5b70cda0bc040350c0585
