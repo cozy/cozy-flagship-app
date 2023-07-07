@@ -16,30 +16,13 @@ export const uploadMedia = async (
   uploadUrl: string,
   media: Media
 ): Promise<UploadMediaResult> => {
-  let filepath: string
+  const data = await CameraRoll.iosGetImageDataById(media.path)
 
-  if (media.type === 'image') {
-    const data = await CameraRoll.iosGetImageDataById(media.path)
-
-    if (data.node.image.filepath === null) {
-      return { success: false }
-    }
-
-    filepath = data.node.image.filepath.replace('file://', '')
-  } else {
-    try {
-      await RNFileSystem.unlink(
-        RNFileSystem.TemporaryDirectoryPath + media.name
-      )
-    } catch {
-      // we try to remove temporary file just in case it exists
-    }
-
-    filepath = await RNFileSystem.copyAssetsVideoIOS(
-      media.path,
-      RNFileSystem.TemporaryDirectoryPath + media.name
-    )
+  if (data.node.image.filepath === null) {
+    return { success: false }
   }
+
+  const filepath = data.node.image.filepath.replace('file://', '')
 
   return new Promise((resolve, reject) => {
     RNFileSystem.uploadFiles({
