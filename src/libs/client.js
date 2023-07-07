@@ -14,6 +14,7 @@ import {
   listenTokenRefresh,
   saveClient
 } from '/libs/clientHelpers/persistClient'
+import { startListening } from '/app/domain/authentication/services/AuthService'
 
 import packageJSON from '../../package.json'
 
@@ -56,6 +57,9 @@ export const getClient = async () => {
   })
   listenTokenRefresh(client)
   client.getStackClient().setOAuthOptions(oauthOptions)
+
+  startListening(client)
+
   await client.login({
     uri,
     token
