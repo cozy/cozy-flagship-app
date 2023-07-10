@@ -11,8 +11,12 @@ import {
 import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
 
 import type CozyClient from 'cozy-client'
+import { IOCozyFile } from 'cozy-client'
 
 const log = Minilog('💿 Backup')
+
+const DOCTYPE_FILES = 'io.cozy.files'
+const DOCTYPE_ALBUMS = 'io.cozy.photos.albums'
 
 export const uploadMedias = async (
   client: CozyClient,
@@ -30,9 +34,20 @@ export const uploadMedias = async (
     try {
       const uploadUrl = getUploadUrl(client, backupFolderId, mediaToUpload)
 
-      await uploadMedia(client, uploadUrl, mediaToUpload)
+      const { data: documentCreated } = await uploadMedia(
+        client,
+        uploadUrl,
+        mediaToUpload
+      )
 
       log.debug(`✅ ${mediaToUpload.name} uploaded`)
+
+      await postUpload(
+        client,
+        localBackupConfig,
+        mediaToUpload,
+        documentCreated
+      )
 
       await setMediaAsBackuped(client, mediaToUpload)
 
@@ -46,6 +61,52 @@ export const uploadMedias = async (
   }
 
   return true
+}
+
+const postUpload = async (
+  client: CozyClient,
+  localBackupConfig: LocalBackupConfig,
+  mediaToUpload: Media,
+  documentCreated: IOCozyFile
+): Promise<void> => {
+  if (mediaToUpload.albums.length > 0) {
+    await addMediaToAlbum(
+      client,
+      localBackupConfig,
+      mediaToUpload,
+      documentCreated
+    )
+  }
+}
+
+const addMediaToAlbum = async (
+  client: CozyClient,
+  localBackupConfig: LocalBackupConfig,
+  mediaToUpload: Media,
+  documentCreated: IOCozyFile
+): Promise<void> => {
+  for (const album of mediaToUpload.albums) {
+    const { remoteId } =
+      localBackupConfig.backupedAlbums.find(
+        backupedAlbum => backupedAlbum.name === album.name
+      ) ?? {}
+
+    if (remoteId === undefined) {
+      return
+    }
+
+    await client.collection(DOCTYPE_FILES).addReferencesTo(
+      {
+        _id: remoteId,
+        _type: DOCTYPE_ALBUMS
+      },
+      [
+        {
+          _id: documentCreated.id
+        }
+      ]
+    )
+  }
 }
 
 const getUploadUrl = (
