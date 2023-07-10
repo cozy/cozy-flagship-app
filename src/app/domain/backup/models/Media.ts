@@ -1,5 +1,7 @@
 import { StackErrors, IOCozyFile } from 'cozy-client'
 
+import { Album } from '/app/domain/backup/models'
+
 /**
  * A media on the device
  * @member {string} name
@@ -13,6 +15,7 @@ export interface Media {
   type: 'image' | 'video'
   subType?: 'PhotoLive'
   creationDate: number
+  albums: Album[]
 }
 
 /**
