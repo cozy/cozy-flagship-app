@@ -4,7 +4,7 @@ import {
   PhotoIdentifier
 } from '@react-native-camera-roll/camera-roll'
 
-import { Media, BackupedMedia } from '/app/domain/backup/models/Media'
+import { Media, BackupedMedia, Album } from '/app/domain/backup/models'
 import { getLocalBackupConfig } from '/app/domain/backup/services/manageLocalBackupConfig'
 
 import type CozyClient from 'cozy-client'
@@ -39,6 +39,8 @@ const formatMediasFromPhotoIdentifier = (
 
   if (filename === null) return []
 
+  const albums = getAlbums(photoIdentifier)
+
   if (subTypes.includes('PhotoLive')) {
     return [
       {
@@ -46,14 +48,16 @@ const formatMediasFromPhotoIdentifier = (
         path: uri,
         type: 'video',
         subType: 'PhotoLive',
-        creationDate: timestamp * 1000
+        creationDate: timestamp * 1000,
+        albums
       },
       {
         name: filename,
         path: uri,
         type: 'image',
         subType: 'PhotoLive',
-        creationDate: timestamp * 1000
+        creationDate: timestamp * 1000,
+        albums
       }
     ]
   }
@@ -63,9 +67,34 @@ const formatMediasFromPhotoIdentifier = (
       name: filename,
       path: uri,
       type: type.includes('image') ? 'image' : 'video',
-      creationDate: timestamp * 1000
+      creationDate: timestamp * 1000,
+      albums
     }
   ]
+}
+
+/*
+  This code is linked to a patch-package of @react-native-camera-roll/camera-roll
+  returning for each asset its albums.
+
+  With this patch-package, group_name can be a string or a string[].
+
+  If it is merged one day, we will not need anymore to compare type.
+*/
+const getAlbums = (photoIdentifier: PhotoIdentifier): Album[] => {
+  const {
+    node: { group_name }
+  } = photoIdentifier
+
+  if (typeof group_name === 'string') {
+    return [
+      {
+        name: group_name
+      }
+    ]
+  } else {
+    return group_name.map(name => ({ name }))
+  }
 }
 
 export const getAllMedias = async (): Promise<Media[]> => {
