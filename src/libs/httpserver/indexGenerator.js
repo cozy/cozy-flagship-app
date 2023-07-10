@@ -1,6 +1,6 @@
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 
 import {
   getBaseFolderForFqdnAndSlug,

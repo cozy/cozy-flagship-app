@@ -6395,6 +6395,13 @@ cozy-logger@^1.10.0:
     chalk "^2.4.2"
     json-stringify-safe "5.0.1"
 
+cozy-minilog@3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/cozy-minilog/-/cozy-minilog-3.3.0.tgz#6e6d0ab49b72f5a8f7cb88cb2709ead1109a254e"
+  integrity sha512-tasP3kEDuPLGyyUSthGpcQxV71I7tJBGeN7BSUOWPYT/+Hh2YoLgL+pfFVLe4wVXrk3wsvzFWXLtJ0HFe1n1pA==
+  dependencies:
+    microee "0.0.6"
+
 cozy-stack-client@^34.11.0:
   version "34.11.0"
   resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-34.11.0.tgz#2c6a6f33b0a935c4d491077d7a4f85e8d2a542b2"

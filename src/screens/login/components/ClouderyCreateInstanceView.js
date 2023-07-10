@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 
 import {
   handleAutofocusFields,

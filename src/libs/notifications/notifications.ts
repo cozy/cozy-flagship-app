@@ -2,7 +2,7 @@ import { Platform } from 'react-native'
 import messaging, {
   FirebaseMessagingTypes
 } from '@react-native-firebase/messaging'
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 
 import CozyClient, {
   generateWebLink,

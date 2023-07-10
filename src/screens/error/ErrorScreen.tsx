@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import React, { useEffect } from 'react'
 import { Linking } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'

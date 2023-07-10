@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   BackHandler,

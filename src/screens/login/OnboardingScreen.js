@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native'
 import { ErrorView } from './components/ErrorView'
 import { OnboardingPasswordView } from './components/OnboardingPasswordView'
 
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 
 import {
   callMagicLinkOnboardingInitClient,

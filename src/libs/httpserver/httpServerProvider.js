@@ -5,7 +5,7 @@ import React, {
   useLayoutEffect,
   useState
 } from 'react'
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 
 import HttpServer from '/libs/httpserver/HttpServer'
 import { fetchAppDataForSlug } from '/libs/httpserver/indexDataFetcher'

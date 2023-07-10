@@ -1,3 +1,3 @@
-import minilog from '@cozy/minilog'
+import minilog from 'cozy-minilog'
 
 export const logger = minilog

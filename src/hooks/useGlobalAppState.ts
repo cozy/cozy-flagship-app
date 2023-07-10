@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import { NavigationContainerRef } from '@react-navigation/native'
 import { Route } from '@react-navigation/routers'
 import { useEffect } from 'react'

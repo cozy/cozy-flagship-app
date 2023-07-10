@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import { StatusBar } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
 

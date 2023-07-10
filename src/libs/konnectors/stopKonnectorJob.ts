@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 
 import CozyClient, { Q } from 'cozy-client'
 import { CozyClientDocument } from 'cozy-client/types/types'

@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import { Linking, Platform } from 'react-native'
 import type { WebViewNavigation } from 'react-native-webview'
 

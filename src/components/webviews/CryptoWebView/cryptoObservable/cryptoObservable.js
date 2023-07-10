@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import uniqueId from 'lodash/uniqueId'
 
 const log = Minilog('CryptoObservable')

@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import { Platform } from 'react-native'
 import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 
