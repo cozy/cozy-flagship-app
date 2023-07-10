@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo'
 import { useEffect } from 'react'
 

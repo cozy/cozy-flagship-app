@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import { Linking } from 'react-native'
 import { useEffect, useState } from 'react'
 

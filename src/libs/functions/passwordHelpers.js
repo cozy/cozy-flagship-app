@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 
 import { queryResultToCrypto } from '../../components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
 import { deleteKeychain, saveVaultInformation } from '../keychain'

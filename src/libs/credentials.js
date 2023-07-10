@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 const log = Minilog('credentials')
 
 const CREDENTIALS_KEY = 'credentials'

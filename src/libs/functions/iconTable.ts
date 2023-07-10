@@ -2,7 +2,7 @@
 import CozyClient, { Q } from 'cozy-client'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 
 import strings from '/constants/strings.json'
 import iconFallbackJson from '/assets/iconFallback.json'

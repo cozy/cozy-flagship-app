@@ -1,6 +1,6 @@
 // @ts-check
 /* eslint-disable no-unused-vars */
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import { getBuildId, getVersion } from 'react-native-device-info'
 
 // @ts-ignore

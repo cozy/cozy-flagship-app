@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 
 import { BootstrapAction } from '/app/domain/bootsrap/model/BootstrapAction'
 import { FallbackUrl } from '/app/domain/deeplinks/models/FallbackUrl'

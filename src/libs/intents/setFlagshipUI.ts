@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import { Platform, StatusBar } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
 

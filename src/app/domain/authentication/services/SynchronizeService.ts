@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import { getDeviceName } from 'react-native-device-info'
 
 import type CozyClient from 'cozy-client'

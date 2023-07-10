@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import { useEffect, useState } from 'react'
 import type {
   WebViewErrorEvent,

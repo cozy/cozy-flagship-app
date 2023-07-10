@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import type { NavigationProp } from '@react-navigation/native'
 import type { RefObject } from 'react'
 import type { WebView } from 'react-native-webview'

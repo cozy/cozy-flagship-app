@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import CozyClient from 'cozy-client'

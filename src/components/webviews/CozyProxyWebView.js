@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import { useFocusEffect } from '@react-navigation/native'
 import React, { useCallback, useState, useEffect } from 'react'
 import { AppState, Platform, View } from 'react-native'

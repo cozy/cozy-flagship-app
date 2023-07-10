@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { WebView } from 'react-native-webview'
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 
 import { useClient } from 'cozy-client'
 

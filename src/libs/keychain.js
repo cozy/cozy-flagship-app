@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import * as Keychain from 'react-native-keychain'
 
 // eslint-disable-next-line no-unused-vars

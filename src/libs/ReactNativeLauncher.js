@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
 import MicroEE from 'microee'

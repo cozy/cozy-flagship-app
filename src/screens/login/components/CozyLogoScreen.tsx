@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { SvgXml } from 'react-native-svg'

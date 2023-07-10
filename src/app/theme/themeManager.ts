@@ -4,7 +4,7 @@
 // can both respond to theme changes without tight coupling between them.
 import { EventEmitter } from 'events'
 
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 
 import { HomeThemeType } from '/app/theme/models'
 import { StatusBarStyle, ThemeInput } from '/libs/intents/setFlagshipUI'

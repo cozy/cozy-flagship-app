@@ -1,4 +1,4 @@
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 

@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { BackHandler } from 'react-native'
 import { useIsFocused } from '@react-navigation/native'
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 
 import { useNativeIntent } from 'cozy-intent'
 

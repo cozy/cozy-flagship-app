@@ -6,7 +6,7 @@ interface MiniLogger {
   error: (...msg: unknown[]) => void
 }
 
-declare module '@cozy/minilog' {
+declare module 'cozy-minilog' {
   const Minilog: (namespace: string) => MiniLogger
 
   export default Minilog
