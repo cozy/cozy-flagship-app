@@ -29,6 +29,7 @@ import { toggleSetting } from '/app/domain/settings/services/SettingsService'
 import {
   prepareBackup,
   startBackup,
+  stopBackup,
   checkBackupPermissions,
   requestBackupPermissions
 } from '/app/domain/backup/services/manageBackup'
@@ -124,6 +125,7 @@ interface CustomMethods {
   showInAppBrowser: (args: { url: string }) => Promise<BrowserResult>
   prepareBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
   startBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
+  stopBackup: () => Promise<BackupInfo>
   checkBackupPermissions: typeof checkBackupPermissions
   requestBackupPermissions: typeof requestBackupPermissions
 }
@@ -152,6 +154,16 @@ const startBackupWithClient = (
     sendProgressToWebview(client, backupInfo)
 
   return startBackup(client, onProgress)
+}
+
+const stopBackupWithClient = (
+  client: CozyClient | undefined
+): Promise<BackupInfo> => {
+  if (!client) {
+    throw new Error('You must be logged in to use backup feature')
+  }
+
+  return stopBackup(client)
 }
 
 /**
@@ -189,6 +201,7 @@ export const localMethods = (
     isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
     prepareBackup: () => prepareBackupWithClient(client),
     startBackup: () => startBackupWithClient(client),
+    stopBackup: () => stopBackupWithClient(client),
     checkBackupPermissions,
     requestBackupPermissions
   }
