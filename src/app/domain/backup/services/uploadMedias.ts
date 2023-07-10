@@ -2,7 +2,10 @@
 import Minilog from '@cozy/minilog'
 
 import { uploadMedia } from '/app/domain/backup/services/uploadMedia'
-import { setMediaAsBackuped } from '/app/domain/backup/services/manageLocalBackupConfig'
+import {
+  setBackupAsDone,
+  setMediaAsBackuped
+} from '/app/domain/backup/services/manageLocalBackupConfig'
 import {
   Media,
   LocalBackupConfig,
@@ -18,6 +21,16 @@ const log = Minilog('💿 Backup')
 const DOCTYPE_FILES = 'io.cozy.files'
 const DOCTYPE_ALBUMS = 'io.cozy.photos.albums'
 
+let shouldStopBackup = false
+
+export const getShouldStopBackup = (): boolean => {
+  return shouldStopBackup
+}
+
+export const setShouldStopBackup = (value: boolean): void => {
+  shouldStopBackup = value
+}
+
 export const uploadMedias = async (
   client: CozyClient,
   localBackupConfig: LocalBackupConfig,
@@ -31,6 +44,12 @@ export const uploadMedias = async (
   } = localBackupConfig
 
   for (const mediaToUpload of mediasToUpload) {
+    if (shouldStopBackup) {
+      shouldStopBackup = false
+      await setBackupAsDone(client)
+      return true
+    }
+
     try {
       const uploadUrl = getUploadUrl(client, backupFolderId, mediaToUpload)
 

@@ -14,7 +14,10 @@ import {
   createRemoteAlbums
 } from '/app/domain/backup/services/manageAlbums'
 import { getMediasToBackup } from '/app/domain/backup/services/getMedias'
-import { uploadMedias } from '/app/domain/backup/services/uploadMedias'
+import {
+  uploadMedias,
+  setShouldStopBackup
+} from '/app/domain/backup/services/uploadMedias'
 import {
   fetchDeviceRemoteBackupConfig,
   fetchBackupedMedias,
@@ -97,6 +100,12 @@ export const startBackup = async (
   log.debug('Backup done')
 
   onProgress(await getBackupInfo(client))
+
+  return await getBackupInfo(client)
+}
+
+export const stopBackup = async (client: CozyClient): Promise<BackupInfo> => {
+  setShouldStopBackup(true)
 
   return await getBackupInfo(client)
 }
