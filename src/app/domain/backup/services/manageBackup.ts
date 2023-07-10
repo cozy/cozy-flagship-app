@@ -6,8 +6,13 @@ import {
   setBackupAsInitializing,
   setBackupAsReady,
   setBackupAsRunning,
-  setBackupAsDone
+  setBackupAsDone,
+  saveAlbums
 } from '/app/domain/backup/services/manageLocalBackupConfig'
+import {
+  getAlbums,
+  createRemoteAlbums
+} from '/app/domain/backup/services/manageAlbums'
 import { getMediasToBackup } from '/app/domain/backup/services/getMedias'
 import { uploadMedias } from '/app/domain/backup/services/uploadMedias'
 import {
@@ -51,6 +56,12 @@ export const prepareBackup = async (
   await setBackupAsInitializing(client)
 
   onProgress(await getBackupInfo(client))
+
+  const albums = await getAlbums()
+
+  const createdAlbums = await createRemoteAlbums(client, albums)
+
+  await saveAlbums(client, createdAlbums)
 
   const mediasToBackup = await getMediasToBackup(client)
 

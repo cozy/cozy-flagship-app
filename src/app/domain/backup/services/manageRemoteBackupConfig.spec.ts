@@ -121,6 +121,7 @@ describe('fetchDeviceRemoteBackupConfig', () => {
         },
         lastBackupDate: 0,
         backupedMedias: [],
+        backupedAlbums: [],
         currentBackup: {
           status: 'to_do',
           mediasToBackup: [],
@@ -161,6 +162,7 @@ describe('fetchDeviceRemoteBackupConfig', () => {
         },
         lastBackupDate: 0,
         backupedMedias: [],
+        backupedAlbums: [],
         currentBackup: {
           status: 'to_do',
           mediasToBackup: [],
