@@ -4,7 +4,8 @@ import {
   Media,
   LocalBackupConfig,
   RemoteBackupConfig,
-  BackupedMedia
+  BackupedMedia,
+  BackupedAlbum
 } from '/app/domain/backup/models'
 import {
   getUserPersistedData,
@@ -27,6 +28,7 @@ const INITIAL_BACKUP_CONFIG: LocalBackupConfig = {
   },
   lastBackupDate: 0,
   backupedMedias: [],
+  backupedAlbums: [],
   currentBackup: {
     status: 'to_do',
     mediasToBackup: [],
@@ -74,6 +76,23 @@ export const initiazeLocalBackupConfig = async (
   await setLocalBackupConfig(client, newLocalBackupConfig)
 
   return newLocalBackupConfig
+}
+
+export const saveAlbums = async (
+  client: CozyClient,
+  albums: BackupedAlbum[]
+): Promise<void> => {
+  const localBackupConfig = await getLocalBackupConfig(client)
+
+  // add media to backuped medias
+  const concatenation = [...albums, ...localBackupConfig.backupedAlbums]
+  const newBackupedAlbums = Object.values(
+    concatenation.reduce((acc, obj) => ({ ...acc, [obj.remoteId]: obj }), {})
+  ) as unknown as BackupedAlbum[]
+
+  localBackupConfig.backupedAlbums = newBackupedAlbums
+
+  await setLocalBackupConfig(client, localBackupConfig)
 }
 
 export const setMediaAsBackuped = async (

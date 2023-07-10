@@ -1,4 +1,4 @@
-import { Media, BackupedMedia } from '/app/domain/backup/models'
+import { Media, BackupedMedia, BackupedAlbum } from '/app/domain/backup/models'
 
 type BackupStatus = 'to_do' | 'initializing' | 'ready' | 'running' | 'done'
 
@@ -13,6 +13,7 @@ export interface LocalBackupConfig {
   remoteBackupConfig: RemoteBackupConfig
   lastBackupDate: number
   backupedMedias: BackupedMedia[]
+  backupedAlbums: BackupedAlbum[]
   currentBackup: {
     status: BackupStatus
     mediasToBackup: Media[]
