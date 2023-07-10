@@ -80,12 +80,7 @@ export const startBackup = async (
 ): Promise<BackupInfo> => {
   log.debug('Backup started')
 
-  const {
-    remoteBackupConfig: {
-      backupFolder: { id: backupFolderId }
-    },
-    currentBackup: { mediasToBackup }
-  } = await getLocalBackupConfig(client)
+  const localBackupConfig = await getLocalBackupConfig(client)
 
   await setBackupAsRunning(client)
 
@@ -93,7 +88,7 @@ export const startBackup = async (
 
   activateKeepAwake()
 
-  await uploadMedias(client, backupFolderId, mediasToBackup, onProgress)
+  await uploadMedias(client, localBackupConfig, onProgress)
 
   deactivateKeepAwake()
 
