@@ -255,7 +255,8 @@ export class LauncherView extends Component {
                 ref={ref => (this.pilotWebView = ref)}
                 originWhitelist={['*']}
                 source={{
-                  uri: 'about:blank'
+                  uri: 'about:blank',
+                  html: '<html></html>'
                 }}
                 useWebKit={true}
                 javaScriptEnabled={true}
