@@ -33,3 +33,6 @@ jobs:
 
     - name: Typecheck
       run: yarn typecheck
+
+    - name: Validate Locales
+      run: yarn validate:locales
