@@ -35,7 +35,7 @@ export const uploadMedias = async (
   client: CozyClient,
   localBackupConfig: LocalBackupConfig,
   onProgress: ProgressCallback
-): Promise<boolean> => {
+): Promise<void> => {
   const {
     remoteBackupConfig: {
       backupFolder: { id: backupFolderId }
@@ -47,7 +47,7 @@ export const uploadMedias = async (
     if (shouldStopBackup) {
       shouldStopBackup = false
       await setBackupAsDone(client)
-      return true
+      return
     }
 
     try {
@@ -79,7 +79,7 @@ export const uploadMedias = async (
     }
   }
 
-  return true
+  return
 }
 
 const postUpload = async (
