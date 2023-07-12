@@ -58,7 +58,7 @@ export const prepareBackup = async (
 
   await setBackupAsInitializing(client)
 
-  onProgress(await getBackupInfo(client))
+  void onProgress(await getBackupInfo(client))
 
   const albums = await getAlbums()
 
@@ -70,7 +70,7 @@ export const prepareBackup = async (
 
   await setBackupAsReady(client, mediasToBackup)
 
-  onProgress(await getBackupInfo(client))
+  void onProgress(await getBackupInfo(client))
 
   log.debug('Backup preparation done')
 
@@ -87,7 +87,7 @@ export const startBackup = async (
 
   await setBackupAsRunning(client)
 
-  onProgress(await getBackupInfo(client))
+  void onProgress(await getBackupInfo(client))
 
   activateKeepAwake()
 
@@ -99,7 +99,7 @@ export const startBackup = async (
 
   log.debug('Backup done')
 
-  onProgress(await getBackupInfo(client))
+  void onProgress(await getBackupInfo(client))
 
   return await getBackupInfo(client)
 }
