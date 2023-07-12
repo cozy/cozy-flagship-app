@@ -1,4 +1,4 @@
-# 1.1.11
+# 1.1.12
 
 ## ✨ Features
 
@@ -8,6 +8,23 @@
 
 ## 🔧 Tech
 
+
+# 1.1.11
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* Client Side Connectors now prevent touch interaction during automated phases ([PR #853](https://github.com/cozy/cozy-react-native/pull/853))
+* Fix a bug where Client Side Connectors would loss some metadata when running ([PR #864](https://github.com/cozy/cozy-react-native/pull/864))
+* Fix a bug that prevented Client Side Connectors to work on iOS ([PR #868](https://github.com/cozy/cozy-react-native/pull/868))
+
+## 🔧 Tech
+
+* Remove unused react-native web setup ([PR #865](https://github.com/cozy/cozy-react-native/pull/865))
+* Remove debug.keystore from versioned files and now use the one from Cozy's password-store ([PR #863](https://github.com/cozy/cozy-react-native/pull/863))
+* Add foundations for photo and video backup ([PR #871](https://github.com/cozy/cozy-react-native/pull/871))
 
 # 1.1.10
 
