@@ -34,9 +34,6 @@ import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
 import { ThemeProvider } from '/app/theme/ThemeProvider'
 import { useInitI18n } from '/locales/useInitI18n'
-import { useRevokedStatus } from '/app/view/Auth/useRevokedStatus'
-import { ErrorTokenModal } from '/app/view/Auth/ErrorTokenModal'
-import { AuthService } from '/app/domain/authentication/services/AuthService'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -70,7 +67,6 @@ const App = ({ setClient }) => {
 
 const Nav = ({ client, setClient }) => {
   const colors = getColors()
-  const { userRevoked, userConfirmation } = useRevokedStatus(AuthService)
 
   return (
     <NavigationContainer ref={RootNavigation.navigationRef}>
@@ -83,7 +79,6 @@ const Nav = ({ client, setClient }) => {
             }
           ]}
         >
-          {userRevoked && <ErrorTokenModal onClose={userConfirmation} />}
           <StatusBar
             barStyle="light-content"
             backgroundColor="transparent"

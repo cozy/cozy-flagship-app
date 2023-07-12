@@ -45,5 +45,11 @@ export const styles = StyleSheet.create({
   subtitle1: { fontSize: 16 },
   subtitle2: { fontSize: 16 },
   body1: { fontSize: 16 },
-  caption: { fontSize: 16 }
+  caption: { fontSize: 16 },
+  link: {
+    fontFamily: 'Lato-Regular',
+    fontSize: 14,
+    lineHeight: 19,
+    textDecorationLine: 'underline'
+  }
 })

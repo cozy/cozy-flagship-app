@@ -1,41 +1,94 @@
 /* eslint-disable @typescript-eslint/unbound-method */
+import Minilog from '@cozy/minilog'
+import { Linking } from 'react-native'
+
+import {
+  handleSupportEmail,
+  startListening
+} from '/app/domain/authentication/services/AuthService'
+
 import CozyClient from 'cozy-client'
 
-import { AuthService } from '/app/domain/authentication/services/AuthService'
-import { asyncLogout } from '/libs/intents/localMethods'
-const { setUserRevoked, isUserRevoked, startListening } = AuthService
+jest.mock('react-native', () => ({
+  Linking: {
+    openURL: jest.fn()
+  }
+}))
 
-jest.mock('cozy-client')
-jest.mock('/libs/intents/localMethods')
+jest.mock('@cozy/minilog', () => {
+  const mockLogFunctions = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    log: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+  }
 
-const mockClient = new CozyClient() as jest.Mocked<CozyClient>
-const mockAsyncLogout = asyncLogout as jest.MockedFunction<typeof asyncLogout>
+  return {
+    __esModule: true,
+    default: (): MiniLogger => mockLogFunctions
+  }
+})
+
+jest.mock('cozy-client', () => ({
+  __esModule: true,
+  default: jest.fn().mockImplementation(() => ({
+    on: jest.fn(),
+    removeListener: jest.fn()
+  }))
+}))
+
+jest.mock('cozy-client', () => ({
+  __esModule: true,
+  default: jest.fn().mockImplementation(() => ({
+    on: jest.fn(),
+    removeListener: jest.fn()
+  }))
+}))
+
+jest.mock('/app/domain/authentication/utils/asyncLogoutNoClient', () =>
+  Promise.resolve()
+)
+
+const mockLinking = Linking as jest.Mocked<typeof Linking>
 
 describe('AuthService', () => {
+  let mockClient: CozyClient
+  let mockLog: MiniLogger
+
   beforeEach(() => {
+    mockClient = new CozyClient()
+    mockLog = Minilog('test')
+  })
+
+  afterEach(() => {
     jest.clearAllMocks()
   })
 
-  it('sets and gets user revoked status correctly', () => {
-    setUserRevoked(true)
-    expect(isUserRevoked()).toBe(true)
+  it('opens the mail app when handleSupportEmail is called', () => {
+    handleSupportEmail()
+    expect(mockLinking.openURL).toHaveBeenCalledWith(
+      'mailto:support@cozycloud.cc'
+    )
   })
 
-  it('handles token error correctly', () => {
-    mockClient.on.mockImplementationOnce((event, callback: () => void) => {
-      if (event === 'revoked') callback()
+  it('logs an error when handleSupportEmail fails', () => {
+    mockLinking.openURL.mockImplementationOnce(() => {
+      throw new Error('Error opening email app')
     })
-    expect(isUserRevoked()).toBe(true)
+
+    handleSupportEmail()
+    expect(mockLog.error).toHaveBeenCalledWith(
+      'Error while opening email app',
+      expect.any(Error)
+    )
   })
 
-  it('starts listening correctly', () => {
+  it('starts listening to events when startListening is called', () => {
     startListening(mockClient)
-    expect(mockClient.on).toHaveBeenCalledTimes(1)
-  })
-
-  it('handles user revoked change callbacks correctly', () => {
-    setUserRevoked(false)
-    expect(isUserRevoked()).toBe(false)
-    expect(mockAsyncLogout).toHaveBeenCalled()
+    expect(mockLog.info).toHaveBeenCalledWith(
+      'Start listening to cozy-client events'
+    )
+    expect(mockClient.on).toHaveBeenCalledWith('revoked', expect.any(Function))
   })
 })

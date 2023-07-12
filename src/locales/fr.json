@@ -1,4 +1,7 @@
 {
+  "support": {
+    "email": "support@cozycloud.cc"
+  },
   "konnectors": {
     "errorDoubleRun": {
       "title": "Déjà un compte en cours d'exécution",
@@ -102,7 +105,7 @@
     },
     "ErrorToken": {
       "title": "Accès révoqué",
-      "body": "Vous semblez avoir révoqué cet appareil depuis votre Cozy. Pour accéder à nouveau à vos données, veuillez vous reconnecter.Si cette action ne vient pas de vous, n’hésitez pas à nous contacter à support@cozycloud.cc.",
+      "body": "Vous semblez avoir révoqué cet appareil depuis votre Cozy. Pour accéder à nouveau à vos données, veuillez vous reconnecter. Si cette action ne vient pas de vous, n'hésitez pas à nous contacter à {{email}}.",
       "button": "Se reconnecter"
     }
   },

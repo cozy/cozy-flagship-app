@@ -12,6 +12,8 @@ import { getClientName } from '/app/domain/authentication/services/SynchronizeSe
 
 import packageJSON from '../../../package.json'
 
+import { startListening } from '/app/domain/authentication/services/AuthService'
+
 /**
  * Create a CozyClient for the given Cozy instance and register it
  *
@@ -41,7 +43,7 @@ export const createClient = async (instance: string): Promise<CozyClient> => {
   const stackClient = client.getStackClient()
   stackClient.setUri(instance)
   await stackClient.register(instance)
-
+  startListening(client)
   return client
 }
 

@@ -16,6 +16,7 @@ type TypographyVariant =
   | 'body2'
   | 'caption'
   | 'underline'
+  | 'link'
 
 type TypographyColor =
   | 'initial'

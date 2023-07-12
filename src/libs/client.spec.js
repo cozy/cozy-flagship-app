@@ -27,7 +27,8 @@ const mockCozyClient = {
   registerPlugin: jest.fn(),
   getInstanceOptions: jest.fn().mockReturnValue({
     locale: 'en'
-  })
+  }),
+  on: jest.fn()
 }
 
 CozyClient.mockImplementation(() => mockCozyClient)

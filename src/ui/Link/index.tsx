@@ -1,7 +1,7 @@
 import React from 'react'
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
+import { Pressable, PressableProps } from 'react-native'
 
-type LinkProps = TouchableOpacityProps
+type LinkProps = PressableProps
 
 export const Link = ({
   children,
@@ -10,12 +10,7 @@ export const Link = ({
   style,
   ...props
 }: LinkProps): JSX.Element => (
-  <TouchableOpacity
-    onPress={onPress}
-    style={[{ width: '100%' }, style]}
-    disabled={disabled}
-    {...props}
-  >
+  <Pressable onPress={onPress} disabled={disabled} {...props}>
     {children}
-  </TouchableOpacity>
+  </Pressable>
 )
