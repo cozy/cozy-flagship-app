@@ -136,10 +136,6 @@ export const getMediasToBackup = async (
 
   const backupConfig = await getLocalBackupConfig(client)
 
-  if (backupConfig === null) {
-    return []
-  }
-
   const mediasToBackup = allMedias.filter(
     allMedia => !isMediaAlreadyBackuped(allMedia, backupConfig.backupedMedias)
   )
