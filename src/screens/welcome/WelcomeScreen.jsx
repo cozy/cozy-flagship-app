@@ -13,6 +13,8 @@ import {
 import { LoginScreen } from '/screens/login/LoginScreen'
 import { useInstallReferrer } from '/screens/welcome/install-referrer/useInstallReferrer'
 import { useWelcomeInit } from '/app/view/Welcome/useWelcomeInit'
+import { ErrorTokenModal } from '/app/view/Auth/ErrorTokenModal'
+import { handleSupportEmail } from '/app/domain/authentication/services/AuthService'
 
 const WelcomeView = ({ setIsWelcomeModalDisplayed, setClouderyMode }) => {
   const colors = getColors()
@@ -73,6 +75,14 @@ export const WelcomeScreen = ({ navigation, route, setClient }) => {
         setClient={setClient}
         goBack={handleBackPress}
       />
+
+      {route.params?.options === 'showTokenError' && (
+        <ErrorTokenModal
+          onClose={() => navigation.setParams({ options: '' })}
+          handleEmail={handleSupportEmail}
+        />
+      )}
+
       {isWelcomeModalDisplayed && !onboardingPartner.hasReferral && (
         <WelcomeView
           setIsWelcomeModalDisplayed={setIsWelcomeModalDisplayed}
