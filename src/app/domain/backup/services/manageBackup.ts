@@ -89,11 +89,11 @@ export const startBackup = async (
 
   void onProgress(await getBackupInfo(client))
 
-  activateKeepAwake()
+  activateKeepAwake('backup')
 
   await uploadMedias(client, localBackupConfig, onProgress)
 
-  deactivateKeepAwake()
+  deactivateKeepAwake('backup')
 
   await setBackupAsDone(client)
 
