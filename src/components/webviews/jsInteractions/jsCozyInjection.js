@@ -16,7 +16,8 @@ const makeMetadata = routeName => {
     platform: Platform,
     routeName,
     statusBarHeight,
-    version
+    version,
+    backup_available: true
   })
 }
 
