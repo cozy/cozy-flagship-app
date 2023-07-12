@@ -51,4 +51,4 @@ export interface BackupInfo {
   }
 }
 
-export type ProgressCallback = (backupInfo: BackupInfo) => void
+export type ProgressCallback = (backupInfo: BackupInfo) => Promise<void>

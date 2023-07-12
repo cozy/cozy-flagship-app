@@ -43,24 +43,28 @@ const getHomeUri = (client: CozyClient): string => {
   return homeUri
 }
 
-export const sendProgressToWebview = (
+export const sendProgressToWebview = async (
   client: CozyClient,
   backupInfo: BackupInfo
-): void => {
+): Promise<void> => {
   const nativeIntentService = getNativeIntentService()
 
   const photosUri = getPhotosUri(client)
   const homeUri = getHomeUri(client)
 
-  nativeIntentService
-    .call(photosUri, 'updateBackupInfo', backupInfo)
-    ?.catch((e: Error) =>
+  try {
+    await nativeIntentService.call(photosUri, 'updateBackupInfo', backupInfo)
+  } catch (e) {
+    if (e instanceof Error) {
       log.debug('Error when sending backup info to photos app', e.message)
-    )
+    }
+  }
 
-  nativeIntentService
-    .call(homeUri, 'updateBackupInfo', backupInfo)
-    ?.catch((e: Error) =>
+  try {
+    await nativeIntentService.call(homeUri, 'updateBackupInfo', backupInfo)
+  } catch (e) {
+    if (e instanceof Error) {
       log.debug('Error when sending backup info to home app', e.message)
-    )
+    }
+  }
 }

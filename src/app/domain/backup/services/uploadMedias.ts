@@ -71,12 +71,14 @@ export const uploadMedias = async (
       await setMediaAsBackuped(client, mediaToUpload)
 
       log.debug(`✅ ${mediaToUpload.name} set as backuped`)
-
-      onProgress(await getBackupInfo(client))
     } catch (e) {
-      log.debug(`❌ ${mediaToUpload.name} not uploaded`)
+      log.debug(
+        `❌ ${mediaToUpload.name} not uploaded or set as backuped correctly`
+      )
       log.debug(e)
     }
+
+    void onProgress(await getBackupInfo(client))
   }
 
   return

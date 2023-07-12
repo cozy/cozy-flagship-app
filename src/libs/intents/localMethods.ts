@@ -137,7 +137,7 @@ const prepareBackupWithClient = (
     throw new Error('You must be logged in to use backup feature')
   }
 
-  const onProgress = (backupInfo: BackupInfo): void =>
+  const onProgress = (backupInfo: BackupInfo): Promise<void> =>
     sendProgressToWebview(client, backupInfo)
 
   return prepareBackup(client, onProgress)
@@ -150,7 +150,7 @@ const startBackupWithClient = (
     throw new Error('You must be logged in to use backup feature')
   }
 
-  const onProgress = (backupInfo: BackupInfo): void =>
+  const onProgress = (backupInfo: BackupInfo): Promise<void> =>
     sendProgressToWebview(client, backupInfo)
 
   return startBackup(client, onProgress)
