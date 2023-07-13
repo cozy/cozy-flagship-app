@@ -11,6 +11,7 @@ import { BackupedMedia, RemoteBackupConfig } from '/app/domain/backup/models'
 import {
   buildFilesQuery,
   buildFileQuery,
+  File,
   FilesQueryAllResult
 } from '/app/domain/backup/queries'
 
@@ -174,19 +175,39 @@ export const createRemoteBackupFolder = async (
   return remoteBackupConfig
 }
 
+const formatBackupedMedia = (
+  deviceRemoteBackupConfig: RemoteBackupConfig,
+  file: File
+): BackupedMedia => {
+  const pathWithBackupFolderRemoved = file.path.replace(
+    deviceRemoteBackupConfig.backupFolder.path,
+    ''
+  )
+
+  const pathWithFilenameRemoved = pathWithBackupFolderRemoved.substring(
+    0,
+    pathWithBackupFolderRemoved.lastIndexOf('/')
+  )
+
+  return {
+    name: file.name,
+    remotePath: pathWithFilenameRemoved
+  }
+}
+
 export const fetchBackupedMedias = async (
   client: CozyClient,
   deviceRemoteBackupConfig: RemoteBackupConfig
 ): Promise<BackupedMedia[]> => {
-  const { backupFolder } = deviceRemoteBackupConfig
+  const deviceId = await getDeviceId()
 
-  const filesQuery = buildFilesQuery(backupFolder.id)
+  const filesQuery = buildFilesQuery(deviceId)
 
   const data = (await client.queryAll(filesQuery)) as FilesQueryAllResult
 
-  const backupedMedias = data.map(file => ({
-    name: file.name
-  }))
+  const backupedMedias = data.map(file =>
+    formatBackupedMedia(deviceRemoteBackupConfig, file)
+  )
 
   return backupedMedias
 }

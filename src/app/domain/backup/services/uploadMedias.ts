@@ -6,6 +6,7 @@ import {
   setBackupAsDone,
   setMediaAsBackuped
 } from '/app/domain/backup/services/manageLocalBackupConfig'
+import { getDeviceId } from '/app/domain/backup/services/manageRemoteBackupConfig'
 import {
   Media,
   LocalBackupConfig,
@@ -37,11 +38,10 @@ export const uploadMedias = async (
   onProgress: ProgressCallback
 ): Promise<void> => {
   const {
-    remoteBackupConfig: {
-      backupFolder: { id: backupFolderId }
-    },
     currentBackup: { mediasToBackup: mediasToUpload }
   } = localBackupConfig
+
+  const metadataId = await getMetadataId(client)
 
   for (const mediaToUpload of mediasToUpload) {
     if (shouldStopBackup) {
@@ -51,7 +51,18 @@ export const uploadMedias = async (
     }
 
     try {
-      const uploadUrl = getUploadUrl(client, backupFolderId, mediaToUpload)
+      const uploadFolderId = await getUploadFolderId(
+        client,
+        localBackupConfig,
+        mediaToUpload
+      )
+
+      const uploadUrl = getUploadUrl(
+        client,
+        uploadFolderId,
+        metadataId,
+        mediaToUpload
+      )
 
       const { data: documentCreated } = await uploadMedia(
         client,
@@ -130,9 +141,44 @@ const addMediaToAlbum = async (
   }
 }
 
+const getMetadataId = async (client: CozyClient): Promise<string> => {
+  const deviceId = await getDeviceId()
+
+  const {
+    data: { id: metadataId }
+  } = await client.collection(DOCTYPE_FILES).createFileMetadata({
+    backupDeviceIds: [deviceId]
+  })
+
+  return metadataId
+}
+
+const getUploadFolderId = async (
+  client: CozyClient,
+  localBackupConfig: LocalBackupConfig,
+  mediaToUpload: Media
+): Promise<string> => {
+  const {
+    remoteBackupConfig: { backupFolder }
+  } = localBackupConfig
+
+  if (mediaToUpload.remotePath === '/') {
+    return backupFolder.id
+  } else {
+    const path = backupFolder.path + mediaToUpload.remotePath
+
+    const dirId = await client
+      .collection(DOCTYPE_FILES)
+      .ensureDirectoryExists(path)
+
+    return dirId
+  }
+}
+
 const getUploadUrl = (
   client: CozyClient,
   backupFolderId: string,
+  metadataId: string,
   media: Media
 ): string => {
   const createdAt = new Date(media.creationDate).toISOString()
@@ -146,7 +192,9 @@ const getUploadUrl = (
     '&Type=file&Tags=library&Executable=false&CreatedAt=' +
     createdAt +
     '&UpdatedAt=' +
-    createdAt
+    createdAt +
+    '&MetadataID=' +
+    metadataId
 
   return toURL
 }
