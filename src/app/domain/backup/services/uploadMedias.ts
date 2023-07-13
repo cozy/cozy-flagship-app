@@ -3,7 +3,7 @@ import Minilog from 'cozy-minilog'
 
 import { uploadMedia } from '/app/domain/backup/services/uploadMedia'
 import {
-  setBackupAsDone,
+  setBackupAsReady,
   setMediaAsBackuped
 } from '/app/domain/backup/services/manageLocalBackupConfig'
 import { getDeviceId } from '/app/domain/backup/services/manageRemoteBackupConfig'
@@ -46,7 +46,7 @@ export const uploadMedias = async (
   for (const mediaToUpload of mediasToUpload) {
     if (shouldStopBackup) {
       shouldStopBackup = false
-      await setBackupAsDone(client)
+      await setBackupAsReady(client)
       return
     }
 

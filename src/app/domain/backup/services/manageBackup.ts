@@ -95,9 +95,15 @@ export const startBackup = async (
 
   deactivateKeepAwake('backup')
 
-  await setBackupAsDone(client)
+  const localBackupConfigAfterUpload = await getLocalBackupConfig(client)
 
-  log.debug('Backup done')
+  if (localBackupConfigAfterUpload.currentBackup.status === 'running') {
+    await setBackupAsDone(client)
+
+    log.debug('Backup done')
+  } else {
+    log.debug('Backup stopped')
+  }
 
   void onProgress(await getBackupInfo(client))
 
