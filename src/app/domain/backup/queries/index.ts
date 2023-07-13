@@ -2,23 +2,26 @@ import { Q, QueryDefinition } from 'cozy-client'
 
 const DOCTYPE_FILES = 'io.cozy.files'
 
-export const buildFilesQuery = (dirId: string): QueryDefinition => {
+export const buildFilesQuery = (deviceId: string): QueryDefinition => {
   return Q(DOCTYPE_FILES)
     .where({
-      dir_id: dirId,
-      type: 'file'
+      type: 'file',
+      'metadata.backupDeviceIds': {
+        $elemMatch: { $eq: deviceId }
+      }
     })
-    .indexFields(['dir_id', 'type'])
-    .select(['name', 'dir_id', 'type'])
+    .indexFields(['metadata.backupDeviceIds', 'type'])
+    .select(['metadata.backupDeviceIds', 'type', 'name', 'path'])
 }
 
 export const buildFileQuery = (id: string): QueryDefinition => {
   return Q(DOCTYPE_FILES).getById(id)
 }
 
-interface File {
+export interface File {
   id: string
   name: string
+  path: string
 }
 
 export type FilesQueryAllResult = File[]

@@ -103,12 +103,15 @@ export const setMediaAsBackuped = async (
 
   // add media to backuped medias
   const backupedMedia = localBackupConfig.backupedMedias.find(
-    backupedMedia => backupedMedia.name === media.name
+    backupedMedia =>
+      backupedMedia.name === media.name &&
+      backupedMedia.remotePath === media.remotePath
   )
 
   if (!backupedMedia) {
     localBackupConfig.backupedMedias.push({
-      name: media.name
+      name: media.name,
+      remotePath: media.remotePath
     })
   }
 
