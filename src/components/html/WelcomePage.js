@@ -1,7 +1,5 @@
+import { translation } from '/locales'
 import { getColors } from '/ui/colors'
-import { getT } from '/locales/i18n'
-
-const t = getT()
 const colors = getColors()
 
 const body = `
@@ -16,17 +14,17 @@ const body = `
       </svg>
     </div>
 
-    <div class="h2 mb-3">${t('screens.welcome.title')}</div>
+    <div class="h2 mb-3">${translation.screens.welcome.title}</div>
 
-    <div class="mx-5">${t('screens.welcome.body')}</div>
+    <div class="mx-5">${translation.screens.welcome.body}</div>
   </div>
 
   <button class="btn btn-primary mt-3 mb-2" onclick="(() => window.ReactNativeWebView.postMessage('onSignin'))()">
-    ${t('screens.welcome.buttonSignin')}
+    ${translation.screens.welcome.buttonSignin}
   </button>
 
   <button class="btn btn-outline-info mb-3" onclick="(() => window.ReactNativeWebView.postMessage('onLogin'))()">
-    ${t('screens.welcome.buttonLogin')}
+    ${translation.screens.welcome.buttonLogin}
   </button>
 `
 
