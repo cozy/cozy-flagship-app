@@ -140,19 +140,27 @@ export const setBackupAsInitializing = async (
 
 export const setBackupAsReady = async (
   client: CozyClient,
-  mediasToBackup: Media[]
+  mediasToBackup?: Media[]
 ): Promise<void> => {
   const localBackupConfig = await getLocalBackupConfig(client)
 
-  localBackupConfig.currentBackup.mediasToBackup = mediasToBackup
-  localBackupConfig.currentBackup.totalMediasToBackupCount =
-    mediasToBackup.length
+  if (mediasToBackup) {
+    localBackupConfig.currentBackup.mediasToBackup = mediasToBackup
+    localBackupConfig.currentBackup.totalMediasToBackupCount =
+      mediasToBackup.length
+  } else {
+    localBackupConfig.currentBackup.totalMediasToBackupCount =
+      localBackupConfig.currentBackup.mediasToBackup.length
+  }
+
   localBackupConfig.currentBackup.status = 'ready'
 
   await setLocalBackupConfig(client, localBackupConfig)
 
   log.debug('Backup set as ready')
-  log.debug(`  ${mediasToBackup.length}  medias to backup`)
+  log.debug(
+    `  ${localBackupConfig.currentBackup.totalMediasToBackupCount}  medias to backup`
+  )
 }
 
 export const setBackupAsRunning = async (client: CozyClient): Promise<void> => {
