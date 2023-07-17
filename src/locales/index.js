@@ -1,3 +1,3 @@
-import frFR from '/locales/fr-FR/translation.json'
+import frFR from './fr.json'
 
 export const translation = frFR

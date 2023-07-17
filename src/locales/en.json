@@ -1,0 +1,86 @@
+{
+  "konnectors": {
+    "errorDoubleRun": {
+      "title": "Account Already Running",
+      "body": "An account {{running_konnector}} is already running. You cannot run two accounts simultaneously. Please wait for the {{running_konnector}} account execution to end before launching your {{concurrent_konnector}} account",
+      "button": "Understood"
+    }
+  },
+  "errors": {
+    "badUnlockPassword": "The credentials you entered are incorrect, please try again.",
+    "badUnlockPin": "The PIN you entered is incorrect, please try again",
+    "contactUs": "A problem, a suggestion? Contact us at",
+    "unknown_error": "An unexpected error occurred, please try again.",
+    "reset": "Return to home"
+  },
+  "logout_dialog": {
+    "cancel": "Cancel",
+    "confirm": "Logout",
+    "content": "Are you sure you want to logout from your Cozy?",
+    "title": "Logout"
+  },
+  "screens": {
+    "cozyNotFound": {
+      "body": "We could not find any Cozy at this address. It may be a typo. To know, check the address of your Cozy in the email we sent you when it was created.",
+      "title": "This Cozy address does not exist."
+    },
+    "managerError": {
+      "body": "An error occurred while processing your login link",
+      "title": "A problem occurred"
+    },
+    "lock": {
+      "password_label": "Password",
+      "pin_label": "PIN Code",
+      "pin_title": "Enter your PIN",
+      "promptCancel": "Cancel",
+      "promptSubtitle": "Use your biometric fingerprint to authenticate",
+      "promptTitle": "Authenticate",
+      "title": "Enter your password"
+    },
+    "SecureScreen": {
+      "confirm_pin_error": "PIN codes do not match",
+      "passwordprompt_body": "Access to your device is not secure. Choose a password to secure access to your Cozy.",
+      "passwordprompt_cta": "Choose a password",
+      "passwordprompt_title": "Secure access to your Cozy",
+      "pinprompt_body": "Access your app faster by enabling app unlock with PIN code",
+      "pinprompt_cta": "Unlock with a PIN",
+      "pinprompt_refusal": "No thanks",
+      "pinprompt_title": "Simplify your app unlock",
+      "pinsave_step1_body": "Set your PIN to unlock the app after a period of inactivity.",
+      "pinsave_step1_cta": "Continue",
+      "pinsave_step1_title": "Choose your PIN",
+      "pinsave_step2_body": "For security, please re-enter the chosen PIN.",
+      "pinsave_step2_cta": "Finish",
+      "pinsave_step2_title": "Confirm your PIN"
+    },
+    "login": {
+      "invalidMagicCode": "The link to access your Cozy is truncated or has expired"
+    },
+    "offline": {
+      "body": "Check your internet connection to access your Cozy.",
+      "title": "No internet connection"
+    },
+    "welcome": {
+      "body": "Access your Personal Cloud now, the digital home to gather all your data",
+      "buttonSignin": "Create",
+      "buttonLogin": "I already have a Personal Cloud",
+      "title": "Personal Cloud"
+    }
+  },
+  "modals": {
+    "IconChangedModal": {
+      "description": "The icon of the 'Cozy' application has been modified."
+    }
+  },
+  "software": {
+    "id": "amiral",
+    "name": "Cozy Mobile Application"
+  },
+  "ui": {
+    "buttons": {
+      "forgotPassword": "I forgot my password",
+      "forgotPin": "I forgot my PIN",
+      "unlock": "Unlock"
+    }
+  }
+}
