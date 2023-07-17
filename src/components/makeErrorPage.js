@@ -24,7 +24,15 @@ const resetTemplate = `
   </button>
 `
 
-export const makeErrorPage = ({ icon, title, body, footer, header, reset }) => {
+export const makeErrorPage = ({
+  icon,
+  title,
+  body,
+  footer,
+  header,
+  reset,
+  backgroundColor
+}) => {
   const dimensions = getDimensions()
   const navbarHeight = dimensions.navbarHeight
   const statusBarHeight = dimensions.statusBarHeight
@@ -40,6 +48,22 @@ export const makeErrorPage = ({ icon, title, body, footer, header, reset }) => {
       <style type="text/css">${cozyBsCss}</style>
       <style type="text/css">${themeCss}</style>
       <style type="text/css">${cirrusCss}</style>
+      <style type="text/css">
+      ${
+        backgroundColor === '#4b4b4b'
+          ? `
+          .theme-inverted {
+            --primaryColorDark: #eeeeee;
+            --primaryColorLightest: #626262;
+            --primaryTextContrastColor: #626262;
+            --secondaryColor: #a3a3a3;
+            --paperBackgroundColor: #4b4b4b;
+            --banner-color: #282828;
+            --btn-secondary-border-color: rgba(255, 255, 255, .48);
+          }`
+          : ''
+      }
+      </style>
     </head>
 
     <body class="theme-inverted" style="padding-top: ${statusBarHeight}px; padding-bottom: ${navbarHeight}px;">

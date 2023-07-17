@@ -10,14 +10,22 @@ import { ManagerErrorPage } from '/components/webviews/ManagerErrorPage'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { routes } from '/constants/routes'
 import { goBack, reset } from '/libs/RootNavigation'
+import { getColors } from '/ui/colors'
 
 const log = Minilog('ErrorScreen')
+
+const colors = getColors()
 
 /**
  * Typings
  */
 interface ErrorScreenProps {
-  route: { params: { type: string } }
+  route: {
+    params: {
+      type: string
+      backgroundColor?: string
+    }
+  }
 }
 
 interface Source {
@@ -75,13 +83,17 @@ const handleMessage = async (
   )
 
 const makeSource = (route: ErrorScreenProps['route']): Source => {
-  const htmlGenerator = HTML[route.params.type] as undefined | (() => string)
+  const htmlGenerator = HTML[route.params.type] as
+    | undefined
+    | ((backgroundColor: string) => string)
 
   if (!htmlGenerator) {
     throw new Error('The requested Page cannot be generated')
   }
 
-  return { html: htmlGenerator(), baseUrl: '' }
+  const backgroundColor: string =
+    route.params.backgroundColor ?? colors.primaryColor
+  return { html: htmlGenerator(backgroundColor), baseUrl: '' }
 }
 
 export const ErrorScreen = (props: ErrorScreenProps): JSX.Element => {
