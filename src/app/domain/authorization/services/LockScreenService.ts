@@ -105,7 +105,7 @@ export const promptBiometry = async (): Promise<{
 
   const promptResult = await rnBiometrics.simplePrompt({
     promptMessage: t('screens.lock.promptTitle'),
-    cancelButtonText: t('translation.screens.lock.promptCancel')
+    cancelButtonText: t('screens.lock.promptCancel')
   })
 
   if (Platform.OS === 'android') {

@@ -2,7 +2,7 @@ import { cirrusCss } from '/screens/login/components/assets/common/css/cssCirrus
 import { cozyBsCss } from '/screens/login/components/assets/common/css/cssCozyBs'
 import { getDimensions } from '/libs/dimensions'
 import { themeCss } from '/screens/login/components/assets/common/css/cssTheme'
-import { translation } from '/locales'
+import { t } from '/locales/i18n'
 
 import { getLocalFonts } from './getLocalFonts'
 
@@ -14,13 +14,13 @@ const headerTemplate = `
 
 const footerTemplate = `
   <p class="text-center mb-3">
-    ${translation.errors.contactUs} <a id="mailto" href="#">contact@cozycloud.cc</a>.
+    ${t('errors.contactUs')} <a id="mailto" href="#">contact@cozycloud.cc</a>.
   </p>
 `
 
 const resetTemplate = `
   <button id="resetButton" class="btn btn-primary mt-3 mb-2">
-    ${translation.errors.reset}
+    ${t('errors.reset')}
   </button>
 `
 

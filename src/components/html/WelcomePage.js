@@ -1,7 +1,6 @@
 import { getColors } from '/ui/colors'
-import { getT } from '/locales/i18n'
+import { t } from '/locales/i18n'
 
-const t = getT()
 const colors = getColors()
 
 const body = `

@@ -19,7 +19,7 @@ import {
   STATE_CONNECTED,
   STATE_INVALID_PASSWORD
 } from '/libs/clientHelpers/types'
-import { translation } from '/locales'
+import { t } from '/locales/i18n'
 
 const ERROR_2FA_PASSWORD_NEEDED =
   'passphrase is required as second authentication factor'
@@ -60,7 +60,8 @@ const loginMagicLink = async (
           twoFactorPasswordNeeded: true
         }
       } else if (e.reason?.error === ERROR_INVALID_MAGIC_CODE) {
-        throw new Error(translation.screens.login.invalidMagicCode, e)
+        // Why is this translated but not the other error message?
+        throw new Error(t('screens.login.invalidMagicCode'), e)
       } else {
         throw new Error('Error while calling loginMagicLink', e)
       }

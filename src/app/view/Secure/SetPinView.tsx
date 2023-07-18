@@ -1,6 +1,5 @@
 import { RouteProp } from '@react-navigation/native'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import {
   Platform,
   TouchableWithoutFeedback,
@@ -11,7 +10,6 @@ import RnMaskInput from 'react-native-mask-input'
 import { FullWindowOverlay } from 'react-native-screens'
 
 import { savePinCode } from '/app/domain/authorization/services/SecurityService'
-import { translation } from '/locales'
 import { Container } from '/ui/Container'
 import { Grid } from '/ui/Grid'
 import { Tooltip } from '/ui/Tooltip'
@@ -24,6 +22,7 @@ import { EyeClosed } from '/ui/Icons/EyeClosed'
 import { TextField } from '/ui/TextField'
 import { ConditionalWrapper } from '/components/ConditionalWrapper'
 import { palette } from '/ui/palette'
+import { useI18n } from '/locales/i18n'
 
 const SetPinViewSimple = ({
   onSuccess
@@ -38,7 +37,7 @@ const SetPinViewSimple = ({
   const handleFirstInputSubmit = (): void => {
     setStep(2)
   }
-  const { t } = useTranslation()
+  const { t } = useI18n()
 
   const handleSecondInputSubmit = (): void => {
     if (secondInput === firstInput) {
@@ -61,7 +60,7 @@ const SetPinViewSimple = ({
                 color="secondary"
                 style={{ maxWidth: 296, marginBottom: 24, textAlign: 'center' }}
               >
-                {translation.screens.SecureScreen.pinsave_step1_title}
+                {t('screens.SecureScreen.pinsave_step1_title')}
               </Typography>
 
               <Typography
@@ -69,7 +68,7 @@ const SetPinViewSimple = ({
                 style={{ marginBottom: 24, textAlign: 'center' }}
                 variant="body1"
               >
-                {translation.screens.SecureScreen.pinsave_step1_body}
+                {t('screens.SecureScreen.pinsave_step1_body')}
               </Typography>
 
               <TextField
@@ -84,7 +83,7 @@ const SetPinViewSimple = ({
                   mask: [[/\d/], [/\d/], [/\d/], [/\d/]]
                 }}
                 keyboardType="numeric"
-                label={translation.screens.lock.pin_label}
+                label={t('screens.lock.pin_label')}
                 onSubmitEditing={handleFirstInputSubmit as () => void}
                 returnKeyType="go"
                 secureTextEntry={!passwordVisibility}
@@ -99,7 +98,7 @@ const SetPinViewSimple = ({
               testID="pin-next"
             >
               <Typography color="primary" variant="button">
-                {translation.screens.SecureScreen.pinsave_step1_cta}
+                {t('screens.SecureScreen.pinsave_step1_cta')}
               </Typography>
             </Button>
           </>
@@ -109,7 +108,7 @@ const SetPinViewSimple = ({
           <>
             <Grid alignItems="center" direction="column">
               <Typography variant="h4" color="secondary">
-                {translation.screens.SecureScreen.pinsave_step2_title}
+                {t('screens.SecureScreen.pinsave_step2_title')}
               </Typography>
 
               <Typography
@@ -117,7 +116,7 @@ const SetPinViewSimple = ({
                 style={{ marginBottom: 24, textAlign: 'center' }}
                 variant="body2"
               >
-                {translation.screens.SecureScreen.pinsave_step2_body}
+                {t('screens.SecureScreen.pinsave_step2_body')}
               </Typography>
 
               <Tooltip title={error}>
@@ -135,7 +134,7 @@ const SetPinViewSimple = ({
                     mask: [[/\d/], [/\d/], [/\d/], [/\d/]]
                   }}
                   keyboardType="numeric"
-                  label={translation.screens.lock.pin_label}
+                  label={t('screens.lock.pin_label')}
                   onSubmitEditing={handleSecondInputSubmit as () => void}
                   returnKeyType="go"
                   secureTextEntry={!passwordVisibility}
@@ -147,7 +146,7 @@ const SetPinViewSimple = ({
 
             <Button onPress={handleSecondInputSubmit}>
               <Typography color="primary" variant="button">
-                {translation.screens.SecureScreen.pinsave_step2_cta}
+                {t('screens.SecureScreen.pinsave_step2_cta')}
               </Typography>
             </Button>
           </>

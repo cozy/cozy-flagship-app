@@ -12,7 +12,6 @@ import { getVaultInformation } from '/libs/keychain'
 import { openForgotPasswordLink } from '/libs/functions/openForgotPasswordLink'
 import { reset } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
-import { translation } from '/locales'
 import {
   ensureLockScreenUi,
   getBiometryType,
@@ -21,6 +20,7 @@ import {
   tryUnlockWithPassword,
   validatePin
 } from '/app/domain/authorization/services/LockScreenService'
+import { useI18n } from '/locales/i18n'
 
 export const useLockScreenProps = (props: LockScreenProps): LockViewProps => {
   const [biometryEnabled, setBiometryEnabled] = useState(false)
@@ -34,6 +34,7 @@ export const useLockScreenProps = (props: LockScreenProps): LockViewProps => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know that the client is defined
   const client = useClient()!
   const { fqdn } = getInstanceAndFqdnFromClient(client)
+  const { t } = useI18n()
 
   const onUnlock = useCallback((): void => {
     if (!props.route.params?.onSuccess) return reset(routes.home)
@@ -128,7 +129,7 @@ export const useLockScreenProps = (props: LockScreenProps): LockViewProps => {
   const tryUnlockWithPin = async (): Promise<void> =>
     (await validatePin(input))
       ? onUnlock()
-      : setUiError(translation.errors.badUnlockPin)
+      : setUiError(t('errors.badUnlockPin'))
 
   const toggleMode = (): void => {
     const asyncCore = async (): Promise<void> => {
