@@ -23,6 +23,16 @@ const resetTemplate = `
   </button>
 `
 
+interface MakeErrorPageProps {
+  icon: string
+  title: string
+  body: string
+  footer?: boolean
+  header?: boolean
+  reset?: boolean
+  backgroundColor?: string
+}
+
 export const makeHtmlErrorPage = ({
   icon,
   title,
@@ -31,7 +41,7 @@ export const makeHtmlErrorPage = ({
   header,
   reset,
   backgroundColor
-}) => {
+}: MakeErrorPageProps): string => {
   const dimensions = getDimensions()
   const navbarHeight = dimensions.navbarHeight
   const statusBarHeight = dimensions.statusBarHeight
