@@ -4,6 +4,7 @@ import { Linking } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
 import { WebViewMessageEvent } from 'react-native-webview/lib/WebViewTypes'
 
+import { ErrorPageGenerator } from '/app/domain/errors/models/ErrorPageGenerator'
 import { CozyBlockedPage } from '/app/view/Error/Pages/CozyBlockedPage'
 import { CozyNotFoundPage } from '/app/view/Error/Pages/CozyNotFoundPage'
 import { CozyNotOnboardedPage } from '/app/view/Error/Pages/CozyNotOnboardedPage'
@@ -43,7 +44,7 @@ type Handlers = Record<
 /**
  * Implementations
  */
-const HTML: Record<string, () => string> = {
+const HTML: Record<string, ErrorPageGenerator> = {
   cozyBlocked: CozyBlockedPage,
   cozyNotFound: CozyNotFoundPage,
   cozyNotOnboarded: CozyNotOnboardedPage,
@@ -89,7 +90,7 @@ const handleMessage = async (
 const makeSource = (route: ErrorScreenProps['route']): Source => {
   const htmlGenerator = HTML[route.params.type] as
     | undefined
-    | ((backgroundColor: string) => string)
+    | ErrorPageGenerator
 
   if (!htmlGenerator) {
     throw new Error('The requested Page cannot be generated')
@@ -97,7 +98,7 @@ const makeSource = (route: ErrorScreenProps['route']): Source => {
 
   const backgroundColor: string =
     route.params.backgroundColor ?? colors.primaryColor
-  return { html: htmlGenerator(backgroundColor), baseUrl: '' }
+  return { html: htmlGenerator({ backgroundColor }), baseUrl: '' }
 }
 
 export const ErrorScreen = (props: ErrorScreenProps): JSX.Element => {

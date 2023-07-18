@@ -1,7 +1,8 @@
 import { makeHtmlErrorPage } from '/app/domain/errors/makeHtmlErrorPage'
+import { ErrorPageGenerator } from '/app/domain/errors/models/ErrorPageGenerator'
 import { t } from '/locales/i18n'
 
-export const ManagerErrorPage = () =>
+export const ManagerErrorPage: ErrorPageGenerator = () =>
   makeHtmlErrorPage({
     icon: `
       <svg width="156" height="120" viewBox="0 0 156 120" fill="none" xmlns="http://www.w3.org/2000/svg">
