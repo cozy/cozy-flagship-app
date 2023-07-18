@@ -31,6 +31,7 @@ interface MakeErrorPageProps {
   header?: boolean
   reset?: boolean
   backgroundColor?: string
+  invertedTheme?: boolean
 }
 
 export const makeHtmlErrorPage = ({
@@ -40,11 +41,14 @@ export const makeHtmlErrorPage = ({
   footer,
   header,
   reset,
-  backgroundColor
+  backgroundColor,
+  invertedTheme = true
 }: MakeErrorPageProps): string => {
   const dimensions = getDimensions()
   const navbarHeight = dimensions.navbarHeight
   const statusBarHeight = dimensions.statusBarHeight
+
+  const theme = invertedTheme ? 'theme-inverted' : 'theme-light'
 
   return `
   <!DOCTYPE html>
@@ -75,7 +79,7 @@ export const makeHtmlErrorPage = ({
       </style>
     </head>
 
-    <body class="theme-inverted" style="padding-top: ${statusBarHeight}px; padding-bottom: ${navbarHeight}px;">
+    <body class="${theme}" style="padding-top: ${statusBarHeight}px; padding-bottom: ${navbarHeight}px;">
       <main class="wrapper">
         <header class="wrapper-top d-flex flex-row align-items-center">${
           header ? headerTemplate : ''
