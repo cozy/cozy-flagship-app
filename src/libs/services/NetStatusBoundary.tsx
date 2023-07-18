@@ -1,7 +1,7 @@
 import NetInfo from '@react-native-community/netinfo'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
-import { ErrorScreen } from '/screens/error/ErrorScreen'
+import { ErrorScreen } from '/app/view/Error/ErrorScreen'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 import { devlog } from '/core/tools/env'
 
