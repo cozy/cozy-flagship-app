@@ -44,5 +44,11 @@ i18n
     console.log(error)
   })
 
+export type TranslateFn = (
+  key: string,
+  options?: Record<string, string>
+) => string
 export const geti18n = (): typeof i18n => i18n
 export const getT = (): typeof i18n.t => i18n.t
+export const t = (key: string, options?: Record<string, string>): string =>
+  i18n.t(key, options)

@@ -1,12 +1,13 @@
 import { RouteProp } from '@react-navigation/native'
 import React, { useState } from 'react'
-import RnMaskInput from 'react-native-mask-input'
+import { useTranslation } from 'react-i18next'
 import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView
 } from 'react-native'
+import RnMaskInput from 'react-native-mask-input'
 import { FullWindowOverlay } from 'react-native-screens'
 
 import { savePinCode } from '/app/domain/authorization/services/SecurityService'
@@ -37,12 +38,13 @@ const SetPinViewSimple = ({
   const handleFirstInputSubmit = (): void => {
     setStep(2)
   }
+  const { t } = useTranslation()
 
   const handleSecondInputSubmit = (): void => {
     if (secondInput === firstInput) {
       void savePinCode(secondInput, onSuccess)
     } else {
-      setError(translation.screens.SecureScreen.confirm_pin_error)
+      setError(t('screens.SecureScreen.confirm_pin_error'))
     }
   }
 
