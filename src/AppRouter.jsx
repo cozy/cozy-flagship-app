@@ -1,9 +1,9 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import React from 'react'
 
+import { ErrorScreen } from '/app/view/Error/ErrorScreen'
 import { CozyAppScreen } from '/screens/cozy-app/CozyAppScreen'
 import { CreateInstanceScreen } from '/screens/login/CreateInstanceScreen'
-import { ErrorScreen } from '/screens/error/ErrorScreen'
 import { HomeScreen } from '/screens/home/HomeScreen'
 import { LockScreen } from '/app/view/Lock/LockScreen'
 import { LoginScreen } from '/screens/login/LoginScreen'
