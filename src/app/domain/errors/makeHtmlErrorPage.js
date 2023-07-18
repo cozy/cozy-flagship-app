@@ -1,10 +1,9 @@
+import { getLocalFonts } from '/components/getLocalFonts'
 import { cirrusCss } from '/screens/login/components/assets/common/css/cssCirrus'
 import { cozyBsCss } from '/screens/login/components/assets/common/css/cssCozyBs'
 import { getDimensions } from '/libs/dimensions'
 import { themeCss } from '/screens/login/components/assets/common/css/cssTheme'
 import { t } from '/locales/i18n'
-
-import { getLocalFonts } from './getLocalFonts'
 
 const headerTemplate = `
   <button id="backButton" class="btn btn-icon">
@@ -24,7 +23,7 @@ const resetTemplate = `
   </button>
 `
 
-export const makeErrorPage = ({
+export const makeHtmlErrorPage = ({
   icon,
   title,
   body,

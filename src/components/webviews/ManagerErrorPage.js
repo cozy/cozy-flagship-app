@@ -1,7 +1,8 @@
-import { makeErrorPage } from '/components/makeErrorPage'
+import { makeHtmlErrorPage } from '/app/domain/errors/makeHtmlErrorPage'
 import { t } from '/locales/i18n'
+
 export const ManagerErrorPage = () =>
-  makeErrorPage({
+  makeHtmlErrorPage({
     icon: `
       <svg width="156" height="120" viewBox="0 0 156 120" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M43.4286 117.273C46.2909 118.291 53.633 119.172 59.5498 119.524C75.7076 120.487 98.2854 119.963 107.856 118.193C117.498 116.408 117.926 113.708 93.4156 112.372C72.5436 111.233 48.1812 112.856 42.9713 115.273C41.5728 115.921 41.6497 116.642 43.4286 117.273Z" fill="black" fill-opacity="0.24"/>
