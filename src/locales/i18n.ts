@@ -47,57 +47,17 @@ _i18n
     console.log(error)
   })
 
-// Type representing the i18n instance
 export type I18nInstance = typeof _i18n
-// Type representing the 't' function from the i18n instance
 export type TranslationFunction = (
   ...args: Parameters<I18nInstance['t']>
 ) => ReturnType<I18nInstance['t']>
-// Type representing the return type of the useTranslation hook
 export type UseTranslationResult = ReturnType<typeof useTranslation>
+export type ChangeLanguageFunction = (
+  ...args: Parameters<I18nInstance['changeLanguage']>
+) => ReturnType<I18nInstance['changeLanguage']>
 
-/**
- * Facade for i18n instance.
- * This reduces coupling with i18n and allows for potential swapping of the i18n implementation.
- *
- * Example of mocking the i18n instance:
- * ```typescript
- * jest.mock('./yourI18nFile', () => ({
- *   ...jest.requireActual('./yourI18nFile'), // import actual implementations of other exports
- *   i18n: jest.fn().mockReturnValue({ // replace `i18n` with a mocked instance
- *     t: jest.fn().mockImplementation((key) => key),
- *     // any other methods used from the i18n instance would be mocked here
- *   }),
- * }));
- * ```
- */
 export const i18n = (): I18nInstance => _i18n
-
-/**
- * Facade for i18n.t function.
- * This reduces coupling with i18n and allows for potential swapping of the i18n implementation.
- * It also simplifies testing by allowing the 't' function to be easily mocked.
- *
- * Example of mocking the 't' function:
- * ```typescript
- * jest.mock('./yourI18nFile', () => ({
- *   ...jest.requireActual('./yourI18nFile'), // import actual implementations of other exports
- *   t: jest.fn().mockImplementation((key) => key), // replace `t` with a mocked function
- * }));
- * ```
- */
 export const t: TranslationFunction = (...args) => _i18n.t(...args)
-
-/** Facade for useTranslation hook.
- * This reduces coupling with i18n and allows for potential swapping of the i18n implementation.
- * It also simplifies testing by allowing the useTranslation hook to be easily mocked.
- *
- * Example of mocking the useTranslation hook:
- * ```typescript
- * jest.mock('./yourI18nFile', () => ({
- *    ...jest.requireActual('./yourI18nFile'), // import actual implementations of other exports
- *    useI18n: jest.fn().mockReturnValue({ t: jest.fn().mockImplementation((key) => key) }), // replace `useI18n` with a mocked function
- * }));
- * ```
- */
 export const useI18n = (): UseTranslationResult => useTranslation()
+export const changeLanguage: ChangeLanguageFunction = languageCode =>
+  _i18n.changeLanguage(languageCode)

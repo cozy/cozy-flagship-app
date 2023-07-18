@@ -91,6 +91,7 @@ declare module 'cozy-client' {
     capabilities: {
       flat_subdomains: boolean
     }
+    locale: string
   }
 
   export const useClient = (): CozyClient => CozyClient as CozyClient
