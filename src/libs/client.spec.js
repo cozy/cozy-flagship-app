@@ -44,13 +44,13 @@ describe('client', () => {
       expect(CozyClient).toHaveBeenCalledWith({
         oauth: {
           certificationConfig: {
-            androidSafetyNetApiKey: expect.any(String)
+            androidSafetyNetApiKey: 'testEnvKey'
           },
           clientKind: 'mobile',
-          clientName: "Application Mobile Cozy (Becca's iPhone 6)",
+          clientName: "software.name (Becca's iPhone 6)",
           redirectURI: 'cozy://',
           shouldRequireFlagshipPermissions: true,
-          softwareID: 'amiral'
+          softwareID: 'software.id'
         },
         scope: ['*'],
         appMetadata: {
