@@ -1,0 +1,8 @@
+[main]
+host = https://app.transifex.com
+
+[o:cozy:p:cozy-flagship-app-1:r:enjson]
+file_filter = src/locales/<lang>.json
+source_file = src/locales/en.json
+source_lang = en
+type        = KEYVALUEJSON
