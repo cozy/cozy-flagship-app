@@ -7,7 +7,7 @@ import { Button } from '/ui/Button'
 import COZY_ICON from '/assets/appIcons/cozy.png'
 import MESPAPIERS_ICON from '/assets/appIcons/mespapiers.png'
 import MABULLE_ICON from '/assets/appIcons/mabulle.png'
-import { translation } from '/locales'
+import { useI18n } from '/locales/i18n'
 
 // eslint-disable-next-line
 export let toggleIconChangedModal = (newIcon: string): void => {}
@@ -42,6 +42,7 @@ const Icon = ({ icon }: IconProps): JSX.Element => {
 export const IconChangedModal = (): JSX.Element | null => {
   const [show, setShow] = useState(false)
   const [icon, setIcon] = useState('')
+  const { t } = useI18n()
 
   toggleIconChangedModal = (newIcon: string): void => {
     setIcon(newIcon)
@@ -54,7 +55,7 @@ export const IconChangedModal = (): JSX.Element | null => {
         <View style={styles.contentWrapper}>
           <Icon icon={icon} />
           <Typography variant="body1" style={styles.description}>
-            {translation.modals.IconChangedModal.description}
+            {t('modals.IconChangedModal.description')}
           </Typography>
         </View>
       }
