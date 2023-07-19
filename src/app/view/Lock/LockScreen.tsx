@@ -27,8 +27,8 @@ import { Tooltip } from '/ui/Tooltip'
 import { Typography } from '/ui/Typography'
 import { getBiometryIcon } from '/app/domain/authorization/services/LockScreenService'
 import { palette } from '/ui/palette'
-import { translation } from '/locales'
 import { useLockScreenProps } from '/app/view/Lock/useLockScreen'
+import { useI18n } from '/locales/i18n'
 
 const LockView = ({
   biometryEnabled,
@@ -46,123 +46,126 @@ const LockView = ({
   togglePasswordVisibility,
   tryUnlock,
   uiError
-}: LockViewProps): JSX.Element => (
-  <Container>
-    {hasLogoutDialog && (
-      <ConfirmDialog
-        actions={
-          <>
-            <Button onPress={toggleLogoutDialog}>
-              <Typography variant="button">
-                {translation.logout_dialog.cancel}
-              </Typography>
-            </Button>
+}: LockViewProps): JSX.Element => {
+  const { t } = useI18n()
 
-            <Button onPress={logout} variant="secondary">
-              <Typography color="textSecondary" variant="button">
-                {translation.logout_dialog.confirm}
-              </Typography>
-            </Button>
-          </>
-        }
-        content={translation.logout_dialog.content}
-        onClose={toggleLogoutDialog}
-        title={translation.logout_dialog.title}
-      />
-    )}
+  return (
+    <Container>
+      {hasLogoutDialog && (
+        <ConfirmDialog
+          actions={
+            <>
+              <Button onPress={toggleLogoutDialog}>
+                <Typography variant="button">
+                  {t('logout_dialog.cancel')}
+                </Typography>
+              </Button>
 
-    <Grid container direction="column" justifyContent="space-between">
-      <Grid justifyContent="space-between">
-        <IconButton onPress={toggleLogoutDialog}>
-          <Icon icon={LogoutFlipped} />
-        </IconButton>
+              <Button onPress={logout} variant="secondary">
+                <Typography color="textSecondary" variant="button">
+                  {t('logout_dialog.confirm')}
+                </Typography>
+              </Button>
+            </>
+          }
+          content={t('logout_dialog.content')}
+          onClose={toggleLogoutDialog}
+          title={t('logout_dialog.title')}
+        />
+      )}
 
-        {biometryType && biometryEnabled ? (
-          <IconButton onPress={(): void => void handleBiometry()}>
-            <Icon icon={getBiometryIcon(biometryType)} />
+      <Grid container direction="column" justifyContent="space-between">
+        <Grid justifyContent="space-between">
+          <IconButton onPress={toggleLogoutDialog}>
+            <Icon icon={LogoutFlipped} />
           </IconButton>
-        ) : null}
-      </Grid>
 
-      <Grid alignItems="center" direction="column">
-        <Icon icon={CozyCircle} style={{ marginBottom: 14 }} />
-
-        <Typography variant="h4" color="secondary">
-          {mode === 'password' ? translation.screens.lock.title : null}
-          {mode === 'PIN' ? translation.screens.lock.pin_title : null}
-        </Typography>
-
-        <Typography
-          color="secondary"
-          style={{ opacity: 0.64, marginBottom: 24 }}
-          variant="body2"
-        >
-          {fqdn}
-        </Typography>
-
-        <Tooltip title={uiError}>
-          {mode === 'password' ? (
-            <TextField
-              endAdornment={
-                <IconButton onPress={togglePasswordVisibility}>
-                  <Icon icon={!passwordVisibility ? EyeClosed : Eye} />
-                </IconButton>
-              }
-              label={translation.screens.lock.password_label}
-              onChangeText={handleInput}
-              onSubmitEditing={tryUnlock}
-              returnKeyType="go"
-              secureTextEntry={!passwordVisibility}
-              value={input}
-              autoCapitalize="none"
-            />
+          {biometryType && biometryEnabled ? (
+            <IconButton onPress={(): void => void handleBiometry()}>
+              <Icon icon={getBiometryIcon(biometryType)} />
+            </IconButton>
           ) : null}
+        </Grid>
 
-          {mode === 'PIN' ? (
-            <TextField
-              endAdornment={
-                <IconButton onPress={togglePasswordVisibility}>
-                  <Icon icon={!passwordVisibility ? EyeClosed : Eye} />
-                </IconButton>
-              }
-              inputComponent={RnMaskInput}
-              inputComponentProps={{
-                onChangeText: handleInput,
-                mask: [[/\d/], [/\d/], [/\d/], [/\d/]]
-              }}
-              keyboardType="numeric"
-              label={translation.screens.lock.pin_label}
-              onSubmitEditing={tryUnlock}
-              returnKeyType="go"
-              secureTextEntry={!passwordVisibility}
-              value={input}
-            />
-          ) : null}
-        </Tooltip>
+        <Grid alignItems="center" direction="column">
+          <Icon icon={CozyCircle} style={{ marginBottom: 14 }} />
 
-        <Link
-          onPress={toggleMode}
-          style={{ alignSelf: 'flex-start', marginVertical: 16 }}
-        >
-          <Typography color="textSecondary" variant="underline">
-            {mode === 'PIN' ? translation.ui.buttons.forgotPin : null}
-
-            {mode === 'password' ? translation.ui.buttons.forgotPassword : null}
+          <Typography variant="h4" color="secondary">
+            {mode === 'password' ? t('screens.lock.title') : null}
+            {mode === 'PIN' ? t('screens.lock.pin_title') : null}
           </Typography>
-        </Link>
-      </Grid>
 
-      <Grid direction="column">
-        <Button onPress={tryUnlock}>
-          <Typography color="primary" variant="button">
-            {translation.ui.buttons.unlock}
+          <Typography
+            color="secondary"
+            style={{ opacity: 0.64, marginBottom: 24 }}
+            variant="body2"
+          >
+            {fqdn}
           </Typography>
-        </Button>
-      </Grid>
-    </Grid>
-  </Container>
-)
 
+          <Tooltip title={uiError}>
+            {mode === 'password' ? (
+              <TextField
+                endAdornment={
+                  <IconButton onPress={togglePasswordVisibility}>
+                    <Icon icon={!passwordVisibility ? EyeClosed : Eye} />
+                  </IconButton>
+                }
+                label={t('screens.lock.password_label')}
+                onChangeText={handleInput}
+                onSubmitEditing={tryUnlock}
+                returnKeyType="go"
+                secureTextEntry={!passwordVisibility}
+                value={input}
+                autoCapitalize="none"
+              />
+            ) : null}
+
+            {mode === 'PIN' ? (
+              <TextField
+                endAdornment={
+                  <IconButton onPress={togglePasswordVisibility}>
+                    <Icon icon={!passwordVisibility ? EyeClosed : Eye} />
+                  </IconButton>
+                }
+                inputComponent={RnMaskInput}
+                inputComponentProps={{
+                  onChangeText: handleInput,
+                  mask: [[/\d/], [/\d/], [/\d/], [/\d/]]
+                }}
+                keyboardType="numeric"
+                label={t('screens.lock.pin_label')}
+                onSubmitEditing={tryUnlock}
+                returnKeyType="go"
+                secureTextEntry={!passwordVisibility}
+                value={input}
+              />
+            ) : null}
+          </Tooltip>
+
+          <Link
+            onPress={toggleMode}
+            style={{ alignSelf: 'flex-start', marginVertical: 16 }}
+          >
+            <Typography color="textSecondary" variant="underline">
+              {mode === 'PIN' ? t('ui.buttons.forgotPin') : null}
+
+              {mode === 'password' ? t('ui.buttons.forgotPassword') : null}
+            </Typography>
+          </Link>
+        </Grid>
+
+        <Grid direction="column">
+          <Button onPress={tryUnlock}>
+            <Typography color="primary" variant="button">
+              {t('ui.buttons.unlock')}
+            </Typography>
+          </Button>
+        </Grid>
+      </Grid>
+    </Container>
+  )
+}
 export const LockScreen = (props: LockScreenProps): React.ReactNode => (
   <ConditionalWrapper
     condition={Platform.OS === 'ios'}
