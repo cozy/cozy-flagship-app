@@ -69,3 +69,30 @@ jest.mock('react-native-idle-timer', () => ({
 jest.mock('@react-native-camera-roll/camera-roll', () => mockRNCameraRoll)
 
 jest.mock('react-native-permissions', () => mockRNPermissions)
+
+jest.mock('react-native-localize', () => ({
+  getLocales: () => [
+    {
+      countryCode: 'GB',
+      languageTag: 'en-GB',
+      languageCode: 'en',
+      isRTL: false
+    },
+    {
+      countryCode: 'FR',
+      languageTag: 'fr-FR',
+      languageCode: 'fr',
+      isRTL: false
+    }
+  ]
+}))
+
+jest.mock('../src/locales/i18n', () => {
+  return {
+    ...jest.requireActual('../src/locales/i18n'),
+    t: jest.fn().mockImplementation(key => key),
+    useI18n: jest
+      .fn()
+      .mockReturnValue({ t: jest.fn().mockImplementation(key => key) })
+  }
+})
