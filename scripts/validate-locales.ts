@@ -9,12 +9,12 @@ export const validateLocales = (
   otherLocales: string[]
 ): void => {
   const referenceContent: Locale = JSON.parse(
-    fs.readFileSync(`src/locales/${referenceLocale}/translation.json`, 'utf-8')
+    fs.readFileSync(`src/locales/${referenceLocale}.json`, 'utf-8')
   ) as Locale
 
   otherLocales.forEach(locale => {
     const localeContent: Locale = JSON.parse(
-      fs.readFileSync(`src/locales/${locale}/translation.json`, 'utf-8')
+      fs.readFileSync(`src/locales/${locale}.json`, 'utf-8')
     ) as Locale
 
     checkKeys(referenceContent, localeContent, '', locale, referenceLocale)
