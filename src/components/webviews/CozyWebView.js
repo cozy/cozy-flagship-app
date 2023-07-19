@@ -28,6 +28,7 @@ import {
   BiometryEmitter,
   makeFlagshipMetadataInjection
 } from '/app/domain/authentication/services/BiometryService'
+import { setLang } from '/libs/intents/localMethods'
 
 const log = Minilog('CozyWebView')
 
@@ -179,8 +180,10 @@ export const CozyWebView = ({
         tryCrypto(m, log, logId, onAnswer)
         tryNavigatorShare(m, log, logId, onAnswer)
         tryConsole(m, log, logId)
-
         nativeIntent.tryEmit(m)
+
+        if (m.nativeEvent.data.includes('setLang'))
+          setLang(...JSON.parse(m.nativeEvent.data).args)
 
         if (parentOnMessage) {
           parentOnMessage(m)
