@@ -1,4 +1,4 @@
-import { Linking, Platform } from 'react-native'
+import { Linking } from 'react-native'
 import { BrowserResult } from 'react-native-inappbrowser-reborn'
 
 import CozyClient from 'cozy-client'
@@ -29,6 +29,15 @@ import { showInAppBrowser, closeInAppBrowser } from '/libs/intents/InAppBrowser'
 import { isBiometryDenied } from '/app/domain/authentication/services/BiometryService'
 import { toggleSetting } from '/app/domain/settings/services/SettingsService'
 import { HomeThemeType } from '/app/theme/models'
+import {
+  prepareBackup,
+  startBackup,
+  stopBackup,
+  checkBackupPermissions,
+  requestBackupPermissions
+} from '/app/domain/backup/services/manageBackup'
+import { sendProgressToWebview } from '/app/domain/backup/services/manageProgress'
+import { BackupInfo, ProgressCallback } from '/app/domain/backup/models'
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {
@@ -77,13 +86,7 @@ const fetchSessionCodeWithClient = (
 }
 
 const openAppOSSettings = async (): Promise<null> => {
-  if (Platform.OS === 'android') {
-    throw new Error(
-      `openAppOSSettings shouldn't be called from Android as no authorization is needed for biometry`
-    )
-  }
-
-  await Linking.openURL('app-settings:')
+  await Linking.openSettings()
   return null
 }
 
@@ -124,6 +127,47 @@ interface CustomMethods {
   fetchSessionCode: () => Promise<string | null>
   showInAppBrowser: (args: { url: string }) => Promise<BrowserResult>
   setTheme: (theme: HomeThemeType) => Promise<boolean>
+  prepareBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
+  startBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
+  stopBackup: () => Promise<BackupInfo>
+  checkBackupPermissions: typeof checkBackupPermissions
+  requestBackupPermissions: typeof requestBackupPermissions
+}
+
+const prepareBackupWithClient = (
+  client: CozyClient | undefined
+): Promise<BackupInfo> => {
+  if (!client) {
+    throw new Error('You must be logged in to use backup feature')
+  }
+
+  const onProgress = (backupInfo: BackupInfo): Promise<void> =>
+    sendProgressToWebview(client, backupInfo)
+
+  return prepareBackup(client, onProgress)
+}
+
+const startBackupWithClient = (
+  client: CozyClient | undefined
+): Promise<BackupInfo> => {
+  if (!client) {
+    throw new Error('You must be logged in to use backup feature')
+  }
+
+  const onProgress = (backupInfo: BackupInfo): Promise<void> =>
+    sendProgressToWebview(client, backupInfo)
+
+  return startBackup(client, onProgress)
+}
+
+const stopBackupWithClient = (
+  client: CozyClient | undefined
+): Promise<BackupInfo> => {
+  if (!client) {
+    throw new Error('You must be logged in to use backup feature')
+  }
+
+  return stopBackup(client)
 }
 
 /**
@@ -160,6 +204,11 @@ export const localMethods = (
     scanDocument,
     isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
     // For now setTheme is only used for the home theme
-    setTheme: setHomeThemeIntent
+    setTheme: setHomeThemeIntent,
+    prepareBackup: () => prepareBackupWithClient(client),
+    startBackup: () => startBackupWithClient(client),
+    stopBackup: () => stopBackupWithClient(client),
+    checkBackupPermissions,
+    requestBackupPermissions
   }
 }

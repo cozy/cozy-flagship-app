@@ -5,7 +5,6 @@ import React from 'react'
 import { PasswordPrompt } from '/app/view/Secure/PasswordPrompt'
 import { routes } from '/constants/routes'
 import { navigate } from '/libs/RootNavigation'
-import { translation } from '/locales'
 
 // Mock the navigation and logging dependencies
 jest.mock('/libs/RootNavigation', () => ({
@@ -30,9 +29,7 @@ describe('PasswordPrompt', () => {
       />
     )
 
-    fireEvent.press(
-      getByText(translation.screens.SecureScreen.passwordprompt_cta)
-    )
+    fireEvent.press(getByText('screens.SecureScreen.passwordprompt_cta'))
 
     // The onSuccess prop should be passed through to the setPassword route
     expect(navigate).toHaveBeenCalledWith(routes.setPassword, { onSuccess })
@@ -53,9 +50,7 @@ describe('PasswordPrompt', () => {
       />
     )
 
-    fireEvent.press(
-      getByText(translation.screens.SecureScreen.passwordprompt_cta)
-    )
+    fireEvent.press(getByText('screens.SecureScreen.passwordprompt_cta'))
 
     // In case of an error, the setPassword route should be called with a new function
     // that redirects to the home route

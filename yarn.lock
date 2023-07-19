@@ -1679,6 +1679,13 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
+"@babel/runtime@^7.22.5":
+  version "7.22.6"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.22.6.tgz#57d64b9ae3cff1d67eb067ae117dac087f5bd438"
+  integrity sha512-wDb5pWm4WDdF6LFUde3Jl8WzPA+3ZbxYqkC6xAXuD3irdEHN1k0NfTRrJD8ZD378SJ61miMLCqIOXYhd8x+AJQ==
+  dependencies:
+    regenerator-runtime "^0.13.11"
+
 "@babel/template@^7.0.0", "@babel/template@^7.10.4", "@babel/template@^7.12.13", "@babel/template@^7.14.5", "@babel/template@^7.16.7", "@babel/template@^7.18.10", "@babel/template@^7.3.3":
   version "7.18.10"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.18.10.tgz#6f9134835970d1dbf0835c0d100c9f38de0c5e71"
@@ -2815,6 +2822,11 @@
   integrity sha512-bzs45n5HNcDq6mxXnSsOHysZWn1SbbebNxldBXCQs8dSvF8Aor9KCdpm+TpnnGweK3R6diqsT8lFhX77VX0NFw==
   dependencies:
     merge-options "^3.0.4"
+
+"@react-native-camera-roll/camera-roll@^5.7.2":
+  version "5.7.2"
+  resolved "https://registry.yarnpkg.com/@react-native-camera-roll/camera-roll/-/camera-roll-5.7.2.tgz#db11525ae26c8a61630c424aebd323a7c784a921"
+  integrity sha512-s8VAUG1Kvi+tEJkLHObmOJdXAL/uclnXJ/IdnJtx2fCKiWA3Ho0ln9gDQqCYHHHHu+sXk7wovsH/I2/AYy0brg==
 
 "@react-native-community/cli-debugger-ui@^6.0.0-rc.0":
   version "6.0.0-rc.0"
@@ -6328,16 +6340,16 @@ cozy-client@^34.11.0:
     sift "^6.0.0"
     url-search-params-polyfill "^8.0.0"
 
-cozy-client@^38.6.0:
-  version "38.6.0"
-  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-38.6.0.tgz#7cc29bede36d685c54478a597c94defc1fd78ae1"
-  integrity sha512-mYKe0iluvA0S/sronxfIgD+KKxHoVTAkIOVlEzneW2XVFfqs5/Dmoa3oKGRnij8PvNrn6CZeiQlt6ZUktBJ+vA==
+cozy-client@^38.7.0:
+  version "38.7.0"
+  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-38.7.0.tgz#081dd9c7806fb68045ed3948e05f0dc6824c0d95"
+  integrity sha512-DIdUMccG5F+kV5Q0UdO/tP6G8yQQGAeeAKsmxk0ehnBP2r5LPqrgdYBe0sAr5TCSal8rb/BVO2Q7nZTd08iHoA==
   dependencies:
     "@cozy/minilog" "1.0.0"
     "@types/jest" "^26.0.20"
     "@types/lodash" "^4.14.170"
     btoa "^1.2.1"
-    cozy-stack-client "^38.0.2"
+    cozy-stack-client "^38.7.0"
     date-fns "2.29.3"
     json-stable-stringify "^1.0.1"
     lodash "^4.17.13"
@@ -6380,10 +6392,10 @@ cozy-flags@^2.11.0:
   dependencies:
     microee "^0.0.6"
 
-cozy-intent@^2.13.0:
-  version "2.13.0"
-  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-2.13.0.tgz#662fd3b5155bed0ca8494b5773fe3c4ea55ef077"
-  integrity sha512-AW+62w4oGxiOGYNK8OEZ22c4/hNK88fBoIS2187qFvsnirsFhPEbbamoS0SJOjqiBdQQqoDfKgOFbXxWwrSNhg==
+cozy-intent@^2.14.0:
+  version "2.14.0"
+  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-2.14.0.tgz#c2733abe08f8cf5d6b053b4a051cbde0f417d5d4"
+  integrity sha512-7OkXrfQcH5gM0AWIAODFYZbMTDprTeYS4eJe9OQKUEnQra52MNIpmUqOMozyl6nyBYcESKfdb+rBKK4++3vbrg==
   dependencies:
     post-me "0.4.5"
 
@@ -6404,10 +6416,10 @@ cozy-stack-client@^34.11.0:
     mime "^2.4.0"
     qs "^6.7.0"
 
-cozy-stack-client@^38.0.2:
-  version "38.0.2"
-  resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-38.0.2.tgz#d6534510b11e15a4f353b075348a130d7e4af184"
-  integrity sha512-GOOsyfugChHA+fiyr/6h6ARoUFYn/dVV3t2VWFfzQr/jpiXpOCaPr+jW+9D1HAfi2RTZJ6S7Zt8GXguEU/dthg==
+cozy-stack-client@^38.7.0:
+  version "38.7.0"
+  resolved "https://registry.yarnpkg.com/cozy-stack-client/-/cozy-stack-client-38.7.0.tgz#17c187ed87f1716307c38d910a78cf04eefe6140"
+  integrity sha512-ZTE50Vgzq+xgPpMroS7FTBhzGLt8S1fcN2kANJhlbjE1bZSZGbfcUSXft5pB3HIQW9EFPGRAjuCrrhpf/ze0ig==
   dependencies:
     detect-node "^2.0.4"
     mime "^2.4.0"
@@ -9124,6 +9136,13 @@ html-minifier-terser@^5.0.1:
     relateurl "^0.2.7"
     terser "^4.6.3"
 
+html-parse-stringify@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/html-parse-stringify/-/html-parse-stringify-3.0.1.tgz#dfc1017347ce9f77c8141a507f233040c59c55d2"
+  integrity sha512-KknJ50kTInJ7qIScF3jeaFRpMpE8/lfiTdzf/twXyPBLAGrLRTmkz3AdTnKeh40X8k9L2fdYwEp/42WGXIRGcg==
+  dependencies:
+    void-elements "3.1.0"
+
 html-webpack-plugin@4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/html-webpack-plugin/-/html-webpack-plugin-4.5.0.tgz#625097650886b97ea5dae331c320e3238f6c121c"
@@ -9248,6 +9267,13 @@ hyphenate-style-name@^1.0.2, hyphenate-style-name@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/hyphenate-style-name/-/hyphenate-style-name-1.0.4.tgz#691879af8e220aea5750e8827db4ef62a54e361d"
   integrity sha512-ygGZLjmXfPHj+ZWh6LwbC37l43MhfztxetbFCoYTM2VjkIUpeHgSNn7QIyVFj7YQ1Wl9Cbw5sholVJPzWvC2MQ==
+
+i18next@23.2.10:
+  version "23.2.10"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-23.2.10.tgz#a9db1aaf84d8853da402888c837aeaf8fa7f71e2"
+  integrity sha512-oVFO06H/njXpvLfXDjlAX3LN8VMMhMn1I8wl+EzJqcMtRW0Glc6apy9mtmOq3AnA2QBPAFMvxIfkdlLFqGKKLw==
+  dependencies:
+    "@babel/runtime" "^7.22.5"
 
 iconv-lite@0.4.24, iconv-lite@^0.4.24:
   version "0.4.24"
@@ -9461,6 +9487,11 @@ interpret@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-2.2.0.tgz#1a78a0b5965c40a5416d007ad6f50ad27c417df9"
   integrity sha512-Ju0Bz/cEia55xDwUWEa8+olFpCiQoypjnQySseKtmjNrnps3P+xfpUmGr90T7yjlVJmOtybRvPXhKMbHr+fWnw==
+
+intl-pluralrules@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/intl-pluralrules/-/intl-pluralrules-2.0.1.tgz#de16c3df1e09437635829725e88ea70c9ad79569"
+  integrity sha512-astxTLzIdXPeN0K9Rumi6LfMpm3rvNO0iJE+h/k8Kr/is+wPbRe4ikyDjlLr6VTh/mEfNv8RjN+gu3KwDiuhqg==
 
 invariant@2.2.4, invariant@^2.2.4:
   version "2.2.4"
@@ -13043,6 +13074,13 @@ pkg-dir@^4.1.0, pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
+pkg-dir@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/pkg-dir/-/pkg-dir-5.0.0.tgz#a02d6aebe6ba133a928f74aec20bafdfe6b8e760"
+  integrity sha512-NPE8TDbzl/3YQYY7CSS228s3g2ollTFnc+Qi3tqmqJp9Vg2ovUpixcJEo2HJScN2Ez+kEaal6y70c0ehqJBJeA==
+  dependencies:
+    find-up "^5.0.0"
+
 pkg-up@3.1.0, pkg-up@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/pkg-up/-/pkg-up-3.1.0.tgz#100ec235cc150e4fd42519412596a28512a0def5"
@@ -13093,6 +13131,11 @@ pnp-webpack-plugin@1.6.4:
   integrity sha512-7Wjy+9E3WwLOEL30D+m8TSTF7qJJUJLONBnwQp0518siuMxUQUbgZwssaFX+QKlZkjHZcw/IpZCt/H0srrntSg==
   dependencies:
     ts-pnp "^1.1.6"
+
+pod-install@0.1.38:
+  version "0.1.38"
+  resolved "https://registry.yarnpkg.com/pod-install/-/pod-install-0.1.38.tgz#1c16a800a5fc1abea0cafcc0e190f376368c76ab"
+  integrity sha512-NeDWGigjJRriOIKBOvpW2/tK2tYLfyUT7ia6C6L+oarCAhBNP+IGODWdU+GEAqvfsseqOApcFclpXAJTL0UPzA==
 
 portfinder@^1.0.26:
   version "1.0.28"
@@ -14207,6 +14250,14 @@ react-freeze@^1.0.0:
   resolved "https://registry.yarnpkg.com/react-freeze/-/react-freeze-1.0.3.tgz#5e3ca90e682fed1d73a7cb50c2c7402b3e85618d"
   integrity sha512-ZnXwLQnGzrDpHBHiC56TXFXvmolPeMjTn1UOm610M4EXGzbEDR7oOIyS2ZiItgbs6eZc4oU/a0hpk8PrcKvv5g==
 
+react-i18next@13.0.2:
+  version "13.0.2"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-13.0.2.tgz#1708a9bdabc1fe1dd4a8534f4c3a80ab784b01e9"
+  integrity sha512-NEVxC32v0oR4egwYM0QM0WE93AiJG5r0NTXTL8mhQfAhsMfDS2fSO6jpluyfsfypP988KzUQrAXncspcJ7+GHA==
+  dependencies:
+    "@babel/runtime" "^7.22.5"
+    html-parse-stringify "^3.0.1"
+
 "react-is@^16.12.0 || ^17.0.0 || ^18.0.0", react-is@^18.0.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
@@ -14221,6 +14272,11 @@ react-is@^17.0.1, react-is@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
+
+react-native-background-upload@^6.6.0:
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-background-upload/-/react-native-background-upload-6.6.0.tgz#7c081f4260d16e7a416522c3622b81938ad799c8"
+  integrity sha512-adfOJmeO3GmPmc53cdHYWp5eTGKagk/AhkraSoQ89BHRwBWrtRQ29NN9sm2CLezBYrSQWg0W47C8TaowtYZ1LQ==
 
 react-native-biometrics@3.0.1:
   version "3.0.1"
@@ -14329,10 +14385,23 @@ react-native-keychain@^8.0.0:
   resolved "https://registry.yarnpkg.com/react-native-keychain/-/react-native-keychain-8.0.0.tgz#ff708e4dc2a5440df717179bf9b7cd50f78b61d7"
   integrity sha512-c7Cs+YQN26UaQsRG1dmlXL7VL2ctnXwH/dl0IOMEQ7ZaL2NdN313YSAI8ZEZZjrVhNmPsyWEuvTFqWrdpItqQg==
 
+react-native-localize@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-localize/-/react-native-localize-3.0.2.tgz#43fa75c0097dbdb24a54ff320b3c8ad732407365"
+  integrity sha512-/l/oE1LVNgIRRhLbhmfFMHiWV0xhUn0A0iz1ytLVRYywL7FTp8Rx2vkJS/q/RpExDvV7yLw2493XZBYIM1dnLQ==
+
 react-native-mask-input@1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-mask-input/-/react-native-mask-input-1.2.1.tgz#2f01683844ded3693d0d845bd1beeb2b8367f2e2"
   integrity sha512-OsVKhdJjljWIt373CPmsyTAjynlMpQKPkz3UQJ0Y48ZTVQa8zyejb9nmwoe15Zvi0uC49RxggDRACgkUxOjt3w==
+
+react-native-permissions@^3.8.0:
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-3.8.0.tgz#7c1f75ae126c7d0b863eec9d2f5cd93ff8ad8310"
+  integrity sha512-BfZ7ksgdpGchHZH8M/kxCGZbWeACANbnPmb3hNjVOMDQusc4PWlPpobX3eBqYMSKbpi7bMECeV9BVU4QuwAf9A==
+  dependencies:
+    picocolors "^1.0.0"
+    pkg-dir "^5.0.0"
 
 react-native-play-install-referrer@^1.1.8:
   version "1.1.8"
@@ -16903,6 +16972,11 @@ vm-browserify@^1.0.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
+
+void-elements@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-3.1.0.tgz#614f7fbf8d801f0bb5f0661f5b2f5785750e4f09"
+  integrity sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==
 
 w3c-hr-time@^1.0.2:
   version "1.0.2"

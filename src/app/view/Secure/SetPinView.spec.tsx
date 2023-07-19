@@ -8,19 +8,6 @@ jest.mock('/app/domain/authorization/services/SecurityService', () => ({
   doPinCodeAutoLock: jest.fn()
 }))
 
-jest.mock('/locales', () => ({
-  translation: {
-    screens: {
-      SecureScreen: {
-        confirm_pin_error: 'Error message'
-      },
-      lock: {
-        pin_label: 'PIN'
-      }
-    }
-  }
-}))
-
 describe('SetPinView', () => {
   it('renders correctly', () => {
     const { getByTestId } = render(

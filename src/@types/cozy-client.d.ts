@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import 'cozy-client'
+import { FileDocument, CozyClientDocument } from 'cozy-client/types/types'
+
 declare module 'cozy-client' {
   interface ClientOptions {
     appMetadata?: AppMetadata
@@ -89,14 +91,54 @@ declare module 'cozy-client' {
     capabilities: {
       flat_subdomains: boolean
     }
+    locale: string
   }
 
   export const useClient = (): CozyClient => CozyClient as CozyClient
+
+  export interface SplitFilenameResult {
+    filename: string
+    extension: string
+  }
+
+  export interface FileCollectionGetResult {
+    data: {
+      _id: string
+      name: string
+      path: string
+      metadata?: {
+        backupDeviceIds: string[]
+      }
+    }
+  }
+
+  export interface StackErrors {
+    errors: {
+      status: string
+      title: string
+      detail: string
+    }[]
+  }
+
+  type IOCozyFile = {
+    attributes: FileDocument
+  } & CozyClientDocument
+
+  interface Collection {
+    findReferencedBy: (
+      params: object
+    ) => Promise<{ included: { attributes: unknown }[] }>
+    createDirectoryByPath: (path: string) => Promise<FileCollectionGetResult>
+    addReferencesTo: (references: object, dirs: object[]) => Promise<void>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    launch: (trigger: any) => any
+  }
 
   export default class CozyClient {
     constructor(rawOptions?: ClientOptions)
     getStackClient(): StackClient
     getInstanceOptions(): InstanceOptions
+    collection(doctype: string): Collection
     isLogged: boolean
     on: (event: string, callback: () => void) => void
     removeListener: (event: string, callback: () => void) => void

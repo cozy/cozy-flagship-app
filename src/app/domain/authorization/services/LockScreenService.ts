@@ -10,10 +10,10 @@ import { doHashPassword } from '/libs/functions/passwordHelpers'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { getVaultInformation } from '/libs/keychain'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
-import { translation } from '/locales'
 import { setLockScreenUI } from '/app/domain/authorization/events/LockScreenUiManager'
 import { UnlockWithPassword } from '/app/domain/authentication/models/User'
 import { devlog } from '/core/tools/env'
+import { t } from '/locales/i18n'
 
 const rnBiometrics = new ReactNativeBiometrics()
 
@@ -46,11 +46,11 @@ export const validatePassword = async ({
     try {
       return onSuccess()
     } catch (error) {
-      return onFailure(translation.errors.unknown_error)
+      return onFailure(t('errors.unknown_error'))
     }
   }
 
-  return onFailure(translation.errors.badUnlockPassword)
+  return onFailure(t('errors.badUnlockPassword'))
 }
 
 export const validatePin = async (pinCode: string): Promise<boolean> =>
@@ -104,8 +104,8 @@ export const promptBiometry = async (): Promise<{
   }
 
   const promptResult = await rnBiometrics.simplePrompt({
-    promptMessage: translation.screens.lock.promptTitle,
-    cancelButtonText: translation.screens.lock.promptCancel
+    promptMessage: t('screens.lock.promptTitle'),
+    cancelButtonText: t('screens.lock.promptCancel')
   })
 
   if (Platform.OS === 'android') {

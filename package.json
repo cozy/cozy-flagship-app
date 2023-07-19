@@ -1,6 +1,6 @@
 {
   "name": "cozy-react-native",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "private": true,
   "scripts": {
     "android": "react-native run-android --variant=devDebug --main-activity=MainActivitycozy",
@@ -14,11 +14,12 @@
     "install:scripts": "yarn tsc --project scripts && yarn install:home:registry",
     "ios": "react-native run-ios",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
-    "postinstall": "patch-package && yarn install:scripts",
+    "postinstall": "patch-package && yarn install:scripts && react-native setup-ios-permissions && pod-install",
     "pre-commit": "yarn lint",
     "start": "react-native start",
     "test": "jest src/**/* scripts/* --detectOpenHandles --forceExit --config __tests__/jest.config.js",
     "token": "node scripts/token.js",
+    "tx": "tx pull --all || true",
     "typecheck": "yarn tsc",
     "validate:locales": "node scripts/dist/validate-locales.cmd.js",
     "web": "webpack serve --open --config webpack.config.js --inline --hot --port=9999",
@@ -28,6 +29,7 @@
     "@cozy/minilog": "^1.0.0",
     "@fengweichong/react-native-gzip": "^2.0.0",
     "@react-native-async-storage/async-storage": "1.17.11",
+    "@react-native-camera-roll/camera-roll": "^5.7.2",
     "@react-native-community/netinfo": "9.3.7",
     "@react-native-cookies/cookies": "^6.0.4",
     "@react-native-firebase/app": "^14.12.0",
@@ -39,13 +41,15 @@
     "@sentry/integrations": "6.19.2",
     "@sentry/react-native": "3.4.3",
     "base-64": "^1.0.0",
-    "cozy-client": "^38.6.0",
     "cozy-clisk": "^0.20.2",
+    "cozy-client": "^38.7.0",
     "cozy-device-helper": "^2.7.0",
     "cozy-flags": "^2.11.0",
-    "cozy-intent": "^2.13.0",
+    "cozy-intent": "^2.14.0",
     "cozy-logger": "^1.10.0",
     "html-entities": "^2.3.3",
+    "i18next": "23.2.10",
+    "intl-pluralrules": "2.0.1",
     "lodash": "^4.17.21",
     "microee": "^0.0.6",
     "patch-package": "^6.4.7",
@@ -53,7 +57,9 @@
     "postinstall-postinstall": "^2.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-i18next": "13.0.2",
     "react-native": "0.66.4",
+    "react-native-background-upload": "^6.6.0",
     "react-native-biometrics": "3.0.1",
     "react-native-bootsplash": "3.2.3",
     "react-native-change-icon": "^4.0.0",
@@ -70,7 +76,9 @@
     "react-native-inappbrowser-reborn": "^3.5.1",
     "react-native-ios11-devicecheck": "https://github.com/cozy/react-native-devicecheck#app-attest-v0.1",
     "react-native-keychain": "^8.0.0",
+    "react-native-localize": "3.0.2",
     "react-native-mask-input": "1.2.1",
+    "react-native-permissions": "^3.8.0",
     "react-native-play-install-referrer": "^1.1.8",
     "react-native-safe-area-context": "^4.5.0",
     "react-native-screens": "3.18.2",
@@ -134,7 +142,8 @@
     "url-loader": "4.1.1",
     "webpack": "5.75.0",
     "webpack-cli": "4.7.2",
-    "webpack-dev-server": "3.11.2"
+    "webpack-dev-server": "3.11.2",
+    "pod-install": "0.1.38"
   },
   "browserslist": {
     "production": [
@@ -147,5 +156,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "reactNativePermissionsIOS": [
+    "PhotoLibrary"
+  ]
 }

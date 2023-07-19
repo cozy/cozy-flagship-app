@@ -14,6 +14,7 @@ import {
   listenTokenRefresh,
   saveClient
 } from '/libs/clientHelpers/persistClient'
+import { changeLanguage } from '/locales/i18n'
 
 import packageJSON from '../../package.json'
 
@@ -63,6 +64,7 @@ export const getClient = async () => {
 
   await client.registerPlugin(flag.plugin)
   await client.plugins.flags.initializing
+  await changeLanguage(client.getInstanceOptions().locale)
 
   return client
 }

@@ -1,3 +1,5 @@
+import { changeLanguage } from 'i18next'
+
 import CozyClient from 'cozy-client'
 import flag from 'cozy-flags'
 
@@ -41,6 +43,7 @@ export const createClient = async (instance: string): Promise<CozyClient> => {
   const stackClient = client.getStackClient()
   stackClient.setUri(instance)
   await stackClient.register(instance)
+  await changeLanguage(client.getInstanceOptions().locale)
 
   return client
 }

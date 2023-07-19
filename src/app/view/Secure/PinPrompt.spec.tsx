@@ -5,7 +5,6 @@ import React from 'react'
 import { PinPrompt } from '/app/view/Secure/PinPrompt'
 import { routes } from '/constants/routes'
 import { navigate } from '/libs/RootNavigation'
-import { translation } from '/locales'
 
 // @TODO
 // We need to mock these core services for the test to work
@@ -38,7 +37,7 @@ describe('PinPrompt', () => {
       />
     )
 
-    fireEvent.press(getByText(translation.screens.SecureScreen.pinprompt_cta))
+    fireEvent.press(getByText('screens.SecureScreen.pinprompt_cta'))
 
     // We're verifying that the navigate function was called with the expected arguments
     expect(navigate).toHaveBeenCalledWith(routes.setPin, { onSuccess })
@@ -57,9 +56,7 @@ describe('PinPrompt', () => {
       />
     )
 
-    fireEvent.press(
-      getByText(translation.screens.SecureScreen.pinprompt_refusal)
-    )
+    fireEvent.press(getByText('screens.SecureScreen.pinprompt_refusal'))
 
     // Verifying that the onSuccess callback was called correctly.
     expect(onSuccess).toHaveBeenCalled()
@@ -70,9 +67,7 @@ describe('PinPrompt', () => {
       throw new Error('An error occurred in onSuccess callback')
     })
 
-    fireEvent.press(
-      getByText(translation.screens.SecureScreen.pinprompt_refusal)
-    )
+    fireEvent.press(getByText('screens.SecureScreen.pinprompt_refusal'))
 
     expect(navigate).toHaveBeenCalledWith(routes.home)
   })

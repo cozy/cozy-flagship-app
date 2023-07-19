@@ -1,7 +1,9 @@
 import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock'
+import mockRNCameraRoll from '@react-native-camera-roll/camera-roll/src/__mocks__/nativeInterface'
 import mockRNCNetInfo from '@react-native-community/netinfo/jest/netinfo-mock.js'
 import mockBackHandler from 'react-native/Libraries/Utilities/__mocks__/BackHandler.js'
 import mockRNDeviceInfo from 'react-native-device-info/jest/react-native-device-info-mock'
+import mockRNPermissions from 'react-native-permissions/mock'
 
 import { mockRNFS } from '../__mocks__/react-native-fs-mock'
 
@@ -63,3 +65,34 @@ jest.mock('react-native-bootsplash', () => ({
 jest.mock('react-native-idle-timer', () => ({
   setIdleTimerDisabled: jest.fn()
 }))
+
+jest.mock('@react-native-camera-roll/camera-roll', () => mockRNCameraRoll)
+
+jest.mock('react-native-permissions', () => mockRNPermissions)
+
+jest.mock('react-native-localize', () => ({
+  getLocales: () => [
+    {
+      countryCode: 'GB',
+      languageTag: 'en-GB',
+      languageCode: 'en',
+      isRTL: false
+    },
+    {
+      countryCode: 'FR',
+      languageTag: 'fr-FR',
+      languageCode: 'fr',
+      isRTL: false
+    }
+  ]
+}))
+
+jest.mock('../src/locales/i18n', () => {
+  return {
+    ...jest.requireActual('../src/locales/i18n'),
+    t: jest.fn().mockImplementation(key => key),
+    useI18n: jest
+      .fn()
+      .mockReturnValue({ t: jest.fn().mockImplementation(key => key) })
+  }
+})
