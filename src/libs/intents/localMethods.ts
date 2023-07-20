@@ -38,7 +38,7 @@ import {
 } from '/app/domain/backup/services/manageBackup'
 import { sendProgressToWebview } from '/app/domain/backup/services/manageProgress'
 import { BackupInfo, ProgressCallback } from '/app/domain/backup/models'
-import { changeLanguage, TranslationFunction } from '/locales/i18n'
+import { changeLanguage } from '/locales/i18n'
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {
@@ -120,7 +120,7 @@ export const internalMethods = {
   }
 }
 
-export const setLang = async (lng: string): Promise<TranslationFunction> => {
+export const setLang = async (lng: string): Promise<void> => {
   return await changeLanguage(lng)
 }
 

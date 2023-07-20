@@ -1,5 +1,5 @@
 /* eslint-disable promise/always-return */
-import Minilog from '@cozy/minilog'
+import Minilog from 'cozy-minilog'
 
 import { uploadMedia } from '/app/domain/backup/services/uploadMedia'
 import {

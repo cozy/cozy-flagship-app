@@ -12,6 +12,7 @@ import {
 } from '/screens/login/components/ClouderyViewSwitch'
 import { LoginScreen } from '/screens/login/LoginScreen'
 import { useInstallReferrer } from '/screens/welcome/install-referrer/useInstallReferrer'
+import { useWelcomeInit } from '/app/view/Welcome/useWelcomeInit'
 
 const WelcomeView = ({ setIsWelcomeModalDisplayed, setClouderyMode }) => {
   const colors = getColors()
@@ -46,6 +47,7 @@ const WelcomeView = ({ setIsWelcomeModalDisplayed, setClouderyMode }) => {
 }
 
 export const WelcomeScreen = ({ navigation, route, setClient }) => {
+  useWelcomeInit()
   const [isWelcomeModalDisplayed, setIsWelcomeModalDisplayed] = useState(true)
   const { isInitialized, onboardingPartner } = useInstallReferrer()
   const [clouderyMode, setClouderyMode] = useState(CLOUDERY_MODE_LOGIN)
