@@ -12,10 +12,7 @@ import {
 import * as RootNavigation from '/libs/RootNavigation'
 import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
 import { routes } from '/constants/routes'
-import {
-  showSplashScreen,
-  hideSplashScreen
-} from '/app/theme/SplashScreenService'
+import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
 
 import CozyClient, { useClient } from 'cozy-client'
@@ -55,9 +52,9 @@ const tryLockingApp = async (
 }
 
 const handleSleep = (): void => {
-  showSplashScreen()
-    .then(() => storeData(StorageKeys.LastActivity, Date.now().toString()))
-    .catch(reason => log.error('Failed when going to sleep', reason))
+  storeData(StorageKeys.LastActivity, Date.now().toString()).catch(reason =>
+    log.error('Failed when going to sleep', reason)
+  )
 }
 
 /**
