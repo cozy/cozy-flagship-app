@@ -3,6 +3,7 @@ import RNBackgroundUpload, {
   UploadOptions
 } from 'react-native-background-upload'
 
+import { getMimeType } from '/app/domain/backup/services/getMedias'
 import { Media, UploadMediaResult } from '/app/domain/backup/models/Media'
 
 import CozyClient, { IOCozyFile } from 'cozy-client'
@@ -22,7 +23,7 @@ export const uploadMedia = async (
       type: 'raw',
       headers: {
         Accept: 'application/json',
-        'Content-Type': media.type,
+        'Content-Type': getMimeType(media),
         Authorization: `Bearer ${
           // @ts-expect-error Type issue which will be fixed in another PR
           client.getStackClient().token.accessToken as string

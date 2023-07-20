@@ -2,6 +2,7 @@
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
 import RNFileSystem from 'react-native-fs'
 
+import { getMimeType } from '/app/domain/backup/services/getMedias'
 import { Media, UploadMediaResult } from '/app/domain/backup/models/Media'
 
 import CozyClient, { StackErrors, IOCozyFile } from 'cozy-client'
@@ -52,7 +53,7 @@ export const uploadMedia = async (
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': media.type,
+        'Content-Type': getMimeType(media),
         Authorization: `Bearer ${
           // @ts-expect-error Type issue which will be fixed in another PR
           client.getStackClient().token.accessToken as string

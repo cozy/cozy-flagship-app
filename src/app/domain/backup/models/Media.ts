@@ -16,6 +16,7 @@ export interface Media {
   remotePath: string
   type: 'image' | 'video'
   subType?: 'PhotoLive'
+  mimeType?: string
   creationDate: number
   albums: Album[]
 }
