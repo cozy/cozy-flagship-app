@@ -1,5 +1,4 @@
 /* eslint-disable promise/always-return */
-import Minilog from 'cozy-minilog'
 
 import { uploadMedia } from '/app/domain/backup/services/uploadMedia'
 import {
@@ -16,6 +15,7 @@ import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
 
 import type CozyClient from 'cozy-client'
 import { IOCozyFile } from 'cozy-client'
+import Minilog from 'cozy-minilog'
 
 const log = Minilog('💿 Backup')
 
@@ -41,7 +41,9 @@ export const uploadMedias = async (
     currentBackup: { mediasToBackup: mediasToUpload }
   } = localBackupConfig
 
-  const metadataId = await getMetadataId(client)
+  const commonMetadataId = await getCommonMetadataId(client)
+
+  let lastUploadedDocument
 
   for (const mediaToUpload of mediasToUpload) {
     if (shouldStopBackup) {
@@ -57,6 +59,20 @@ export const uploadMedias = async (
         mediaToUpload
       )
 
+      let metadataId = commonMetadataId
+
+      if (
+        mediaToUpload.type === 'image' &&
+        mediaToUpload.subType === 'PhotoLive' &&
+        lastUploadedDocument
+      ) {
+        metadataId = await getLivePhotoMetadataId(
+          client,
+          mediaToUpload,
+          lastUploadedDocument
+        )
+      }
+
       const uploadUrl = getUploadUrl(
         client,
         uploadFolderId,
@@ -69,6 +85,8 @@ export const uploadMedias = async (
         uploadUrl,
         mediaToUpload
       )
+
+      lastUploadedDocument = documentCreated
 
       log.debug(`✅ ${mediaToUpload.name} uploaded`)
 
@@ -141,13 +159,30 @@ const addMediaToAlbum = async (
   }
 }
 
-const getMetadataId = async (client: CozyClient): Promise<string> => {
+const getCommonMetadataId = async (client: CozyClient): Promise<string> => {
   const deviceId = await getDeviceId()
 
   const {
     data: { id: metadataId }
   } = await client.collection(DOCTYPE_FILES).createFileMetadata({
     backupDeviceIds: [deviceId]
+  })
+
+  return metadataId
+}
+
+const getLivePhotoMetadataId = async (
+  client: CozyClient,
+  media: Media,
+  lastUploadedDocument: IOCozyFile
+): Promise<string> => {
+  const deviceId = await getDeviceId()
+
+  const {
+    data: { id: metadataId }
+  } = await client.collection(DOCTYPE_FILES).createFileMetadata({
+    backupDeviceIds: [deviceId],
+    pairedVideoId: lastUploadedDocument.id
   })
 
   return metadataId
