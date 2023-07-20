@@ -65,12 +65,14 @@ export const setLocalBackupConfig = async (
 export const initiazeLocalBackupConfig = async (
   client: CozyClient,
   remoteBackupConfig: RemoteBackupConfig,
-  backupedMedias: BackupedMedia[]
+  backupedMedias: BackupedMedia[],
+  backupedAlbums: BackupedAlbum[]
 ): Promise<LocalBackupConfig> => {
   const newLocalBackupConfig = {
     ...INITIAL_BACKUP_CONFIG,
     remoteBackupConfig: remoteBackupConfig,
-    backupedMedias: backupedMedias
+    backupedMedias: backupedMedias,
+    backupedAlbums: backupedAlbums
   }
 
   await setLocalBackupConfig(client, newLocalBackupConfig)

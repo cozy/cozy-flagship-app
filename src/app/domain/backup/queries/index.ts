@@ -1,6 +1,7 @@
 import { Q, QueryDefinition } from 'cozy-client'
 
 const DOCTYPE_FILES = 'io.cozy.files'
+const DOCTYPE_ALBUMS = 'io.cozy.photos.albums'
 
 export const buildFilesQuery = (deviceId: string): QueryDefinition => {
   return Q(DOCTYPE_FILES)
@@ -25,3 +26,21 @@ export interface File {
 }
 
 export type FilesQueryAllResult = File[]
+
+export const buildAlbumsQuery = (deviceId: string): QueryDefinition => {
+  return Q(DOCTYPE_ALBUMS)
+    .where({
+      backupDeviceIds: {
+        $elemMatch: { $eq: deviceId }
+      }
+    })
+    .indexFields(['backupDeviceIds'])
+    .select(['backupDeviceIds', 'name'])
+}
+
+export interface AlbumDocument {
+  id: string
+  name: string
+}
+
+export type AlbumsQueryAllResult = AlbumDocument[]
