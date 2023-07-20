@@ -11,7 +11,8 @@ import {
 } from '/app/domain/backup/services/manageLocalBackupConfig'
 import {
   getAlbums,
-  createRemoteAlbums
+  createRemoteAlbums,
+  fetchBackupedAlbums
 } from '/app/domain/backup/services/manageAlbums'
 import { getMediasToBackup } from '/app/domain/backup/services/getMedias'
 import {
@@ -34,6 +35,7 @@ import {
   BackupInfo,
   ProgressCallback,
   BackupedMedia,
+  BackupedAlbum,
   LocalBackupConfig
 } from '/app/domain/backup/models'
 
@@ -146,6 +148,7 @@ const initializeBackup = async (
     // if there is no local backup config
     let deviceRemoteBackupConfig = await fetchDeviceRemoteBackupConfig(client)
     let backupedMedias
+    let backupedAlbums
 
     if (deviceRemoteBackupConfig) {
       log.debug('Backup will be restored')
@@ -154,16 +157,20 @@ const initializeBackup = async (
         client,
         deviceRemoteBackupConfig
       )
+      backupedAlbums = await fetchBackupedAlbums(client)
     } else {
       log.debug('Backup will be created')
+
       deviceRemoteBackupConfig = await createRemoteBackupFolder(client)
       backupedMedias = [] as BackupedMedia[]
+      backupedAlbums = [] as BackupedAlbum[]
     }
 
     const backupConfig = await initiazeLocalBackupConfig(
       client,
       deviceRemoteBackupConfig,
-      backupedMedias
+      backupedMedias,
+      backupedAlbums
     )
 
     return backupConfig
