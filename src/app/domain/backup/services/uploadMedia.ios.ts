@@ -22,13 +22,11 @@ const getRealFilepath = async (media: Media): Promise<string> => {
 
   filepath = filepath.replace('file://', '')
 
-  if (media.type === 'image') {
-    return filepath
-  } else if (media.type === 'video' && media.subType === 'PhotoLive') {
+  if (media.type === 'video' && media.subType === 'PhotoLive') {
     return getVideoPathFromLivePhoto(filepath)
   }
 
-  throw new Error('Impossible to get a real filepath')
+  return filepath
 }
 
 export const uploadMedia = async (
