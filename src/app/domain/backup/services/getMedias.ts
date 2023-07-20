@@ -27,6 +27,36 @@ const getPhotoIdentifiersPage = async (
   return photoIdentifiersPage
 }
 
+export const getMimeType = (media: Media): string => {
+  if (media.mimeType) {
+    return media.mimeType
+  }
+
+  const extension = media.name
+    .substring(media.name.lastIndexOf('.') + 1)
+    .toLowerCase()
+
+  if (media.type === 'image') {
+    switch (extension) {
+      case 'jpg':
+        return 'image/jpeg'
+      default:
+        return `image/${extension}`
+    }
+  }
+
+  if (media.type === 'video') {
+    switch (extension) {
+      case 'mp4':
+        return 'video/mpeg'
+      default:
+        return `video/${extension}`
+    }
+  }
+
+  throw new Error('Platform is not supported for backup')
+}
+
 export const getRemotePath = (uri: string): string => {
   if (Platform.OS === 'ios') {
     return '/'
@@ -94,6 +124,7 @@ const formatMediasFromPhotoIdentifier = (
       path: uri,
       remotePath: getRemotePath(uri),
       type: type.includes('image') ? 'image' : 'video',
+      mimeType: Platform.OS == 'android' ? type : undefined,
       creationDate: timestamp * 1000,
       albums
     }
