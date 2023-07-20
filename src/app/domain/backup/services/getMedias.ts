@@ -79,7 +79,7 @@ export const getRemotePath = (uri: string): string => {
   throw new Error('Platform is not supported for backup')
 }
 
-const formatMediasFromPhotoIdentifier = (
+export const formatMediasFromPhotoIdentifier = (
   photoIdentifier: PhotoIdentifier
 ): Media[] => {
   const {
