@@ -60,7 +60,6 @@ const loginMagicLink = async (
           twoFactorPasswordNeeded: true
         }
       } else if (e.reason?.error === ERROR_INVALID_MAGIC_CODE) {
-        // Why is this translated but not the other error message?
         throw new Error(t('screens.login.invalidMagicCode'), e)
       } else {
         throw new Error('Error while calling loginMagicLink', e)

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { BackHandler, StyleSheet, View } from 'react-native'
+
 import Minilog from 'cozy-minilog'
 
 import { ClouderyView } from './components/ClouderyView'
@@ -35,6 +36,7 @@ import { routes } from '/constants/routes'
 import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { getInstanceFromFqdn } from '/screens/login/components/functions/getInstanceFromFqdn'
 import { getInstanceDataFromFqdn } from '/screens/login/components/functions/getInstanceDataFromRequest'
+import { changeLanguage } from 'i18next'
 
 const log = Minilog('LoginScreen')
 
@@ -147,7 +149,10 @@ const LoginSteps = ({
       try {
         const client = await createClient(instance)
 
-        const { kdfIterations, name } = await fetchPublicData(client)
+        const { kdfIterations, name, locale } = await fetchPublicData(client)
+
+        // If we are able to get a locale from the public data, we update the language asap
+        if (locale) void changeLanguage(locale)
 
         // we do not want to await for flagship certification in order to make the UI more responsive
         // so do not add `await` keyword here

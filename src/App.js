@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
-import RNAsyncStorageFlipper from 'rn-async-storage-flipper'
-import React, { useEffect, useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
-import { PersistGate } from 'redux-persist/integration/react'
-import { Provider } from 'react-redux'
-import { StatusBar, StyleSheet, View } from 'react-native'
 import { decode, encode } from 'base-64'
+import React, { useEffect, useState } from 'react'
+import { StatusBar, StyleSheet, View } from 'react-native'
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
+import RNAsyncStorageFlipper from 'rn-async-storage-flipper'
+import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
 
 import { CozyProvider, useClient } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
@@ -33,6 +33,7 @@ import { useSynchronizeOnInit } from '/hooks/useSynchronizeOnInit'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
 import { ThemeProvider } from '/app/theme/ThemeProvider'
+import { useInitI18n } from '/locales/useInitI18n'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -48,6 +49,7 @@ const App = ({ setClient }) => {
 
   useSynchronizeOnInit()
   useNetService(client)
+  useInitI18n(client)
 
   const { initialRoute, isLoading } = useAppBootstrap(client)
 

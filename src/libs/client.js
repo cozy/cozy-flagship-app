@@ -1,10 +1,10 @@
-import Minilog from 'cozy-minilog'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
 
 import CozyClient from 'cozy-client'
 // @ts-ignore
 import flag from 'cozy-flags'
+import Minilog from 'cozy-minilog'
 
 import { normalizeFqdn } from './functions/stringHelpers'
 
@@ -14,7 +14,6 @@ import {
   listenTokenRefresh,
   saveClient
 } from '/libs/clientHelpers/persistClient'
-import { changeLanguage } from '/locales/i18n'
 
 import packageJSON from '../../package.json'
 
@@ -64,7 +63,6 @@ export const getClient = async () => {
 
   await client.registerPlugin(flag.plugin)
   await client.plugins.flags.initializing
-  await changeLanguage(client.getInstanceOptions().locale)
 
   return client
 }
@@ -83,14 +81,16 @@ export const getClient = async () => {
 export const fetchPublicData = async client => {
   const stackClient = client.getStackClient()
 
-  const { KdfIterations: kdfIterations, name } = await stackClient.fetchJSON(
-    'GET',
-    '/public/prelogin'
-  )
+  const {
+    KdfIterations: kdfIterations,
+    name,
+    locale
+  } = await stackClient.fetchJSON('GET', '/public/prelogin')
 
   return {
     kdfIterations,
-    name
+    name,
+    locale
   }
 }
 

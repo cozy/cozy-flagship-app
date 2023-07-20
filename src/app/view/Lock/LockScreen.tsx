@@ -166,6 +166,7 @@ const LockView = ({
     </Container>
   )
 }
+
 export const LockScreen = (props: LockScreenProps): React.ReactNode => (
   <ConditionalWrapper
     condition={Platform.OS === 'ios'}
