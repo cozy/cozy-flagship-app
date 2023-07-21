@@ -3,6 +3,7 @@ import {
   PhotoIdentifiersPage,
   PhotoIdentifier
 } from '@react-native-camera-roll/camera-roll'
+import mime from 'mime/lite'
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 
@@ -32,29 +33,13 @@ export const getMimeType = (media: Media): string => {
     return media.mimeType
   }
 
-  const extension = media.name
-    .substring(media.name.lastIndexOf('.') + 1)
-    .toLowerCase()
+  const guessedMimeType = mime.getType(media.name)
 
-  if (media.type === 'image') {
-    switch (extension) {
-      case 'jpg':
-        return 'image/jpeg'
-      default:
-        return `image/${extension}`
-    }
+  if (guessedMimeType === null) {
+    throw new Error('File is not supported for backup')
   }
 
-  if (media.type === 'video') {
-    switch (extension) {
-      case 'mp4':
-        return 'video/mpeg'
-      default:
-        return `video/${extension}`
-    }
-  }
-
-  throw new Error('Platform is not supported for backup')
+  return guessedMimeType
 }
 
 export const getRemotePath = (uri: string): string => {
