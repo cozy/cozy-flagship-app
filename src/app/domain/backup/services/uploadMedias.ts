@@ -214,18 +214,15 @@ const getUploadUrl = (
 ): string => {
   const createdAt = new Date(media.creationDate).toISOString()
 
-  const toURL =
-    client.getStackClient().uri +
-    '/files/' +
-    backupFolderId +
-    '?Name=' +
-    encodeURIComponent(media.name) +
-    '&Type=file&Tags=library&Executable=false&CreatedAt=' +
-    createdAt +
-    '&UpdatedAt=' +
-    createdAt +
-    '&MetadataID=' +
-    metadataId
+  const toURL = new URL(client.getStackClient().uri)
+  toURL.pathname = `/files/${backupFolderId}`
+  toURL.searchParams.append('Name', media.name)
+  toURL.searchParams.append('Type', 'file')
+  toURL.searchParams.append('Tags', 'library')
+  toURL.searchParams.append('Executable', 'false')
+  toURL.searchParams.append('CreatedAt', createdAt)
+  toURL.searchParams.append('UpdatedAt', createdAt)
+  toURL.searchParams.append('MetadataID', metadataId)
 
-  return toURL
+  return toURL.toString()
 }
