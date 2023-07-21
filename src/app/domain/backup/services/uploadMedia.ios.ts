@@ -29,6 +29,16 @@ const getRealFilepath = async (media: Media): Promise<string> => {
   return filepath
 }
 
+let currentUploadId: string | undefined
+
+export const getCurrentUploadId = (): string | undefined => {
+  return currentUploadId
+}
+
+const setCurrentUploadId = (value: string): void => {
+  currentUploadId = value
+}
+
 export const uploadMedia = async (
   client: CozyClient,
   uploadUrl: string,
@@ -56,6 +66,9 @@ export const uploadMedia = async (
           // @ts-expect-error Type issue which will be fixed in another PR
           client.getStackClient().token.accessToken as string
         }`
+      },
+      begin: ({ jobId }) => {
+        setCurrentUploadId(jobId.toString())
       }
     })
       .promise.then(response => {
@@ -79,5 +92,11 @@ export const uploadMedia = async (
       .catch(e => {
         reject(e)
       })
+  })
+}
+
+export const cancelUpload = (uploadId: string): Promise<void> => {
+  return new Promise(resolve => {
+    resolve(RNFileSystem.stopUpload(parseInt(uploadId)))
   })
 }

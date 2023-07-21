@@ -8,6 +8,16 @@ import { Media, UploadMediaResult } from '/app/domain/backup/models/Media'
 
 import CozyClient, { IOCozyFile } from 'cozy-client'
 
+let currentUploadId: string | undefined
+
+export const getCurrentUploadId = (): string | undefined => {
+  return currentUploadId
+}
+
+const setCurrentUploadId = (value: string): void => {
+  currentUploadId = value
+}
+
 export const uploadMedia = async (
   client: CozyClient,
   uploadUrl: string,
@@ -36,6 +46,8 @@ export const uploadMedia = async (
 
     RNBackgroundUpload.startUpload(options)
       .then(uploadId => {
+        setCurrentUploadId(uploadId)
+
         RNBackgroundUpload.addListener('error', uploadId, error => {
           // RNBackgroundUpload does not return status code and response body...
           reject({
@@ -74,4 +86,8 @@ export const uploadMedia = async (
         reject(e)
       })
   })
+}
+
+export const cancelUpload = (uploadId: string): Promise<boolean> => {
+  return RNBackgroundUpload.cancelUpload(uploadId)
 }

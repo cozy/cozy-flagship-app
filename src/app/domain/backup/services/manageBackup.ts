@@ -20,6 +20,10 @@ import {
   setShouldStopBackup
 } from '/app/domain/backup/services/uploadMedias'
 import {
+  cancelUpload,
+  getCurrentUploadId
+} from '/app/domain/backup/services/uploadMedia'
+import {
   fetchDeviceRemoteBackupConfig,
   fetchBackupedMedias,
   createRemoteBackupFolder
@@ -114,6 +118,14 @@ export const startBackup = async (
 
 export const stopBackup = async (client: CozyClient): Promise<BackupInfo> => {
   setShouldStopBackup(true)
+
+  const uploadId = getCurrentUploadId()
+
+  if (uploadId) {
+    await cancelUpload(uploadId)
+  }
+
+  await setBackupAsReady(client)
 
   return await getBackupInfo(client)
 }
