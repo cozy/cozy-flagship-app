@@ -40,7 +40,8 @@ export const uploadMedia = async (
         }`
       },
       notification: {
-        enabled: false
+        enabled: true,
+        autoClear: true
       }
     } as UploadOptions
 
