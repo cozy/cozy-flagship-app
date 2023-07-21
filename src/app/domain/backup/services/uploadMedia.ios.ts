@@ -8,7 +8,7 @@ import { Media, UploadMediaResult } from '/app/domain/backup/models/Media'
 import CozyClient, { StackErrors, IOCozyFile } from 'cozy-client'
 
 const getVideoPathFromLivePhoto = (photoPath: string): string => {
-  return photoPath.substring(0, photoPath.lastIndexOf('.')) + '.mov'
+  return photoPath.substring(0, photoPath.lastIndexOf('.')) + '.MOV'
 }
 
 const getRealFilepath = async (media: Media): Promise<string> => {
