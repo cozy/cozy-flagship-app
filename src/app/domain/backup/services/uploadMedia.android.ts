@@ -6,7 +6,7 @@ import RNBackgroundUpload, {
 import { getMimeType } from '/app/domain/backup/services/getMedias'
 import { Media, UploadMediaResult } from '/app/domain/backup/models/Media'
 
-import CozyClient, { IOCozyFile } from 'cozy-client'
+import CozyClient, { StackErrors, IOCozyFile } from 'cozy-client'
 
 let currentUploadId: string | undefined
 
@@ -50,16 +50,10 @@ export const uploadMedia = async (
         setCurrentUploadId(uploadId)
 
         RNBackgroundUpload.addListener('error', uploadId, error => {
-          // RNBackgroundUpload does not return status code and response body...
+          const { errors } = JSON.parse(error.responseBody) as StackErrors
           reject({
-            statusCode: -1,
-            errors: [
-              {
-                status: -1,
-                title: error.error,
-                detail: error.error
-              }
-            ]
+            statusCode: error.responseCode,
+            errors
           })
         })
         RNBackgroundUpload.addListener('cancelled', uploadId, data => {

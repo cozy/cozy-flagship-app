@@ -1,0 +1,36 @@
+diff --git a/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/GlobalRequestObserverDelegate.kt b/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/GlobalRequestObserverDelegate.kt
+index c89d495..5da9d14 100644
+--- a/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/GlobalRequestObserverDelegate.kt
++++ b/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/GlobalRequestObserverDelegate.kt
+@@ -9,6 +9,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEm
+ import net.gotev.uploadservice.data.UploadInfo
+ import net.gotev.uploadservice.network.ServerResponse
+ import net.gotev.uploadservice.observer.request.RequestObserverDelegate
++import net.gotev.uploadservice.exceptions.UploadError
+ 
+ class GlobalRequestObserverDelegate(reactContext: ReactApplicationContext) : RequestObserverDelegate {
+   private val TAG = "UploadReceiver"
+@@ -28,6 +29,10 @@ class GlobalRequestObserverDelegate(reactContext: ReactApplicationContext) : Req
+     // Make sure we do not try to call getMessage() on a null object
+     if (exception != null) {
+       params.putString("error", exception.message)
++      if (exception is UploadError) {
++        params.putInt("responseCode", exception.serverResponse.code)
++        params.putString("responseBody", String(exception.serverResponse.body, Charsets.US_ASCII))
++      }
+     } else {
+       params.putString("error", "Unknown exception")
+     }
+diff --git a/node_modules/react-native-background-upload/index.d.ts b/node_modules/react-native-background-upload/index.d.ts
+index 8b2a07c..80cff93 100644
+--- a/node_modules/react-native-background-upload/index.d.ts
++++ b/node_modules/react-native-background-upload/index.d.ts
+@@ -11,6 +11,8 @@ declare module "react-native-background-upload" {
+ 
+     export interface ErrorData extends EventData {
+         error: string
++        responseCode: number
++        responseBody: string
+     }
+ 
+     export interface CompletedData extends EventData {
