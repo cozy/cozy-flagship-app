@@ -1,10 +1,7 @@
 /* eslint-disable promise/always-return */
 
 import { uploadMedia } from '/app/domain/backup/services/uploadMedia'
-import {
-  setBackupAsReady,
-  setMediaAsBackuped
-} from '/app/domain/backup/services/manageLocalBackupConfig'
+import { setMediaAsBackuped } from '/app/domain/backup/services/manageLocalBackupConfig'
 import { getDeviceId } from '/app/domain/backup/services/manageRemoteBackupConfig'
 import {
   Media,
@@ -48,7 +45,6 @@ export const uploadMedias = async (
   for (const mediaToUpload of mediasToUpload) {
     if (shouldStopBackup) {
       shouldStopBackup = false
-      await setBackupAsReady(client)
       return
     }
 
