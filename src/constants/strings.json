@@ -35,6 +35,7 @@
   "errorAppendParamsFail": "Could not handle url, it is neither a valid URL string nor a string",
   "errorScreens": {
     "cozyNotFound": "cozyNotFound",
+    "cozyNotOnboarded": "cozyNotOnboarded",
     "offline": "offline",
     "managerError": "managerError"
   },

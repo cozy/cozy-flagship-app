@@ -5,6 +5,7 @@ import { changeBarColors } from 'react-native-immersive-bars'
 import { WebViewMessageEvent } from 'react-native-webview/lib/WebViewTypes'
 
 import { CozyNotFoundPage } from '/components/webviews/CozyNotFoundPage'
+import { CozyNotOnboardedPage } from '/components/webviews/CozyNotOnboardedPage'
 import { OfflinePage } from '/components/webviews/OfflinePage'
 import { ManagerErrorPage } from '/components/webviews/ManagerErrorPage'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
@@ -43,6 +44,7 @@ type Handlers = Record<
  */
 const HTML: Record<string, () => string> = {
   cozyNotFound: CozyNotFoundPage,
+  cozyNotOnboarded: CozyNotOnboardedPage,
   offline: OfflinePage,
   managerError: ManagerErrorPage
 }

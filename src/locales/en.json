@@ -24,6 +24,10 @@
       "body": "We could not find any Cozy at this address. It may be a typo. To know, check the address of your Cozy in the email we sent you when it was created.",
       "title": "This Cozy address does not exist."
     },
+    "cozyNotOnboarded": {
+      "body": "You must click on the email sent at the end of your registration to complete it. If you can't find this email, please contact us at <a id=\"mailto\" href=\"#\">contact@cozycloud.cc</a>.",
+      "title": "You have not completed your registration"
+    },
     "managerError": {
       "body": "An error occurred while processing your login link",
       "title": "A problem occurred"
