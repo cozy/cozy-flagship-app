@@ -34,6 +34,7 @@
   },
   "errorAppendParamsFail": "Could not handle url, it is neither a valid URL string nor a string",
   "errorScreens": {
+    "cozyBlocked": "cozyBlocked",
     "cozyNotFound": "cozyNotFound",
     "cozyNotOnboarded": "cozyNotOnboarded",
     "offline": "offline",

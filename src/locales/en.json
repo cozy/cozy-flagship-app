@@ -20,6 +20,10 @@
     "title": "Logout"
   },
   "screens": {
+    "cozyBlocked": {
+      "body": "Contact us, if you want to know more, at <a id=\"mailto\" href=\"#\">contact@cozycloud.cc</a>.",
+      "title": "Your Cozy has been blocked"
+    },
     "cozyNotFound": {
       "body": "We could not find any Cozy at this address. It may be a typo. To know, check the address of your Cozy in the email we sent you when it was created.",
       "title": "This Cozy address does not exist."

@@ -8,7 +8,7 @@ import {
   View
 } from 'react-native'
 
-import { rootCozyUrl } from 'cozy-client'
+import { rootCozyUrl, BlockedCozyError } from 'cozy-client'
 
 import strings from '/constants/strings.json'
 import { navigate } from '/libs/RootNavigation'
@@ -103,13 +103,20 @@ export const ClouderyView = ({
         await rootCozyUrl(new URL(checkInstanceData.instance))
 
         setInstanceData({ ...checkInstanceData })
-      } catch {
+      } catch (e) {
+        if (e instanceof BlockedCozyError) {
+          navigate(routes.error, {
+            type: strings.errorScreens.cozyBlocked,
+            backgroundColor: clouderyTheme?.backgroundColor
+          })
+          return
+        }
         navigate(routes.error, { type: strings.errorScreens.cozyNotFound })
       }
     }
 
     checkInstanceData && asyncCore()
-  }, [checkInstanceData, setInstanceData])
+  }, [checkInstanceData, clouderyTheme, setInstanceData])
 
   const handleBackPress = useCallback(() => {
     if (!canGoBack) {

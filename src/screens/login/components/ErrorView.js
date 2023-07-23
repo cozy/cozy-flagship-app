@@ -30,6 +30,14 @@ export const ErrorView = ({ errorMessage, error, button, backgroundColor }) => {
     })
   }
 
+  if (isErrorAboutBlockedCozy(error)) {
+    button.callback()
+    navigate(routes.error, {
+      type: strings.errorScreens.cozyBlocked,
+      backgroundColor
+    })
+  }
+
   return (
     <View>
       <Text>AN ERROR OCCURED</Text>
@@ -53,5 +61,11 @@ const isErrorAboutNotOnboardedCozy = error => {
   return (
     error.status === 412 &&
     error.reason?.error === 'the instance has not been onboarded'
+  )
+}
+
+const isErrorAboutBlockedCozy = error => {
+  return (
+    error.status === 503 && error?.reason?.some?.(r => r.title === 'Blocked')
   )
 }
