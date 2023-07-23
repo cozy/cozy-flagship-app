@@ -47,6 +47,7 @@
     "cozyBlocked": "cozyBlocked",
     "cozyNotFound": "cozyNotFound",
     "cozyNotOnboarded": "cozyNotOnboarded",
+    "genericError": "genericError",
     "offline": "offline",
     "managerError": "managerError"
   },
