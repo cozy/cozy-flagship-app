@@ -23,6 +23,12 @@ const resetTemplate = `
   </button>
 `
 
+const errorDetailsTemplate = `
+  <button id="showDetails" class="btn btn-link mt-1">
+    ${t('errors.showDetails')}
+  </button>
+`
+
 interface MakeErrorPageProps {
   icon: string
   title: string
@@ -31,6 +37,7 @@ interface MakeErrorPageProps {
   header?: boolean
   reset?: boolean
   backgroundColor?: string
+  errorDetails?: string
   invertedTheme?: boolean
 }
 
@@ -42,6 +49,7 @@ export const makeHtmlErrorPage = ({
   header,
   reset,
   backgroundColor,
+  errorDetails,
   invertedTheme = true
 }: MakeErrorPageProps): string => {
   const dimensions = getDimensions()
@@ -89,6 +97,7 @@ export const makeHtmlErrorPage = ({
           <div class="mb-3">${icon}</div>
           <h1 class="h4 h2-md mb-3 text-center">${title}</h1>
           <p class="text-center">${body}</p>
+          ${errorDetails ? errorDetailsTemplate : ''}
           ${reset ? resetTemplate : ''}
         </div>
 
@@ -123,6 +132,13 @@ export const makeHtmlErrorPage = ({
               window.ReactNativeWebView.postMessage(JSON.stringify({
                 message: 'reset'
               }))
+            }
+          }
+
+          const showDetailsButton = document.getElementById('showDetails')
+          if (showDetailsButton) {
+            showDetailsButton.onclick = (e) => {
+              window.alert(\`${errorDetails}\`)
             }
           }
         })

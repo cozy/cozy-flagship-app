@@ -11,7 +11,8 @@
     "badUnlockPin": "Le code PIN que vous avez saisi est incorrect, veuillez ré-essayer",
     "contactUs": "Un problème, une suggestion ? Contactez-nous à",
     "unknown_error": "Une erreur inattendue s'est produite, veuillez ré-essayer.",
-    "reset": "Revenir à l'accueil"
+    "reset": "Revenir à l'accueil",
+    "showDetails": "Voir les détails de l'erreur"
   },
   "logout_dialog": {
     "cancel": "Annuler",
@@ -31,6 +32,10 @@
     "cozyNotOnboarded": {
       "body": "Vous devez cliquer sur l'email envoyé à la fin de votre inscription pour terminer celle-ci. Si vous ne retrouvez pas cet email, n'hésitez pas à nous contacter à <a id=\"mailto\" href=\"#\">contact@cozycloud.cc</a>.",
       "title": "Vous n'avez pas terminé votre inscription"
+    },
+    "genericError": {
+      "defaultBody": "Une erreur inatendue est survenue",
+      "title": "Nous avons rencontré une erreur inattendue"
     },
     "managerError": {
       "body": "Une erreur est survenue lors du traitement de votre lien de connexion",

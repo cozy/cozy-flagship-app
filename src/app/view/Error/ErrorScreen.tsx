@@ -8,6 +8,7 @@ import { ErrorPageGenerator } from '/app/domain/errors/models/ErrorPageGenerator
 import { CozyBlockedPage } from '/app/view/Error/Pages/CozyBlockedPage'
 import { CozyNotFoundPage } from '/app/view/Error/Pages/CozyNotFoundPage'
 import { CozyNotOnboardedPage } from '/app/view/Error/Pages/CozyNotOnboardedPage'
+import { GenericErrorPage } from '/app/view/Error/Pages/GenericErrorPage'
 import { ManagerErrorPage } from '/app/view/Error/Pages/ManagerErrorPage'
 import { OfflinePage } from '/app/view/Error/Pages/OfflinePage'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
@@ -27,6 +28,10 @@ interface ErrorScreenProps {
     params: {
       type: string
       backgroundColor?: string
+      error?: {
+        message: string
+        details: string
+      }
     }
   }
 }
@@ -48,6 +53,7 @@ const HTML: Record<string, ErrorPageGenerator> = {
   cozyBlocked: CozyBlockedPage,
   cozyNotFound: CozyNotFoundPage,
   cozyNotOnboarded: CozyNotOnboardedPage,
+  genericError: GenericErrorPage,
   offline: OfflinePage,
   managerError: ManagerErrorPage
 }
@@ -98,7 +104,10 @@ const makeSource = (route: ErrorScreenProps['route']): Source => {
 
   const backgroundColor: string =
     route.params.backgroundColor ?? colors.primaryColor
-  return { html: htmlGenerator({ backgroundColor }), baseUrl: '' }
+
+  const error = route.params.error ?? undefined
+
+  return { html: htmlGenerator({ backgroundColor, error }), baseUrl: '' }
 }
 
 export const ErrorScreen = (props: ErrorScreenProps): JSX.Element => {
