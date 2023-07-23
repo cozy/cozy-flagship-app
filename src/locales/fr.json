@@ -20,6 +20,10 @@
     "title": "Déconnexion"
   },
   "screens": {
+    "cozyBlocked": {
+      "body": "Contactez-nous, si vous souhaitez en savoir plus, à l'adresse <a id=\"mailto\" href=\"#\">contact@cozycloud.cc</a>.",
+      "title": "Le fonctionnement de votre Cozy a été momentanément interrompu"
+    },
     "cozyNotFound": {
       "body": "Nous n'avons trouvé aucun Cozy à cette adresse. Il s'agit peut-être d'une erreur de frappe. Pour le savoir, vérifiez l'adresse de votre Cozy dans l'e-mail que nous vous avons envoyé au moment de sa création.",
       "title": "L'adresse de ce Cozy n'existe pas."
