@@ -9,6 +9,7 @@ import RNFS from 'react-native-fs'
 
 import { Media, BackupedMedia, Album } from '/app/domain/backup/models'
 import { getLocalBackupConfig } from '/app/domain/backup/services/manageLocalBackupConfig'
+import { getPathWithoutExtension } from '/app/domain/backup/helpers'
 import { t } from '/locales/i18n'
 
 import type CozyClient from 'cozy-client'
@@ -84,7 +85,7 @@ export const formatMediasFromPhotoIdentifier = (
   if (subTypes.includes('PhotoLive')) {
     return [
       {
-        name: filename.substring(0, filename.lastIndexOf('.')) + '.MOV',
+        name: getPathWithoutExtension(filename) + '.MOV',
         path: uri,
         remotePath: getRemotePath(uri),
         type: 'video',
