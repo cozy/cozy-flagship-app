@@ -69,7 +69,13 @@
   },
   "services": {
     "backup": {
-      "backupRootPath": "/Sauvegardé depuis mon mobile"
+      "backupRootPath": "/Sauvegardé depuis mon mobile",
+      "errors": {
+        "fileNotFound": "Fichier non trouvé",
+        "fileNotSupported": "Fichier non supporté pour la sauvegarde",
+        "platformNotSupported": "Plateforme non supportée pour la sauvegarde",
+        "configNotInitialized": "Configuration locale de sauvegarde non initialisée"
+      }
     }
   },
   "modals": {

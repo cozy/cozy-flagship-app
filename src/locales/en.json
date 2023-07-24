@@ -69,7 +69,13 @@
   },
   "services": {
     "backup": {
-      "backupRootPath": "/Mobile backup"
+      "backupRootPath": "/Mobile backup",
+      "errors": {
+        "fileNotFound": "File not found",
+        "fileNotSupported": "File not supported for backup",
+        "platformNotSupported": "Platform not supported for backup",
+        "configNotInitialized": "Local backup config not initialized"
+      }
     }
   },
   "modals": {

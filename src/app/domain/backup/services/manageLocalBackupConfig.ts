@@ -1,3 +1,4 @@
+import type CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import {
@@ -12,8 +13,7 @@ import {
   storeUserPersistedData,
   UserPersistedStorageKeys
 } from '/libs/localStore'
-
-import type CozyClient from 'cozy-client'
+import { t } from '/locales/i18n'
 
 const log = Minilog('💿 Backup')
 
@@ -45,7 +45,7 @@ export const getLocalBackupConfig = async (
   )
 
   if (backupConfig === null) {
-    throw new Error('Local backup config has not been initialized')
+    throw new Error(t('services.backup.errors.configNotInitialized'))
   }
 
   return backupConfig
