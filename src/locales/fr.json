@@ -67,6 +67,11 @@
       "title": "Cloud Personnel"
     }
   },
+  "services": {
+    "backup": {
+      "backupRootPath": "/Sauvegardé depuis mon mobile"
+    }
+  },
   "modals": {
     "IconChangedModal": {
       "description": "L'icône de l'application «Cozy» a été modifiée."

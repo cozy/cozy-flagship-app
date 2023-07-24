@@ -67,6 +67,11 @@
       "title": "Nube Personal"
     }
   },
+  "services": {
+    "backup": {
+      "backupRootPath": "/Copiado desde mi móvil"
+    }
+  },
   "modals": {
     "IconChangedModal": {
       "description": "El ícono de la aplicación 'Cozy' ha sido modificado."
