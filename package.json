@@ -49,6 +49,7 @@
     "cozy-minilog": "3.3.0",
     "html-entities": "^2.3.3",
     "i18next": "23.2.10",
+    "intl": "^1.2.5",
     "intl-pluralrules": "2.0.1",
     "lodash": "^4.17.21",
     "microee": "^0.0.6",
