@@ -1,14 +1,22 @@
 /* eslint-disable promise/always-return */
 
 import { uploadMedia } from '/app/domain/backup/services/uploadMedia'
-import { setMediaAsBackuped } from '/app/domain/backup/services/manageLocalBackupConfig'
+import {
+  setBackupAsReady,
+  setMediaAsBackuped
+} from '/app/domain/backup/services/manageLocalBackupConfig'
 import { getDeviceId } from '/app/domain/backup/services/manageRemoteBackupConfig'
 import {
   Media,
   LocalBackupConfig,
-  ProgressCallback
+  ProgressCallback,
+  UploadMediaError
 } from '/app/domain/backup/models'
 import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
+import {
+  BackupError,
+  STACK_ERRORS_INTERRUPTING_BACKUP
+} from '/app/domain/backup/helpers/error'
 
 import type CozyClient from 'cozy-client'
 import { IOCozyFile } from 'cozy-client'
@@ -101,6 +109,16 @@ export const uploadMedias = async (
         `❌ ${mediaToUpload.name} not uploaded or set as backuped correctly`
       )
       log.debug(e)
+
+      const error = e as UploadMediaError
+
+      if (STACK_ERRORS_INTERRUPTING_BACKUP.includes(error.statusCode)) {
+        await setBackupAsReady(client)
+
+        void onProgress(await getBackupInfo(client))
+
+        throw new BackupError(error.errors[0].detail, error.statusCode)
+      }
     }
 
     void onProgress(await getBackupInfo(client))
