@@ -1,4 +1,5 @@
 import _i18n, { Resource } from 'i18next'
+import 'intl'
 import 'intl-pluralrules'
 import { initReactI18next, useTranslation } from 'react-i18next'
 import { getLocales } from 'react-native-localize'
