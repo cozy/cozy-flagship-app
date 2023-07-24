@@ -9,6 +9,7 @@ import RNFS from 'react-native-fs'
 
 import { Media, BackupedMedia, Album } from '/app/domain/backup/models'
 import { getLocalBackupConfig } from '/app/domain/backup/services/manageLocalBackupConfig'
+import { t } from '/locales/i18n'
 
 import type CozyClient from 'cozy-client'
 
@@ -36,7 +37,7 @@ export const getMimeType = (media: Media): string => {
   const guessedMimeType = mime.getType(media.name)
 
   if (guessedMimeType === null) {
-    throw new Error('File is not supported for backup')
+    throw new Error(t('services.backup.errors.fileNotSupported'))
   }
 
   return guessedMimeType
@@ -61,7 +62,7 @@ export const getRemotePath = (uri: string): string => {
     return uriWithFilenameRemoved
   }
 
-  throw new Error('Platform is not supported for backup')
+  throw new Error(t('services.backup.errors.platformNotSupported'))
 }
 
 export const formatMediasFromPhotoIdentifier = (

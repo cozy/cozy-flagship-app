@@ -6,6 +6,7 @@ import {
   NATIVE_PERMISSIONS,
   NativePermissionStatus
 } from '/app/domain/nativePermissions'
+import { t } from '/locales/i18n'
 
 export const checkBackupPermissions =
   async (): Promise<NativePermissionStatus> => {
@@ -33,7 +34,7 @@ export const checkBackupPermissions =
       )
     }
 
-    throw new Error('Platform is not supported for backup')
+    throw new Error(t('services.backup.errors.platformNotSupported'))
   }
 
 export const requestBackupPermissions =
@@ -62,5 +63,5 @@ export const requestBackupPermissions =
       )
     }
 
-    throw new Error('Platform is not supported for backup')
+    throw new Error(t('services.backup.errors.platformNotSupported'))
   }
