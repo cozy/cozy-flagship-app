@@ -9,7 +9,10 @@ import RNFS from 'react-native-fs'
 
 import { Media, BackupedMedia, Album } from '/app/domain/backup/models'
 import { getLocalBackupConfig } from '/app/domain/backup/services/manageLocalBackupConfig'
-import { getPathWithoutExtension } from '/app/domain/backup/helpers'
+import {
+  getPathWithoutExtension,
+  getPathWithoutFilename
+} from '/app/domain/backup/helpers'
 import { t } from '/locales/i18n'
 
 import type CozyClient from 'cozy-client'
@@ -54,11 +57,9 @@ export const getRemotePath = (uri: string): string => {
     const uriWithExternalStorageDirectoryPathRemoved =
       uriWithProtocolRemoved.replace(RNFS.ExternalStorageDirectoryPath, '')
 
-    const uriWithFilenameRemoved =
-      uriWithExternalStorageDirectoryPathRemoved.substring(
-        0,
-        uriWithExternalStorageDirectoryPathRemoved.lastIndexOf('/')
-      )
+    const uriWithFilenameRemoved = getPathWithoutFilename(
+      uriWithExternalStorageDirectoryPathRemoved
+    )
 
     return uriWithFilenameRemoved
   }

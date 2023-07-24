@@ -14,6 +14,7 @@ import {
   File,
   FilesQueryAllResult
 } from '/app/domain/backup/queries'
+import { getPathWithoutFilename } from '/app/domain/backup/helpers'
 import { t } from '/locales/i18n'
 
 import { IOCozyFile } from 'cozy-client/types/types'
@@ -184,9 +185,8 @@ const formatBackupedMedia = (
     ''
   )
 
-  const pathWithFilenameRemoved = pathWithBackupFolderRemoved.substring(
-    0,
-    pathWithBackupFolderRemoved.lastIndexOf('/')
+  const pathWithFilenameRemoved = getPathWithoutFilename(
+    pathWithBackupFolderRemoved
   )
 
   return {
