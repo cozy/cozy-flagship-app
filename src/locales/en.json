@@ -67,6 +67,11 @@
       "title": "Personal Cloud"
     }
   },
+  "services": {
+    "backup": {
+      "backupRootPath": "/Mobile backup"
+    }
+  },
   "modals": {
     "IconChangedModal": {
       "description": "The icon of the 'Cozy' application has been modified."

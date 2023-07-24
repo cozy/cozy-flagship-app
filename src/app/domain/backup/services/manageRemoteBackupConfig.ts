@@ -14,13 +14,13 @@ import {
   File,
   FilesQueryAllResult
 } from '/app/domain/backup/queries'
+import { t } from '/locales/i18n'
 
 import { IOCozyFile } from 'cozy-client/types/types'
 
 const DOCTYPE_APPS = 'io.cozy.apps'
 const DOCTYPE_FILES = 'io.cozy.files'
 const BACKUP_REF = `io.cozy.apps/photos/mobile`
-const BACKUP_ROOT_PATH = '/Sauvegardé depuis mon mobile'
 
 interface BackupFolder {
   _id: string
@@ -128,7 +128,7 @@ export const createRemoteBackupFolder = async (
     data: { _id: backupRootId }
   } = await client
     .collection(DOCTYPE_FILES)
-    .createDirectoryByPath(BACKUP_ROOT_PATH)
+    .createDirectoryByPath(t('services.backup.backupRootPath'))
 
   const backupFolderAttributes = {
     type: 'directory',
