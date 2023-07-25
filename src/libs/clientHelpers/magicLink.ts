@@ -10,6 +10,7 @@ import {
   is2faNeededResult,
   is2faPasswordNeededResult,
   isAccessToken,
+  isErrorReason,
   isFetchError,
   isFlagshipVerificationNeededResult,
   isInvalidPasswordResult,
@@ -55,11 +56,17 @@ const loginMagicLink = async (
     }
 
     if (e.status === 401) {
-      if (e.reason?.error === ERROR_2FA_PASSWORD_NEEDED) {
+      if (
+        isErrorReason(e.reason) &&
+        e.reason.error === ERROR_2FA_PASSWORD_NEEDED
+      ) {
         return {
           twoFactorPasswordNeeded: true
         }
-      } else if (e.reason?.error === ERROR_INVALID_MAGIC_CODE) {
+      } else if (
+        isErrorReason(e.reason) &&
+        e.reason.error === ERROR_INVALID_MAGIC_CODE
+      ) {
         throw new Error(t('screens.login.invalidMagicCode'), e)
       } else {
         throw new Error('Error while calling loginMagicLink', e)

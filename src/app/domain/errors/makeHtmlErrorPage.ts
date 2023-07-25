@@ -138,7 +138,7 @@ export const makeHtmlErrorPage = ({
           const showDetailsButton = document.getElementById('showDetails')
           if (showDetailsButton) {
             showDetailsButton.onclick = (e) => {
-              window.alert(\`${errorDetails}\`)
+              window.alert(\`${errorDetails ?? 'no details'}\`)
             }
           }
         })

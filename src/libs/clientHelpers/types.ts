@@ -25,15 +25,20 @@ export interface CozyClientCreationContext {
   sessionCode?: string
 }
 
+interface Reason2FA {
+  two_factor_token?: string
+}
+
+interface ReasonError {
+  error?: string
+}
+
 interface FetchError extends Error {
   name: string
   response: string
   url: string
   status: number
-  reason?: {
-    two_factor_token?: string
-    error?: string
-  }
+  reason?: string | unknown[] | Reason2FA | ReasonError
 }
 
 export const isFetchError = (error: unknown): error is FetchError => {
@@ -43,6 +48,23 @@ export const isFetchError = (error: unknown): error is FetchError => {
     'status' in error &&
     typeof (error as Record<string, unknown>).status === 'number'
   )
+}
+
+export const isErrorReason = (reason: unknown): reason is ReasonError => {
+  return reason !== null && typeof reason === 'object' && 'error' in reason
+}
+
+export const is2FAReason = (reason: unknown): reason is Reason2FA => {
+  return (
+    reason !== null &&
+    reason !== undefined &&
+    typeof reason === 'object' &&
+    'two_factor_token' in reason
+  )
+}
+
+export const isStringReason = (reason: unknown): reason is string => {
+  return reason !== null && typeof reason === 'string'
 }
 
 interface LoginFlagshipInvalidPasswordResult {
