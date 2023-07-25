@@ -1,5 +1,7 @@
-import { makeHtmlErrorPage } from '/app/domain/errors/makeHtmlErrorPage'
-import { ErrorPageGenerator } from '/app/domain/errors/models/ErrorPageGenerator'
+import {
+  ErrorPageGenerator,
+  makeHtmlErrorPage
+} from '/app/view/Error/Pages/makeHtmlErrorPage'
 import { t } from '/locales/i18n'
 
 export const CozyNotOnboardedPage: ErrorPageGenerator = () =>
