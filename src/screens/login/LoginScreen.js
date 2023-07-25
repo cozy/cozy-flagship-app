@@ -4,13 +4,13 @@ import { BackHandler, StyleSheet, View } from 'react-native'
 import Minilog from 'cozy-minilog'
 
 import { ClouderyView } from './components/ClouderyView'
-import { ErrorView } from './components/ErrorView'
 import { OidcOnboardingView } from './components/OidcOnboardingView'
 import { PasswordView } from './components/PasswordView'
 import { TransitionToPasswordView } from './components/transitions/TransitionToPasswordView'
 import { TransitionToAuthorizeView } from './components/transitions/TransitionToAuthorizeView'
 import { TwoFactorAuthenticationView } from './components/TwoFactorAuthenticationView'
 
+import { navigateToError } from '/app/domain/errors/navigateToError'
 import {
   callInitClient,
   call2FAInitClient,
@@ -48,7 +48,6 @@ const TWO_FACTOR_AUTHENTICATION_STEP = 'TWO_FACTOR_AUTHENTICATION_STEP'
 const TWO_FACTOR_AUTHENTICATION_PASSWORD_STEP =
   'TWO_FACTOR_AUTHENTICATION_PASSWORD_STEP'
 const AUTHORIZE_TRANSITION_STEP = 'AUTHORIZE_TRANSITION_STEP'
-const ERROR_STEP = 'ERROR_STEP'
 
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
@@ -497,15 +496,9 @@ const LoginSteps = ({
 
   const setError = useCallback(
     (errorMessage, error) => {
-      setState(oldState => ({
-        ...oldState,
-        step: ERROR_STEP,
-        errorMessage: errorMessage,
-        error: error,
-        previousStep: state.step
-      }))
+      navigateToError(errorMessage, error, clouderyTheme.backgroundColor)
     },
-    [state]
+    [clouderyTheme]
   )
 
   const startTransitionToPassword = avatarPosition => {
@@ -653,20 +646,6 @@ const LoginSteps = ({
 
   if (state.step === LOADING_STEP) {
     return null
-  }
-
-  if (state.step === ERROR_STEP) {
-    return (
-      <ErrorView
-        errorMessage={state.errorMessage}
-        error={state.error}
-        button={{
-          callback: cancelLogin,
-          title: 'Restart login'
-        }}
-        backgroundColor={clouderyTheme.backgroundColor}
-      />
-    )
   }
 }
 

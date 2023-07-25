@@ -5,6 +5,7 @@ import {
   CozyClientCreationContext,
   is2faNeededResult,
   is2faPasswordNeededResult,
+  is2FAReason,
   isFetchError,
   isFlagshipVerificationNeededResult,
   isInvalidPasswordResult,
@@ -50,7 +51,7 @@ const loginOidc = async (
     }
 
     if (e.status === 401) {
-      if (e.reason?.two_factor_token) {
+      if (is2FAReason(e.reason) && e.reason.two_factor_token) {
         return {
           two_factor_token: e.reason.two_factor_token
         }

@@ -1,6 +1,10 @@
 import type CozyClient from 'cozy-client'
 
-import { isFetchError, LoginFlagshipResult } from '/libs/clientHelpers/types'
+import {
+  is2FAReason,
+  isFetchError,
+  LoginFlagshipResult
+} from '/libs/clientHelpers/types'
 import type {
   LoginData,
   TwoFactorAuthenticationData
@@ -49,7 +53,7 @@ export const loginFlagship = async ({
     }
 
     if (e.status === 401) {
-      if (e.reason?.two_factor_token) {
+      if (is2FAReason(e.reason) && e.reason.two_factor_token) {
         return {
           two_factor_token: e.reason.two_factor_token
         }

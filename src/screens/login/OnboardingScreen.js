@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 
-import { ErrorView } from './components/ErrorView'
 import { OnboardingPasswordView } from './components/OnboardingPasswordView'
 
 import Minilog from 'cozy-minilog'
 
+import { navigateToError } from '/app/domain/errors/navigateToError'
 import {
   callMagicLinkOnboardingInitClient,
   callOnboardingInitClient
@@ -26,7 +26,6 @@ Minilog.enable()
 const LOADING_STEP = 'LOADING_STEP'
 const PASSWORD_STEP = 'PASSWORD_STEP'
 const MAGIC_LINK_STEP = 'MAGIC_LINK_STEP'
-const ERROR_STEP = 'ERROR_STEP'
 
 const OAUTH_USER_CANCELED_ERROR = 'USER_CANCELED'
 
@@ -143,27 +142,15 @@ const OnboardingSteps = ({
     })
   }
 
-  const cancelLogin = () => {
-    setState({
-      step: LOADING_STEP
-    })
-  }
-
   const cancelOnboarding = useCallback(() => {
     navigation.navigate(routes.authenticate)
   }, [navigation])
 
   const setError = useCallback(
     (errorMessage, error) => {
-      setState({
-        ...state,
-        step: ERROR_STEP,
-        errorMessage: errorMessage,
-        error: error,
-        previousStep: state.step
-      })
+      navigateToError(errorMessage, error, clouderyTheme.backgroundColor)
     },
-    [state]
+    [clouderyTheme]
   )
 
   const startOAuth = useCallback(async () => {
@@ -228,20 +215,6 @@ const OnboardingSteps = ({
 
   if (state.step === LOADING_STEP || state.step === MAGIC_LINK_STEP) {
     return <CozyLogoScreen backgroundColor={clouderyTheme.backgroundColor} />
-  }
-
-  if (state.step === ERROR_STEP) {
-    return (
-      <ErrorView
-        errorMessage={state.errorMessage}
-        error={state.error}
-        button={{
-          callback: cancelLogin,
-          title: 'Cancel OAuth'
-        }}
-        backgroundColor={clouderyTheme.backgroundColor}
-      />
-    )
   }
 }
 
