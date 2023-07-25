@@ -4,7 +4,7 @@ import { Linking } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
 import { WebViewMessageEvent } from 'react-native-webview/lib/WebViewTypes'
 
-import { ErrorPageGenerator } from '/app/domain/errors/models/ErrorPageGenerator'
+import { ErrorPageGenerator } from '/app/view/Error/Pages/makeHtmlErrorPage'
 import { CozyBlockedPage } from '/app/view/Error/Pages/CozyBlockedPage'
 import { CozyNotFoundPage } from '/app/view/Error/Pages/CozyNotFoundPage'
 import { CozyNotOnboardedPage } from '/app/view/Error/Pages/CozyNotOnboardedPage'

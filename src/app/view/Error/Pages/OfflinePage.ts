@@ -1,8 +1,8 @@
-import { makeHtmlErrorPage } from '/app/domain/errors/makeHtmlErrorPage'
 import {
   ErrorPageGenerator,
-  ErrorPageGeneratorArguments
-} from '/app/domain/errors/models/ErrorPageGenerator'
+  ErrorPageGeneratorArguments,
+  makeHtmlErrorPage
+} from '/app/view/Error/Pages/makeHtmlErrorPage'
 import { t } from '/locales/i18n'
 
 export const OfflinePage: ErrorPageGenerator = ({

@@ -5,6 +5,19 @@ import { getDimensions } from '/libs/dimensions'
 import { themeCss } from '/screens/login/components/assets/common/css/cssTheme'
 import { t } from '/locales/i18n'
 
+export interface ErrorPageGeneratorArguments {
+  backgroundColor?: string
+  error?: {
+    message: string
+    details: string
+  }
+}
+
+export type ErrorPageGenerator = ({
+  backgroundColor,
+  error
+}: ErrorPageGeneratorArguments) => string
+
 const headerTemplate = `
   <button id="backButton" class="btn btn-icon">
     <span class="icon icon-back"></span>
