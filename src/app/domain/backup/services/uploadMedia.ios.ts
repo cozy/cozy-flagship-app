@@ -4,13 +4,24 @@ import RNFileSystem from 'react-native-fs'
 
 import { getMimeType } from '/app/domain/backup/services/getMedias'
 import { Media, UploadMediaResult } from '/app/domain/backup/models/Media'
-import { getPathWithoutExtension } from '/app/domain/backup/helpers'
+import {
+  getPathExtension,
+  getPathWithoutExtension
+} from '/app/domain/backup/helpers'
 import { t } from '/locales/i18n'
 
 import CozyClient, { StackErrors, IOCozyFile } from 'cozy-client'
 
-const getVideoPathFromLivePhoto = (photoPath: string): string => {
-  return getPathWithoutExtension(photoPath) + '.MOV'
+export const getVideoPathFromLivePhoto = (photoPath: string): string => {
+  const extension = getPathExtension(photoPath)
+
+  if (extension === extension.toUpperCase()) {
+    // Path is something like IMG_001.MOV
+    return getPathWithoutExtension(photoPath) + '.MOV'
+  } else {
+    // When Live Photo has been modified, path is something like FullSizeRender.mov
+    return getPathWithoutExtension(photoPath) + '.mov'
+  }
 }
 
 const getRealFilepath = async (media: Media): Promise<string> => {
