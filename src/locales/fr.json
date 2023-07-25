@@ -70,6 +70,16 @@
   "services": {
     "backup": {
       "backupRootPath": "/Sauvegardé depuis mon mobile",
+      "notifications": {
+        "onProgressTitle": "Envoi en cours",
+        "onProgressMessage": "{{filename}} est en cours de sauvegarde",
+        "onCompleteTitle": "Envoi terminé",
+        "onCompleteMessage": "{{filename}} a été sauvegardé",
+        "onErrorTitle": "Oops",
+        "onErrorMessage": "Votre sauvegarde a rencontré une erreur. Ouvrez l'app pour obtenir plus de détails",
+        "onCancelledTitle": "Sauvegarde arrêtée",
+        "onCancelledMessage": "Votre sauvegarde a été arrêtée. Ouvrez l'app pour la reprendre"
+      },
       "errors": {
         "fileNotFound": "Fichier non trouvé",
         "fileNotSupported": "Fichier non supporté pour la sauvegarde",
