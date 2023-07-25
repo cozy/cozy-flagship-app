@@ -5,6 +5,11 @@ import { getDimensions } from '/libs/dimensions'
 import { themeCss } from '/screens/login/components/assets/common/css/cssTheme'
 import { t } from '/locales/i18n'
 
+export enum Theme {
+  light,
+  inverted
+}
+
 export interface ErrorPageGeneratorArguments {
   backgroundColor?: string
   error?: {
@@ -51,7 +56,7 @@ interface MakeErrorPageProps {
   reset?: boolean
   backgroundColor?: string
   errorDetails?: string
-  invertedTheme?: boolean
+  theme?: Theme
 }
 
 export const makeHtmlErrorPage = ({
@@ -63,13 +68,14 @@ export const makeHtmlErrorPage = ({
   reset,
   backgroundColor,
   errorDetails,
-  invertedTheme = true
+  theme = Theme.inverted
 }: MakeErrorPageProps): string => {
   const dimensions = getDimensions()
   const navbarHeight = dimensions.navbarHeight
   const statusBarHeight = dimensions.statusBarHeight
 
-  const theme = invertedTheme ? 'theme-inverted' : 'theme-light'
+  const themeString =
+    theme === Theme.inverted ? 'theme-inverted' : 'theme-light'
 
   return `
   <!DOCTYPE html>
@@ -100,7 +106,7 @@ export const makeHtmlErrorPage = ({
       </style>
     </head>
 
-    <body class="${theme}" style="padding-top: ${statusBarHeight}px; padding-bottom: ${navbarHeight}px;">
+    <body class="${themeString}" style="padding-top: ${statusBarHeight}px; padding-bottom: ${navbarHeight}px;">
       <main class="wrapper">
         <header class="wrapper-top d-flex flex-row align-items-center">${
           header ? headerTemplate : ''
