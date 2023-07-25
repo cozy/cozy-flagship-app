@@ -1,9 +1,20 @@
 import {
+  getPathExtension,
   getPathWithoutExtension,
   getPathWithoutFilename
 } from '/app/domain/backup/helpers'
 
 describe('file helper', () => {
+  describe('getPathExtension', () => {
+    it.each([
+      ['IMG_001.heic', 'heic'],
+      ['/Folder/IMG_001.heic', 'heic'],
+      ['IMG_001.heic.mov', 'mov']
+    ])('with %p should return %p', (path, result) => {
+      expect(getPathExtension(path)).toBe(result)
+    })
+  })
+
   describe('getPathWithoutExtension', () => {
     it.each([
       ['IMG_001.heic', 'IMG_001'],
