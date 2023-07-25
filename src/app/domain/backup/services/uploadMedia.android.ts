@@ -5,6 +5,7 @@ import RNBackgroundUpload, {
 
 import { getMimeType } from '/app/domain/backup/services/getMedias'
 import { Media, UploadMediaResult } from '/app/domain/backup/models/Media'
+import { t } from '/locales/i18n'
 
 import CozyClient, { StackErrors, IOCozyFile } from 'cozy-client'
 
@@ -41,7 +42,32 @@ export const uploadMedia = async (
       },
       notification: {
         enabled: true,
-        autoClear: true
+        autoClear: true,
+        onProgressTitle: t('services.backup.notifications.onProgressTitle'),
+        onProgressMessage: t(
+          'services.backup.notifications.onProgressMessage',
+          {
+            filename: media.name
+          }
+        ),
+        onCompleteTitle: t('services.backup.notifications.onCompleteTitle'),
+        onCompleteMessage: t(
+          'services.backup.notifications.onCompleteMessage',
+          {
+            filename: media.name
+          }
+        ),
+        onErrorTitle: t('services.backup.notifications.onErrorTitle'),
+        onErrorMessage: t('services.backup.notifications.onErrorMessage', {
+          filename: media.name
+        }),
+        onCancelledTitle: t('services.backup.notifications.onCancelledTitle'),
+        onCancelledMessage: t(
+          'services.backup.notifications.onCancelledMessage',
+          {
+            filename: media.name
+          }
+        )
       }
     } as UploadOptions
 

@@ -70,6 +70,16 @@
   "services": {
     "backup": {
       "backupRootPath": "/Mobile backup",
+      "notifications": {
+        "onProgressTitle": "Uploading",
+        "onProgressMessage": "{{filename}} is being uploaded",
+        "onCompleteTitle": "Upload finished",
+        "onCompleteMessage": "{{filename}} has been uploaded",
+        "onErrorTitle": "Oops",
+        "onErrorMessage": "Your backup encountered an error. Open the app to see more details",
+        "onCancelledTitle": "Backup canceled",
+        "onCancelledMessage": "Open the app to resume the process"
+      },
       "errors": {
         "fileNotFound": "File not found",
         "fileNotSupported": "File not supported for backup",
