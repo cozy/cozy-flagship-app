@@ -1,6 +1,7 @@
 import {
   ErrorPageGenerator,
   ErrorPageGeneratorArguments,
+  Theme,
   makeHtmlErrorPage
 } from '/app/view/Error/Pages/makeHtmlErrorPage'
 import { t } from '/locales/i18n'
@@ -27,5 +28,5 @@ export const GenericErrorPage: ErrorPageGenerator = ({
     backgroundColor,
     errorDetails: error?.details,
     reset: true,
-    invertedTheme: false
+    theme: Theme.light
   })
