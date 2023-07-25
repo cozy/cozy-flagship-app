@@ -62,6 +62,13 @@ jobs:
           workspace-path: ios/CozyReactNative.xcworkspace
           scheme: CozyReactNative
 
+      - name: Upload CozyReactNative-CozyReactNative.log
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: CozyReactNative-CozyReactNative.log
+          path: /Users/runner/Library/Logs/gym/CozyReactNative-CozyReactNative.log
+
       - name: 'Upload app to TestFlight'
         uses: apple-actions/upload-testflight-build@v1
         with:
