@@ -180,13 +180,27 @@ const isMediaAlreadyBackuped = (
 export const getMediasToBackup = async (
   client: CozyClient
 ): Promise<Media[]> => {
+  let startTime = performance.now()
+
   const allMedias = await getAllMedias()
 
+  let endTime = performance.now()
+
+  console.log(
+    `🥨 Call to getAllMedias took ${endTime - startTime} milliseconds.`
+  )
+
   const backupConfig = await getLocalBackupConfig(client)
+
+  startTime = performance.now()
 
   const mediasToBackup = allMedias.filter(
     allMedia => !isMediaAlreadyBackuped(allMedia, backupConfig.backupedMedias)
   )
+
+  endTime = performance.now()
+
+  console.log(`🥨 Call to filter took ${endTime - startTime} milliseconds.`)
 
   return mediasToBackup
 }

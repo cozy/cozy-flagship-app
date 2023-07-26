@@ -66,11 +66,19 @@ export const prepareBackup = async (
 
   void onProgress(await getBackupInfo(client))
 
+  const startTime = performance.now()
+
   const albums = await getAlbums()
 
   const createdAlbums = await createRemoteAlbums(client, albums)
 
   await saveAlbums(client, createdAlbums)
+
+  const endTime = performance.now()
+
+  console.log(
+    `🥨 Call to album methods took ${endTime - startTime} milliseconds.`
+  )
 
   const mediasToBackup = await getMediasToBackup(client)
 
