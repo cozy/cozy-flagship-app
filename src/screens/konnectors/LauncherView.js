@@ -45,6 +45,7 @@ export class LauncherView extends Component {
     this.onWorkerMessage = this.onWorkerMessage.bind(this)
     this.onWorkerError = this.onWorkerError.bind(this)
     this.onWorkerLoad = this.onWorkerLoad.bind(this)
+    this.onWorkerOpenWindow = this.onWorkerOpenWindow.bind(this)
     this.onStopExecution = this.onStopExecution.bind(this)
     this.onCreatedAccount = this.onCreatedAccount.bind(this)
     this.onCreatedJob = this.onCreatedJob.bind(this)
@@ -297,6 +298,8 @@ export class LauncherView extends Component {
                 onMessage={this.onWorkerMessage}
                 onError={this.onWorkerError}
                 injectedJavaScriptBeforeContentLoaded={run}
+                javaScriptCanOpenWindowsAutomatically={true}
+                onOpenWindow={this.onWorkerOpenWindow}
               />
               {workerVisible && this.state.workerInteractionBlockerVisible ? (
                 <View
@@ -369,6 +372,19 @@ export class LauncherView extends Component {
     if (this.launcher) {
       this.launcher.onWorkerMessage(event)
     }
+  }
+
+  /**
+   * Intercept window.open inside worker webview and redirect the worker to the given url
+   *
+   * @param {Object} event
+   */
+  onWorkerOpenWindow({ nativeEvent }) {
+    log.info('onWorkerOpenWindow', nativeEvent)
+    const { targetUrl } = nativeEvent
+    this.launcher.setWorkerState({
+      url: targetUrl
+    })
   }
 }
 
