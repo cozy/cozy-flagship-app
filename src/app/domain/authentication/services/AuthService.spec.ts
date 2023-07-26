@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import Minilog from '@cozy/minilog'
 import { Linking } from 'react-native'
 
 import {
@@ -8,6 +7,7 @@ import {
 } from '/app/domain/authentication/services/AuthService'
 
 import CozyClient from 'cozy-client'
+import Minilog from 'cozy-minilog'
 
 jest.mock('react-native', () => ({
   Linking: {
@@ -15,7 +15,7 @@ jest.mock('react-native', () => ({
   }
 }))
 
-jest.mock('@cozy/minilog', () => {
+jest.mock('cozy-minilog', () => {
   const mockLogFunctions = {
     debug: jest.fn(),
     info: jest.fn(),
