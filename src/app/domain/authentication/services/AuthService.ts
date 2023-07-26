@@ -1,7 +1,7 @@
-import Minilog from '@cozy/minilog'
 import { Linking } from 'react-native'
 
 import type CozyClient from 'cozy-client'
+import Minilog from 'cozy-minilog'
 
 import { asyncLogoutNoClient } from '/app/domain/authentication/utils/asyncLogoutNoClient'
 
