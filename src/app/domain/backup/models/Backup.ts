@@ -42,6 +42,7 @@ export interface RemoteBackupConfig {
  * @member {object} currentBackup
  */
 export interface BackupInfo {
+  remoteBackupConfig: RemoteBackupConfig
   lastBackupDate: number
   backupedMediasCount: number
   currentBackup: {
