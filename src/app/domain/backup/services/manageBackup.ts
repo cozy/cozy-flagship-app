@@ -136,6 +136,7 @@ export const getBackupInfo = async (
   const backupConfig = await getLocalBackupConfig(client)
 
   return {
+    remoteBackupConfig: backupConfig.remoteBackupConfig,
     lastBackupDate: backupConfig.lastBackupDate,
     backupedMediasCount: backupConfig.backupedMedias.length,
     currentBackup: {
