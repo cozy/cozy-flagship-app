@@ -1,3 +1,5 @@
+import { UploadMediaError } from '/app/domain/backup/models'
+
 export class BackupError extends Error {
   statusCode: number | undefined
 
@@ -13,6 +15,13 @@ export class BackupError extends Error {
   }
 }
 
-export const STACK_ERRORS_INTERRUPTING_BACKUP = [
-  413 // quota exceeded
-]
+export const isQuotaExceededError = (error: UploadMediaError): boolean => {
+  return (
+    error.statusCode === 413 &&
+    error.errors[0].detail === 'The file is too big and exceeds the disk quota'
+  )
+}
+
+export const isFatalError = (error: UploadMediaError): boolean => {
+  return isQuotaExceededError(error)
+}
