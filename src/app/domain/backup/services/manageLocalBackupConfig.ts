@@ -128,6 +128,16 @@ export const setMediaAsBackuped = async (
   await setLocalBackupConfig(client, localBackupConfig)
 }
 
+export const setBackupAsToDo = async (client: CozyClient): Promise<void> => {
+  const localBackupConfig = await getLocalBackupConfig(client)
+
+  localBackupConfig.currentBackup.status = 'to_do'
+
+  await setLocalBackupConfig(client, localBackupConfig)
+
+  log.debug('Backup set as to do')
+}
+
 export const setBackupAsInitializing = async (
   client: CozyClient
 ): Promise<void> => {
