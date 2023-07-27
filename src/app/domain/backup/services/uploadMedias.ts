@@ -9,9 +9,9 @@ import { getDeviceId } from '/app/domain/backup/services/manageRemoteBackupConfi
 import {
   Media,
   LocalBackupConfig,
-  ProgressCallback,
-  UploadMediaError
+  ProgressCallback
 } from '/app/domain/backup/models'
+import { UploadError } from '/app/domain/upload/models'
 import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
 import { BackupError, isFatalError } from '/app/domain/backup/helpers/error'
 
@@ -107,7 +107,7 @@ export const uploadMedias = async (
       )
       log.debug(e)
 
-      const error = e as UploadMediaError
+      const error = e as UploadError
 
       if (isFatalError(error)) {
         await setBackupAsReady(client)
