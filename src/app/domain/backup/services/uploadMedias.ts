@@ -13,10 +13,7 @@ import {
   UploadMediaError
 } from '/app/domain/backup/models'
 import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
-import {
-  BackupError,
-  STACK_ERRORS_INTERRUPTING_BACKUP
-} from '/app/domain/backup/helpers/error'
+import { BackupError, isFatalError } from '/app/domain/backup/helpers/error'
 
 import type CozyClient from 'cozy-client'
 import { IOCozyFile } from 'cozy-client'
@@ -112,7 +109,7 @@ export const uploadMedias = async (
 
       const error = e as UploadMediaError
 
-      if (STACK_ERRORS_INTERRUPTING_BACKUP.includes(error.statusCode)) {
+      if (isFatalError(error)) {
         await setBackupAsReady(client)
 
         void onProgress(await getBackupInfo(client))
