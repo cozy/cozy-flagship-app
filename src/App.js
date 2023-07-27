@@ -30,6 +30,7 @@ import { useCookieResyncOnResume } from '/hooks/useCookieResyncOnResume'
 import { useCozyEnvironmentOverride } from '/hooks/useCozyEnvironmentOverride'
 import { useNotifications } from '/hooks/useNotifications'
 import { useSynchronizeOnInit } from '/hooks/useSynchronizeOnInit'
+import { useInitBackup } from '/app/domain/backup/hooks'
 import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
 import { ThemeProvider } from '/app/theme/ThemeProvider'
@@ -50,6 +51,7 @@ const App = ({ setClient }) => {
   useSynchronizeOnInit()
   useNetService(client)
   useInitI18n(client)
+  useInitBackup(client)
 
   const { initialRoute, isLoading } = useAppBootstrap(client)
 
