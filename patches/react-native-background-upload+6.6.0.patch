@@ -7,7 +7,7 @@ index c89d495..5da9d14 100644
  import net.gotev.uploadservice.network.ServerResponse
  import net.gotev.uploadservice.observer.request.RequestObserverDelegate
 +import net.gotev.uploadservice.exceptions.UploadError
- 
+
  class GlobalRequestObserverDelegate(reactContext: ReactApplicationContext) : RequestObserverDelegate {
    private val TAG = "UploadReceiver"
 @@ -28,6 +29,10 @@ class GlobalRequestObserverDelegate(reactContext: ReactApplicationContext) : Req
@@ -26,11 +26,11 @@ index 8b2a07c..80cff93 100644
 --- a/node_modules/react-native-background-upload/index.d.ts
 +++ b/node_modules/react-native-background-upload/index.d.ts
 @@ -11,6 +11,8 @@ declare module "react-native-background-upload" {
- 
+
      export interface ErrorData extends EventData {
          error: string
-+        responseCode: number
-+        responseBody: string
++        responseCode?: number
++        responseBody?: string
      }
- 
+
      export interface CompletedData extends EventData {

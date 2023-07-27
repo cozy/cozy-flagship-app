@@ -32,6 +32,7 @@ export const uploadMedia = async (
       path: filepath,
       method: 'POST',
       type: 'raw',
+      maxRetries: 0,
       headers: {
         Accept: 'application/json',
         'Content-Type': getMimeType(media),
@@ -76,14 +77,37 @@ export const uploadMedia = async (
         setCurrentUploadId(uploadId)
 
         RNBackgroundUpload.addListener('error', uploadId, error => {
-          const { errors } = JSON.parse(error.responseBody) as StackErrors
-          reject({
-            statusCode: error.responseCode,
-            errors
-          })
+          if (error.responseCode && error.responseBody) {
+            const { errors } = JSON.parse(error.responseBody) as StackErrors
+            reject({
+              statusCode: error.responseCode,
+              errors
+            })
+          } else {
+            reject({
+              statusCode: -1,
+              errors: [
+                {
+                  status: -1,
+                  title: error.error,
+                  detail: error.error
+                }
+              ]
+            })
+          }
         })
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         RNBackgroundUpload.addListener('cancelled', uploadId, data => {
-          reject({ success: false, data })
+          reject({
+            statusCode: -1,
+            errors: [
+              {
+                status: -1,
+                title: 'Upload cancelled',
+                detail: 'Upload cancelled'
+              }
+            ]
+          })
         })
         RNBackgroundUpload.addListener('completed', uploadId, response => {
           const { data } = JSON.parse(response.responseBody) as {
