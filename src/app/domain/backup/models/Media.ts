@@ -1,5 +1,3 @@
-import { StackErrors, IOCozyFile } from 'cozy-client'
-
 import { Album } from '/app/domain/backup/models'
 
 /**
@@ -29,14 +27,4 @@ export interface Media {
 export interface BackupedMedia {
   name: string
   remotePath: string
-}
-
-export type UploadMediaError = {
-  statusCode: number
-} & StackErrors
-
-// These type is incomplete there is more information in data
-export interface UploadMediaResult {
-  statusCode: number
-  data: IOCozyFile
 }

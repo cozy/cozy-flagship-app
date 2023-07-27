@@ -1,4 +1,4 @@
-import { UploadMediaError } from '/app/domain/backup/models'
+import { UploadError } from '/app/domain/upload/models'
 
 export class BackupError extends Error {
   statusCode: number | undefined
@@ -15,13 +15,13 @@ export class BackupError extends Error {
   }
 }
 
-export const isQuotaExceededError = (error: UploadMediaError): boolean => {
+export const isQuotaExceededError = (error: UploadError): boolean => {
   return (
     error.statusCode === 413 &&
     error.errors[0].detail === 'The file is too big and exceeds the disk quota'
   )
 }
 
-export const isFatalError = (error: UploadMediaError): boolean => {
+export const isFatalError = (error: UploadError): boolean => {
   return isQuotaExceededError(error)
 }

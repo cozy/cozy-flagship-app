@@ -1,16 +1,16 @@
-/* eslint-disable promise/always-return */
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
-import RNFileSystem from 'react-native-fs'
 
 import { getMimeType } from '/app/domain/backup/services/getMedias'
-import { Media, UploadMediaResult } from '/app/domain/backup/models/Media'
+import { Media } from '/app/domain/backup/models/Media'
 import {
   getPathExtension,
   getPathWithoutExtension
 } from '/app/domain/backup/helpers'
 import { t } from '/locales/i18n'
+import { uploadFile } from '/app/domain/upload/services/upload'
+import { UploadResult } from '/app/domain/upload/models'
 
-import CozyClient, { StackErrors, IOCozyFile } from 'cozy-client'
+import CozyClient from 'cozy-client'
 
 export const getVideoPathFromLivePhoto = (photoPath: string): string => {
   const extension = getPathExtension(photoPath)
@@ -42,74 +42,19 @@ const getRealFilepath = async (media: Media): Promise<string> => {
   return filepath
 }
 
-let currentUploadId: string | undefined
-
-export const getCurrentUploadId = (): string | undefined => {
-  return currentUploadId
-}
-
-const setCurrentUploadId = (value: string): void => {
-  currentUploadId = value
-}
-
 export const uploadMedia = async (
   client: CozyClient,
   uploadUrl: string,
   media: Media
-): Promise<UploadMediaResult> => {
+): Promise<UploadResult> => {
   const filepath = await getRealFilepath(media)
 
-  return new Promise((resolve, reject) => {
-    RNFileSystem.uploadFiles({
-      toUrl: uploadUrl,
-      files: [
-        {
-          name: media.name,
-          filename: media.name,
-          filetype: media.type,
-          filepath
-        }
-      ],
-      binaryStreamOnly: true,
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': getMimeType(media),
-        Authorization: `Bearer ${
-          // @ts-expect-error Type issue which will be fixed in another PR
-          client.getStackClient().token.accessToken as string
-        }`
-      },
-      begin: ({ jobId }) => {
-        setCurrentUploadId(jobId.toString())
-      }
-    })
-      .promise.then(response => {
-        if (response.statusCode == 201) {
-          const { data } = JSON.parse(response.body) as {
-            data: IOCozyFile
-          }
-          resolve({
-            statusCode: response.statusCode,
-            data
-          })
-        } else {
-          const { errors } = JSON.parse(response.body) as StackErrors
-
-          reject({
-            statusCode: response.statusCode,
-            errors
-          })
-        }
-      })
-      .catch(e => {
-        reject(e)
-      })
-  })
-}
-
-export const cancelUpload = (uploadId: string): Promise<void> => {
-  return new Promise(resolve => {
-    resolve(RNFileSystem.stopUpload(parseInt(uploadId)))
+  return uploadFile({
+    url: uploadUrl,
+    // @ts-expect-error Type issue which will be fixed in another PR
+    token: client.getStackClient().token.accessToken as string,
+    filename: media.name,
+    filepath,
+    mimetype: getMimeType(media)
   })
 }

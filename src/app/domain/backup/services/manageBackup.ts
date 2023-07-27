@@ -22,7 +22,7 @@ import {
 import {
   cancelUpload,
   getCurrentUploadId
-} from '/app/domain/backup/services/uploadMedia'
+} from '/app/domain/upload/services/upload'
 import {
   fetchDeviceRemoteBackupConfig,
   fetchBackupedMedias,
