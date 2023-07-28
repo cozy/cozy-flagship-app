@@ -10,6 +10,7 @@ import {
   saveAlbums
 } from '/app/domain/backup/services/manageLocalBackupConfig'
 import {
+  areAlbumsEnabled,
   getAlbums,
   createRemoteAlbums,
   fetchBackupedAlbums
@@ -66,11 +67,13 @@ export const prepareBackup = async (
 
   void onProgress(await getBackupInfo(client))
 
-  const albums = await getAlbums()
+  if (areAlbumsEnabled()) {
+    const albums = await getAlbums()
 
-  const createdAlbums = await createRemoteAlbums(client, albums)
+    const createdAlbums = await createRemoteAlbums(client, albums)
 
-  await saveAlbums(client, createdAlbums)
+    await saveAlbums(client, createdAlbums)
+  }
 
   const mediasToBackup = await getMediasToBackup(client)
 

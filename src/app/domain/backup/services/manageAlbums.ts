@@ -1,4 +1,5 @@
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
+import { Platform } from 'react-native'
 
 import { Album, BackupedAlbum } from '/app/domain/backup/models'
 import { getLocalBackupConfig } from '/app/domain/backup/services/manageLocalBackupConfig'
@@ -10,6 +11,10 @@ import {
 } from '/app/domain/backup/queries'
 
 import type CozyClient from 'cozy-client'
+
+export const areAlbumsEnabled = (): boolean => {
+  return Platform.OS === 'ios'
+}
 
 export const getAlbums = async (): Promise<Album[]> => {
   const cameraRollAlbums = await CameraRoll.getAlbums()
