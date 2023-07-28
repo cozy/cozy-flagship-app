@@ -1,4 +1,4 @@
-import type CozyClient from 'cozy-client'
+import CozyClient, { FileCollectionGetResult } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import {
@@ -8,6 +8,7 @@ import {
   BackupedMedia,
   BackupedAlbum
 } from '/app/domain/backup/models'
+import { buildFileQuery } from '/app/domain/backup/queries'
 import {
   getUserPersistedData,
   storeUserPersistedData,
@@ -124,6 +125,27 @@ export const setMediaAsBackuped = async (
     localBackupConfig.currentBackup.mediasToBackup.filter(
       mediaToBackup => mediaToBackup.name !== media.name
     )
+
+  await setLocalBackupConfig(client, localBackupConfig)
+}
+
+export const updateRemoteBackupConfigLocally = async (
+  client: CozyClient
+): Promise<void> => {
+  const localBackupConfig = await getLocalBackupConfig(client)
+
+  const fileQuery = buildFileQuery(
+    localBackupConfig.remoteBackupConfig.backupFolder.id
+  )
+
+  const { data: remoteBackupFolderUpdated } = (await client.query(
+    fileQuery
+  )) as FileCollectionGetResult
+
+  localBackupConfig.remoteBackupConfig.backupFolder.name =
+    remoteBackupFolderUpdated.name
+  localBackupConfig.remoteBackupConfig.backupFolder.path =
+    remoteBackupFolderUpdated.path
 
   await setLocalBackupConfig(client, localBackupConfig)
 }

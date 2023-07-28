@@ -7,7 +7,8 @@ import {
   setBackupAsReady,
   setBackupAsRunning,
   setBackupAsDone,
-  saveAlbums
+  saveAlbums,
+  updateRemoteBackupConfigLocally
 } from '/app/domain/backup/services/manageLocalBackupConfig'
 import {
   areAlbumsEnabled,
@@ -91,6 +92,8 @@ export const startBackup = async (
   onProgress: ProgressCallback
 ): Promise<BackupInfo> => {
   log.debug('Backup started')
+
+  await updateRemoteBackupConfigLocally(client)
 
   const localBackupConfig = await getLocalBackupConfig(client)
 
