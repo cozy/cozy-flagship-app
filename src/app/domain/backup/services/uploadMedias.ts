@@ -14,6 +14,7 @@ import {
 import { UploadError } from '/app/domain/upload/models'
 import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
 import { BackupError, isFatalError } from '/app/domain/backup/helpers/error'
+import { areAlbumsEnabled } from '/app/domain/backup/services/manageAlbums'
 
 import type CozyClient from 'cozy-client'
 import { IOCozyFile } from 'cozy-client'
@@ -130,7 +131,7 @@ const postUpload = async (
   mediaToUpload: Media,
   documentCreated: IOCozyFile
 ): Promise<void> => {
-  if (mediaToUpload.albums.length > 0) {
+  if (mediaToUpload.albums.length > 0 && areAlbumsEnabled()) {
     await addMediaToAlbum(
       client,
       localBackupConfig,
