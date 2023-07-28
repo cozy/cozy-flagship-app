@@ -75,7 +75,8 @@ export const formatMediasFromPhotoIdentifier = (
       image: { filename, uri },
       type,
       subTypes,
-      timestamp
+      timestamp,
+      modificationTimestamp
     }
   } = photoIdentifier
 
@@ -92,6 +93,7 @@ export const formatMediasFromPhotoIdentifier = (
         type: 'video',
         subType: 'PhotoLive',
         creationDate: timestamp * 1000,
+        modificationDate: modificationTimestamp * 1000,
         albums
       },
       {
@@ -101,6 +103,7 @@ export const formatMediasFromPhotoIdentifier = (
         type: 'image',
         subType: 'PhotoLive',
         creationDate: timestamp * 1000,
+        modificationDate: modificationTimestamp * 1000,
         albums
       }
     ]
@@ -114,6 +117,7 @@ export const formatMediasFromPhotoIdentifier = (
       type: type.includes('image') ? 'image' : 'video',
       mimeType: Platform.OS == 'android' ? type : undefined,
       creationDate: timestamp * 1000,
+      modificationDate: modificationTimestamp * 1000,
       albums
     }
   ]
