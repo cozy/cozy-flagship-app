@@ -16,6 +16,7 @@ export interface Media {
   subType?: 'PhotoLive'
   mimeType?: string
   creationDate: number
+  modificationDate: number
   albums: Album[]
 }
 

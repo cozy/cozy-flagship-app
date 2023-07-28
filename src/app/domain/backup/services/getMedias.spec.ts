@@ -71,6 +71,7 @@ describe('formatMediasFromPhotoIdentifier', () => {
         type: 'image',
         mimeType: 'image/jpeg',
         creationDate: 1684521894234,
+        modificationDate: 1684521894000,
         albums: [{ name: 'Pictures' }]
       }
     ])
@@ -111,6 +112,7 @@ describe('formatMediasFromPhotoIdentifier', () => {
         type: 'image',
         mimeType: undefined,
         creationDate: 1682604478599,
+        modificationDate: 1688756699463.186,
         albums: [{ name: 'Pictures' }]
       }
     ])
@@ -152,6 +154,7 @@ describe('formatMediasFromPhotoIdentifier', () => {
         subType: 'PhotoLive',
         mimeType: undefined,
         creationDate: 1682604478599,
+        modificationDate: 1688756699463.186,
         albums: [{ name: 'Pictures' }]
       },
       {
@@ -162,6 +165,7 @@ describe('formatMediasFromPhotoIdentifier', () => {
         subType: 'PhotoLive',
         mimeType: undefined,
         creationDate: 1682604478599,
+        modificationDate: 1688756699463.186,
         albums: [{ name: 'Pictures' }]
       }
     ])
