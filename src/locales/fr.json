@@ -80,7 +80,7 @@
   },
   "services": {
     "backup": {
-      "backupRootPath": "/Sauvegardé depuis mon mobile",
+      "backupRootName": "Sauvegardé depuis mon mobile",
       "notifications": {
         "onProgressTitle": "Envoi en cours",
         "onProgressMessage": "{{filename}} est en cours de sauvegarde",

@@ -22,6 +22,15 @@ import { IOCozyFile } from 'cozy-client/types/types'
 const DOCTYPE_APPS = 'io.cozy.apps'
 const DOCTYPE_FILES = 'io.cozy.files'
 const BACKUP_REF = `io.cozy.apps/photos/mobile`
+const PHOTOS_REF = `io.cozy.apps/photos`
+
+interface Folder {
+  _id: string
+  attributes: {
+    name: string
+    path: string
+  }
+}
 
 interface BackupFolder {
   _id: string
@@ -119,17 +128,65 @@ const createRemoteBackupFolderWithConflictStrategy = async (
   }
 }
 
+export const getOrCreatePhotosMagicFolder = async (
+  client: CozyClient
+): Promise<Folder> => {
+  const { included } = await client.collection(DOCTYPE_FILES).findReferencedBy({
+    _type: DOCTYPE_APPS,
+    _id: PHOTOS_REF
+  })
+
+  let photosMagicFolders = included as Folder[]
+
+  photosMagicFolders = photosMagicFolders.filter(
+    folder => !isInTrash(folder.attributes.path)
+  )
+
+  if (photosMagicFolders.length > 0) {
+    return photosMagicFolders[0]
+  }
+
+  const { data: newPhotosMagicFolder } = await client
+    .collection(DOCTYPE_FILES)
+    .createDirectoryByPath('/Photos')
+
+  await client.collection(DOCTYPE_FILES).addReferencesTo(
+    {
+      _id: PHOTOS_REF,
+      _type: DOCTYPE_APPS
+    },
+    [
+      {
+        _id: newPhotosMagicFolder._id
+      }
+    ]
+  )
+
+  return {
+    _id: newPhotosMagicFolder._id,
+    attributes: {
+      name: newPhotosMagicFolder.name,
+      path: newPhotosMagicFolder.path
+    }
+  }
+}
+
 export const createRemoteBackupFolder = async (
   client: CozyClient
 ): Promise<RemoteBackupConfig> => {
   const deviceName = await getDeviceName()
   const deviceId = await getDeviceId()
 
+  const photosMagicFolder = await getOrCreatePhotosMagicFolder(client)
+
   const {
     data: { _id: backupRootId }
   } = await client
     .collection(DOCTYPE_FILES)
-    .createDirectoryByPath(t('services.backup.backupRootPath'))
+    .getDirectoryOrCreate(
+      t('services.backup.backupRootName'),
+      photosMagicFolder
+    )
 
   const backupFolderAttributes = {
     type: 'directory',
