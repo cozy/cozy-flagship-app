@@ -248,7 +248,7 @@ const formatBackupedMedia = (
 
   return {
     name: file.name,
-    remotePath: pathWithFilenameRemoved
+    remotePath: pathWithFilenameRemoved || '/'
   }
 }
 
