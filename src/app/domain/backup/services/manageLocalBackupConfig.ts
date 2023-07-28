@@ -1,4 +1,4 @@
-import CozyClient, { FileCollectionGetResult } from 'cozy-client'
+import CozyClient, { FileCollectionGetResult, IOCozyFile } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import {
@@ -100,7 +100,8 @@ export const saveAlbums = async (
 
 export const setMediaAsBackuped = async (
   client: CozyClient,
-  media: Media
+  media: Media,
+  documentCreated: IOCozyFile
 ): Promise<void> => {
   const localBackupConfig = await getLocalBackupConfig(client)
 
@@ -112,10 +113,16 @@ export const setMediaAsBackuped = async (
   )
 
   if (!backupedMedia) {
-    localBackupConfig.backupedMedias.push({
+    const newBackupedMedia = {
       name: media.name,
       remotePath: media.remotePath
-    })
+    } as BackupedMedia
+
+    if (documentCreated.attributes.name !== media.name) {
+      newBackupedMedia.remoteName = documentCreated.attributes.name
+    }
+
+    localBackupConfig.backupedMedias.push(newBackupedMedia)
   }
 
   localBackupConfig.lastBackupDate = Date.now()

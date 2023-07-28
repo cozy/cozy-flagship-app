@@ -7,7 +7,7 @@ import {
   getPathWithoutExtension
 } from '/app/domain/backup/helpers'
 import { t } from '/locales/i18n'
-import { uploadFile } from '/app/domain/upload/services/upload'
+import { uploadFileWithConflictStrategy } from '/app/domain/upload/services'
 import { UploadResult } from '/app/domain/upload/models'
 
 import CozyClient from 'cozy-client'
@@ -49,7 +49,7 @@ export const uploadMedia = async (
 ): Promise<UploadResult> => {
   const filepath = await getRealFilepath(media)
 
-  return uploadFile({
+  return uploadFileWithConflictStrategy({
     url: uploadUrl,
     // @ts-expect-error Type issue which will be fixed in another PR
     token: client.getStackClient().token.accessToken as string,
