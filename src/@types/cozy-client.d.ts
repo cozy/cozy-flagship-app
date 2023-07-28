@@ -130,6 +130,10 @@ declare module 'cozy-client' {
     ) => Promise<{ included: { attributes: unknown }[] }>
     createDirectoryByPath: (path: string) => Promise<FileCollectionGetResult>
     ensureDirectoryExists: (path: string) => Promise<string>
+    getDirectoryOrCreate: (
+      name: string,
+      parentDirectory: object
+    ) => Promise<FileCollectionGetResult>
     createFileMetadata: (metadata: object) => Promise<{ data: { id: string } }>
     addReferencesTo: (references: object, dirs: object[]) => Promise<void>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

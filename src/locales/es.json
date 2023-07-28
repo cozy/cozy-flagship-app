@@ -69,7 +69,7 @@
   },
   "services": {
     "backup": {
-      "backupRootPath": "/Copiado desde mi móvil",
+      "backupRootName": "Copiado desde mi móvil",
       "errors": {
         "fileNotFound": "Archivo no encontrado",
         "fileNotSupported": "Archivo no compatible con la copia de seguridad",

@@ -80,7 +80,7 @@
   },
   "services": {
     "backup": {
-      "backupRootPath": "/Mobile backup",
+      "backupRootName": "Mobile backup",
       "notifications": {
         "onProgressTitle": "Uploading",
         "onProgressMessage": "{{filename}} is being uploaded",
