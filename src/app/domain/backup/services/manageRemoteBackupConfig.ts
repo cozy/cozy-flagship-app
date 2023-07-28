@@ -262,9 +262,9 @@ export const fetchBackupedMedias = async (
 
   const data = (await client.queryAll(filesQuery)) as FilesQueryAllResult
 
-  const backupedMedias = data.map(file =>
-    formatBackupedMedia(deviceRemoteBackupConfig, file)
-  )
+  const backupedMedias = data
+    .filter(file => !isInTrash(file.path))
+    .map(file => formatBackupedMedia(deviceRemoteBackupConfig, file))
 
   return backupedMedias
 }
