@@ -24,8 +24,10 @@ export interface Media {
  * A selection of media metadata stored locally to identify if a media has already been backuped
  * @member {string} name
  * @member {string} remotePath e.g. /Sauvegardé depuis mon mobile/My Android/Download
+ * @member {string} remoteName e.g. IMG_001 (1).jpg (added only if different from name)
  */
 export interface BackupedMedia {
   name: string
   remotePath: string
+  remoteName?: string
 }

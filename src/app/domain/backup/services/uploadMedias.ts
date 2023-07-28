@@ -99,7 +99,7 @@ export const uploadMedias = async (
         documentCreated
       )
 
-      await setMediaAsBackuped(client, mediaToUpload)
+      await setMediaAsBackuped(client, mediaToUpload, documentCreated)
 
       log.debug(`✅ ${mediaToUpload.name} set as backuped`)
     } catch (e) {

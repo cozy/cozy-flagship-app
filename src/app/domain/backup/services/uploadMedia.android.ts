@@ -4,7 +4,7 @@ import { t } from '/locales/i18n'
 
 import CozyClient from 'cozy-client'
 
-import { uploadFile } from '/app/domain/upload/services/upload'
+import { uploadFileWithConflictStrategy } from '/app/domain/upload/services'
 import { UploadResult } from '/app/domain/upload/models'
 
 export const uploadMedia = async (
@@ -14,7 +14,7 @@ export const uploadMedia = async (
 ): Promise<UploadResult> => {
   const filepath = media.path.replace('file://', '')
 
-  return uploadFile({
+  return uploadFileWithConflictStrategy({
     url: uploadUrl,
     // @ts-expect-error Type issue which will be fixed in another PR
     token: client.getStackClient().token.accessToken as string,
