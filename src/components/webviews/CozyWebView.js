@@ -1,8 +1,8 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { BackHandler } from 'react-native'
 import { useIsFocused } from '@react-navigation/native'
-import Minilog from 'cozy-minilog'
 
+import Minilog from 'cozy-minilog'
 import { useNativeIntent } from 'cozy-intent'
 
 import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
@@ -20,6 +20,7 @@ import {
 } from '/components/webviews/jsInteractions/jsLogInterception'
 import { postMessageFunctionDeclaration } from '/components/webviews/CryptoWebView/jsInteractions/jsFunctions/jsMessaging'
 import { jsSubscribers } from '/components/webviews/jsInteractions/jsSubscribers'
+import strings from '/constants/strings.json'
 import { useSession } from '/hooks/useSession'
 import ReloadInterceptorWebView from '/components/webviews/ReloadInterceptorWebView'
 import { getHostname } from '/libs/functions/getHostname'
@@ -145,7 +146,7 @@ export const CozyWebView = ({
       }}
       source={webviewSource}
       injectedJavaScriptBeforeContentLoaded={run}
-      originWhitelist={['http://*', 'https://*', 'intent://*']}
+      originWhitelist={strings.ORIGIN_WHITELIST}
       useWebKit={true}
       javaScriptEnabled={true}
       ref={ref => {

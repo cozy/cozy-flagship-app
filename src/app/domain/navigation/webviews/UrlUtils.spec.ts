@@ -14,7 +14,7 @@ jest.mock('react-native', () => ({
 }))
 
 jest.mock('/app/domain/navigation/webviews/UrlModels', () => ({
-  webviewUrlLog: { error: jest.fn() }
+  webviewUrlLog: { error: jest.fn(), info: jest.fn() }
 }))
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
