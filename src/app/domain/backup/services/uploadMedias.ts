@@ -81,7 +81,6 @@ export const uploadMedias = async (
         metadataId,
         mediaToUpload
       )
-
       const { data: documentCreated } = await uploadMedia(
         client,
         uploadUrl,
@@ -240,6 +239,9 @@ const getUploadUrl = (
   toURL.searchParams.append('CreatedAt', createdAt)
   toURL.searchParams.append('UpdatedAt', modifiedAt)
   toURL.searchParams.append('MetadataID', metadataId)
+  if (media.fileSize !== null) {
+    toURL.searchParams.append('Size', media.fileSize.toString())
+  }
 
   return toURL.toString()
 }
