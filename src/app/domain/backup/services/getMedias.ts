@@ -27,9 +27,8 @@ const getPhotoIdentifiersPage = async (
   const photoIdentifiersPage = await CameraRoll.getPhotos({
     first: MEDIAS_BY_PAGE,
     after: after,
-    include: ['filename', 'fileExtension']
+    include: ['filename', 'fileExtension', 'fileSize']
   })
-
   return photoIdentifiersPage
 }
 
@@ -72,7 +71,7 @@ export const formatMediasFromPhotoIdentifier = (
 ): Media[] => {
   const {
     node: {
-      image: { filename, uri },
+      image: { filename, uri, fileSize },
       type,
       subTypes,
       timestamp,
@@ -94,7 +93,8 @@ export const formatMediasFromPhotoIdentifier = (
         subType: 'PhotoLive',
         creationDate: timestamp * 1000,
         modificationDate: modificationTimestamp * 1000,
-        albums
+        albums,
+        fileSize: null
       },
       {
         name: filename,
@@ -104,7 +104,8 @@ export const formatMediasFromPhotoIdentifier = (
         subType: 'PhotoLive',
         creationDate: timestamp * 1000,
         modificationDate: modificationTimestamp * 1000,
-        albums
+        albums,
+        fileSize
       }
     ]
   }
@@ -118,7 +119,8 @@ export const formatMediasFromPhotoIdentifier = (
       mimeType: Platform.OS == 'android' ? type : undefined,
       creationDate: timestamp * 1000,
       modificationDate: modificationTimestamp * 1000,
-      albums
+      albums,
+      fileSize
     }
   ]
 }

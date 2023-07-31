@@ -43,7 +43,7 @@ describe('formatMediasFromPhotoIdentifier', () => {
         group_name: 'Pictures',
         image: {
           extension: 'jpg',
-          fileSize: null,
+          fileSize: 1234,
           filename: 'IMG_20230519_204453.jpg',
           height: null,
           orientation: null,
@@ -70,6 +70,7 @@ describe('formatMediasFromPhotoIdentifier', () => {
         remotePath: '/Pictures',
         type: 'image',
         mimeType: 'image/jpeg',
+        fileSize: 1234,
         creationDate: 1684521894234,
         modificationDate: 1684521894000,
         albums: [{ name: 'Pictures' }]
@@ -85,7 +86,7 @@ describe('formatMediasFromPhotoIdentifier', () => {
         group_name: ['Pictures'],
         image: {
           extension: 'heic',
-          fileSize: null,
+          fileSize: 1234,
           filename: 'IMG_0744.HEIC',
           height: null,
           playableDuration: null,
@@ -110,6 +111,7 @@ describe('formatMediasFromPhotoIdentifier', () => {
         path: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
         remotePath: '/',
         type: 'image',
+        fileSize: 1234,
         mimeType: undefined,
         creationDate: 1682604478599,
         modificationDate: 1688756699463.186,
@@ -126,7 +128,7 @@ describe('formatMediasFromPhotoIdentifier', () => {
         group_name: ['Pictures'],
         image: {
           extension: 'heic',
-          fileSize: null,
+          fileSize: 1234,
           filename: 'IMG_0744.HEIC',
           height: null,
           playableDuration: null,
@@ -155,7 +157,8 @@ describe('formatMediasFromPhotoIdentifier', () => {
         mimeType: undefined,
         creationDate: 1682604478599,
         modificationDate: 1688756699463.186,
-        albums: [{ name: 'Pictures' }]
+        albums: [{ name: 'Pictures' }],
+        fileSize: null
       },
       {
         name: 'IMG_0744.HEIC',
@@ -164,6 +167,7 @@ describe('formatMediasFromPhotoIdentifier', () => {
         type: 'image',
         subType: 'PhotoLive',
         mimeType: undefined,
+        fileSize: 1234,
         creationDate: 1682604478599,
         modificationDate: 1688756699463.186,
         albums: [{ name: 'Pictures' }]

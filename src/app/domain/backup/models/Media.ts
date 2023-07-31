@@ -18,6 +18,7 @@ export interface Media {
   creationDate: number
   modificationDate: number
   albums: Album[]
+  fileSize: number | null
 }
 
 /**
