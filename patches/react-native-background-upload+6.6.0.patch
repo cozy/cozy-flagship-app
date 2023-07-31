@@ -7,7 +7,7 @@ index c89d495..5da9d14 100644
  import net.gotev.uploadservice.network.ServerResponse
  import net.gotev.uploadservice.observer.request.RequestObserverDelegate
 +import net.gotev.uploadservice.exceptions.UploadError
- 
+
  class GlobalRequestObserverDelegate(reactContext: ReactApplicationContext) : RequestObserverDelegate {
    private val TAG = "UploadReceiver"
 @@ -28,6 +29,10 @@ class GlobalRequestObserverDelegate(reactContext: ReactApplicationContext) : Req
@@ -21,42 +21,16 @@ index c89d495..5da9d14 100644
      } else {
        params.putString("error", "Unknown exception")
      }
-diff --git a/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/UploaderModule.kt b/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/UploaderModule.kt
-index 0258e95..2a5fd70 100644
---- a/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/UploaderModule.kt
-+++ b/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/UploaderModule.kt
-@@ -18,9 +18,11 @@ import net.gotev.uploadservice.observer.request.GlobalRequestObserver
- import net.gotev.uploadservice.okhttp.OkHttpStack
- import net.gotev.uploadservice.protocols.binary.BinaryUploadRequest
- import net.gotev.uploadservice.protocols.multipart.MultipartUploadRequest
-+import okhttp3.Protocol
- import okhttp3.OkHttpClient
- import java.io.File
- import java.util.concurrent.TimeUnit
-+import java.util.Arrays
- 
- class UploaderModule(val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext), LifecycleEventListener {
-   private val TAG = "UploaderBridge"
-@@ -109,7 +111,9 @@ class UploaderModule(val reactContext: ReactApplicationContext) : ReactContextBa
-       }
-       readTimeout = options.getInt("readTimeout")
-     }
-+
-     httpStack = OkHttpStack(OkHttpClient().newBuilder()
-+            .protocols(Arrays.asList(Protocol.HTTP_1_1))
-             .followRedirects(followRedirects)
-             .followSslRedirects(followSslRedirects)
-             .retryOnConnectionFailure(retryOnConnectionFailure)
 diff --git a/node_modules/react-native-background-upload/index.d.ts b/node_modules/react-native-background-upload/index.d.ts
-index 8b2a07c..ebe61ce 100644
+index 8b2a07c..80cff93 100644
 --- a/node_modules/react-native-background-upload/index.d.ts
 +++ b/node_modules/react-native-background-upload/index.d.ts
 @@ -11,6 +11,8 @@ declare module "react-native-background-upload" {
- 
+
      export interface ErrorData extends EventData {
          error: string
 +        responseCode?: number
 +        responseBody?: string
      }
- 
+
      export interface CompletedData extends EventData {
