@@ -19,6 +19,7 @@ export const isHttpOrHttps = (url: string): boolean => {
  */
 export const openUrlWithOs = async (url: string): Promise<void> => {
   try {
+    webviewUrlLog.info(`Opening url "${url}" with operating system`)
     await Linking.openURL(url)
   } catch (error) {
     webviewUrlLog.error(
