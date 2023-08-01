@@ -45,3 +45,7 @@ allprojects {
     // A temporary workaround for that is to disable Javadoc generation for all modules
     // tasks.withType(Javadoc).all { enabled = false }
 }
+
+subprojects {
+    task allDeps(type: DependencyReportTask) {}
+}
