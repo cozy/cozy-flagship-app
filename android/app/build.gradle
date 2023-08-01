@@ -239,6 +239,19 @@ dependencies {
             because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
         }
     }
+    implementation(project(":react-native-background-upload")) {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    }
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.1'
+    configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'com.squareup.okhttp3' && details.requested.name == 'okhttp') {
+            if (details.requested.name == 'net.gotev:uploadservice-okhttp') {
+                details.useVersion 'com.squareup.okhttp3:okhttp:5.0.0-alpha.1'
+            }
+        }
+    }
+}
 }
 
 // Run this once to be able to run the application with BUCK
