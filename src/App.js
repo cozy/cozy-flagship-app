@@ -12,6 +12,7 @@ import { CozyProvider, useClient } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
 
 import { RootNavigator } from '/AppRouter'
+import { useSecureBackgroundSplashScreen } from '/hooks/useSplashScreen'
 import * as RootNavigation from '/libs/RootNavigation'
 import NetStatusBoundary from '/libs/services/NetStatusBoundary'
 import { IconChangedModal } from '/libs/icon/IconChangedModal'
@@ -54,6 +55,7 @@ const App = ({ setClient }) => {
   const { initialRoute, isLoading } = useAppBootstrap(client)
 
   useGlobalAppState()
+  useSecureBackgroundSplashScreen()
   useCookieResyncOnResume()
   useNotifications()
   useCozyEnvironmentOverride()
