@@ -9,11 +9,11 @@ export class SplashScreenService {
   hide = hideSplashScreen
 }
 
-export const showSplashScreen = (): Promise<void> => {
+export const showSplashScreen = (bootsplashName?: string): Promise<void> => {
   devlog('☁️ showSplashScreen called')
-  return RNBootSplash.show({ fade: true })
+  return RNBootSplash.show({ fade: true, bootsplashName })
 }
-export const hideSplashScreen = (): Promise<void> => {
+export const hideSplashScreen = (bootsplashName?: string): Promise<void> => {
   // On the default page (home), we want to reset the UI state at first render
   // so we get correct OS theme and status bar color
   const isDefaultRoute =
@@ -27,7 +27,7 @@ export const hideSplashScreen = (): Promise<void> => {
     devlog('☁️ hideSplashScreen called with non-default route')
   }
 
-  return RNBootSplash.hide({ fade: true })
+  return RNBootSplash.hide({ fade: true, bootsplashName })
 }
 
 export const getSplashScreenStatus = (): Promise<VisibilityStatus> => {
