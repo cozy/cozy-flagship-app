@@ -46,6 +46,21 @@
         android:screenOrientation="portrait"
       ></activity>
 
+      <activity
+          android:noHistory="true"
+          android:name=".share.ShareActivity"
+          android:configChanges="orientation"
+          android:label="@string/title_activity_share"
+          android:screenOrientation="portrait"
+          android:theme="@style/Theme.Share.Transparent"
+          android:exported="true" >
+        <intent-filter>
+          <action android:name="android.intent.action.SEND" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <data android:mimeType="*/*" />
+        </intent-filter>
+      </activity>
+
       <activity-alias
         android:name="io.cozy.flagship.mobile.MainActivitycozy"
         android:enabled="true"
