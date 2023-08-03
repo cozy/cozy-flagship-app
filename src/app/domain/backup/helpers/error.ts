@@ -15,10 +15,20 @@ export class BackupError extends Error {
   }
 }
 
+export const isUploadError = (error: unknown): error is UploadError => {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'statusCode' in error &&
+    'errors' in error &&
+    Array.isArray(error.errors)
+  )
+}
+
 export const isQuotaExceededError = (error: UploadError): boolean => {
   return (
     error.statusCode === 413 &&
-    error.errors[0].detail === 'The file is too big and exceeds the disk quota'
+    error.errors[0]?.detail === 'The file is too big and exceeds the disk quota'
   )
 }
 
