@@ -11,9 +11,12 @@ import {
   LocalBackupConfig,
   ProgressCallback
 } from '/app/domain/backup/models'
-import { UploadError } from '/app/domain/upload/models'
 import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
-import { BackupError, isFatalError } from '/app/domain/backup/helpers/error'
+import {
+  BackupError,
+  isFatalError,
+  isUploadError
+} from '/app/domain/backup/helpers/error'
 import { areAlbumsEnabled } from '/app/domain/backup/services/manageAlbums'
 
 import type CozyClient from 'cozy-client'
@@ -101,13 +104,15 @@ export const uploadMedias = async (
       await setMediaAsBackuped(client, mediaToUpload, documentCreated)
 
       log.debug(`✅ ${mediaToUpload.name} set as backuped`)
-    } catch (e) {
+    } catch (error) {
       log.debug(
         `❌ ${mediaToUpload.name} not uploaded or set as backuped correctly`
       )
-      log.debug(e)
+      log.debug(error)
 
-      const error = e as UploadError
+      if (!isUploadError(error)) {
+        return
+      }
 
       if (isFatalError(error)) {
         await setBackupAsReady(client)
