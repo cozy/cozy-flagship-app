@@ -1,6 +1,7 @@
 // @ts-check
 /* eslint-disable no-unused-vars */
 import Minilog from 'cozy-minilog'
+
 import { getBuildId, getVersion } from 'react-native-device-info'
 
 // @ts-ignore
@@ -17,7 +18,6 @@ import {
   removeCredential,
   getSlugAccountIds
 } from './keychain'
-import { dataURItoArrayBuffer } from './utils'
 
 import { constants } from '/screens/konnectors/constants/konnectors-constants'
 
@@ -458,16 +458,11 @@ export default class Launcher {
       sourceAccount: job.message.account,
       sourceAccountIdentifier,
       // @ts-ignore
-      downloadAndFormatFile: async entry => {
+      downloadAndFormatFile: async entry => ({
+        ...entry,
         // @ts-ignore
-        const dataUri = await this.worker.call('downloadFileInWorker', entry)
-        const test = dataURItoArrayBuffer(dataUri)
-        const filestream = test.arrayBuffer
-        return {
-          ...entry,
-          filestream
-        }
-      },
+        dataUri: await this.worker.call('downloadFileInWorker', entry)
+      }),
       existingFilesIndex
     })
     log.debug(result, 'saveFiles result')
