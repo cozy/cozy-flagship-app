@@ -380,6 +380,8 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
+  - react-native-share-extension (2.0.0):
+    - React
   - react-native-webview (11.18.2):
     - React-Core
   - React-perflogger (0.66.4)
@@ -548,6 +550,7 @@ DEPENDENCIES:
   - react-native-idle-timer (from `../node_modules/react-native-idle-timer`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-share-extension (from `../node_modules/react-native-share-extension`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -670,6 +673,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-share-extension:
+    :path: "../node_modules/react-native-share-extension"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-perflogger:
@@ -787,6 +792,7 @@ SPEC CHECKSUMS:
   react-native-idle-timer: f1920a59fe776340d004ff9de13c4a6eedcc8807
   react-native-netinfo: 2517ad504b3d303e90d7a431b0fcaef76d207983
   react-native-safe-area-context: 39c2d8be3328df5d437ac1700f4f3a4f75716acc
+  react-native-share-extension: ec60142ec7439481dc721033ead4967159662880
   react-native-webview: 8ec7ddf9eb4ddcd92b32cee7907efec19a9ec7cb
   React-perflogger: 93075d8931c32cd1fce8a98c15d2d5ccc4d891bd
   React-RCTActionSheet: 7d3041e6761b4f3044a37079ddcb156575fb6d89
@@ -820,6 +826,6 @@ SPEC CHECKSUMS:
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: a2c223e4d2ea601c5de467600be03d9ccfbdc548
+PODFILE CHECKSUM: 2e007c67c8c15957fe63201670c2f60e979289d8
 
 COCOAPODS: 1.11.3

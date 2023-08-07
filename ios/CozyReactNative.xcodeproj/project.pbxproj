@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1787FB853A76872C4D38807A /* libPods-CozyReactNative-CozyReactNativeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 79D616F87DFFDD069B1F634E /* libPods-CozyReactNative-CozyReactNativeTests.a */; };
+		22E3FB2CDAC96DBC7E640E95 /* libPods-CozyReactNative-CozyReactNative.Extension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6F720119A6575C50622CCA /* libPods-CozyReactNative-CozyReactNative.Extension.a */; };
 		293A69ED340EB757BFB282D0 /* libPods-CozyReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CA875020D8BE788449DD47FC /* libPods-CozyReactNative.a */; };
 		2C7AA45328157D2E0052F4D8 /* HttpServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7AA45228157D2E0052F4D8 /* HttpServer.swift */; };
 		2C7AA455281584D30052F4D8 /* HttpServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7AA454281584D30052F4D8 /* HttpServer.m */; };
@@ -21,6 +22,9 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		94BEBCC36EFC4F1DDD8E6E50 /* libPods-CozyReactNative-CozyReactNativeDev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A6C35B4CE552A45F0087FDE /* libPods-CozyReactNative-CozyReactNativeDev.a */; };
 		997B98B22769CFD100089037 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 997B98B12769CFD100089037 /* BootSplash.storyboard */; };
+		A96681F32A80E42B000D1DBE /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A96681F12A80E42B000D1DBE /* MainInterface.storyboard */; };
+		A96681F72A80E42B000D1DBE /* CozyReactNative.Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A96681EC2A80E42B000D1DBE /* CozyReactNative.Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A96681FD2A80E477000D1DBE /* CozyReactNativeExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = A96681FC2A80E477000D1DBE /* CozyReactNativeExtension.m */; };
 		E42E384B2A21515E0099D90A /* mabulle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E38492A21515E0099D90A /* mabulle@2x.png */; };
 		E42E384C2A21515E0099D90A /* mabulle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E38492A21515E0099D90A /* mabulle@2x.png */; };
 		E42E384D2A21515E0099D90A /* mabulle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E384A2A21515E0099D90A /* mabulle@3x.png */; };
@@ -56,7 +60,28 @@
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = CozyReactNative;
 		};
+		A96681F52A80E42B000D1DBE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A96681EB2A80E42B000D1DBE;
+			remoteInfo = CozyReactNative.Extension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A96681F82A80E42B000D1DBE /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A96681F72A80E42B000D1DBE /* CozyReactNative.Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		00323DA8D6BE49D2BE5C238B /* Lato-Bold.woff */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Bold.woff"; path = "../assets/fonts/Lato-Bold.woff"; sourceTree = "<group>"; };
@@ -70,6 +95,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = CozyReactNative/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = CozyReactNative/main.m; sourceTree = "<group>"; };
 		2161F5FB1C88F7A96C55ED73 /* Pods-CozyReactNative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative.debug.xcconfig"; path = "Target Support Files/Pods-CozyReactNative/Pods-CozyReactNative.debug.xcconfig"; sourceTree = "<group>"; };
+		247A6CD6A26B49C54ADBD7F7 /* Pods-CozyReactNative-CozyReactNative.Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-CozyReactNative.Extension.debug.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-CozyReactNative.Extension/Pods-CozyReactNative-CozyReactNative.Extension.debug.xcconfig"; sourceTree = "<group>"; };
 		2A6C35B4CE552A45F0087FDE /* libPods-CozyReactNative-CozyReactNativeDev.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyReactNative-CozyReactNativeDev.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C7AA45128157D2D0052F4D8 /* CozyReactNative-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CozyReactNative-Bridging-Header.h"; sourceTree = "<group>"; };
 		2C7AA45228157D2E0052F4D8 /* HttpServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpServer.swift; sourceTree = "<group>"; };
@@ -80,14 +106,20 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CozyReactNative/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		997B98B12769CFD100089037 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = CozyReactNative/BootSplash.storyboard; sourceTree = "<group>"; };
 		99A26C682632A5AC00365D30 /* CozyReactNative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = CozyReactNative.entitlements; path = CozyReactNative/CozyReactNative.entitlements; sourceTree = "<group>"; };
+		9A6F720119A6575C50622CCA /* libPods-CozyReactNative-CozyReactNative.Extension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyReactNative-CozyReactNative.Extension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A8507EB61A9895B473A06A3 /* Pods-CozyReactNative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative/Pods-CozyReactNative.release.xcconfig"; sourceTree = "<group>"; };
 		9F5886BEE4526A9676E4D592 /* Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-CozyReactNativeTests/Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A0572B798A7D41908174A427 /* Lato-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.ttf"; path = "../assets/fonts/Lato-Regular.ttf"; sourceTree = "<group>"; };
+		A96681EC2A80E42B000D1DBE /* CozyReactNative.Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CozyReactNative.Extension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A96681F22A80E42B000D1DBE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		A96681F42A80E42B000D1DBE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A96681FC2A80E477000D1DBE /* CozyReactNativeExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CozyReactNativeExtension.m; sourceTree = "<group>"; };
 		BF90BB6E53007BE49D4888CA /* Pods-CozyReactNative-CozyReactNativeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-CozyReactNativeTests.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-CozyReactNativeTests/Pods-CozyReactNative-CozyReactNativeTests.release.xcconfig"; sourceTree = "<group>"; };
 		CA875020D8BE788449DD47FC /* libPods-CozyReactNative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyReactNative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6FD94648F224F6683FD0C85 /* Lato-Regular.woff */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.woff"; path = "../assets/fonts/Lato-Regular.woff"; sourceTree = "<group>"; };
 		DB7507DF32C8AE85CC054D7E /* Pods-CozyReactNative-CozyReactNativeDev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-CozyReactNativeDev.debug.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-CozyReactNativeDev/Pods-CozyReactNative-CozyReactNativeDev.debug.xcconfig"; sourceTree = "<group>"; };
 		DF93CAAA2160427F9BC16935 /* Lato-Bold.woff2 */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Bold.woff2"; path = "../assets/fonts/Lato-Bold.woff2"; sourceTree = "<group>"; };
+		E2E992F70933A6C7ADFFCFB1 /* Pods-CozyReactNative-CozyReactNative.Extension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-CozyReactNative.Extension.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-CozyReactNative.Extension/Pods-CozyReactNative-CozyReactNative.Extension.release.xcconfig"; sourceTree = "<group>"; };
 		E42E38492A21515E0099D90A /* mabulle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mabulle@2x.png"; sourceTree = "<group>"; };
 		E42E384A2A21515E0099D90A /* mabulle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mabulle@3x.png"; sourceTree = "<group>"; };
 		E4924ABE29963CAD00F415CE /* CozyReactNativeDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CozyReactNativeDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -118,6 +150,14 @@
 			files = (
 				643009FE24043073DD6A15DE /* libPods-CozyReactNative.a in Frameworks */,
 				293A69ED340EB757BFB282D0 /* libPods-CozyReactNative.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A96681E92A80E42B000D1DBE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22E3FB2CDAC96DBC7E640E95 /* libPods-CozyReactNative-CozyReactNative.Extension.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,6 +224,7 @@
 				CA875020D8BE788449DD47FC /* libPods-CozyReactNative.a */,
 				79D616F87DFFDD069B1F634E /* libPods-CozyReactNative-CozyReactNativeTests.a */,
 				2A6C35B4CE552A45F0087FDE /* libPods-CozyReactNative-CozyReactNativeDev.a */,
+				9A6F720119A6575C50622CCA /* libPods-CozyReactNative-CozyReactNative.Extension.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -203,6 +244,7 @@
 				13B07FAE1A68108700A75B9A /* CozyReactNative */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* CozyReactNativeTests */,
+				A96681ED2A80E42B000D1DBE /* CozyReactNative.Extension */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				CDA0EE31E7D3E42F21731B64 /* Pods */,
@@ -220,8 +262,19 @@
 				13B07F961A680F5B00A75B9A /* CozyReactNative.app */,
 				00E356EE1AD99517003FC87E /* CozyReactNativeTests.xctest */,
 				E4924ABE29963CAD00F415CE /* CozyReactNativeDev.app */,
+				A96681EC2A80E42B000D1DBE /* CozyReactNative.Extension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A96681ED2A80E42B000D1DBE /* CozyReactNative.Extension */ = {
+			isa = PBXGroup;
+			children = (
+				A96681F12A80E42B000D1DBE /* MainInterface.storyboard */,
+				A96681F42A80E42B000D1DBE /* Info.plist */,
+				A96681FC2A80E477000D1DBE /* CozyReactNativeExtension.m */,
+			);
+			path = CozyReactNative.Extension;
 			sourceTree = "<group>";
 		};
 		CDA0EE31E7D3E42F21731B64 /* Pods */ = {
@@ -233,6 +286,8 @@
 				9A8507EB61A9895B473A06A3 /* Pods-CozyReactNative.release.xcconfig */,
 				DB7507DF32C8AE85CC054D7E /* Pods-CozyReactNative-CozyReactNativeDev.debug.xcconfig */,
 				79997E63AEB566EB66642538 /* Pods-CozyReactNative-CozyReactNativeDev.release.xcconfig */,
+				247A6CD6A26B49C54ADBD7F7 /* Pods-CozyReactNative-CozyReactNative.Extension.debug.xcconfig */,
+				E2E992F70933A6C7ADFFCFB1 /* Pods-CozyReactNative-CozyReactNative.Extension.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -301,15 +356,36 @@
 				02F6E7460B106C0824136025 /* [CP] Copy Pods Resources */,
 				592D30E9601C4E6BAD83C8B3 /* Upload Debug Symbols to Sentry */,
 				A6FFA29AB5A56B37E2529745 /* [CP-User] [RNFB] Core Configuration */,
+				A96681F82A80E42B000D1DBE /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A96681F62A80E42B000D1DBE /* PBXTargetDependency */,
 			);
 			name = CozyReactNative;
 			productName = CozyReactNative;
 			productReference = 13B07F961A680F5B00A75B9A /* CozyReactNative.app */;
 			productType = "com.apple.product-type.application";
+		};
+		A96681EB2A80E42B000D1DBE /* CozyReactNative.Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A96681FB2A80E42B000D1DBE /* Build configuration list for PBXNativeTarget "CozyReactNative.Extension" */;
+			buildPhases = (
+				155811967BEE3ADC82A4CED2 /* [CP] Check Pods Manifest.lock */,
+				A96681E82A80E42B000D1DBE /* Sources */,
+				A96681E92A80E42B000D1DBE /* Frameworks */,
+				A96681EA2A80E42B000D1DBE /* Resources */,
+				3F656E5F75B736D003CA7600 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CozyReactNative.Extension;
+			productName = CozyReactNative.Extension;
+			productReference = A96681EC2A80E42B000D1DBE /* CozyReactNative.Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		E4924AA629963CAD00F415CE /* CozyReactNativeDev */ = {
 			isa = PBXNativeTarget;
@@ -349,6 +425,9 @@
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1320;
 					};
+					A96681EB2A80E42B000D1DBE = {
+						CreatedOnToolsVersion = 14.3.1;
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CozyReactNative" */;
@@ -367,6 +446,7 @@
 				13B07F861A680F5B00A75B9A /* CozyReactNative */,
 				E4924AA629963CAD00F415CE /* CozyReactNativeDev */,
 				00E356ED1AD99517003FC87E /* CozyReactNativeTests */,
+				A96681EB2A80E42B000D1DBE /* CozyReactNative.Extension */,
 			);
 		};
 /* End PBXProject section */
@@ -396,6 +476,14 @@
 				E42E384B2A21515E0099D90A /* mabulle@2x.png in Resources */,
 				F3B83720E44641879E6927C6 /* Lato-Regular.ttf in Resources */,
 				E4924AC32996438600F415CE /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A96681EA2A80E42B000D1DBE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A96681F32A80E42B000D1DBE /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -473,6 +561,45 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		155811967BEE3ADC82A4CED2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CozyReactNative-CozyReactNative.Extension-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3F656E5F75B736D003CA7600 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CozyReactNative-CozyReactNative.Extension/Pods-CozyReactNative-CozyReactNative.Extension-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CozyReactNative-CozyReactNative.Extension/Pods-CozyReactNative-CozyReactNative.Extension-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CozyReactNative-CozyReactNative.Extension/Pods-CozyReactNative-CozyReactNative.Extension-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		51825DB3A86DD3563457F7A1 /* [CP] Check Pods Manifest.lock */ = {
@@ -719,6 +846,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A96681E82A80E42B000D1DBE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A96681FD2A80E477000D1DBE /* CozyReactNativeExtension.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E4924AA929963CAD00F415CE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -738,7 +873,23 @@
 			target = 13B07F861A680F5B00A75B9A /* CozyReactNative */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
+		A96681F62A80E42B000D1DBE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A96681EB2A80E42B000D1DBE /* CozyReactNative.Extension */;
+			targetProxy = A96681F52A80E42B000D1DBE /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		A96681F12A80E42B000D1DBE /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A96681F22A80E42B000D1DBE /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
@@ -805,6 +956,89 @@
 				DEVELOPMENT_TEAM = 3AKXFMV43J;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 3AKXFMV43J;
 				ENABLE_BITCODE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/CocoaAsyncSocket\"",
+					"\"${PODS_ROOT}/Headers/Public/DoubleConversion\"",
+					"\"${PODS_ROOT}/Headers/Public/FBLazyVector\"",
+					"\"${PODS_ROOT}/Headers/Public/FBReactNativeSpec\"",
+					"\"${PODS_ROOT}/Headers/Public/Firebase\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCore\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCoreDiagnostics\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseInstallations\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseMessaging\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-Fmt\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-Folly\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-Glog\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-PeerTalk\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-RSocket\"",
+					"\"${PODS_ROOT}/Headers/Public/FlipperKit\"",
+					"\"${PODS_ROOT}/Headers/Public/GCDWebServer\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleDataTransport\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleUtilities\"",
+					"\"${PODS_ROOT}/Headers/Public/NVHTarGzip\"",
+					"\"${PODS_ROOT}/Headers/Public/PromisesObjC\"",
+					"\"${PODS_ROOT}/Headers/Public/RCT-Folly\"",
+					"\"${PODS_ROOT}/Headers/Public/RCTRequired\"",
+					"\"${PODS_ROOT}/Headers/Public/RCTTypeSafety\"",
+					"\"${PODS_ROOT}/Headers/Public/RNBootSplash\"",
+					"\"${PODS_ROOT}/Headers/Public/RNCAsyncStorage\"",
+					"\"${PODS_ROOT}/Headers/Public/RNDeviceInfo\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFBApp\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFBMessaging\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFS\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFileViewer\"",
+					"\"${PODS_ROOT}/Headers/Public/RNGestureHandler\"",
+					"\"${PODS_ROOT}/Headers/Public/RNIOS11DeviceCheck\"",
+					"\"${PODS_ROOT}/Headers/Public/RNInAppBrowser\"",
+					"\"${PODS_ROOT}/Headers/Public/RNKeychain\"",
+					"\"${PODS_ROOT}/Headers/Public/RNLocalize\"",
+					"\"${PODS_ROOT}/Headers/Public/RNPermissions\"",
+					"\"${PODS_ROOT}/Headers/Public/RNSVG\"",
+					"\"${PODS_ROOT}/Headers/Public/RNScreens\"",
+					"\"${PODS_ROOT}/Headers/Public/RNSentry\"",
+					"\"${PODS_ROOT}/Headers/Public/React-Core\"",
+					"\"${PODS_ROOT}/Headers/Public/React-RCTBlob\"",
+					"\"${PODS_ROOT}/Headers/Public/React-RCTText\"",
+					"\"${PODS_ROOT}/Headers/Public/React-callinvoker\"",
+					"\"${PODS_ROOT}/Headers/Public/React-cxxreact\"",
+					"\"${PODS_ROOT}/Headers/Public/React-hermes\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsi\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsiexecutor\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsinspector\"",
+					"\"${PODS_ROOT}/Headers/Public/React-logger\"",
+					"\"${PODS_ROOT}/Headers/Public/React-perflogger\"",
+					"\"${PODS_ROOT}/Headers/Public/React-runtimeexecutor\"",
+					"\"${PODS_ROOT}/Headers/Public/ReactCommon\"",
+					"\"${PODS_ROOT}/Headers/Public/Sentry\"",
+					"\"${PODS_ROOT}/Headers/Public/Yoga\"",
+					"\"${PODS_ROOT}/Headers/Public/YogaKit\"",
+					"\"${PODS_ROOT}/Headers/Public/fmt\"",
+					"\"${PODS_ROOT}/Headers/Public/glog\"",
+					"\"${PODS_ROOT}/Headers/Public/hermes-engine\"",
+					"\"${PODS_ROOT}/Headers/Public/libevent\"",
+					"\"${PODS_ROOT}/Headers/Public/nanopb\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-biometrics\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-cameraroll\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-change-icon\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-config\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-cookies\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-document-scanner-plugin\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-flipper\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-gzip\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-idle-timer\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-netinfo\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-safe-area-context\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-webview\"",
+					"\"$(PODS_ROOT)/DoubleConversion\"",
+					"$(inherited)",
+					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
+					"\"$(PODS_ROOT)/boost\"",
+					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
+					"\"$(PODS_TARGET_SRCROOT)/include/\"",
+				);
 				INFOPLIST_FILE = CozyReactNative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -837,6 +1071,89 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 3AKXFMV43J;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/CocoaAsyncSocket\"",
+					"\"${PODS_ROOT}/Headers/Public/DoubleConversion\"",
+					"\"${PODS_ROOT}/Headers/Public/FBLazyVector\"",
+					"\"${PODS_ROOT}/Headers/Public/FBReactNativeSpec\"",
+					"\"${PODS_ROOT}/Headers/Public/Firebase\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCore\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCoreDiagnostics\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseInstallations\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseMessaging\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-Fmt\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-Folly\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-Glog\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-PeerTalk\"",
+					"\"${PODS_ROOT}/Headers/Public/Flipper-RSocket\"",
+					"\"${PODS_ROOT}/Headers/Public/FlipperKit\"",
+					"\"${PODS_ROOT}/Headers/Public/GCDWebServer\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleDataTransport\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleUtilities\"",
+					"\"${PODS_ROOT}/Headers/Public/NVHTarGzip\"",
+					"\"${PODS_ROOT}/Headers/Public/PromisesObjC\"",
+					"\"${PODS_ROOT}/Headers/Public/RCT-Folly\"",
+					"\"${PODS_ROOT}/Headers/Public/RCTRequired\"",
+					"\"${PODS_ROOT}/Headers/Public/RCTTypeSafety\"",
+					"\"${PODS_ROOT}/Headers/Public/RNBootSplash\"",
+					"\"${PODS_ROOT}/Headers/Public/RNCAsyncStorage\"",
+					"\"${PODS_ROOT}/Headers/Public/RNDeviceInfo\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFBApp\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFBMessaging\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFS\"",
+					"\"${PODS_ROOT}/Headers/Public/RNFileViewer\"",
+					"\"${PODS_ROOT}/Headers/Public/RNGestureHandler\"",
+					"\"${PODS_ROOT}/Headers/Public/RNIOS11DeviceCheck\"",
+					"\"${PODS_ROOT}/Headers/Public/RNInAppBrowser\"",
+					"\"${PODS_ROOT}/Headers/Public/RNKeychain\"",
+					"\"${PODS_ROOT}/Headers/Public/RNLocalize\"",
+					"\"${PODS_ROOT}/Headers/Public/RNPermissions\"",
+					"\"${PODS_ROOT}/Headers/Public/RNSVG\"",
+					"\"${PODS_ROOT}/Headers/Public/RNScreens\"",
+					"\"${PODS_ROOT}/Headers/Public/RNSentry\"",
+					"\"${PODS_ROOT}/Headers/Public/React-Core\"",
+					"\"${PODS_ROOT}/Headers/Public/React-RCTBlob\"",
+					"\"${PODS_ROOT}/Headers/Public/React-RCTText\"",
+					"\"${PODS_ROOT}/Headers/Public/React-callinvoker\"",
+					"\"${PODS_ROOT}/Headers/Public/React-cxxreact\"",
+					"\"${PODS_ROOT}/Headers/Public/React-hermes\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsi\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsiexecutor\"",
+					"\"${PODS_ROOT}/Headers/Public/React-jsinspector\"",
+					"\"${PODS_ROOT}/Headers/Public/React-logger\"",
+					"\"${PODS_ROOT}/Headers/Public/React-perflogger\"",
+					"\"${PODS_ROOT}/Headers/Public/React-runtimeexecutor\"",
+					"\"${PODS_ROOT}/Headers/Public/ReactCommon\"",
+					"\"${PODS_ROOT}/Headers/Public/Sentry\"",
+					"\"${PODS_ROOT}/Headers/Public/Yoga\"",
+					"\"${PODS_ROOT}/Headers/Public/YogaKit\"",
+					"\"${PODS_ROOT}/Headers/Public/fmt\"",
+					"\"${PODS_ROOT}/Headers/Public/glog\"",
+					"\"${PODS_ROOT}/Headers/Public/hermes-engine\"",
+					"\"${PODS_ROOT}/Headers/Public/libevent\"",
+					"\"${PODS_ROOT}/Headers/Public/nanopb\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-biometrics\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-cameraroll\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-change-icon\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-config\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-cookies\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-document-scanner-plugin\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-flipper\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-gzip\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-idle-timer\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-netinfo\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-safe-area-context\"",
+					"\"${PODS_ROOT}/Headers/Public/react-native-webview\"",
+					"\"$(PODS_ROOT)/DoubleConversion\"",
+					"$(inherited)",
+					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
+					"\"$(PODS_ROOT)/boost\"",
+					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
+					"\"$(PODS_TARGET_SRCROOT)/include/\"",
+				);
 				INFOPLIST_FILE = CozyReactNative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -890,7 +1207,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -956,7 +1273,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -979,6 +1296,94 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A96681F92A80E42B000D1DBE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 247A6CD6A26B49C54ADBD7F7 /* Pods-CozyReactNative-CozyReactNative.Extension.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 3AKXFMV43J;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native/React",
+				);
+				INFOPLIST_FILE = CozyReactNative.Extension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CozyReactNative.Extension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.cozy.flagship.mobile.CozyReactNative-Extension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A96681FA2A80E42B000D1DBE /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E2E992F70933A6C7ADFFCFB1 /* Pods-CozyReactNative-CozyReactNative.Extension.release.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native/Reaact/**",
+				);
+				INFOPLIST_FILE = CozyReactNative.Extension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CozyReactNative.Extension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.cozy.flagship.mobile.CozyReactNative-Extension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -1069,6 +1474,15 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A96681FB2A80E42B000D1DBE /* Build configuration list for PBXNativeTarget "CozyReactNative.Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A96681F92A80E42B000D1DBE /* Debug */,
+				A96681FA2A80E42B000D1DBE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -23,6 +23,8 @@ target 'CozyReactNative' do
 
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
+  pod 'react-native-share-extension', :path => '../node_modules/react-native-share-extension'
+
   target 'CozyReactNativeDev' do
     inherit! :complete
     # Pods for testing
@@ -31,6 +33,11 @@ target 'CozyReactNative' do
   target 'CozyReactNativeTests' do
     inherit! :complete
     # Pods for testing
+  end
+
+  target 'CozyReactNative.Extension' do
+    use_native_modules!
+    inherit! :complete
   end
 
   # Enables Flipper.
