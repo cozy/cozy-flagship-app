@@ -48,7 +48,7 @@
 
       <activity
           android:noHistory="true"
-          android:name=".share.ShareActivity"
+          android:name="io.cozy.flagship.share.ShareActivity"
           android:configChanges="orientation"
           android:label="@string/title_activity_share"
           android:screenOrientation="portrait"

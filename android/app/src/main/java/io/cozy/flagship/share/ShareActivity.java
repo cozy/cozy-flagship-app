@@ -1,4 +1,4 @@
-package io.cozy.flagship.mobile.share;
+package io.cozy.flagship.share;
 
 import com.facebook.react.ReactActivity;
 

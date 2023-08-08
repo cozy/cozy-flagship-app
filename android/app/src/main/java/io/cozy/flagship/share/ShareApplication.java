@@ -1,4 +1,4 @@
-package io.cozy.flagship.mobile.share;
+package io.cozy.flagship.share;
 import io.cozy.flagship.mobile.BuildConfig;
 
 import com.alinz.parkerdan.shareextension.SharePackage;
@@ -28,6 +28,11 @@ public class ShareApplication extends Application implements ReactApplication {
          new MainReactPackage(),
          new SharePackage()
      );
+   }
+
+   @Override
+    protected String getJSMainModuleName() {
+     return "index";
    }
  };
 
