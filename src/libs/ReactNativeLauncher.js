@@ -1,4 +1,5 @@
 import Minilog from 'cozy-minilog'
+
 import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
 import MicroEE from 'microee'
@@ -195,9 +196,9 @@ class ReactNativeLauncher extends Launcher {
     deactivateKeepAwake('clisk')
     const { client, job } = this.getStartContext()
 
+    await sendKonnectorsLogs(client)
     if (job) {
       launcherEvent.emit('launchResult', { cancel: true })
-      await sendKonnectorsLogs(client)
       if (message) {
         await this.updateJobResult({
           state: 'errored',
