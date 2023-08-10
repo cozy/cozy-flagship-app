@@ -184,8 +184,7 @@ class ReactNativeLauncher extends Launcher {
     } catch (error) {
       throw new Error(
         `Critical error while ensuring "${slug}" konnector is installed.
-        The konnector will not be able to run.`,
-        error
+        The konnector will not be able to run: ${error.message}`
       )
     }
   }
