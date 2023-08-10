@@ -196,6 +196,9 @@ class ReactNativeLauncher extends Launcher {
     deactivateKeepAwake('clisk')
     const { client, job } = this.getStartContext()
 
+    if (message) {
+      this.log({ level: 'error', message, timestamp: new Date().toISOString() })
+    }
     await sendKonnectorsLogs(client)
     if (job) {
       launcherEvent.emit('launchResult', { cancel: true })
