@@ -97,14 +97,19 @@ class ReactNativeLauncher extends Launcher {
    *
    * @param  {ContentScriptLogMessage} message - log message
    */
-  log(logContent) {
+  log({ timestamp, ...logContent }) {
     const context = this.getStartContext()
-    const slug = context.konnector.slug // konnector attribut is available before manifest one
+    const slug = context.konnector.slug // konnector attribute is available before manifest one
     let jobId
     if (context.job) {
       jobId = context.job.id
     }
-    this.logger({ ...logContent, slug, jobId })
+    this.logger({
+      ...logContent,
+      slug,
+      jobId,
+      timestamp: timestamp ?? new Date().toISOString()
+    })
   }
 
   async init({ bridgeOptions, contentScript }) {
@@ -197,7 +202,7 @@ class ReactNativeLauncher extends Launcher {
     const { client, job } = this.getStartContext()
 
     if (message) {
-      this.log({ level: 'error', message, timestamp: new Date().toISOString() })
+      this.log({ level: 'error', message })
     }
     await sendKonnectorsLogs(client)
     if (job) {
