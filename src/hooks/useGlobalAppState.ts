@@ -1,5 +1,4 @@
-import { useNavigationState } from '@react-navigation/native'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { AppState, AppStateStatus, NativeEventSubscription } from 'react-native'
 
 import Minilog from 'cozy-minilog'
@@ -8,32 +7,25 @@ import CozyClient, { useClient } from 'cozy-client'
 import { StorageKeys, storeData } from '/libs/localStore/storage'
 import { showSplashScreen } from '/app/theme/SplashScreenService'
 import {
-  getIsSecurityFlowPassed,
   handleSecurityFlowWakeUp,
   setIsSecurityFlowPassed
 } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
 import { synchronizeDevice } from '/app/domain/authentication/services/SynchronizeService'
 import { safePromise } from '/utils/safePromise'
-import {
-  initSharingMode,
-  isSharingMode,
-  setFilesToUpload
-} from '/app/domain/sharing/SharingService'
-import { routes } from '/constants/routes'
-import { navigate } from '/libs/RootNavigation'
+import { clearFilesToUpload } from '/app/domain/sharing/services/SharingService'
 
 const log = Minilog('useGlobalAppState')
 
 // Runtime variables
 let appState: AppStateStatus = AppState.currentState
-initSharingMode()
 
 const handleSleep = (): void => {
+  clearFilesToUpload()
+  setIsSecurityFlowPassed(false)
+
   showSplashScreen()
     .then(async () => {
-      setIsSecurityFlowPassed(false)
-      setFilesToUpload([])
       return await storeData(StorageKeys.LastActivity, Date.now().toString())
     })
     .catch(reason => log.error('Failed when going to sleep', reason))
@@ -41,11 +33,6 @@ const handleSleep = (): void => {
 
 const handleWakeUp = (client: CozyClient): void => {
   handleSecurityFlowWakeUp(client)
-
-  if (isSharingMode()) {
-    log.info('useGlobalAppState: handleWakeUp, sharing mode')
-    navigate(routes.sharing)
-  }
 }
 
 const isGoingToSleep = (nextAppState: AppStateStatus): boolean =>
@@ -77,29 +64,6 @@ const onStateChange = (
  */
 export const useGlobalAppState = (): void => {
   const client = useClient()
-  const initFlag = useRef(false)
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  const routeIndex = useNavigationState(state => state?.index)
-
-  // On app start
-  useEffect(() => {
-    log.info('useGlobalAppState: app start')
-
-    if (getIsSecurityFlowPassed() && !initFlag.current) {
-      log.info('useGlobalAppState: app start, security flow passed')
-
-      if (isSharingMode()) {
-        log.info('useGlobalAppState: app start, sharing mode')
-        navigate(routes.sharing)
-      } else {
-        log.info('useGlobalAppState: app start, not sharing mode')
-      }
-
-      initFlag.current = true
-    } else {
-      log.info('useGlobalAppState: app start, security flow not passed')
-    }
-  }, [routeIndex])
 
   useEffect(() => {
     let subscription: NativeEventSubscription | undefined
