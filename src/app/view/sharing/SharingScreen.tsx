@@ -1,38 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import React from 'react'
 
-import { useSharingMode } from './useSharing'
+import { getFilesToUpload } from '/app/domain/sharing/services/SharingService'
+import { Container } from '/ui/Container'
+import { Grid } from '/ui/Grid'
+import { Typography } from '/ui/Typography'
 
 export const SharingScreen = (): JSX.Element => {
-  const [numberOfFiles, setNumberOfFiles] = useState(0)
-  const { filesToUpload } = useSharingMode()
-
-  useEffect(() => {
-    setNumberOfFiles(filesToUpload.length)
-
-    return () => {
-      setNumberOfFiles(0)
-    }
-  }, [filesToUpload])
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>
-        Number of files to upload: {numberOfFiles}
-      </Text>
-    </View>
+    <Container>
+      <Grid>
+        {Array.from(getFilesToUpload().entries()).map(([key, file]) => (
+          <Typography key={key} variant="h3">
+            <Typography>File: {key}</Typography>
+            <Typography>{JSON.stringify(file, null, 2)}</Typography>
+          </Typography>
+        ))}
+      </Grid>
+    </Container>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  text: {
-    backgroundColor: '#000',
-    fontSize: 18,
-    color: '#fff'
-  }
-})

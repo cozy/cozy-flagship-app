@@ -1,6 +1,6 @@
 import { Platform } from 'react-native'
 
-import { _shouldLockApp } from '/hooks/useGlobalAppState'
+import { _shouldLockApp } from '/app/domain/authorization/services/SecurityService'
 import { routes } from '/constants/routes'
 
 afterAll(jest.resetModules)
