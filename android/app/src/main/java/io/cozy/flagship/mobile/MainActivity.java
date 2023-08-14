@@ -1,6 +1,7 @@
 package io.cozy.flagship.mobile;
 
 import android.os.Bundle;
+import android.content.Intent;
 
 import com.facebook.react.ReactActivity;
 import com.zoontek.rnbootsplash.RNBootSplash;
@@ -23,5 +24,11 @@ public class MainActivity extends ReactActivity {
     ImmersiveBars.changeBarColors(this, isDarkMode);
     super.onCreate(savedInstanceState);
     RNBootSplash.init(R.drawable.bootsplash, MainActivity.this);
+  }
+
+  @Override
+  public void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    setIntent(intent);
   }
 }
