@@ -1,7 +1,7 @@
-import Minilog from 'cozy-minilog'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { get } from 'lodash'
 import { useFocusEffect } from '@react-navigation/native'
+import { AppState } from 'react-native'
 
 import {
   deconstructCozyWebLinkWithSlug,
@@ -9,8 +9,7 @@ import {
   useClient
 } from 'cozy-client'
 import { useNativeIntent } from 'cozy-intent'
-
-import { AppState } from 'react-native'
+import Minilog from 'cozy-minilog'
 
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import {

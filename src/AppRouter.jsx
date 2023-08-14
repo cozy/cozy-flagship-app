@@ -10,12 +10,12 @@ import { LoginScreen } from '/screens/login/LoginScreen'
 import { ManagerScreen } from '/app/view/Manager/ManagerScreen'
 import { OnboardingScreen } from '/screens/login/OnboardingScreen'
 import { WelcomeScreen } from '/screens/welcome/WelcomeScreen'
-import { routes } from '/constants/routes.js'
-
-import { PasswordPrompt } from './app/view/Secure/PasswordPrompt'
-import { PinPrompt } from './app/view/Secure/PinPrompt'
-import { SetPasswordView } from './app/view/Secure/SetPasswordView'
-import { SetPinView } from './app/view/Secure/SetPinView'
+import { routes } from '/constants/routes'
+import { SharingScreen } from '/app/view/sharing/SharingScreen'
+import { PasswordPrompt } from '/app/view/Secure/PasswordPrompt'
+import { PinPrompt } from '/app/view/Secure/PinPrompt'
+import { SetPasswordView } from '/app/view/Secure/SetPasswordView'
+import { SetPinView } from '/app/view/Secure/SetPinView'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -96,6 +96,15 @@ export const RootNavigator = ({ initialRoute, setClient }) => (
     <Root.Screen
       name={routes.lock}
       component={LockScreen}
+      options={{
+        presentation: 'transparentModal',
+        animationEnabled: false
+      }}
+    />
+
+    <Root.Screen
+      name={routes.sharing}
+      component={SharingScreen}
       options={{
         presentation: 'transparentModal',
         animationEnabled: false
