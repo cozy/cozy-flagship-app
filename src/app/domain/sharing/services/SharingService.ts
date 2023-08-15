@@ -7,10 +7,8 @@ import {
   isIOSFile,
   ReceivedFile
 } from '/app/domain/sharing/models/ReceivedFile'
-import { routes } from '/constants/routes'
-import { navigate } from '/libs/RootNavigation'
 
-const sharingLogger = Minilog('🗃️ SharingService')
+export const sharingLogger = Minilog('🗃️ SharingService')
 const filesToUpload = new Map<string, ReceivedFile>()
 
 // Add files to upload in a Map to avoid duplicates created by a bug in the library
@@ -48,11 +46,6 @@ export const _handleReceivedFiles = (
       processReceivedFiles(files)
 
       callback?.(files)
-
-      if (hasFilesToUpload()) {
-        sharingLogger.info('useGlobalAppState: handleWakeUp, sharing mode')
-        navigate(routes.sharing)
-      }
     },
     error => {
       sharingLogger.error('Could not get received files', error)
