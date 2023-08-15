@@ -14,7 +14,11 @@ let appState = AppState.currentState
 let appStateSubscription: NativeEventSubscription | null = null
 
 // Define the routes that should trigger an app exit when the back button is pressed
-const exitRoutes = [routes.lock, routes.promptPin, routes.promptPassword]
+const exitRoutes = [
+  routes.lock,
+  routes.promptPin,
+  routes.promptPassword
+] as string[]
 
 /**
  * Handle back button press
