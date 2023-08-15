@@ -9,7 +9,7 @@ export const SharingScreen = (): JSX.Element => {
   return (
     <Container>
       <Grid>
-        {Array.from(getFilesToUpload().entries()).map(([key, file]) => (
+        {Array.from(getFilesToUpload()).map(([key, file]) => (
           <Typography key={key} variant="h3">
             <Typography>File: {key}</Typography>
             <Typography>{JSON.stringify(file, null, 2)}</Typography>

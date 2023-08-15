@@ -20,6 +20,7 @@ import com.facebook.react.modules.network.OkHttpClientProvider;
 import io.cozy.flagship.mobile.keyboard.KeyboardPackage;
 import io.cozy.flagship.mobile.httpserver.HttpServerPackage;
 import io.cozy.flagship.mobile.webview.WebViewPackage;
+import io.cozy.flagship.mobile.sharing.SharingIntentPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -40,6 +41,7 @@ public class MainApplication extends Application implements ReactApplication {
           packages.add(new KeyboardPackage());
           packages.add(new HttpServerPackage());
           packages.add(new WebViewPackage());
+          packages.add(new SharingIntentPackage());
           return packages;
         }
 
