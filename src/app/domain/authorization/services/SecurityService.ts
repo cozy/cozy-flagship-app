@@ -30,16 +30,6 @@ import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { SecurityNavigationService } from '/app/domain/authorization/services/SecurityNavigationService'
 import { getData, StorageKeys } from '/libs/localStore'
 
-let isSecurityFlowPassed = false
-
-export const setIsSecurityFlowPassed = (value: boolean): void => {
-  isSecurityFlowPassed = value
-}
-
-export const getIsSecurityFlowPassed = (): boolean => {
-  return isSecurityFlowPassed
-}
-
 // Can use mock functions in dev environment
 const fns = getDevModeFunctions(
   {
@@ -53,6 +43,34 @@ const fns = getDevModeFunctions(
     hasDefinedPassword: undefined // async (): Promise<boolean> => Promise.resolve(false)
   }
 )
+
+let isSecurityFlowPassed = false
+
+export const setIsSecurityFlowPassed = (value: boolean): void => {
+  isSecurityFlowPassed = value
+}
+
+export const getIsSecurityFlowPassed = async (): Promise<boolean> => {
+  if (isSecurityFlowPassed) return isSecurityFlowPassed
+
+  try {
+    const [isSecured, isAutoLock] = await Promise.all([
+      fns.isDeviceSecured(),
+      fns.isAutoLockEnabled()
+    ])
+
+    setIsSecurityFlowPassed(isSecured && !isAutoLock)
+
+    return isSecurityFlowPassed
+  } catch (error) {
+    // This would be a huge error blocking the user from the application
+    // In this case let's assume the security flow is passed to avoid locking the user out
+    // In theory, this should never happen, but async functions can be unpredictable
+    devlog('🔏', 'Error getting security flow status', error)
+    setIsSecurityFlowPassed(true)
+    return isSecurityFlowPassed
+  }
+}
 
 export const determineSecurityFlow = async (
   client: CozyClient,
@@ -89,8 +107,6 @@ export const determineSecurityFlow = async (
     devlog('🔏', 'Application does not have autolock activated')
     devlog('🔏', 'Device is secured')
     devlog('🔏', 'No security action taken')
-
-    setIsSecurityFlowPassed(true)
 
     if (navigationObject) await navigateToApp(navigationObject)
 

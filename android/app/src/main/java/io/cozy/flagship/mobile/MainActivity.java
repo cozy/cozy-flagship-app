@@ -55,10 +55,18 @@ public class MainActivity extends ReactActivity {
       SharingIntentModule.notifyAppResumedWithSharing(isSharing);
   }
 
-  // Utility method to check if the current intent is a sharing intent
+  @Override
+  protected void onPause() {
+      super.onPause();
+      MainActivity.wasOpenedViaSharing = false;
+  }
+
+
+  // Utility method to check if the current intent is a sharing intent (single or multiple files)
   private boolean isSharingIntent() {
     String action = getIntent().getAction();
     String type = getIntent().getType();
-    return Intent.ACTION_SEND.equals(action) && type != null;
+    return (Intent.ACTION_SEND.equals(action) || Intent.ACTION_SEND_MULTIPLE.equals(action)) && type != null;
   }
+  
 }
