@@ -40,9 +40,50 @@ export interface AndroidReceivedFile extends SharedFile {
   subject?: null | string
 }
 
-export interface IOSReceivedFile extends SharedFile {
-  fileName?: string | null
-  localIdentifier?: string | null
+export interface IOSReceivedFile {
+  /**
+   * The content URI for the received content. This might be different from filePath
+   * and is more commonly used on Android. On iOS, contentUri might often be null.
+   */
+  contentUri: string | null
+
+  /**
+   * The file extension (e.g., "docx", "pdf").
+   * This helps determine the file type and how it should be handled or displayed.
+   */
+  extension: string
+
+  /**
+   * The name of the file, typically providing a human-readable identifier for the file.
+   * It might include the file extension as well.
+   */
+  fileName: string
+
+  /**
+   * The actual path to the file in the device's storage. On iOS, this often references
+   * locations in the app's sandboxed environment or shared app groups.
+   * This can be used to directly access the file if needed.
+   */
+  filePath: string
+
+  /**
+   * MIME type of the file. A standard identifier that indicates the nature
+   * and format of a document or file. This helps in determining how the content
+   * should be processed or displayed. On iOS, this might sometimes look more like a file extension.
+   */
+  mimeType: string
+
+  /**
+   * Text associated with the sharing intent. It can be metadata, description, or
+   * any additional information related to how or why the file was shared. Often null for files.
+   */
+  text: string | null
+
+  /**
+   * A web link associated with the shared content, if applicable.
+   * This could be a reference URL or any link that provides more context about the shared file.
+   */
+  weblink: string | null
 }
 
 export type ReceivedFile = AndroidReceivedFile | IOSReceivedFile
@@ -56,7 +97,7 @@ export function isAndroidFile(file: ReceivedFile): file is AndroidReceivedFile {
 export function isIOSFile(file: ReceivedFile): file is IOSReceivedFile {
   // It seems that ESLint is not able to infer the type of `file` here
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  return (file as IOSReceivedFile).localIdentifier !== undefined
+  return (file as IOSReceivedFile).weblink !== undefined
 }
 
 export const RECEIVED_NEW_FILES = 'RECEIVED_NEW_FILES'
