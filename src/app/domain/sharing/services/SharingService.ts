@@ -29,7 +29,7 @@ const processReceivedFiles = (files: ReceivedFile[]): void => {
     if (isAndroidFile(file)) {
       key = file.filePath
     } else if (isIOSFile(file)) {
-      key = file.localIdentifier
+      key = file.filePath
     }
 
     if (key && !filesToUpload.has(key)) {

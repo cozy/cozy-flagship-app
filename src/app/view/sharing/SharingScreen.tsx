@@ -4,14 +4,17 @@ import { Container } from '/ui/Container'
 import { Grid } from '/ui/Grid'
 import { Typography } from '/ui/Typography'
 import { useSharingFiles } from '/app/view/sharing/SharingProvider'
-import { sharingLogger } from '/app/domain/sharing/services/SharingService'
+import { hideSplashScreen } from '/app/theme/SplashScreenService'
 
 export const SharingScreen = (): JSX.Element => {
   const receivedFiles = useSharingFiles()
 
   useEffect(() => {
-    sharingLogger.info('SharingScreen', receivedFiles)
-  }, [receivedFiles])
+    // As the hideSplashScreen function is idempotent, we can call it here for safety purposes,
+    // in case the splash screen is still visible for whatever reason (this would be a bug)
+    // The splash screen should be hidden either by SecurityService or cozy-home WebView at this point
+    void hideSplashScreen()
+  }, [])
 
   return (
     <Container>
