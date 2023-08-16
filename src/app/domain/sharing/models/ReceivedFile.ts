@@ -58,3 +58,5 @@ export function isIOSFile(file: ReceivedFile): file is IOSReceivedFile {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   return (file as IOSReceivedFile).localIdentifier !== undefined
 }
+
+export const RECEIVED_NEW_FILES = 'RECEIVED_NEW_FILES'

@@ -16,6 +16,13 @@ const filesToUpload = new Map<string, ReceivedFile>()
 const processReceivedFiles = (files: ReceivedFile[]): void => {
   sharingLogger.info('Processing received files', files)
 
+  // We don't want to keep files from a previous sharing session
+  if (filesToUpload.size > 0) {
+    sharingLogger.info('Clearing files to upload')
+    filesToUpload.clear()
+  }
+
+  // Populate the `filesToUpload` Map with the files to upload
   for (const file of files) {
     let key: string | undefined | null
 
@@ -34,9 +41,22 @@ const processReceivedFiles = (files: ReceivedFile[]): void => {
   }
 }
 
-// Abstract the ReceiveSharingIntent dependency for easier testing
-// This function is only exported for testing purposes
-export const _handleReceivedFiles = (
+const getFilesToUploadAsArray = (): ReceivedFile[] => {
+  return Array.from(getFilesToUpload().values())
+}
+
+export const getFilesToUpload = (): Map<string, ReceivedFile> => {
+  sharingLogger.info('Getting files to upload', filesToUpload)
+  return filesToUpload
+}
+
+export const hasFilesToUpload = (): boolean => {
+  sharingLogger.info('Has files to upload', filesToUpload.size > 0)
+  return filesToUpload.size > 0
+}
+
+// Abstract the ReceiveSharingIntent dependency in a callback handler to be initialized in the app
+export const handleReceivedFiles = (
   callback?: (files: ReceivedFile[]) => void
 ): void => {
   ReceiveSharingIntent.getReceivedFiles(
@@ -45,7 +65,7 @@ export const _handleReceivedFiles = (
 
       processReceivedFiles(files)
 
-      callback?.(files)
+      callback?.(getFilesToUploadAsArray())
     },
     error => {
       sharingLogger.error('Could not get received files', error)
@@ -53,24 +73,3 @@ export const _handleReceivedFiles = (
     'ShareMedia'
   )
 }
-
-// Start listening for incoming files
-_handleReceivedFiles()
-
-const getFilesToUpload = (): Map<string, ReceivedFile> => {
-  sharingLogger.info('Getting files to upload', filesToUpload)
-  return filesToUpload
-}
-
-const hasFilesToUpload = (): boolean => {
-  sharingLogger.info('Has files to upload', filesToUpload.size > 0)
-  return filesToUpload.size > 0
-}
-
-const clearFilesToUpload = (): void => {
-  sharingLogger.info('Clearing files to upload')
-  filesToUpload.clear()
-  ReceiveSharingIntent.clearReceivedFiles()
-}
-
-export { clearFilesToUpload, getFilesToUpload, hasFilesToUpload }

@@ -38,6 +38,7 @@ import { useInitI18n } from '/locales/useInitI18n'
 import { SecureBackgroundSplashScreenWrapper } from '/app/theme/SecureBackgroundSplashScreenWrapper'
 import { PermissionsChecker } from '/app/domain/nativePermissions/components/PermissionsChecker'
 import { useGeolocationTracking } from '/app/domain/geolocation/hooks/tracking'
+import { SharingProvider } from '/app/view/sharing/SharingProvider'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -162,7 +163,9 @@ const Wrapper = () => {
                     <NetStatusBoundary>
                       <ThemeProvider>
                         <PermissionsChecker>
-                          <WrappedApp />
+                          <SharingProvider>
+                            <WrappedApp />
+                          </SharingProvider>
                         </PermissionsChecker>
                       </ThemeProvider>
                     </NetStatusBoundary>
