@@ -1,4 +1,4 @@
-# 1.1.12
+# 1.1.13
 
 ## ✨ Features
 
@@ -8,6 +8,30 @@
 
 ## 🔧 Tech
 
+
+# 1.1.12
+
+## ✨ Features
+
+* Add localization to login, onboarding and lock screen ([PR #870](https://github.com/cozy/cozy-react-native/pull/870), [PR #872](https://github.com/cozy/cozy-react-native/pull/872), [PR #867](https://github.com/cozy/cozy-react-native/pull/867), [PR #875](https://github.com/cozy/cozy-react-native/pull/875), [PR #881](https://github.com/cozy/cozy-react-native/pull/881) and [PR #892](https://github.com/cozy/cozy-react-native/pull/892))
+* Improve UI when displaying errors during login scenario ([PR #877](https://github.com/cozy/cozy-react-native/pull/877))
+* The app content is now hiden when navigating to other phone's apps ([PR #894](https://github.com/cozy/cozy-react-native/pull/894))
+
+## 🐛 Bug Fixes
+
+* Blocked and Not Onboarded Cozy are now correctly handled when trying to login ([PR #876](https://github.com/cozy/cozy-react-native/pull/876))
+* The app is now redirected to Welcome screen and its content is cleared when the app access is revoked from cozy-settings ([PR #862](https://github.com/cozy/cozy-react-native/pull/862))
+* Client Side Connectors now correctly intercept new opened window for login ([PR #884](https://github.com/cozy/cozy-react-native/pull/884))
+* Improve support for email and phone links ([PR #890](https://github.com/cozy/cozy-react-native/pull/890))
+
+## 🔧 Tech
+
+* Replace @cozy/minilog with cozy-minilog ([PR #866](https://github.com/cozy/cozy-react-native/pull/866))
+* Improve foundations for photo and video backup ([PR #873](https://github.com/cozy/cozy-react-native/pull/873))
+* Delay call to `postMessage` on Client Side Connectors initialization ([PR #883](https://github.com/cozy/cozy-react-native/pull/883))
+* Add foundations for photo and video backup ([PR #882](https://github.com/cozy/cozy-react-native/pull/882), [PR #885](https://github.com/cozy/cozy-react-native/pull/885) and [PR #887](https://github.com/cozy/cozy-react-native/pull/887))
+* Upgrade cozy-client to improve Indexes management ([PR #886](https://github.com/cozy/cozy-react-native/pull/886))
+* Improve Client Side Connectors logs and API ([PR #896](https://github.com/cozy/cozy-react-native/pull/896) and [PR #895](https://github.com/cozy/cozy-react-native/pull/895))
 
 # 1.1.11
 
