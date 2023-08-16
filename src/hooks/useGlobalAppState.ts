@@ -79,23 +79,26 @@ export const useGlobalAppState = (): void => {
 
   // On app start
   useEffect(() => {
-    log.info('useGlobalAppState: app start')
+    const appStart = async (): Promise<void> => {
+      if (await getIsSecurityFlowPassed()) {
+        log.info('useGlobalAppState: app start, security flow passed')
 
-    if (getIsSecurityFlowPassed()) {
-      log.info('useGlobalAppState: app start, security flow passed')
-
-      if (
-        hasFilesToUpload() &&
-        sharingIntentStatus === SharingIntentStatus.OpenedViaSharing
-      ) {
-        log.info('useGlobalAppState: app start, sharing mode')
-        navigate(routes.sharing)
+        if (
+          hasFilesToUpload() &&
+          sharingIntentStatus === SharingIntentStatus.OpenedViaSharing
+        ) {
+          log.info('useGlobalAppState: app start, sharing mode')
+          navigate(routes.sharing)
+        } else {
+          log.info('useGlobalAppState: app start, not sharing mode')
+        }
       } else {
-        log.info('useGlobalAppState: app start, not sharing mode')
+        log.info('useGlobalAppState: app start, security flow not passed')
       }
-    } else {
-      log.info('useGlobalAppState: app start, security flow not passed')
     }
+
+    log.info('useGlobalAppState: app start')
+    void appStart()
   }, [routeIndex, sharingIntentStatus])
 
   useEffect(() => {
