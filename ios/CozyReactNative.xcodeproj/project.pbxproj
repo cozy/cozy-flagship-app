@@ -21,6 +21,9 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		94BEBCC36EFC4F1DDD8E6E50 /* libPods-CozyReactNative-CozyReactNativeDev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A6C35B4CE552A45F0087FDE /* libPods-CozyReactNative-CozyReactNativeDev.a */; };
 		997B98B22769CFD100089037 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 997B98B12769CFD100089037 /* BootSplash.storyboard */; };
+		A98E5EB52A8CC8EF00CAC55D /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98E5EB42A8CC8EF00CAC55D /* ShareViewController.swift */; };
+		A98E5EB82A8CC8EF00CAC55D /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A98E5EB62A8CC8EF00CAC55D /* MainInterface.storyboard */; };
+		A98E5EBC2A8CC8EF00CAC55D /* CozyShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A98E5EB22A8CC8EF00CAC55D /* CozyShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E42E384B2A21515E0099D90A /* mabulle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E38492A21515E0099D90A /* mabulle@2x.png */; };
 		E42E384C2A21515E0099D90A /* mabulle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E38492A21515E0099D90A /* mabulle@2x.png */; };
 		E42E384D2A21515E0099D90A /* mabulle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E384A2A21515E0099D90A /* mabulle@3x.png */; };
@@ -56,7 +59,28 @@
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = CozyReactNative;
 		};
+		A98E5EBA2A8CC8EF00CAC55D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A98E5EB12A8CC8EF00CAC55D;
+			remoteInfo = CozyShare;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A98E5EA92A8CC1AB00CAC55D /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A98E5EBC2A8CC8EF00CAC55D /* CozyShare.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		00323DA8D6BE49D2BE5C238B /* Lato-Bold.woff */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Bold.woff"; path = "../assets/fonts/Lato-Bold.woff"; sourceTree = "<group>"; };
@@ -83,6 +107,13 @@
 		9A8507EB61A9895B473A06A3 /* Pods-CozyReactNative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative/Pods-CozyReactNative.release.xcconfig"; sourceTree = "<group>"; };
 		9F5886BEE4526A9676E4D592 /* Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-CozyReactNativeTests/Pods-CozyReactNative-CozyReactNativeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A0572B798A7D41908174A427 /* Lato-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.ttf"; path = "../assets/fonts/Lato-Regular.ttf"; sourceTree = "<group>"; };
+		A94CD3A62A8CD1A700A5DA84 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		A94CD3A92A8CD1A700A5DA84 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		A94CD3AB2A8CD1A700A5DA84 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A98E5EB22A8CC8EF00CAC55D /* CozyShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CozyShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A98E5EB42A8CC8EF00CAC55D /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		A98E5EB72A8CC8EF00CAC55D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		A98E5EB92A8CC8EF00CAC55D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BF90BB6E53007BE49D4888CA /* Pods-CozyReactNative-CozyReactNativeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-CozyReactNativeTests.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-CozyReactNativeTests/Pods-CozyReactNative-CozyReactNativeTests.release.xcconfig"; sourceTree = "<group>"; };
 		CA875020D8BE788449DD47FC /* libPods-CozyReactNative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyReactNative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6FD94648F224F6683FD0C85 /* Lato-Regular.woff */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.woff"; path = "../assets/fonts/Lato-Regular.woff"; sourceTree = "<group>"; };
@@ -118,6 +149,13 @@
 			files = (
 				643009FE24043073DD6A15DE /* libPods-CozyReactNative.a in Frameworks */,
 				293A69ED340EB757BFB282D0 /* libPods-CozyReactNative.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A98E5EAF2A8CC8EF00CAC55D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,6 +241,8 @@
 				13B07FAE1A68108700A75B9A /* CozyReactNative */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* CozyReactNativeTests */,
+				A98E5EB32A8CC8EF00CAC55D /* CozyShare */,
+				A94CD3A52A8CD1A700A5DA84 /* aza */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				CDA0EE31E7D3E42F21731B64 /* Pods */,
@@ -220,8 +260,29 @@
 				13B07F961A680F5B00A75B9A /* CozyReactNative.app */,
 				00E356EE1AD99517003FC87E /* CozyReactNativeTests.xctest */,
 				E4924ABE29963CAD00F415CE /* CozyReactNativeDev.app */,
+				A98E5EB22A8CC8EF00CAC55D /* CozyShare.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A94CD3A52A8CD1A700A5DA84 /* aza */ = {
+			isa = PBXGroup;
+			children = (
+				A94CD3A62A8CD1A700A5DA84 /* ShareViewController.swift */,
+				A94CD3A82A8CD1A700A5DA84 /* MainInterface.storyboard */,
+				A94CD3AB2A8CD1A700A5DA84 /* Info.plist */,
+			);
+			path = aza;
+			sourceTree = "<group>";
+		};
+		A98E5EB32A8CC8EF00CAC55D /* CozyShare */ = {
+			isa = PBXGroup;
+			children = (
+				A98E5EB42A8CC8EF00CAC55D /* ShareViewController.swift */,
+				A98E5EB62A8CC8EF00CAC55D /* MainInterface.storyboard */,
+				A98E5EB92A8CC8EF00CAC55D /* Info.plist */,
+			);
+			path = CozyShare;
 			sourceTree = "<group>";
 		};
 		CDA0EE31E7D3E42F21731B64 /* Pods */ = {
@@ -301,15 +362,34 @@
 				02F6E7460B106C0824136025 /* [CP] Copy Pods Resources */,
 				592D30E9601C4E6BAD83C8B3 /* Upload Debug Symbols to Sentry */,
 				A6FFA29AB5A56B37E2529745 /* [CP-User] [RNFB] Core Configuration */,
+				A98E5EA92A8CC1AB00CAC55D /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A98E5EBB2A8CC8EF00CAC55D /* PBXTargetDependency */,
 			);
 			name = CozyReactNative;
 			productName = CozyReactNative;
 			productReference = 13B07F961A680F5B00A75B9A /* CozyReactNative.app */;
 			productType = "com.apple.product-type.application";
+		};
+		A98E5EB12A8CC8EF00CAC55D /* CozyShare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A98E5EBD2A8CC8EF00CAC55D /* Build configuration list for PBXNativeTarget "CozyShare" */;
+			buildPhases = (
+				A98E5EAE2A8CC8EF00CAC55D /* Sources */,
+				A98E5EAF2A8CC8EF00CAC55D /* Frameworks */,
+				A98E5EB02A8CC8EF00CAC55D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CozyShare;
+			productName = CozyShare;
+			productReference = A98E5EB22A8CC8EF00CAC55D /* CozyShare.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		E4924AA629963CAD00F415CE /* CozyReactNativeDev */ = {
 			isa = PBXNativeTarget;
@@ -340,6 +420,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1210;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
@@ -348,6 +429,9 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1320;
+					};
+					A98E5EB12A8CC8EF00CAC55D = {
+						CreatedOnToolsVersion = 14.3.1;
 					};
 				};
 			};
@@ -367,6 +451,7 @@
 				13B07F861A680F5B00A75B9A /* CozyReactNative */,
 				E4924AA629963CAD00F415CE /* CozyReactNativeDev */,
 				00E356ED1AD99517003FC87E /* CozyReactNativeTests */,
+				A98E5EB12A8CC8EF00CAC55D /* CozyShare */,
 			);
 		};
 /* End PBXProject section */
@@ -396,6 +481,14 @@
 				E42E384B2A21515E0099D90A /* mabulle@2x.png in Resources */,
 				F3B83720E44641879E6927C6 /* Lato-Regular.ttf in Resources */,
 				E4924AC32996438600F415CE /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A98E5EB02A8CC8EF00CAC55D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A98E5EB82A8CC8EF00CAC55D /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -719,6 +812,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A98E5EAE2A8CC8EF00CAC55D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A98E5EB52A8CC8EF00CAC55D /* ShareViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E4924AA929963CAD00F415CE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -738,7 +839,31 @@
 			target = 13B07F861A680F5B00A75B9A /* CozyReactNative */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
+		A98E5EBB2A8CC8EF00CAC55D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A98E5EB12A8CC8EF00CAC55D /* CozyShare */;
+			targetProxy = A98E5EBA2A8CC8EF00CAC55D /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		A94CD3A82A8CD1A700A5DA84 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A94CD3A92A8CD1A700A5DA84 /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+		A98E5EB62A8CC8EF00CAC55D /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A98E5EB72A8CC8EF00CAC55D /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
@@ -798,6 +923,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2161F5FB1C88F7A96C55ED73 /* Pods-CozyReactNative.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = CozyReactNative/CozyReactNative.entitlements;
@@ -829,6 +955,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9A8507EB61A9895B473A06A3 /* Pods-CozyReactNative.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = CozyReactNative/CozyReactNative.entitlements;
@@ -890,7 +1017,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -956,7 +1083,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -979,6 +1106,84 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A98E5EBE2A8CC8EF00CAC55D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = CozyShare/CozyShare.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 3AKXFMV43J;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CozyShare/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CozyShare;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.cozy.flagship.mobile.CozyShare;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A98E5EBF2A8CC8EF00CAC55D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = CozyShare/CozyShare.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CozyShare/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CozyShare;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.cozy.flagship.mobile.CozyShare;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -1069,6 +1274,15 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A98E5EBD2A8CC8EF00CAC55D /* Build configuration list for PBXNativeTarget "CozyShare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A98E5EBE2A8CC8EF00CAC55D /* Debug */,
+				A98E5EBF2A8CC8EF00CAC55D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -374,6 +374,8 @@ PODS:
     - React-Core
   - react-native-netinfo (9.3.7):
     - React-Core
+  - react-native-receive-sharing-intent (2.2.1):
+    - React-Core
   - react-native-safe-area-context (4.5.0):
     - RCT-Folly
     - RCTRequired
@@ -547,6 +549,7 @@ DEPENDENCIES:
   - "react-native-gzip (from `../node_modules/@fengweichong/react-native-gzip`)"
   - react-native-idle-timer (from `../node_modules/react-native-idle-timer`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - "react-native-receive-sharing-intent (from `../node_modules/@mythologi/react-native-receive-sharing-intent`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -668,6 +671,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-idle-timer"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-receive-sharing-intent:
+    :path: "../node_modules/@mythologi/react-native-receive-sharing-intent"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-webview:
@@ -786,6 +791,7 @@ SPEC CHECKSUMS:
   react-native-gzip: 5ffb84bf191c7cd135338eca748317bc466d41a1
   react-native-idle-timer: f1920a59fe776340d004ff9de13c4a6eedcc8807
   react-native-netinfo: 2517ad504b3d303e90d7a431b0fcaef76d207983
+  react-native-receive-sharing-intent: 0c21b8e80f629a73341f2566ce9b99df8124bb10
   react-native-safe-area-context: 39c2d8be3328df5d437ac1700f4f3a4f75716acc
   react-native-webview: 8ec7ddf9eb4ddcd92b32cee7907efec19a9ec7cb
   React-perflogger: 93075d8931c32cd1fce8a98c15d2d5ccc4d891bd
