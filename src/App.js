@@ -36,6 +36,7 @@ import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
 import { ThemeProvider } from '/app/theme/ThemeProvider'
 import { useInitI18n } from '/locales/useInitI18n'
+import { SharingProvider } from '/app/view/sharing/SharingProvider'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -158,7 +159,9 @@ const Wrapper = () => {
                 <SplashScreenProvider>
                   <NetStatusBoundary>
                     <ThemeProvider>
-                      <WrappedApp />
+                      <SharingProvider>
+                        <WrappedApp />
+                      </SharingProvider>
                     </ThemeProvider>
                   </NetStatusBoundary>
                 </SplashScreenProvider>

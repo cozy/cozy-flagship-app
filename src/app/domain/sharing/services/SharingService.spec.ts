@@ -1,10 +1,9 @@
 import ReceiveSharingIntent from '@mythologi/react-native-receive-sharing-intent'
 
 import {
-  clearFilesToUpload,
   getFilesToUpload,
   hasFilesToUpload,
-  _handleReceivedFiles
+  handleReceivedFiles
 } from '/app/domain/sharing/services/SharingService'
 import { AndroidReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
 import {
@@ -29,13 +28,9 @@ const mockReceiveSharingIntent = ReceiveSharingIntent as jest.Mocked<
 >
 
 describe('SharingService', () => {
-  afterEach(() => {
-    clearFilesToUpload()
-  })
-
   it('should handle received files via callback', () => {
     const mockFile: AndroidReceivedFile = AndroidReceivedFileFixture
-    _handleReceivedFiles(files => {
+    handleReceivedFiles(files => {
       expect(files).toEqual([mockFile])
     })
 
@@ -47,7 +42,7 @@ describe('SharingService', () => {
 
   it('should handle errors when getting received files', () => {
     const errorMessage = 'Error getting files'
-    _handleReceivedFiles(() => {
+    handleReceivedFiles(() => {
       // This should not be called if the library errors out
       expect(true).toBe(false)
     })
@@ -60,7 +55,7 @@ describe('SharingService', () => {
       AndroidReceivedFileFixture,
       AndroidReceivedFileFixture2
     ]
-    _handleReceivedFiles(files => {
+    handleReceivedFiles(files => {
       expect(files).toEqual(mockFiles)
     })
 
@@ -72,7 +67,7 @@ describe('SharingService', () => {
 
   it('should return files to upload', () => {
     const mockFiles: AndroidReceivedFile[] = [AndroidReceivedFileFixture]
-    _handleReceivedFiles(files => {
+    handleReceivedFiles(files => {
       expect(files).toEqual(mockFiles)
     })
 
@@ -89,10 +84,8 @@ describe('SharingService', () => {
   })
 
   it('should indicate if there are files to upload', () => {
-    expect(hasFilesToUpload()).toBe(false)
-
     const mockFiles: AndroidReceivedFile[] = [AndroidReceivedFileFixture]
-    _handleReceivedFiles(files => {
+    handleReceivedFiles(files => {
       expect(files).toEqual(mockFiles)
     })
 
@@ -103,29 +96,12 @@ describe('SharingService', () => {
     expect(hasFilesToUpload()).toBe(true)
   })
 
-  it('should clear files to upload', () => {
-    const mockFiles: AndroidReceivedFile[] = [AndroidReceivedFileFixture]
-    _handleReceivedFiles(files => {
-      expect(files).toEqual(mockFiles)
-    })
-
-    const callbackPassedToGetReceivedFiles =
-      mockReceiveSharingIntent.getReceivedFiles.mock.calls[0][0]
-
-    callbackPassedToGetReceivedFiles(mockFiles)
-    expect(getFilesToUpload().size).toBe(1)
-
-    clearFilesToUpload()
-    expect(getFilesToUpload().size).toBe(0)
-  })
-
   it('should avoid storing duplicate files', () => {
     const mockFile: AndroidReceivedFile = AndroidReceivedFileFixture
 
-    _handleReceivedFiles(files => {
-      expect(files).toHaveLength(2)
+    handleReceivedFiles(files => {
+      expect(files).toHaveLength(1)
       expect(files[0]).toEqual(mockFile)
-      expect(files[1]).toEqual(mockFile)
     })
 
     const callbackPassedToGetReceivedFiles =
