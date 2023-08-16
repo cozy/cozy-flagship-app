@@ -1,5 +1,5 @@
 import { useNavigationState } from '@react-navigation/native'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { AppState, AppStateStatus, NativeEventSubscription } from 'react-native'
 
 import CozyClient, { useClient } from 'cozy-client'
@@ -8,6 +8,7 @@ import Minilog from 'cozy-minilog'
 import { StorageKeys, storeData } from '/libs/localStore/storage'
 import { showSplashScreen } from '/app/theme/SplashScreenService'
 import {
+  getIsSecurityFlowPassed,
   handleSecurityFlowWakeUp,
   setIsSecurityFlowPassed
 } from '/app/domain/authorization/services/SecurityService'
@@ -72,7 +73,6 @@ const onStateChange = (
  */
 export const useGlobalAppState = (): void => {
   const client = useClient()
-  const initFlag = useRef(false)
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const routeIndex = useNavigationState(state => state?.index)
   const { sharingIntentStatus } = useSharingIntentListener()
@@ -81,7 +81,7 @@ export const useGlobalAppState = (): void => {
   useEffect(() => {
     log.info('useGlobalAppState: app start')
 
-    if (!initFlag.current) {
+    if (getIsSecurityFlowPassed()) {
       log.info('useGlobalAppState: app start, security flow passed')
 
       if (
@@ -93,8 +93,6 @@ export const useGlobalAppState = (): void => {
       } else {
         log.info('useGlobalAppState: app start, not sharing mode')
       }
-
-      initFlag.current = true
     } else {
       log.info('useGlobalAppState: app start, security flow not passed')
     }
