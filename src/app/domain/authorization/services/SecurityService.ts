@@ -90,6 +90,8 @@ export const determineSecurityFlow = async (
     devlog('🔏', 'Device is secured')
     devlog('🔏', 'No security action taken')
 
+    setIsSecurityFlowPassed(true)
+
     if (navigationObject) await navigateToApp(navigationObject)
 
     // This might be redundant but some cases require a hideSplashScreen() failsafe
@@ -278,10 +280,16 @@ const tryLockingApp = async (
 
 export const handleSecurityFlowWakeUp = (client: CozyClient): void => {
   const currentRoute = navigationRef.getCurrentRoute()
-  const parsedRoute = JSON.parse(JSON.stringify(currentRoute)) as Route<
-    string,
-    { href: string; slug: string }
-  >
+  let parsedRoute: Route<string, { href: string; slug: string }>
+
+  try {
+    parsedRoute = JSON.parse(JSON.stringify(currentRoute)) as Route<
+      string,
+      { href: string; slug: string }
+    >
+  } catch (error) {
+    devlog('Could not parse the current route:', currentRoute, error)
+  }
 
   getData<string>(StorageKeys.LastActivity)
     .then((lastActivity): number => {
