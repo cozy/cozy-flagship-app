@@ -14,12 +14,10 @@ import {
 } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
 import { synchronizeDevice } from '/app/domain/authentication/services/SynchronizeService'
-import { safePromise } from '/utils/safePromise'
-import { hasFilesToUpload } from '/app/domain/sharing/services/SharingService'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
-import { useSharingIntentListener } from '/app/view/sharing/useSharingIntentListener'
-import { SharingIntentStatus } from '/app/domain/sharing/models/ReceivedIntent'
+import { useSharingState } from '/app/view/sharing/SharingProvider'
+import { SharingIntentStatus } from '/app/domain/sharing/models/SharingState'
 
 const log = Minilog('useGlobalAppState')
 
@@ -35,10 +33,13 @@ const handleSleep = (): void => {
     .catch(reason => log.error('Failed when going to sleep', reason))
 }
 
-const handleWakeUp = (client: CozyClient): void => {
-  handleSecurityFlowWakeUp(client)
+const handleWakeUp = async (
+  client: CozyClient,
+  sharingIntentStatus: SharingIntentStatus
+): Promise<void> => {
+  await handleSecurityFlowWakeUp(client)
 
-  if (hasFilesToUpload()) {
+  if (sharingIntentStatus === SharingIntentStatus.OpenedViaSharing) {
     log.info('useGlobalAppState: handleWakeUp, sharing mode')
     navigate(routes.sharing)
   }
@@ -52,13 +53,16 @@ const isGoingToWakeUp = (nextAppState: AppStateStatus): boolean =>
 
 const onStateChange = (
   nextAppState: AppStateStatus,
-  client: CozyClient
+  client: CozyClient,
+  sharingIntentStatus: SharingIntentStatus
 ): void => {
   if (isGoingToSleep(nextAppState)) handleSleep()
 
   if (isGoingToWakeUp(nextAppState)) {
-    handleWakeUp(client)
-    safePromise(synchronizeDevice)(client)
+    Promise.all([
+      handleWakeUp(client, sharingIntentStatus),
+      synchronizeDevice(client)
+    ]).catch(reason => log.error('Failed when waking up', reason))
   }
 
   appState = nextAppState
@@ -75,7 +79,7 @@ export const useGlobalAppState = (): void => {
   const client = useClient()
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const routeIndex = useNavigationState(state => state?.index)
-  const { sharingIntentStatus } = useSharingIntentListener()
+  const { sharingIntentStatus } = useSharingState()
 
   // On app start
   useEffect(() => {
@@ -83,10 +87,7 @@ export const useGlobalAppState = (): void => {
       if (await getIsSecurityFlowPassed()) {
         log.info('useGlobalAppState: app start, security flow passed')
 
-        if (
-          hasFilesToUpload() &&
-          sharingIntentStatus === SharingIntentStatus.OpenedViaSharing
-        ) {
+        if (sharingIntentStatus === SharingIntentStatus.OpenedViaSharing) {
           log.info('useGlobalAppState: app start, sharing mode')
           navigate(routes.sharing)
         } else {
@@ -112,7 +113,7 @@ export const useGlobalAppState = (): void => {
       )
 
       subscription = AppState.addEventListener('change', e =>
-        onStateChange(e, client)
+        onStateChange(e, client, sharingIntentStatus)
       )
     }
 
@@ -120,5 +121,5 @@ export const useGlobalAppState = (): void => {
       appState = AppState.currentState
       subscription?.remove()
     }
-  }, [client])
+  }, [client, sharingIntentStatus])
 }
