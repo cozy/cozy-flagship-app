@@ -88,16 +88,4 @@ export interface IOSReceivedFile {
 
 export type ReceivedFile = AndroidReceivedFile | IOSReceivedFile
 
-export function isAndroidFile(file: ReceivedFile): file is AndroidReceivedFile {
-  // It seems that ESLint is not able to infer the type of `file` here
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  return (file as AndroidReceivedFile).contentUri !== undefined
-}
-
-export function isIOSFile(file: ReceivedFile): file is IOSReceivedFile {
-  // It seems that ESLint is not able to infer the type of `file` here
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  return (file as IOSReceivedFile).weblink !== undefined
-}
-
-export const RECEIVED_NEW_FILES = 'RECEIVED_NEW_FILES'
+export const SHARING_PROTOCOL_NAME = 'ShareMedia'

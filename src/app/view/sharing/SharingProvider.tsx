@@ -1,23 +1,14 @@
-import React, { useReducer, ReactNode, Dispatch } from 'react'
+import React, { useReducer, ReactNode, Dispatch, useEffect } from 'react'
 
-import { ReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
-import { SharingIntentStatus } from '/app/domain/sharing/models/ReceivedIntent'
+import {
+  SharingState,
+  SharingAction,
+  SharingIntentStatus,
+  SharingActionType
+} from '/app/domain/sharing/models/SharingState'
+import { handleReceivedFiles } from '/app/domain/sharing/services/SharingData'
+import { handleSharing } from '/app/domain/sharing/services/SharingStatus'
 
-// 1. Define state and action types
-export interface SharingState {
-  SharingIntentStatus: SharingIntentStatus | null
-  filesToUpload: ReceivedFile[]
-  isSharingExpected: boolean
-  isSharingReady: boolean
-}
-
-export type SharingAction =
-  | { type: 'SET_INTENT_STATUS'; payload: SharingIntentStatus }
-  | { type: 'SET_FILES_TO_UPLOAD'; payload: ReceivedFile[] }
-  | { type: 'SET_SHARING_EXPECTED'; payload: boolean }
-  | { type: 'SET_SHARING_READY'; payload: boolean }
-
-// 2. Implement the reducer with types
 const assertNever = (action: never): never => {
   throw new Error('Unexpected object', action)
 }
@@ -27,20 +18,15 @@ export const sharingReducer = (
   action: SharingAction
 ): SharingState => {
   switch (action.type) {
-    case 'SET_INTENT_STATUS':
-      return { ...state, SharingIntentStatus: action.payload }
-    case 'SET_FILES_TO_UPLOAD':
+    case SharingActionType.SetIntentStatus:
+      return { ...state, sharingIntentStatus: action.payload }
+    case SharingActionType.SetFilesToUpload:
       return { ...state, filesToUpload: action.payload }
-    case 'SET_SHARING_EXPECTED':
-      return { ...state, isSharingExpected: action.payload }
-    case 'SET_SHARING_READY':
-      return { ...state, isSharingReady: action.payload }
     default:
       return assertNever(action)
   }
 }
 
-// 3. Define the types for context
 const SharingStateContext = React.createContext<SharingState | undefined>(
   undefined
 )
@@ -48,7 +34,6 @@ const SharingDispatchContext = React.createContext<
   Dispatch<SharingAction> | undefined
 >(undefined)
 
-// 4. Implement the provider with types
 interface SharingProviderProps {
   children: ReactNode
 }
@@ -57,11 +42,25 @@ export const SharingProvider = ({
   children
 }: SharingProviderProps): JSX.Element => {
   const [state, dispatch] = useReducer(sharingReducer, {
-    SharingIntentStatus: null,
-    filesToUpload: [],
-    isSharingExpected: false,
-    isSharingReady: false
+    sharingIntentStatus: SharingIntentStatus.Undetermined,
+    filesToUpload: []
   })
+
+  useEffect(() => {
+    const cleanupSharingIntent = handleSharing(
+      (status: SharingIntentStatus) => {
+        dispatch({ type: SharingActionType.SetIntentStatus, payload: status })
+      }
+    )
+
+    handleReceivedFiles(files => {
+      dispatch({ type: SharingActionType.SetFilesToUpload, payload: files })
+    })
+
+    return () => {
+      cleanupSharingIntent()
+    }
+  }, [dispatch])
 
   return (
     <SharingStateContext.Provider value={state}>
@@ -72,7 +71,6 @@ export const SharingProvider = ({
   )
 }
 
-// 5. Create custom hooks for easy usage
 export const useSharingState = (): SharingState => {
   const context = React.useContext(SharingStateContext)
   if (context === undefined) {
