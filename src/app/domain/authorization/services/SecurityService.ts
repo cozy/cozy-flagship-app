@@ -294,7 +294,9 @@ const tryLockingApp = async (
   )
 }
 
-export const handleSecurityFlowWakeUp = (client: CozyClient): void => {
+export const handleSecurityFlowWakeUp = async (
+  client: CozyClient
+): Promise<void> => {
   const currentRoute = navigationRef.getCurrentRoute()
   let parsedRoute: Route<string, { href: string; slug: string }>
 
@@ -307,7 +309,7 @@ export const handleSecurityFlowWakeUp = (client: CozyClient): void => {
     devlog('Could not parse the current route:', currentRoute, error)
   }
 
-  getData<string>(StorageKeys.LastActivity)
+  return getData<string>(StorageKeys.LastActivity)
     .then((lastActivity): number => {
       const now = Date.now()
       const lastActivityDate = new Date(parseInt(lastActivity ?? '0', 10))
