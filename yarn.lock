@@ -2768,9 +2768,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@mythologi/react-native-receive-sharing-intent@cozy/react-native-receive-sharing-intent":
+"@mythologi/react-native-receive-sharing-intent@2.2.1":
   version "2.2.1"
-  resolved "https://codeload.github.com/cozy/react-native-receive-sharing-intent/tar.gz/8ebc8bcef5a7f7f7c583718bd85b6a19126bc69d"
+  resolved "https://registry.yarnpkg.com/@mythologi/react-native-receive-sharing-intent/-/react-native-receive-sharing-intent-2.2.1.tgz#062faba38631babdef0bd29b0ed0c2ba128c77a2"
+  integrity sha512-qTfg4Ra/Wp60xatXcLU3h8xaeCFtwCj4huvsjMVOIqjTM39R06s+o7vx0vHrF40XsVjxUqAFPCx77Glf+mly8g==
 
 "@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1":
   version "5.1.1-v1"
