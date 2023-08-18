@@ -8,9 +8,12 @@ import {
 import { SharingIntentStatus } from '/app/domain/sharing/models/SharingState'
 import { sharingLogger } from '/app/domain/sharing'
 
+type handleSharingCallback = (status: SharingIntentStatus) => void
+type handleSharingCleanupFn = () => void
+
 export const handleSharing = (
-  setStatus: (status: SharingIntentStatus) => void
-): (() => void) => {
+  setStatus: handleSharingCallback
+): handleSharingCleanupFn => {
   const nativeModule = NativeModules as {
     SharingIntentModule?: { wasAppOpenedViaSharing: () => Promise<boolean> }
   }

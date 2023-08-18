@@ -53,11 +53,12 @@ export const SharingProvider = ({
       }
     )
 
-    handleReceivedFiles(files => {
+    const cleanupReceivedFiles = handleReceivedFiles(files => {
       dispatch({ type: SharingActionType.SetFilesToUpload, payload: files })
     })
 
     return () => {
+      cleanupReceivedFiles()
       cleanupSharingIntent()
     }
   }, [dispatch])

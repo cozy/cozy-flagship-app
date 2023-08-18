@@ -52,12 +52,19 @@ const onFailure = (error: unknown): void => {
   sharingLogger.error('Could not get received files', error)
 }
 
+type FileCallback = (files: ReceivedFile[]) => void
+type CleanupFunction = () => void
+
 export const handleReceivedFiles = (
-  callback?: (files: ReceivedFile[]) => void
-): void => {
+  callback?: FileCallback
+): CleanupFunction => {
   ReceiveSharingIntent.getReceivedFiles(
     files => onReceiveFiles(files, callback),
     onFailure,
     SHARING_PROTOCOL_NAME
   )
+
+  return () => {
+    ReceiveSharingIntent.clearReceivedFiles()
+  }
 }
