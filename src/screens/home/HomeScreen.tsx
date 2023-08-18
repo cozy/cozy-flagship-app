@@ -75,7 +75,7 @@ export const HomeScreen = ({
 
       {LauncherDialog}
 
-      <OauthClientsLimitExceeded />
+      <OauthClientsLimitExceeded navigation={navigation} />
     </View>
   )
 }
