@@ -132,7 +132,9 @@ const WrappedApp = () => {
   if (client)
     return (
       <CozyProvider client={client}>
-        <Nav client={client} setClient={setClient} />
+        <SharingProvider>
+          <Nav client={client} setClient={setClient} />
+        </SharingProvider>
       </CozyProvider>
     )
 
@@ -159,9 +161,7 @@ const Wrapper = () => {
                 <SplashScreenProvider>
                   <NetStatusBoundary>
                     <ThemeProvider>
-                      <SharingProvider>
-                        <WrappedApp />
-                      </SharingProvider>
+                      <WrappedApp />
                     </ThemeProvider>
                   </NetStatusBoundary>
                 </SplashScreenProvider>
