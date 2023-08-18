@@ -10,8 +10,9 @@ import type CozyClient from 'cozy-client'
 import { deconstructCozyWebLinkWithSlug } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
+import { routes } from '/constants/routes'
 import { navigateToApp } from '/libs/functions/openApp'
-import { navigate } from '/libs/RootNavigation'
+import { navigate, navigationRef } from '/libs/RootNavigation'
 
 const log = Minilog('⛔ OAuth Clients Limit Service')
 
@@ -55,7 +56,25 @@ export const interceptNavigation =
       return false
     }
 
-    closePopup()
+    const currentRouteName =
+      navigationRef.current?.getCurrentRoute()?.name ?? ''
+
+    if (currentRouteName === routes.default) {
+      log.debug(
+        `Current route is Home, close popup and navigate to ${destinationUrl}`
+      )
+      closePopup()
+      void navigateToApp({
+        navigation,
+        href: destinationUrl,
+        slug: destinationUrlData.slug
+      })
+    } else {
+      log.debug(
+        `Current route is not Home but ${currentRouteName}, only close popup and don't interrupt user`
+      )
+      closePopup()
+    }
 
     return false
   }
