@@ -8,6 +8,8 @@ import {
 import RnMaskInput from 'react-native-mask-input'
 import { FullWindowOverlay } from 'react-native-screens'
 
+import { routes } from '/constants/routes'
+import { navigationRef } from '/libs/RootNavigation'
 import { Button } from '/ui/Button'
 import { ConditionalWrapper } from '/components/ConditionalWrapper'
 import { ConfirmDialog } from '/ui/CozyDialogs/ConfirmDialog'
@@ -167,26 +169,30 @@ const LockView = ({
   )
 }
 
-export const LockScreen = (props: LockScreenProps): React.ReactNode => (
-  <ConditionalWrapper
-    condition={Platform.OS === 'ios'}
-    wrapper={(children): JSX.Element => (
-      <FullWindowOverlay>{children}</FullWindowOverlay>
-    )}
-  >
-    <>
-      <LockScreenBars />
+export const LockScreen = (props: LockScreenProps): React.ReactNode => {
+  const currentRouteName = navigationRef.current?.getCurrentRoute()?.name ?? ''
 
-      <TouchableWithoutFeedback
-        onPress={Keyboard.dismiss}
-        style={{ backgroundColor: palette.Primary[600], height: '100%' }}
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  return (
+    <ConditionalWrapper
+      condition={Platform.OS === 'ios' && currentRouteName === routes.lock}
+      wrapper={(children): JSX.Element => (
+        <FullWindowOverlay>{children}</FullWindowOverlay>
+      )}
+    >
+      <>
+        <LockScreenBars />
+
+        <TouchableWithoutFeedback
+          onPress={Keyboard.dismiss}
+          style={{ backgroundColor: palette.Primary[600], height: '100%' }}
         >
-          <LockView {...useLockScreenProps(props)} />
-        </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
-    </>
-  </ConditionalWrapper>
-)
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          >
+            <LockView {...useLockScreenProps(props)} />
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </>
+    </ConditionalWrapper>
+  )
+}
