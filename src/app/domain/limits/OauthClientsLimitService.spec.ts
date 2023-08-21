@@ -188,6 +188,35 @@ describe('interceptNavigation', () => {
     expect(closePopup).not.toHaveBeenCalled()
     expect(navigateToApp).not.toHaveBeenCalled()
   })
+
+  it('should be error safe and interrupt navigation if any', () => {
+    const initialUrl =
+      'http://claude.mycozy.cloud/settings/clients/limit-exceeded?redirect=http%3A%2F%2Fclaude-drive.mycozy.cloud%2F'
+    const destinationUrl = 'http://claude-drive.mycozy.cloud/'
+
+    const client = mockClient()
+    const closePopup = jest.fn()
+    const navigationRequest = mockWebViewNavigationRequest(destinationUrl)
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    navigationRef.current = {
+      getCurrentRoute: jest.fn().mockImplementation(() => {
+        throw new Error('SOME_ERROR')
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any
+
+    const allowNavigation = interceptNavigation(
+      initialUrl,
+      closePopup,
+      client,
+      mockNavigationProp
+    )(navigationRequest)
+
+    expect(allowNavigation).toBe(false)
+    expect(closePopup).not.toHaveBeenCalled()
+    expect(navigateToApp).not.toHaveBeenCalled()
+  })
 })
 
 describe('interceptOpenWindow', () => {
@@ -215,5 +244,21 @@ describe('interceptOpenWindow', () => {
       slug: 'settings',
       navigation: mockNavigationProp
     })
+  })
+
+  it('should be error safe', () => {
+    const targetUrl = 'http://claude-settings.mycozy.cloud/#/connectedDevices'
+
+    const client = mockClient()
+    const openWindowRequest = mockOpenWindowRequest(targetUrl)
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+    ;(navigateToApp as any).mockImplementation(() => {
+      throw new Error('SOME_ERROR')
+    })
+
+    interceptOpenWindow(client, mockNavigationProp)(openWindowRequest)
+
+    expect(true).toBe(true)
   })
 })
