@@ -46,7 +46,9 @@ export const useOAuthClientsLimitExceeded = (
       const rootURL = client.getStackClient().uri
       const encodedRedirect = encodeURIComponent(href)
       setPopupUrl(
-        `${rootURL}${OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH}?redirect=${encodedRedirect}`
+        current =>
+          current ??
+          `${rootURL}${OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH}?redirect=${encodedRedirect}`
       )
     }
 
