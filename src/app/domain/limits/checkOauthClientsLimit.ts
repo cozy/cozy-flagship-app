@@ -5,12 +5,16 @@ import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 const log = Minilog('⛔ Check OAuth Clients Limit')
 
+interface ClientUsage {
+  count: number
+  limit: number
+  limitReached: boolean
+  limitExceeded: boolean
+}
+
 interface ClientsUsageResult {
   data?: {
-    attributes?: {
-      count: number
-      limit: number
-    }
+    attributes?: ClientUsage
   }
 }
 
@@ -24,10 +28,7 @@ export const checkOauthClientsLimit = async (
       `/settings/clients-usage`
     )
 
-    const count = result.data?.attributes?.count ?? 0
-    const limit = result.data?.attributes?.limit ?? 1
-
-    return count > limit
+    return result.data?.attributes?.limitExceeded ?? false
   } catch (error) {
     const errorMessage = getErrorMessage(error)
     log.error(`Error while fetching OAuth clients limit: ${errorMessage}`)
