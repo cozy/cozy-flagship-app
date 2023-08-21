@@ -6,6 +6,7 @@ import {
 import React, { useState } from 'react'
 import { StatusBar, View } from 'react-native'
 
+import { OauthClientsLimitExceeded } from '/app/view/Limits/OauthClientsLimitExceeded'
 import HomeView from '/screens/home/components/HomeView'
 import LauncherView from '/screens/konnectors/LauncherView'
 import CliskDevView from '/screens/konnectors/CliskDevView'
@@ -73,6 +74,8 @@ export const HomeScreen = ({
       )}
 
       {LauncherDialog}
+
+      <OauthClientsLimitExceeded />
     </View>
   )
 }
