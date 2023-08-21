@@ -8,6 +8,8 @@ import { useClient } from 'cozy-client'
 import { styles } from './CozyProxyWebView.styles'
 import { CozyWebView } from './CozyWebView'
 
+import { checkOauthClientsLimit } from '/app/domain/limits/checkOauthClientsLimit'
+import { showOauthClientsLimitExceeded } from '/app/domain/limits/OauthClientsLimitService'
 import { RemountProgress } from '/app/view/Loading/RemountProgress'
 import { updateCozyAppBundleInBackground } from '/libs/cozyAppBundle/cozyAppBundle'
 import { useHttpServerContext } from '/libs/httpserver/httpServerProvider'
@@ -79,6 +81,17 @@ const initHtmlContent = async ({
   dispatch,
   setHtmlContentCreationDate
 }) => {
+  const isOauthClientsLimitExeeded = await checkOauthClientsLimit(client)
+
+  if (isOauthClientsLimitExeeded) {
+    if (slug === 'home') {
+      showOauthClientsLimitExceeded()
+    } else if (slug !== 'settings') {
+      showOauthClientsLimitExceeded()
+      return
+    }
+  }
+
   const htmlContent = await httpServerContext.getIndexHtmlForSlug(slug, client)
 
   const { source: sourceActual, nativeConfig: nativeConfigActual } =
