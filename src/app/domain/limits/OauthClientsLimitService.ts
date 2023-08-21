@@ -12,6 +12,7 @@ import Minilog from 'cozy-minilog'
 
 import { routes } from '/constants/routes'
 import { navigateToApp } from '/libs/functions/openApp'
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { navigate, navigationRef } from '/libs/RootNavigation'
 
 const log = Minilog('⛔ OAuth Clients Limit Service')
@@ -33,83 +34,97 @@ export const interceptNavigation =
     navigation: NavigationProp<ParamListBase>
   ) =>
   (request: WebViewNavigation): boolean => {
-    if (client === null) {
-      log.error('Client is null, should not happen')
+    try {
+      if (client === null) {
+        log.error('Client is null, should not happen')
+        return false
+      }
+
+      const destinationUrl = cleanUrl(request.url)
+      const subdomainType = client.capabilities.flat_subdomains
+        ? 'flat'
+        : 'nested'
+
+      if (destinationUrl === initialUrl) {
+        return true
+      }
+
+      const destinationUrlData = deconstructCozyWebLinkWithSlug(
+        destinationUrl,
+        subdomainType
+      )
+
+      if (!destinationUrlData.slug) {
+        return false
+      }
+
+      const currentRouteName =
+        navigationRef.current?.getCurrentRoute()?.name ?? ''
+
+      if (destinationUrlData.slug === 'home') {
+        log.debug(
+          `Destination URL is Home which should already be rendered in background, only close popup to reveal the HomeView`
+        )
+        closePopup()
+      } else if (currentRouteName !== routes.default) {
+        log.debug(
+          `Current route is not Home but ${currentRouteName}, only close popup and don't interrupt user`
+        )
+        closePopup()
+      } else {
+        log.debug(
+          `Current route is Home, close popup and navigate to ${destinationUrl}`
+        )
+        closePopup()
+        void navigateToApp({
+          navigation,
+          href: destinationUrl,
+          slug: destinationUrlData.slug
+        })
+      }
+
+      return false
+    } catch (error) {
+      const errorMessage = getErrorMessage(error)
+      log.error(
+        `Error while analysing WebView navigation. Intercept it anyway to prevent unexpected behavior: ${errorMessage}`
+      )
+
       return false
     }
-
-    const destinationUrl = cleanUrl(request.url)
-    const subdomainType = client.capabilities.flat_subdomains
-      ? 'flat'
-      : 'nested'
-
-    if (destinationUrl === initialUrl) {
-      return true
-    }
-
-    const destinationUrlData = deconstructCozyWebLinkWithSlug(
-      destinationUrl,
-      subdomainType
-    )
-
-    if (!destinationUrlData.slug) {
-      return false
-    }
-
-    const currentRouteName =
-      navigationRef.current?.getCurrentRoute()?.name ?? ''
-
-    if (destinationUrlData.slug === 'home') {
-      log.debug(
-        `Destination URL is Home which should already be rendered in background, only close popup to reveal the HomeView`
-      )
-      closePopup()
-    } else if (currentRouteName !== routes.default) {
-      log.debug(
-        `Current route is not Home but ${currentRouteName}, only close popup and don't interrupt user`
-      )
-      closePopup()
-    } else {
-      log.debug(
-        `Current route is Home, close popup and navigate to ${destinationUrl}`
-      )
-      closePopup()
-      void navigateToApp({
-        navigation,
-        href: destinationUrl,
-        slug: destinationUrlData.slug
-      })
-    }
-
-    return false
   }
 
 export const interceptOpenWindow =
   (client: CozyClient | null, navigation: NavigationProp<ParamListBase>) =>
   (syntheticEvent: WebViewOpenWindowEvent): void => {
-    if (client === null) {
-      log.error('Client is null, should not happen')
-      return
-    }
+    try {
+      if (client === null) {
+        log.error('Client is null, should not happen')
+        return
+      }
 
-    const { nativeEvent } = syntheticEvent
-    const destinationUrl = nativeEvent.targetUrl
+      const { nativeEvent } = syntheticEvent
+      const destinationUrl = nativeEvent.targetUrl
 
-    const subdomainType = client.capabilities.flat_subdomains
-      ? 'flat'
-      : 'nested'
+      const subdomainType = client.capabilities.flat_subdomains
+        ? 'flat'
+        : 'nested'
 
-    const destinationUrlData = deconstructCozyWebLinkWithSlug(
-      destinationUrl,
-      subdomainType
-    )
+      const destinationUrlData = deconstructCozyWebLinkWithSlug(
+        destinationUrl,
+        subdomainType
+      )
 
-    if (destinationUrlData.slug) {
-      void navigateToApp({
-        navigation,
-        href: destinationUrl,
-        slug: destinationUrlData.slug
-      })
+      if (destinationUrlData.slug) {
+        void navigateToApp({
+          navigation,
+          href: destinationUrl,
+          slug: destinationUrlData.slug
+        })
+      }
+    } catch (error) {
+      const errorMessage = getErrorMessage(error)
+      log.error(`Error while intercepting WebView openWindow: ${errorMessage}`)
     }
   }
 
