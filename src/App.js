@@ -37,6 +37,7 @@ import { withSentry } from '/libs/monitoring/Sentry'
 import { ThemeProvider } from '/app/theme/ThemeProvider'
 import { useInitI18n } from '/locales/useInitI18n'
 import { SharingProvider } from '/app/view/sharing/SharingProvider'
+import { ErrorProvider } from '/app/view/Error/ErrorProvider'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -57,7 +58,11 @@ const App = ({ setClient }) => {
 
   const { initialRoute, isLoading } = useAppBootstrap(client)
 
-  useGlobalAppState()
+  useGlobalAppState({
+    onNavigationRequest: route => {
+      RootNavigation.navigate(route)
+    }
+  })
   useSecureBackgroundSplashScreen()
   useCookieResyncOnResume()
   useNotifications()
@@ -75,24 +80,28 @@ const Nav = ({ client, setClient }) => {
 
   return (
     <NavigationContainer ref={RootNavigation.navigationRef}>
-      <NativeIntentProvider localMethods={localMethods(client)}>
-        <View
-          style={[
-            styles.view,
-            {
-              backgroundColor: colors.primaryColor
-            }
-          ]}
-        >
-          <StatusBar
-            barStyle="light-content"
-            backgroundColor="transparent"
-            translucent
-          />
-          <IconChangedModal />
-          <App setClient={setClient} />
-        </View>
-      </NativeIntentProvider>
+      <ErrorProvider>
+        <SharingProvider>
+          <NativeIntentProvider localMethods={localMethods(client)}>
+            <View
+              style={[
+                styles.view,
+                {
+                  backgroundColor: colors.primaryColor
+                }
+              ]}
+            >
+              <StatusBar
+                barStyle="light-content"
+                backgroundColor="transparent"
+                translucent
+              />
+              <IconChangedModal />
+              <App setClient={setClient} />
+            </View>
+          </NativeIntentProvider>
+        </SharingProvider>
+      </ErrorProvider>
     </NavigationContainer>
   )
 }
@@ -132,9 +141,7 @@ const WrappedApp = () => {
   if (client)
     return (
       <CozyProvider client={client}>
-        <SharingProvider>
-          <Nav client={client} setClient={setClient} />
-        </SharingProvider>
+        <Nav client={client} setClient={setClient} />
       </CozyProvider>
     )
 
