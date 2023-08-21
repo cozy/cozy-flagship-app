@@ -33,9 +33,7 @@ export const handleSharing = (
       : SharingIntentStatus.NotOpenedViaSharing
 
     sharingLogger.info(
-      `${
-        isAndroid ? 'Android' : 'iOS'
-      } App was opened or resumed via sharing, setting status to ${newStatus}`
+      `App was opened or resumed via sharing, setting status to ${newStatus}`
     )
 
     setStatus(newStatus)

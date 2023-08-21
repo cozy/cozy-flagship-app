@@ -5,19 +5,10 @@ import { SharingCozyApp } from '/app/domain/sharing/models/SharingCozyApp'
 import { ServiceResponse } from '/app/domain/sharing/models/SharingState'
 
 export const fetchSharingCozyApps = {
-  definition: Q('io.cozy.apps')
-    .where({
-      'accept_documents_from_flagship.route_to_upload': { $exists: true },
-      accept_from_flagship: true
-    })
-    .indexFields([
-      'accept_documents_from_flagship.route_to_upload',
-      'accept_from_flagship'
-    ])
-    .select([
-      'accept_documents_from_flagship.route_to_upload',
-      'accept_from_flagship'
-    ]),
+  definition: Q('io.cozy.apps').where({
+    'accept_documents_from_flagship.route_to_upload': { $exists: true },
+    accept_from_flagship: true
+  }),
   options: {
     as: 'io.cozy.apps/fetchSharingCozyApps'
   }
@@ -25,12 +16,13 @@ export const fetchSharingCozyApps = {
 
 export const getRouteToUpload = (
   cozyApps?: SharingCozyApp[],
-  client?: CozyClient | null
+  client?: CozyClient | null,
+  appName = 'drive'
 ): ServiceResponse<{ href: string; slug: string }> => {
   try {
     if (!client || !Array.isArray(cozyApps) || cozyApps.length === 0) return {}
 
-    const cozyApp = cozyApps.find(cozyApp => cozyApp.slug === 'drive')
+    const cozyApp = cozyApps.find(cozyApp => cozyApp.slug === appName)
     if (!cozyApp) return {}
 
     const hash =
@@ -49,7 +41,7 @@ export const getRouteToUpload = (
     })
 
     sharingLogger.info('routeToUpload is', { href, slug })
-
+    //throw new Error('routeToUpload is')
     return { result: { href, slug: cozyApp.slug } }
   } catch (error) {
     sharingLogger.error('Error when getting routeToUpload', error)

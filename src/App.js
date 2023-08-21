@@ -36,7 +36,7 @@ import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
 import { ThemeProvider } from '/app/theme/ThemeProvider'
 import { useInitI18n } from '/locales/useInitI18n'
-import { SharingProvider } from '/app/view/sharing/SharingProvider'
+import { SharingProvider } from '/app/view/Sharing/SharingProvider'
 import { ErrorProvider } from '/app/view/Error/ErrorProvider'
 
 // Polyfill needed for cozy-client connection

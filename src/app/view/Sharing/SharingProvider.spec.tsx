@@ -5,7 +5,7 @@ import { Text } from 'react-native'
 import {
   SharingProvider,
   useSharingState
-} from '/app/view/sharing/SharingProvider'
+} from '/app/view/Sharing/SharingProvider'
 import { handleReceivedFiles } from '/app/domain/sharing/services/SharingData'
 import { handleSharing } from '/app/domain/sharing/services/SharingStatus'
 import { SharingIntentStatus } from '/app/domain/sharing/models/SharingState'

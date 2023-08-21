@@ -22,6 +22,7 @@ import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import { launcherEvent } from '/libs/ReactNativeLauncher'
 import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
+import { useSharingState } from '/app/view/Sharing/SharingState'
 
 const log = Minilog('🏠 HomeView')
 
@@ -59,6 +60,7 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   const session = useSession()
   const didBlurOnce = useRef(false)
   const [webviewRef, setParentRef] = useState()
+  const { sharingIntentStatus } = useSharingState()
   const mainAppFallbackURLInitialParam = useInitialParam(
     'mainAppFallbackURL',
     route,
@@ -238,7 +240,12 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
           `HomeView: setting hasRenderedOnce.current set to "true" and calling determineSecurityFlowHook()`
         )
         hasRenderedOnce.current = true
-        await determineSecurityFlow(client, navigationObject, true)
+        await determineSecurityFlow(
+          client,
+          navigationObject,
+          true,
+          sharingIntentStatus
+        )
       }
     }
 
@@ -249,7 +256,8 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
     navigation,
     shouldWaitCozyApp,
     setShouldWaitCozyApp,
-    uri
+    uri,
+    sharingIntentStatus
   ])
 
   const handleTrackWebviewInnerUri = webviewInneruri => {
