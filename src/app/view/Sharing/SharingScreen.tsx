@@ -3,7 +3,7 @@ import React from 'react'
 import { Container } from '/ui/Container'
 import { Grid } from '/ui/Grid'
 import { Typography } from '/ui/Typography'
-import { useSharingState } from '/app/view/sharing/SharingProvider'
+import { useSharingState } from '/app/view/Sharing/SharingState'
 
 export const SharingScreen = (): JSX.Element => {
   const { filesToUpload } = useSharingState()
