@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { AppState, AppStateStatus, NativeEventSubscription } from 'react-native'
 
 import CozyClient, { useClient } from 'cozy-client'
@@ -14,7 +14,7 @@ import {
 import { devlog } from '/core/tools/env'
 import { synchronizeDevice } from '/app/domain/authentication/services/SynchronizeService'
 import { routes } from '/constants/routes'
-import { useSharingState } from '/app/view/sharing/SharingProvider'
+import { useSharingState } from '/app/view/Sharing/SharingState'
 import { SharingIntentStatus } from '/app/domain/sharing/models/SharingState'
 
 const log = Minilog('useGlobalAppState')
@@ -83,8 +83,31 @@ interface GlobalAppStateProps {
 export const useGlobalAppState = ({
   onNavigationRequest
 }: GlobalAppStateProps): void => {
+  // Ref to track if the logic has already been executed
+  const hasExecuted = useRef(false)
   const client = useClient()
   const { sharingIntentStatus, errored } = useSharingState()
+
+  useEffect(() => {
+    let subscription: NativeEventSubscription | undefined
+
+    // If there's no client, we don't need to listen to app state changes
+    // because we can't lock the app anyway
+    if (!hasExecuted.current && client && !subscription) {
+      devlog(
+        'useGlobalAppState: subscribing to AppState changes, synchronizing device'
+      )
+
+      subscription = AppState.addEventListener('change', e =>
+        onStateChange(e, client, sharingIntentStatus, onNavigationRequest)
+      )
+    }
+
+    return () => {
+      appState = AppState.currentState
+      subscription?.remove()
+    }
+  }, [client, onNavigationRequest, sharingIntentStatus])
 
   // On app start
   useEffect(() => {
@@ -103,28 +126,12 @@ export const useGlobalAppState = ({
       }
     }
 
-    log.info('useGlobalAppState: app start')
-    void appStart()
+    if (!hasExecuted.current) {
+      log.info('useGlobalAppState: app start')
+      void appStart()
+
+      // Mark the logic as executed
+      hasExecuted.current = true
+    }
   }, [errored, onNavigationRequest, sharingIntentStatus])
-
-  useEffect(() => {
-    let subscription: NativeEventSubscription | undefined
-
-    // If there's no client, we don't need to listen to app state changes
-    // because we can't lock the app anyway
-    if (client && !subscription) {
-      devlog(
-        'useGlobalAppState: subscribing to AppState changes, synchronizing device'
-      )
-
-      subscription = AppState.addEventListener('change', e =>
-        onStateChange(e, client, sharingIntentStatus, onNavigationRequest)
-      )
-    }
-
-    return () => {
-      appState = AppState.currentState
-      subscription?.remove()
-    }
-  }, [client, onNavigationRequest, sharingIntentStatus])
 }
