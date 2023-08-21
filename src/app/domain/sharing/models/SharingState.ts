@@ -10,7 +10,8 @@ export enum SharingActionType {
   SetIntentStatus = 'SET_INTENT_STATUS',
   SetFilesToUpload = 'SET_FILES_TO_UPLOAD',
   SetRouteToUpload = 'SET_ROUTE_TO_UPLOAD',
-  SetFlowErrored = 'SET_FLOW_ERRORED'
+  SetFlowErrored = 'SET_FLOW_ERRORED',
+  SetRecoveryState = 'SET_RECOVERY_STATE'
 }
 
 export interface SharingState {
@@ -28,6 +29,7 @@ export type SharingAction =
       payload: { href: string; slug: string }
     }
   | { type: SharingActionType.SetFlowErrored; payload: boolean }
+  | { type: SharingActionType.SetRecoveryState }
 
 export interface ServiceResponse<T> {
   result?: T

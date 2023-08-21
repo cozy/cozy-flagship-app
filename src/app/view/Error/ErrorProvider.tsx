@@ -1,8 +1,6 @@
 import React, { ReactNode, useCallback, useEffect } from 'react'
 
-import { routes } from '/constants/routes'
 import { ErrorToaster } from '/app/view/Error/ErrorToaster'
-import { navigate } from '/libs/RootNavigation'
 
 interface ErrorState {
   message: string | null
@@ -54,9 +52,8 @@ export const useError = (): ErrorHook => {
 
   const handleError = useCallback(
     (errorMessage: string, callback?: () => void): void => {
-      callback?.()
       setError(errorMessage)
-      navigate(routes.home)
+      callback?.()
     },
     [setError]
   )
