@@ -20,9 +20,9 @@ export const OAUTH_CLIENTS_LIMIT_EXCEEDED = 'OAUTH_CLIENTS_LIMIT_EXCEEDED'
 
 export const oauthClientLimitEventHandler = new EventEmitter()
 
-export const showOauthClientsLimitExceeded = (): void => {
+export const showOauthClientsLimitExceeded = (href: string): void => {
   navigate('home')
-  oauthClientLimitEventHandler.emit(OAUTH_CLIENTS_LIMIT_EXCEEDED)
+  oauthClientLimitEventHandler.emit(OAUTH_CLIENTS_LIMIT_EXCEEDED, href)
 }
 
 export const interceptNavigation =
