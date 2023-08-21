@@ -59,7 +59,17 @@ export const interceptNavigation =
     const currentRouteName =
       navigationRef.current?.getCurrentRoute()?.name ?? ''
 
-    if (currentRouteName === routes.default) {
+    if (destinationUrlData.slug === 'home') {
+      log.debug(
+        `Destination URL is Home which should already be rendered in background, only close popup to reveal the HomeView`
+      )
+      closePopup()
+    } else if (currentRouteName !== routes.default) {
+      log.debug(
+        `Current route is not Home but ${currentRouteName}, only close popup and don't interrupt user`
+      )
+      closePopup()
+    } else {
       log.debug(
         `Current route is Home, close popup and navigate to ${destinationUrl}`
       )
@@ -69,11 +79,6 @@ export const interceptNavigation =
         href: destinationUrl,
         slug: destinationUrlData.slug
       })
-    } else {
-      log.debug(
-        `Current route is not Home but ${currentRouteName}, only close popup and don't interrupt user`
-      )
-      closePopup()
     }
 
     return false
