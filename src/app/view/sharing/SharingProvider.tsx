@@ -1,4 +1,10 @@
-import React, { useReducer, ReactNode, Dispatch, useEffect } from 'react'
+import React, {
+  useReducer,
+  ReactNode,
+  Dispatch,
+  useEffect,
+  useCallback
+} from 'react'
 
 import { useClient, useQuery } from 'cozy-client'
 
@@ -15,7 +21,7 @@ import {
   getRouteToUpload
 } from '/app/domain/sharing/services/SharingNetwork'
 import { handleSharing } from '/app/domain/sharing/services/SharingStatus'
-import { useSession } from '/hooks/useSession'
+import { useError } from '/app/view/Error/ErrorProvider'
 
 const assertNever = (action: never): never => {
   throw new Error('Unexpected object', action)
@@ -35,6 +41,9 @@ export const sharingReducer = (
     case SharingActionType.SetRouteToUpload:
       if (state.routeToUpload?.slug === action.payload.slug) return state
       return { ...state, routeToUpload: action.payload }
+    case SharingActionType.SetFlowErrored: {
+      return { ...state, errored: action.payload }
+    }
     default:
       return assertNever(action)
   }
@@ -55,30 +64,38 @@ export const SharingProvider = ({
   children
 }: SharingProviderProps): JSX.Element => {
   const client = useClient()
-  const session = useSession()
   const [state, dispatch] = useReducer(sharingReducer, {
     sharingIntentStatus: SharingIntentStatus.Undetermined,
     filesToUpload: [],
-    routeToUpload: undefined
+    routeToUpload: undefined,
+    errored: false
   })
-  const { data: fetchedApps } = useQuery(
+  const { data } = useQuery(
     fetchSharingCozyApps.definition,
     fetchSharingCozyApps.options
+  ) as { data?: SharingCozyApp[] | [] }
+  const { handleError } = useError()
+
+  const isProcessed = useCallback(
+    (): boolean => state.filesToUpload.length > 1 || state.errored,
+    [state.filesToUpload, state.errored]
+  )
+  const hasData = useCallback(
+    (): boolean => Boolean(client && data && data.length > 0),
+    [client, data]
   )
 
   useEffect(() => {
-    if (client === null) return
+    if (isProcessed() || !hasData()) return
+    const { result, error } = getRouteToUpload(data, client)
 
-    const route = getRouteToUpload(
-      fetchedApps as SharingCozyApp[],
-      client,
-      session
-    )
-
-    if (route !== undefined && route.href !== state.routeToUpload?.slug) {
-      dispatch({ type: SharingActionType.SetRouteToUpload, payload: route })
+    if (error) {
+      dispatch({ type: SharingActionType.SetFlowErrored, payload: true })
+      handleError(error)
+    } else if (result !== undefined) {
+      dispatch({ type: SharingActionType.SetRouteToUpload, payload: result })
     }
-  }, [client, fetchedApps, state.routeToUpload, session])
+  }, [client, data, handleError, hasData, isProcessed])
 
   useEffect(() => {
     const cleanupSharingIntent = handleSharing(

@@ -1,4 +1,3 @@
-import { useNavigationState } from '@react-navigation/native'
 import { useEffect } from 'react'
 import { AppState, AppStateStatus, NativeEventSubscription } from 'react-native'
 
@@ -14,7 +13,6 @@ import {
 } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
 import { synchronizeDevice } from '/app/domain/authentication/services/SynchronizeService'
-import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { useSharingState } from '/app/view/sharing/SharingProvider'
 import { SharingIntentStatus } from '/app/domain/sharing/models/SharingState'
@@ -35,13 +33,14 @@ const handleSleep = (): void => {
 
 const handleWakeUp = async (
   client: CozyClient,
-  sharingIntentStatus: SharingIntentStatus
+  sharingIntentStatus: SharingIntentStatus,
+  onNavigationRequest: (route: string) => void
 ): Promise<void> => {
   await handleSecurityFlowWakeUp(client)
 
   if (sharingIntentStatus === SharingIntentStatus.OpenedViaSharing) {
     log.info('useGlobalAppState: handleWakeUp, sharing mode')
-    navigate(routes.sharing)
+    onNavigationRequest(routes.sharing)
   }
 }
 
@@ -54,13 +53,14 @@ const isGoingToWakeUp = (nextAppState: AppStateStatus): boolean =>
 const onStateChange = (
   nextAppState: AppStateStatus,
   client: CozyClient,
-  sharingIntentStatus: SharingIntentStatus
+  sharingIntentStatus: SharingIntentStatus,
+  onNavigationRequest: (route: string) => void
 ): void => {
   if (isGoingToSleep(nextAppState)) handleSleep()
 
   if (isGoingToWakeUp(nextAppState)) {
     Promise.all([
-      handleWakeUp(client, sharingIntentStatus),
+      handleWakeUp(client, sharingIntentStatus, onNavigationRequest),
       synchronizeDevice(client)
     ]).catch(reason => log.error('Failed when waking up', reason))
   }
@@ -75,11 +75,16 @@ const onStateChange = (
  * Do NOT use it anywhere else than in the <App /> component,
  * for it could create unintended side effects.
  */
-export const useGlobalAppState = (): void => {
+
+interface GlobalAppStateProps {
+  onNavigationRequest: (route: string) => void
+}
+
+export const useGlobalAppState = ({
+  onNavigationRequest
+}: GlobalAppStateProps): void => {
   const client = useClient()
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  const routeIndex = useNavigationState(state => state?.index)
-  const { sharingIntentStatus } = useSharingState()
+  const { sharingIntentStatus, errored } = useSharingState()
 
   // On app start
   useEffect(() => {
@@ -89,7 +94,7 @@ export const useGlobalAppState = (): void => {
 
         if (sharingIntentStatus === SharingIntentStatus.OpenedViaSharing) {
           log.info('useGlobalAppState: app start, sharing mode')
-          navigate(routes.sharing)
+          !errored && onNavigationRequest(routes.sharing)
         } else {
           log.info('useGlobalAppState: app start, not sharing mode')
         }
@@ -100,7 +105,7 @@ export const useGlobalAppState = (): void => {
 
     log.info('useGlobalAppState: app start')
     void appStart()
-  }, [routeIndex, sharingIntentStatus])
+  }, [errored, onNavigationRequest, sharingIntentStatus])
 
   useEffect(() => {
     let subscription: NativeEventSubscription | undefined
@@ -113,7 +118,7 @@ export const useGlobalAppState = (): void => {
       )
 
       subscription = AppState.addEventListener('change', e =>
-        onStateChange(e, client, sharingIntentStatus)
+        onStateChange(e, client, sharingIntentStatus, onNavigationRequest)
       )
     }
 
@@ -121,5 +126,5 @@ export const useGlobalAppState = (): void => {
       appState = AppState.currentState
       subscription?.remove()
     }
-  }, [client, sharingIntentStatus])
+  }, [client, onNavigationRequest, sharingIntentStatus])
 }

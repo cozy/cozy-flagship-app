@@ -9,13 +9,15 @@ export enum SharingIntentStatus {
 export enum SharingActionType {
   SetIntentStatus = 'SET_INTENT_STATUS',
   SetFilesToUpload = 'SET_FILES_TO_UPLOAD',
-  SetRouteToUpload = 'SET_ROUTE_TO_UPLOAD'
+  SetRouteToUpload = 'SET_ROUTE_TO_UPLOAD',
+  SetFlowErrored = 'SET_FLOW_ERRORED'
 }
 
 export interface SharingState {
   sharingIntentStatus: SharingIntentStatus
   filesToUpload: ReceivedFile[]
   routeToUpload?: { href: string; slug: string }
+  errored: boolean
 }
 
 export type SharingAction =
@@ -25,3 +27,9 @@ export type SharingAction =
       type: SharingActionType.SetRouteToUpload
       payload: { href: string; slug: string }
     }
+  | { type: SharingActionType.SetFlowErrored; payload: boolean }
+
+export interface ServiceResponse<T> {
+  result?: T
+  error?: string
+}
