@@ -37,14 +37,17 @@ export const useOAuthClientsLimitExceeded = (
   }
 
   useEffect(() => {
-    const eventCallback = (): void => {
+    const eventCallback = (href: string): void => {
       if (client === null) {
         log.error('Client is null, should not happen')
         return
       }
 
       const rootURL = client.getStackClient().uri
-      setPopupUrl(`${rootURL}${OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH}`)
+      const encodedRedirect = encodeURIComponent(href)
+      setPopupUrl(
+        `${rootURL}${OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH}?redirect=${encodedRedirect}`
+      )
     }
 
     const subscription = oauthClientLimitEventHandler.addListener(

@@ -85,9 +85,9 @@ const initHtmlContent = async ({
 
   if (isOauthClientsLimitExeeded) {
     if (slug === 'home') {
-      showOauthClientsLimitExceeded()
+      showOauthClientsLimitExceeded(href)
     } else if (slug !== 'settings') {
-      showOauthClientsLimitExceeded()
+      showOauthClientsLimitExceeded(href)
       return
     }
   }
