@@ -1,18 +1,37 @@
-import React from 'react'
 import { render } from '@testing-library/react-native'
+import React from 'react'
 import { Text } from 'react-native'
 
-import {
-  SharingProvider,
-  useSharingState
-} from '/app/view/Sharing/SharingProvider'
+import { useQuery } from 'cozy-client'
+
+import { SharingProvider } from '/app/view/Sharing/SharingProvider'
 import { handleReceivedFiles } from '/app/domain/sharing/services/SharingData'
 import { handleSharing } from '/app/domain/sharing/services/SharingStatus'
 import { SharingIntentStatus } from '/app/domain/sharing/models/SharingState'
 import { ReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
+import { useSharingState } from '/app/view/Sharing/SharingState'
 
 jest.mock('/app/domain/sharing/services/SharingData')
 jest.mock('/app/domain/sharing/services/SharingStatus')
+jest.mock('/app/domain/sharing/services/SharingNetwork')
+jest.mock('/app/view/Error/ErrorProvider', () => ({
+  useError: jest.fn().mockReturnValue({
+    handleError: jest.fn()
+  })
+}))
+jest.mock('cozy-client', () => ({
+  useClient: jest.fn(),
+  useQuery: jest.fn(),
+  Q: jest.fn().mockReturnValue({
+    where: jest.fn().mockReturnValue({
+      all: jest.fn().mockReturnValue([])
+    })
+  })
+}))
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: jest.fn(),
+  useNavigationState: jest.fn()
+}))
 
 describe('SharingProvider', () => {
   beforeEach(() => {
@@ -24,7 +43,7 @@ describe('SharingProvider', () => {
   it('calls services and updates state correctly on mount', () => {
     const mockReceivedFilesCallback = jest.fn()
     const mockSharingCallback = jest.fn()
-
+    ;(useQuery as jest.Mock).mockReturnValue({ data: [] })
     ;(handleReceivedFiles as jest.Mock).mockImplementation(callback => {
       mockReceivedFilesCallback()
       const mockCallback = callback as (files: ReceivedFile[]) => void
@@ -104,5 +123,24 @@ describe('SharingProvider', () => {
     )
 
     getByText(SharingIntentStatus.NotOpenedViaSharing.toString())
+  })
+
+  it('calls cleanup functions on unmount', () => {
+    const cleanupReceivedFiles = jest.fn()
+    const cleanupSharingIntent = jest.fn()
+
+    ;(handleReceivedFiles as jest.Mock).mockReturnValue(cleanupReceivedFiles)
+    ;(handleSharing as jest.Mock).mockReturnValue(cleanupSharingIntent)
+
+    const { unmount } = render(
+      <SharingProvider>
+        <Text>Test</Text>
+      </SharingProvider>
+    )
+
+    unmount()
+
+    expect(cleanupReceivedFiles).toHaveBeenCalledTimes(1)
+    expect(cleanupSharingIntent).toHaveBeenCalledTimes(1)
   })
 })

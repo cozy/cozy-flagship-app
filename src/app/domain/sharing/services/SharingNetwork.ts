@@ -24,7 +24,6 @@ export const getRouteToUpload = (
 
     const cozyApp = cozyApps.find(cozyApp => cozyApp.slug === appName)
     if (!cozyApp) return {}
-
     const hash =
       cozyApp.accept_documents_from_flagship?.route_to_upload ??
       cozyApp.attributes.accept_documents_from_flagship?.route_to_upload
@@ -41,7 +40,6 @@ export const getRouteToUpload = (
     })
 
     sharingLogger.info('routeToUpload is', { href, slug })
-    //throw new Error('routeToUpload is')
     return { result: { href, slug: cozyApp.slug } }
   } catch (error) {
     sharingLogger.error('Error when getting routeToUpload', error)
