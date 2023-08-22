@@ -1,11 +1,13 @@
 import { createContext, Dispatch, useContext } from 'react'
 
 import { sharingLogger } from '/app/domain/sharing'
+import { ReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
 import {
   SharingState,
   SharingAction,
   SharingActionType,
-  SharingIntentStatus
+  SharingIntentStatus,
+  SharingApi
 } from '/app/domain/sharing/models/SharingState'
 
 export const SharingStateContext = createContext<SharingState | undefined>(
@@ -68,4 +70,34 @@ export const useSharingState = (): SharingState => {
     throw new Error('useSharingState must be used within a SharingProvider')
   }
   return context
+}
+
+export const useSharingApi = (): SharingApi => {
+  const state = useContext(SharingStateContext)
+  const dispatch = useContext(SharingDispatchContext)
+
+  if (state === undefined || dispatch === undefined) {
+    throw new Error('useSharingApi must be used within a SharingProvider')
+  }
+
+  const hasFilesToHandle = (): boolean => {
+    sharingLogger.info('hasFilesToHandle', state.filesToUpload)
+    return state.filesToUpload.length > 0
+  }
+
+  const getFilesToHandle = (): ReceivedFile[] => {
+    sharingLogger.info('getFilesToHandle', state.filesToUpload)
+    return state.filesToUpload
+  }
+
+  const uploadFiles = (files: ReceivedFile[]): void => {
+    sharingLogger.info('uploadFiles', files)
+  }
+
+  const resetFilesToHandle = (): void => {
+    sharingLogger.info('resetFilesToHandle')
+    dispatch({ type: SharingActionType.SetFilesToUpload, payload: [] })
+  }
+
+  return { hasFilesToHandle, getFilesToHandle, uploadFiles, resetFilesToHandle }
 }

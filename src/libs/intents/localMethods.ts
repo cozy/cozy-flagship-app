@@ -240,7 +240,8 @@ const nativeMethodWrapper =
   }
 
 export const localMethods = (
-  client: CozyClient | undefined
+  client: CozyClient | undefined,
+  ...rest: Record<string, Promise<unknown>>[]
 ): NativeMethodsRegister | CustomMethods => {
   return {
     backToHome,
@@ -283,6 +284,7 @@ export const localMethods = (
     sendGeolocationTrackingLogs,
     forceUploadGeolocationTrackingData,
     getDeviceInfo,
-    isAvailable
+    isAvailable,
+    ...rest
   }
 }
