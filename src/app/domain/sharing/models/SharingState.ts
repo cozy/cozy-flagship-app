@@ -35,3 +35,10 @@ export interface ServiceResponse<T> {
   result?: T
   error?: string
 }
+
+export interface SharingApi {
+  getFilesToHandle: () => ReceivedFile[]
+  hasFilesToHandle: () => boolean
+  uploadFiles: (files: ReceivedFile[]) => void
+  resetFilesToHandle: () => void
+}
