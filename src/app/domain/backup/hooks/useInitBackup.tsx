@@ -20,11 +20,15 @@ export const useInitBackup = (): void => {
         return
       }
 
-      const backupConfig = await getLocalBackupConfig(client)
+      try {
+        const backupConfig = await getLocalBackupConfig(client)
 
-      if (backupConfig.currentBackup.status === 'running') {
-        log.debug('A running backup has been set as to do.')
-        await setBackupAsToDo(client)
+        if (backupConfig.currentBackup.status === 'running') {
+          log.debug('A running backup has been set as to do.')
+          await setBackupAsToDo(client)
+        }
+      } catch {
+        /* empty */
       }
     }
 
