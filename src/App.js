@@ -40,6 +40,7 @@ import { PermissionsChecker } from '/app/domain/nativePermissions/components/Per
 import { useGeolocationTracking } from '/app/domain/geolocation/hooks/tracking'
 import { SharingProvider } from '/app/view/sharing/SharingProvider'
 import { ErrorProvider } from '/app/view/Error/ErrorProvider'
+import { useSharingApi } from '/app/view/Sharing/SharingState'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -79,36 +80,45 @@ const App = ({ setClient }) => {
   return <RootNavigator initialRoute={initialRoute} setClient={setClient} />
 }
 
-const Nav = ({ client, setClient }) => {
+const InnerNav = ({ client, setClient }) => {
   const colors = getColors()
+  const sharingApi = useSharingApi()
 
   return (
-    <NavigationContainer ref={RootNavigation.navigationRef}>
-      <ErrorProvider>
-        <SharingProvider>
-          <NativeIntentProvider localMethods={localMethods(client)}>
-            <View
-              style={[
-                styles.view,
-                {
-                  backgroundColor: colors.primaryColor
-                }
-              ]}
-            >
-              <StatusBar
-                barStyle="light-content"
-                backgroundColor="transparent"
-                translucent
-              />
-              <IconChangedModal />
-              <App setClient={setClient} />
-            </View>
-          </NativeIntentProvider>
-        </SharingProvider>
-      </ErrorProvider>
-    </NavigationContainer>
+    <ErrorProvider>
+      <SharingProvider>
+        <NativeIntentProvider localMethods={localMethods(client, sharingApi)}>
+          <View
+            style={[
+              styles.view,
+              {
+                backgroundColor: colors.primaryColor
+              }
+            ]}
+          >
+            <StatusBar
+              barStyle="light-content"
+              backgroundColor="transparent"
+              translucent
+            />
+            <IconChangedModal />
+            <App setClient={setClient} />
+          </View>
+        </NativeIntentProvider>
+      </SharingProvider>
+    </ErrorProvider>
   )
 }
+
+const Nav = ({ client, setClient }) => (
+  <NavigationContainer ref={RootNavigation.navigationRef}>
+    <ErrorProvider>
+      <SharingProvider>
+        <InnerNav client={client} setClient={setClient} />
+      </SharingProvider>
+    </ErrorProvider>
+  </NavigationContainer>
+)
 
 const WrappedApp = () => {
   const [client, setClient] = useState(undefined)
