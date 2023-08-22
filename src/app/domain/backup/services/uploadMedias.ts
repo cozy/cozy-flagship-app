@@ -58,52 +58,13 @@ export const uploadMedias = async (
     }
 
     try {
-      const uploadFolderId = await getUploadFolderId(
-        client,
-        localBackupConfig,
-        mediaToUpload
-      )
-
-      let metadataId = commonMetadataId
-
-      if (
-        mediaToUpload.type === 'image' &&
-        mediaToUpload.subType === 'PhotoLive' &&
-        lastUploadedDocument
-      ) {
-        metadataId = await getLivePhotoMetadataId(
-          client,
-          mediaToUpload,
-          lastUploadedDocument
-        )
-      }
-
-      const uploadUrl = getUploadUrl(
-        client,
-        uploadFolderId,
-        metadataId,
-        mediaToUpload
-      )
-      const { data: documentCreated } = await uploadMedia(
-        client,
-        uploadUrl,
-        mediaToUpload
-      )
-
-      lastUploadedDocument = documentCreated
-
-      log.debug(`✅ ${mediaToUpload.name} uploaded`)
-
-      await postUpload(
+      lastUploadedDocument = await prepareAndUploadMedia(
         client,
         localBackupConfig,
         mediaToUpload,
-        documentCreated
+        commonMetadataId,
+        lastUploadedDocument
       )
-
-      await setMediaAsBackuped(client, mediaToUpload, documentCreated)
-
-      log.debug(`✅ ${mediaToUpload.name} set as backuped`)
     } catch (error) {
       log.debug(
         `❌ ${mediaToUpload.name} not uploaded or set as backuped correctly`
@@ -127,6 +88,56 @@ export const uploadMedias = async (
   }
 
   return
+}
+
+const prepareAndUploadMedia = async (
+  client: CozyClient,
+  localBackupConfig: LocalBackupConfig,
+  mediaToUpload: Media,
+  commonMetadataId: string,
+  lastUploadedDocument: IOCozyFile | undefined
+): Promise<IOCozyFile> => {
+  const uploadFolderId = await getUploadFolderId(
+    client,
+    localBackupConfig,
+    mediaToUpload
+  )
+
+  let metadataId = commonMetadataId
+
+  if (
+    mediaToUpload.type === 'image' &&
+    mediaToUpload.subType === 'PhotoLive' &&
+    lastUploadedDocument
+  ) {
+    metadataId = await getLivePhotoMetadataId(
+      client,
+      mediaToUpload,
+      lastUploadedDocument
+    )
+  }
+
+  const uploadUrl = getUploadUrl(
+    client,
+    uploadFolderId,
+    metadataId,
+    mediaToUpload
+  )
+  const { data: documentCreated } = await uploadMedia(
+    client,
+    uploadUrl,
+    mediaToUpload
+  )
+
+  log.debug(`✅ ${mediaToUpload.name} uploaded`)
+
+  await postUpload(client, localBackupConfig, mediaToUpload, documentCreated)
+
+  await setMediaAsBackuped(client, mediaToUpload, documentCreated)
+
+  log.debug(`✅ ${mediaToUpload.name} set as backuped`)
+
+  return documentCreated
 }
 
 const postUpload = async (
