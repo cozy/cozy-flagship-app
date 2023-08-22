@@ -25,6 +25,13 @@ export const isUploadError = (error: unknown): error is UploadError => {
   )
 }
 
+export const isMetadataExpiredError = (error: UploadError): boolean => {
+  return (
+    error.statusCode === 422 &&
+    error.errors[0]?.detail === 'Invalid or expired MetadataID'
+  )
+}
+
 export const isQuotaExceededError = (error: UploadError): boolean => {
   return (
     error.statusCode === 413 &&

@@ -15,7 +15,8 @@ import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
 import {
   BackupError,
   isFatalError,
-  isUploadError
+  isUploadError,
+  isMetadataExpiredError
 } from '/app/domain/backup/helpers/error'
 import { areAlbumsEnabled } from '/app/domain/backup/services/manageAlbums'
 
@@ -47,7 +48,7 @@ export const uploadMedias = async (
     currentBackup: { mediasToBackup: mediasToUpload }
   } = localBackupConfig
 
-  const commonMetadataId = await getCommonMetadataId(client)
+  let commonMetadataId = await getCommonMetadataId(client)
 
   let lastUploadedDocument
 
@@ -73,6 +74,18 @@ export const uploadMedias = async (
 
       if (!isUploadError(error)) {
         return
+      }
+
+      if (isMetadataExpiredError(error)) {
+        commonMetadataId = await getCommonMetadataId(client)
+
+        lastUploadedDocument = await prepareAndUploadMedia(
+          client,
+          localBackupConfig,
+          mediaToUpload,
+          commonMetadataId,
+          lastUploadedDocument
+        )
       }
 
       if (isFatalError(error)) {
