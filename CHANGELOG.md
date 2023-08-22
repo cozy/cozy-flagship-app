@@ -1,4 +1,4 @@
-# 1.1.13
+# 1.1.14
 
 ## ✨ Features
 
@@ -8,6 +8,26 @@
 
 ## 🔧 Tech
 
+
+# 1.1.13
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* Fix a bug that prevented Client Side Connectors to download files ([PR #902](https://github.com/cozy/cozy-react-native/pull/902))
+* Fix a bug that prevented notifications to work on Android 13 ([PR #911](https://github.com/cozy/cozy-flagship-app/pull/911))
+* Correctly hide lock screen when navigating to a default cozy-app ([PR #901](https://github.com/cozy/cozy-react-native/pull/901))
+* Correctly check log level for Client Side Connectors to avoid crash ([PR #910](https://github.com/cozy/cozy-flagship-app/pull/910))
+* Fix a bug where notification permission could lead to a blank screen on Android 13 ([PR #918](https://github.com/cozy/cozy-flagship-app/pull/918))
+* Fix FR translations ([PR #922](https://github.com/cozy/cozy-flagship-app/pull/922))
+
+## 🔧 Tech
+
+* Change Android's target SDK from `31` to `33` ([PR #904](https://github.com/cozy/cozy-react-native/pull/904))
+* Improve foundations for photo and video backup ([PR #903](https://github.com/cozy/cozy-flagship-app/pull/903), [PR #905](https://github.com/cozy/cozy-flagship-app/pull/905), [PR #908](https://github.com/cozy/cozy-flagship-app/pull/908), [PR #913](https://github.com/cozy/cozy-flagship-app/pull/913), [PR #914](https://github.com/cozy/cozy-flagship-app/pull/914), [PR #915](https://github.com/cozy/cozy-flagship-app/pull/915), [PR #917](https://github.com/cozy/cozy-flagship-app/pull/917), [PR #919](https://github.com/cozy/cozy-flagship-app/pull/919), [PR #920](https://github.com/cozy/cozy-flagship-app/pull/920), [PR #921](https://github.com/cozy/cozy-flagship-app/pull/921), [PR #925](https://github.com/cozy/cozy-flagship-app/pull/925), [PR #928](https://github.com/cozy/cozy-flagship-app/pull/928))
+* Improve and rename CI ([PR #923](https://github.com/cozy/cozy-flagship-app/pull/923), [PR #924](https://github.com/cozy/cozy-flagship-app/pull/924))
 
 # 1.1.12
 
