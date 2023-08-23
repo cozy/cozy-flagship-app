@@ -24,3 +24,10 @@ export interface UploadResult {
 export type UploadError = {
   statusCode: number
 } & StackErrors
+
+export class NetworkError extends Error {
+  constructor() {
+    super()
+    this.name = 'NetworkError'
+  }
+}

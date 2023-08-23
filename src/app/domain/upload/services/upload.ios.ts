@@ -3,7 +3,11 @@ import RNFileSystem from 'react-native-fs'
 
 import { StackErrors, IOCozyFile } from 'cozy-client'
 
-import { UploadParams, UploadResult } from '/app/domain/upload/models'
+import {
+  UploadParams,
+  UploadResult,
+  NetworkError
+} from '/app/domain/upload/models'
 
 let currentUploadId: string | undefined
 
@@ -45,6 +49,10 @@ export const uploadFile = async ({
       }
     })
       .promise.then(response => {
+        if (response.body === '' && !response.statusCode) {
+          reject(new NetworkError())
+        }
+
         if (response.statusCode == 201) {
           const { data } = JSON.parse(response.body) as {
             data: IOCozyFile

@@ -5,7 +5,11 @@ import RNBackgroundUpload, {
 
 import { StackErrors, IOCozyFile } from 'cozy-client'
 
-import { UploadParams, UploadResult } from '/app/domain/upload/models'
+import {
+  UploadParams,
+  UploadResult,
+  NetworkError
+} from '/app/domain/upload/models'
 
 let currentUploadId: string | undefined
 
@@ -48,6 +52,13 @@ export const uploadFile = async ({
         setCurrentUploadId(uploadId)
 
         RNBackgroundUpload.addListener('error', uploadId, error => {
+          if (
+            error.error.includes('Failed to connect') ||
+            error.error.includes('Unable to resolve host')
+          ) {
+            reject(new NetworkError())
+          }
+
           if (error.responseCode && error.responseBody) {
             const { errors } = JSON.parse(error.responseBody) as StackErrors
             reject({
