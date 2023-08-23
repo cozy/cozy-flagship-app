@@ -2,6 +2,19 @@ import { Media, BackupedMedia, BackupedAlbum } from '/app/domain/backup/models'
 
 type BackupStatus = 'to_do' | 'initializing' | 'ready' | 'running' | 'done'
 
+interface LastBackupSuccess {
+  status: 'success'
+  backedUpMediaCount: number
+  totalMediasToBackupCount: number
+}
+
+interface LastBackupError {
+  status: 'error'
+  errorMessage: string
+}
+
+type LastBackup = LastBackupSuccess | LastBackupError
+
 /**
  * A local backup config representing the current backup of the device
  * @member {RemoteBackupConfig} remoteBackupConfig
@@ -19,6 +32,7 @@ export interface LocalBackupConfig {
     mediasToBackup: Media[]
     totalMediasToBackupCount: number
   }
+  lastBackup?: LastBackup
 }
 
 /**
@@ -50,6 +64,7 @@ export interface BackupInfo {
     mediasToBackupCount: number
     totalMediasToBackupCount: number
   }
+  lastBackup?: LastBackup
 }
 
 export type ProgressCallback = (backupInfo: BackupInfo) => Promise<void>

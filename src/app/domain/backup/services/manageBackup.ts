@@ -1,3 +1,4 @@
+import type CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import {
@@ -7,6 +8,8 @@ import {
   setBackupAsReady,
   setBackupAsRunning,
   setBackupAsDone,
+  setLastBackupAsSuccess,
+  setLastBackupAsError,
   saveAlbums,
   updateRemoteBackupConfigLocally
 } from '/app/domain/backup/services/manageLocalBackupConfig'
@@ -34,9 +37,6 @@ import {
   activateKeepAwake,
   deactivateKeepAwake
 } from '/app/domain/sleep/services/sleep'
-
-import type CozyClient from 'cozy-client'
-
 import {
   BackupInfo,
   ProgressCallback,
@@ -44,6 +44,7 @@ import {
   BackupedAlbum,
   LocalBackupConfig
 } from '/app/domain/backup/models'
+import { BackupError } from '/app/domain/backup/helpers'
 
 const log = Minilog('💿 Backup')
 
@@ -103,7 +104,24 @@ export const startBackup = async (
 
   activateKeepAwake('backup')
 
-  await uploadMedias(client, localBackupConfig, onProgress)
+  try {
+    await uploadMedias(client, localBackupConfig, onProgress)
+
+    const postUploadLocalBackupConfig = await getLocalBackupConfig(client)
+
+    await setLastBackupAsSuccess(client, {
+      remainingMediaCount:
+        postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
+      totalMediasToBackupCount:
+        postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
+    })
+  } catch (e) {
+    if (e instanceof BackupError) {
+      await setLastBackupAsError(client, { errorMessage: e.textMessage })
+    } else {
+      throw e
+    }
+  }
 
   deactivateKeepAwake('backup')
 
@@ -150,7 +168,8 @@ export const getBackupInfo = async (
       mediasToBackupCount: backupConfig.currentBackup.mediasToBackup.length,
       totalMediasToBackupCount:
         backupConfig.currentBackup.totalMediasToBackupCount
-    }
+    },
+    lastBackup: backupConfig.lastBackup
   }
 }
 

@@ -16,13 +16,17 @@ import {
   BackupError,
   isFatalError,
   isUploadError,
-  isMetadataExpiredError
+  isMetadataExpiredError,
+  isQuotaExceededError
 } from '/app/domain/backup/helpers/error'
 import { areAlbumsEnabled } from '/app/domain/backup/services/manageAlbums'
+import { t } from '/locales/i18n'
 
 import type CozyClient from 'cozy-client'
 import { IOCozyFile } from 'cozy-client'
 import Minilog from 'cozy-minilog'
+
+import { NetworkError } from '/app/domain/upload/models'
 
 const log = Minilog('💿 Backup')
 
@@ -72,8 +76,15 @@ export const uploadMedias = async (
       )
       log.debug(error)
 
+      if (error instanceof NetworkError) {
+        throw new BackupError(
+          t('services.backup.errors.networkIssue'),
+          undefined
+        )
+      }
+
       if (!isUploadError(error)) {
-        return
+        throw error
       }
 
       if (isMetadataExpiredError(error)) {
@@ -93,7 +104,17 @@ export const uploadMedias = async (
 
         void onProgress(await getBackupInfo(client))
 
-        throw new BackupError(error.errors[0].detail, error.statusCode)
+        if (isQuotaExceededError(error)) {
+          throw new BackupError(
+            t('services.backup.errors.quotaExceeded'),
+            error.statusCode
+          )
+        } else {
+          throw new BackupError(
+            t('services.backup.errors.unknownIssue'),
+            error.statusCode
+          )
+        }
       }
     }
 

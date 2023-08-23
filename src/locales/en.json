@@ -95,7 +95,10 @@
         "fileNotFound": "File not found",
         "fileNotSupported": "File not supported for backup",
         "platformNotSupported": "Platform not supported for backup",
-        "configNotInitialized": "Local backup config not initialized"
+        "configNotInitialized": "Local backup config not initialized",
+        "quotaExceeded": "Storage space full",
+        "networkIssue": "Network issue",
+        "unknownIssue": "Unknown issue"
       }
     }
   },
