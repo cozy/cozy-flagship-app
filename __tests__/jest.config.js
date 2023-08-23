@@ -13,7 +13,7 @@ const config = {
       '<rootDir>/__tests__/transformer/imageTransformer.js'
   },
   transformIgnorePatterns: [
-    'node_modules/(?!((jest-)?react-native(-.*)?|@react-native(-community)?|p-timeout?|p-wait-for?)/)'
+    'node_modules/(?!((jest-)?react-native(-.*)?|@react-native(-community)?|p-timeout?|p-wait-for?|@notifee?)/)'
   ],
   rootDir: '../'
 }
