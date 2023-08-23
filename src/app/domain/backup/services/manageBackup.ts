@@ -44,7 +44,9 @@ import {
   BackupedAlbum,
   LocalBackupConfig
 } from '/app/domain/backup/models'
+import { showLocalNotification } from '/libs/notifications/notifications'
 import { BackupError } from '/app/domain/backup/helpers'
+import { t } from '/locales/i18n'
 
 const log = Minilog('💿 Backup')
 
@@ -114,6 +116,15 @@ export const startBackup = async (
         postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
       totalMediasToBackupCount:
         postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
+    })
+
+    await showLocalNotification({
+      title: t('services.backup.notifications.backupSuccessTitle'),
+      body: t('services.backup.notifications.backupSuccessBody', {
+        count:
+          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
+          postUploadLocalBackupConfig.currentBackup.mediasToBackup.length
+      })
     })
   } catch (e) {
     if (e instanceof BackupError) {

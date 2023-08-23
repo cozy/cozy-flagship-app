@@ -89,7 +89,9 @@
         "onErrorTitle": "Oops",
         "onErrorMessage": "Your backup encountered an error. Open the app to see more details",
         "onCancelledTitle": "Backup canceled",
-        "onCancelledMessage": "Open the app to resume the process"
+        "onCancelledMessage": "Open the app to resume the process",
+        "backupSuccessTitle": "Photo & video backup",
+        "backupSuccessBody": "Your backup is complete! {{count}} saved item(s) "
       },
       "errors": {
         "fileNotFound": "File not found",

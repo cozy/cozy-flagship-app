@@ -94,7 +94,9 @@
         "onErrorTitle": "Oops",
         "onErrorMessage": "Votre sauvegarde a rencontré une erreur. Ouvrez l'app pour obtenir plus de détails",
         "onCancelledTitle": "Sauvegarde arrêtée",
-        "onCancelledMessage": "Votre sauvegarde a été arrêtée. Ouvrez l'app pour la reprendre"
+        "onCancelledMessage": "Votre sauvegarde a été arrêtée. Ouvrez l'app pour la reprendre",
+        "backupSuccessTitle": "Sauvegarde photo & vidéo",
+        "backupSuccessBody": "Votre sauvegarde est terminée ! {{count}} élément(s) sauvegardé(s)"
       },
       "errors": {
         "fileNotFound": "Fichier non trouvé",
