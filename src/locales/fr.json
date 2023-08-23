@@ -100,7 +100,10 @@
         "fileNotFound": "Fichier non trouvé",
         "fileNotSupported": "Fichier non supporté pour la sauvegarde",
         "platformNotSupported": "Plateforme non supportée pour la sauvegarde",
-        "configNotInitialized": "Configuration locale de sauvegarde non initialisée"
+        "configNotInitialized": "Configuration locale de sauvegarde non initialisée",
+        "quotaExceeded": "Espace de stockage plein",
+        "networkIssue": "Problème réseau",
+        "unknownIssue": "Autre erreur"
       }
     }
   },

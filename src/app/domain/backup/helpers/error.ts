@@ -1,6 +1,7 @@
 import { UploadError } from '/app/domain/upload/models'
 
 export class BackupError extends Error {
+  textMessage: string
   statusCode: number | undefined
 
   constructor(message: string, statusCode: number | undefined) {
@@ -11,6 +12,7 @@ export class BackupError extends Error {
 
     super(stringifiedMessage)
     this.name = 'BackupError'
+    this.textMessage = message
     this.statusCode = statusCode
   }
 }

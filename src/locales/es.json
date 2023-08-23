@@ -74,7 +74,10 @@
         "fileNotFound": "Archivo no encontrado",
         "fileNotSupported": "Archivo no compatible con la copia de seguridad",
         "platformNotSupported": "Plataforma no compatible con la copia de seguridad",
-        "configNotInitialized": "Configuración de copia de seguridad local no inicializada"
+        "configNotInitialized": "Configuración de copia de seguridad local no inicializada",
+        "quotaExceeded": "Espacio de almacenamiento completo",
+        "networkIssue": "Problema de red",
+        "unknownIssue": "Problema desconocido"
       }
     }
   },
