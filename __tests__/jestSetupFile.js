@@ -1,3 +1,4 @@
+import mockNotifee from '@notifee/react-native/jest-mock'
 import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock'
 import mockRNCameraRoll from '@react-native-camera-roll/camera-roll/src/__mocks__/nativeInterface'
 import mockRNCNetInfo from '@react-native-community/netinfo/jest/netinfo-mock.js'
@@ -96,3 +97,6 @@ jest.mock('../src/locales/i18n', () => {
       .mockReturnValue({ t: jest.fn().mockImplementation(key => key) })
   }
 })
+
+jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper')
+jest.mock('@notifee/react-native', () => mockNotifee)

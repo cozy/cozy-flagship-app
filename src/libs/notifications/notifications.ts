@@ -2,7 +2,10 @@ import { Platform } from 'react-native'
 import messaging, {
   FirebaseMessagingTypes
 } from '@react-native-firebase/messaging'
+
 import Minilog from 'cozy-minilog'
+
+import notifee from '@notifee/react-native'
 
 import CozyClient, {
   generateWebLink,
@@ -120,3 +123,26 @@ export const requestAndGetNotificationPermission =
     }
     return messaging.AuthorizationStatus.NOT_DETERMINED
   }
+
+export interface LocalNotification {
+  title: string
+  body: string
+}
+
+export const showLocalNotification = async (
+  localNotification: LocalNotification
+): Promise<void> => {
+  const channelId = await notifee.createChannel({
+    id: 'cozy',
+    name: 'Cozy'
+  })
+
+  await notifee.displayNotification({
+    title: localNotification.title,
+    body: localNotification.body,
+    android: {
+      channelId,
+      smallIcon: 'ic_stat_ic_notification'
+    }
+  })
+}
