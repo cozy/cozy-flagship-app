@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import messaging from '@react-native-firebase/messaging'
 
 import { useClient } from 'cozy-client'
 
@@ -8,9 +7,9 @@ import {
   handleInitialToken,
   handleNotificationTokenReceiving,
   handleInitialNotification,
-  handleNotificationOpening,
-  requestAndGetNotificationPermission
+  handleNotificationOpening
 } from '/libs/notifications/notifications'
+import { requestNotifications } from '/app/domain/nativePermissions'
 
 export const useNotifications = (): void => {
   const client = useClient()
@@ -21,11 +20,11 @@ export const useNotifications = (): void => {
     const initializeNotifications = async (): Promise<void> => {
       if (!client) return
 
-      const permission = await requestAndGetNotificationPermission()
+      const permission = await requestNotifications()
 
-      if (permission === messaging.AuthorizationStatus.AUTHORIZED) {
+      if (permission.granted) {
         setAreNotificationsEnabled(true)
-      } else if (permission === messaging.AuthorizationStatus.DENIED) {
+      } else if (!permission.granted && !permission.canRequest) {
         await removeNotificationDeviceToken(client)
       }
     }

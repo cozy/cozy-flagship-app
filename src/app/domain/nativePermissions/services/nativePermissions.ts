@@ -1,6 +1,7 @@
 import {
   check,
   request,
+  requestNotifications as RNPRequestNotifications,
   PermissionStatus,
   RESULTS
 } from 'react-native-permissions'
@@ -22,6 +23,13 @@ export const requestNativePermission = async (
 
   return formatResult(result)
 }
+
+export const requestNotifications =
+  async (): Promise<NativePermissionStatus> => {
+    const result = await RNPRequestNotifications(['alert'])
+
+    return formatResult(result.status)
+  }
 
 const formatResult = (result: PermissionStatus): NativePermissionStatus => {
   switch (result) {
