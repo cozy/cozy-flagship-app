@@ -85,6 +85,15 @@ export const RootNavigator = ({ initialRoute, setClient }) => (
     />
 
     <Root.Screen
+      name={routes.sharing}
+      component={SharingScreen}
+      options={{
+        presentation: 'transparentModal',
+        animationEnabled: false
+      }}
+    />
+
+    <Root.Screen
       name={routes.cozyapp}
       component={CozyAppScreen}
       options={{
@@ -102,18 +111,11 @@ export const RootNavigator = ({ initialRoute, setClient }) => (
       }}
     />
 
-    <Root.Screen
-      name={routes.sharing}
-      component={SharingScreen}
-      options={{
-        presentation: 'transparentModal',
-        animationEnabled: false
-      }}
-    />
-
     <Root.Screen name={routes.promptPassword} component={PasswordPrompt} />
     <Root.Screen name={routes.promptPin} component={PinPrompt} />
     <Root.Screen name={routes.setPin} component={SetPinView} />
     <Root.Screen name={routes.setPassword} component={SetPasswordView} />
   </Root.Navigator>
 )
+
+RootNavigator.displayName = 'RootNavigator'

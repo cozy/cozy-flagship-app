@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { NavigationContainer } from '@react-navigation/native'
 import { decode, encode } from 'base-64'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -39,7 +39,7 @@ import { SecureBackgroundSplashScreenWrapper } from '/app/theme/SecureBackground
 import { PermissionsChecker } from '/app/domain/nativePermissions/components/PermissionsChecker'
 import { SharingProvider } from '/app/view/sharing/SharingProvider'
 import { ErrorProvider } from '/app/view/Error/ErrorProvider'
-import { useSharingApi } from '/app/view/Sharing/SharingState'
+import { useSharingApi } from '/app/view/Sharing/useSharingApi'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -50,6 +50,7 @@ if (!global.atob) {
   global.atob = decode
 }
 
+// eslint-disable-next-line react/display-name
 const App = ({ setClient }) => {
   const client = useClient()
 
@@ -78,33 +79,34 @@ const App = ({ setClient }) => {
   return <RootNavigator initialRoute={initialRoute} setClient={setClient} />
 }
 
+// eslint-disable-next-line react/display-name
 const InnerNav = ({ client, setClient }) => {
   const colors = getColors()
   const sharingApi = useSharingApi()
+  const localMethodsMemoized = useMemo(() => {
+    if (!client || !sharingApi) return null
+    return localMethods(client, sharingApi)
+  }, [client, sharingApi])
 
   return (
-    <ErrorProvider>
-      <SharingProvider>
-        <NativeIntentProvider localMethods={localMethods(client, sharingApi)}>
-          <View
-            style={[
-              styles.view,
-              {
-                backgroundColor: colors.primaryColor
-              }
-            ]}
-          >
-            <StatusBar
-              barStyle="light-content"
-              backgroundColor="transparent"
-              translucent
-            />
-            <IconChangedModal />
-            <App setClient={setClient} />
-          </View>
-        </NativeIntentProvider>
-      </SharingProvider>
-    </ErrorProvider>
+    <NativeIntentProvider localMethods={localMethodsMemoized}>
+      <View
+        style={[
+          styles.view,
+          {
+            backgroundColor: colors.primaryColor
+          }
+        ]}
+      >
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="transparent"
+          translucent
+        />
+        <IconChangedModal />
+        <App setClient={setClient} />
+      </View>
+    </NativeIntentProvider>
   )
 }
 

@@ -4,30 +4,11 @@ import type {
 } from '@react-navigation/native'
 import type { Dispatch, SetStateAction } from 'react'
 
-export interface IconParams {
-  x: number
-  y: number
-  width: number
-  height: number
-  top: number
-  right: number
-  bottom: number
-  left: number
-}
-
-export interface RootStackParamList {
-  cozyapp: {
-    href: string
-    slug: string
-    iconParams: IconParams
-  }
-  [key: string]:
-    | undefined
-    | { href: string; slug: string; iconParams: IconParams }
-}
+import { CozyAppRouteParams } from '/constants/route-types'
+import { routes } from '/constants/routes'
 
 export interface CozyAppScreenProps {
-  route: RouteProp<RootStackParamList, 'cozyapp'>
+  route: RouteProp<CozyAppRouteParams, typeof routes.cozyapp>
   navigation: NavigationContainerRef<Record<string, unknown>>
 }
 

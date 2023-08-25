@@ -193,6 +193,11 @@ export const localMethods = (
   client: CozyClient | undefined,
   ...rest: Record<string, Promise<unknown>>[]
 ): NativeMethodsRegister | CustomMethods => {
+  const mergedMethods = Object.assign({}, ...rest) as Record<
+    string,
+    Promise<unknown>
+  >
+
   return {
     backToHome,
     closeInAppBrowser,
@@ -221,6 +226,6 @@ export const localMethods = (
     checkBackupPermissions,
     requestBackupPermissions,
     setLang,
-    ...rest
+    ...mergedMethods
   }
 }
