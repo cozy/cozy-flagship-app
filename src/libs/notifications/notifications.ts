@@ -1,4 +1,3 @@
-import { Platform } from 'react-native'
 import messaging, {
   FirebaseMessagingTypes
 } from '@react-native-firebase/messaging'
@@ -98,31 +97,6 @@ export const handleNotificationTokenReceiving = (
     void saveNotificationDeviceToken(client, token)
   })
 }
-
-const requestAndGetIosNotificationPermission =
-  async (): Promise<FirebaseMessagingTypes.AuthorizationStatus> => {
-    return await messaging().requestPermission()
-  }
-
-/*
- * Because we target Android 12, Android handles automatically notification permission request if needed.
- * But messaging().requestPermission() never return the correct permission contrary to messaging().hasPermission().
- * When we will target Android 13, we will need to handles manually notification permission request.
- */
-const requestAndGetAndroidNotificationPermission =
-  async (): Promise<FirebaseMessagingTypes.AuthorizationStatus> => {
-    return await messaging().hasPermission()
-  }
-
-export const requestAndGetNotificationPermission =
-  async (): Promise<FirebaseMessagingTypes.AuthorizationStatus> => {
-    if (Platform.OS === 'ios') {
-      return await requestAndGetIosNotificationPermission()
-    } else if (Platform.OS === 'android') {
-      return await requestAndGetAndroidNotificationPermission()
-    }
-    return messaging.AuthorizationStatus.NOT_DETERMINED
-  }
 
 export interface LocalNotification {
   title: string
