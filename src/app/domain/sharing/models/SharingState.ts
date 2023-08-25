@@ -37,8 +37,8 @@ export interface ServiceResponse<T> {
 }
 
 export interface SharingApi {
-  getFilesToHandle: () => ReceivedFile[]
-  hasFilesToHandle: () => boolean
-  uploadFiles: (files: ReceivedFile[]) => void
-  resetFilesToHandle: () => void
+  getFilesToUpload: () => Promise<ReceivedFile[]>
+  hasFilesToHandle: () => Promise<boolean>
+  uploadFiles: (arg: string) => Promise<void>
+  resetFilesToHandle: () => Promise<void>
 }

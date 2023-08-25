@@ -1,13 +1,11 @@
 import { createContext, Dispatch, useContext } from 'react'
 
 import { sharingLogger } from '/app/domain/sharing'
-import { ReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
 import {
   SharingState,
   SharingAction,
   SharingActionType,
-  SharingIntentStatus,
-  SharingApi
+  SharingIntentStatus
 } from '/app/domain/sharing/models/SharingState'
 
 export const SharingStateContext = createContext<SharingState | undefined>(
@@ -42,7 +40,9 @@ export const sharingReducer = (
     }
     case SharingActionType.SetRecoveryState:
       nextState = {
-        ...initialState,
+        ...state,
+        filesToUpload: [],
+        routeToUpload: undefined,
         sharingIntentStatus: SharingIntentStatus.NotOpenedViaSharing
       }
       break
@@ -72,32 +72,10 @@ export const useSharingState = (): SharingState => {
   return context
 }
 
-export const useSharingApi = (): SharingApi => {
-  const state = useContext(SharingStateContext)
-  const dispatch = useContext(SharingDispatchContext)
-
-  if (state === undefined || dispatch === undefined) {
-    throw new Error('useSharingApi must be used within a SharingProvider')
+export const useSharingDispatch = (): Dispatch<SharingAction> => {
+  const context = useContext(SharingDispatchContext)
+  if (context === undefined) {
+    throw new Error('useSharingDispatch must be used within a SharingProvider')
   }
-
-  const hasFilesToHandle = (): boolean => {
-    sharingLogger.info('hasFilesToHandle', state.filesToUpload)
-    return state.filesToUpload.length > 0
-  }
-
-  const getFilesToHandle = (): ReceivedFile[] => {
-    sharingLogger.info('getFilesToHandle', state.filesToUpload)
-    return state.filesToUpload
-  }
-
-  const uploadFiles = (files: ReceivedFile[]): void => {
-    sharingLogger.info('uploadFiles', files)
-  }
-
-  const resetFilesToHandle = (): void => {
-    sharingLogger.info('resetFilesToHandle')
-    dispatch({ type: SharingActionType.SetFilesToUpload, payload: [] })
-  }
-
-  return { hasFilesToHandle, getFilesToHandle, uploadFiles, resetFilesToHandle }
+  return context
 }

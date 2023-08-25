@@ -86,7 +86,7 @@ export const useGlobalAppState = ({
   // Ref to track if the logic has already been executed
   const hasExecuted = useRef(false)
   const client = useClient()
-  const { sharingIntentStatus, errored } = useSharingState()
+  const sharingState = useSharingState()
 
   useEffect(() => {
     let subscription: NativeEventSubscription | undefined
@@ -98,16 +98,21 @@ export const useGlobalAppState = ({
         'useGlobalAppState: subscribing to AppState changes, synchronizing device'
       )
 
+      // We never unsubscribe from this event because it will last for the whole app lifecycle
       subscription = AppState.addEventListener('change', e =>
-        onStateChange(e, client, sharingIntentStatus, onNavigationRequest)
+        onStateChange(
+          e,
+          client,
+          sharingState.sharingIntentStatus,
+          onNavigationRequest
+        )
       )
     }
 
     return () => {
       appState = AppState.currentState
-      subscription?.remove()
     }
-  }, [client, onNavigationRequest, sharingIntentStatus])
+  }, [client, onNavigationRequest, sharingState])
 
   // On app start
   useEffect(() => {
@@ -115,11 +120,18 @@ export const useGlobalAppState = ({
       if (await getIsSecurityFlowPassed()) {
         log.info('useGlobalAppState: app start, security flow passed')
 
-        if (sharingIntentStatus === SharingIntentStatus.OpenedViaSharing) {
+        if (
+          sharingState.sharingIntentStatus ===
+          SharingIntentStatus.OpenedViaSharing
+        ) {
           log.info('useGlobalAppState: app start, sharing mode')
-          !errored && onNavigationRequest(routes.sharing)
+          !sharingState.errored && onNavigationRequest(routes.sharing)
+          // Mark the logic as executed
+          hasExecuted.current = true
         } else {
           log.info('useGlobalAppState: app start, not sharing mode')
+          // Mark the logic as executed
+          hasExecuted.current = true
         }
       } else {
         log.info('useGlobalAppState: app start, security flow not passed')
@@ -129,9 +141,6 @@ export const useGlobalAppState = ({
     if (!hasExecuted.current) {
       log.info('useGlobalAppState: app start')
       void appStart()
-
-      // Mark the logic as executed
-      hasExecuted.current = true
     }
-  }, [errored, onNavigationRequest, sharingIntentStatus])
+  }, [onNavigationRequest, sharingState])
 }
