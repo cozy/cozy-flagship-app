@@ -97,10 +97,17 @@ class ReactNativeLauncher extends Launcher {
    *
    * @param  {ContentScriptLogMessage} message - log message
    */
-  log({ timestamp, ...logContent }) {
+  log({ timestamp, level, ...logContent }) {
     const context = this.getStartContext()
     const slug = context.konnector.slug // konnector attribute is available before manifest one
+    let newLevel = level
     let jobId
+
+    const allowedLevels = ['debug', 'info', 'warn', 'error']
+    if (!allowedLevels.includes(level)) {
+      newLevel = 'debug'
+    }
+
     if (context.job) {
       jobId = context.job.id
     }
@@ -108,6 +115,7 @@ class ReactNativeLauncher extends Launcher {
       ...logContent,
       slug,
       jobId,
+      level: newLevel,
       timestamp: timestamp ?? new Date().toISOString()
     })
   }
