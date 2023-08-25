@@ -479,7 +479,7 @@ PODS:
     - RNNotifee/NotifeeCore (= 7.8.0)
   - RNNotifee/NotifeeCore (7.8.0):
     - React-Core
-  - RNPermissions (3.8.0):
+  - RNPermissions (3.8.4):
     - React-Core
   - RNScreens (3.18.2):
     - React-Core
@@ -821,7 +821,7 @@ SPEC CHECKSUMS:
   RNKeychain: 4f63aada75ebafd26f4bc2c670199461eab85d94
   RNLocalize: d4b8af4e442d4bcca54e68fc687a2129b4d71a81
   RNNotifee: f3c01b391dd8e98e67f539f9a35a9cbcd3bae744
-  RNPermissions: 5e3c1e142c182af3ea4aded14b0c56b55fdb8ac0
+  RNPermissions: 3af04be11690f3875dc481023279d0de43a19772
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   RNSentry: 85f6525b5fe8d2ada065858026b338605b3c09da
   RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
