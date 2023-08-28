@@ -11,17 +11,31 @@ import {
 } from '/app/domain/backup/queries'
 
 import type CozyClient from 'cozy-client'
+import flag from 'cozy-flags'
 
 export const areAlbumsEnabled = (): boolean => {
   return Platform.OS === 'ios'
 }
 
 export const getAlbums = async (): Promise<Album[]> => {
-  const cameraRollAlbums = await CameraRoll.getAlbums()
+  const shouldIncludeSharedAlbums =
+    flag('flagship.backup.includeSharedAlbums') || false
 
-  const albums = cameraRollAlbums.map(cameraRollAlbum => ({
-    name: cameraRollAlbum.title
-  }))
+  const cameraRollAlbums = await CameraRoll.getAlbums()
+  const albums = cameraRollAlbums
+    .filter(cameraRollAlbum => {
+      if (
+        !shouldIncludeSharedAlbums &&
+        cameraRollAlbum.subtype === 'AlbumCloudShared'
+      ) {
+        return false
+      }
+
+      return true
+    })
+    .map(cameraRollAlbum => ({
+      name: cameraRollAlbum.title
+    }))
 
   return albums
 }

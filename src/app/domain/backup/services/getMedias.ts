@@ -7,6 +7,9 @@ import mime from 'mime/lite'
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 
+import type CozyClient from 'cozy-client'
+import flag from 'cozy-flags'
+
 import { Media, BackupedMedia, Album } from '/app/domain/backup/models'
 import { getLocalBackupConfig } from '/app/domain/backup/services/manageLocalBackupConfig'
 import {
@@ -15,8 +18,6 @@ import {
 } from '/app/domain/backup/helpers'
 import { t } from '/locales/i18n'
 
-import type CozyClient from 'cozy-client'
-
 const MEDIAS_BY_PAGE = 500
 
 type CameraRollCursor = string | undefined
@@ -24,11 +25,16 @@ type CameraRollCursor = string | undefined
 const getPhotoIdentifiersPage = async (
   after: CameraRollCursor
 ): Promise<PhotoIdentifiersPage> => {
+  const shouldIncludeSharedAlbums =
+    flag('flagship.backup.includeSharedAlbums') || false
+
   const photoIdentifiersPage = await CameraRoll.getPhotos({
     first: MEDIAS_BY_PAGE,
     after: after,
-    include: ['filename', 'fileExtension', 'fileSize']
+    include: ['filename', 'fileExtension', 'fileSize'],
+    includeSharedAlbums: shouldIncludeSharedAlbums
   })
+
   return photoIdentifiersPage
 }
 
