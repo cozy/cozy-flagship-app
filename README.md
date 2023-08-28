@@ -202,6 +202,12 @@ To prevent conflict on this, please increase your local `cozy-notes`'s version i
 
 Please make sure that Java 11 is installed and used.
 
+Run :
+
+```
+source ./reset-android.sh
+```
+
 6. Command PhaseScriptExecution failed with a nonzero exit code
 
 When compiling the app from XCode, if you encounter a `Command PhaseScriptExecution failed with a nonzero exit code` error, then your NodeJS configuration may be invalid
