@@ -55,7 +55,7 @@
     "lodash": "^4.17.21",
     "microee": "^0.0.6",
     "mime": "^3.0.0",
-    "patch-package": "^6.4.7",
+    "patch-package": "^8.0.0",
     "post-me": "^0.4.5",
     "postinstall-postinstall": "^2.1.0",
     "react": "17.0.2",
