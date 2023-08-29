@@ -4,7 +4,7 @@ export class BackupError extends Error {
   textMessage: string
   statusCode: number | undefined
 
-  constructor(message: string, statusCode: number | undefined) {
+  constructor(message: string, statusCode?: number) {
     const stringifiedMessage = JSON.stringify({
       message,
       statusCode
@@ -41,6 +41,17 @@ export const isQuotaExceededError = (error: UploadError): boolean => {
   )
 }
 
-export const isFatalError = (error: UploadError): boolean => {
-  return isQuotaExceededError(error)
+export const isFileTooBigError = (error: UploadError): boolean => {
+  return (
+    error.statusCode === 413 &&
+    error.errors[0]?.detail ===
+      'The file is too big and exceeds the filesystem maximum file size'
+  )
+}
+
+export const isCancellationError = (error: UploadError): boolean => {
+  return (
+    error.statusCode === -1 &&
+    error.errors[0]?.detail === 'User cancelled upload'
+  )
 }

@@ -2,18 +2,21 @@ import { Media, BackupedMedia, BackupedAlbum } from '/app/domain/backup/models'
 
 type BackupStatus = 'to_do' | 'initializing' | 'ready' | 'running' | 'done'
 
-interface LastBackupSuccess {
-  status: 'success'
+/**
+ * A local backup config representing the current backup of the device
+ * @member {string} status
+ * @member {number} code
+ * @member {string} message Translated message to display to the user
+ * @member {number} backedUpMediaCount
+ * @member {number} totalMediasToBackupCount
+ */
+export interface LastBackup {
+  status: 'success' | 'partial_success' | 'error'
+  code?: number
+  message?: string
   backedUpMediaCount: number
   totalMediasToBackupCount: number
 }
-
-interface LastBackupError {
-  status: 'error'
-  errorMessage: string
-}
-
-type LastBackup = LastBackupSuccess | LastBackupError
 
 /**
  * A local backup config representing the current backup of the device
