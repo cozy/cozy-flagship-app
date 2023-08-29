@@ -62,6 +62,15 @@ export const handleInitialNotification = async (
 }
 
 export const handleNotificationOpening = (client: CozyClient): (() => void) => {
+  notifee.onBackgroundEvent(async ({ detail }) => {
+    if (detail.notification?.data?.redirectLink) {
+      await navigateFromNotification(
+        client,
+        detail.notification.data.redirectLink as string
+      )
+    }
+  })
+
   return messaging().onNotificationOpenedApp(async notification => {
     if (notification.data?.redirectLink) {
       await navigateFromNotification(client, notification.data.redirectLink)
@@ -95,6 +104,7 @@ export const handleNotificationTokenReceiving = (
 export interface LocalNotification {
   title: string
   body: string
+  data?: undefined | Record<string, string>
 }
 
 export const showLocalNotification = async (
@@ -108,9 +118,13 @@ export const showLocalNotification = async (
   await notifee.displayNotification({
     title: localNotification.title,
     body: localNotification.body,
+    data: localNotification.data,
     android: {
       channelId,
-      smallIcon: 'ic_stat_ic_notification'
+      smallIcon: 'ic_stat_ic_notification',
+      pressAction: {
+        id: 'default'
+      }
     }
   })
 }
