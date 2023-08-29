@@ -6,7 +6,8 @@ import {
   LocalBackupConfig,
   RemoteBackupConfig,
   BackupedMedia,
-  BackupedAlbum
+  BackupedAlbum,
+  LastBackup
 } from '/app/domain/backup/models'
 import { buildFileQuery } from '/app/domain/backup/queries'
 import {
@@ -224,45 +225,15 @@ export const setBackupAsDone = async (client: CozyClient): Promise<void> => {
   log.debug('Backup set as done')
 }
 
-interface SetLastBackupAsSuccessParams {
-  remainingMediaCount: number
-  totalMediasToBackupCount: number
-}
-
-export const setLastBackupAsSuccess = async (
+export const setLastBackup = async (
   client: CozyClient,
-  params: SetLastBackupAsSuccessParams
+  lastBackup: LastBackup
 ): Promise<void> => {
   const localBackupConfig = await getLocalBackupConfig(client)
 
-  localBackupConfig.lastBackup = {
-    status: 'success',
-    backedUpMediaCount:
-      params.totalMediasToBackupCount - params.remainingMediaCount,
-    totalMediasToBackupCount: params.totalMediasToBackupCount
-  }
+  localBackupConfig.lastBackup = lastBackup
 
   await setLocalBackupConfig(client, localBackupConfig)
 
-  log.debug('Backup success')
-}
-
-interface SetLastBackupAsErrorParams {
-  errorMessage: string
-}
-
-export const setLastBackupAsError = async (
-  client: CozyClient,
-  params: SetLastBackupAsErrorParams
-): Promise<void> => {
-  const localBackupConfig = await getLocalBackupConfig(client)
-
-  localBackupConfig.lastBackup = {
-    status: 'error',
-    errorMessage: params.errorMessage
-  }
-
-  await setLocalBackupConfig(client, localBackupConfig)
-
-  log.debug('Backup error')
+  log.debug('Last backup set')
 }

@@ -8,8 +8,7 @@ import {
   setBackupAsReady,
   setBackupAsRunning,
   setBackupAsDone,
-  setLastBackupAsSuccess,
-  setLastBackupAsError,
+  setLastBackup,
   saveAlbums,
   updateRemoteBackupConfigLocally
 } from '/app/domain/backup/services/manageLocalBackupConfig'
@@ -107,30 +106,68 @@ export const startBackup = async (
   activateKeepAwake('backup')
 
   try {
-    await uploadMedias(client, localBackupConfig, onProgress)
+    const partialSuccessMessage = await uploadMedias(
+      client,
+      localBackupConfig,
+      onProgress
+    )
 
     const postUploadLocalBackupConfig = await getLocalBackupConfig(client)
 
-    await setLastBackupAsSuccess(client, {
-      remainingMediaCount:
-        postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
-      totalMediasToBackupCount:
-        postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
-    })
+    if (partialSuccessMessage) {
+      await setLastBackup(client, {
+        status: 'partial_success',
+        backedUpMediaCount:
+          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
+          postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
+        totalMediasToBackupCount:
+          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount,
+        message: partialSuccessMessage
+      })
+    } else {
+      await setLastBackup(client, {
+        status: 'success',
+        backedUpMediaCount:
+          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
+          postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
+        totalMediasToBackupCount:
+          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
+      })
+    }
 
     await showLocalNotification({
       title: t('services.backup.notifications.backupSuccessTitle'),
       body: t('services.backup.notifications.backupSuccessBody', {
-        count:
+        backedUpMediaCount:
           postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
-          postUploadLocalBackupConfig.currentBackup.mediasToBackup.length
+          postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
+        totalMediasToBackupCount:
+          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
       })
     })
   } catch (e) {
+    const postUploadLocalBackupConfig = await getLocalBackupConfig(client)
     if (e instanceof BackupError) {
-      await setLastBackupAsError(client, { errorMessage: e.textMessage })
+      await setLastBackup(client, {
+        status: 'error',
+        code: e.statusCode,
+        backedUpMediaCount:
+          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
+          postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
+        totalMediasToBackupCount:
+          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount,
+        message: e.textMessage
+      })
     } else {
-      throw e
+      await setLastBackup(client, {
+        status: 'error',
+        backedUpMediaCount:
+          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
+          postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
+        totalMediasToBackupCount:
+          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount,
+        message: t('services.backup.errors.unknownIssue')
+      })
     }
   }
 
@@ -159,8 +196,6 @@ export const stopBackup = async (client: CozyClient): Promise<BackupInfo> => {
   if (uploadId) {
     await cancelUpload(uploadId)
   }
-
-  await setBackupAsReady(client)
 
   return await getBackupInfo(client)
 }

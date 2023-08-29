@@ -1,10 +1,7 @@
 /* eslint-disable promise/always-return */
 
 import { uploadMedia } from '/app/domain/backup/services/uploadMedia'
-import {
-  setBackupAsReady,
-  setMediaAsBackuped
-} from '/app/domain/backup/services/manageLocalBackupConfig'
+import { setMediaAsBackuped } from '/app/domain/backup/services/manageLocalBackupConfig'
 import { getDeviceId } from '/app/domain/backup/services/manageRemoteBackupConfig'
 import {
   Media,
@@ -14,10 +11,11 @@ import {
 import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
 import {
   BackupError,
-  isFatalError,
   isUploadError,
   isMetadataExpiredError,
-  isQuotaExceededError
+  isQuotaExceededError,
+  isFileTooBigError,
+  isCancellationError
 } from '/app/domain/backup/helpers/error'
 import { areAlbumsEnabled } from '/app/domain/backup/services/manageAlbums'
 import { t } from '/locales/i18n'
@@ -47,7 +45,7 @@ export const uploadMedias = async (
   client: CozyClient,
   localBackupConfig: LocalBackupConfig,
   onProgress: ProgressCallback
-): Promise<void> => {
+): Promise<string | undefined> => {
   const {
     currentBackup: { mediasToBackup: mediasToUpload }
   } = localBackupConfig
@@ -56,10 +54,12 @@ export const uploadMedias = async (
 
   let lastUploadedDocument
 
+  let firstPartialSuccessMessage: string | undefined
+
   for (const mediaToUpload of mediasToUpload) {
     if (shouldStopBackup) {
       shouldStopBackup = false
-      return
+      return t('services.backup.errors.backupStopped')
     }
 
     try {
@@ -77,51 +77,45 @@ export const uploadMedias = async (
       log.debug(error)
 
       if (error instanceof NetworkError) {
-        throw new BackupError(
-          t('services.backup.errors.networkIssue'),
-          undefined
-        )
+        throw new BackupError(t('services.backup.errors.networkIssue'))
       }
 
-      if (!isUploadError(error)) {
-        throw error
-      }
-
-      if (isMetadataExpiredError(error)) {
-        commonMetadataId = await getCommonMetadataId(client)
-
-        lastUploadedDocument = await prepareAndUploadMedia(
-          client,
-          localBackupConfig,
-          mediaToUpload,
-          commonMetadataId,
-          lastUploadedDocument
-        )
-      }
-
-      if (isFatalError(error)) {
-        await setBackupAsReady(client)
-
-        void onProgress(await getBackupInfo(client))
-
+      if (isUploadError(error)) {
         if (isQuotaExceededError(error)) {
           throw new BackupError(
             t('services.backup.errors.quotaExceeded'),
             error.statusCode
           )
-        } else {
-          throw new BackupError(
-            t('services.backup.errors.unknownIssue'),
-            error.statusCode
+        } else if (isFileTooBigError(error)) {
+          firstPartialSuccessMessage =
+            firstPartialSuccessMessage ?? t('services.backup.errors.fileTooBig')
+        } else if (isMetadataExpiredError(error)) {
+          commonMetadataId = await getCommonMetadataId(client)
+
+          lastUploadedDocument = await prepareAndUploadMedia(
+            client,
+            localBackupConfig,
+            mediaToUpload,
+            commonMetadataId,
+            lastUploadedDocument
           )
+        } else if (isCancellationError(error)) {
+          shouldStopBackup = false
+          return t('services.backup.errors.backupStopped')
+        } else {
+          firstPartialSuccessMessage =
+            firstPartialSuccessMessage ??
+            t('services.backup.errors.unknownIssue')
         }
+      } else {
+        throw new BackupError(t('services.backup.errors.unknownIssue'))
       }
     }
 
     void onProgress(await getBackupInfo(client))
   }
 
-  return
+  return firstPartialSuccessMessage
 }
 
 const prepareAndUploadMedia = async (

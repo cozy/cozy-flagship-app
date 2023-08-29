@@ -96,10 +96,13 @@
         "onCancelledTitle": "Sauvegarde arrêtée",
         "onCancelledMessage": "Votre sauvegarde a été arrêtée. Ouvrez l'app pour la reprendre",
         "backupSuccessTitle": "Sauvegarde photo & vidéo",
-        "backupSuccessBody": "Votre sauvegarde est terminée ! {{count}} élément(s) sauvegardé(s)"
+        "backupSuccessBody": "Votre sauvegarde est terminée ! {{backedUpMediaCount}}/{{totalMediasToBackupCount}} élément(s) sauvegardé(s)"
       },
       "errors": {
+        "appKilled": "Application arrêtée",
+        "backupStopped": "Sauvegarde arrêtée",
         "fileNotFound": "Fichier non trouvé",
+        "fileTooBig": "Fichier trop volumineux",
         "fileNotSupported": "Fichier non supporté pour la sauvegarde",
         "platformNotSupported": "Plateforme non supportée pour la sauvegarde",
         "configNotInitialized": "Configuration locale de sauvegarde non initialisée",

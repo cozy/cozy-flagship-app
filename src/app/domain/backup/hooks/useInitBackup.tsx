@@ -4,8 +4,10 @@ import { useClient } from 'cozy-client'
 
 import {
   getLocalBackupConfig,
-  setBackupAsToDo
+  setBackupAsDone,
+  setLastBackup
 } from '/app/domain/backup/services/manageLocalBackupConfig'
+import { t } from '/locales/i18n'
 
 import Minilog from 'cozy-minilog'
 
@@ -24,8 +26,17 @@ export const useInitBackup = (): void => {
         const backupConfig = await getLocalBackupConfig(client)
 
         if (backupConfig.currentBackup.status === 'running') {
-          log.debug('A running backup has been set as to do.')
-          await setBackupAsToDo(client)
+          log.debug('A running backup has been found at startup.')
+          await setBackupAsDone(client)
+          await setLastBackup(client, {
+            status: 'error',
+            backedUpMediaCount:
+              backupConfig.currentBackup.totalMediasToBackupCount -
+              backupConfig.currentBackup.mediasToBackup.length,
+            totalMediasToBackupCount:
+              backupConfig.currentBackup.totalMediasToBackupCount,
+            message: t('services.backup.errors.appKilled')
+          })
         }
       } catch {
         /* empty */

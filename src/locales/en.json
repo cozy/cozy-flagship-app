@@ -91,10 +91,13 @@
         "onCancelledTitle": "Backup canceled",
         "onCancelledMessage": "Open the app to resume the process",
         "backupSuccessTitle": "Photo & video backup",
-        "backupSuccessBody": "Your backup is complete! {{count}} saved item(s) "
+        "backupSuccessBody": "Your backup is complete! {{backedUpMediaCount}}/{{totalMediasToBackupCount}} saved item(s) "
       },
       "errors": {
+        "appKilled": "App killed",
+        "backupStopped": "Backup stopped",
         "fileNotFound": "File not found",
+        "fileTooBig": "File too big",
         "fileNotSupported": "File not supported for backup",
         "platformNotSupported": "Platform not supported for backup",
         "configNotInitialized": "Local backup config not initialized",
