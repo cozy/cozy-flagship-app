@@ -207,3 +207,14 @@ Please make sure that Java 11 is installed and used.
 When compiling the app from XCode, if you encounter a `Command PhaseScriptExecution failed with a nonzero exit code` error, then your NodeJS configuration may be invalid
 If using NVM, then ensure that `/usr/local/bin/node` is correctly linked to your NVM default NodeJS location
 More info: https://github.com/facebook/react-native/issues/32984#issuecomment-1165385007
+
+7. `Installed Build Tools revision 33.0.0 is corrupted. Remove and install again using the SDK Manager.`
+
+Run commands below. [More information](https://github.com/cozy/cozy-flagship-app/commit/d76e130220a87947313f7a17da8f3d9b59f704e6).
+
+```
+cd $ANDROID_HOME/build-tools/33.0.0
+mv d8 dx
+cd lib
+mv d8.jar dx.jar
+```
