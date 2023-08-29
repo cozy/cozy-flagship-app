@@ -70,8 +70,23 @@
   "services": {
     "backup": {
       "backupRootName": "Copiado desde mi móvil",
+      "notifications": {
+        "onProgressTitle": "Subiendo",
+        "onProgressMessage": "{{filename}} se está subiendo",
+        "onCompleteTitle": "Subida finalizada",
+        "onCompleteMessage": "{{filename}} se ha subido",
+        "onErrorTitle": "Oops",
+        "onErrorMessage": "Tu copia de seguridad ha encontrado un error. Abre la aplicación para ver más detalles",
+        "onCancelledTitle": "Copia de seguridad cancelada",
+        "onCancelledMessage": "Abre la app para reanudar el proceso",
+        "backupSuccessTitle": "Copia de seguridad de fotos y vídeos",
+        "backupSuccessBody": "¡Tu copia de seguridad ha finalizado! {{backedUpMediaCount}}/{{totalMediasToBackupCount}} elemento(s) guardado(s)"
+      },
       "errors": {
+        "appKilled": "App asesinada",
+        "backupStopped": "Copia de seguridad detenida",
         "fileNotFound": "Archivo no encontrado",
+        "fileTooBig": "Fichero demasiado grande",
         "fileNotSupported": "Archivo no compatible con la copia de seguridad",
         "platformNotSupported": "Plataforma no compatible con la copia de seguridad",
         "configNotInitialized": "Configuración de copia de seguridad local no inicializada",
