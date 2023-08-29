@@ -14,12 +14,10 @@ describe('navigateFromNotification', () => {
 
   it('should navigate to app to generated url', async () => {
     // Given
-    const notification = {
-      data: { redirectLink: 'contacts/#/new' }
-    }
+    const redirectLink = 'contacts/#/new'
 
     // When
-    await navigateFromNotification(client, notification)
+    await navigateFromNotification(client, redirectLink)
 
     // Then
     expect(navigateToApp).toHaveBeenCalledWith({
@@ -28,16 +26,5 @@ describe('navigateFromNotification', () => {
       slug: 'contacts',
       iconParams: undefined
     })
-  })
-
-  it('should do nothing if no data in notification', async () => {
-    // Given
-    const notification = {}
-
-    // When
-    await navigateFromNotification(client, notification)
-
-    // Then
-    expect(navigateToApp).not.toHaveBeenCalled()
   })
 })
