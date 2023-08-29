@@ -11,14 +11,16 @@ export enum SharingActionType {
   SetFilesToUpload = 'SET_FILES_TO_UPLOAD',
   SetRouteToUpload = 'SET_ROUTE_TO_UPLOAD',
   SetFlowErrored = 'SET_FLOW_ERRORED',
-  SetRecoveryState = 'SET_RECOVERY_STATE'
+  SetRecoveryState = 'SET_RECOVERY_STATE',
+  SetFileUploaded = 'SET_FILE_UPLOADED'
 }
 
 export interface SharingState {
   sharingIntentStatus: SharingIntentStatus
   filesToUpload: ReceivedFile[]
-  routeToUpload?: { href: string; slug: string }
+  routeToUpload: { href?: string; slug?: string }
   errored: boolean
+  filesUploaded: ReceivedFile[]
 }
 
 export type SharingAction =
@@ -30,6 +32,7 @@ export type SharingAction =
     }
   | { type: SharingActionType.SetFlowErrored; payload: boolean }
   | { type: SharingActionType.SetRecoveryState }
+  | { type: SharingActionType.SetFileUploaded; payload: ReceivedFile }
 
 export interface ServiceResponse<T> {
   result?: T
@@ -39,6 +42,6 @@ export interface ServiceResponse<T> {
 export interface SharingApi {
   getFilesToUpload: () => Promise<ReceivedFile[]>
   hasFilesToHandle: () => Promise<boolean>
-  uploadFiles: (arg: string) => Promise<void>
-  resetFilesToHandle: () => Promise<void>
+  uploadFiles: (arg: string) => Promise<boolean>
+  resetFilesToHandle: () => Promise<boolean>
 }

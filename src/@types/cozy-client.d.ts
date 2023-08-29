@@ -32,6 +32,7 @@ declare module 'cozy-client' {
   interface AccessToken {
     token_type: string
     access_token: string
+    accessToken?: string
     refresh_token: string
     scope: string
   }

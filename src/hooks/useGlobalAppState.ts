@@ -138,7 +138,10 @@ export const useGlobalAppState = ({
       }
     }
 
-    if (!hasExecuted.current) {
+    if (
+      !hasExecuted.current &&
+      sharingState.sharingIntentStatus !== SharingIntentStatus.Undetermined
+    ) {
       log.info('useGlobalAppState: app start')
       void appStart()
     }

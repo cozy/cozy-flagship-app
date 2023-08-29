@@ -31,18 +31,23 @@ export const sharingReducer = (
       nextState = { ...state, filesToUpload: action.payload }
       break
     case SharingActionType.SetRouteToUpload:
-      if (state.routeToUpload?.slug === action.payload.slug) return state
+      if (state.routeToUpload.slug === action.payload.slug) return state
       nextState = { ...state, routeToUpload: action.payload }
       break
     case SharingActionType.SetFlowErrored: {
       nextState = { ...state, errored: action.payload }
       break
     }
-    case SharingActionType.SetRecoveryState:
+    case SharingActionType.SetFileUploaded: {
       nextState = {
         ...state,
-        filesToUpload: [],
-        routeToUpload: undefined,
+        filesUploaded: [...state.filesUploaded, action.payload]
+      }
+      break
+    }
+    case SharingActionType.SetRecoveryState:
+      nextState = {
+        ...initialState,
         sharingIntentStatus: SharingIntentStatus.NotOpenedViaSharing
       }
       break
@@ -60,8 +65,9 @@ export const sharingReducer = (
 export const initialState: SharingState = {
   sharingIntentStatus: SharingIntentStatus.Undetermined,
   filesToUpload: [],
-  routeToUpload: undefined,
-  errored: false
+  routeToUpload: {},
+  errored: false,
+  filesUploaded: []
 }
 
 export const useSharingState = (): SharingState => {
