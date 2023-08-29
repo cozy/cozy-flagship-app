@@ -47,7 +47,7 @@ describe('SharingProvider', () => {
     ;(handleReceivedFiles as jest.Mock).mockImplementation(callback => {
       mockReceivedFilesCallback()
       const mockCallback = callback as (files: ReceivedFile[]) => void
-      mockCallback([{ filePath: 'test-file' }])
+      mockCallback([{ filePath: 'test-file' } as ReceivedFile])
     })
     ;(handleSharing as jest.Mock).mockImplementation(callback => {
       mockSharingCallback()

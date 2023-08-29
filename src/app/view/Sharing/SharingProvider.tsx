@@ -1,5 +1,5 @@
 import { useNavigation, useNavigationState } from '@react-navigation/native'
-import React, { useReducer, useEffect, useCallback } from 'react'
+import React, { useReducer, useEffect } from 'react'
 
 import { useClient, useQuery } from 'cozy-client'
 
@@ -38,18 +38,6 @@ export const SharingProvider = ({
     fetchSharingCozyApps.options
   ) as { data?: SharingCozyApp[] | [] }
 
-  const isProcessed = useCallback(
-    (): boolean => state.filesToUpload.length > 1 || state.errored,
-    [state.filesToUpload, state.errored]
-  )
-  const hasData = useCallback(
-    (): boolean =>
-      Boolean(
-        state.filesToUpload.length > 0 && client && data && data.length > 0
-      ),
-    [client, data, state.filesToUpload]
-  )
-
   // This effect is triggered at mount and unmount of the provider,
   // its role is to listen native events and update the state accordingly
   useEffect(() => {
@@ -75,7 +63,7 @@ export const SharingProvider = ({
 
   // Fetches the route of the cozy-app that will handle the sharing intent
   useEffect(() => {
-    if (isProcessed() || !hasData()) return
+    if (state.filesToUpload.length === 0 || state.routeToUpload.href) return
     const { result, error } = getRouteToUpload(data, client)
 
     if (error) {
@@ -83,7 +71,7 @@ export const SharingProvider = ({
     } else if (result !== undefined) {
       dispatch({ type: SharingActionType.SetRouteToUpload, payload: result })
     }
-  }, [client, data, handleError, hasData, isProcessed])
+  }, [client, data, handleError, state])
 
   // If an error is detected, we handle that by abandoning the flow.
   // The user will be redirected to the home screen and the sharing mode is ended until next file sharing.
@@ -103,7 +91,7 @@ export const SharingProvider = ({
     navigationState?.index,
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     navigationState?.routes,
-    state.errored,
+    state,
     t
   ])
 
