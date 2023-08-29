@@ -1,6 +1,4 @@
-import messaging, {
-  FirebaseMessagingTypes
-} from '@react-native-firebase/messaging'
+import messaging from '@react-native-firebase/messaging'
 
 import Minilog from 'cozy-minilog'
 
@@ -18,16 +16,10 @@ import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 const log = Minilog('notifications')
 
-interface NotificationData {
-  redirectLink: string
-}
-
 export const navigateFromNotification = async (
   client: CozyClient,
-  notification: FirebaseMessagingTypes.RemoteMessage
+  redirectLink: string
 ): Promise<void> => {
-  const { data: { redirectLink } = {} as NotificationData } = notification
-
   try {
     const { slug, pathname, hash } = deconstructRedirectLink(redirectLink)
 
@@ -62,16 +54,18 @@ export const navigateFromNotification = async (
 export const handleInitialNotification = async (
   client: CozyClient
 ): Promise<void> => {
-  const initialNotification = await messaging().getInitialNotification()
+  const notification = await messaging().getInitialNotification()
 
-  if (initialNotification) {
-    await navigateFromNotification(client, initialNotification)
+  if (notification?.data?.redirectLink) {
+    await navigateFromNotification(client, notification.data.redirectLink)
   }
 }
 
 export const handleNotificationOpening = (client: CozyClient): (() => void) => {
   return messaging().onNotificationOpenedApp(async notification => {
-    await navigateFromNotification(client, notification)
+    if (notification.data?.redirectLink) {
+      await navigateFromNotification(client, notification.data.redirectLink)
+    }
   })
 }
 
