@@ -40,6 +40,11 @@ import { PermissionsChecker } from '/app/domain/nativePermissions/components/Per
 import { useGeolocationTracking } from '/app/domain/geolocation/hooks/tracking'
 import { SharingProvider } from '/app/view/sharing/SharingProvider'
 import { ErrorProvider } from '/app/view/Error/ErrorProvider'
+import { sharingApi } from '/app/domain/sharing/services/SharingApi'
+import {
+  useSharingDispatch,
+  useSharingState
+} from '/app/view/Sharing/SharingState'
 import { useSharingApi } from '/app/view/Sharing/useSharingApi'
 
 // Polyfill needed for cozy-client connection
@@ -59,6 +64,7 @@ const App = ({ setClient }) => {
   useNetService(client)
   useInitI18n(client)
   useInitBackup(client)
+  useSharingApi()
 
   const { initialRoute, isLoading } = useAppBootstrap(client)
 
@@ -84,11 +90,16 @@ const App = ({ setClient }) => {
 // eslint-disable-next-line react/display-name
 const InnerNav = ({ client, setClient }) => {
   const colors = getColors()
-  const sharingApi = useSharingApi()
+  const sharingState = useSharingState()
+  const sharingDispatch = useSharingDispatch()
+
   const localMethodsMemoized = useMemo(() => {
-    if (!client || !sharingApi) return null
-    return localMethods(client, sharingApi)
-  }, [client, sharingApi])
+    if (!client) return null
+    return localMethods(
+      client,
+      sharingApi(client, sharingState, sharingDispatch)
+    )
+  }, [client, sharingDispatch, sharingState])
 
   return (
     <NativeIntentProvider localMethods={localMethodsMemoized}>

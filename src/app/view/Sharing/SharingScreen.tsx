@@ -17,7 +17,11 @@ export const SharingScreen = (): JSX.Element => {
 
   // Open the cozy-app that will handle the sharing intent
   useEffect(() => {
-    if (sharingState.routeToUpload === undefined) return
+    if (
+      sharingState.routeToUpload.href === undefined ||
+      sharingState.routeToUpload.slug === undefined
+    )
+      return
 
     navigation.goBack()
     navigation.navigate(Routes.cozyapp, {
@@ -25,21 +29,16 @@ export const SharingScreen = (): JSX.Element => {
       slug: sharingState.routeToUpload.slug,
       iconParams: getDefaultIconParams()
     })
-  }, [navigation, sharingState])
+  }, [
+    navigation,
+    sharingState.routeToUpload.href,
+    sharingState.routeToUpload.slug
+  ])
 
   return (
     <Container>
       <Grid>
-        {sharingState.filesToUpload.length > 0 ? (
-          sharingState.filesToUpload.map((file, index) => (
-            <Typography key={index} variant="h3">
-              <Typography>File: {file.fileName}</Typography>
-              <Typography>{JSON.stringify(file, null, 2)}</Typography>
-            </Typography>
-          ))
-        ) : (
-          <Typography>...loading</Typography>
-        )}
+        <Typography>...loading</Typography>
       </Grid>
     </Container>
   )
