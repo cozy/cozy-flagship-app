@@ -143,7 +143,10 @@ export const startBackup = async (
           postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
         totalMediasToBackupCount:
           postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
-      })
+      }),
+      data: {
+        redirectLink: 'photos/#/backup'
+      }
     })
   } catch (e) {
     const postUploadLocalBackupConfig = await getLocalBackupConfig(client)
