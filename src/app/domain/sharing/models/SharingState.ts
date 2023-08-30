@@ -41,7 +41,15 @@ export interface ServiceResponse<T> {
 
 export interface SharingApi {
   getFilesToUpload: () => Promise<ReceivedFile[]>
-  hasFilesToHandle: () => Promise<boolean>
+  hasFilesToHandle: () => Promise<UploadStatus>
   uploadFiles: (arg: string) => Promise<boolean>
   resetFilesToHandle: () => Promise<boolean>
+}
+
+export interface UploadStatus {
+  filesToHandle: SharingState['filesToUpload']
+  remainingFiles: number
+  totalFiles: number
+  uploadedFiles: SharingState['filesUploaded']
+  uploading: boolean
 }
