@@ -1,6 +1,6 @@
 import CozyClient from 'cozy-client'
 
-import { SharingCozyApp } from '/app/domain/sharing/models/SharingCozyApp'
+import { OsReceiveCozyApp } from '/app/domain/sharing/models/SharingCozyApp'
 import { getRouteToUpload } from '/app/domain/sharing/services/SharingNetwork'
 
 describe('getRouteToUpload', () => {
@@ -21,7 +21,7 @@ describe('getRouteToUpload', () => {
   })
 
   it('returns empty object if no matching app is found', () => {
-    const cozyApps = [{ slug: 'wrong-app' } as SharingCozyApp]
+    const cozyApps = [{ slug: 'wrong-app' } as OsReceiveCozyApp]
 
     const result = getRouteToUpload(cozyApps, mockCozyClient)
     expect(result).toEqual({})
@@ -39,7 +39,7 @@ describe('getRouteToUpload', () => {
             route_to_upload: '/upload-route'
           }
         }
-      } as SharingCozyApp
+      } as OsReceiveCozyApp
     ]
     const result = getRouteToUpload(cozyApps, mockCozyClient, 'drive')
     expect(result).toEqual({
@@ -52,7 +52,7 @@ describe('getRouteToUpload', () => {
 
   it('handles an error gracefully', () => {
     const brokenClient = new CozyClient({ uri: undefined })
-    const cozyApps = [{ slug: 'drive' } as SharingCozyApp]
+    const cozyApps = [{ slug: 'drive' } as OsReceiveCozyApp]
     const result = getRouteToUpload(cozyApps, brokenClient)
     expect(result).toEqual({ error: 'Error determining route to upload.' })
   })

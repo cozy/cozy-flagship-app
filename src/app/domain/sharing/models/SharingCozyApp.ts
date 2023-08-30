@@ -1,4 +1,4 @@
-export interface SharingCozyApp {
+export interface OsReceiveCozyApp {
   _id: string
   _type: string
   accept_documents_from_flagship?: {

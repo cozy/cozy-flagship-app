@@ -2,11 +2,11 @@ import { useEffect } from 'react'
 
 import { useNativeIntent } from 'cozy-intent'
 
-import { useSharingState } from '/app/view/Sharing/SharingState'
-import { sharingLogger } from '/app/domain/sharing'
+import { useOsReceiveState } from '/app/view/Sharing/SharingState'
+import { OsReceiveLogger } from '/app/domain/sharing'
 
-export const useSharingApi = (): void => {
-  const state = useSharingState()
+export const useOsReceiveApi = (): void => {
+  const state = useOsReceiveState()
   const nativeIntent = useNativeIntent()
 
   useEffect(() => {
@@ -14,7 +14,7 @@ export const useSharingApi = (): void => {
     const isLast = state.filesUploaded.length === state.filesToUpload.length
 
     const onUploaded = async (): Promise<void> => {
-      sharingLogger.info('onUploaded called')
+      OsReceiveLogger.info('onUploaded called')
 
       try {
         const res = await nativeIntent.call(
@@ -23,9 +23,9 @@ export const useSharingApi = (): void => {
           state.filesUploaded[state.filesUploaded.length - 1],
           isLast ? state.filesUploaded.length : undefined
         )
-        sharingLogger.info('onUploaded res', res)
+        OsReceiveLogger.info('onUploaded res', res)
       } catch (error) {
-        sharingLogger.error('onUploaded error', error)
+        OsReceiveLogger.error('onUploaded error', error)
       }
     }
 

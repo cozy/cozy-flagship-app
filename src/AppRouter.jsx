@@ -11,7 +11,7 @@ import { ManagerScreen } from '/app/view/Manager/ManagerScreen'
 import { OnboardingScreen } from '/screens/login/OnboardingScreen'
 import { WelcomeScreen } from '/screens/welcome/WelcomeScreen'
 import { routes } from '/constants/routes'
-import { SharingScreen } from '/app/view/Sharing/SharingScreen'
+import { OsReceiveScreen } from '/app/view/Sharing/SharingScreen'
 import { PasswordPrompt } from '/app/view/Secure/PasswordPrompt'
 import { PinPrompt } from '/app/view/Secure/PinPrompt'
 import { SetPasswordView } from '/app/view/Secure/SetPasswordView'
@@ -85,8 +85,8 @@ export const RootNavigator = ({ initialRoute, setClient }) => (
     />
 
     <Root.Screen
-      name={routes.sharing}
-      component={SharingScreen}
+      name={routes.osReceive}
+      component={OsReceiveScreen}
       options={{
         presentation: 'transparentModal',
         animationEnabled: false

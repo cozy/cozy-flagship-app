@@ -1,9 +1,9 @@
-import ReceiveSharingIntent from '@mythologi/react-native-receive-sharing-intent'
+import OsReceiveIntent from '@mythologi/react-native-receive-sharing-intent'
 
-import { sharingLogger } from '/app/domain/sharing'
+import { OsReceiveLogger } from '/app/domain/sharing'
 import {
   ReceivedFile,
-  SHARING_PROTOCOL_NAME
+  OS_RECEIVE_PROTOCOL_NAME
 } from '/app/domain/sharing/models/ReceivedFile'
 
 const getDeduplicationKey = (file: ReceivedFile): string | null => {
@@ -13,7 +13,7 @@ const getDeduplicationKey = (file: ReceivedFile): string | null => {
 const processReceivedFiles = (
   files: ReceivedFile[]
 ): Map<string, ReceivedFile> => {
-  sharingLogger.info('Processing received files', files)
+  OsReceiveLogger.info('Processing received files', files)
 
   const filesToUpload = new Map<string, ReceivedFile>()
 
@@ -21,10 +21,10 @@ const processReceivedFiles = (
     const key = getDeduplicationKey(file)
 
     if (key && !filesToUpload.has(key)) {
-      sharingLogger.info('Adding file to upload', file)
+      OsReceiveLogger.info('Adding file to upload', file)
       filesToUpload.set(key, file)
     } else {
-      sharingLogger.info('File already added', file)
+      OsReceiveLogger.info('File already added', file)
     }
   }
 
@@ -41,7 +41,7 @@ const onReceiveFiles = (
   files: ReceivedFile[],
   callback?: (files: ReceivedFile[]) => void
 ): void => {
-  sharingLogger.info('Received files', files)
+  OsReceiveLogger.info('Received files', files)
   const processedFilesMap = processReceivedFiles(files)
   const filesArray = mapFilesToUploadToArray(processedFilesMap)
 
@@ -49,7 +49,7 @@ const onReceiveFiles = (
 }
 
 const onFailure = (error: unknown): void => {
-  sharingLogger.error('Could not get received files', error)
+  OsReceiveLogger.error('Could not get received files', error)
 }
 
 type FileCallback = (files: ReceivedFile[]) => void
@@ -58,13 +58,13 @@ type CleanupFunction = () => void
 export const handleReceivedFiles = (
   callback?: FileCallback
 ): CleanupFunction => {
-  ReceiveSharingIntent.getReceivedFiles(
+  OsReceiveIntent.getReceivedFiles(
     files => onReceiveFiles(files as ReceivedFile[], callback),
     onFailure,
-    SHARING_PROTOCOL_NAME
+    OS_RECEIVE_PROTOCOL_NAME
   )
 
   return () => {
-    ReceiveSharingIntent.clearReceivedFiles()
+    OsReceiveIntent.clearReceivedFiles()
   }
 }

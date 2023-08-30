@@ -5,34 +5,34 @@ import {
   Platform
 } from 'react-native'
 
-import { SharingIntentStatus } from '/app/domain/sharing/models/SharingState'
-import { sharingLogger } from '/app/domain/sharing'
+import { OsReceiveIntentStatus } from '/app/domain/sharing/models/SharingState'
+import { OsReceiveLogger } from '/app/domain/sharing'
 
-type handleSharingCallback = (status: SharingIntentStatus) => void
-type handleSharingCleanupFn = () => void
+type handleOsReceiveCallback = (status: OsReceiveIntentStatus) => void
+type handleOsReceiveCleanupFn = () => void
 
-export const handleSharing = (
-  setStatus: handleSharingCallback
-): handleSharingCleanupFn => {
+export const handleOsReceive = (
+  setStatus: handleOsReceiveCallback
+): handleOsReceiveCleanupFn => {
   const nativeModule = NativeModules as {
     SharingIntentModule?: { wasAppOpenedViaSharing: () => Promise<boolean> }
   }
 
-  const handleSharingIntent = (event: { url: string } | boolean): void => {
-    let isSharing = false
+  const handleOsReceiveIntent = (event: { url: string } | boolean): void => {
+    let isOsReceive = false
     const isAndroid = typeof event === 'boolean'
 
     if (isAndroid) {
-      isSharing = event
+      isOsReceive = event
     } else if (event.url) {
-      isSharing = true
+      isOsReceive = true
     }
 
-    const newStatus = isSharing
-      ? SharingIntentStatus.OpenedViaSharing
-      : SharingIntentStatus.NotOpenedViaSharing
+    const newStatus = isOsReceive
+      ? OsReceiveIntentStatus.OpenedViaOsReceive
+      : OsReceiveIntentStatus.NotOpenedViaOsReceive
 
-    sharingLogger.info(
+    OsReceiveLogger.info(
       `App was opened or resumed via sharing, setting status to ${newStatus}`
     )
 
@@ -40,9 +40,9 @@ export const handleSharing = (
   }
 
   nativeModule.SharingIntentModule?.wasAppOpenedViaSharing()
-    .then(handleSharingIntent)
+    .then(handleOsReceiveIntent)
     .catch(error => {
-      sharingLogger.error(
+      OsReceiveLogger.error(
         'Failed to check if app was opened via sharing',
         error
       )
@@ -52,18 +52,18 @@ export const handleSharing = (
     Platform.OS === 'android' &&
     DeviceEventEmitter.addListener(
       'APP_OPENED_VIA_SHARING',
-      handleSharingIntent
+      handleOsReceiveIntent
     )
 
   const onResume =
     Platform.OS === 'android' &&
     DeviceEventEmitter.addListener(
       'APP_RESUMED_WITH_SHARING',
-      handleSharingIntent
+      handleOsReceiveIntent
     )
 
   const handleLinkingEvent = (event: { url: string }): void => {
-    handleSharingIntent(event)
+    handleOsReceiveIntent(event)
   }
 
   const iOSonOpenResume =
