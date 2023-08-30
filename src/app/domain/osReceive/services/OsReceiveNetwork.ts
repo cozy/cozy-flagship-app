@@ -8,12 +8,13 @@ import { OsReceiveCozyApp } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import { ServiceResponse } from '/app/domain/osReceive/models/OsReceiveState'
 
 export const fetchOsReceiveCozyApps = {
-  definition: Q('io.cozy.apps').where({
-    'accept_documents_from_flagship.route_to_upload': { $exists: true },
-    accept_from_flagship: true
-  }),
+  definition: Q('io.cozy.apps')
+    .where({
+      accept_from_flagship: true
+    })
+    .indexFields(['accept_from_flagship']),
   options: {
-    as: 'io.cozy.apps/fetchSharingCozyApps'
+    as: 'io.cozy.apps/accept_from_flagship'
   }
 }
 
