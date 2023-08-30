@@ -1,87 +1,89 @@
 import { createContext, Dispatch, useContext } from 'react'
 
-import { sharingLogger } from '/app/domain/sharing'
+import { OsReceiveLogger } from '/app/domain/sharing'
 import {
-  SharingState,
-  SharingAction,
-  SharingActionType,
-  SharingIntentStatus
+  OsReceiveState,
+  OsReceiveAction,
+  OsReceiveActionType,
+  OsReceiveIntentStatus
 } from '/app/domain/sharing/models/SharingState'
 
-export const SharingStateContext = createContext<SharingState | undefined>(
+export const OsReceiveStateContext = createContext<OsReceiveState | undefined>(
   undefined
 )
-export const SharingDispatchContext = createContext<
-  Dispatch<SharingAction> | undefined
+export const OsReceiveDispatchContext = createContext<
+  Dispatch<OsReceiveAction> | undefined
 >(undefined)
 
-export const sharingReducer = (
-  state: SharingState,
-  action: SharingAction
-): SharingState => {
+export const osReceiveReducer = (
+  state: OsReceiveState,
+  action: OsReceiveAction
+): OsReceiveState => {
   let nextState = state
 
   switch (action.type) {
-    case SharingActionType.SetIntentStatus:
-      if (state.sharingIntentStatus === action.payload) return state
-      nextState = { ...state, sharingIntentStatus: action.payload }
+    case OsReceiveActionType.SetIntentStatus:
+      if (state.OsReceiveIntentStatus === action.payload) return state
+      nextState = { ...state, OsReceiveIntentStatus: action.payload }
       break
-    case SharingActionType.SetFilesToUpload:
+    case OsReceiveActionType.SetFilesToUpload:
       if (state.filesToUpload === action.payload) return state
       nextState = { ...state, filesToUpload: action.payload }
       break
-    case SharingActionType.SetRouteToUpload:
+    case OsReceiveActionType.SetRouteToUpload:
       if (state.routeToUpload.slug === action.payload.slug) return state
       nextState = { ...state, routeToUpload: action.payload }
       break
-    case SharingActionType.SetFlowErrored: {
+    case OsReceiveActionType.SetFlowErrored: {
       nextState = { ...state, errored: action.payload }
       break
     }
-    case SharingActionType.SetFileUploaded: {
+    case OsReceiveActionType.SetFileUploaded: {
       nextState = {
         ...state,
         filesUploaded: [...state.filesUploaded, action.payload]
       }
       break
     }
-    case SharingActionType.SetRecoveryState:
+    case OsReceiveActionType.SetRecoveryState:
       nextState = {
         ...initialState,
-        sharingIntentStatus: SharingIntentStatus.NotOpenedViaSharing
+        OsReceiveIntentStatus: OsReceiveIntentStatus.NotOpenedViaOsReceive
       }
       break
     default:
       break
   }
 
-  sharingLogger.info(`sharingReducer handled action "${action.type}"`)
-  sharingLogger.info('sharingReducer prevState', state)
-  sharingLogger.info('sharingReducer nextState', nextState)
+  OsReceiveLogger.info(`osReceiveReducer handled action "${action.type}"`)
+  OsReceiveLogger.info('osReceiveReducer prevState', state)
+  OsReceiveLogger.info('osReceiveReducer nextState', nextState)
 
   return nextState
 }
 
-export const initialState: SharingState = {
-  sharingIntentStatus: SharingIntentStatus.Undetermined,
+export const initialState: OsReceiveState = {
+  OsReceiveIntentStatus: OsReceiveIntentStatus.Undetermined,
   filesToUpload: [],
   routeToUpload: {},
   errored: false,
   filesUploaded: []
 }
 
-export const useSharingState = (): SharingState => {
-  const context = useContext(SharingStateContext)
+export const useOsReceiveState = (): OsReceiveState => {
+  const context = useContext(OsReceiveStateContext)
   if (context === undefined) {
-    throw new Error('useSharingState must be used within a SharingProvider')
+    throw new Error('useOsReceiveState must be used within a OsReceiveProvider')
   }
   return context
 }
 
-export const useSharingDispatch = (): Dispatch<SharingAction> => {
-  const context = useContext(SharingDispatchContext)
+export const useOsReceiveDispatch = (): Dispatch<OsReceiveAction> => {
+  const context = useContext(OsReceiveDispatchContext)
   if (context === undefined) {
-    throw new Error('useSharingDispatch must be used within a SharingProvider')
+    throw new Error(
+      'useOsReceiveDispatch must be used within a OsReceiveProvider'
+    )
   }
   return context
 }

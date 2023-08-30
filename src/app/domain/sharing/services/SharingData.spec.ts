@@ -3,7 +3,7 @@ import ReceiveSharingIntent, {
 } from '@mythologi/react-native-receive-sharing-intent'
 
 import { handleReceivedFiles } from '/app/domain/sharing/services/SharingData'
-import { sharingLogger } from '/app/domain/sharing'
+import { OsReceiveLogger } from '/app/domain/sharing'
 
 jest.mock('@mythologi/react-native-receive-sharing-intent')
 jest.mock('/app/domain/sharing')
@@ -33,7 +33,7 @@ describe('SharingData Service', () => {
     handleReceivedFiles(callback)
 
     expect(callback).toHaveBeenCalledWith(mockFiles)
-    expect(sharingLogger.info).toHaveBeenCalledWith('Received files', mockFiles)
+    expect(OsReceiveLogger.info).toHaveBeenCalledWith('Received files', mockFiles)
   })
 
   it('handles failure in receiving files', () => {
@@ -50,7 +50,7 @@ describe('SharingData Service', () => {
 
     handleReceivedFiles()
 
-    expect(sharingLogger.error).toHaveBeenCalledWith(
+    expect(OsReceiveLogger.error).toHaveBeenCalledWith(
       'Could not get received files',
       mockError
     )

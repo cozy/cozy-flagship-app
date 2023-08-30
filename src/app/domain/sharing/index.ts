@@ -1,3 +1,3 @@
 import Minilog from 'cozy-minilog'
 
-export const sharingLogger = Minilog('🗃️ SharingService')
+export const OsReceiveLogger = Minilog('🗃️ OsReceiveService')

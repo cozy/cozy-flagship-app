@@ -1,12 +1,12 @@
 import { ReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
 
-export enum SharingIntentStatus {
+export enum OsReceiveIntentStatus {
   Undetermined = 'undetermined',
-  OpenedViaSharing = 'openedViaSharing',
-  NotOpenedViaSharing = 'notOpenedViaSharing'
+  OpenedViaOsReceive = 'openedViaOsReceive',
+  NotOpenedViaOsReceive = 'notOpenedViaOsReceive'
 }
 
-export enum SharingActionType {
+export enum OsReceiveActionType {
   SetIntentStatus = 'SET_INTENT_STATUS',
   SetFilesToUpload = 'SET_FILES_TO_UPLOAD',
   SetRouteToUpload = 'SET_ROUTE_TO_UPLOAD',
@@ -15,31 +15,34 @@ export enum SharingActionType {
   SetFileUploaded = 'SET_FILE_UPLOADED'
 }
 
-export interface SharingState {
-  sharingIntentStatus: SharingIntentStatus
+export interface OsReceiveState {
+  OsReceiveIntentStatus: OsReceiveIntentStatus
   filesToUpload: ReceivedFile[]
   routeToUpload: { href?: string; slug?: string }
   errored: boolean
   filesUploaded: ReceivedFile[]
 }
 
-export type SharingAction =
-  | { type: SharingActionType.SetIntentStatus; payload: SharingIntentStatus }
-  | { type: SharingActionType.SetFilesToUpload; payload: ReceivedFile[] }
+export type OsReceiveAction =
   | {
-      type: SharingActionType.SetRouteToUpload
+      type: OsReceiveActionType.SetIntentStatus
+      payload: OsReceiveIntentStatus
+    }
+  | { type: OsReceiveActionType.SetFilesToUpload; payload: ReceivedFile[] }
+  | {
+      type: OsReceiveActionType.SetRouteToUpload
       payload: { href: string; slug: string }
     }
-  | { type: SharingActionType.SetFlowErrored; payload: boolean }
-  | { type: SharingActionType.SetRecoveryState }
-  | { type: SharingActionType.SetFileUploaded; payload: ReceivedFile }
+  | { type: OsReceiveActionType.SetFlowErrored; payload: boolean }
+  | { type: OsReceiveActionType.SetRecoveryState }
+  | { type: OsReceiveActionType.SetFileUploaded; payload: ReceivedFile }
 
 export interface ServiceResponse<T> {
   result?: T
   error?: string
 }
 
-export interface SharingApi {
+export interface OsReceiveApi {
   getFilesToUpload: () => Promise<ReceivedFile[]>
   hasFilesToHandle: () => Promise<UploadStatus>
   uploadFiles: (arg: string) => Promise<boolean>
@@ -47,9 +50,9 @@ export interface SharingApi {
 }
 
 export interface UploadStatus {
-  filesToHandle: SharingState['filesToUpload']
+  filesToHandle: OsReceiveState['filesToUpload']
   remainingFiles: number
   totalFiles: number
-  uploadedFiles: SharingState['filesUploaded']
+  uploadedFiles: OsReceiveState['filesUploaded']
   uploading: boolean
 }

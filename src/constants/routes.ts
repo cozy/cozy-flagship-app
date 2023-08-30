@@ -13,7 +13,7 @@ export const routes = {
   securize: 'securize',
   setPassword: 'setPassword',
   setPin: 'setPin',
-  sharing: 'sharing',
+  osReceive: 'osReceive',
   stack: 'stack',
   welcome: 'welcome'
 } as const

@@ -2,14 +2,14 @@ import { Dispatch } from 'react'
 
 import CozyClient from 'cozy-client'
 
-import { sharingLogger } from '/app/domain/sharing'
+import { OsReceiveLogger } from '/app/domain/sharing'
 import { uploadFileWithConflictStrategy } from '/app/domain/upload/services/index'
 import { ReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
 import {
-  SharingState,
-  SharingAction,
-  SharingActionType,
-  SharingApi,
+  OsReceiveState,
+  OsReceiveAction,
+  OsReceiveActionType,
+  OsReceiveApi,
   UploadStatus
 } from '/app/domain/sharing/models/SharingState'
 
@@ -34,17 +34,17 @@ const getUrl = (
 }
 
 const getFilesToUpload = async (
-  state: SharingState
+  state: OsReceiveState
 ): Promise<ReceivedFile[]> => {
-  sharingLogger.info('getFilesToUpload', state.filesToUpload)
+  OsReceiveLogger.info('getFilesToUpload', state.filesToUpload)
   return Promise.resolve(state.filesToUpload)
 }
 
 const uploadFiles = async (
   arg: string,
-  state: SharingState,
+  state: OsReceiveState,
   client: CozyClient | null,
-  dispatch: Dispatch<SharingAction>
+  dispatch: Dispatch<OsReceiveAction>
 ): Promise<boolean> => {
   interface IncomingFile {
     fileOptions: {
@@ -60,16 +60,16 @@ const uploadFiles = async (
   )
 
   if (!fileToUpload) {
-    sharingLogger.error('uploadFiles: fileToUpload is undefined, aborting')
+    OsReceiveLogger.error('uploadFiles: fileToUpload is undefined, aborting')
     return false
   }
 
   if (!client) {
-    sharingLogger.error('uploadFiles: client is undefined, aborting')
+    OsReceiveLogger.error('uploadFiles: client is undefined, aborting')
     return false
   }
 
-  sharingLogger.info('starting to uploadFile', { fileToUpload })
+  OsReceiveLogger.info('starting to uploadFile', { fileToUpload })
 
   try {
     const token = client.getStackClient().token.accessToken
@@ -86,23 +86,25 @@ const uploadFiles = async (
       mimetype: fileToUpload.mimeType
     })
   } catch (error) {
-    sharingLogger.error('uploadFiles: error', error)
+    OsReceiveLogger.error('uploadFiles: error', error)
   }
 
-  dispatch({ type: SharingActionType.SetFileUploaded, payload: fileToUpload })
+  dispatch({ type: OsReceiveActionType.SetFileUploaded, payload: fileToUpload })
   return true
 }
 
 const resetFilesToHandle = (
-  dispatch: Dispatch<SharingAction>
+  dispatch: Dispatch<OsReceiveAction>
 ): Promise<boolean> => {
-  sharingLogger.info('resetFilesToHandle')
-  setTimeout(() => dispatch({ type: SharingActionType.SetRecoveryState }), 0)
+  OsReceiveLogger.info('resetFilesToHandle')
+  setTimeout(() => dispatch({ type: OsReceiveActionType.SetRecoveryState }), 0)
   return Promise.resolve(true)
 }
 
-const hasFilesToHandle = async (state: SharingState): Promise<UploadStatus> => {
-  sharingLogger.info('getUploadStatus called')
+const hasFilesToHandle = async (
+  state: OsReceiveState
+): Promise<UploadStatus> => {
+  OsReceiveLogger.info('getUploadStatus called')
 
   const totalFiles = state.filesToUpload.length
   const uploadedFiles = state.filesUploaded.length
@@ -115,16 +117,16 @@ const hasFilesToHandle = async (state: SharingState): Promise<UploadStatus> => {
     uploading: totalFiles > 0
   }
 
-  sharingLogger.info('getUploadStatus', { uploadStatus })
+  OsReceiveLogger.info('getUploadStatus', { uploadStatus })
 
   return Promise.resolve(uploadStatus)
 }
 
-export const sharingApi = (
+export const osReceiveApi = (
   client: CozyClient,
-  state: SharingState,
-  dispatch: Dispatch<SharingAction>
-): SharingApi => ({
+  state: OsReceiveState,
+  dispatch: Dispatch<OsReceiveAction>
+): OsReceiveApi => ({
   hasFilesToHandle: () => hasFilesToHandle(state),
   getFilesToUpload: () => getFilesToUpload(state),
   uploadFiles: arg => uploadFiles(arg, state, client, dispatch),
