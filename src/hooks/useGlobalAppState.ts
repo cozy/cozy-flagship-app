@@ -14,8 +14,8 @@ import {
 import { devlog } from '/core/tools/env'
 import { synchronizeDevice } from '/app/domain/authentication/services/SynchronizeService'
 import { routes } from '/constants/routes'
-import { useOsReceiveState } from '/app/view/Sharing/SharingState'
-import { OsReceiveIntentStatus } from '/app/domain/sharing/models/SharingState'
+import { useOsReceiveState } from '/app/view/OsReceive/OsReceiveState'
+import { OsReceiveIntentStatus } from '/app/domain/osReceive/models/OsReceiveState'
 
 const log = Minilog('useGlobalAppState')
 
@@ -33,13 +33,13 @@ const handleSleep = (): void => {
 
 const handleWakeUp = async (
   client: CozyClient,
-  sharingIntentStatus: OsReceiveIntentStatus,
+  osReceiveIntentStatus: OsReceiveIntentStatus,
   onNavigationRequest: (route: string) => void
 ): Promise<void> => {
   await handleSecurityFlowWakeUp(client)
 
-  if (sharingIntentStatus === OsReceiveIntentStatus.OpenedViaOsReceive) {
-    log.info('useGlobalAppState: handleWakeUp, sharing mode')
+  if (osReceiveIntentStatus === OsReceiveIntentStatus.OpenedViaOsReceive) {
+    log.info('useGlobalAppState: handleWakeUp, osReceive mode')
     onNavigationRequest(routes.osReceive)
   }
 }
@@ -53,14 +53,14 @@ const isGoingToWakeUp = (nextAppState: AppStateStatus): boolean =>
 const onStateChange = (
   nextAppState: AppStateStatus,
   client: CozyClient,
-  sharingIntentStatus: OsReceiveIntentStatus,
+  osReceiveIntentStatus: OsReceiveIntentStatus,
   onNavigationRequest: (route: string) => void
 ): void => {
   if (isGoingToSleep(nextAppState)) handleSleep()
 
   if (isGoingToWakeUp(nextAppState)) {
     Promise.all([
-      handleWakeUp(client, sharingIntentStatus, onNavigationRequest),
+      handleWakeUp(client, osReceiveIntentStatus, onNavigationRequest),
       synchronizeDevice(client)
     ]).catch(reason => log.error('Failed when waking up', reason))
   }
@@ -86,7 +86,7 @@ export const useGlobalAppState = ({
   // Ref to track if the logic has already been executed
   const hasExecuted = useRef(false)
   const client = useClient()
-  const sharingState = useOsReceiveState()
+  const osReceiveState = useOsReceiveState()
 
   useEffect(() => {
     let subscription: NativeEventSubscription | undefined
@@ -103,7 +103,7 @@ export const useGlobalAppState = ({
         onStateChange(
           e,
           client,
-          sharingState.OsReceiveIntentStatus,
+          osReceiveState.OsReceiveIntentStatus,
           onNavigationRequest
         )
       )
@@ -112,7 +112,7 @@ export const useGlobalAppState = ({
     return () => {
       appState = AppState.currentState
     }
-  }, [client, onNavigationRequest, sharingState])
+  }, [client, onNavigationRequest, osReceiveState])
 
   // On app start
   useEffect(() => {
@@ -121,15 +121,15 @@ export const useGlobalAppState = ({
         log.info('useGlobalAppState: app start, security flow passed')
 
         if (
-          sharingState.OsReceiveIntentStatus ===
+          osReceiveState.OsReceiveIntentStatus ===
           OsReceiveIntentStatus.OpenedViaOsReceive
         ) {
-          log.info('useGlobalAppState: app start, sharing mode')
-          !sharingState.errored && onNavigationRequest(routes.osReceive)
+          log.info('useGlobalAppState: app start, osReceive mode')
+          !osReceiveState.errored && onNavigationRequest(routes.osReceive)
           // Mark the logic as executed
           hasExecuted.current = true
         } else {
-          log.info('useGlobalAppState: app start, not sharing mode')
+          log.info('useGlobalAppState: app start, not osReceive mode')
           // Mark the logic as executed
           hasExecuted.current = true
         }
@@ -140,10 +140,11 @@ export const useGlobalAppState = ({
 
     if (
       !hasExecuted.current &&
-      sharingState.OsReceiveIntentStatus !== OsReceiveIntentStatus.Undetermined
+      osReceiveState.OsReceiveIntentStatus !==
+        OsReceiveIntentStatus.Undetermined
     ) {
       log.info('useGlobalAppState: app start')
       void appStart()
     }
-  }, [onNavigationRequest, sharingState])
+  }, [onNavigationRequest, osReceiveState])
 }

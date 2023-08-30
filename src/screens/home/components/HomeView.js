@@ -22,7 +22,7 @@ import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import { launcherEvent } from '/libs/ReactNativeLauncher'
 import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
-import { useOsReceiveState } from '/app/view/Sharing/SharingState'
+import { useOsReceiveState } from '/app/view/OsReceive/OsReceiveState'
 
 const log = Minilog('🏠 HomeView')
 
@@ -60,7 +60,7 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   const session = useSession()
   const didBlurOnce = useRef(false)
   const [webviewRef, setParentRef] = useState()
-  const { OsReceiveIntentStatus: sharingIntentStatus } = useOsReceiveState()
+  const { OsReceiveIntentStatus } = useOsReceiveState()
   const mainAppFallbackURLInitialParam = useInitialParam(
     'mainAppFallbackURL',
     route,
@@ -244,7 +244,7 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
           client,
           navigationObject,
           true,
-          sharingIntentStatus
+          OsReceiveIntentStatus
         )
       }
     }
@@ -257,7 +257,7 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
     shouldWaitCozyApp,
     setShouldWaitCozyApp,
     uri,
-    sharingIntentStatus
+    OsReceiveIntentStatus
   ])
 
   const handleTrackWebviewInnerUri = webviewInneruri => {

@@ -2,16 +2,16 @@ import { Dispatch } from 'react'
 
 import CozyClient from 'cozy-client'
 
-import { OsReceiveLogger } from '/app/domain/sharing'
+import { OsReceiveLogger } from '/app/domain/osReceive'
 import { uploadFileWithConflictStrategy } from '/app/domain/upload/services/index'
-import { ReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
+import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
 import {
   OsReceiveState,
   OsReceiveAction,
   OsReceiveActionType,
   OsReceiveApi,
   UploadStatus
-} from '/app/domain/sharing/models/SharingState'
+} from '/app/domain/osReceive/models/OsReceiveState'
 
 const getUrl = (
   client: CozyClient,

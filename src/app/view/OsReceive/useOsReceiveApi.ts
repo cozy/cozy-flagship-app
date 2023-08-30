@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 
 import { useNativeIntent } from 'cozy-intent'
 
-import { useOsReceiveState } from '/app/view/Sharing/SharingState'
-import { OsReceiveLogger } from '/app/domain/sharing'
+import { useOsReceiveState } from '/app/view/OsReceive/OsReceiveState'
+import { OsReceiveLogger } from '/app/domain/osReceive'
 
 export const useOsReceiveApi = (): void => {
   const state = useOsReceiveState()

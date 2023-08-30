@@ -4,17 +4,17 @@ import { Text } from 'react-native'
 
 import { useQuery } from 'cozy-client'
 
-import { OsReceiveProvider } from '/app/view/Sharing/SharingProvider'
-import { handleReceivedFiles } from '/app/domain/sharing/services/SharingData'
-import { handleOsReceive } from '/app/domain/sharing/services/SharingStatus'
-import { OsReceiveIntentStatus } from '/app/domain/sharing/models/SharingState'
-import { ReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
-import { useOsReceiveState } from '/app/view/Sharing/SharingState'
-import { getRouteToUpload } from '/app/domain/sharing/services/SharingNetwork'
+import { OsReceiveProvider } from '/app/view/OsReceive/OsReceiveProvider'
+import { handleReceivedFiles } from '/app/domain/osReceive/services/OsReceiveData'
+import { handleOsReceive } from '/app/domain/osReceive/services/OsReceiveStatus'
+import { OsReceiveIntentStatus } from '/app/domain/osReceive/models/OsReceiveState'
+import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
+import { useOsReceiveState } from '/app/view/OsReceive/OsReceiveState'
+import { getRouteToUpload } from '/app/domain/osReceive/services/OsReceiveNetwork'
 
-jest.mock('/app/domain/sharing/services/SharingData')
-jest.mock('/app/domain/sharing/services/SharingStatus')
-jest.mock('/app/domain/sharing/services/SharingNetwork')
+jest.mock('/app/domain/osReceive/services/OsReceiveData')
+jest.mock('/app/domain/osReceive/services/OsReceiveStatus')
+jest.mock('/app/domain/osReceive/services/OsReceiveNetwork')
 jest.mock('/app/view/Error/ErrorProvider', () => ({
   useError: jest.fn().mockReturnValue({
     handleError: jest.fn()
@@ -34,7 +34,7 @@ jest.mock('@react-navigation/native', () => ({
   useNavigationState: jest.fn()
 }))
 
-describe('SharingProvider', () => {
+describe('OsReceiveProvider', () => {
   beforeEach(() => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
     ;(handleReceivedFiles as jest.Mock).mockClear()
@@ -43,7 +43,7 @@ describe('SharingProvider', () => {
 
   it('calls services and updates state correctly on mount', () => {
     const mockReceivedFilesCallback = jest.fn()
-    const mockSharingCallback = jest.fn()
+    const mockOsReceiveCallback = jest.fn()
     ;(useQuery as jest.Mock).mockReturnValue({ data: [] })
     ;(handleReceivedFiles as jest.Mock).mockImplementation(callback => {
       mockReceivedFilesCallback()
@@ -51,7 +51,7 @@ describe('SharingProvider', () => {
       mockCallback([{ filePath: 'test-file' } as ReceivedFile])
     })
     ;(handleOsReceive as jest.Mock).mockImplementation(callback => {
-      mockSharingCallback()
+      mockOsReceiveCallback()
       const mockCallback = callback as (status: OsReceiveIntentStatus) => void
       mockCallback(OsReceiveIntentStatus.OpenedViaOsReceive)
     })
@@ -68,8 +68,8 @@ describe('SharingProvider', () => {
         <Text>
           {state.OsReceiveIntentStatus ===
           OsReceiveIntentStatus.OpenedViaOsReceive
-            ? 'OpenedViaSharing'
-            : 'NotOpenedViaSharing'}
+            ? 'OpenedViaOsReceive'
+            : 'NotOpenedViaOsReceive'}
         </Text>
       )
     }
@@ -81,12 +81,12 @@ describe('SharingProvider', () => {
     )
 
     expect(mockReceivedFilesCallback).toHaveBeenCalledTimes(1)
-    expect(mockSharingCallback).toHaveBeenCalledTimes(1)
+    expect(mockOsReceiveCallback).toHaveBeenCalledTimes(1)
 
-    getByText('OpenedViaSharing')
+    getByText('OpenedViaOsReceive')
   })
 
-  it('starts with an undetermined sharing intent status', () => {
+  it('starts with an undetermined osReceive intent status', () => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
     ;(handleReceivedFiles as jest.Mock).mockImplementation(() => {
       /** noop */
@@ -108,7 +108,7 @@ describe('SharingProvider', () => {
     getByText(OsReceiveIntentStatus.Undetermined.toString())
   })
 
-  it('updates to "not opened via sharing" when service indicates', () => {
+  it('updates to "not opened via osReceive" when service indicates', () => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
     ;(handleReceivedFiles as jest.Mock).mockImplementation(callback => {
       const mockCallback = callback as (files: ReceivedFile[]) => void
@@ -135,10 +135,10 @@ describe('SharingProvider', () => {
 
   it('calls cleanup functions on unmount', () => {
     const cleanupReceivedFiles = jest.fn()
-    const cleanupSharingIntent = jest.fn()
+    const cleanupOsReceiveIntent = jest.fn()
 
     ;(handleReceivedFiles as jest.Mock).mockReturnValue(cleanupReceivedFiles)
-    ;(handleOsReceive as jest.Mock).mockReturnValue(cleanupSharingIntent)
+    ;(handleOsReceive as jest.Mock).mockReturnValue(cleanupOsReceiveIntent)
 
     const { unmount } = render(
       <OsReceiveProvider>
@@ -149,6 +149,6 @@ describe('SharingProvider', () => {
     unmount()
 
     expect(cleanupReceivedFiles).toHaveBeenCalledTimes(1)
-    expect(cleanupSharingIntent).toHaveBeenCalledTimes(1)
+    expect(cleanupOsReceiveIntent).toHaveBeenCalledTimes(1)
   })
 })

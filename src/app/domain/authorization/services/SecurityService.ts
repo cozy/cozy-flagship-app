@@ -29,7 +29,7 @@ import { navigateToApp } from '/libs/functions/openApp'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { SecurityNavigationService } from '/app/domain/authorization/services/SecurityNavigationService'
 import { getData, StorageKeys } from '/libs/localStore'
-import { OsReceiveIntentStatus } from '/app/domain/sharing/models/SharingState'
+import { OsReceiveIntentStatus } from '/app/domain/osReceive/models/OsReceiveState'
 
 // Can use mock functions in dev environment
 const fns = getDevModeFunctions(
