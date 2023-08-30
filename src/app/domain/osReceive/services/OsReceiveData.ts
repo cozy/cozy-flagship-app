@@ -1,13 +1,13 @@
 import OsReceiveIntent from '@mythologi/react-native-receive-sharing-intent'
 
-import { OsReceiveLogger } from '/app/domain/sharing'
+import { OsReceiveLogger } from '/app/domain/osReceive'
 import {
   ReceivedFile,
   OS_RECEIVE_PROTOCOL_NAME
-} from '/app/domain/sharing/models/ReceivedFile'
+} from '/app/domain/osReceive/models/ReceivedFile'
 
 const getDeduplicationKey = (file: ReceivedFile): string | null => {
-  return file.filePath ?? null
+  return file.filePath
 }
 
 const processReceivedFiles = (

@@ -1,4 +1,4 @@
-import { ReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
+import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
 
 export enum OsReceiveIntentStatus {
   Undetermined = 'undetermined',

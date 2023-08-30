@@ -3,25 +3,25 @@ import React, { useReducer, useEffect } from 'react'
 
 import { useClient, useQuery } from 'cozy-client'
 
-import { OsReceiveCozyApp } from '/app/domain/sharing/models/SharingCozyApp'
-import { handleReceivedFiles } from '/app/domain/sharing/services/SharingData'
-import { handleOsReceive } from '/app/domain/sharing/services/SharingStatus'
+import { OsReceiveCozyApp } from '/app/domain/osReceive/models/OsReceiveCozyApp'
+import { handleReceivedFiles } from '/app/domain/osReceive/services/OsReceiveData'
+import { handleOsReceive } from '/app/domain/osReceive/services/OsReceiveStatus'
 import { useError } from '/app/view/Error/ErrorProvider'
 import { useI18n } from '/locales/i18n'
 import {
   OsReceiveIntentStatus,
   OsReceiveActionType
-} from '/app/domain/sharing/models/SharingState'
+} from '/app/domain/osReceive/models/OsReceiveState'
 import {
   fetchOsReceiveCozyApps,
   getRouteToUpload
-} from '/app/domain/sharing/services/SharingNetwork'
+} from '/app/domain/osReceive/services/OsReceiveNetwork'
 import {
   initialState,
   OsReceiveDispatchContext,
   osReceiveReducer,
   OsReceiveStateContext
-} from '/app/view/Sharing/SharingState'
+} from '/app/view/OsReceive/OsReceiveState'
 import { routes } from '/constants/routes'
 
 export const OsReceiveProvider = ({
@@ -43,7 +43,7 @@ export const OsReceiveProvider = ({
   useEffect(() => {
     // As soon as we can detect that the app was opened with or without files,
     // we can update the state accordingly so the view can react to it
-    const cleanupSharingIntent = handleOsReceive(
+    const cleanupOsReceiveIntent = handleOsReceive(
       (status: OsReceiveIntentStatus) => {
         dispatch({ type: OsReceiveActionType.SetIntentStatus, payload: status })
       }
@@ -57,11 +57,11 @@ export const OsReceiveProvider = ({
 
     return () => {
       cleanupReceivedFiles()
-      cleanupSharingIntent()
+      cleanupOsReceiveIntent()
     }
   }, [])
 
-  // Fetches the route of the cozy-app that will handle the sharing intent
+  // Fetches the route of the cozy-app that will handle the osReceive intent
   useEffect(() => {
     if (state.filesToUpload.length === 0 || state.routeToUpload.href) return
     const { result, error } = getRouteToUpload(data, client)
@@ -74,7 +74,7 @@ export const OsReceiveProvider = ({
   }, [client, data, handleError, state])
 
   // If an error is detected, we handle that by abandoning the flow.
-  // The user will be redirected to the home screen and the sharing mode is ended until next file sharing.
+  // The user will be redirected to the home screen and the osReceive mode is ended until next file osReceive.
   useEffect(() => {
     if (state.errored) {
       dispatch({ type: OsReceiveActionType.SetRecoveryState })

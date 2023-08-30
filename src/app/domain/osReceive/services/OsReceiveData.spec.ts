@@ -1,14 +1,14 @@
-import ReceiveSharingIntent, {
+import OsReceiveSharingIntent, {
   SharedFile
 } from '@mythologi/react-native-receive-sharing-intent'
 
-import { handleReceivedFiles } from '/app/domain/sharing/services/SharingData'
-import { OsReceiveLogger } from '/app/domain/sharing'
+import { handleReceivedFiles } from '/app/domain/osReceive/services/OsReceiveData'
+import { OsReceiveLogger } from '/app/domain/osReceive'
 
 jest.mock('@mythologi/react-native-receive-sharing-intent')
-jest.mock('/app/domain/sharing')
+jest.mock('/app/domain/osReceive')
 
-describe('SharingData Service', () => {
+describe('OsReceiveData Service', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
@@ -19,7 +19,7 @@ describe('SharingData Service', () => {
       { filePath: 'path2', otherProperties: '...' }
     ]
 
-    ;(ReceiveSharingIntent.getReceivedFiles as jest.Mock).mockImplementation(
+    ;(OsReceiveSharingIntent.getReceivedFiles as jest.Mock).mockImplementation(
       successCallback => {
         const successCallbackAsFunction = successCallback as (
           files: SharedFile[]
@@ -33,13 +33,16 @@ describe('SharingData Service', () => {
     handleReceivedFiles(callback)
 
     expect(callback).toHaveBeenCalledWith(mockFiles)
-    expect(OsReceiveLogger.info).toHaveBeenCalledWith('Received files', mockFiles)
+    expect(OsReceiveLogger.info).toHaveBeenCalledWith(
+      'Received files',
+      mockFiles
+    )
   })
 
   it('handles failure in receiving files', () => {
     const mockError = new Error('Failed to get files')
 
-    ;(ReceiveSharingIntent.getReceivedFiles as jest.Mock).mockImplementation(
+    ;(OsReceiveSharingIntent.getReceivedFiles as jest.Mock).mockImplementation(
       (_successCallback, errorCallback) => {
         const errorCallbackAsFunction = errorCallback as (
           error: unknown

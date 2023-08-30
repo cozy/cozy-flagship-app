@@ -40,12 +40,12 @@ import { PermissionsChecker } from '/app/domain/nativePermissions/components/Per
 import { useGeolocationTracking } from '/app/domain/geolocation/hooks/tracking'
 import { SharingProvider } from '/app/view/sharing/SharingProvider'
 import { ErrorProvider } from '/app/view/Error/ErrorProvider'
-import { OsReceiveApi } from '/app/domain/sharing/services/SharingApi'
+import { OsReceiveApi } from '/app/domain/osReceive/services/OsReceiveApi'
 import {
   useOsReceiveDispatch,
   useOsReceiveState
-} from '/app/view/Sharing/SharingState'
-import { useOsReceiveApi } from '/app/view/Sharing/useSharingApi'
+} from '/app/view/OsReceive/OsReceiveState'
+import { useOsReceiveApi } from '/app/view/OsReceive/useOsReceiveApi'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
