@@ -5,8 +5,8 @@ import {
   Platform
 } from 'react-native'
 
-import { OsReceiveIntentStatus } from '/app/domain/sharing/models/SharingState'
-import { OsReceiveLogger } from '/app/domain/sharing'
+import { OsReceiveIntentStatus } from '/app/domain/osReceive/models/OsReceiveState'
+import { OsReceiveLogger } from '/app/domain/osReceive'
 
 type handleOsReceiveCallback = (status: OsReceiveIntentStatus) => void
 type handleOsReceiveCleanupFn = () => void
@@ -43,7 +43,7 @@ export const handleOsReceive = (
     .then(handleOsReceiveIntent)
     .catch(error => {
       OsReceiveLogger.error(
-        'Failed to check if app was opened via sharing',
+        'Failed to check if app was opened via osReceive',
         error
       )
     })

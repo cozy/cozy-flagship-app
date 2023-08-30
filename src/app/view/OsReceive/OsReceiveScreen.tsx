@@ -1,7 +1,7 @@
 import { Container } from '/ui/Container'
 import { Grid } from '/ui/Grid'
 import { Typography } from '/ui/Typography'
-import { useOsReceiveState } from '/app/view/Sharing/SharingState'
+import { useOsReceiveState } from '/app/view/OsReceive/OsReceiveState'
 
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'

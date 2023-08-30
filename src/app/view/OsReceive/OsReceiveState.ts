@@ -1,12 +1,12 @@
 import { createContext, Dispatch, useContext } from 'react'
 
-import { OsReceiveLogger } from '/app/domain/sharing'
+import { OsReceiveLogger } from '/app/domain/osReceive'
 import {
   OsReceiveState,
   OsReceiveAction,
   OsReceiveActionType,
   OsReceiveIntentStatus
-} from '/app/domain/sharing/models/SharingState'
+} from '/app/domain/osReceive/models/OsReceiveState'
 
 export const OsReceiveStateContext = createContext<OsReceiveState | undefined>(
   undefined

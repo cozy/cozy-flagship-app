@@ -2,10 +2,10 @@ import CozyClient, { generateWebLink, Q } from 'cozy-client'
 
 import { UploadResult } from '/app/domain/upload/models'
 import { uploadFileWithConflictStrategy } from '/app/domain/upload/services'
-import { ReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
-import { OsReceiveLogger } from '/app/domain/sharing'
-import { OsReceiveCozyApp } from '/app/domain/sharing/models/SharingCozyApp'
-import { ServiceResponse } from '/app/domain/sharing/models/SharingState'
+import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
+import { OsReceiveLogger } from '/app/domain/osReceive'
+import { OsReceiveCozyApp } from '/app/domain/osReceive/models/OsReceiveCozyApp'
+import { ServiceResponse } from '/app/domain/osReceive/models/OsReceiveState'
 
 export const fetchOsReceiveCozyApps = {
   definition: Q('io.cozy.apps').where({

@@ -1,7 +1,7 @@
 import CozyClient from 'cozy-client'
 
-import { OsReceiveCozyApp } from '/app/domain/sharing/models/SharingCozyApp'
-import { getRouteToUpload } from '/app/domain/sharing/services/SharingNetwork'
+import { OsReceiveCozyApp } from '/app/domain/osReceive/models/OsReceiveCozyApp'
+import { getRouteToUpload } from '/app/domain/osReceive/services/OsReceiveNetwork'
 
 describe('getRouteToUpload', () => {
   const mockCozyClient = new CozyClient({

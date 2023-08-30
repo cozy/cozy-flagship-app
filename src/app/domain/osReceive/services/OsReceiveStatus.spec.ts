@@ -2,9 +2,9 @@
 import { waitFor } from '@testing-library/react-native'
 import { NativeModules, Linking, Platform } from 'react-native'
 
-import { handleOsReceive } from '/app/domain/sharing/services/SharingStatus'
-import { OsReceiveLogger } from '/app/domain/sharing'
-import { OsReceiveIntentStatus } from '/app/domain/sharing/models/SharingState'
+import { handleOsReceive } from '/app/domain/osReceive/services/OsReceiveStatus'
+import { OsReceiveLogger } from '/app/domain/osReceive'
+import { OsReceiveIntentStatus } from '/app/domain/osReceive/models/OsReceiveState'
 
 jest.mock('react-native', () => {
   return {
@@ -25,9 +25,9 @@ jest.mock('react-native', () => {
   }
 })
 
-jest.mock('/app/domain/sharing')
+jest.mock('/app/domain/osReceive')
 
-describe('SharingStatus Service', () => {
+describe('OsReceiveStatus Service', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     NativeModules.SharingIntentModule = {
@@ -35,7 +35,7 @@ describe('SharingStatus Service', () => {
     }
   })
 
-  it('handles Android app opened via sharing', async () => {
+  it('handles Android app opened via osReceive', async () => {
     Platform.OS = 'android'
     const mockCall = (
       NativeModules.SharingIntentModule as {
@@ -54,7 +54,7 @@ describe('SharingStatus Service', () => {
     )
   })
 
-  it('handles Android app not opened via sharing', async () => {
+  it('handles Android app not opened via osReceive', async () => {
     Platform.OS = 'android'
     const mockCall = (
       NativeModules.SharingIntentModule as {
@@ -88,10 +88,12 @@ describe('SharingStatus Service', () => {
     }) => void
     eventHandler({ url: 'some-shared-url' })
 
-    expect(setStatus).toHaveBeenCalledWith(OsReceiveIntentStatus.OpenedViaOsReceive)
+    expect(setStatus).toHaveBeenCalledWith(
+      OsReceiveIntentStatus.OpenedViaOsReceive
+    )
   })
 
-  it('handles failure when checking if app was opened via sharing', async () => {
+  it('handles failure when checking if app was opened via osReceive', async () => {
     Platform.OS = 'android'
     const mockCall = (
       NativeModules.SharingIntentModule as {
@@ -105,7 +107,7 @@ describe('SharingStatus Service', () => {
 
     await waitFor(() =>
       expect(OsReceiveLogger.error).toHaveBeenCalledWith(
-        'Failed to check if app was opened via sharing',
+        'Failed to check if app was opened via osReceive',
         expect.any(Error)
       )
     )
