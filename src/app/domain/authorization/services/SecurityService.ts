@@ -29,7 +29,7 @@ import { navigateToApp } from '/libs/functions/openApp'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { SecurityNavigationService } from '/app/domain/authorization/services/SecurityNavigationService'
 import { getData, StorageKeys } from '/libs/localStore'
-import { SharingIntentStatus } from '/app/domain/sharing/models/SharingState'
+import { OsReceiveIntentStatus } from '/app/domain/sharing/models/SharingState'
 
 // Can use mock functions in dev environment
 const fns = getDevModeFunctions(
@@ -81,17 +81,17 @@ export const determineSecurityFlow = async (
     slug: string
   },
   isCallerHandlingSplashscreen?: boolean,
-  sharingIntentStatus?: SharingIntentStatus
+  osReceiveIntentStatus?: OsReceiveIntentStatus
 ): Promise<void> => {
-  const openedWithSharing =
-    sharingIntentStatus === SharingIntentStatus.OpenedViaSharing
+  const openedWithOsReceive =
+    osReceiveIntentStatus === OsReceiveIntentStatus.OpenedViaOsReceive
   SecurityNavigationService.startListening()
 
   const callbackNav = async (): Promise<void> => {
     try {
       if (navigationObject) {
         await navigateToApp(navigationObject)
-      } else navigate(openedWithSharing ? routes.sharing : routes.home)
+      } else navigate(openedWithOsReceive ? routes.osReceive : routes.home)
     } catch (error) {
       devlog('🔏', 'Error navigating to app, defaulting to home', error)
       navigate(routes.home)

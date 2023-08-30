@@ -88,4 +88,4 @@ export interface IOSReceivedFile {
 
 export type ReceivedFile = AndroidReceivedFile | IOSReceivedFile
 
-export const SHARING_PROTOCOL_NAME = 'ShareMedia'
+export const OS_RECEIVE_PROTOCOL_NAME = 'ShareMedia'

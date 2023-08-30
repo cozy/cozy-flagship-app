@@ -14,8 +14,8 @@ import {
 import { devlog } from '/core/tools/env'
 import { synchronizeDevice } from '/app/domain/authentication/services/SynchronizeService'
 import { routes } from '/constants/routes'
-import { useSharingState } from '/app/view/Sharing/SharingState'
-import { SharingIntentStatus } from '/app/domain/sharing/models/SharingState'
+import { useOsReceiveState } from '/app/view/Sharing/SharingState'
+import { OsReceiveIntentStatus } from '/app/domain/sharing/models/SharingState'
 
 const log = Minilog('useGlobalAppState')
 
@@ -33,14 +33,14 @@ const handleSleep = (): void => {
 
 const handleWakeUp = async (
   client: CozyClient,
-  sharingIntentStatus: SharingIntentStatus,
+  sharingIntentStatus: OsReceiveIntentStatus,
   onNavigationRequest: (route: string) => void
 ): Promise<void> => {
   await handleSecurityFlowWakeUp(client)
 
-  if (sharingIntentStatus === SharingIntentStatus.OpenedViaSharing) {
+  if (sharingIntentStatus === OsReceiveIntentStatus.OpenedViaOsReceive) {
     log.info('useGlobalAppState: handleWakeUp, sharing mode')
-    onNavigationRequest(routes.sharing)
+    onNavigationRequest(routes.osReceive)
   }
 }
 
@@ -53,7 +53,7 @@ const isGoingToWakeUp = (nextAppState: AppStateStatus): boolean =>
 const onStateChange = (
   nextAppState: AppStateStatus,
   client: CozyClient,
-  sharingIntentStatus: SharingIntentStatus,
+  sharingIntentStatus: OsReceiveIntentStatus,
   onNavigationRequest: (route: string) => void
 ): void => {
   if (isGoingToSleep(nextAppState)) handleSleep()
@@ -86,7 +86,7 @@ export const useGlobalAppState = ({
   // Ref to track if the logic has already been executed
   const hasExecuted = useRef(false)
   const client = useClient()
-  const sharingState = useSharingState()
+  const sharingState = useOsReceiveState()
 
   useEffect(() => {
     let subscription: NativeEventSubscription | undefined
@@ -103,7 +103,7 @@ export const useGlobalAppState = ({
         onStateChange(
           e,
           client,
-          sharingState.sharingIntentStatus,
+          sharingState.OsReceiveIntentStatus,
           onNavigationRequest
         )
       )
@@ -121,11 +121,11 @@ export const useGlobalAppState = ({
         log.info('useGlobalAppState: app start, security flow passed')
 
         if (
-          sharingState.sharingIntentStatus ===
-          SharingIntentStatus.OpenedViaSharing
+          sharingState.OsReceiveIntentStatus ===
+          OsReceiveIntentStatus.OpenedViaOsReceive
         ) {
           log.info('useGlobalAppState: app start, sharing mode')
-          !sharingState.errored && onNavigationRequest(routes.sharing)
+          !sharingState.errored && onNavigationRequest(routes.osReceive)
           // Mark the logic as executed
           hasExecuted.current = true
         } else {
@@ -140,7 +140,7 @@ export const useGlobalAppState = ({
 
     if (
       !hasExecuted.current &&
-      sharingState.sharingIntentStatus !== SharingIntentStatus.Undetermined
+      sharingState.OsReceiveIntentStatus !== OsReceiveIntentStatus.Undetermined
     ) {
       log.info('useGlobalAppState: app start')
       void appStart()

@@ -1,7 +1,7 @@
 import { Container } from '/ui/Container'
 import { Grid } from '/ui/Grid'
 import { Typography } from '/ui/Typography'
-import { useSharingState } from '/app/view/Sharing/SharingState'
+import { useOsReceiveState } from '/app/view/Sharing/SharingState'
 
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
@@ -11,28 +11,28 @@ import { RootStackParamList, Routes } from '/constants/route-types'
 
 import React, { useEffect } from 'react'
 
-export const SharingScreen = (): JSX.Element => {
-  const sharingState = useSharingState()
+export const OsReceiveScreen = (): JSX.Element => {
+  const osReceiveState = useOsReceiveState()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
-  // Open the cozy-app that will handle the sharing intent
+  // Open the cozy-app that will handle the OsReceive intent
   useEffect(() => {
     if (
-      sharingState.routeToUpload.href === undefined ||
-      sharingState.routeToUpload.slug === undefined
+      osReceiveState.routeToUpload.href === undefined ||
+      osReceiveState.routeToUpload.slug === undefined
     )
       return
 
     navigation.goBack()
     navigation.navigate(Routes.cozyapp, {
-      href: sharingState.routeToUpload.href,
-      slug: sharingState.routeToUpload.slug,
+      href: osReceiveState.routeToUpload.href,
+      slug: osReceiveState.routeToUpload.slug,
       iconParams: getDefaultIconParams()
     })
   }, [
     navigation,
-    sharingState.routeToUpload.href,
-    sharingState.routeToUpload.slug
+    osReceiveState.routeToUpload.href,
+    osReceiveState.routeToUpload.slug
   ])
 
   return (

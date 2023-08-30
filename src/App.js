@@ -40,12 +40,12 @@ import { PermissionsChecker } from '/app/domain/nativePermissions/components/Per
 import { useGeolocationTracking } from '/app/domain/geolocation/hooks/tracking'
 import { SharingProvider } from '/app/view/sharing/SharingProvider'
 import { ErrorProvider } from '/app/view/Error/ErrorProvider'
-import { sharingApi } from '/app/domain/sharing/services/SharingApi'
+import { OsReceiveApi } from '/app/domain/sharing/services/SharingApi'
 import {
-  useSharingDispatch,
-  useSharingState
+  useOsReceiveDispatch,
+  useOsReceiveState
 } from '/app/view/Sharing/SharingState'
-import { useSharingApi } from '/app/view/Sharing/useSharingApi'
+import { useOsReceiveApi } from '/app/view/Sharing/useSharingApi'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -64,7 +64,7 @@ const App = ({ setClient }) => {
   useNetService(client)
   useInitI18n(client)
   useInitBackup(client)
-  useSharingApi()
+  useOsReceiveApi()
 
   const { initialRoute, isLoading } = useAppBootstrap(client)
 
@@ -90,16 +90,16 @@ const App = ({ setClient }) => {
 // eslint-disable-next-line react/display-name
 const InnerNav = ({ client, setClient }) => {
   const colors = getColors()
-  const sharingState = useSharingState()
-  const sharingDispatch = useSharingDispatch()
+  const osReceiveState = useOsReceiveState()
+  const osReceiveDispatch = useOsReceiveDispatch()
 
   const localMethodsMemoized = useMemo(() => {
     if (!client) return null
     return localMethods(
       client,
-      sharingApi(client, sharingState, sharingDispatch)
+      OsReceiveApi(client, osReceiveState, osReceiveDispatch)
     )
-  }, [client, sharingDispatch, sharingState])
+  }, [client, osReceiveDispatch, osReceiveState])
 
   return (
     <NativeIntentProvider localMethods={localMethodsMemoized}>
@@ -126,9 +126,9 @@ const InnerNav = ({ client, setClient }) => {
 const Nav = ({ client, setClient }) => (
   <NavigationContainer ref={RootNavigation.navigationRef}>
     <ErrorProvider>
-      <SharingProvider>
+      <OsReceiveProvider>
         <InnerNav client={client} setClient={setClient} />
-      </SharingProvider>
+      </OsReceiveProvider>
     </ErrorProvider>
   </NavigationContainer>
 )

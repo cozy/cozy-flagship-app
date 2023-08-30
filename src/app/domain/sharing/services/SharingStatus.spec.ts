@@ -2,9 +2,9 @@
 import { waitFor } from '@testing-library/react-native'
 import { NativeModules, Linking, Platform } from 'react-native'
 
-import { handleSharing } from '/app/domain/sharing/services/SharingStatus'
-import { sharingLogger } from '/app/domain/sharing'
-import { SharingIntentStatus } from '/app/domain/sharing/models/SharingState'
+import { handleOsReceive } from '/app/domain/sharing/services/SharingStatus'
+import { OsReceiveLogger } from '/app/domain/sharing'
+import { OsReceiveIntentStatus } from '/app/domain/sharing/models/SharingState'
 
 jest.mock('react-native', () => {
   return {
@@ -45,11 +45,11 @@ describe('SharingStatus Service', () => {
     mockCall.mockResolvedValue(true)
 
     const setStatus = jest.fn()
-    handleSharing(setStatus)
+    handleOsReceive(setStatus)
 
     await waitFor(() =>
       expect(setStatus).toHaveBeenCalledWith(
-        SharingIntentStatus.OpenedViaSharing
+        OsReceiveIntentStatus.OpenedViaOsReceive
       )
     )
   })
@@ -64,11 +64,11 @@ describe('SharingStatus Service', () => {
     mockCall.mockResolvedValue(false)
 
     const setStatus = jest.fn()
-    handleSharing(setStatus)
+    handleOsReceive(setStatus)
 
     await waitFor(() =>
       expect(setStatus).toHaveBeenCalledWith(
-        SharingIntentStatus.NotOpenedViaSharing
+        OsReceiveIntentStatus.NotOpenedViaOsReceive
       )
     )
   })
@@ -76,7 +76,7 @@ describe('SharingStatus Service', () => {
   it('handles iOS app opened via a shared link', () => {
     Platform.OS = 'ios'
     const setStatus = jest.fn()
-    handleSharing(setStatus)
+    handleOsReceive(setStatus)
 
     const addEventListenerMock =
       Linking.addEventListener as jest.MockedFunction<
@@ -88,7 +88,7 @@ describe('SharingStatus Service', () => {
     }) => void
     eventHandler({ url: 'some-shared-url' })
 
-    expect(setStatus).toHaveBeenCalledWith(SharingIntentStatus.OpenedViaSharing)
+    expect(setStatus).toHaveBeenCalledWith(OsReceiveIntentStatus.OpenedViaOsReceive)
   })
 
   it('handles failure when checking if app was opened via sharing', async () => {
@@ -101,10 +101,10 @@ describe('SharingStatus Service', () => {
     mockCall.mockRejectedValue(new Error('Test error'))
 
     const setStatus = jest.fn()
-    handleSharing(setStatus)
+    handleOsReceive(setStatus)
 
     await waitFor(() =>
-      expect(sharingLogger.error).toHaveBeenCalledWith(
+      expect(OsReceiveLogger.error).toHaveBeenCalledWith(
         'Failed to check if app was opened via sharing',
         expect.any(Error)
       )

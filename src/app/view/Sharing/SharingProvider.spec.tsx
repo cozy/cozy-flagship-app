@@ -4,12 +4,12 @@ import { Text } from 'react-native'
 
 import { useQuery } from 'cozy-client'
 
-import { SharingProvider } from '/app/view/Sharing/SharingProvider'
+import { OsReceiveProvider } from '/app/view/Sharing/SharingProvider'
 import { handleReceivedFiles } from '/app/domain/sharing/services/SharingData'
-import { handleSharing } from '/app/domain/sharing/services/SharingStatus'
-import { SharingIntentStatus } from '/app/domain/sharing/models/SharingState'
+import { handleOsReceive } from '/app/domain/sharing/services/SharingStatus'
+import { OsReceiveIntentStatus } from '/app/domain/sharing/models/SharingState'
 import { ReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
-import { useSharingState } from '/app/view/Sharing/SharingState'
+import { useOsReceiveState } from '/app/view/Sharing/SharingState'
 import { getRouteToUpload } from '/app/domain/sharing/services/SharingNetwork'
 
 jest.mock('/app/domain/sharing/services/SharingData')
@@ -38,7 +38,7 @@ describe('SharingProvider', () => {
   beforeEach(() => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
     ;(handleReceivedFiles as jest.Mock).mockClear()
-    ;(handleSharing as jest.Mock).mockClear()
+    ;(handleOsReceive as jest.Mock).mockClear()
   })
 
   it('calls services and updates state correctly on mount', () => {
@@ -50,10 +50,10 @@ describe('SharingProvider', () => {
       const mockCallback = callback as (files: ReceivedFile[]) => void
       mockCallback([{ filePath: 'test-file' } as ReceivedFile])
     })
-    ;(handleSharing as jest.Mock).mockImplementation(callback => {
+    ;(handleOsReceive as jest.Mock).mockImplementation(callback => {
       mockSharingCallback()
-      const mockCallback = callback as (status: SharingIntentStatus) => void
-      mockCallback(SharingIntentStatus.OpenedViaSharing)
+      const mockCallback = callback as (status: OsReceiveIntentStatus) => void
+      mockCallback(OsReceiveIntentStatus.OpenedViaOsReceive)
     })
     ;(getRouteToUpload as jest.Mock).mockReturnValue({
       result: {
@@ -63,10 +63,11 @@ describe('SharingProvider', () => {
     })
 
     const TestComponent = (): JSX.Element => {
-      const state = useSharingState()
+      const state = useOsReceiveState()
       return (
         <Text>
-          {state.sharingIntentStatus === SharingIntentStatus.OpenedViaSharing
+          {state.OsReceiveIntentStatus ===
+          OsReceiveIntentStatus.OpenedViaOsReceive
             ? 'OpenedViaSharing'
             : 'NotOpenedViaSharing'}
         </Text>
@@ -74,9 +75,9 @@ describe('SharingProvider', () => {
     }
 
     const { getByText } = render(
-      <SharingProvider>
+      <OsReceiveProvider>
         <TestComponent />
-      </SharingProvider>
+      </OsReceiveProvider>
     )
 
     expect(mockReceivedFilesCallback).toHaveBeenCalledTimes(1)
@@ -90,21 +91,21 @@ describe('SharingProvider', () => {
     ;(handleReceivedFiles as jest.Mock).mockImplementation(() => {
       /** noop */
     })
-    ;(handleSharing as jest.Mock).mockImplementation(() => {
+    ;(handleOsReceive as jest.Mock).mockImplementation(() => {
       /** noop */
     })
 
     const TestComponent = (): JSX.Element => {
-      const state = useSharingState()
-      return <Text>{state.sharingIntentStatus}</Text>
+      const state = useOsReceiveState()
+      return <Text>{state.OsReceiveIntentStatus}</Text>
     }
     const { getByText } = render(
-      <SharingProvider>
+      <OsReceiveProvider>
         <TestComponent />
-      </SharingProvider>
+      </OsReceiveProvider>
     )
 
-    getByText(SharingIntentStatus.Undetermined.toString())
+    getByText(OsReceiveIntentStatus.Undetermined.toString())
   })
 
   it('updates to "not opened via sharing" when service indicates', () => {
@@ -113,23 +114,23 @@ describe('SharingProvider', () => {
       const mockCallback = callback as (files: ReceivedFile[]) => void
       mockCallback([])
     })
-    ;(handleSharing as jest.Mock).mockImplementation(callback => {
-      const mockCallback = callback as (status: SharingIntentStatus) => void
-      mockCallback(SharingIntentStatus.NotOpenedViaSharing)
+    ;(handleOsReceive as jest.Mock).mockImplementation(callback => {
+      const mockCallback = callback as (status: OsReceiveIntentStatus) => void
+      mockCallback(OsReceiveIntentStatus.NotOpenedViaOsReceive)
     })
 
     const TestComponent = (): JSX.Element => {
-      const state = useSharingState()
-      return <Text>{state.sharingIntentStatus}</Text>
+      const state = useOsReceiveState()
+      return <Text>{state.OsReceiveIntentStatus}</Text>
     }
 
     const { getByText } = render(
-      <SharingProvider>
+      <OsReceiveProvider>
         <TestComponent />
-      </SharingProvider>
+      </OsReceiveProvider>
     )
 
-    getByText(SharingIntentStatus.NotOpenedViaSharing.toString())
+    getByText(OsReceiveIntentStatus.NotOpenedViaOsReceive.toString())
   })
 
   it('calls cleanup functions on unmount', () => {
@@ -137,12 +138,12 @@ describe('SharingProvider', () => {
     const cleanupSharingIntent = jest.fn()
 
     ;(handleReceivedFiles as jest.Mock).mockReturnValue(cleanupReceivedFiles)
-    ;(handleSharing as jest.Mock).mockReturnValue(cleanupSharingIntent)
+    ;(handleOsReceive as jest.Mock).mockReturnValue(cleanupSharingIntent)
 
     const { unmount } = render(
-      <SharingProvider>
+      <OsReceiveProvider>
         <Text>Test</Text>
-      </SharingProvider>
+      </OsReceiveProvider>
     )
 
     unmount()

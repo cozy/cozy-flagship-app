@@ -1,14 +1,13 @@
 import CozyClient, { generateWebLink, Q } from 'cozy-client'
 
-import { UploadResult } from '../../upload/models'
-import { uploadFileWithConflictStrategy } from '../../upload/services'
-
+import { UploadResult } from '/app/domain/upload/models'
+import { uploadFileWithConflictStrategy } from '/app/domain/upload/services'
 import { ReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
-import { sharingLogger } from '/app/domain/sharing'
-import { SharingCozyApp } from '/app/domain/sharing/models/SharingCozyApp'
+import { OsReceiveLogger } from '/app/domain/sharing'
+import { OsReceiveCozyApp } from '/app/domain/sharing/models/SharingCozyApp'
 import { ServiceResponse } from '/app/domain/sharing/models/SharingState'
 
-export const fetchSharingCozyApps = {
+export const fetchOsReceiveCozyApps = {
   definition: Q('io.cozy.apps').where({
     'accept_documents_from_flagship.route_to_upload': { $exists: true },
     accept_from_flagship: true
@@ -19,7 +18,7 @@ export const fetchSharingCozyApps = {
 }
 
 export const getRouteToUpload = (
-  cozyApps?: SharingCozyApp[],
+  cozyApps?: OsReceiveCozyApp[],
   client?: CozyClient | null,
   appName = 'drive'
 ): ServiceResponse<{ href: string; slug: string }> => {
@@ -43,10 +42,10 @@ export const getRouteToUpload = (
       searchParams: []
     })
 
-    sharingLogger.info('routeToUpload is', { href, slug })
+    OsReceiveLogger.info('routeToUpload is', { href, slug })
     return { result: { href, slug: cozyApp.slug } }
   } catch (error) {
-    sharingLogger.error('Error when getting routeToUpload', error)
+    OsReceiveLogger.error('Error when getting routeToUpload', error)
     return { error: 'Error determining route to upload.' }
   }
 }
