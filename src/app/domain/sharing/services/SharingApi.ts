@@ -9,7 +9,8 @@ import {
   SharingState,
   SharingAction,
   SharingActionType,
-  SharingApi
+  SharingApi,
+  UploadStatus
 } from '/app/domain/sharing/models/SharingState'
 
 const getUrl = (
@@ -30,11 +31,6 @@ const getUrl = (
   toURL.searchParams.append('UpdatedAt', modifiedAt)
 
   return toURL.toString()
-}
-
-const hasFilesToHandle = async (state: SharingState): Promise<boolean> => {
-  sharingLogger.info('hasFilesToHandle', state.filesToUpload)
-  return Promise.resolve(state.filesToUpload.length > 0)
 }
 
 const getFilesToUpload = async (
@@ -103,6 +99,25 @@ const resetFilesToHandle = (
   sharingLogger.info('resetFilesToHandle')
   setTimeout(() => dispatch({ type: SharingActionType.SetRecoveryState }), 0)
   return Promise.resolve(true)
+}
+
+const hasFilesToHandle = async (state: SharingState): Promise<UploadStatus> => {
+  sharingLogger.info('getUploadStatus called')
+
+  const totalFiles = state.filesToUpload.length
+  const uploadedFiles = state.filesUploaded.length
+  const remainingFiles = totalFiles - uploadedFiles
+  const uploadStatus = {
+    filesToHandle: state.filesToUpload,
+    remainingFiles,
+    totalFiles,
+    uploadedFiles: state.filesUploaded,
+    uploading: totalFiles > 0
+  }
+
+  sharingLogger.info('getUploadStatus', { uploadStatus })
+
+  return Promise.resolve(uploadStatus)
 }
 
 export const sharingApi = (
