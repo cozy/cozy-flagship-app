@@ -59,7 +59,7 @@ export const handleReceivedFiles = (
   callback?: FileCallback
 ): CleanupFunction => {
   ReceiveSharingIntent.getReceivedFiles(
-    files => onReceiveFiles(files, callback),
+    files => onReceiveFiles(files as ReceivedFile[], callback),
     onFailure,
     SHARING_PROTOCOL_NAME
   )

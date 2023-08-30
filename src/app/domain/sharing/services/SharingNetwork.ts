@@ -71,10 +71,15 @@ export const uploadFiles = async (
     throw new Error('Invalid file to upload')
   }
 
+  const token = client.getStackClient().token.accessToken
+
+  if (!token) {
+    throw new Error('uploadFiles: token is undefined, aborting')
+  }
+
   return uploadFileWithConflictStrategy({
     url: uploadUrl,
-    // @ts-expect-error Type issue which will be fixed in another PR
-    token: client.getStackClient().token.accessToken as string,
+    token,
     filename: media.fileName,
     filepath: media.filePath,
     mimetype: media.mimeType

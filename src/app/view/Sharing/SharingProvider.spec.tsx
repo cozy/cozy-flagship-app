@@ -10,6 +10,7 @@ import { handleSharing } from '/app/domain/sharing/services/SharingStatus'
 import { SharingIntentStatus } from '/app/domain/sharing/models/SharingState'
 import { ReceivedFile } from '/app/domain/sharing/models/ReceivedFile'
 import { useSharingState } from '/app/view/Sharing/SharingState'
+import { getRouteToUpload } from '/app/domain/sharing/services/SharingNetwork'
 
 jest.mock('/app/domain/sharing/services/SharingData')
 jest.mock('/app/domain/sharing/services/SharingStatus')
@@ -53,6 +54,12 @@ describe('SharingProvider', () => {
       mockSharingCallback()
       const mockCallback = callback as (status: SharingIntentStatus) => void
       mockCallback(SharingIntentStatus.OpenedViaSharing)
+    })
+    ;(getRouteToUpload as jest.Mock).mockReturnValue({
+      result: {
+        href: 'test-href',
+        slug: 'test-slug'
+      }
     })
 
     const TestComponent = (): JSX.Element => {
