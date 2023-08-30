@@ -24,6 +24,8 @@ import {
 } from '/app/view/OsReceive/OsReceiveState'
 import { routes } from '/constants/routes'
 
+import { QueryFetchStatus } from 'cozy-client/types/types'
+
 export const OsReceiveProvider = ({
   children
 }: React.PropsWithChildren): JSX.Element => {
@@ -33,10 +35,10 @@ export const OsReceiveProvider = ({
   const { handleError } = useError()
   const navigationState = useNavigationState(state => state)
   const navigation = useNavigation()
-  const { data } = useQuery(
+  const { data, fetchStatus } = useQuery(
     fetchOsReceiveCozyApps.definition,
     fetchOsReceiveCozyApps.options
-  ) as { data?: OsReceiveCozyApp[] | [] }
+  ) as { data?: OsReceiveCozyApp[] | []; fetchStatus?: QueryFetchStatus }
 
   // This effect is triggered at mount and unmount of the provider,
   // its role is to listen native events and update the state accordingly
@@ -71,7 +73,7 @@ export const OsReceiveProvider = ({
     } else if (result !== undefined) {
       dispatch({ type: OsReceiveActionType.SetRouteToUpload, payload: result })
     }
-  }, [client, data, handleError, state])
+  }, [client, data, handleError, state, fetchStatus])
 
   // If an error is detected, we handle that by abandoning the flow.
   // The user will be redirected to the home screen and the osReceive mode is ended until next file osReceive.
