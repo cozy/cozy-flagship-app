@@ -231,7 +231,10 @@ export const setLastBackup = async (
 ): Promise<void> => {
   const localBackupConfig = await getLocalBackupConfig(client)
 
-  localBackupConfig.lastBackup = lastBackup
+  localBackupConfig.lastBackup = {
+    ...lastBackup,
+    message: lastBackup.message?.toLowerCase()
+  }
 
   await setLocalBackupConfig(client, localBackupConfig)
 
