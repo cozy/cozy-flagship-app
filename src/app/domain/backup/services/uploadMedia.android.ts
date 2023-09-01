@@ -25,22 +25,7 @@ export const uploadMedia = async (
       onProgressTitle: t('services.backup.notifications.onProgressTitle'),
       onProgressMessage: t('services.backup.notifications.onProgressMessage', {
         filename: media.name
-      }),
-      onCompleteTitle: t('services.backup.notifications.onCompleteTitle'),
-      onCompleteMessage: t('services.backup.notifications.onCompleteMessage', {
-        filename: media.name
-      }),
-      onErrorTitle: t('services.backup.notifications.onErrorTitle'),
-      onErrorMessage: t('services.backup.notifications.onErrorMessage', {
-        filename: media.name
-      }),
-      onCancelledTitle: t('services.backup.notifications.onCancelledTitle'),
-      onCancelledMessage: t(
-        'services.backup.notifications.onCancelledMessage',
-        {
-          filename: media.name
-        }
-      )
+      })
     }
   })
 }

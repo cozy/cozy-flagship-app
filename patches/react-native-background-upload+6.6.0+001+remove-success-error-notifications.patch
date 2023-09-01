@@ -1,0 +1,212 @@
+diff --git a/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/MyNotificationHandler.kt b/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/MyNotificationHandler.kt
+new file mode 100644
+index 0000000..f7d2e18
+--- /dev/null
++++ b/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/MyNotificationHandler.kt
+@@ -0,0 +1,186 @@
++package com.vydia.RNUploader
++
++// Cozy customization, remove error and success notification
++// We cannot simply override onSuccess and onError methods in original NotificationHandler class because it is final
++// So we copy NotificationHandler class file and just comment what we do not want
++// Original file https://github.com/gotev/android-upload-service/blob/master/uploadservice/src/main/java/net/gotev/uploadservice/observer/task/NotificationHandler.kt
++
++import android.app.NotificationManager
++import android.app.PendingIntent
++import android.content.Context
++import android.media.RingtoneManager
++import android.os.Build
++import androidx.core.app.NotificationCompat
++import net.gotev.uploadservice.UploadService
++import net.gotev.uploadservice.UploadServiceConfig.namespace
++import net.gotev.uploadservice.UploadServiceConfig.placeholdersProcessor
++import net.gotev.uploadservice.data.UploadInfo
++import net.gotev.uploadservice.data.UploadNotificationConfig
++import net.gotev.uploadservice.data.UploadNotificationStatusConfig
++import net.gotev.uploadservice.exceptions.UserCancelledUploadException
++// Cozy customization, remove error and success notification
++// To fix "Cannot access 'validateNotificationChannel': it is internal in 'net.gotev.uploadservice.extensions'"
++// import net.gotev.uploadservice.extensions.validateNotificationChannel
++import net.gotev.uploadservice.network.ServerResponse
++import net.gotev.uploadservice.observer.task.UploadTaskObserver
++
++class MyNotificationHandler(private val service: UploadService) : UploadTaskObserver {
++
++    private val notificationCreationTimeMillis by lazy { System.currentTimeMillis() }
++
++    private val notificationManager by lazy {
++        service.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
++    }
++
++    private fun NotificationCompat.Builder.addActions(config: UploadNotificationStatusConfig): NotificationCompat.Builder {
++        config.actions.forEach { addAction(it.asAction()) }
++        return this
++    }
++
++    private fun NotificationCompat.Builder.setRingtoneCompat(isRingToneEnabled: Boolean): NotificationCompat.Builder {
++        if (isRingToneEnabled && Build.VERSION.SDK_INT < 26) {
++            setSound(
++                RingtoneManager.getActualDefaultRingtoneUri(
++                    service,
++                    RingtoneManager.TYPE_NOTIFICATION
++                )
++            )
++        }
++
++        return this
++    }
++
++    private fun NotificationCompat.Builder.notify(uploadId: String, notificationId: Int) {
++        build().apply {
++            if (service.holdForegroundNotification(uploadId, this)) {
++                notificationManager.cancel(notificationId)
++            } else {
++                notificationManager.notify(notificationId, this)
++            }
++        }
++    }
++
++    private fun NotificationCompat.Builder.setCommonParameters(
++        statusConfig: UploadNotificationStatusConfig,
++        info: UploadInfo
++    ): NotificationCompat.Builder {
++        return setGroup(namespace)
++            .setContentTitle(placeholdersProcessor.processPlaceholders(statusConfig.title, info))
++            .setContentText(placeholdersProcessor.processPlaceholders(statusConfig.message, info))
++            .setContentIntent(statusConfig.getClickIntent(service))
++            .setSmallIcon(statusConfig.iconResourceID)
++            .setLargeIcon(statusConfig.largeIcon)
++            .setColor(statusConfig.iconColorResourceID)
++            .addActions(statusConfig)
++    }
++
++    private fun ongoingNotification(
++        notificationConfig: UploadNotificationConfig,
++        info: UploadInfo
++    ): NotificationCompat.Builder {
++        return NotificationCompat.Builder(service, notificationConfig.notificationChannelId)
++            .setWhen(notificationCreationTimeMillis)
++            .setCommonParameters(notificationConfig.progress, info)
++            .setOngoing(true)
++    }
++
++    private fun NotificationCompat.Builder.setDeleteIntentIfPresent(
++        intent: PendingIntent?
++    ): NotificationCompat.Builder {
++        return intent?.let { setDeleteIntent(it) } ?: this
++    }
++
++    private fun updateNotification(
++        notificationId: Int,
++        info: UploadInfo,
++        notificationChannelId: String,
++        isRingToneEnabled: Boolean,
++        statusConfig: UploadNotificationStatusConfig
++    ) {
++        notificationManager.cancel(notificationId)
++
++        if (statusConfig.autoClear) return
++
++        val notification = NotificationCompat.Builder(service, notificationChannelId)
++            .setCommonParameters(statusConfig, info)
++            .setProgress(0, 0, false)
++            .setOngoing(false)
++            .setDeleteIntentIfPresent(statusConfig.onDismissed)
++            .setAutoCancel(statusConfig.clearOnAction)
++            .setRingtoneCompat(isRingToneEnabled)
++            .build()
++
++        // this is needed because the main notification used to show progress is ongoing
++        // and a new one has to be created to allow the user to dismiss it
++        notificationManager.notify(notificationId + 1, notification)
++    }
++
++    override fun onStart(
++        info: UploadInfo,
++        notificationId: Int,
++        notificationConfig: UploadNotificationConfig
++    ) {
++        // Cozy customization, remove error and success notification
++        // To fix "Cannot access 'validateNotificationChannel': it is internal in 'net.gotev.uploadservice.extensions'"
++        // notificationManager.validateNotificationChannel(notificationConfig.notificationChannelId)
++
++        ongoingNotification(notificationConfig, info)
++            .setProgress(100, 0, true)
++            .notify(info.uploadId, notificationId)
++    }
++
++    override fun onProgress(
++        info: UploadInfo,
++        notificationId: Int,
++        notificationConfig: UploadNotificationConfig
++    ) {
++        ongoingNotification(notificationConfig, info)
++            .setProgress(100, info.progressPercent, false)
++            .notify(info.uploadId, notificationId)
++    }
++
++    override fun onSuccess(
++        info: UploadInfo,
++        notificationId: Int,
++        notificationConfig: UploadNotificationConfig,
++        response: ServerResponse
++    ) {
++        // Cozy customization, remove error and success notification
++        // updateNotification(
++        //   info,
++        //         notificationId,
++        //   notificationConfig.notificationChannelId,
++        //     notificationConfig.isRingToneEnabled,
++        //     notificationConfig.success
++        // )
++    }
++
++    override fun onError(
++        info: UploadInfo,
++        notificationId: Int,
++        notificationConfig: UploadNotificationConfig,
++        exception: Throwable
++    ) {
++        // Cozy customization, remove error and success notification
++        // val statusConfig = if (exception is UserCancelledUploadException) {
++        //     notificationConfig.cancelled
++        // } else {
++        //     notificationConfig.error
++        // }
++
++        // updateNotification(
++        //     notificationId,
++        //     info,
++        //     notificationConfig.notificationChannelId,
++        //     notificationConfig.isRingToneEnabled,
++        //     statusConfig
++        // )
++    }
++
++    override fun onCompleted(
++        info: UploadInfo,
++        notificationId: Int,
++        notificationConfig: UploadNotificationConfig
++    ) {
++    }
++}
+diff --git a/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/UploaderModule.kt b/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/UploaderModule.kt
+index 0258e95..363cc9b 100644
+--- a/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/UploaderModule.kt
++++ b/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/UploaderModule.kt
+@@ -10,6 +10,7 @@ import android.webkit.MimeTypeMap
+ import com.facebook.react.BuildConfig
+ import com.facebook.react.bridge.*
+ import net.gotev.uploadservice.UploadService
++import net.gotev.uploadservice.UploadServiceConfig
+ import net.gotev.uploadservice.UploadServiceConfig.httpStack
+ import net.gotev.uploadservice.UploadServiceConfig.initialize
+ import net.gotev.uploadservice.data.UploadNotificationConfig
+@@ -177,6 +178,7 @@ class UploaderModule(val reactContext: ReactApplicationContext) : ReactContextBa
+
+     if(!isGlobalRequestObserver) {
+       isGlobalRequestObserver = true
++      UploadServiceConfig.notificationHandlerFactory = { MyNotificationHandler(it) }
+       GlobalRequestObserver(application, GlobalRequestObserverDelegate(reactContext))
+     }
+
