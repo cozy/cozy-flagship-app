@@ -36,6 +36,7 @@ import { withSentry } from '/libs/monitoring/Sentry'
 import { ThemeProvider } from '/app/theme/ThemeProvider'
 import { useInitI18n } from '/locales/useInitI18n'
 import { SecureBackgroundSplashScreenWrapper } from '/app/theme/SecureBackgroundSplashScreenWrapper'
+import { PermissionsChecker } from '/app/domain/nativePermissions/components/PermissionsChecker'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -158,7 +159,9 @@ const Wrapper = () => {
                   <SecureBackgroundSplashScreenWrapper>
                     <NetStatusBoundary>
                       <ThemeProvider>
-                        <WrappedApp />
+                        <PermissionsChecker>
+                          <WrappedApp />
+                        </PermissionsChecker>
                       </ThemeProvider>
                     </NetStatusBoundary>
                   </SecureBackgroundSplashScreenWrapper>

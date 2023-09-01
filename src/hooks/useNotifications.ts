@@ -9,7 +9,7 @@ import {
   handleInitialNotification,
   handleNotificationOpening
 } from '/libs/notifications/notifications'
-import { requestNotifications } from '/app/domain/nativePermissions'
+import { checkNotifications } from '/app/domain/nativePermissions'
 
 export const useNotifications = (): void => {
   const client = useClient()
@@ -20,7 +20,7 @@ export const useNotifications = (): void => {
     const initializeNotifications = async (): Promise<void> => {
       if (!client) return
 
-      const permission = await requestNotifications()
+      const permission = await checkNotifications()
 
       if (permission.granted) {
         setAreNotificationsEnabled(true)
