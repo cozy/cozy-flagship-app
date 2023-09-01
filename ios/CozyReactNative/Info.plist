@@ -115,11 +115,13 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Afin de prendre des photos pour Drive ou MesPapiers afin d&apos;importer des documents</string>
+	<string>Afin de prendre des photos pour Drive ou MesPapiers afin d'importer des documents</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Permet le déverouillage de l&apos;application en utilisant FaceID</string>
+	<string>Permet le déverouillage de l'application en utilisant FaceID</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pour faire un backup de vos photos</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Lato-Bold.ttf</string>
@@ -144,7 +146,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Pour faire un backup de vos photos</string>
 </dict>
 </plist>
