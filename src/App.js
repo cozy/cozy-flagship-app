@@ -12,7 +12,6 @@ import { CozyProvider, useClient } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
 
 import { RootNavigator } from '/AppRouter'
-import { useSecureBackgroundSplashScreen } from '/hooks/useSplashScreen'
 import * as RootNavigation from '/libs/RootNavigation'
 import NetStatusBoundary from '/libs/services/NetStatusBoundary'
 import { IconChangedModal } from '/libs/icon/IconChangedModal'
@@ -36,6 +35,7 @@ import { useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
 import { ThemeProvider } from '/app/theme/ThemeProvider'
 import { useInitI18n } from '/locales/useInitI18n'
+import { SecureBackgroundSplashScreenWrapper } from '/app/theme/SecureBackgroundSplashScreenWrapper'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -57,7 +57,6 @@ const App = ({ setClient }) => {
   const { initialRoute, isLoading } = useAppBootstrap(client)
 
   useGlobalAppState()
-  useSecureBackgroundSplashScreen()
   useCookieResyncOnResume()
   useNotifications()
   useCozyEnvironmentOverride()
@@ -156,11 +155,13 @@ const Wrapper = () => {
             <HttpServerProvider>
               <HomeStateProvider>
                 <SplashScreenProvider>
-                  <NetStatusBoundary>
-                    <ThemeProvider>
-                      <WrappedApp />
-                    </ThemeProvider>
-                  </NetStatusBoundary>
+                  <SecureBackgroundSplashScreenWrapper>
+                    <NetStatusBoundary>
+                      <ThemeProvider>
+                        <WrappedApp />
+                      </ThemeProvider>
+                    </NetStatusBoundary>
+                  </SecureBackgroundSplashScreenWrapper>
                 </SplashScreenProvider>
               </HomeStateProvider>
             </HttpServerProvider>
