@@ -1,0 +1,72 @@
+{
+  "BUNDLE_STORAGE_KEY": "@cozy_AmiralAppBundleConfig",
+  "COOKIE_STORAGE_KEY": "@cozy_AmiralAppCookieConfig",
+  "COZY_SCHEME": "cozy://",
+  "CLOUDERY_ENV_STORAGE_KEY": "@cozy_AmiralAppClouderyEnvConfig",
+  "OAUTH_STORAGE_KEY": "@cozy_AmiralAppOAuthConfig",
+  "ONBOARDING_PARTNER_STORAGE_KEY": "@cozy_AmiralAppOnboardingPartnerConfig",
+  "DEFAULT_REDIRECTION_URL_STORAGE_KEY": "@cozy_AmiralAppDefaultRedirectionUrl",
+  "REDIRECT": "redirect",
+  "SESSION_CODE": "session_code",
+  "SESSION_CREATED_FLAG": "@cozy_AmiralAppSessionCreated",
+  "USER_AGENT": "io.cozy.flagship.mobile",
+  "ORIGIN_WHITELIST": [
+    "http://*",
+    "https://*",
+    "intent://*",
+    "mailto:*",
+    "tel:*",
+    "sms:*",
+    "maps:*",
+    "geo:*"
+  ],
+  "appTouched": "appTouched",
+  "authLogin": "/auth/login?redirect=",
+  "konnectors": {
+    "worker": {
+      "backButton": "RETOUR À MON COZY"
+    }
+  },
+  "cloudery": {
+    "prodBaseUri": "https://manager.cozycloud.cc",
+    "intBaseUri": "https://staging-manager.cozycloud.cc",
+    "devBaseUri": "https://manager-dev.cozycloud.cc",
+    "cozyLoginRelativeUri": "/v2/neutral/start",
+    "cozySigninRelativeUri": "/v2/postcode",
+    "iOSQueryString": "universallink_for_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fmanager&redirect_after_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fonboarding%3Fflagship%3Dtrue%26fallback=cozy%253A%252F%252Fonboarding%253Fflagship%253Dtrue&redirect_after_login=https%3A%2F%2Floginflagship",
+    "androidQueryString": "universallink_for_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fmanager&redirect_after_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fonboarding%3Fflagship%3Dtrue%26fallback=cozy%253A%252F%252Fonboarding%253Fflagship%253Dtrue&redirect_after_login=https%3A%2F%2Floginflagship"
+  },
+  "defaultHttpScheme": "https://",
+  "emptyString": "",
+  "environments": {
+    "production": "production",
+    "test": "test"
+  },
+  "errorAppendParamsFail": "Could not handle url, it is neither a valid URL string nor a string",
+  "errorScreens": {
+    "cozyBlocked": "cozyBlocked",
+    "cozyNotFound": "cozyNotFound",
+    "cozyNotOnboarded": "cozyNotOnboarded",
+    "genericError": "genericError",
+    "offline": "offline",
+    "managerError": "managerError"
+  },
+  "errors": {
+    "cozyClientMismatch": "Could not validate redirect url, Cozy Client mismatch",
+    "clearPersistentIconTable": "Could not clear icon cache. Saved cache might be corrupted.",
+    "getPersistentIconTable": "Could not get icon cache.",
+    "setPersistentIconTable": "Could not set icon cache. Cache to save might be corrupted.",
+    "attemptFetchApps": "Failed to fetch apps registry, recovering by returning undefined.",
+    "attemptFetchIcons": "Failed to fetch icons XML data. No icon will be available until next boot.",
+    "wrong2FA": "Le code que vous avez entré n'est pas correct, merci de réessayer.",
+    "invalidPassword": "Les identifiants que vous avez saisis sont incorrects, veuillez ré-essayer."
+  },
+  "fqdn": "fqdn",
+  "home": "home",
+  "registerToken": "registerToken",
+  "reachability": {
+    "cloud": "https://manager.cozycloud.cc/connection_check",
+    "stack": "connection_check"
+  },
+  "SENTRY_DSN_URL": "https://73d1bdec0dad488bb8781dfcfe083380@errors.cozycloud.cc/17"
+}
