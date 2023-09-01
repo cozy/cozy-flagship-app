@@ -2,6 +2,7 @@ import Minilog from 'cozy-minilog'
 import { Linking, Platform } from 'react-native'
 import type { WebViewNavigation } from 'react-native-webview'
 
+import strings from '/constants/strings.json'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { closeInAppBrowser, showInAppBrowser } from '/libs/intents/InAppBrowser'
 
@@ -12,7 +13,7 @@ const USER_CANCELED = 'USER_CANCELED'
 const INVALID_CALLBACK = 'INVALID_CALLBACK'
 
 const OIDC_CALLBACK_URL_PARAM = 'redirect_after_oidc'
-const OIDC_CALLBACK_URL = 'https://links.mycozy.cloud/flagship/oidc_result'
+const OIDC_CALLBACK_URL = `${strings.UNIVERSAL_LINK_BASE}/oidc_result`
 const OIDC_CALLBACK_URL_ANDROID = 'cozy://flagship/oidc_result'
 
 export const LOGIN_FLAGSHIP_URL = 'https://loginflagship'
