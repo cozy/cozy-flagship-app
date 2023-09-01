@@ -2,9 +2,11 @@
   "cozy" : {
     "appName": "Cozy",
     "bundleId": "io.cozy.flagship.mobile",
+    "scheme": "cozy"
   },
   "mabulle": {
     "appName": "Ma Bulle",
     "bundleId": "io.cozy.flagship.mobile.mabulle",
+    "scheme": "mabulle"
   }
 }

@@ -52,6 +52,11 @@ const configureIOS = async (brand: string): Promise<void> => {
     `/usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName ${config.appName}" ios/CozyReactNative/Info.plist`
   )
 
+  logger.info('Set iOS App Scheme')
+  await executeCommand(
+    `/usr/libexec/PlistBuddy -c "Set :CFBundleURLTypes:0:CFBundleURLSchemes:0 ${config.scheme}" ios/CozyReactNative/Info.plist`
+  )
+
   logger.info('Copy iOS files')
   await fs.copy(`./white_label/brands/${brand}/ios`, './ios', {
     overwrite: true
