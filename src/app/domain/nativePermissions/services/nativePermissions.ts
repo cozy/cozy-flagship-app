@@ -1,6 +1,7 @@
 import {
   check,
   request,
+  checkNotifications as RNPCheckNotifications,
   requestNotifications as RNPRequestNotifications,
   PermissionStatus,
   RESULTS
@@ -22,6 +23,12 @@ export const requestNativePermission = async (
   const result = await request(permission)
 
   return formatResult(result)
+}
+
+export const checkNotifications = async (): Promise<NativePermissionStatus> => {
+  const result = await RNPCheckNotifications()
+
+  return formatResult(result.status)
 }
 
 export const requestNotifications =
