@@ -26,8 +26,6 @@ import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
 const log = Minilog('useManagerScreen')
 
-const UNIVERSAL_LINK_BASE = 'https://links.mycozy.cloud/flagship'
-
 const handleUniversalLink = async (
   url: string,
   client: CozyClient | null,
@@ -113,7 +111,7 @@ export const useManagerScreenProps = (
   const onShouldStartLoadWithRequest = (
     initialRequest: WebViewNavigation
   ): boolean => {
-    if (initialRequest.url.startsWith(UNIVERSAL_LINK_BASE)) {
+    if (initialRequest.url.startsWith(strings.UNIVERSAL_LINK_BASE)) {
       void handleUniversalLink(
         initialRequest.url,
         client,
