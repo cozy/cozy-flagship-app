@@ -12,7 +12,10 @@ export interface UploadParams {
   filename: string
   filepath: string
   mimetype: string
-  notification?: object // only for Android
+  notification?: {
+    onProgressTitle: string
+    onProgressMessage: string
+  }
 }
 
 // These type is incomplete there is more information in data

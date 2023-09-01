@@ -84,14 +84,10 @@
       "notifications": {
         "onProgressTitle": "Uploading",
         "onProgressMessage": "{{filename}} is being uploaded",
-        "onCompleteTitle": "Upload finished",
-        "onCompleteMessage": "{{filename}} has been uploaded",
-        "onErrorTitle": "Oops",
-        "onErrorMessage": "Your backup encountered an error. Open the app to see more details",
-        "onCancelledTitle": "Backup canceled",
-        "onCancelledMessage": "Open the app to resume the process",
         "backupSuccessTitle": "Photo & video backup",
-        "backupSuccessBody": "Your backup is complete! {{backedUpMediaCount}}/{{totalMediasToBackupCount}} saved item(s)"
+        "backupSuccessBody": "Your backup is complete! {{backedUpMediaCount}}/{{totalMediasToBackupCount}} saved item(s)",
+        "backupErrorTitle": "Oops",
+        "backupErrorBody":  "Your backup encountered an error. Open the app to see more details"
       },
       "errors": {
         "appKilled": "App killed",
@@ -104,6 +100,12 @@
         "quotaExceeded": "Storage space full",
         "networkIssue": "Network issue",
         "unknownIssue": "Unknown issue"
+      }
+    },
+    "upload": {
+      "notifications": {
+        "onProgressTitle": "Uploading",
+        "onProgressMessage": "A file is being uploaded"
       }
     }
   },

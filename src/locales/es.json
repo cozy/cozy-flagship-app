@@ -73,14 +73,10 @@
       "notifications": {
         "onProgressTitle": "Subiendo",
         "onProgressMessage": "{{filename}} se está subiendo",
-        "onCompleteTitle": "Subida finalizada",
-        "onCompleteMessage": "{{filename}} se ha subido",
-        "onErrorTitle": "Oops",
-        "onErrorMessage": "Tu copia de seguridad ha encontrado un error. Abre la aplicación para ver más detalles",
-        "onCancelledTitle": "Copia de seguridad cancelada",
-        "onCancelledMessage": "Abre la app para reanudar el proceso",
         "backupSuccessTitle": "Copia de seguridad de fotos y vídeos",
-        "backupSuccessBody": "¡Tu copia de seguridad ha finalizado! {{backedUpMediaCount}}/{{totalMediasToBackupCount}} elemento(s) guardado(s)"
+        "backupSuccessBody": "¡Tu copia de seguridad ha finalizado! {{backedUpMediaCount}}/{{totalMediasToBackupCount}} elemento(s) guardado(s)",
+        "backupErrorTitle": "Oops",
+        "backupErrorBody":  "Tu copia de seguridad ha encontrado un error. Abre la aplicación para ver más detalles"
       },
       "errors": {
         "appKilled": "App asesinada",
@@ -93,6 +89,12 @@
         "quotaExceeded": "Espacio de almacenamiento completo",
         "networkIssue": "Problema de red",
         "unknownIssue": "Problema desconocido"
+      }
+    },
+    "upload": {
+      "notifications": {
+        "onProgressTitle": "Subiendo",
+        "onProgressMessage": "Se está subiendo un archivo"
       }
     }
   },

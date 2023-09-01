@@ -5,6 +5,7 @@ import RNBackgroundUpload, {
 
 import { StackErrors, IOCozyFile } from 'cozy-client'
 
+import { t } from '/locales/i18n'
 import {
   UploadParams,
   UploadResult,
@@ -42,7 +43,8 @@ export const uploadFile = async ({
       },
       notification: {
         enabled: true,
-        autoClear: true,
+        onProgressTitle: t('services.upload.notifications.onProgressTitle'),
+        onProgressMessage: t('services.upload.notifications.onProgressMessage'),
         ...notification
       }
     } as UploadOptions

@@ -172,6 +172,14 @@ export const startBackup = async (
         message: t('services.backup.errors.unknownIssue')
       })
     }
+
+    await showLocalNotification({
+      title: t('services.backup.notifications.backupErrorTitle'),
+      body: t('services.backup.notifications.backupErrorBody'),
+      data: {
+        redirectLink: 'photos/#/backup'
+      }
+    })
   }
 
   deactivateKeepAwake('backup')
