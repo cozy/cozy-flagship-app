@@ -4,22 +4,18 @@ import { UploadResult } from '/app/domain/upload/models'
 import { uploadFileWithConflictStrategy } from '/app/domain/upload/services'
 import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
 import { OsReceiveLogger } from '/app/domain/osReceive'
-import { OsReceiveCozyApp } from '/app/domain/osReceive/models/OsReceiveCozyApp'
+import { AcceptFromFlagshipManifest } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import { ServiceResponse } from '/app/domain/osReceive/models/OsReceiveState'
 
 export const fetchOsReceiveCozyApps = {
-  definition: Q('io.cozy.apps')
-    .where({
-      accept_from_flagship: true
-    })
-    .indexFields(['accept_from_flagship']),
+  definition: Q('io.cozy.apps'),
   options: {
     as: 'io.cozy.apps/accept_from_flagship'
   }
 }
 
 export const getRouteToUpload = (
-  cozyApps?: OsReceiveCozyApp[],
+  cozyApps?: AcceptFromFlagshipManifest[],
   client?: CozyClient | null,
   appName = 'drive'
 ): ServiceResponse<{ href: string; slug: string }> => {

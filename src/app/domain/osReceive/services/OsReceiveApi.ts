@@ -4,12 +4,15 @@ import CozyClient from 'cozy-client'
 
 import { OsReceiveLogger } from '/app/domain/osReceive'
 import { uploadFileWithConflictStrategy } from '/app/domain/upload/services/index'
-import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
+import {
+  IncomingFile,
+  ReceivedFile
+} from '/app/domain/osReceive/models/ReceivedFile'
 import {
   OsReceiveState,
   OsReceiveAction,
   OsReceiveActionType,
-  OsReceiveApi,
+  OsReceiveApiMethods,
   UploadStatus
 } from '/app/domain/osReceive/models/OsReceiveState'
 
@@ -46,14 +49,6 @@ const uploadFiles = async (
   client: CozyClient | null,
   dispatch: Dispatch<OsReceiveAction>
 ): Promise<boolean> => {
-  interface IncomingFile {
-    fileOptions: {
-      name: string
-      dirId: string
-      conflictStrategy: string
-    }
-  }
-
   const file = JSON.parse(arg) as IncomingFile
   const fileToUpload = state.filesToUpload.find(
     fileToUpload => fileToUpload.fileName === file.fileOptions.name
@@ -87,9 +82,20 @@ const uploadFiles = async (
     })
   } catch (error) {
     OsReceiveLogger.error('uploadFiles: error', error)
+
+    dispatch({
+      type: OsReceiveActionType.SetFileUploadFailed,
+      payload: { ...fileToUpload, ...file.fileOptions }
+    })
+
+    return false
   }
 
-  dispatch({ type: OsReceiveActionType.SetFileUploaded, payload: fileToUpload })
+  dispatch({
+    type: OsReceiveActionType.SetFileUploaded,
+    payload: { ...fileToUpload, ...file.fileOptions }
+  })
+
   return true
 }
 
@@ -106,27 +112,18 @@ const hasFilesToHandle = async (
 ): Promise<UploadStatus> => {
   OsReceiveLogger.info('getUploadStatus called')
 
-  const totalFiles = state.filesToUpload.length
-  const uploadedFiles = state.filesUploaded.length
-  const remainingFiles = totalFiles - uploadedFiles
-  const uploadStatus = {
-    filesToHandle: state.filesToUpload,
-    remainingFiles,
-    totalFiles,
-    uploadedFiles: state.filesUploaded,
-    uploading: totalFiles > 0
-  }
+  const uploadStatus = { filesToHandle: state.filesToUpload }
 
   OsReceiveLogger.info('getUploadStatus', { uploadStatus })
 
   return Promise.resolve(uploadStatus)
 }
 
-export const osReceiveApi = (
+export const OsReceiveApi = (
   client: CozyClient,
   state: OsReceiveState,
   dispatch: Dispatch<OsReceiveAction>
-): OsReceiveApi => ({
+): OsReceiveApiMethods => ({
   hasFilesToHandle: () => hasFilesToHandle(state),
   getFilesToUpload: () => getFilesToUpload(state),
   uploadFiles: arg => uploadFiles(arg, state, client, dispatch),

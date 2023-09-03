@@ -1,4 +1,7 @@
-import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
+import {
+  ConfirmedFile,
+  ReceivedFile
+} from '/app/domain/osReceive/models/ReceivedFile'
 
 export enum OsReceiveIntentStatus {
   Undetermined = 'undetermined',
@@ -12,7 +15,9 @@ export enum OsReceiveActionType {
   SetRouteToUpload = 'SET_ROUTE_TO_UPLOAD',
   SetFlowErrored = 'SET_FLOW_ERRORED',
   SetRecoveryState = 'SET_RECOVERY_STATE',
-  SetFileUploaded = 'SET_FILE_UPLOADED'
+  SetFileUploaded = 'SET_FILE_UPLOADED',
+  SetInitialState = 'SET_INITIAL_STATE',
+  SetFileUploadFailed = 'SET_FILE_UPLOAD_FAILED'
 }
 
 export interface OsReceiveState {
@@ -20,7 +25,8 @@ export interface OsReceiveState {
   filesToUpload: ReceivedFile[]
   routeToUpload: { href?: string; slug?: string }
   errored: boolean
-  filesUploaded: ReceivedFile[]
+  fileUploaded: ReceivedFile | null
+  fileFailed: ReceivedFile | null
 }
 
 export type OsReceiveAction =
@@ -35,14 +41,19 @@ export type OsReceiveAction =
     }
   | { type: OsReceiveActionType.SetFlowErrored; payload: boolean }
   | { type: OsReceiveActionType.SetRecoveryState }
-  | { type: OsReceiveActionType.SetFileUploaded; payload: ReceivedFile }
+  | { type: OsReceiveActionType.SetFileUploaded; payload: ConfirmedFile | null }
+  | { type: OsReceiveActionType.SetInitialState }
+  | {
+      type: OsReceiveActionType.SetFileUploadFailed
+      payload: ConfirmedFile | null
+    }
 
 export interface ServiceResponse<T> {
   result?: T
   error?: string
 }
 
-export interface OsReceiveApi {
+export interface OsReceiveApiMethods {
   getFilesToUpload: () => Promise<ReceivedFile[]>
   hasFilesToHandle: () => Promise<UploadStatus>
   uploadFiles: (arg: string) => Promise<boolean>
@@ -51,8 +62,4 @@ export interface OsReceiveApi {
 
 export interface UploadStatus {
   filesToHandle: OsReceiveState['filesToUpload']
-  remainingFiles: number
-  totalFiles: number
-  uploadedFiles: OsReceiveState['filesUploaded']
-  uploading: boolean
 }

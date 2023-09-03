@@ -41,7 +41,10 @@ export const osReceiveReducer = (
     case OsReceiveActionType.SetFileUploaded: {
       nextState = {
         ...state,
-        filesUploaded: [...state.filesUploaded, action.payload]
+        filesToUpload: state.filesToUpload.filter(
+          file => file.filePath !== action.payload?.filePath
+        ),
+        fileUploaded: action.payload
       }
       break
     }
@@ -51,6 +54,19 @@ export const osReceiveReducer = (
         OsReceiveIntentStatus: OsReceiveIntentStatus.NotOpenedViaOsReceive
       }
       break
+    case OsReceiveActionType.SetInitialState:
+      nextState = initialState
+      break
+    case OsReceiveActionType.SetFileUploadFailed: {
+      nextState = {
+        ...state,
+        filesToUpload: state.filesToUpload.filter(
+          file => file.filePath !== action.payload?.filePath
+        ),
+        fileFailed: action.payload
+      }
+      break
+    }
     default:
       break
   }
@@ -67,7 +83,8 @@ export const initialState: OsReceiveState = {
   filesToUpload: [],
   routeToUpload: {},
   errored: false,
-  filesUploaded: []
+  fileUploaded: null,
+  fileFailed: null
 }
 
 export const useOsReceiveState = (): OsReceiveState => {

@@ -85,7 +85,6 @@ const App = ({ setClient }) => {
   return <RootNavigator initialRoute={initialRoute} setClient={setClient} />
 }
 
-// eslint-disable-next-line react/display-name
 const InnerNav = ({ client, setClient }) => {
   const colors = getColors()
   const osReceiveState = useOsReceiveState()
