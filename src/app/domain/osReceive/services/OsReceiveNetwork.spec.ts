@@ -1,6 +1,6 @@
 import CozyClient from 'cozy-client'
 
-import { OsReceiveCozyApp } from '/app/domain/osReceive/models/OsReceiveCozyApp'
+import { AcceptFromFlagshipManifest } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import { getRouteToUpload } from '/app/domain/osReceive/services/OsReceiveNetwork'
 
 describe('getRouteToUpload', () => {
@@ -21,7 +21,7 @@ describe('getRouteToUpload', () => {
   })
 
   it('returns empty object if no matching app is found', () => {
-    const cozyApps = [{ slug: 'wrong-app' } as OsReceiveCozyApp]
+    const cozyApps = [{ slug: 'wrong-app' } as AcceptFromFlagshipManifest]
 
     const result = getRouteToUpload(cozyApps, mockCozyClient)
     expect(result).toEqual({})
@@ -39,7 +39,7 @@ describe('getRouteToUpload', () => {
             route_to_upload: '/upload-route'
           }
         }
-      } as OsReceiveCozyApp
+      } as AcceptFromFlagshipManifest
     ]
     const result = getRouteToUpload(cozyApps, mockCozyClient, 'drive')
     expect(result).toEqual({
@@ -52,7 +52,7 @@ describe('getRouteToUpload', () => {
 
   it('handles an error gracefully', () => {
     const brokenClient = new CozyClient({ uri: undefined })
-    const cozyApps = [{ slug: 'drive' } as OsReceiveCozyApp]
+    const cozyApps = [{ slug: 'drive' } as AcceptFromFlagshipManifest]
     const result = getRouteToUpload(cozyApps, brokenClient)
     expect(result).toEqual({ error: 'Error determining route to upload.' })
   })

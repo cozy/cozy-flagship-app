@@ -14,18 +14,28 @@ import {
 import { devlog } from '/core/tools/env'
 import { synchronizeDevice } from '/app/domain/authentication/services/SynchronizeService'
 import { routes } from '/constants/routes'
-import { useOsReceiveState } from '/app/view/OsReceive/OsReceiveState'
-import { OsReceiveIntentStatus } from '/app/domain/osReceive/models/OsReceiveState'
+import {
+  useOsReceiveDispatch,
+  useOsReceiveState
+} from '/app/view/OsReceive/OsReceiveState'
+import {
+  OsReceiveAction,
+  OsReceiveActionType,
+  OsReceiveIntentStatus
+} from '/app/domain/osReceive/models/OsReceiveState'
 
 const log = Minilog('useGlobalAppState')
 
 // Runtime variables
 let appState: AppStateStatus = AppState.currentState
 
-const handleSleep = (): void => {
+const handleSleep = (
+  osReceiveDispatch?: React.Dispatch<OsReceiveAction>
+): void => {
   showSplashScreen()
     .then(async () => {
       setIsSecurityFlowPassed(false)
+      osReceiveDispatch?.({ type: OsReceiveActionType.SetInitialState })
       return await storeData(StorageKeys.LastActivity, Date.now().toString())
     })
     .catch(reason => log.error('Failed when going to sleep', reason))
@@ -54,9 +64,10 @@ const onStateChange = (
   nextAppState: AppStateStatus,
   client: CozyClient,
   osReceiveIntentStatus: OsReceiveIntentStatus,
-  onNavigationRequest: (route: string) => void
+  onNavigationRequest: (route: string) => void,
+  osReceiveDispatch: React.Dispatch<OsReceiveAction>
 ): void => {
-  if (isGoingToSleep(nextAppState)) handleSleep()
+  if (isGoingToSleep(nextAppState)) handleSleep(osReceiveDispatch)
 
   if (isGoingToWakeUp(nextAppState)) {
     Promise.all([
@@ -87,6 +98,22 @@ export const useGlobalAppState = ({
   const hasExecuted = useRef(false)
   const client = useClient()
   const osReceiveState = useOsReceiveState()
+  const osReceiveDispatch = useOsReceiveDispatch()
+
+  useEffect(() => {
+    if (!client) return
+
+    if (
+      osReceiveState.OsReceiveIntentStatus ===
+      OsReceiveIntentStatus.OpenedViaOsReceive
+    ) {
+      void handleWakeUp(
+        client,
+        osReceiveState.OsReceiveIntentStatus,
+        onNavigationRequest
+      )
+    }
+  }, [client, onNavigationRequest, osReceiveState.OsReceiveIntentStatus])
 
   useEffect(() => {
     let subscription: NativeEventSubscription | undefined
@@ -104,7 +131,8 @@ export const useGlobalAppState = ({
           e,
           client,
           osReceiveState.OsReceiveIntentStatus,
-          onNavigationRequest
+          onNavigationRequest,
+          osReceiveDispatch
         )
       )
     }
@@ -112,7 +140,7 @@ export const useGlobalAppState = ({
     return () => {
       appState = AppState.currentState
     }
-  }, [client, onNavigationRequest, osReceiveState])
+  }, [client, onNavigationRequest, osReceiveDispatch, osReceiveState])
 
   // On app start
   useEffect(() => {

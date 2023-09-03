@@ -2,33 +2,46 @@ import { useEffect } from 'react'
 
 import { useNativeIntent } from 'cozy-intent'
 
-import { useOsReceiveState } from '/app/view/OsReceive/OsReceiveState'
+import {
+  useOsReceiveDispatch,
+  useOsReceiveState
+} from '/app/view/OsReceive/OsReceiveState'
 import { OsReceiveLogger } from '/app/domain/osReceive'
+import { OsReceiveActionType } from '/app/domain/osReceive/models/OsReceiveState'
 
 export const useOsReceiveApi = (): void => {
   const state = useOsReceiveState()
   const nativeIntent = useNativeIntent()
+  const dispatch = useOsReceiveDispatch()
 
   useEffect(() => {
-    if (state.filesUploaded.length === 0 || !nativeIntent) return
-    const isLast = state.filesUploaded.length === state.filesToUpload.length
+    if (!nativeIntent) return
+    const isLast = state.filesToUpload.length === 0
 
     const onUploaded = async (): Promise<void> => {
-      OsReceiveLogger.info('onUploaded called')
+      if (!state.routeToUpload.href) return
+
+      const success = state.fileUploaded
+      const failure = state.fileFailed
 
       try {
-        const res = await nativeIntent.call(
-          'drive.dev.192-168-1-65.nip.io',
+        await nativeIntent.call(
+          state.routeToUpload.href,
           'onFileUploaded',
-          state.filesUploaded[state.filesUploaded.length - 1],
-          isLast ? state.filesUploaded.length : undefined
+          success ?? failure,
+          Boolean(success),
+          isLast
         )
-        OsReceiveLogger.info('onUploaded res', res)
       } catch (error) {
         OsReceiveLogger.error('onUploaded error', error)
+
+        dispatch({
+          type: OsReceiveActionType.SetFlowErrored,
+          payload: true
+        })
       }
     }
 
     void onUploaded()
-  }, [nativeIntent, state.filesToUpload.length, state.filesUploaded])
+  }, [dispatch, nativeIntent, state])
 }
