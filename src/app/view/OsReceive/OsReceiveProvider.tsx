@@ -1,9 +1,8 @@
 import { useNavigation, useNavigationState } from '@react-navigation/native'
-import React, { useReducer, useEffect } from 'react'
+import React, { useReducer, useEffect, useState, useRef } from 'react'
 
-import { useClient, useQuery } from 'cozy-client'
+import { useClient } from 'cozy-client'
 
-import { OsReceiveCozyApp } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import { handleReceivedFiles } from '/app/domain/osReceive/services/OsReceiveData'
 import { handleOsReceive } from '/app/domain/osReceive/services/OsReceiveStatus'
 import { useError } from '/app/view/Error/ErrorProvider'
@@ -23,8 +22,7 @@ import {
   OsReceiveStateContext
 } from '/app/view/OsReceive/OsReceiveState'
 import { routes } from '/constants/routes'
-
-import { QueryFetchStatus } from 'cozy-client/types/types'
+import { AcceptFromFlagshipManifest } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 
 export const OsReceiveProvider = ({
   children
@@ -35,10 +33,27 @@ export const OsReceiveProvider = ({
   const { handleError } = useError()
   const navigationState = useNavigationState(state => state)
   const navigation = useNavigation()
-  const { data, fetchStatus } = useQuery(
-    fetchOsReceiveCozyApps.definition,
-    fetchOsReceiveCozyApps.options
-  ) as { data?: OsReceiveCozyApp[] | []; fetchStatus?: QueryFetchStatus }
+  const [data, setQuery] = useState<AcceptFromFlagshipManifest[]>([])
+  const didCall = useRef(false)
+
+  useEffect(() => {
+    if (!client || didCall.current) return
+
+    const fetchRegistry = async (): Promise<void> => {
+      const res = (await client.fetchQueryAndGetFromState({
+        definition: fetchOsReceiveCozyApps.definition,
+        options: fetchOsReceiveCozyApps.options
+      })) as { data: AcceptFromFlagshipManifest[] }
+
+      if (res.data.length > 0) {
+        didCall.current = true
+        setQuery(res.data)
+      }
+    }
+
+    void fetchRegistry()
+  }),
+    [client]
 
   // This effect is triggered at mount and unmount of the provider,
   // its role is to listen native events and update the state accordingly
@@ -73,7 +88,7 @@ export const OsReceiveProvider = ({
     } else if (result !== undefined) {
       dispatch({ type: OsReceiveActionType.SetRouteToUpload, payload: result })
     }
-  }, [client, data, handleError, state, fetchStatus])
+  }, [client, data, handleError, state])
 
   // If an error is detected, we handle that by abandoning the flow.
   // The user will be redirected to the home screen and the osReceive mode is ended until next file osReceive.

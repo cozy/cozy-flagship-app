@@ -88,4 +88,21 @@ export interface IOSReceivedFile {
 
 export type ReceivedFile = AndroidReceivedFile | IOSReceivedFile
 
+export type ConfirmedFile = ReceivedFile & {
+  dirId: string
+  conflictStrategy: string
+}
+
+export interface IncomingFile {
+  fileOptions: {
+    name: string
+    dirId: string
+    conflictStrategy: string
+  }
+  filePath: string
+  mimeType: string
+  createdAt: string
+  modifiedAt: string
+}
+
 export const OS_RECEIVE_PROTOCOL_NAME = 'ShareMedia'
