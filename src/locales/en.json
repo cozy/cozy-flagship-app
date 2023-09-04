@@ -86,6 +86,8 @@
         "onProgressMessage": "{{filename}} is being uploaded",
         "backupSuccessTitle": "Photo & video backup",
         "backupSuccessBody": "Your backup is complete! {{backedUpMediaCount}}/{{totalMediasToBackupCount}} saved item(s)",
+        "backupPartialSuccessTitle": "Photo & video backup",
+        "backupPartialSuccessBody": "Your backup is stopped! {{backedUpMediaCount}}/{{totalMediasToBackupCount}} saved item(s)",
         "backupErrorTitle": "Oops",
         "backupErrorBody":  "Your backup encountered an error. Open the app to see more details"
       },

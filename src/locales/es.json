@@ -75,6 +75,8 @@
         "onProgressMessage": "{{filename}} se está subiendo",
         "backupSuccessTitle": "Copia de seguridad de fotos y vídeos",
         "backupSuccessBody": "¡Tu copia de seguridad ha finalizado! {{backedUpMediaCount}}/{{totalMediasToBackupCount}} elemento(s) guardado(s)",
+        "backupPartialSuccessTitle": "Copia de seguridad de fotos y vídeos",
+        "backupPartialSuccessBody": "La copia de seguridad se ha detenido. {{backedUpMediaCount}}/{{totalMediasToBackupCount}} elemento(s) guardado(s)",
         "backupErrorTitle": "Oops",
         "backupErrorBody":  "Tu copia de seguridad ha encontrado un error. Abre la aplicación para ver más detalles"
       },
