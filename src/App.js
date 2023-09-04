@@ -37,7 +37,7 @@ import { ThemeProvider } from '/app/theme/ThemeProvider'
 import { useInitI18n } from '/locales/useInitI18n'
 import { SecureBackgroundSplashScreenWrapper } from '/app/theme/SecureBackgroundSplashScreenWrapper'
 import { PermissionsChecker } from '/app/domain/nativePermissions/components/PermissionsChecker'
-import { SharingProvider } from '/app/view/sharing/SharingProvider'
+import { OsReceiveProvider } from '/app/view/OsReceive/OsReceiveProvider'
 import { ErrorProvider } from '/app/view/Error/ErrorProvider'
 import { OsReceiveApi } from '/app/domain/osReceive/services/OsReceiveApi'
 import {
@@ -45,6 +45,7 @@ import {
   useOsReceiveState
 } from '/app/view/OsReceive/OsReceiveState'
 import { useOsReceiveApi } from '/app/view/OsReceive/useOsReceiveApi'
+import { useSecureBackgroundSplashScreen } from '/hooks/useSplashScreen'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -67,7 +68,6 @@ const App = ({ setClient }) => {
 
   const { initialRoute, isLoading } = useAppBootstrap(client)
 
-  useGlobalAppState()
   useGlobalAppState({
     onNavigationRequest: route => {
       RootNavigation.navigate(route)
@@ -194,9 +194,7 @@ const Wrapper = () => {
                     <NetStatusBoundary>
                       <ThemeProvider>
                         <PermissionsChecker>
-                          <SharingProvider>
-                            <WrappedApp />
-                          </SharingProvider>
+                          <WrappedApp />
                         </PermissionsChecker>
                       </ThemeProvider>
                     </NetStatusBoundary>
