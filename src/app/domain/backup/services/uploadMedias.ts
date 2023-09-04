@@ -1,5 +1,7 @@
 /* eslint-disable promise/always-return */
 
+import { AppState, Platform } from 'react-native'
+
 import { uploadMedia } from '/app/domain/backup/services/uploadMedia'
 import { setMediaAsBackuped } from '/app/domain/backup/services/manageLocalBackupConfig'
 import { getDeviceId } from '/app/domain/backup/services/manageRemoteBackupConfig'
@@ -41,6 +43,14 @@ export const setShouldStopBackup = (value: boolean): void => {
   shouldStopBackup = value
 }
 
+const shouldStopBecauseBackground = (): boolean => {
+  if (Platform.OS === 'android' && Platform.Version <= 31) {
+    return false
+  }
+
+  return AppState.currentState === 'background'
+}
+
 export const uploadMedias = async (
   client: CozyClient,
   localBackupConfig: LocalBackupConfig,
@@ -60,6 +70,10 @@ export const uploadMedias = async (
     if (shouldStopBackup) {
       shouldStopBackup = false
       return t('services.backup.errors.backupStopped')
+    }
+
+    if (shouldStopBecauseBackground()) {
+      return t('services.backup.errors.appKilled')
     }
 
     try {

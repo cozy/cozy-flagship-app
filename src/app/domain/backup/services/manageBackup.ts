@@ -124,6 +124,20 @@ export const startBackup = async (
           postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount,
         message: partialSuccessMessage
       })
+
+      await showLocalNotification({
+        title: t('services.backup.notifications.backupPartialSuccessTitle'),
+        body: t('services.backup.notifications.backupPartialSuccessBody', {
+          backedUpMediaCount:
+            postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
+            postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
+          totalMediasToBackupCount:
+            postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
+        }),
+        data: {
+          redirectLink: 'photos/#/backup'
+        }
+      })
     } else {
       await setLastBackup(client, {
         status: 'success',
@@ -133,21 +147,21 @@ export const startBackup = async (
         totalMediasToBackupCount:
           postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
       })
-    }
 
-    await showLocalNotification({
-      title: t('services.backup.notifications.backupSuccessTitle'),
-      body: t('services.backup.notifications.backupSuccessBody', {
-        backedUpMediaCount:
-          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
-          postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
-        totalMediasToBackupCount:
-          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
-      }),
-      data: {
-        redirectLink: 'photos/#/backup'
-      }
-    })
+      await showLocalNotification({
+        title: t('services.backup.notifications.backupSuccessTitle'),
+        body: t('services.backup.notifications.backupSuccessBody', {
+          backedUpMediaCount:
+            postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
+            postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
+          totalMediasToBackupCount:
+            postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
+        }),
+        data: {
+          redirectLink: 'photos/#/backup'
+        }
+      })
+    }
   } catch (e) {
     const postUploadLocalBackupConfig = await getLocalBackupConfig(client)
     if (e instanceof BackupError) {
