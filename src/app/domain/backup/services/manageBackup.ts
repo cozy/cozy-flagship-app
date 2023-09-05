@@ -41,7 +41,8 @@ import {
   ProgressCallback,
   BackupedMedia,
   BackupedAlbum,
-  LocalBackupConfig
+  LocalBackupConfig,
+  LastBackup
 } from '/app/domain/backup/models'
 import { showLocalNotification } from '/libs/notifications/notifications'
 import { BackupError } from '/app/domain/backup/helpers'
@@ -114,54 +115,38 @@ export const startBackup = async (
 
     const postUploadLocalBackupConfig = await getLocalBackupConfig(client)
 
-    if (partialSuccessMessage) {
-      await setLastBackup(client, {
-        status: 'partial_success',
-        backedUpMediaCount:
-          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
-          postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
-        totalMediasToBackupCount:
-          postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount,
-        message: partialSuccessMessage
-      })
+    let status: LastBackup['status'] = 'success'
+    let titleKey = 'services.backup.notifications.backupSuccessTitle'
+    let bodyKey = 'services.backup.notifications.backupSuccessBody'
 
-      await showLocalNotification({
-        title: t('services.backup.notifications.backupPartialSuccessTitle'),
-        body: t('services.backup.notifications.backupPartialSuccessBody', {
-          backedUpMediaCount:
-            postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
-            postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
-          totalMediasToBackupCount:
-            postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
-        }),
-        data: {
-          redirectLink: 'photos/#/backup'
-        }
-      })
-    } else {
-      await setLastBackup(client, {
-        status: 'success',
+    if (partialSuccessMessage) {
+      status = 'partial_success'
+      titleKey = 'services.backup.notifications.backupPartialSuccessTitle'
+      bodyKey = 'services.backup.notifications.backupPartialSuccessBody'
+    }
+
+    await setLastBackup(client, {
+      status,
+      backedUpMediaCount:
+        postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
+        postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
+      totalMediasToBackupCount:
+        postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
+    })
+
+    await showLocalNotification({
+      title: t(titleKey),
+      body: t(bodyKey, {
         backedUpMediaCount:
           postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
           postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
         totalMediasToBackupCount:
           postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
-      })
-
-      await showLocalNotification({
-        title: t('services.backup.notifications.backupSuccessTitle'),
-        body: t('services.backup.notifications.backupSuccessBody', {
-          backedUpMediaCount:
-            postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
-            postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
-          totalMediasToBackupCount:
-            postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
-        }),
-        data: {
-          redirectLink: 'photos/#/backup'
-        }
-      })
-    }
+      }),
+      data: {
+        redirectLink: 'photos/#/backup'
+      }
+    })
   } catch (e) {
     const postUploadLocalBackupConfig = await getLocalBackupConfig(client)
     if (e instanceof BackupError) {
