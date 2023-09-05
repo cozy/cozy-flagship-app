@@ -54,9 +54,15 @@ export interface RemoteBackupConfig {
 
 /**
  * An object representing everything a front end need to know about a backup
+ * @member {RemoteBackupConfig} remoteBackupConfig
  * @member {number} lastBackupDate
  * @member {number} backupedMediasCount
  * @member {object} currentBackup
+ * @member {BackupStatus} currentBackup.status
+ * @member {number} currentBackup.mediasToBackupCount Number of medias to backup, change during a backup
+ * @member {number} currentBackup.totalMediasToBackupCount Total number of medias to backup, do not change during a backup
+ * @member {number} [currentBackup.mediasLoadedCount] Number of medias loaded from the native side
+ * @member {LastBackup} [lastBackup]
  */
 export interface BackupInfo {
   remoteBackupConfig: RemoteBackupConfig
@@ -66,6 +72,7 @@ export interface BackupInfo {
     status: BackupStatus
     mediasToBackupCount: number
     totalMediasToBackupCount: number
+    mediasLoadedCount?: number
   }
   lastBackup?: LastBackup
 }
