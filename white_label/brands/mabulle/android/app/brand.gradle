@@ -1,5 +1,8 @@
 android {
   defaultConfig {
       applicationId "io.cozy.flagship.mobile.mabulle"
+      manifestPlaceholders = [
+        universalLinkUrl:" linksmabulle.mycozy.cloud"
+      ]
   }
 }
