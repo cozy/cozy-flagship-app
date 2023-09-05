@@ -79,7 +79,7 @@ export const prepareBackup = async (
     await saveAlbums(client, createdAlbums)
   }
 
-  const mediasToBackup = await getMediasToBackup(client)
+  const mediasToBackup = await getMediasToBackup(client, onProgress)
 
   await setBackupAsReady(client, mediasToBackup)
 

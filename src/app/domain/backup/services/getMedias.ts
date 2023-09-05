@@ -10,12 +10,18 @@ import RNFS from 'react-native-fs'
 import type CozyClient from 'cozy-client'
 import flag from 'cozy-flags'
 
-import { Media, BackupedMedia, Album } from '/app/domain/backup/models'
+import {
+  Media,
+  BackupedMedia,
+  Album,
+  ProgressCallback
+} from '/app/domain/backup/models'
 import { getLocalBackupConfig } from '/app/domain/backup/services/manageLocalBackupConfig'
 import {
   getPathWithoutExtension,
   getPathWithoutFilename
 } from '/app/domain/backup/helpers'
+import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
 import { t } from '/locales/i18n'
 
 const MEDIAS_BY_PAGE = 500
@@ -155,8 +161,13 @@ const getAlbums = (photoIdentifier: PhotoIdentifier): Album[] => {
   }
 }
 
-export const getAllMedias = async (): Promise<Media[]> => {
+export const getAllMedias = async (
+  client: CozyClient,
+  onProgress: ProgressCallback
+): Promise<Media[]> => {
   const allMedias = []
+
+  const backupInfo = await getBackupInfo(client)
 
   let hasNextPage = true
   let endCursor: CameraRollCursor
@@ -168,6 +179,10 @@ export const getAllMedias = async (): Promise<Media[]> => {
       .map(photoIdentifier => formatMediasFromPhotoIdentifier(photoIdentifier))
       .flat()
     allMedias.push(...newMedias)
+
+    backupInfo.currentBackup.mediasLoadedCount = allMedias.length
+
+    void onProgress(backupInfo)
 
     hasNextPage = photoIdentifiersPage.page_info.has_next_page
     endCursor = photoIdentifiersPage.page_info.end_cursor
@@ -190,9 +205,10 @@ const isMediaAlreadyBackuped = (
 }
 
 export const getMediasToBackup = async (
-  client: CozyClient
+  client: CozyClient,
+  onProgress: ProgressCallback
 ): Promise<Media[]> => {
-  const allMedias = await getAllMedias()
+  const allMedias = await getAllMedias(client, onProgress)
 
   const backupConfig = await getLocalBackupConfig(client)
 
