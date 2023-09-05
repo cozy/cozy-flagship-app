@@ -85,6 +85,7 @@ project.ext.react = [
 
 apply from: "../../node_modules/react-native/react.gradle"
 apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
+apply from: "./brand.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -134,7 +135,9 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "io.cozy.flagship.mobile"
+        // applicationId is set in ./brand.gradle
+        // if absent use `yarn configure:brand:cozy` to create it
+        namespace = "io.cozy.flagship.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 101122

@@ -1,0 +1,5 @@
+android {
+  defaultConfig {
+      applicationId "io.cozy.flagship.mobile.mabulle"
+  }
+}
