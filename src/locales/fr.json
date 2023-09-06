@@ -37,7 +37,7 @@
       "title": "Vous n'avez pas terminé votre inscription"
     },
     "genericError": {
-      "defaultBody": "Une erreur inatendue est survenue",
+      "defaultBody": "Une erreur inattendue est survenue",
       "title": "Nous avons rencontré une erreur inattendue"
     },
     "managerError": {
@@ -61,7 +61,7 @@
       "pinprompt_body": "Accédez plus rapidement à votre application en activant le déverrouillage de votre application par code PIN",
       "pinprompt_cta": "Déverrouiller avec un code pin",
       "pinprompt_refusal": "Non merci",
-      "pinprompt_title": "Simplifier le déverouillage de votre app",
+      "pinprompt_title": "Simplifier le déverrouillage de votre app",
       "pinsave_step1_body": "Définissez votre code PIN pour déverrouiller l’application après une période d’inactivité.",
       "pinsave_step1_cta": "Continuer",
       "pinsave_step1_title": "Choisir votre code PIN",
