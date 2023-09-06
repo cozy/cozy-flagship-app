@@ -1,11 +1,11 @@
-name: IOS Development Build
+name: IOS Build
 
 on:
   workflow_dispatch:
 
 jobs:
   ios-build:
-    name: IOS Production Build
+    name: IOS Build
     runs-on: macos-latest
 
     steps:

@@ -1,4 +1,4 @@
-name: React-Native CI
+name: Quality Checks
 
 on:
   workflow_dispatch:
@@ -10,6 +10,7 @@ concurrency:
 
 jobs:
   quality_checks:
+    name: Quality Checks
     runs-on: ubuntu-latest
 
     steps:
