@@ -1,4 +1,5 @@
 name: Android Build
+run-name: Android Build for ${{ inputs.brand }} on ${{github.ref_name}}
 
 on:
   workflow_dispatch:

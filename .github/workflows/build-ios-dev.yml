@@ -1,4 +1,5 @@
 name: IOS Build
+run-name: IOS Build for ${{ inputs.brand }} on ${{github.ref_name}}
 
 on:
   workflow_dispatch:
