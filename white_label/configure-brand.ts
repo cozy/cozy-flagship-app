@@ -40,6 +40,13 @@ const configureAndroid = async (brand: string): Promise<void> => {
 }
 
 const configureIOS = async (brand: string): Promise<void> => {
+  const config = configs[brand as keyof typeof configs]
+
+  logger.info('Set iOS Bundle ID')
+  await executeCommand(
+    `/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier ${config.bundleId}" ios/CozyReactNative/Info.plist`
+  )
+
   logger.info('Copy iOS files')
   await fs.copy(`./white_label/brands/${brand}/ios`, './ios', {
     overwrite: true
