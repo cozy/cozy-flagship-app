@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>69589465874-g8lbe8lbua69cslqau62hpo1q9krjuf5.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.69589465874-g8lbe8lbua69cslqau62hpo1q9krjuf5</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBzWAIoT0_E0Ayj_54566JwWr2l4W6KUHE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>69589465874</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>io.cozy.flagship.mobile.mabulle</string>
+	<key>PROJECT_ID</key>
+	<string>cozy-flagship-app-push-prod</string>
+	<key>STORAGE_BUCKET</key>
+	<string>cozy-flagship-app-push-prod.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<false/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:69589465874:ios:260c4d525cdcbbb97c91cb</string>
+</dict>
+</plist>

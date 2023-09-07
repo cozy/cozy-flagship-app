@@ -1,0 +1,8 @@
+{
+  "cozy" : {
+    "bundleId": "io.cozy.flagship.mobile",
+  },
+  "mabulle": {
+    "bundleId": "io.cozy.flagship.mobile.mabulle",
+  }
+}
