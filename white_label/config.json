@@ -1,8 +1,10 @@
 {
   "cozy" : {
+    "appName": "Cozy",
     "bundleId": "io.cozy.flagship.mobile",
   },
   "mabulle": {
+    "appName": "Ma Bulle",
     "bundleId": "io.cozy.flagship.mobile.mabulle",
   }
 }
