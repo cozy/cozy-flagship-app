@@ -55,3 +55,14 @@ export const isCancellationError = (error: UploadError): boolean => {
     error.errors[0]?.detail === 'User cancelled upload'
   )
 }
+
+export const shouldRetryCallbackBackup = (error: Error): boolean => {
+  const notRetryableError =
+    isUploadError(error) &&
+    (isMetadataExpiredError(error) ||
+      isQuotaExceededError(error) ||
+      isFileTooBigError(error) ||
+      isCancellationError(error))
+
+  return !notRetryableError
+}

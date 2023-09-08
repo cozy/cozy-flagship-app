@@ -4,8 +4,9 @@ import { t } from '/locales/i18n'
 
 import CozyClient from 'cozy-client'
 
-import { uploadFileWithConflictStrategy } from '/app/domain/upload/services'
+import { uploadFileWithRetryAndConflictStrategy } from '/app/domain/upload/services'
 import { UploadResult } from '/app/domain/upload/models'
+import { shouldRetryCallbackBackup } from '/app/domain/backup/helpers/error'
 
 export const uploadMedia = async (
   client: CozyClient,
@@ -14,7 +15,7 @@ export const uploadMedia = async (
 ): Promise<UploadResult> => {
   const filepath = media.path.replace('file://', '')
 
-  return uploadFileWithConflictStrategy({
+  return uploadFileWithRetryAndConflictStrategy({
     url: uploadUrl,
     // @ts-expect-error Type issue which will be fixed in another PR
     token: client.getStackClient().token.accessToken as string,
@@ -26,6 +27,10 @@ export const uploadMedia = async (
       onProgressMessage: t('services.backup.notifications.onProgressMessage', {
         filename: media.name
       })
+    },
+    retry: {
+      nRetry: 1,
+      shouldRetryCallback: shouldRetryCallbackBackup
     }
   })
 }
