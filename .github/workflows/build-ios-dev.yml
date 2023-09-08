@@ -9,13 +9,19 @@ jobs:
     runs-on: macos-latest
 
     steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
       - name: Set NodeJS version
         uses: actions/setup-node@v3
         with:
           node-version: 16
 
-      - name: Check out Git repository
-        uses: actions/checkout@v3
+      - name: Setup Ruby (bundle)
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.6
+          bundler-cache: true
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -30,15 +36,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile --network-timeout 300000
-
-      - name: Setup Ruby (bundle)
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7.6
-          bundler-cache: true
-
       - name: Restore Pods cache
         uses: actions/cache@v3
         with:
@@ -49,6 +46,9 @@ jobs:
           key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pods-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --network-timeout 300000
 
       - name: Install Pods
         run: cd ios && pod install --repo-update && cd ..
