@@ -23,7 +23,7 @@ import { areAlbumsEnabled } from '/app/domain/backup/services/manageAlbums'
 import { t } from '/locales/i18n'
 
 import type CozyClient from 'cozy-client'
-import { IOCozyFile } from 'cozy-client'
+import type { IOCozyFile } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import { NetworkError } from '/app/domain/upload/models'

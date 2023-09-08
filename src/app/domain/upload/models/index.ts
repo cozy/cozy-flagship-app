@@ -16,6 +16,12 @@ export interface UploadParams {
     onProgressTitle: string
     onProgressMessage: string
   }
+  retry?: Retry
+}
+
+interface Retry {
+  nRetry: number
+  shouldRetryCallback: (error: Error) => boolean
 }
 
 // These type is incomplete there is more information in data

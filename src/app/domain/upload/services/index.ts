@@ -9,6 +9,59 @@ export { uploadFile }
 
 import { SplitFilenameResult, models } from 'cozy-client'
 import { IOCozyFile } from 'cozy-client/types/types'
+import Minilog from 'cozy-minilog'
+
+const log = Minilog('💿 Backup')
+
+export const uploadFileWithRetryAndConflictStrategy = async ({
+  url,
+  token,
+  filename,
+  filepath,
+  mimetype,
+  notification,
+  retry
+}: UploadParams): Promise<UploadResult> => {
+  try {
+    return await uploadFileWithConflictStrategy({
+      url,
+      token,
+      filename,
+      filepath,
+      mimetype,
+      notification,
+      retry
+    })
+  } catch (e) {
+    const error = e as Error
+
+    const shouldRetry =
+      retry && retry.nRetry > 0 && retry.shouldRetryCallback(error)
+
+    if (shouldRetry) {
+      log.debug(
+        `Retry upload of ${filepath} because got ${JSON.stringify(error)}`
+      )
+
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      return await uploadFileWithRetryAndConflictStrategy({
+        url,
+        token,
+        filename,
+        filepath,
+        mimetype,
+        notification,
+        retry: {
+          nRetry: retry.nRetry - 1,
+          shouldRetryCallback: retry.shouldRetryCallback
+        }
+      })
+    }
+
+    throw e
+  }
+}
 
 export const uploadFileWithConflictStrategy = async ({
   url,
