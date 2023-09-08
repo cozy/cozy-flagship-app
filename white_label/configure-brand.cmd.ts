@@ -2,7 +2,11 @@ import { Command } from 'commander'
 
 import Minilog from 'cozy-minilog'
 
-import { configureBrand, checkGitStatus } from './configure-brand'
+import {
+  configureBrand,
+  checkCozyBrandIso,
+  checkGitStatus
+} from './configure-brand'
 
 export const logger = Minilog('Configure Brand CLI')
 
@@ -27,10 +31,19 @@ interface ConfigureOptions {
   force?: boolean
 }
 
+const errorColor = (str: string): string => {
+  // Add ANSI escape codes to display text in red.
+  return `\x1b[31m${str}\x1b[0m`
+}
+
 async function main(): Promise<void> {
   const program = new Command()
 
   program.name('brand').description('CLI to configure brands').version('0.0.1')
+
+  program.configureOutput({
+    outputError: (str, write) => write(errorColor(str))
+  })
 
   program
     .command('configure')
@@ -57,6 +70,19 @@ async function main(): Promise<void> {
         await configureBrand(brand)
       })
     )
+
+  program
+    .command('check')
+    .description('Check that Cozy brand mirrors root files')
+    .action(() => {
+      logger.info(`Check Cozy brand`)
+
+      const isISO = checkCozyBrandIso()
+
+      if (!isISO) {
+        program.error('Cozy brand is not sync with original files')
+      }
+    })
 
   await program.parseAsync()
 }

@@ -1,4 +1,5 @@
 import { exec } from 'child_process'
+import path from 'path'
 
 import fs from 'fs-extra'
 
@@ -13,6 +14,36 @@ export const checkGitStatus = async (): Promise<boolean> => {
   const result = await executeCommand('git status --porcelain -z')
 
   return result.length === 0
+}
+
+export const checkCozyBrandIso = (): boolean => {
+  let isISO = true
+
+  const basePath = 'white_label/brands/cozy/android'
+
+  // @ts-ignore
+  for (const file of readAllFiles('./white_label/brands/cozy/android')) {
+    if (typeof file !== 'string') {
+      continue
+    }
+    const relativePath = file.replace(basePath, '')
+    const originalFile = path.join('./android', relativePath)
+
+    if (!fs.existsSync(originalFile)) {
+      logger.error(`${relativePath} does not exist`)
+      isISO = false
+      continue
+    }
+
+    const areEqual = areFilesEqual(file, originalFile)
+    if (!areEqual) {
+      logger.error(`${relativePath} is different`)
+      isISO = false
+      continue
+    }
+  }
+
+  return isISO
 }
 
 export const configureBrand = async (brand: string): Promise<void> => {
@@ -123,4 +154,24 @@ const replaceStringsInFile = async (
   } catch (error) {
     logger.error(error)
   }
+}
+
+function* readAllFiles(dir: string): Generator<string> {
+  const files = fs.readdirSync(dir, { withFileTypes: true })
+
+  for (const file of files) {
+    if (file.isDirectory()) {
+      // @ts-ignore
+      yield* readAllFiles(path.join(dir, file.name))
+    } else {
+      yield path.join(dir, file.name)
+    }
+  }
+}
+
+const areFilesEqual = (file1: string, file2: string): boolean => {
+  const file1Buffer = fs.readFileSync(file1)
+  const file2Buffer = fs.readFileSync(file2)
+
+  return file1Buffer.equals(file2Buffer)
 }
