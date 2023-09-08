@@ -2,6 +2,15 @@ name: IOS Build
 
 on:
   workflow_dispatch:
+    inputs:
+      brand:
+        description: 'Brand to publish'
+        required: true
+        default: 'cozy'
+        type: choice
+        options:
+        - cozy
+        - mabulle
 
 jobs:
   ios-build:
@@ -53,6 +62,9 @@ jobs:
       - name: Install Pods
         run: cd ios && pod install --repo-update && cd ..
 
+      - name: Set white label brand
+        run: yarn brand:configure:${{ inputs.brand }} --force
+
       - name: Build IOS App
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -60,7 +72,7 @@ jobs:
         with:
           project-path: ios/CozyReactNative.xcodeproj
           p12-base64: ${{ secrets.IOS_P12_BASE64 }}
-          mobileprovision-base64: ${{ secrets.IOS_MOBILE_PROVISION_BASE64 }}
+          mobileprovision-base64: ${{ secrets[format('{0}_IOS_MOBILE_PROVISION_BASE64', inputs.brand)] }}
           code-signing-identity: 'iPhone Distribution'
           team-id: ${{ secrets.IOS_TEAM_ID }}
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
