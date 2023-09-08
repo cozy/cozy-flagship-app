@@ -37,3 +37,6 @@ jobs:
 
     - name: Validate Locales
       run: yarn validate:locales
+
+    - name: Validate Cozy brand (should mirror src)
+      run: yarn brand:check
