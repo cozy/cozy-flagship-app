@@ -7,8 +7,9 @@ import {
   getPathWithoutExtension
 } from '/app/domain/backup/helpers'
 import { t } from '/locales/i18n'
-import { uploadFileWithConflictStrategy } from '/app/domain/upload/services'
+import { uploadFileWithRetryAndConflictStrategy } from '/app/domain/upload/services'
 import { UploadResult } from '/app/domain/upload/models'
+import { shouldRetryCallbackBackup } from '/app/domain/backup/helpers/error'
 
 import CozyClient from 'cozy-client'
 
@@ -49,12 +50,16 @@ export const uploadMedia = async (
 ): Promise<UploadResult> => {
   const filepath = await getRealFilepath(media)
 
-  return uploadFileWithConflictStrategy({
+  return uploadFileWithRetryAndConflictStrategy({
     url: uploadUrl,
     // @ts-expect-error Type issue which will be fixed in another PR
     token: client.getStackClient().token.accessToken as string,
     filename: media.name,
     filepath,
-    mimetype: getMimeType(media)
+    mimetype: getMimeType(media),
+    retry: {
+      nRetry: 1,
+      shouldRetryCallback: shouldRetryCallbackBackup
+    }
   })
 }
