@@ -2,11 +2,15 @@
   "cozy" : {
     "appName": "Cozy",
     "bundleId": "io.cozy.flagship.mobile",
+    "provisionningProfile": "amiral-ci-profile",
+    "provisionningDevProfile": "amiral-dev-profile",
     "scheme": "cozy"
   },
   "mabulle": {
     "appName": "Ma Bulle",
     "bundleId": "io.cozy.flagship.mobile.mabulle",
+    "provisionningProfile": "amiral-mabulle-ci-profile",
+    "provisionningDevProfile": "amiral-mabulle-dev-profile",
     "scheme": "mabulle"
   }
 }
