@@ -57,6 +57,15 @@ const configureIOS = async (brand: string): Promise<void> => {
     `/usr/libexec/PlistBuddy -c "Set :CFBundleURLTypes:0:CFBundleURLSchemes:0 ${config.scheme}" ios/CozyReactNative/Info.plist`
   )
 
+  logger.info('Edit iOS project file')
+  const pbxprojPath = './ios/CozyReactNative.xcodeproj/project.pbxproj'
+  await replaceStringsInFile(pbxprojPath, [
+    {
+      from: /PRODUCT_BUNDLE_IDENTIFIER = io\.cozy\.flagship\.mobile.*/g,
+      to: `PRODUCT_BUNDLE_IDENTIFIER = ${config.bundleId};`
+    }
+  ])
+
   logger.info('Copy iOS files')
   await fs.copy(`./white_label/brands/${brand}/ios`, './ios', {
     overwrite: true
@@ -84,4 +93,26 @@ const executeCommand = async (command: string): Promise<string> => {
       resolve(stdout)
     })
   })
+}
+
+interface ReplaceItem {
+  from: RegExp
+  to: string
+}
+
+const replaceStringsInFile = async (
+  file: string,
+  replaceList: ReplaceItem[]
+): Promise<void> => {
+  try {
+    let fileContent = await fs.readFile(file, 'utf8')
+
+    for (const item of replaceList) {
+      fileContent = fileContent.replace(item.from, item.to)
+    }
+
+    await fs.writeFile(file, fileContent)
+  } catch (error) {
+    logger.error(error)
+  }
 }
