@@ -458,11 +458,25 @@ export default class Launcher {
       sourceAccount: job.message.account,
       sourceAccountIdentifier,
       // @ts-ignore
-      downloadAndFormatFile: async entry => ({
-        ...entry,
-        // @ts-ignore
-        dataUri: await this.worker.call('downloadFileInWorker', entry)
-      }),
+      downloadAndFormatFile: async entry => {
+        try {
+          // @ts-ignore
+          const dataUri = await this.worker.call('downloadFileInWorker', entry)
+          return {
+            ...entry,
+            dataUri
+          }
+        } catch (err) {
+          this.log({
+            level: 'warning',
+            // @ts-ignore
+            message: `Could not download entry: ${entry.fileurl}: ${err.message}`,
+            label: 'downloadAndFormatFile',
+            namespace: 'Launcher'
+          })
+          return entry
+        }
+      },
       existingFilesIndex
     })
     log.debug(result, 'saveFiles result')
