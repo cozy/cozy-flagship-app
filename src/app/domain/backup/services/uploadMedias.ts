@@ -85,10 +85,10 @@ export const uploadMedias = async (
         lastUploadedDocument
       )
     } catch (error) {
-      log.debug(
+      log.warn(
         `❌ ${mediaToUpload.name} not uploaded or set as backuped correctly`
       )
-      log.debug(error)
+      log.warn(error)
 
       if (error instanceof NetworkError) {
         throw new BackupError(t('services.backup.errors.networkIssue'))
