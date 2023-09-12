@@ -99,6 +99,7 @@ export const formatMediasFromPhotoIdentifier = (
     return [
       {
         name: getPathWithoutExtension(filename) + '.MOV',
+        uri: uri,
         path: uri,
         remotePath: getRemotePath(uri),
         type: 'video',
@@ -110,6 +111,7 @@ export const formatMediasFromPhotoIdentifier = (
       },
       {
         name: filename,
+        uri: uri,
         path: uri,
         remotePath: getRemotePath(uri),
         type: 'image',
@@ -125,6 +127,7 @@ export const formatMediasFromPhotoIdentifier = (
   return [
     {
       name: filename,
+      uri: uri,
       path: uri,
       remotePath: getRemotePath(uri),
       type: type.includes('image') ? 'image' : 'video',
