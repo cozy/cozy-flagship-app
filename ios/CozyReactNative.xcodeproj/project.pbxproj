@@ -21,10 +21,6 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		94BEBCC36EFC4F1DDD8E6E50 /* libPods-CozyReactNative-CozyReactNativeDev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A6C35B4CE552A45F0087FDE /* libPods-CozyReactNative-CozyReactNativeDev.a */; };
 		997B98B22769CFD100089037 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 997B98B12769CFD100089037 /* BootSplash.storyboard */; };
-		E42E384B2A21515E0099D90A /* mabulle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E38492A21515E0099D90A /* mabulle@2x.png */; };
-		E42E384C2A21515E0099D90A /* mabulle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E38492A21515E0099D90A /* mabulle@2x.png */; };
-		E42E384D2A21515E0099D90A /* mabulle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E384A2A21515E0099D90A /* mabulle@3x.png */; };
-		E42E384E2A21515E0099D90A /* mabulle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E384A2A21515E0099D90A /* mabulle@3x.png */; };
 		E4924AAA29963CAD00F415CE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		E4924AAB29963CAD00F415CE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		E4924AAC29963CAD00F415CE /* HttpServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7AA454281584D30052F4D8 /* HttpServer.m */; };
@@ -88,8 +84,6 @@
 		D6FD94648F224F6683FD0C85 /* Lato-Regular.woff */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.woff"; path = "../assets/fonts/Lato-Regular.woff"; sourceTree = "<group>"; };
 		DB7507DF32C8AE85CC054D7E /* Pods-CozyReactNative-CozyReactNativeDev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-CozyReactNativeDev.debug.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-CozyReactNativeDev/Pods-CozyReactNative-CozyReactNativeDev.debug.xcconfig"; sourceTree = "<group>"; };
 		DF93CAAA2160427F9BC16935 /* Lato-Bold.woff2 */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Bold.woff2"; path = "../assets/fonts/Lato-Bold.woff2"; sourceTree = "<group>"; };
-		E42E38492A21515E0099D90A /* mabulle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mabulle@2x.png"; sourceTree = "<group>"; };
-		E42E384A2A21515E0099D90A /* mabulle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mabulle@3x.png"; sourceTree = "<group>"; };
 		E4924ABE29963CAD00F415CE /* CozyReactNativeDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CozyReactNativeDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4924ABF29963CAD00F415CE /* CozyReactNativeDev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "CozyReactNativeDev-Info.plist"; path = "/Users/theo/cozy/cozy-flagship-app/ios/CozyReactNativeDev-Info.plist"; sourceTree = "<absolute>"; };
 		E4924AC02996437D00F415CE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Dev/GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -240,8 +234,6 @@
 		E4F8715B29DDEB6C00C52A35 /* AppIcons */ = {
 			isa = PBXGroup;
 			children = (
-				E42E38492A21515E0099D90A /* mabulle@2x.png */,
-				E42E384A2A21515E0099D90A /* mabulle@3x.png */,
 				E4F8715C29DDEC1E00C52A35 /* cozy@2x.png */,
 				E4F8715F29DDEC1E00C52A35 /* cozy@3x.png */,
 				E4F8715D29DDEC1E00C52A35 /* mespapiers@2x.png */,
@@ -391,9 +383,7 @@
 				E4F8716429DDEC1E00C52A35 /* mespapiers@3x.png in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				573255ED23C142D79968C840 /* Lato-Bold.ttf in Resources */,
-				E42E384D2A21515E0099D90A /* mabulle@3x.png in Resources */,
 				E4F8716229DDEC1E00C52A35 /* mespapiers@2x.png in Resources */,
-				E42E384B2A21515E0099D90A /* mabulle@2x.png in Resources */,
 				F3B83720E44641879E6927C6 /* Lato-Regular.ttf in Resources */,
 				E4924AC32996438600F415CE /* GoogleService-Info.plist in Resources */,
 			);
@@ -411,9 +401,7 @@
 				E4F8716529DDEC1E00C52A35 /* mespapiers@3x.png in Resources */,
 				E4924AB429963CAD00F415CE /* Images.xcassets in Resources */,
 				E4924AB529963CAD00F415CE /* Lato-Bold.ttf in Resources */,
-				E42E384E2A21515E0099D90A /* mabulle@3x.png in Resources */,
 				E4F8716329DDEC1E00C52A35 /* mespapiers@2x.png in Resources */,
-				E42E384C2A21515E0099D90A /* mabulle@2x.png in Resources */,
 				E4924AB629963CAD00F415CE /* Lato-Regular.ttf in Resources */,
 				E4924AC12996437D00F415CE /* GoogleService-Info.plist in Resources */,
 			);

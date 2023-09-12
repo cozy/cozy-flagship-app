@@ -6,7 +6,6 @@ import { Typography } from '/ui/Typography'
 import { Button } from '/ui/Button'
 import COZY_ICON from '/assets/appIcons/cozy.png'
 import MESPAPIERS_ICON from '/assets/appIcons/mespapiers.png'
-import MABULLE_ICON from '/assets/appIcons/mabulle.png'
 import { useI18n } from '/locales/i18n'
 
 // eslint-disable-next-line
@@ -27,14 +26,11 @@ const styles = StyleSheet.create({
 })
 
 const Icon = ({ icon }: IconProps): JSX.Element => {
-  if (icon === 'mespapiers')
+  if (icon === 'mespapiers') {
     return (
       <Image source={MESPAPIERS_ICON} style={styles.icon} resizeMode="center" />
     )
-  if (icon === 'mabulle')
-    return (
-      <Image source={MABULLE_ICON} style={styles.icon} resizeMode="center" />
-    )
+  }
 
   return <Image source={COZY_ICON} style={styles.icon} resizeMode="center" />
 }
