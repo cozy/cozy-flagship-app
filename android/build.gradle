@@ -8,6 +8,7 @@ buildscript {
         targetSdkVersion = 33
         ndkVersion = "21.4.7075529"
         androidXBrowser = "1.4.0"
+        googlePlayServicesLocationVersion = "20.0.0"
         DocumentScanner_compileSdkVersion = 33
         DocumentScanner_targetSdkVersion = 33
         kotlinVersion="1.6.0"
@@ -36,7 +37,15 @@ allprojects {
             // Android JSC is installed from npm
             url("$rootDir/../node_modules/jsc-android/dist")
         }
-
+        maven {
+          url("${project(':react-native-background-geolocation').projectDir}/libs")
+        }
+        maven {
+          url("${project(':react-native-background-fetch').projectDir}/libs")
+        }
+        maven {
+          url 'https://developer.huawei.com/repo/'
+        }
         google()
         maven { url 'https://www.jitpack.io' }
     }
