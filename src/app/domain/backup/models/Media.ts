@@ -10,6 +10,7 @@ import { Album } from '/app/domain/backup/models'
  */
 export interface Media {
   name: string
+  uri: string
   path: string
   remotePath: string
   type: 'image' | 'video'
@@ -23,12 +24,18 @@ export interface Media {
 
 /**
  * A selection of media metadata stored locally to identify if a media has already been backuped
- * @member {string} name
- * @member {string} remotePath e.g. /Sauvegardé depuis mon mobile/My Android/Download
- * @member {string} remoteName e.g. IMG_001 (1).jpg (added only if different from name)
+ * @member {string} name e.g. "IMG_50.jpg"
+ * @member {string} uri e.g. "file:///storage/emulated/0/Download/IMG_50.jpg" on Android or "ph://0E75CF5E-4587-4BD7-AB07-E940BB627C4B/L0/001" on iOS
+ * @member {number} creationDate e.g. 1694523521000
+ * @member {number} modificationDate e.g. 1694172391000
+ * @member {string} remoteId e.g. "d78a3c84139d173dde3b87df0003b32e"
+ * @member {string} remotePath e.g. "/Sauvegardé depuis mon mobile/My Android/Download"
  */
 export interface BackupedMedia {
   name: string
+  uri: string
+  creationDate: number
+  modificationDate: number
+  remoteId: string
   remotePath: string
-  remoteName?: string
 }
