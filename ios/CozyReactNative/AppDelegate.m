@@ -8,6 +8,8 @@
 #import <React/RCTRootView.h>
 #import <React/RCTHTTPRequestHandler.h>
 
+#import <TSBackgroundFetch/TSBackgroundFetch.h>
+
 #import "RNBootSplash.h" // <- add the header import
 #import "RNCConfig.h"
 
@@ -74,6 +76,8 @@ static void SetCustomNSURLSessionConfiguration() {
   [self.window makeKeyAndVisible];
 
   [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView];
+
+  [[TSBackgroundFetch sharedInstance] didFinishLaunching];
 
   return YES;
 }
