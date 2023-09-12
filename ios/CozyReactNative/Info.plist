@@ -21,15 +21,6 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
-			<key>mabulle</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>mabulle</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
 			<key>mespapiers</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
