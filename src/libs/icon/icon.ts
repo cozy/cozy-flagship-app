@@ -4,8 +4,6 @@ import {
   getIcon as RNGetIcon
 } from 'react-native-change-icon'
 
-import flag from 'cozy-flags'
-
 import { getSplashScreenStatus } from '/app/theme/SplashScreenService'
 import { toggleIconChangedModal } from '/libs/icon/IconChangedModal'
 
@@ -40,15 +38,7 @@ export const changeIcon = async (slug: string): Promise<void> => {
     return
   }
 
-  const changeAllowed = flag('flagship.icon.changeAllowed')
-  const defaultIcon =
-    (flag('flagship.icon.defaultIcon') as unknown as string) || DEFAULT_ICON
-
-  if (!changeAllowed) {
-    return
-  }
-
-  const iconName = ALLOWED_ICONS.includes(slug) ? slug : defaultIcon
+  const iconName = ALLOWED_ICONS.includes(slug) ? slug : DEFAULT_ICON
 
   const currentIconName = await RNGetIcon()
 
