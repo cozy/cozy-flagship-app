@@ -62,7 +62,7 @@
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
-          <data android:scheme="cozy" />
+          <data android:scheme="${appScheme}" />
         </intent-filter>
         <intent-filter android:autoVerify="true">
           <action android:name="android.intent.action.VIEW" />
@@ -89,7 +89,7 @@
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
-          <data android:scheme="cozy" />
+          <data android:scheme="${appScheme}" />
         </intent-filter>
         <intent-filter android:autoVerify="true">
           <action android:name="android.intent.action.VIEW" />
@@ -116,7 +116,7 @@
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
-          <data android:scheme="cozy" />
+          <data android:scheme="${appScheme}" />
         </intent-filter>
         <intent-filter android:autoVerify="true">
           <action android:name="android.intent.action.VIEW" />
