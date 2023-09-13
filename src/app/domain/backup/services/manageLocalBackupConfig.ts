@@ -10,6 +10,7 @@ import {
   LastBackup
 } from '/app/domain/backup/models'
 import { buildFileQuery } from '/app/domain/backup/queries'
+import { isSameMedia } from '/app/domain/backup/helpers'
 import {
   getUserPersistedData,
   storeUserPersistedData,
@@ -107,10 +108,8 @@ export const setMediaAsBackuped = async (
   const localBackupConfig = await getLocalBackupConfig(client)
 
   // add media to backuped medias
-  const backupedMedia = localBackupConfig.backupedMedias.find(
-    backupedMedia =>
-      backupedMedia.name === media.name &&
-      backupedMedia.remotePath === media.remotePath
+  const backupedMedia = localBackupConfig.backupedMedias.find(backupedMedia =>
+    isSameMedia(backupedMedia, media)
   )
 
   if (!backupedMedia) {
