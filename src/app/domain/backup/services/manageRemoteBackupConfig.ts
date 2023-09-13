@@ -7,7 +7,11 @@ import CozyClient, {
   models
 } from 'cozy-client'
 
-import { BackupedMedia, RemoteBackupConfig } from '/app/domain/backup/models'
+import {
+  Media,
+  BackupedMedia,
+  RemoteBackupConfig
+} from '/app/domain/backup/models'
 import {
   buildFilesQuery,
   buildFileQuery,
@@ -15,6 +19,7 @@ import {
   FilesQueryAllResult
 } from '/app/domain/backup/queries'
 import { getPathWithoutFilename } from '/app/domain/backup/helpers'
+import { getAllMedias } from '/app/domain/backup/services/getMedias'
 import { t } from '/locales/i18n'
 
 import { IOCozyFile } from 'cozy-client/types/types'
@@ -233,10 +238,25 @@ export const createRemoteBackupFolder = async (
   return remoteBackupConfig
 }
 
+const isFileCorrespondingToMedia = (file: File, media: Media): boolean => {
+  return (
+    file.name === media.name &&
+    new Date(file.created_at).getTime() === media.creationDate &&
+    new Date(file.updated_at).getTime() === media.modificationDate
+  )
+}
+
 const formatBackupedMedia = (
+  allMedias: Media[],
   deviceRemoteBackupConfig: RemoteBackupConfig,
   file: File
-): BackupedMedia => {
+): BackupedMedia | undefined => {
+  const correspondingMedia = allMedias.find(media =>
+    isFileCorrespondingToMedia(file, media)
+  )
+
+  if (!correspondingMedia) return undefined
+
   const pathWithBackupFolderRemoved = file.path.replace(
     deviceRemoteBackupConfig.backupFolder.path,
     ''
@@ -247,10 +267,18 @@ const formatBackupedMedia = (
   )
 
   return {
-    name: file.name,
+    name: correspondingMedia.name,
+    uri: correspondingMedia.uri,
+    creationDate: correspondingMedia.creationDate,
+    modificationDate: correspondingMedia.modificationDate,
+    remoteId: file.id,
     remotePath: pathWithFilenameRemoved || '/'
   }
 }
+
+const removeUndefined = (
+  backupedMedia: BackupedMedia | undefined
+): backupedMedia is NonNullable<BackupedMedia> => !!backupedMedia
 
 export const fetchBackupedMedias = async (
   client: CozyClient,
@@ -258,13 +286,16 @@ export const fetchBackupedMedias = async (
 ): Promise<BackupedMedia[]> => {
   const deviceId = await getDeviceId()
 
+  const allMedias = await getAllMedias(client)
+
   const filesQuery = buildFilesQuery(deviceId)
 
   const data = (await client.queryAll(filesQuery)) as FilesQueryAllResult
 
   const backupedMedias = data
     .filter(file => !isInTrash(file.path))
-    .map(file => formatBackupedMedia(deviceRemoteBackupConfig, file))
+    .map(file => formatBackupedMedia(allMedias, deviceRemoteBackupConfig, file))
+    .filter(removeUndefined)
 
   return backupedMedias
 }

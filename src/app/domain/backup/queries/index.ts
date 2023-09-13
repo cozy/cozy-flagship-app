@@ -12,7 +12,14 @@ export const buildFilesQuery = (deviceId: string): QueryDefinition => {
       }
     })
     .indexFields(['metadata.backupDeviceIds', 'type'])
-    .select(['metadata.backupDeviceIds', 'type', 'name', 'path'])
+    .select([
+      'metadata.backupDeviceIds',
+      'type',
+      'name',
+      'path',
+      'created_at',
+      'updated_at'
+    ])
 }
 
 export const buildFileQuery = (id: string): QueryDefinition => {
@@ -23,6 +30,8 @@ export interface File {
   id: string
   name: string
   path: string
+  created_at: number
+  updated_at: number
 }
 
 export type FilesQueryAllResult = File[]
