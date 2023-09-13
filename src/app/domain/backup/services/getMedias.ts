@@ -104,8 +104,8 @@ export const formatMediasFromPhotoIdentifier = (
         remotePath: getRemotePath(uri),
         type: 'video',
         subType: 'PhotoLive',
-        creationDate: timestamp * 1000,
-        modificationDate: modificationTimestamp * 1000,
+        creationDate: Math.trunc(timestamp) * 1000,
+        modificationDate: Math.trunc(modificationTimestamp) * 1000,
         albums,
         fileSize: null
       },
@@ -116,8 +116,8 @@ export const formatMediasFromPhotoIdentifier = (
         remotePath: getRemotePath(uri),
         type: 'image',
         subType: 'PhotoLive',
-        creationDate: timestamp * 1000,
-        modificationDate: modificationTimestamp * 1000,
+        creationDate: Math.trunc(timestamp) * 1000,
+        modificationDate: Math.trunc(modificationTimestamp) * 1000,
         albums,
         fileSize
       }
@@ -132,8 +132,8 @@ export const formatMediasFromPhotoIdentifier = (
       remotePath: getRemotePath(uri),
       type: type.includes('image') ? 'image' : 'video',
       mimeType: Platform.OS == 'android' ? type : undefined,
-      creationDate: timestamp * 1000,
-      modificationDate: modificationTimestamp * 1000,
+      creationDate: Math.trunc(timestamp) * 1000,
+      modificationDate: Math.trunc(modificationTimestamp) * 1000,
       albums,
       fileSize
     }
