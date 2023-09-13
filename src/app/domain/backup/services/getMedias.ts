@@ -19,7 +19,8 @@ import {
 import { getLocalBackupConfig } from '/app/domain/backup/services/manageLocalBackupConfig'
 import {
   getPathWithoutExtension,
-  getPathWithoutFilename
+  getPathWithoutFilename,
+  isSameMedia
 } from '/app/domain/backup/helpers'
 import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
 import { t } from '/locales/i18n'
@@ -204,10 +205,8 @@ const isMediaAlreadyBackuped = (
   mediaToCheck: Media,
   backupedMedias: BackupedMedia[]
 ): boolean => {
-  const isAlreadyBackuped = backupedMedias.some(
-    backupedMedia =>
-      mediaToCheck.name === backupedMedia.name &&
-      mediaToCheck.remotePath === backupedMedia.remotePath
+  const isAlreadyBackuped = backupedMedias.some(backupedMedia =>
+    isSameMedia(mediaToCheck, backupedMedia)
   )
 
   return isAlreadyBackuped
