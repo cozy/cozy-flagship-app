@@ -118,7 +118,8 @@ export const setMediaAsBackuped = async (
       uri: media.uri,
       creationDate: media.creationDate,
       modificationDate: media.modificationDate,
-      remoteId: documentCreated.id as string
+      remoteId: documentCreated.id as string,
+      md5: documentCreated.attributes.md5sum
     }
 
     localBackupConfig.backupedMedias.push(newBackupedMedia)

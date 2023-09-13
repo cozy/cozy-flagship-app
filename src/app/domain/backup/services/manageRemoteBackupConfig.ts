@@ -261,7 +261,8 @@ const formatBackupedMedia = (
     uri: correspondingMedia.uri,
     creationDate: correspondingMedia.creationDate,
     modificationDate: correspondingMedia.modificationDate,
-    remoteId: file.id
+    remoteId: file.id,
+    md5: file.md5sum
   }
 }
 
