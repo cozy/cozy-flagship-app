@@ -9,15 +9,21 @@ import flag from 'cozy-flags'
 import { getSplashScreenStatus } from '/app/theme/SplashScreenService'
 import { toggleIconChangedModal } from '/libs/icon/IconChangedModal'
 
-import { DEFAULT_ICON, ALLOWED_ICONS, DEFAULT_VALUE } from './config'
+import { ALLOWED_ICONS } from './config'
 
-// Our default icon is called 'cozy' but react-native-change-icon return 'default' if default icon is selected...
+const DEFAULT_ICON = 'base'
+
+const normalizeName = (name: string): string => {
+  // Our default icon is called 'base' but react-native-change-icon return 'default' if no matching activity is found...
+  if (name === 'default') {
+    return DEFAULT_ICON
+  }
+
+  return name
+}
+
 const isSameIcon = (firstIconName: string, secondIconName: string): boolean => {
-  return (
-    firstIconName === secondIconName ||
-    (firstIconName === DEFAULT_VALUE && secondIconName === DEFAULT_ICON) ||
-    (firstIconName === DEFAULT_ICON && secondIconName === DEFAULT_VALUE)
-  )
+  return normalizeName(firstIconName) === normalizeName(secondIconName)
 }
 
 export const changeIcon = async (slug: string): Promise<void> => {
