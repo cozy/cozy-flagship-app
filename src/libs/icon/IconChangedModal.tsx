@@ -4,7 +4,7 @@ import { View, Image, StyleSheet } from 'react-native'
 import { ConfirmDialog } from '/ui/CozyDialogs/ConfirmDialog'
 import { Typography } from '/ui/Typography'
 import { Button } from '/ui/Button'
-import COZY_ICON from '/assets/appIcons/cozy.png'
+import BASE_ICON from '/assets/appIcons/base.png'
 import MESPAPIERS_ICON from '/assets/appIcons/mespapiers.png'
 import { useI18n } from '/locales/i18n'
 
@@ -32,7 +32,7 @@ const Icon = ({ icon }: IconProps): JSX.Element => {
     )
   }
 
-  return <Image source={COZY_ICON} style={styles.icon} resizeMode="center" />
+  return <Image source={BASE_ICON} style={styles.icon} resizeMode="center" />
 }
 
 export const IconChangedModal = (): JSX.Element | null => {

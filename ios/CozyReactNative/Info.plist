@@ -12,11 +12,11 @@
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
-			<key>cozy</key>
+			<key>base</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>cozy</string>
+					<string>base</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>

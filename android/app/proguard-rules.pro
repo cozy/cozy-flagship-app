@@ -11,5 +11,5 @@
 
 -keep public class com.horcrux.svg.** {*;}
 -keep class io.cozy.flagship.mobile.BuildConfig { *; }
--keep public class io.cozy.flagship.mobile.MainActivitycozy { *; }
+-keep public class io.cozy.flagship.mobile.MainActivitybase { *; }
 -keep public class io.cozy.flagship.mobile.MainActivitymespapiers { *; }
