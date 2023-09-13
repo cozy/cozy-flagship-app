@@ -2,7 +2,8 @@ android {
   defaultConfig {
       applicationId "io.cozy.flagship.mobile"
       manifestPlaceholders = [
-        universalLinkUrl: "links.mycozy.cloud"
+        universalLinkUrl: "links.mycozy.cloud",
+        appScheme: "cozy"
       ]
   }
 }
