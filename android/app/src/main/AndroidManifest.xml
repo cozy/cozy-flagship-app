@@ -48,7 +48,7 @@
       ></activity>
 
       <activity-alias
-        android:name="io.cozy.flagship.mobile.MainActivitybase"
+        android:name="${applicationId}.MainActivitybase"
         android:enabled="true"
         android:exported="true"
         android:icon="@mipmap/base"
@@ -75,7 +75,7 @@
       </activity-alias>
 
       <activity-alias
-        android:name="io.cozy.flagship.mobile.MainActivitymespapiers"
+        android:name="${applicationId}.MainActivitymespapiers"
         android:enabled="false"
         android:exported="true"
         android:icon="@mipmap/mespapiers"
