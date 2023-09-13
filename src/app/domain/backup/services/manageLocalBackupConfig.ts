@@ -113,13 +113,12 @@ export const setMediaAsBackuped = async (
   )
 
   if (!backupedMedia) {
-    const newBackupedMedia = {
+    const newBackupedMedia: BackupedMedia = {
       name: media.name,
       uri: media.uri,
       creationDate: media.creationDate,
       modificationDate: media.modificationDate,
-      remoteId: documentCreated.id as string,
-      remotePath: media.remotePath
+      remoteId: documentCreated.id as string
     }
 
     localBackupConfig.backupedMedias.push(newBackupedMedia)

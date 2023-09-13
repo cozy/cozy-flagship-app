@@ -18,7 +18,6 @@ import {
   File,
   FilesQueryAllResult
 } from '/app/domain/backup/queries'
-import { getPathWithoutFilename } from '/app/domain/backup/helpers'
 import { getAllMedias } from '/app/domain/backup/services/getMedias'
 import { t } from '/locales/i18n'
 
@@ -257,22 +256,12 @@ const formatBackupedMedia = (
 
   if (!correspondingMedia) return undefined
 
-  const pathWithBackupFolderRemoved = file.path.replace(
-    deviceRemoteBackupConfig.backupFolder.path,
-    ''
-  )
-
-  const pathWithFilenameRemoved = getPathWithoutFilename(
-    pathWithBackupFolderRemoved
-  )
-
   return {
     name: correspondingMedia.name,
     uri: correspondingMedia.uri,
     creationDate: correspondingMedia.creationDate,
     modificationDate: correspondingMedia.modificationDate,
-    remoteId: file.id,
-    remotePath: pathWithFilenameRemoved || '/'
+    remoteId: file.id
   }
 }
 
