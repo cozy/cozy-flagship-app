@@ -6,7 +6,7 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:linksmabulle.mycozy.cloud</string>
+		<string>applinks:links.mabullecozy.cloud</string>
 	</array>
 </dict>
 </plist>
