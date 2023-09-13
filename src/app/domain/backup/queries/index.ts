@@ -18,7 +18,8 @@ export const buildFilesQuery = (deviceId: string): QueryDefinition => {
       'name',
       'path',
       'created_at',
-      'updated_at'
+      'updated_at',
+      'md5sum'
     ])
 }
 
@@ -32,6 +33,7 @@ export interface File {
   path: string
   created_at: number
   updated_at: number
+  md5sum: string
 }
 
 export type FilesQueryAllResult = File[]

@@ -30,6 +30,7 @@ export interface Media {
  * @member {number} creationDate timestamp with ms set to 0, e.g. 1694523521000
  * @member {number} modificationDate timestamp with ms set to 0, e.g. 1694172391000
  * @member {string} remoteId e.g. "d78a3c84139d173dde3b87df0003b32e"
+ * @member {string} md5 e.g. "anQfyi/m1NIso1mHyYIzPA=="
  */
 export interface BackupedMedia {
   name: string
@@ -37,4 +38,5 @@ export interface BackupedMedia {
   creationDate: number
   modificationDate: number
   remoteId: string
+  md5: string
 }
