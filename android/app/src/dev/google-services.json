@@ -22,17 +22,7 @@
         {
           "current_key": "AIzaSyClgjlflp--SRsu6u0-r_GbZAueNqCtvEQ"
         }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "761843577340-hm8np6faes10qh07u9g2ga1bf4vaer6h.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
+      ]
     }
   ],
   "configuration_version": "1"
