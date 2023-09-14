@@ -1,67 +1,66 @@
+import { Platform } from 'react-native'
 import { getVisibilityStatus } from 'react-native-bootsplash'
-import { changeIcon as RNChangeIcon } from 'react-native-change-icon'
+import {
+  changeIcon as RNChangeIcon,
+  getIcon as RNGetIcon
+} from 'react-native-change-icon'
 
-import flag from 'cozy-flags'
-
-import { changeIcon } from './icon'
+import { changeIcon } from '/libs/icon/icon'
+import * as constants from '/libs/icon/config'
+import { toggleIconChangedModal } from '/libs/icon/IconChangedModal'
 
 jest.mock('react-native-change-icon')
-jest.mock('cozy-flags')
+jest.mock('/libs/icon/IconChangedModal')
 
-const mockFlag = flag as jest.MockedFunction<typeof flag>
 const mockGetVisibilityStatus = getVisibilityStatus as jest.MockedFunction<
   typeof getVisibilityStatus
 >
+
+const mockRNGetIcon = RNGetIcon as jest.MockedFunction<typeof RNGetIcon>
 
 const mockedRNChangeIcon = RNChangeIcon as jest.MockedFunction<
   typeof RNChangeIcon
 >
 
-const ICON_CHANGE_ALLOWED_FLAGS = {
-  'flagship.icon.changeAllowed': true,
-  'flagship.icon.defaultIcon': 'cozy'
-}
-
-const ICON_CHANGE_NOT_ALLOWED_FLAGS = {
-  'flagship.icon.changeAllowed': false
-}
-
-const ICON_CHANGE_UNDEFINED_FLAGS = {
-  'flagship.icon.changeAllowed': false
-}
-
-type Flags = Record<string, boolean | string>
-
 describe('icon', () => {
   beforeEach(() => {
-    mockFlag.mockReset()
+    constants.ALLOWED_ICONS.length = 0
+    Platform.OS = 'ios'
     mockedRNChangeIcon.mockReset()
     mockGetVisibilityStatus.mockResolvedValue('hidden')
+    mockRNGetIcon.mockResolvedValue('')
   })
 
-  const mockFlags = (flags: Flags): void => {
-    // @ts-expect-error flag is not correctly typed for the moment
-    mockFlag.mockImplementation(flagName => {
-      return flags[flagName]
-    })
-  }
-
   it('should change icon if icon allowed', async () => {
-    mockFlags(ICON_CHANGE_ALLOWED_FLAGS)
+    constants.ALLOWED_ICONS.push('mespapiers')
     await changeIcon('mespapiers')
 
     expect(mockedRNChangeIcon).toHaveBeenCalledWith('mespapiers')
   })
 
   it('should change icon with default icon if icon not allowed', async () => {
-    mockFlags(ICON_CHANGE_ALLOWED_FLAGS)
     await changeIcon('drive')
 
-    expect(mockedRNChangeIcon).toHaveBeenCalledWith('cozy')
+    expect(mockedRNChangeIcon).toHaveBeenCalledWith('base')
+  })
+
+  it('should not change icon if same icon is already set', async () => {
+    mockRNGetIcon.mockResolvedValue('mespapiers')
+    constants.ALLOWED_ICONS.push('mespapiers')
+    await changeIcon('mespapiers')
+
+    expect(mockedRNChangeIcon).not.toHaveBeenCalled()
+  })
+
+  it('should not change icon for base if default is returned by react-native-change-icon', async () => {
+    mockRNGetIcon.mockResolvedValue('default')
+    await changeIcon('base')
+
+    expect(mockedRNChangeIcon).not.toHaveBeenCalled()
   })
 
   it('should not throw if icon already used error', async () => {
-    mockFlags(ICON_CHANGE_ALLOWED_FLAGS)
+    constants.ALLOWED_ICONS.push('mespapiers')
     mockedRNChangeIcon.mockImplementation(() => {
       throw new Error('ICON_ALREADY_USED')
     })
@@ -70,7 +69,7 @@ describe('icon', () => {
   })
 
   it('should throw if other error', async () => {
-    mockFlags(ICON_CHANGE_ALLOWED_FLAGS)
+    constants.ALLOWED_ICONS.push('mespapiers')
     mockedRNChangeIcon.mockImplementation(() => {
       throw new Error('ICON_INVALID')
     })
@@ -78,17 +77,21 @@ describe('icon', () => {
     await expect(changeIcon('mespapiers')).rejects.toThrow('ICON_INVALID')
   })
 
-  it('should not change icon if icon change not allowed', async () => {
-    mockFlags(ICON_CHANGE_NOT_ALLOWED_FLAGS)
-    await changeIcon('drive')
+  it('should not show changed modal on iOS because it is already handled by the OS', async () => {
+    constants.ALLOWED_ICONS.push('mespapiers')
+    await changeIcon('mespapiers')
 
-    expect(mockedRNChangeIcon).not.toHaveBeenCalled()
+    expect(mockedRNChangeIcon).toHaveBeenCalledWith('mespapiers')
+    expect(toggleIconChangedModal).not.toHaveBeenCalled()
   })
 
-  it('should not change icon if icon change undefined', async () => {
-    mockFlags(ICON_CHANGE_UNDEFINED_FLAGS)
-    await changeIcon('drive')
+  it('should not show changed modal on iOS because it is already handled by the OS', async () => {
+    Platform.OS = 'android'
+    constants.ALLOWED_ICONS.push('mespapiers')
+    mockedRNChangeIcon.mockResolvedValueOnce('mespapiers')
+    await changeIcon('mespapiers')
 
-    expect(mockedRNChangeIcon).not.toHaveBeenCalled()
+    expect(mockedRNChangeIcon).toHaveBeenCalledWith('mespapiers')
+    expect(toggleIconChangedModal).toHaveBeenCalledWith('mespapiers')
   })
 })
