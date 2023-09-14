@@ -25,6 +25,7 @@ export interface Media {
 
 /**
  * A selection of media metadata stored locally to identify if a media has already been backuped
+ * When it is not prefixed by remote, it means that it is the local value, or at least the local value when we backed up the media
  * @member {string} name e.g. "IMG_50.jpg"
  * @member {string} uri e.g. "file:///storage/emulated/0/Download/IMG_50.jpg" on Android or "ph://0E75CF5E-4587-4BD7-AB07-E940BB627C4B/L0/001" on iOS
  * @member {number} creationDate timestamp with ms set to 0, e.g. 1694523521000
