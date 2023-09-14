@@ -21,6 +21,8 @@ export const useSecureBackgroundSplashScreen = (): void => {
       }
     })
 
+    safePromise(hideSplashScreen)('secure_background')
+
     return () => {
       subscription.remove()
     }
