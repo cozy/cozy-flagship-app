@@ -397,8 +397,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: -2000,
     top: -2000,
-    height: 0,
-    width: 0,
+    height: '100%',
+    width: '100%',
     flex: 0
   },
   headerStyle: {
