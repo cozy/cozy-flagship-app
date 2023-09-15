@@ -50,6 +50,8 @@ export class LauncherView extends Component {
     this.onCreatedAccount = this.onCreatedAccount.bind(this)
     this.onCreatedJob = this.onCreatedJob.bind(this)
     this.onStoppedJob = this.onStoppedJob.bind(this)
+    this.onPilotWebviewKilled = this.onPilotWebviewKilled.bind(this)
+    this.onWorkerWebviewKilled = this.onWorkerWebviewKilled.bind(this)
     this.pilotWebView = null
     this.workerWebview = null
     this.state = {
@@ -261,6 +263,8 @@ export class LauncherView extends Component {
                 }}
                 useWebKit={true}
                 javaScriptEnabled={true}
+                onContentProcessDidTerminate={this.onPilotWebviewKilled}
+                onRenderProcessGone={this.onPilotWebviewKilled}
                 sharedCookiesEnabled={true}
                 onMessage={this.onPilotMessage}
                 onError={this.onPilotError}
@@ -290,6 +294,8 @@ export class LauncherView extends Component {
                 onLoad={this.onWorkerLoad}
                 useWebKit={true}
                 javaScriptEnabled={true}
+                onContentProcessDidTerminate={this.onWorkerWebviewKilled}
+                onRenderProcessGone={this.onWorkerWebviewKilled}
                 userAgent={this.state.userAgent}
                 source={{
                   uri: this.state.worker.url
@@ -351,6 +357,30 @@ export class LauncherView extends Component {
     if (this.launcher) {
       this.launcher.onPilotMessage(event)
     }
+  }
+  /**
+   * When the pilot webview is killed
+   *
+   * @param {Object} event
+   */
+  onPilotWebviewKilled(syntheticEvent) {
+    const { nativeEvent } = syntheticEvent
+    this.launcher.log({
+      level: 'error',
+      msg: 'Pilot webview terminated: ' + JSON.stringify(nativeEvent)
+    })
+  }
+  /**
+   * When the worker webview is killed
+   *
+   * @param {Object} event
+   */
+  onWorkerWebviewKilled(syntheticEvent) {
+    const { nativeEvent } = syntheticEvent
+    this.launcher.log({
+      level: 'error',
+      msg: 'Worker webview terminated: ' + JSON.stringify(nativeEvent)
+    })
   }
   /**
    * Postmessage relay from the worker to  the launcher
