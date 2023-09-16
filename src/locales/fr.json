@@ -94,7 +94,7 @@
         "backupPartialSuccessTitle": "Sauvegarde photo & vidéo",
         "backupPartialSuccessBody": "Votre sauvegarde est arrêtée ! {{backedUpMediaCount}}/{{totalMediasToBackupCount}} élément(s) sauvegardé(s)",
         "backupErrorTitle": "Oops",
-        "backupErrorBody":  "Votre sauvegarde a rencontré une erreur. Ouvrez l'app pour obtenir plus de détails"
+        "backupErrorBody": "Votre sauvegarde a rencontré une erreur. Ouvrez l'app pour obtenir plus de détails"
       },
       "errors": {
         "appKilled": "Application arrêtée",
