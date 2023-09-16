@@ -87,6 +87,7 @@ adb logcat --pid=$(adb shell pidof -s io.cozy.flagship.mobile)
 
 Use [flipper](https://fbflipper.com/docs/features/react-native/) to
 have access to a React Native Debuguer.
+If you are running MacOS on a M1 or M2 computer, use [this optimized version](https://github.com/chiragramani/FlipperReleases) instead.
 
 To have access to the AsyncStorage content you can install those
 2 plugins:
