@@ -89,7 +89,7 @@
         "backupPartialSuccessTitle": "Photo & video backup",
         "backupPartialSuccessBody": "Your backup is stopped! {{backedUpMediaCount}}/{{totalMediasToBackupCount}} saved item(s)",
         "backupErrorTitle": "Oops",
-        "backupErrorBody":  "Your backup encountered an error. Open the app to see more details"
+        "backupErrorBody": "Your backup encountered an error. Open the app to see more details"
       },
       "errors": {
         "appKilled": "App killed",

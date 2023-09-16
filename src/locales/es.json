@@ -78,7 +78,7 @@
         "backupPartialSuccessTitle": "Copia de seguridad de fotos y vídeos",
         "backupPartialSuccessBody": "La copia de seguridad se ha detenido. {{backedUpMediaCount}}/{{totalMediasToBackupCount}} elemento(s) guardado(s)",
         "backupErrorTitle": "Oops",
-        "backupErrorBody":  "Tu copia de seguridad ha encontrado un error. Abre la aplicación para ver más detalles"
+        "backupErrorBody": "Tu copia de seguridad ha encontrado un error. Abre la aplicación para ver más detalles"
       },
       "errors": {
         "appKilled": "App asesinada",
