@@ -1,0 +1,9 @@
+{
+  "screens": {
+    "welcome": {
+      "body": "Accédez dès maintenant à votre Cloud Personnel, le domicile numérique pour réunir toutes vos données",
+      "buttonLogin": "J'ai déjà un Cloud Personnel",
+      "title": "Cloud Personnel"
+    }
+  }
+}

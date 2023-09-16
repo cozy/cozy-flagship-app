@@ -1,0 +1,9 @@
+{
+  "screens": {
+    "welcome": {
+      "body": "Au sein de votre espace Ma Bulle, vous êtes chez vous!<br /><br />Rangez vos papiers, gérez votre consommation énergétique, suivez vos dépenses… La Métropole de Lyon vous propose un service pour vous faciliter votre vie numérique.",
+      "buttonLogin": "J'ai déjà un Cloud Personnel Cozy",
+      "title": "Ma Bulle"
+    }
+  }
+}
