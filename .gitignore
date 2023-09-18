@@ -4,6 +4,7 @@ src/api-keys.json
 src/constants/api-keys.json
 storage/
 token.json
+white_label/**/**/build_assets/splashscreen.png
 
 connectors/*/dist
 
