@@ -1,5 +1,6 @@
 import { Linking } from 'react-native'
 import { BrowserResult } from 'react-native-inappbrowser-reborn'
+import { getDeviceName } from 'react-native-device-info'
 
 import CozyClient from 'cozy-client'
 import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
@@ -40,7 +41,13 @@ import {
 import { sendProgressToWebview } from '/app/domain/backup/services/manageProgress'
 import { BackupInfo, ProgressCallback } from '/app/domain/backup/models'
 import { changeLanguage } from '/locales/i18n'
-import { setGeolocationTracking } from '/app/domain/geolocation/services/tracking'
+import {
+  getGeolocationTrackingId,
+  setGeolocationTrackingId,
+  setGeolocationTracking,
+  sendGeolocationTrackingLogs,
+  forceUploadGeolocationTrackingData
+} from '/app/domain/geolocation/services/tracking'
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {
@@ -130,6 +137,14 @@ const isNativePassInstalledOnDevice = async (): Promise<boolean> => {
   return await Linking.canOpenURL('cozypass://')
 }
 
+interface DeviceInfo {
+  deviceName: string
+}
+
+const getDeviceInfo = async (): Promise<DeviceInfo> => ({
+  deviceName: await getDeviceName()
+})
+
 interface CustomMethods {
   fetchSessionCode: () => Promise<string | null>
   showInAppBrowser: (args: { url: string }) => Promise<BrowserResult>
@@ -141,6 +156,11 @@ interface CustomMethods {
   requestBackupPermissions: typeof requestBackupPermissions
   setLang: typeof setLang
   setGeolocationTracking: typeof setGeolocationTracking
+  sendGeolocationTrackingLogs: typeof sendGeolocationTrackingLogs
+  getGeolocationTrackingId: typeof getGeolocationTrackingId
+  setGeolocationTrackingId: typeof setGeolocationTrackingId
+  forceUploadGeolocationTrackingData: typeof forceUploadGeolocationTrackingData
+  getDeviceInfo: typeof getDeviceInfo
 }
 
 const prepareBackupWithClient = (
@@ -222,6 +242,11 @@ export const localMethods = (
     checkBackupPermissions,
     requestBackupPermissions,
     setLang,
-    setGeolocationTracking
+    setGeolocationTracking,
+    getGeolocationTrackingId,
+    setGeolocationTrackingId,
+    sendGeolocationTrackingLogs,
+    forceUploadGeolocationTrackingData,
+    getDeviceInfo
   }
 }
