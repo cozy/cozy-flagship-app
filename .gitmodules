@@ -1,0 +1,3 @@
+[submodule "CozyGPSMemory"]
+	path = CozyGPSMemory
+	url = https://github.com/cozy/CozyGPSMemory
