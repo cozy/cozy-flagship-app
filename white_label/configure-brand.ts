@@ -18,33 +18,11 @@ export const checkGitStatus = async (): Promise<boolean> => {
 }
 
 export const checkCozyBrandIso = (): boolean => {
-  let isISO = true
+  const isAndroidIso = checkBrandFolderIso('android', 'android')
+  const isIosIso = checkBrandFolderIso('ios', 'ios')
+  const isJsIso = checkBrandFolderIso('js', 'src')
 
-  const basePath = 'white_label/brands/cozy/android'
-
-  // @ts-ignore
-  for (const file of readAllFiles('./white_label/brands/cozy/android')) {
-    if (typeof file !== 'string') {
-      continue
-    }
-    const relativePath = file.replace(basePath, '')
-    const originalFile = path.join('./android', relativePath)
-
-    if (!fs.existsSync(originalFile)) {
-      logger.error(`${relativePath} does not exist`)
-      isISO = false
-      continue
-    }
-
-    const areEqual = areFilesEqual(file, originalFile)
-    if (!areEqual) {
-      logger.error(`${relativePath} is different`)
-      isISO = false
-      continue
-    }
-  }
-
-  return isISO
+  return isAndroidIso && isIosIso && isJsIso
 }
 
 export const configureBrand = async (brand: string): Promise<void> => {
@@ -206,4 +184,34 @@ const mergeJsonFiles = async (
   const mergedJson = merge(baseContentJson, overrideContentJson)
 
   return JSON.stringify(mergedJson, null, 2) + '\n'
+}
+
+export const checkBrandFolderIso = (folderBrand: string, folderOrigin: string): boolean => {
+  let isISO = true
+
+  const basePath = `white_label/brands/cozy/${folderBrand}`
+
+  // @ts-ignore
+  for (const file of readAllFiles(`./white_label/brands/cozy/${folderBrand}`)) {
+    if (typeof file !== 'string') {
+      continue
+    }
+    const relativePath = file.replace(basePath, '')
+    const originalFile = path.join(`./${folderOrigin}`, relativePath)
+
+    if (!fs.existsSync(originalFile)) {
+      logger.error(`${relativePath} does not exist`)
+      isISO = false
+      continue
+    }
+
+    const areEqual = areFilesEqual(file, originalFile)
+    if (!areEqual) {
+      logger.error(`${relativePath} is different`)
+      isISO = false
+      continue
+    }
+  }
+
+  return isISO
 }
