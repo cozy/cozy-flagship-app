@@ -40,6 +40,7 @@ import {
 import { sendProgressToWebview } from '/app/domain/backup/services/manageProgress'
 import { BackupInfo, ProgressCallback } from '/app/domain/backup/models'
 import { changeLanguage } from '/locales/i18n'
+import { setGeolocationTracking } from '/app/domain/geolocation/services/tracking'
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {
@@ -139,6 +140,7 @@ interface CustomMethods {
   checkBackupPermissions: typeof checkBackupPermissions
   requestBackupPermissions: typeof requestBackupPermissions
   setLang: typeof setLang
+  setGeolocationTracking: typeof setGeolocationTracking
 }
 
 const prepareBackupWithClient = (
@@ -219,6 +221,7 @@ export const localMethods = (
     stopBackup: () => stopBackupWithClient(client),
     checkBackupPermissions,
     requestBackupPermissions,
-    setLang
+    setLang,
+    setGeolocationTracking
   }
 }
