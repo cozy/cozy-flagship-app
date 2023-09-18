@@ -74,15 +74,17 @@ async function main(): Promise<void> {
   program
     .command('check')
     .description('Check that Cozy brand mirrors root files')
-    .action(() => {
-      logger.info(`Check Cozy brand`)
+    .action(
+      handleErrors(async () => {
+        logger.info(`Check Cozy brand`)
 
-      const isISO = checkCozyBrandIso()
+        const isISO = await checkCozyBrandIso()
 
-      if (!isISO) {
-        program.error('Cozy brand is not sync with original files')
-      }
-    })
+        if (!isISO) {
+          program.error('Cozy brand is not sync with original files')
+        }
+      })
+    )
 
   await program.parseAsync()
 }
