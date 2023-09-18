@@ -17,10 +17,10 @@ export const checkGitStatus = async (): Promise<boolean> => {
   return result.length === 0
 }
 
-export const checkCozyBrandIso = (): boolean => {
-  const isAndroidIso = checkBrandFolderIso('android', 'android')
-  const isIosIso = checkBrandFolderIso('ios', 'ios')
-  const isJsIso = checkBrandFolderIso('js', 'src')
+export const checkCozyBrandIso = async (): Promise<boolean> => {
+  const isAndroidIso = await checkBrandFolderIso('android', 'android')
+  const isIosIso = await checkBrandFolderIso('ios', 'ios')
+  const isJsIso = await checkBrandFolderIso('js', 'src')
 
   return isAndroidIso && isIosIso && isJsIso
 }
@@ -185,7 +185,10 @@ const mergeJsonFiles = async (
   return JSON.stringify(mergedJson, null, 2) + '\n'
 }
 
-export const checkBrandFolderIso = (folderBrand: string, folderOrigin: string): boolean => {
+export const checkBrandFolderIso = async (
+  folderBrand: string,
+  folderOrigin: string
+): Promise<boolean> => {
   let isISO = true
 
   const basePath = `white_label/brands/cozy/${folderBrand}`
@@ -204,13 +207,36 @@ export const checkBrandFolderIso = (folderBrand: string, folderOrigin: string): 
       continue
     }
 
-    const areEqual = areFilesEqual(file, originalFile)
-    if (!areEqual) {
-      logger.error(`${relativePath} is different`)
-      isISO = false
-      continue
+    const isJsonFile = path.extname(relativePath) === '.json'
+
+    if (isJsonFile) {
+      const areEqual = await areJsonFilesEqual(originalFile, file)
+      if (!areEqual) {
+        logger.error(
+          `${relativePath} contains keys that are not in the original file`
+        )
+        isISO = false
+        continue
+      }
+    } else {
+      const areEqual = areFilesEqual(file, originalFile)
+      if (!areEqual) {
+        logger.error(`${relativePath} is different`)
+        isISO = false
+        continue
+      }
     }
   }
 
   return isISO
+}
+
+const areJsonFilesEqual = async (
+  file1: string,
+  file2: string
+): Promise<boolean> => {
+  const file1Json = fs.readFileSync(file1, 'utf8')
+  const file2Json = await mergeJsonFiles(file1, file2)
+
+  return file1Json == file2Json
 }
