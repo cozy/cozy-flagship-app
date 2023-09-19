@@ -5,5 +5,13 @@
       "buttonLogin": "I already have a Personal Cloud",
       "title": "Personal Cloud"
     }
+  },
+  "modals": {
+    "IconChangedModal": {
+      "description": "The icon of the 'Cozy' application has been modified."
+    }
+  },
+  "software": {
+    "name": "Cozy Mobile Application"
   }
 }
