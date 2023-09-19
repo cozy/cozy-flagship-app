@@ -5,5 +5,13 @@
       "buttonLogin": "J'ai déjà un Cloud Personnel Cozy",
       "title": "Ma Bulle"
     }
+  },
+  "modals": {
+    "IconChangedModal": {
+      "description": "L'icône de l'application « Ma Bulle » a été modifiée."
+    }
+  },
+  "software": {
+    "name": "Application Mobile Ma Bulle"
   }
 }

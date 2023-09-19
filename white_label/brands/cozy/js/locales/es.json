@@ -5,5 +5,13 @@
       "buttonLogin": "Ya tengo una Nube Personal",
       "title": "Nube Personal"
     }
+  },
+  "modals": {
+    "IconChangedModal": {
+      "description": "El ícono de la aplicación 'Cozy' ha sido modificado."
+    }
+  },
+  "software": {
+    "name": "Aplicación Móvil Cozy"
   }
 }
