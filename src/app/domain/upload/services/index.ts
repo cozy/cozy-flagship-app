@@ -40,7 +40,9 @@ export const uploadFileWithRetryAndConflictStrategy = async ({
 
     if (shouldRetry) {
       log.debug(
-        `Retry upload of ${filepath} because got ${JSON.stringify(error)}`
+        `Retry upload of ${filename} (${filepath}) because got ${JSON.stringify(
+          error
+        )}`
       )
 
       await new Promise(resolve => setTimeout(resolve, 1000))
@@ -96,6 +98,10 @@ export const uploadFileWithConflictStrategy = async ({
       const newName = models.file.generateNewFileNameOnConflict(filename)
 
       urlWithNewName.searchParams.set('Name', newName)
+
+      log.debug(
+        `Retry upload of ${filename} (${filepath}) because conflict (new name ${newName})`
+      )
 
       return await uploadFileWithConflictStrategy({
         url: urlWithNewName.toString(),
