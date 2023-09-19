@@ -118,7 +118,7 @@
   },
   "modals": {
     "IconChangedModal": {
-      "description": "L'icône de l'application «Cozy» a été modifiée."
+      "description": "L'icône de l'application « Cozy » a été modifiée."
     },
     "ErrorToken": {
       "title": "Accès révoqué",
