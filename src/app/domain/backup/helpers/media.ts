@@ -4,5 +4,9 @@ export const isSameMedia = (
   a: Media | BackupedMedia,
   b: Media | BackupedMedia
 ): boolean => {
-  return a.uri === b.uri
+  return (
+    a.name === b.name &&
+    a.creationDate === b.creationDate &&
+    a.modificationDate === b.modificationDate
+  )
 }
