@@ -1,6 +1,7 @@
 import { exec } from 'child_process'
 import path from 'path'
 
+import merge from 'deepmerge-json'
 import fs from 'fs-extra'
 
 import Minilog from 'cozy-minilog'
@@ -113,9 +114,25 @@ const configureIOS = async (brand: string): Promise<void> => {
 
 const configureJS = async (brand: string): Promise<void> => {
   logger.info('Copy JS files')
-  await fs.copy(`./white_label/brands/${brand}/js`, './src', {
-    overwrite: true
-  })
+  const basePath = `white_label/brands/${brand}/js`
+
+  // @ts-ignore
+  for (const file of readAllFiles(`./white_label/brands/${brand}/js`)) {
+    if (typeof file !== 'string') {
+      continue
+    }
+    const relativePath = file.replace(basePath, '')
+    const originalFile = path.join('./src', relativePath)
+
+    const isJsonFile = path.extname(relativePath) === '.json'
+
+    if (isJsonFile) {
+      const merged = await mergeJsonFiles(originalFile, file)
+      await fs.writeFile(originalFile, merged)
+    } else {
+      await fs.copy(file, originalFile)
+    }
+  }
 }
 
 const executeCommand = async (command: string): Promise<string> => {
@@ -174,4 +191,19 @@ const areFilesEqual = (file1: string, file2: string): boolean => {
   const file2Buffer = fs.readFileSync(file2)
 
   return file1Buffer.equals(file2Buffer)
+}
+
+const mergeJsonFiles = async (
+  baseFile: string,
+  overrideFile: string
+): Promise<string> => {
+  const baseContentString = await fs.readFile(baseFile, 'utf8')
+  const overrideContentString = await fs.readFile(overrideFile, 'utf8')
+
+  const baseContentJson = JSON.parse(baseContentString)
+  const overrideContentJson = JSON.parse(overrideContentString)
+
+  const mergedJson = merge(baseContentJson, overrideContentJson)
+
+  return JSON.stringify(mergedJson, null, 2) + '\n'
 }
