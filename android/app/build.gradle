@@ -143,6 +143,7 @@ android {
         versionCode 101136
         versionName "1.1.13"
         multiDexEnabled true
+        resValue "string", "build_config_package", "io.cozy.flagship.mobile"
     }
     splits {
         abi {
