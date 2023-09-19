@@ -1,0 +1,9 @@
+{
+  "screens": {
+    "welcome": {
+      "body": "Accede a tu Nube Personal ahora, el hogar digital para reunir todos tus datos",
+      "buttonLogin": "Ya tengo una Nube Personal",
+      "title": "Ma Bulle"
+    }
+  }
+}
