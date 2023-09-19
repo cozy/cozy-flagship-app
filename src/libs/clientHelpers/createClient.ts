@@ -1,5 +1,6 @@
 import CozyClient from 'cozy-client'
 import flag from 'cozy-flags'
+import Minilog from 'cozy-minilog'
 
 import { androidSafetyNetApiKey } from '/constants/api-keys'
 import strings from '/constants/strings.json'
@@ -13,6 +14,7 @@ import { getClientName } from '/app/domain/authentication/services/SynchronizeSe
 import packageJSON from '../../../package.json'
 
 import { startListening } from '/app/domain/authentication/services/AuthService'
+const log = Minilog('Create Client')
 
 /**
  * Create a CozyClient for the given Cozy instance and register it
@@ -21,6 +23,7 @@ import { startListening } from '/app/domain/authentication/services/AuthService'
  * @returns {CozyClient} - The created and registered CozyClient
  */
 export const createClient = async (instance: string): Promise<CozyClient> => {
+  log.debug('🌈 Android Key', androidSafetyNetApiKey)
   const options = {
     scope: ['*'],
     oauth: {
