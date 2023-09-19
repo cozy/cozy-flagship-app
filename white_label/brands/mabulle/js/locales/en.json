@@ -1,0 +1,9 @@
+{
+  "screens": {
+    "welcome": {
+      "body": "Access your Personal Cloud now, the digital home to gather all your data",
+      "buttonLogin": "I already have a Cozy Personal Cloud",
+      "title": "Ma Bulle"
+    }
+  }
+}
