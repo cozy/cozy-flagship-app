@@ -100,11 +100,9 @@ const configureJS = async (brand: string): Promise<void> => {
       continue
     }
     const relativePath = file.replace(basePath, '')
-    const originalFile = path.join('./src', relativePath)
+    const originalFile = path.join('./src', relativePath).replace('extra-', '')
 
-    const isJsonFile = path.extname(relativePath) === '.json'
-
-    if (isJsonFile) {
+    if (isJsonOverrideFile(relativePath)) {
       const merged = await mergeJsonFiles(originalFile, file)
       await fs.writeFile(originalFile, merged)
     } else {
@@ -200,7 +198,9 @@ export const checkBrandFolderIso = async (
       continue
     }
     const relativePath = file.replace(basePath, '')
-    const originalFile = path.join(`./${folderOrigin}`, relativePath)
+    const originalFile = path
+      .join(`./${folderOrigin}`, relativePath)
+      .replace('extra-', '')
 
     if (!fs.existsSync(originalFile)) {
       logger.error(`${relativePath} does not exist`)
@@ -208,9 +208,7 @@ export const checkBrandFolderIso = async (
       continue
     }
 
-    const isJsonFile = path.extname(relativePath) === '.json'
-
-    if (isJsonFile) {
+    if (isJsonOverrideFile(relativePath)) {
       const areEqual = await areJsonFilesEqual(originalFile, file)
       if (!areEqual) {
         logger.error(
@@ -230,6 +228,13 @@ export const checkBrandFolderIso = async (
   }
 
   return isISO
+}
+
+const isJsonOverrideFile = (filePath: string): boolean => {
+  const isJsonFile = path.extname(filePath) === '.json'
+  const isOverrideFile = path.basename(filePath).startsWith('extra-')
+
+  return isJsonFile && isOverrideFile
 }
 
 const areJsonFilesEqual = async (
