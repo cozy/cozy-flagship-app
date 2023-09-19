@@ -130,7 +130,7 @@ export const setMediaAsBackuped = async (
   // remove media from current backup
   localBackupConfig.currentBackup.mediasToBackup =
     localBackupConfig.currentBackup.mediasToBackup.filter(
-      mediaToBackup => mediaToBackup.name !== media.name
+      mediaToBackup => !isSameMedia(mediaToBackup, media)
     )
 
   await setLocalBackupConfig(client, localBackupConfig)
