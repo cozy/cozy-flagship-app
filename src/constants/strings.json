@@ -10,7 +10,6 @@
   "REDIRECT": "redirect",
   "SESSION_CODE": "session_code",
   "SESSION_CREATED_FLAG": "@cozy_AmiralAppSessionCreated",
-  "USER_AGENT": "io.cozy.flagship.mobile",
   "ORIGIN_WHITELIST": [
     "http://*",
     "https://*",

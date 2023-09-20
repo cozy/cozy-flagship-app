@@ -1,7 +1,6 @@
 {
   "COZY_SCHEME": "cozy://",
   "UNIVERSAL_LINK_BASE": "https://links.mycozy.cloud/flagship",
-  "USER_AGENT": "io.cozy.flagship.mobile",
   "cloudery": {
     "iOSQueryString": "universallink_for_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fmanager&redirect_after_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fonboarding%3Fflagship%3Dtrue%26fallback=cozy%253A%252F%252Fonboarding%253Fflagship%253Dtrue&redirect_after_login=https%3A%2F%2Floginflagship",
     "androidQueryString": "universallink_for_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fmanager&redirect_after_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fonboarding%3Fflagship%3Dtrue%26fallback=cozy%253A%252F%252Fonboarding%253Fflagship%253Dtrue&redirect_after_login=https%3A%2F%2Floginflagship"
