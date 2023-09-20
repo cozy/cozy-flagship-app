@@ -37,6 +37,7 @@ export const configureBrand = async (brand: string): Promise<void> => {
     await configureAndroid(brand)
     await configureIOS(brand)
     await configureJS(brand)
+    await configureEnv(brand)
   } catch (error) {
     logger.error('Could not apply changes:', error)
   }
@@ -109,6 +110,30 @@ const configureJS = async (brand: string): Promise<void> => {
       await fs.copy(file, originalFile)
     }
   }
+}
+
+const configureEnv = async (brand: string): Promise<void> => {
+  logger.info('Edit .env file')
+  const config = configs[brand as keyof typeof configs]
+  const envContent = await fs.readFile('.env', 'utf8')
+  let newEnvContent = envContent
+
+  const userAgentRegex = /^USER_AGENT=".*"/m
+  const newUserAgent = `USER_AGENT="${config.userAgent}"`
+
+  if (userAgentRegex.test(newEnvContent)) {
+    newEnvContent = newEnvContent.replace(userAgentRegex, newUserAgent)
+  } else {
+    newEnvContent += `\n${newUserAgent}\n`
+  }
+
+  if (envContent !== newEnvContent) {
+    logger.warn(
+      '.env file has been modified, please run `pod install` to apply changes'
+    )
+  }
+
+  await fs.writeFile('.env', newEnvContent)
 }
 
 const executeCommand = async (command: string): Promise<string> => {

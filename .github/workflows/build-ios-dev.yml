@@ -63,6 +63,10 @@ jobs:
       - name: Install Pods
         run: cd ios && pod install --repo-update && cd ..
 
+      - name: 'Create env file'
+        run: |
+          touch .env
+
       - name: Set white label brand
         run: yarn brand:configure:${{ inputs.brand }} --force
 
