@@ -13,6 +13,8 @@ import { shouldRetryCallbackBackup } from '/app/domain/backup/helpers/error'
 
 import CozyClient from 'cozy-client'
 
+const IOS_NAME_FORMAT_REGEX = new RegExp('^([A-Z]+)(_)([0-9]+)$')
+
 export const getVideoPathFromLivePhoto = (photoPath: string): string => {
   const extension = getPathExtension(photoPath)
 
@@ -57,6 +59,9 @@ export const uploadMedia = async (
     filename: media.name,
     filepath,
     mimetype: getMimeType(media),
+    conflictOptions: {
+      originalNameFormatRegex: IOS_NAME_FORMAT_REGEX
+    },
     retry: {
       nRetry: 1,
       shouldRetryCallback: shouldRetryCallbackBackup
