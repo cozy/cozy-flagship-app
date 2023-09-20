@@ -4,6 +4,7 @@ import flow from 'lodash/fp/flow'
 
 import strings from '/constants/strings.json'
 import { devlog, EnvService, isSentryDebugMode } from '/core/tools/env'
+import { groupBackupErrors } from '/libs/monitoring/grouping'
 import { scrubPhoneNumbers } from '/libs/monitoring/scrubbing'
 
 import { version } from '../../../package.json'
@@ -26,7 +27,7 @@ Sentry.init({
   beforeBreadcrumb: (breadcrumb, hint) =>
     flow(scrubPhoneNumbers)(breadcrumb, hint) as Sentry.Breadcrumb,
   beforeSend: (event, hint) =>
-    flow(scrubPhoneNumbers)(event, hint) as Sentry.Event,
+    flow(scrubPhoneNumbers, groupBackupErrors)(event, hint) as Sentry.Event,
   debug: isSentryDebugMode(),
   dsn: strings.SENTRY_DSN_URL,
   enabled: EnvService.hasSentryEnabled,
