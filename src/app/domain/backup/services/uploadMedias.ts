@@ -86,9 +86,10 @@ export const uploadMedias = async (
       )
     } catch (error) {
       log.warn(
-        `❌ ${mediaToUpload.name} not uploaded or set as backuped correctly`
+        `❌ ${
+          mediaToUpload.name
+        } not uploaded or set as backuped correctly (${JSON.stringify(error)})`
       )
-      log.warn(error)
 
       if (error instanceof NetworkError) {
         throw new BackupError(t('services.backup.errors.networkIssue'))
