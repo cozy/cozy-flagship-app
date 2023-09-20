@@ -9,6 +9,7 @@
 #import <React/RCTHTTPRequestHandler.h>
 
 #import "RNBootSplash.h" // <- add the header import
+#import "RNCConfig.h"
 
 #import <Firebase.h>
 
@@ -36,8 +37,8 @@ static void SetCustomNSURLSessionConfiguration() {
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
 
     NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-    NSString * bundleIdentifier = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"];
-    NSString * userAgent = [NSString stringWithFormat:@"%@-%@", bundleIdentifier, appVersionString];
+    NSString * userAgentNamespace = [RNCConfig envFor:@"USER_AGENT"];
+    NSString * userAgent = [NSString stringWithFormat:@"%@-%@", userAgentNamespace, appVersionString];
     configuration.HTTPAdditionalHeaders = @{ @"User-Agent": userAgent };
 
     return configuration;
