@@ -58,17 +58,17 @@ export const uploadFile = async ({
             error.error.includes('Failed to connect') ||
             error.error.includes('Unable to resolve host')
           ) {
-            reject(new NetworkError())
+            return reject(new NetworkError())
           }
 
           if (error.responseCode && error.responseBody) {
             const { errors } = JSON.parse(error.responseBody) as StackErrors
-            reject({
+            return reject({
               statusCode: error.responseCode,
               errors
             })
           } else {
-            reject({
+            return reject({
               statusCode: -1,
               errors: [
                 {
@@ -82,7 +82,7 @@ export const uploadFile = async ({
         })
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         RNBackgroundUpload.addListener('cancelled', uploadId, data => {
-          reject({
+          return reject({
             statusCode: -1,
             errors: [
               {
@@ -99,12 +99,12 @@ export const uploadFile = async ({
           }
 
           if (response.responseCode === 201) {
-            resolve({
+            return resolve({
               statusCode: response.responseCode,
               data
             })
           } else {
-            reject({
+            return reject({
               statusCode: response.responseCode,
               data
             })
@@ -112,7 +112,7 @@ export const uploadFile = async ({
         })
       })
       .catch(e => {
-        reject(e)
+        return reject(e)
       })
   })
 }

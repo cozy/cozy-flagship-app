@@ -50,28 +50,28 @@ export const uploadFile = async ({
     })
       .promise.then(response => {
         if (response.body === '' && !response.statusCode) {
-          reject(new NetworkError())
+          return reject(new NetworkError())
         }
 
         if (response.statusCode == 201) {
           const { data } = JSON.parse(response.body) as {
             data: IOCozyFile
           }
-          resolve({
+          return resolve({
             statusCode: response.statusCode,
             data
           })
         } else {
           const { errors } = JSON.parse(response.body) as StackErrors
 
-          reject({
+          return reject({
             statusCode: response.statusCode,
             errors
           })
         }
       })
       .catch(e => {
-        reject(e)
+        return reject(e)
       })
   })
 }
