@@ -2,7 +2,7 @@
   "COZY_SCHEME": "mabulle://",
   "UNIVERSAL_LINK_BASE": "https://links.mabullecozy.cloud/flagship",
   "cloudery": {
-    "iOSQueryString": "universallink_for_email=https%3A%2F%2Flinks.mabullecozy.cloud%2Fflagship%2Fmanager&redirect_after_email=https%3A%2F%2Flinks.mabullecozy.cloud%2Fflagship%2Fonboarding%3Fflagship%3Dtrue%26fallback=mabulle%253A%252F%252Fonboarding%253Fflagship%253Dtrue&redirect_after_login=https%3A%2F%2Floginflagship",
-    "androidQueryString": "universallink_for_email=https%3A%2F%2Flinks.mabullecozy.cloud%2Fflagship%2Fmanager&redirect_after_email=https%3A%2F%2Flinks.mabullecozy.cloud%2Fflagship%2Fonboarding%3Fflagship%3Dtrue%26fallback=mabulle%253A%252F%252Fonboarding%253Fflagship%253Dtrue&redirect_after_login=https%3A%2F%2Floginflagship"
+    "iOSQueryString": "flagship_app=mabulle&universallink_for_email=https%3A%2F%2Flinks.mabullecozy.cloud%2Fflagship%2Fmanager&redirect_after_email=https%3A%2F%2Flinks.mabullecozy.cloud%2Fflagship%2Fonboarding%3Fflagship%3Dtrue%26fallback=mabulle%253A%252F%252Fonboarding%253Fflagship%253Dtrue&redirect_after_login=https%3A%2F%2Floginflagship",
+    "androidQueryString": "flagship_app=mabulle&universallink_for_email=https%3A%2F%2Flinks.mabullecozy.cloud%2Fflagship%2Fmanager&redirect_after_email=https%3A%2F%2Flinks.mabullecozy.cloud%2Fflagship%2Fonboarding%3Fflagship%3Dtrue%26fallback=mabulle%253A%252F%252Fonboarding%253Fflagship%253Dtrue&redirect_after_login=https%3A%2F%2Floginflagship"
   }
 }
