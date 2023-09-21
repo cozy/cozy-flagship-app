@@ -23,6 +23,10 @@ import {
   showSplashScreen
 } from '/app/theme/SplashScreenService'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
+import {
+  isOidcNavigationRequest,
+  processOIDC
+} from '/screens/login/components/functions/oidc'
 
 const log = Minilog('useManagerScreen')
 
@@ -119,6 +123,25 @@ export const useManagerScreenProps = (
       )
       return false
     }
+
+    const isOidc = isOidcNavigationRequest(initialRequest)
+    if (isOidc) {
+      processOIDC(initialRequest)
+        .then(oidcResult => {
+          reset(routes.authenticate, oidcResult)
+          return
+        })
+        .catch(error => {
+          if (error === 'USER_CANCELED') {
+            reset(routes.welcome)
+          } else {
+            void hideSplashScreen()
+            reset(routes.error, { type: strings.errorScreens.managerError })
+          }
+        })
+      return false
+    }
+
     return true
   }
 

@@ -105,6 +105,8 @@ const LoginSteps = ({
   useEffect(() => {
     const fqdn = consumeRouteParameter('fqdn', route, navigation)
     const magicCode = consumeRouteParameter('magicCode', route, navigation)
+    const oauthCode = consumeRouteParameter('code', route, navigation)
+    const onboardUrl = consumeRouteParameter('onboardUrl', route, navigation)
     if (fqdn) {
       const instanceData = getInstanceDataFromFqdn(fqdn)
 
@@ -121,9 +123,24 @@ const LoginSteps = ({
 
       if (magicCode) {
         startMagicLinkOAuth(instanceData.fqdn, magicCode)
+      } else if (oauthCode) {
+        startOidcOAuth(instanceData.fqdn, oauthCode)
       } else {
         setInstanceData(instanceData)
       }
+    } else if (onboardUrl && oauthCode) {
+      // when receiving fqdn from route parameter, we don't have access to partner context
+      // so we enforce default Cozy color as background
+      setClouderyTheme({
+        backgroundColor: colors.primaryColor
+      })
+
+      setState(oldState => ({
+        ...oldState,
+        step: LOADING_STEP
+      }))
+
+      startOidcOnboarding(onboardUrl, oauthCode)
     }
   }, [
     navigation,
