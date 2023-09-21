@@ -1,4 +1,5 @@
 import Minilog from 'cozy-minilog'
+
 import { Linking, Platform } from 'react-native'
 import type { WebViewNavigation } from 'react-native-webview'
 
@@ -30,6 +31,16 @@ interface OidcOnboardingStartCallback {
 }
 
 type OidcCallback = OidcLoginCallback | OidcOnboardingStartCallback
+
+export const isOidcOnboardingStartCallback = (
+  callback: unknown
+): callback is OidcOnboardingStartCallback => {
+  return (
+    typeof callback === 'object' &&
+    callback !== null &&
+    'onboardUrl' in callback
+  )
+}
 
 /**
  * Check if the given NavigationRequest should trigger the OIDC scenario
