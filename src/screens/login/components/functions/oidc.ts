@@ -1,6 +1,6 @@
 import Minilog from 'cozy-minilog'
 
-import { Linking, Platform } from 'react-native'
+import { Linking } from 'react-native'
 import type { WebViewNavigation } from 'react-native-webview'
 
 import strings from '/constants/strings.json'
@@ -14,8 +14,7 @@ const USER_CANCELED = 'USER_CANCELED'
 const INVALID_CALLBACK = 'INVALID_CALLBACK'
 
 const OIDC_CALLBACK_URL_PARAM = 'redirect_after_oidc'
-const OIDC_CALLBACK_URL = `${strings.UNIVERSAL_LINK_BASE}/oidc_result`
-const OIDC_CALLBACK_URL_ANDROID = `${strings.COZY_SCHEME}flagship/oidc_result`
+const OIDC_CALLBACK_URL = `${strings.COZY_SCHEME}flagship/oidc_result`
 
 export const LOGIN_FLAGSHIP_URL = 'https://loginflagship'
 
@@ -123,9 +122,7 @@ export const processOIDC = (
 ): Promise<OidcCallback> => {
   return new Promise((resolve, reject) => {
     const oidcUrl = new URL(request.url)
-    const urlParam =
-      Platform.OS === 'ios' ? OIDC_CALLBACK_URL : OIDC_CALLBACK_URL_ANDROID
-    oidcUrl.searchParams.append(OIDC_CALLBACK_URL_PARAM, urlParam)
+    oidcUrl.searchParams.append(OIDC_CALLBACK_URL_PARAM, OIDC_CALLBACK_URL)
 
     void showInAppBrowser({ url: oidcUrl.toString() }).then(result => {
       if (result.type === 'cancel') {

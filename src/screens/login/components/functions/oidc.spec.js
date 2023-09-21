@@ -38,7 +38,7 @@ jest.mock('/libs/intents/InAppBrowser', () => {
   }
 })
 
-describe('ClouderyView', () => {
+describe('OIDC', () => {
   describe('isOidcNavigationRequest', () => {
     it(`Should return true if url has 'oidc=true' param`, async () => {
       const request = {
@@ -121,14 +121,14 @@ describe('ClouderyView', () => {
 
       act(() => {
         Linking.emit('url', {
-          url: 'https://links.mycozy.cloud/flagship/oidc_result?code=SOME_OIDC_CODE&onboard_url=https%3A%2F%2Fmanager.cozycloud.cc%2Fsomepartner%2Fonboard%3Fonboarding_id%3DSOME_ONBOARDING_ID'
+          url: 'cozy://oidc_result?code=SOME_OIDC_CODE&onboard_url=https%3A%2F%2Fmanager.cozycloud.cc%2Fsomepartner%2Fonboard%3Fonboarding_id%3DSOME_ONBOARDING_ID'
         })
       })
 
       const result = await promise
 
       expect(showInAppBrowser).toHaveBeenCalledWith({
-        url: 'http://some-oidc-server.fr/oidc?offer=ecolyo&oidc=true&redirect_after_oidc=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Foidc_result'
+        url: 'http://some-oidc-server.fr/oidc?offer=ecolyo&oidc=true&redirect_after_oidc=cozy%3A%2F%2Fflagship%2Foidc_result'
       })
       expect(result).toStrictEqual({
         code: 'SOME_OIDC_CODE',
@@ -150,14 +150,14 @@ describe('ClouderyView', () => {
 
       act(() => {
         Linking.emit('url', {
-          url: 'https://links.mycozy.cloud/flagship/oidc_result?code=SOME_OIDC_CODE&fqdn=claude.somepartner.fr'
+          url: 'cozy://oidc_result?code=SOME_OIDC_CODE&fqdn=claude.somepartner.fr'
         })
       })
 
       const result = await promise
 
       expect(showInAppBrowser).toHaveBeenCalledWith({
-        url: 'http://some-oidc-server.fr/oidc?offer=ecolyo&oidc=true&redirect_after_oidc=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Foidc_result'
+        url: 'http://some-oidc-server.fr/oidc?offer=ecolyo&oidc=true&redirect_after_oidc=cozy%3A%2F%2Fflagship%2Foidc_result'
       })
       expect(result).toStrictEqual({
         code: 'SOME_OIDC_CODE',
@@ -179,7 +179,7 @@ describe('ClouderyView', () => {
 
       act(() => {
         Linking.emit('url', {
-          url: 'https://links.mycozy.cloud/flagship/some_bad_url'
+          url: 'cozy://some_bad_url'
         })
       })
 
