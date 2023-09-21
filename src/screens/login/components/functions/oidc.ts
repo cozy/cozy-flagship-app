@@ -14,7 +14,7 @@ const INVALID_CALLBACK = 'INVALID_CALLBACK'
 
 const OIDC_CALLBACK_URL_PARAM = 'redirect_after_oidc'
 const OIDC_CALLBACK_URL = `${strings.UNIVERSAL_LINK_BASE}/oidc_result`
-const OIDC_CALLBACK_URL_ANDROID = 'cozy://flagship/oidc_result'
+const OIDC_CALLBACK_URL_ANDROID = `${strings.COZY_SCHEME}flagship/oidc_result`
 
 export const LOGIN_FLAGSHIP_URL = 'https://loginflagship'
 
