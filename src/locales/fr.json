@@ -37,8 +37,8 @@
       "title": "Vous n'avez pas terminé votre inscription"
     },
     "genericError": {
-      "defaultBody": "Une erreur inattendue est survenue",
-      "title": "Nous avons rencontré une erreur inattendue"
+      "defaultBody": "L'app a rencontré une erreur inattendue",
+      "title": "Un problème est survenu"
     },
     "managerError": {
       "body": "Une erreur est survenue lors du traitement de votre lien de connexion",
