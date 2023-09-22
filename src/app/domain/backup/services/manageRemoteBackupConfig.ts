@@ -240,8 +240,7 @@ export const createRemoteBackupFolder = async (
 const isFileCorrespondingToMedia = (file: File, media: Media): boolean => {
   return (
     file.name === media.name &&
-    new Date(file.created_at).getTime() === media.creationDate &&
-    new Date(file.updated_at).getTime() === media.modificationDate
+    new Date(file.created_at).getTime() === media.creationDate
   )
 }
 
