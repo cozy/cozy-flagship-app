@@ -247,10 +247,7 @@ const initializeBackup = async (
     if (deviceRemoteBackupConfig) {
       log.debug('Backup will be restored')
 
-      backupedMedias = await fetchBackupedMedias(
-        client,
-        deviceRemoteBackupConfig
-      )
+      backupedMedias = await fetchBackupedMedias(client)
       backupedAlbums = await fetchBackupedAlbums(client)
     } else {
       log.debug('Backup will be created')

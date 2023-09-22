@@ -247,7 +247,6 @@ const isFileCorrespondingToMedia = (file: File, media: Media): boolean => {
 
 const formatBackupedMedia = (
   allMedias: Media[],
-  deviceRemoteBackupConfig: RemoteBackupConfig,
   file: File
 ): BackupedMedia | undefined => {
   const correspondingMedia = allMedias.find(media =>
@@ -271,8 +270,7 @@ const removeUndefined = (
 ): backupedMedia is NonNullable<BackupedMedia> => !!backupedMedia
 
 export const fetchBackupedMedias = async (
-  client: CozyClient,
-  deviceRemoteBackupConfig: RemoteBackupConfig
+  client: CozyClient
 ): Promise<BackupedMedia[]> => {
   const deviceId = await getDeviceId()
 
@@ -284,7 +282,7 @@ export const fetchBackupedMedias = async (
 
   const backupedMedias = data
     .filter(file => !isInTrash(file.path))
-    .map(file => formatBackupedMedia(allMedias, deviceRemoteBackupConfig, file))
+    .map(file => formatBackupedMedia(allMedias, file))
     .filter(removeUndefined)
 
   return backupedMedias
