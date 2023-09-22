@@ -10,6 +10,7 @@ import {
   LastBackup
 } from '/app/domain/backup/models'
 import { buildFileQuery } from '/app/domain/backup/queries'
+import { fetchBackupedMedias } from '/app/domain/backup/services/manageRemoteBackupConfig'
 import { isSameMedia } from '/app/domain/backup/helpers'
 import {
   getUserPersistedData,
@@ -238,4 +239,29 @@ export const setLastBackup = async (
   await setLocalBackupConfig(client, localBackupConfig)
 
   log.debug('Last backup set')
+}
+
+export const addRemoteDuplicatesToBackupedMedias = async (
+  client: CozyClient
+): Promise<void> => {
+  log.debug('Trying to find remote duplicates')
+
+  const localBackupConfig = await getLocalBackupConfig(client)
+
+  const remoteDuplicates = await fetchBackupedMedias(client)
+
+  const remoteDuplicatesNotAlreadyConsideredAsBackuped =
+    remoteDuplicates.filter(
+      m => !localBackupConfig.backupedMedias.find(a => isSameMedia(a, m))
+    )
+
+  log.debug(
+    `${remoteDuplicatesNotAlreadyConsideredAsBackuped.length} medias found remotely that are present locally but not in local backuped medias`
+  )
+
+  localBackupConfig.backupedMedias = localBackupConfig.backupedMedias.concat(
+    remoteDuplicatesNotAlreadyConsideredAsBackuped
+  )
+
+  await setLocalBackupConfig(client, localBackupConfig)
 }
