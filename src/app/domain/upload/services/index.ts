@@ -20,7 +20,6 @@ export const uploadFileWithRetryAndConflictStrategy = async ({
   filepath,
   mimetype,
   notification,
-  conflictOptions,
   retry
 }: UploadParams): Promise<UploadResult> => {
   try {
@@ -31,7 +30,6 @@ export const uploadFileWithRetryAndConflictStrategy = async ({
       filepath,
       mimetype,
       notification,
-      conflictOptions,
       retry
     })
   } catch (e) {
@@ -56,7 +54,6 @@ export const uploadFileWithRetryAndConflictStrategy = async ({
         filepath,
         mimetype,
         notification,
-        conflictOptions,
         retry: {
           nRetry: retry.nRetry - 1,
           shouldRetryCallback: retry.shouldRetryCallback
@@ -74,8 +71,7 @@ export const uploadFileWithConflictStrategy = async ({
   filename,
   filepath,
   mimetype,
-  notification,
-  conflictOptions
+  notification
 }: UploadParams): Promise<UploadResult> => {
   try {
     return await uploadFile({
@@ -99,11 +95,7 @@ export const uploadFileWithConflictStrategy = async ({
         name: oldName
       } as IOCozyFile) as SplitFilenameResult
 
-      const newName =
-        models.file.generateNewFileNameOnConflict(
-          filename,
-          conflictOptions?.originalNameFormatRegex
-        ) + extension
+      const newName = `${filename}_conflict_${new Date().toISOString()}${extension}`
 
       urlWithNewName.searchParams.set('Name', newName)
 
@@ -117,8 +109,7 @@ export const uploadFileWithConflictStrategy = async ({
         filename,
         filepath,
         mimetype,
-        notification,
-        conflictOptions
+        notification
       })
     }
 

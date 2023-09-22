@@ -16,12 +16,7 @@ export interface UploadParams {
     onProgressTitle: string
     onProgressMessage: string
   }
-  conflictOptions?: ConflictOptions
   retry?: Retry
-}
-
-interface ConflictOptions {
-  originalNameFormatRegex: RegExp
 }
 
 interface Retry {
