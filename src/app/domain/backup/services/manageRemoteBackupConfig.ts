@@ -6,6 +6,8 @@ import CozyClient, {
   SplitFilenameResult,
   models
 } from 'cozy-client'
+import { IOCozyFile } from 'cozy-client/types/types'
+import flag from 'cozy-flags'
 
 import {
   Media,
@@ -13,6 +15,7 @@ import {
   RemoteBackupConfig
 } from '/app/domain/backup/models'
 import {
+  buildAllMediasFilesQuery,
   buildFilesQuery,
   buildFileQuery,
   File,
@@ -20,8 +23,6 @@ import {
 } from '/app/domain/backup/queries'
 import { getAllMedias } from '/app/domain/backup/services/getMedias'
 import { t } from '/locales/i18n'
-
-import { IOCozyFile } from 'cozy-client/types/types'
 
 const DOCTYPE_APPS = 'io.cozy.apps'
 const DOCTYPE_FILES = 'io.cozy.files'
@@ -276,9 +277,17 @@ export const fetchBackupedMedias = async (
 
   const allMedias = await getAllMedias(client)
 
-  const filesQuery = buildFilesQuery(deviceId)
+  let data
 
-  const data = (await client.queryAll(filesQuery)) as FilesQueryAllResult
+  if (flag('flagship.backup.dedup')) {
+    const filesQuery = buildAllMediasFilesQuery()
+
+    data = (await client.queryAll(filesQuery)) as FilesQueryAllResult
+  } else {
+    const filesQuery = buildFilesQuery(deviceId)
+
+    data = (await client.queryAll(filesQuery)) as FilesQueryAllResult
+  }
 
   const backupedMedias = data
     .filter(file => !isInTrash(file.path))

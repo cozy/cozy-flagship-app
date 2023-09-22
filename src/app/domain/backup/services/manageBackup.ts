@@ -1,4 +1,5 @@
 import type CozyClient from 'cozy-client'
+import flag from 'cozy-flags'
 import Minilog from 'cozy-minilog'
 
 import {
@@ -10,7 +11,8 @@ import {
   setBackupAsDone,
   setLastBackup,
   saveAlbums,
-  updateRemoteBackupConfigLocally
+  updateRemoteBackupConfigLocally,
+  addRemoteDuplicatesToBackupedMedias
 } from '/app/domain/backup/services/manageLocalBackupConfig'
 import {
   areAlbumsEnabled,
@@ -233,9 +235,14 @@ const initializeBackup = async (
   client: CozyClient
 ): Promise<LocalBackupConfig> => {
   try {
-    const backupConfig = await getLocalBackupConfig(client)
+    let backupConfig = await getLocalBackupConfig(client)
 
     log.debug('Backup found')
+
+    if (flag('flagship.backup.dedup')) {
+      await addRemoteDuplicatesToBackupedMedias(client)
+      backupConfig = await getLocalBackupConfig(client)
+    }
 
     return backupConfig
   } catch {

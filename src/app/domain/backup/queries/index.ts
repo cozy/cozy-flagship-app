@@ -3,6 +3,24 @@ import { Q, QueryDefinition } from 'cozy-client'
 const DOCTYPE_FILES = 'io.cozy.files'
 const DOCTYPE_ALBUMS = 'io.cozy.photos.albums'
 
+export const buildAllMediasFilesQuery = (): QueryDefinition => {
+  return Q(DOCTYPE_FILES)
+    .where({
+      type: 'file',
+      class: { $or: ['image', 'video'] }
+    })
+    .indexFields(['class', 'type'])
+    .select([
+      'class',
+      'type',
+      'name',
+      'path',
+      'created_at',
+      'updated_at',
+      'md5sum'
+    ])
+}
+
 export const buildFilesQuery = (deviceId: string): QueryDefinition => {
   return Q(DOCTYPE_FILES)
     .where({
