@@ -51,6 +51,11 @@ const configureAndroid = async (brand: string): Promise<void> => {
 }
 
 const configureIOS = async (brand: string): Promise<void> => {
+  if (process.platform !== 'darwin') {
+    logger.warn('Skip iOS configuration (platform !== iOS)')
+    return
+  }
+
   const config = configs[brand as keyof typeof configs]
 
   logger.info('Set iOS Bundle ID')
