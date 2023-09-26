@@ -17,6 +17,9 @@ import { navigate, navigationRef } from '/libs/RootNavigation'
 
 const log = Minilog('⛔ OAuth Clients Limit Service')
 
+export const OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH =
+  '/settings/clients/limit-exceeded'
+
 export const OAUTH_CLIENTS_LIMIT_EXCEEDED = 'OAUTH_CLIENTS_LIMIT_EXCEEDED'
 
 export const oauthClientLimitEventHandler = new EventEmitter()
@@ -24,6 +27,10 @@ export const oauthClientLimitEventHandler = new EventEmitter()
 export const showOauthClientsLimitExceeded = (href: string): void => {
   navigate('home')
   oauthClientLimitEventHandler.emit(OAUTH_CLIENTS_LIMIT_EXCEEDED, href)
+}
+
+export const isOauthClientLimitExceededUrl = (url: string): boolean => {
+  return url.includes(OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH)
 }
 
 export const interceptNavigation =

@@ -16,6 +16,10 @@ import {
 } from '/libs/functions/filePreviewHelper'
 import { safePromise } from '/utils/safePromise'
 import {
+  isOauthClientLimitExceededUrl,
+  showOauthClientsLimitExceeded
+} from '/app/domain/limits/OauthClientsLimitService'
+import {
   InterceptNavigationProps,
   InterceptOpenWindowProps,
   webviewUrlLog
@@ -49,6 +53,11 @@ export const interceptNavigation = ({
   client,
   setDownloadProgress
 }: InterceptNavigationProps): boolean => {
+  if (isOauthClientLimitExceededUrl(initialRequest.url)) {
+    showOauthClientsLimitExceeded(targetUri)
+    return false
+  }
+
   const isPreviewableLink = checkIsPreviewableLink(initialRequest.url, client)
   // We don't want to intecerpt iframe navigation excepts for iOS and the download
   // Since we can download file from an iframe (intents)

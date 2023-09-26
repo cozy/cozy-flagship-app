@@ -10,14 +10,13 @@ import Minilog from 'cozy-minilog'
 
 import {
   OAUTH_CLIENTS_LIMIT_EXCEEDED,
+  OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH,
   interceptNavigation,
   interceptOpenWindow,
   oauthClientLimitEventHandler
 } from '/app/domain/limits/OauthClientsLimitService'
 
 const log = Minilog('⛔ OAuth Clients Limit Exceeded')
-
-const OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH = '/settings/clients/limit-exceeded'
 
 interface OAuthClientsLimitExceededState {
   popupUrl: string | null
