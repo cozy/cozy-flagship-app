@@ -1,3 +1,5 @@
+import BackgroundGeolocation from 'react-native-background-geolocation'
+
 import {
   startTracking,
   stopTracking,
@@ -37,3 +39,16 @@ export const sendGeolocationTrackingLogs = async (): Promise<void> => {
 export const forceUploadGeolocationTrackingData = async (): Promise<void> => {
   await uploadData({ force: true })
 }
+
+interface GeolocationTrackingStatus {
+  enabled: boolean
+}
+
+export const getGeolocationTrackingStatus =
+  async (): Promise<GeolocationTrackingStatus> => {
+    const status = await BackgroundGeolocation.getState()
+
+    return {
+      enabled: status.enabled
+    }
+  }
