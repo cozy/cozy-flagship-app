@@ -7,10 +7,11 @@ import {
   uploadData,
   getId,
   updateId,
-  stopTrackingAndClearData
+  stopTrackingAndClearData,
+  getShouldStartTracking
 } from '../../../../../CozyGPSMemory/geolocation/services'
 
-export { stopTrackingAndClearData }
+export { stopTrackingAndClearData, getShouldStartTracking }
 
 export const getGeolocationTrackingId = async (): Promise<string> => {
   return (await getId()) as string
