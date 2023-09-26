@@ -19,6 +19,7 @@ export const buildAllMediasFilesQuery = (): QueryDefinition => {
       'updated_at',
       'md5sum'
     ])
+    .limitBy(1000)
 }
 
 export const buildFilesQuery = (deviceId: string): QueryDefinition => {
@@ -39,6 +40,7 @@ export const buildFilesQuery = (deviceId: string): QueryDefinition => {
       'updated_at',
       'md5sum'
     ])
+    .limitBy(1000)
 }
 
 export const buildFileQuery = (id: string): QueryDefinition => {
