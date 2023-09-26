@@ -42,6 +42,7 @@ import { sendProgressToWebview } from '/app/domain/backup/services/manageProgres
 import { BackupInfo, ProgressCallback } from '/app/domain/backup/models'
 import { changeLanguage } from '/locales/i18n'
 import {
+  stopTrackingAndClearData,
   getGeolocationTrackingId,
   setGeolocationTrackingId,
   setGeolocationTracking,
@@ -61,6 +62,8 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   await deleteKeychain()
   await clearCookies()
   await clearData()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  await stopTrackingAndClearData()
   RootNavigation.reset(routes.welcome, { screen: 'welcome' })
   return Promise.resolve(null)
 }
