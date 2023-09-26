@@ -42,6 +42,7 @@ import { sendProgressToWebview } from '/app/domain/backup/services/manageProgres
 import { BackupInfo, ProgressCallback } from '/app/domain/backup/models'
 import { changeLanguage } from '/locales/i18n'
 import {
+  getGeolocationTrackingStatus,
   stopTrackingAndClearData,
   getGeolocationTrackingId,
   setGeolocationTrackingId,
@@ -158,6 +159,7 @@ interface CustomMethods {
   checkBackupPermissions: typeof checkBackupPermissions
   requestBackupPermissions: typeof requestBackupPermissions
   setLang: typeof setLang
+  getGeolocationTrackingStatus: typeof getGeolocationTrackingStatus
   setGeolocationTracking: typeof setGeolocationTracking
   sendGeolocationTrackingLogs: typeof sendGeolocationTrackingLogs
   getGeolocationTrackingId: typeof getGeolocationTrackingId
@@ -245,6 +247,7 @@ export const localMethods = (
     checkBackupPermissions,
     requestBackupPermissions,
     setLang,
+    getGeolocationTrackingStatus,
     setGeolocationTracking,
     getGeolocationTrackingId,
     setGeolocationTrackingId,
