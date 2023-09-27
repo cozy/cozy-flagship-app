@@ -255,6 +255,10 @@ const getUploadUrl = (
   const createdAt = new Date(media.creationDate).toISOString()
   const modifiedAt = new Date(media.modificationDate).toISOString()
 
+  console.log(`🔮 Uploading ${media.name} with
+    creationDate ${media.creationDate} saved as ${createdAt}
+    modificationDate ${media.modificationDate} saved as ${modifiedAt}`)
+
   const toURL = new URL(client.getStackClient().uri)
   toURL.pathname = `/files/${backupFolderId}`
   toURL.searchParams.append('Name', media.name)

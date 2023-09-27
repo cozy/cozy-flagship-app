@@ -241,6 +241,20 @@ export const createRemoteBackupFolder = async (
 const isFileCorrespondingToMedia = (file: File, media: Media): boolean => {
   const creationDate = new Date(file.created_at)
   creationDate.setMilliseconds(0)
+  if (file.name === media.name) {
+    console.log(
+      `🔮 name : ${file.name} VS ${media.name} => ${
+        file.name === media.name ? '✅' : '❌'
+      }
+      🔮 creationDate : ${creationDate.getTime()} VS ${media.creationDate} => ${
+        creationDate.getTime() === media.creationDate ? '✅' : '❌'
+      }
+    `
+    )
+
+    console.log(file)
+    console.log(media)
+  }
 
   return (
     file.name === media.name && creationDate.getTime() === media.creationDate
@@ -251,10 +265,16 @@ const formatBackupedMedia = (
   allMedias: Media[],
   file: File
 ): BackupedMedia | undefined => {
+  console.log('🔮 Trying to find local ' + file.name)
+
   const correspondingMedia = allMedias.find(media =>
     isFileCorrespondingToMedia(file, media)
   )
-
+  if (correspondingMedia) {
+    console.log('✅✅✅✅✅✅✅')
+  } else {
+    console.log('❌❌❌❌❌❌❌')
+  }
   if (!correspondingMedia) return undefined
 
   return {

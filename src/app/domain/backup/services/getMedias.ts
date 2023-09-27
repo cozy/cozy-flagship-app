@@ -218,11 +218,17 @@ export const getMediasToBackup = async (
 ): Promise<Media[]> => {
   const allMedias = await getAllMedias(client, onProgress)
 
+  console.log("🔮 allMedias")
+  console.log(JSON.stringify(allMedias))
+
   const backupConfig = await getLocalBackupConfig(client)
 
   const mediasToBackup = allMedias.filter(
     allMedia => !isMediaAlreadyBackuped(allMedia, backupConfig.backupedMedias)
   )
+
+  console.log("🔮 mediasToBackup")
+  console.log(JSON.stringify(mediasToBackup))
 
   return mediasToBackup
 }
