@@ -108,10 +108,21 @@ export const setMediaAsBackuped = async (
 ): Promise<void> => {
   const localBackupConfig = await getLocalBackupConfig(client)
 
+  console.log(`🔮 Setting ${media.name} as backuped with
+  creationDate ${media.creationDate} and server ${documentCreated.attributes.created_at}
+  modificationDate ${media.modificationDate} and server ${documentCreated.attributes.updated_at}`)
+
+  console.log(documentCreated)
+
   // add media to backuped medias
   const backupedMedia = localBackupConfig.backupedMedias.find(backupedMedia =>
     isSameMedia(backupedMedia, media)
   )
+
+  if (backupedMedia) {
+    console.log(`🔮 ${media.name} est déjà considéré comme backup`)
+    console.log(backupedMedia)
+  }
 
   if (!backupedMedia) {
     const newBackupedMedia: BackupedMedia = {
@@ -119,7 +130,7 @@ export const setMediaAsBackuped = async (
       uri: media.uri,
       creationDate: media.creationDate,
       modificationDate: media.modificationDate,
-      remoteId: documentCreated.id as string,
+      remoteId: documentCreated.id!,
       md5: documentCreated.attributes.md5sum
     }
 
