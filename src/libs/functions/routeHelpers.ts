@@ -64,7 +64,7 @@ export const useInitialParam = <T>(
 
       if (handledInitialParams) {
         if (value) {
-          log.warn(
+          log.debug(
             `🚨 useInitialParam detected new value for already consumed ${paramName} param, this should not happens, please verify your Router initialization`
           )
         }
