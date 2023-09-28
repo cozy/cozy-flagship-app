@@ -1,4 +1,4 @@
-# 1.1.14
+# 1.1.15
 
 ## ✨ Features
 
@@ -8,6 +8,28 @@
 
 ## 🔧 Tech
 
+
+# 1.1.14
+
+## ✨ Features
+
+* Implement email login for OIDC accounts ([PR #949](https://github.com/cozy/cozy-react-native/pull/949))
+* Add login authorization check based on the total connected devices for the account ([PR #900](https://github.com/cozy/cozy-react-native/pull/900), [PR #955](https://github.com/cozy/cozy-react-native/pull/955), [PR #954](https://github.com/cozy/cozy-react-native/pull/954) and [PR #954](https://github.com/cozy/cozy-react-native/pull/954))
+
+## 🐛 Bug Fixes
+
+* Fix a bug that can make the app to freeze when running some Client Side Connectors ([PR #932](https://github.com/cozy/cozy-react-native/pull/932))
+* Fix a bug that could prevent the SplashScreen to be hiden on app start ([PR #931](https://github.com/cozy/cozy-react-native/pull/931))
+* Fix some bugs related to Backup feature ([PR #942](https://github.com/cozy/cozy-react-native/pull/942))
+* Fix how file names conflicts are handled in the Backup feature ([PR #950](https://github.com/cozy/cozy-react-native/pull/950))
+* Fix a crash that could occurs when resuming the app after a long period of inactivity ([PR #946](https://github.com/cozy/cozy-react-native/pull/946))
+
+## 🔧 Tech
+
+* Add white label mechanism to customize the application ([PR #926](https://github.com/cozy/cozy-react-native/pull/926), [PR #929](https://github.com/cozy/cozy-react-native/pull/929), [PR #933](https://github.com/cozy/cozy-react-native/pull/933), [PR #930](https://github.com/cozy/cozy-react-native/pull/930), [PR #940](https://github.com/cozy/cozy-react-native/pull/940), [PR #936](https://github.com/cozy/cozy-react-native/pull/936), [PR #937](https://github.com/cozy/cozy-react-native/pull/937), [PR #941](https://github.com/cozy/cozy-react-native/pull/941), [PR #939](https://github.com/cozy/cozy-react-native/pull/939), [PR #943](https://github.com/cozy/cozy-react-native/pull/943), [PR #945](https://github.com/cozy/cozy-react-native/pull/945), [PR #948](https://github.com/cozy/cozy-react-native/pull/948), [PR #947](https://github.com/cozy/cozy-react-native/pull/947), [PR #953](https://github.com/cozy/cozy-react-native/pull/953), [PR #944](https://github.com/cozy/cozy-react-native/pull/944) and [PR #957](https://github.com/cozy/cozy-react-native/pull/957))
+* Add installation instructions for developpers using M1/M2 macs ([PR #926](https://github.com/cozy/cozy-react-native/pull/926))
+* Add foundations for file deduplication in the Backup feature ([PR #951](https://github.com/cozy/cozy-react-native/pull/951))
+* Change log level for `checkInitialParam` console alert ([PR #958](https://github.com/cozy/cozy-react-native/pull/958))
 
 # 1.1.13
 
