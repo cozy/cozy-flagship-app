@@ -123,6 +123,7 @@
         android:name="com.google.firebase.messaging.default_notification_color"
         android:resource="@color/black"
         tools:replace="android:resource" />
+      <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="${reactNativeBackgroundGeolocationKey}" />
     </application>
 
 </manifest>
