@@ -14468,6 +14468,11 @@ react-native-mask-input@1.2.1:
   resolved "https://registry.yarnpkg.com/react-native-mask-input/-/react-native-mask-input-1.2.1.tgz#2f01683844ded3693d0d845bd1beeb2b8367f2e2"
   integrity sha512-OsVKhdJjljWIt373CPmsyTAjynlMpQKPkz3UQJ0Y48ZTVQa8zyejb9nmwoe15Zvi0uC49RxggDRACgkUxOjt3w==
 
+react-native-mlkit-ocr@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-mlkit-ocr/-/react-native-mlkit-ocr-0.3.0.tgz#b5b65dbe1fffdca0ca2012b1cab56cca6ea1bf58"
+  integrity sha512-8oNJwNMGsUup41nWlKA01iW6xiNkCcXM3ANDsOKKijvsrd3eWNs7kL0Yhpt3Cq64zSyjoeqkdTdOCDiI6Pv6KA==
+
 react-native-permissions@^3.8.4:
   version "3.8.4"
   resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-3.8.4.tgz#20f203f1dd659c28fb770fc26bbbf0126faa797e"
