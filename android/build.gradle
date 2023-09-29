@@ -10,6 +10,7 @@ buildscript {
         androidXBrowser = "1.4.0"
         DocumentScanner_compileSdkVersion = 33
         DocumentScanner_targetSdkVersion = 33
+        kotlinVersion="1.6.0"
     }
     repositories {
         google()
