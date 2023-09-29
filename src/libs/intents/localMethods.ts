@@ -9,6 +9,7 @@ import {
   scanDocument,
   isScannerAvailable
 } from '/app/domain/scanner/services/scanner'
+import { processOcr, isOcrAvailable } from '/app/domain/ocr/services/ocr'
 
 import { setHomeThemeIntent } from './setHomeThemeIntent'
 
@@ -209,6 +210,8 @@ export const localMethods = (
     isNativePassInstalledOnDevice,
     scanDocument,
     isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
+    ocr: processOcr,
+    isOcrAvailable: () => Promise.resolve(isOcrAvailable()),
     // For now setTheme is only used for the home theme
     setTheme: setHomeThemeIntent,
     prepareBackup: () => prepareBackupWithClient(client),
