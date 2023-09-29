@@ -838,7 +838,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.cozy.flagship.mobile;
 				PRODUCT_NAME = CozyReactNative;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "amiral-ci-profile";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "amiral-ci-hadoc-profile";
 				SWIFT_OBJC_BRIDGING_HEADER = "CozyReactNative-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1024,7 +1024,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.cozy.flagship.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "amiral-ci-profile";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "amiral-ci-hadoc-profile";
 				SWIFT_OBJC_BRIDGING_HEADER = "CozyReactNative-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
