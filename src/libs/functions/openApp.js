@@ -1,4 +1,5 @@
 import { Alert, Linking, Platform } from 'react-native'
+import { useMemo } from 'react'
 
 import { Q } from 'cozy-client'
 
@@ -216,4 +217,22 @@ export const navigateToApp = ({ navigation, href, slug, iconParams }) => {
       (iconParams && JSON.parse(iconParams)) || getDefaultIconParams(),
     slug
   })
+}
+
+/**
+ * Memoized default icon params as a React hook
+ * It will return the icon params centered on both axis on the screen
+ * @returns {import('/constants/route-types').IconParams}
+ */
+export const useDefaultIconParams = () => {
+  const { screenWidth, screenHeight } = getDimensions()
+
+  return useMemo(() => {
+    return {
+      x: screenWidth * 0.5 - 32 * 0.5,
+      y: screenHeight * 0.5 - 32 * 0.5,
+      width: 32,
+      height: 32
+    }
+  }, [screenWidth, screenHeight])
 }
