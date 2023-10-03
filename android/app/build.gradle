@@ -140,7 +140,7 @@ android {
         namespace = "io.cozy.flagship.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 101140
+        versionCode 101141
         versionName "1.1.14"
         multiDexEnabled true
         resValue "string", "build_config_package", "io.cozy.flagship.mobile"
