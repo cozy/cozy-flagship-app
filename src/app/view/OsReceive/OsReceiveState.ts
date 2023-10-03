@@ -4,8 +4,7 @@ import { OsReceiveLogger } from '/app/domain/osReceive'
 import {
   OsReceiveState,
   OsReceiveAction,
-  OsReceiveActionType,
-  OsReceiveIntentStatus
+  OsReceiveActionType
 } from '/app/domain/osReceive/models/OsReceiveState'
 
 export const OsReceiveStateContext = createContext<OsReceiveState | undefined>(
@@ -22,10 +21,6 @@ export const osReceiveReducer = (
   let nextState = state
 
   switch (action.type) {
-    case OsReceiveActionType.SetIntentStatus:
-      if (state.OsReceiveIntentStatus === action.payload) return state
-      nextState = { ...state, OsReceiveIntentStatus: action.payload }
-      break
     case OsReceiveActionType.SetFilesToUpload:
       if (state.filesToUpload === action.payload) return state
       nextState = { ...state, filesToUpload: action.payload }
@@ -49,10 +44,7 @@ export const osReceiveReducer = (
       break
     }
     case OsReceiveActionType.SetRecoveryState:
-      nextState = {
-        ...initialState,
-        OsReceiveIntentStatus: OsReceiveIntentStatus.NotOpenedViaOsReceive
-      }
+      nextState = initialState
       break
     case OsReceiveActionType.SetInitialState:
       nextState = initialState
@@ -79,7 +71,6 @@ export const osReceiveReducer = (
 }
 
 export const initialState: OsReceiveState = {
-  OsReceiveIntentStatus: OsReceiveIntentStatus.Undetermined,
   filesToUpload: [],
   routeToUpload: {},
   errored: false,

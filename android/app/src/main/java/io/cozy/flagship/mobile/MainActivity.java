@@ -7,8 +7,6 @@ import com.facebook.react.ReactActivity;
 import com.zoontek.rnbootsplash.RNBootSplash;
 import com.rnimmersivebars.ImmersiveBars;
 
-import io.cozy.flagship.mobile.sharing.SharingIntentModule;
-
 public class MainActivity extends ReactActivity {
 
   // Static variable to track if the app was opened via a sharing intent
@@ -29,30 +27,17 @@ public class MainActivity extends ReactActivity {
     ImmersiveBars.changeBarColors(this, isDarkMode);
     super.onCreate(null);
     RNBootSplash.init(R.drawable.bootsplash, MainActivity.this);
-
-    // Check if the app was opened via a sharing intent
-    if (isSharingIntent()) {
-      wasOpenedViaSharing = true;
-    }
   }
 
   @Override
   public void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
     setIntent(intent);
-
-    // Check if the app received a new sharing intent
-    if (isSharingIntent()) {
-      wasOpenedViaSharing = true;
-    }
   }
 
   @Override
   protected void onResume() {
       super.onResume();
-      
-      boolean isSharing = isSharingIntent();
-      SharingIntentModule.notifyAppResumedWithSharing(isSharing);
   }
 
   @Override
@@ -60,13 +45,4 @@ public class MainActivity extends ReactActivity {
       super.onPause();
       MainActivity.wasOpenedViaSharing = false;
   }
-
-
-  // Utility method to check if the current intent is a sharing intent (single or multiple files)
-  private boolean isSharingIntent() {
-    String action = getIntent().getAction();
-    String type = getIntent().getType();
-    return (Intent.ACTION_SEND.equals(action) || Intent.ACTION_SEND_MULTIPLE.equals(action)) && type != null;
-  }
-  
 }

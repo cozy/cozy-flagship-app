@@ -3,14 +3,7 @@ import {
   ReceivedFile
 } from '/app/domain/osReceive/models/ReceivedFile'
 
-export enum OsReceiveIntentStatus {
-  Undetermined = 'undetermined',
-  OpenedViaOsReceive = 'openedViaOsReceive',
-  NotOpenedViaOsReceive = 'notOpenedViaOsReceive'
-}
-
 export enum OsReceiveActionType {
-  SetIntentStatus = 'SET_INTENT_STATUS',
   SetFilesToUpload = 'SET_FILES_TO_UPLOAD',
   SetRouteToUpload = 'SET_ROUTE_TO_UPLOAD',
   SetFlowErrored = 'SET_FLOW_ERRORED',
@@ -21,7 +14,6 @@ export enum OsReceiveActionType {
 }
 
 export interface OsReceiveState {
-  OsReceiveIntentStatus: OsReceiveIntentStatus
   filesToUpload: ReceivedFile[]
   routeToUpload: { href?: string; slug?: string }
   errored: boolean
@@ -30,10 +22,6 @@ export interface OsReceiveState {
 }
 
 export type OsReceiveAction =
-  | {
-      type: OsReceiveActionType.SetIntentStatus
-      payload: OsReceiveIntentStatus
-    }
   | { type: OsReceiveActionType.SetFilesToUpload; payload: ReceivedFile[] }
   | {
       type: OsReceiveActionType.SetRouteToUpload
