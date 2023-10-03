@@ -1,3 +1,14 @@
+# 1.1.16
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+
 # 1.1.15
 
 ## ✨ Features
@@ -5,6 +16,8 @@
 
 ## 🐛 Bug Fixes
 
+* Fix SplashScreen logo for Ma Bulle ([PR #961](https://github.com/cozy/cozy-react-native/pull/961))
+* Set missing translations for Ma Bulle ([PR #962](https://github.com/cozy/cozy-react-native/pull/962))
 
 ## 🔧 Tech
 
