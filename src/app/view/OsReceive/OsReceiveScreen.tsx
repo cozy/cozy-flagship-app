@@ -1,45 +1,54 @@
-import { Container } from '/ui/Container'
-import { Grid } from '/ui/Grid'
+import { useNavigation, useNavigationState } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import React, { useCallback, useEffect } from 'react'
+import { View } from 'react-native'
+
 import { Typography } from '/ui/Typography'
 import { useOsReceiveState } from '/app/view/OsReceive/OsReceiveState'
-
-import { useNavigation } from '@react-navigation/native'
-import { StackNavigationProp } from '@react-navigation/stack'
-
-import { getDefaultIconParams } from '/libs/functions/openApp'
 import { RootStackParamList, Routes } from '/constants/route-types'
+import { routes } from '/constants/routes'
+import { useDefaultIconParams } from '/libs/functions/openApp'
 
-import React, { useEffect } from 'react'
-
-export const OsReceiveScreen = (): JSX.Element => {
+export const OsReceiveScreen = (): JSX.Element | null => {
   const osReceiveState = useOsReceiveState()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
+  const navigationState = useNavigationState(state => state)
+  const iconParams = useDefaultIconParams()
 
-  // Open the cozy-app that will handle the OsReceive intent
+  const navCallback = useCallback(
+    (href: string, slug: string) => {
+      navigation.navigate(Routes.cozyapp, {
+        href,
+        slug,
+        iconParams
+      })
+    },
+    [iconParams, navigation]
+  )
+
   useEffect(() => {
-    if (
-      osReceiveState.routeToUpload.href === undefined ||
-      osReceiveState.routeToUpload.slug === undefined
-    )
-      return
+    const { href, slug } = osReceiveState.routeToUpload
 
-    navigation.goBack()
-    navigation.navigate(Routes.cozyapp, {
-      href: osReceiveState.routeToUpload.href,
-      slug: osReceiveState.routeToUpload.slug,
-      iconParams: getDefaultIconParams()
-    })
-  }, [
-    navigation,
-    osReceiveState.routeToUpload.href,
-    osReceiveState.routeToUpload.slug
-  ])
+    if (href && slug) {
+      window.setTimeout(() => navCallback(href, slug), 1500)
+    }
+  }, [navCallback, osReceiveState.routeToUpload])
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (navigationState?.routes[navigationState.index].name === routes.cozyapp)
+    return null
+
+  if (osReceiveState.filesToUpload.length === 0) return null
 
   return (
-    <Container>
-      <Grid>
-        <Typography>...loading</Typography>
-      </Grid>
-    </Container>
+    <View
+      style={{
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      <Typography>...loading</Typography>
+    </View>
   )
 }

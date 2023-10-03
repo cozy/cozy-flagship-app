@@ -2,7 +2,7 @@
 
 ### Happy Path Scenarios:
 
-#### 1. Single fFile Upload:
+#### 1. Single File Upload:
 - **Objective**: Ensure a user can select a file from their device, use the share feature to select the Cozy App, and successfully upload the file.
 - **Steps**:
   1. Open a file browsing app or gallery on the mobile device.

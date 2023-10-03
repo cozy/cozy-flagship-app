@@ -24,6 +24,8 @@ import {
 import { routes } from '/constants/routes'
 import { AcceptFromFlagshipManifest } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 
+import { OsReceiveScreen } from './OsReceiveScreen'
+
 export const OsReceiveProvider = ({
   children
 }: React.PropsWithChildren): JSX.Element => {
@@ -115,6 +117,8 @@ export const OsReceiveProvider = ({
   return (
     <OsReceiveStateContext.Provider value={state}>
       <OsReceiveDispatchContext.Provider value={dispatch}>
+        <OsReceiveScreen />
+
         {children}
       </OsReceiveDispatchContext.Provider>
     </OsReceiveStateContext.Provider>
