@@ -49,7 +49,7 @@
     "cozy-clisk": "^0.22.3",
     "cozy-device-helper": "^2.7.0",
     "cozy-flags": "^2.11.0",
-    "cozy-intent": "^2.14.0",
+    "cozy-intent": "^2.17.0",
     "cozy-logger": "^1.10.0",
     "cozy-minilog": "3.3.0",
     "date-fns": "2.29.3",
