@@ -29,7 +29,6 @@ import { navigateToApp } from '/libs/functions/openApp'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { SecurityNavigationService } from '/app/domain/authorization/services/SecurityNavigationService'
 import { getData, StorageKeys } from '/libs/localStore'
-import { OsReceiveIntentStatus } from '/app/domain/osReceive/models/OsReceiveState'
 
 // Can use mock functions in dev environment
 const fns = getDevModeFunctions(
@@ -80,18 +79,13 @@ export const determineSecurityFlow = async (
     href: string
     slug: string
   },
-  isCallerHandlingSplashscreen?: boolean,
-  osReceiveIntentStatus?: OsReceiveIntentStatus
+  isCallerHandlingSplashscreen?: boolean
 ): Promise<void> => {
-  const openedWithOsReceive =
-    osReceiveIntentStatus === OsReceiveIntentStatus.OpenedViaOsReceive
-  SecurityNavigationService.startListening()
-
   const callbackNav = async (): Promise<void> => {
     try {
       if (navigationObject) {
         await navigateToApp(navigationObject)
-      } else navigate(openedWithOsReceive ? routes.osReceive : routes.home)
+      } else navigate(routes.home)
     } catch (error) {
       devlog('🔏', 'Error navigating to app, defaulting to home', error)
       navigate(routes.home)

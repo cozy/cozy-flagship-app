@@ -13,15 +13,13 @@ import {
 } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
 import { synchronizeDevice } from '/app/domain/authentication/services/SynchronizeService'
-import { routes } from '/constants/routes'
 import {
   useOsReceiveDispatch,
   useOsReceiveState
 } from '/app/view/OsReceive/OsReceiveState'
 import {
   OsReceiveAction,
-  OsReceiveActionType,
-  OsReceiveIntentStatus
+  OsReceiveActionType
 } from '/app/domain/osReceive/models/OsReceiveState'
 
 const log = Minilog('useGlobalAppState')
@@ -41,17 +39,8 @@ const handleSleep = (
     .catch(reason => log.error('Failed when going to sleep', reason))
 }
 
-const handleWakeUp = async (
-  client: CozyClient,
-  osReceiveIntentStatus: OsReceiveIntentStatus,
-  onNavigationRequest: (route: string) => void
-): Promise<void> => {
+const handleWakeUp = async (client: CozyClient): Promise<void> => {
   await handleSecurityFlowWakeUp(client)
-
-  if (osReceiveIntentStatus === OsReceiveIntentStatus.OpenedViaOsReceive) {
-    log.info('useGlobalAppState: handleWakeUp, osReceive mode')
-    onNavigationRequest(routes.osReceive)
-  }
 }
 
 const isGoingToSleep = (nextAppState: AppStateStatus): boolean =>
@@ -63,17 +52,14 @@ const isGoingToWakeUp = (nextAppState: AppStateStatus): boolean =>
 const onStateChange = (
   nextAppState: AppStateStatus,
   client: CozyClient,
-  osReceiveIntentStatus: OsReceiveIntentStatus,
-  onNavigationRequest: (route: string) => void,
   osReceiveDispatch: React.Dispatch<OsReceiveAction>
 ): void => {
   if (isGoingToSleep(nextAppState)) handleSleep(osReceiveDispatch)
 
   if (isGoingToWakeUp(nextAppState)) {
-    Promise.all([
-      handleWakeUp(client, osReceiveIntentStatus, onNavigationRequest),
-      synchronizeDevice(client)
-    ]).catch(reason => log.error('Failed when waking up', reason))
+    Promise.all([handleWakeUp(client), synchronizeDevice(client)]).catch(
+      reason => log.error('Failed when waking up', reason)
+    )
   }
 
   appState = nextAppState
@@ -103,17 +89,8 @@ export const useGlobalAppState = ({
   useEffect(() => {
     if (!client) return
 
-    if (
-      osReceiveState.OsReceiveIntentStatus ===
-      OsReceiveIntentStatus.OpenedViaOsReceive
-    ) {
-      void handleWakeUp(
-        client,
-        osReceiveState.OsReceiveIntentStatus,
-        onNavigationRequest
-      )
-    }
-  }, [client, onNavigationRequest, osReceiveState.OsReceiveIntentStatus])
+    void handleWakeUp(client)
+  }, [client, onNavigationRequest])
 
   useEffect(() => {
     let subscription: NativeEventSubscription | undefined
@@ -127,13 +104,7 @@ export const useGlobalAppState = ({
 
       // We never unsubscribe from this event because it will last for the whole app lifecycle
       subscription = AppState.addEventListener('change', e =>
-        onStateChange(
-          e,
-          client,
-          osReceiveState.OsReceiveIntentStatus,
-          onNavigationRequest,
-          osReceiveDispatch
-        )
+        onStateChange(e, client, osReceiveDispatch)
       )
     }
 
@@ -147,30 +118,12 @@ export const useGlobalAppState = ({
     const appStart = async (): Promise<void> => {
       if (await getIsSecurityFlowPassed()) {
         log.info('useGlobalAppState: app start, security flow passed')
-
-        if (
-          osReceiveState.OsReceiveIntentStatus ===
-          OsReceiveIntentStatus.OpenedViaOsReceive
-        ) {
-          log.info('useGlobalAppState: app start, osReceive mode')
-          !osReceiveState.errored && onNavigationRequest(routes.osReceive)
-          // Mark the logic as executed
-          hasExecuted.current = true
-        } else {
-          log.info('useGlobalAppState: app start, not osReceive mode')
-          // Mark the logic as executed
-          hasExecuted.current = true
-        }
       } else {
         log.info('useGlobalAppState: app start, security flow not passed')
       }
     }
 
-    if (
-      !hasExecuted.current &&
-      osReceiveState.OsReceiveIntentStatus !==
-        OsReceiveIntentStatus.Undetermined
-    ) {
+    if (!hasExecuted.current) {
       log.info('useGlobalAppState: app start')
       void appStart()
     }
