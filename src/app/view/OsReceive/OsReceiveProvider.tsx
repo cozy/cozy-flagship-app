@@ -4,13 +4,9 @@ import React, { useReducer, useEffect, useState, useRef } from 'react'
 import { useClient } from 'cozy-client'
 
 import { handleReceivedFiles } from '/app/domain/osReceive/services/OsReceiveData'
-import { handleOsReceive } from '/app/domain/osReceive/services/OsReceiveStatus'
 import { useError } from '/app/view/Error/ErrorProvider'
 import { useI18n } from '/locales/i18n'
-import {
-  OsReceiveIntentStatus,
-  OsReceiveActionType
-} from '/app/domain/osReceive/models/OsReceiveState'
+import { OsReceiveActionType } from '/app/domain/osReceive/models/OsReceiveState'
 import {
   fetchOsReceiveCozyApps,
   getRouteToUpload
@@ -60,14 +56,6 @@ export const OsReceiveProvider = ({
   // This effect is triggered at mount and unmount of the provider,
   // its role is to listen native events and update the state accordingly
   useEffect(() => {
-    // As soon as we can detect that the app was opened with or without files,
-    // we can update the state accordingly so the view can react to it
-    const cleanupOsReceiveIntent = handleOsReceive(
-      (status: OsReceiveIntentStatus) => {
-        dispatch({ type: OsReceiveActionType.SetIntentStatus, payload: status })
-      }
-    )
-
     // Pass a callback to the low level function that handles the received files
     // We will have access to their paths in the provider state afterwards
     const cleanupReceivedFiles = handleReceivedFiles(files => {
@@ -76,7 +64,6 @@ export const OsReceiveProvider = ({
 
     return () => {
       cleanupReceivedFiles()
-      cleanupOsReceiveIntent()
     }
   }, [])
 
