@@ -1,5 +1,23 @@
 {
+  "logout_dialog": {
+    "content": "¿Estás seguro de que quieres desconectar esta aplicación de tu espacio personal?"
+  },
   "screens": {
+    "cozyBlocked": {
+      "title": "Su espacio personal ha sido suspendido"
+    },
+    "cozyNotFound": {
+      "body": "Esta dirección no parece existir. Puede tratarse de un error tipográfico. Para averiguarlo, compruebe la dirección en el correo electrónico que recibió cuando se creó.",
+      "title": "Esta dirección no existe."
+    },
+    "SecureScreen": {
+      "passwordprompt_body": "Como el acceso a tu dispositivo no es seguro, elige una contraseña para asegurar el acceso a tu espacio personal.",
+      "passwordprompt_title": "Asegurar este acceso",
+      "pinprompt_body": "Acceda más rápidamente a su aplicación activando el desbloqueo mediante código PIN"
+    },
+    "login": {
+      "invalidMagicCode": "El enlace a su espacio personal está truncado o ha caducado"
+    },
     "welcome": {
       "body": "Accede a tu Nube Personal ahora, el hogar digital para reunir todos tus datos",
       "buttonLogin": "Ya tengo una Nube Personal",
@@ -9,6 +27,9 @@
   "modals": {
     "IconChangedModal": {
       "description": "El ícono de la aplicación 'Ma Bulle' ha sido modificado."
+    },
+    "ErrorToken": {
+      "body": "Parece que has revocado el acceso a este dispositivo. Para volver a acceder a tus datos, inicia sesión de nuevo. Si esta acción no procede de usted, no dude en ponerse en contacto con nosotros en <linkTag>email</linkTag>."
     }
   },
   "software": {
