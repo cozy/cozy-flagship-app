@@ -28,11 +28,11 @@ export const OsReceiveScreen = (): JSX.Element | null => {
 
   useEffect(() => {
     const { href, slug } = osReceiveState.routeToUpload
+    const hasFilesToUpload = osReceiveState.filesToUpload.length > 0
+    const shouldNavigate = href && slug && hasFilesToUpload
 
-    if (href && slug) {
-      window.setTimeout(() => navCallback(href, slug), 1500)
-    }
-  }, [navCallback, osReceiveState.routeToUpload])
+    if (shouldNavigate) navCallback(href, slug)
+  }, [navCallback, osReceiveState.filesToUpload, osReceiveState.routeToUpload])
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (navigationState?.routes[navigationState.index].name === routes.cozyapp)

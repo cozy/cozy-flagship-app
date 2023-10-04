@@ -19,8 +19,9 @@ import {
 } from '/app/view/OsReceive/OsReceiveState'
 import { routes } from '/constants/routes'
 import { AcceptFromFlagshipManifest } from '/app/domain/osReceive/models/OsReceiveCozyApp'
-
-import { OsReceiveScreen } from './OsReceiveScreen'
+import { OsReceiveScreen } from '/app/view/OsReceive/OsReceiveScreen'
+import { backToHome } from '/libs/intents/localMethods'
+import { OsReceiveLogger } from '/app/domain/osReceive'
 
 export const OsReceiveProvider = ({
   children
@@ -60,6 +61,12 @@ export const OsReceiveProvider = ({
     // We will have access to their paths in the provider state afterwards
     const cleanupReceivedFiles = handleReceivedFiles(files => {
       dispatch({ type: OsReceiveActionType.SetFilesToUpload, payload: files })
+      backToHome().catch(err => {
+        OsReceiveLogger.warn(
+          'Error while going back to home after receiving files from native',
+          err
+        )
+      })
     })
 
     return () => {
