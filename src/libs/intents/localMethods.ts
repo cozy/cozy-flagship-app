@@ -73,7 +73,7 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   return Promise.resolve(null)
 }
 
-const backToHome = (): Promise<null> => {
+export const backToHome = (): Promise<null> => {
   RootNavigation.navigate('home')
   return Promise.resolve(null)
 }
