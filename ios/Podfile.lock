@@ -535,7 +535,7 @@ PODS:
     - RNNotifee/NotifeeCore (= 7.8.0)
   - RNNotifee/NotifeeCore (7.8.0):
     - React-Core
-  - RNPermissions (3.8.4):
+  - RNPermissions (3.9.3):
     - React-Core
   - RNScreens (3.18.2):
     - React-Core
@@ -911,7 +911,7 @@ SPEC CHECKSUMS:
   RNKeychain: 4f63aada75ebafd26f4bc2c670199461eab85d94
   RNLocalize: d4b8af4e442d4bcca54e68fc687a2129b4d71a81
   RNNotifee: f3c01b391dd8e98e67f539f9a35a9cbcd3bae744
-  RNPermissions: 1627a589b34fa7b63b4238f672780a2bba2a8372
+  RNPermissions: 83168e00be08bd043f51fb738256bf761f38952d
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   RNSentry: 85f6525b5fe8d2ada065858026b338605b3c09da
   RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
@@ -919,6 +919,6 @@ SPEC CHECKSUMS:
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: d9c158e23a67a909e3f1d2ee47e09cc9ee29ee8d
+PODFILE CHECKSUM: 4f97908b3d33eb906614ea4b7bd1107a880687a8
 
 COCOAPODS: 1.11.3
