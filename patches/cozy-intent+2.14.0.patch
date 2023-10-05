@@ -1,0 +1,21 @@
+diff --git a/node_modules/cozy-intent/dist/api/services/NativeMessenger.js b/node_modules/cozy-intent/dist/api/services/NativeMessenger.js
+index 9fd21c2..b1f775e 100644
+--- a/node_modules/cozy-intent/dist/api/services/NativeMessenger.js
++++ b/node_modules/cozy-intent/dist/api/services/NativeMessenger.js
+@@ -57,14 +57,14 @@ exports.NativeMessenger = NativeMessenger;
+ var DebugNativeMessenger = function DebugNativeMessenger(messenger) {
+   return {
+     postMessage: function postMessage(message) {
+-      message.action !== 'response' && log('- OUT', message);
++      //message.action !== 'response' && log('- OUT', message);
+       messenger.postMessage(message);
+     },
+     addMessageListener: function addMessageListener(listener) {
+       return messenger.addMessageListener(listener);
+     },
+     onMessage: function onMessage(data) {
+-      log('- IN', data);
++      //log('- IN', data);
+       messenger.onMessage(data);
+     }
+   };
