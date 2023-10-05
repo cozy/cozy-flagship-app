@@ -38,6 +38,10 @@ A brand subfolder should contain up to 3 folders:
 
 In addition to this folder, the `white_label/config.json` file is used to define project specific variables that should be propagated into root project files (ex: variables that should be injected in `Info.plist``)
 
+The following diagram summarises macro-tasks that must be done to configure a brand for the Flagship app
+
+![Macro workflow](../docs/images/white-label.drawio.svg)
+
 ## Android customizations
 
 ### App name and bundle id
