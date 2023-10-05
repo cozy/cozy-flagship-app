@@ -85,7 +85,8 @@ describe('ReactNativeLauncher', () => {
         get,
         statByPath,
         add
-      })
+      }),
+      getInstanceOptions: jest.fn().mockReturnValueOnce({ locale: 'fr' })
     }
     return {
       launcher,
