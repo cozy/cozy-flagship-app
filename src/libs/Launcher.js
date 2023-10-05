@@ -11,7 +11,6 @@ import { saveFiles, saveBills, saveIdentity } from 'cozy-clisk'
 
 import { cleanExistingAccountsForKonnector } from './Launcher.functions'
 import { getInstanceAndFqdnFromClient } from './client'
-import { ensureKonnectorFolder } from './folder'
 import {
   saveCredential,
   getCredential,
@@ -271,9 +270,10 @@ export default class Launcher {
     launcherClient.setAppMetadata({
       sourceAccount: account._id
     })
-    const folder = await ensureKonnectorFolder(client, {
-      konnector,
-      account
+    const folder = await models.konnectorFolder.ensureKonnectorFolder(client, {
+      konnector: { ...konnector, _id: konnector.id }, // _id attribute is missing in konnector object, which causes the reference to the konnector in the destination folder to be null
+      account,
+      lang: client.getInstanceOptions().locale
     })
     if (!trigger) {
       log.debug(
@@ -289,6 +289,25 @@ export default class Launcher {
       trigger = triggerResponse.data
       result.createdTrigger = trigger
       log.debug(`ensureAccountAndTriggerAndJob: created trigger`, trigger)
+    } else if (trigger.message.folder_to_save !== folder._id) {
+      this.log({
+        level: 'debug',
+        namespace: 'Launcher',
+        label: 'ensureAccountTriggerAndLaunch',
+        message: 'Destination folder changed, updating the trigger'
+      })
+
+      const triggerUpdateResponse = await client.save({
+        _type: 'io.cozy.triggers',
+        _id: trigger._id,
+        _rev: trigger._rev,
+        message: {
+          ...trigger.message,
+          folder_to_save: folder._id
+        }
+      })
+      trigger.message.folder_to_save =
+        triggerUpdateResponse.data.message.folder_to_save
     }
 
     // trigger should not be already running (blocked in an upper level)
@@ -446,7 +465,6 @@ export default class Launcher {
     } = this.getStartContext() || {}
     const { sourceAccountIdentifier } = this.getUserData() || {}
 
-    // @ts-ignore
     const folderPath = await this.getFolderPath(trigger.message?.folder_to_save)
 
     const existingFilesIndex = await this.getExistingFilesIndex()

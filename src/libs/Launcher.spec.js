@@ -3,9 +3,15 @@ import { saveFiles } from 'cozy-clisk'
 import Launcher from './Launcher'
 import { saveCredential, getSlugAccountIds } from './keychain'
 
-jest.mock('./folder')
 jest.mock('./keychain')
 jest.mock('cozy-clisk')
+
+const existingMagicFolder = [
+  {
+    path: '/Administratif',
+    created_at: '2023-03-02T14:57:07.661588+01:00'
+  }
+]
 
 describe('Launcher', () => {
   describe('ensureAccountTriggerAndLaunch', () => {
@@ -14,16 +20,42 @@ describe('Launcher', () => {
       const account = {
         _id: 'testaccount'
       }
-      const trigger = { _id: 'testtrigger' }
+      const trigger = {
+        _id: 'testtrigger',
+        _rev: 'testtriggerrev',
+        message: {
+          account: 'testaccountid',
+          konnector: 'testslug',
+          folder_to_save: 'oldfolderid'
+        }
+      }
       const job = { _id: 'testjob' }
-      const client = {}
+      const mockClient = {
+        collection: () => mockClient,
+        findReferencedBy: jest
+          .fn()
+          .mockResolvedValue({ included: existingMagicFolder }),
+        statByPath: jest.fn().mockRejectedValueOnce({ status: 404 }),
+        add: jest.fn(),
+        addReferencesTo: jest.fn(),
+        createDirectoryByPath: jest.fn().mockResolvedValueOnce({
+          data: {
+            _id: 'createdfolderid'
+          }
+        }),
+        getInstanceOptions: jest.fn().mockReturnValueOnce({ locale: 'fr' }),
+        save: jest.fn().mockResolvedValueOnce({
+          data: { message: { folder_to_save: 'newfolderid' } }
+        })
+      }
+
       const konnector = {}
       const launcherClient = {
         setAppMetadata: () => null
       }
       launcher.ensureAccountName = jest.fn().mockResolvedValue(account)
       launcher.setStartContext({
-        client,
+        client: mockClient,
         konnector,
         account,
         trigger,
@@ -33,11 +65,21 @@ describe('Launcher', () => {
       })
 
       await launcher.ensureAccountTriggerAndLaunch()
+      expect(mockClient.save).toHaveBeenCalledWith({
+        _id: 'testtrigger',
+        _rev: 'testtriggerrev',
+        _type: 'io.cozy.triggers',
+        message: {
+          account: 'testaccountid',
+          konnector: 'testslug',
+          folder_to_save: 'createdfolderid'
+        }
+      })
       expect(launcher.getStartContext()).toStrictEqual({
         account,
         trigger,
         job,
-        client,
+        client: mockClient,
         konnector,
         manifest: { name: 'konnector' },
         launcherClient
