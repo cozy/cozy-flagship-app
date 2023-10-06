@@ -209,7 +209,7 @@ class ReactNativeLauncher extends Launcher {
     const { client, job } = this.getStartContext()
 
     if (message) {
-      this.log({ level: 'error', message })
+      this.log({ level: 'error', msg: message })
     }
     await sendKonnectorsLogs(client)
     if (job) {
