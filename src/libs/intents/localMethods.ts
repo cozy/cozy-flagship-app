@@ -50,6 +50,10 @@ import {
   sendGeolocationTrackingLogs,
   forceUploadGeolocationTrackingData
 } from '/app/domain/geolocation/services/tracking'
+import {
+  checkPermissions,
+  requestPermissions
+} from '/app/domain/nativePermissions'
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {
@@ -156,6 +160,8 @@ interface CustomMethods {
   prepareBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
   startBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
   stopBackup: () => Promise<BackupInfo>
+  checkPermissions: typeof checkPermissions
+  requestPermissions: typeof requestPermissions
   checkBackupPermissions: typeof checkBackupPermissions
   requestBackupPermissions: typeof requestBackupPermissions
   setLang: typeof setLang
@@ -244,6 +250,8 @@ export const localMethods = (
     prepareBackup: () => prepareBackupWithClient(client),
     startBackup: () => startBackupWithClient(client),
     stopBackup: () => stopBackupWithClient(client),
+    checkPermissions,
+    requestPermissions,
     checkBackupPermissions,
     requestBackupPermissions,
     setLang,

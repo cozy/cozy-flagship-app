@@ -15,7 +15,8 @@
     "contactUs": "Un problème, une suggestion ? Contactez-nous à",
     "unknown_error": "Une erreur inattendue s'est produite, veuillez ré-essayer.",
     "reset": "Revenir à l'accueil",
-    "showDetails": "Voir les détails de l'erreur"
+    "showDetails": "Voir les détails de l'erreur",
+    "platformNotSupported": "Plateforme non supportée pour cette demande"
   },
   "logout_dialog": {
     "cancel": "Annuler",

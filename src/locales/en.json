@@ -14,7 +14,8 @@
     "badUnlockPin": "The PIN you entered is incorrect, please try again",
     "contactUs": "A problem, a suggestion? Contact us at",
     "unknown_error": "An unexpected error occurred, please try again.",
-    "reset": "Return to home"
+    "reset": "Return to home",
+    "platformNotSupported": "Platform not supported for this request"
   },
   "logout_dialog": {
     "cancel": "Cancel",
