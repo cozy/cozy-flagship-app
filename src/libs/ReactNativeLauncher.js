@@ -1,7 +1,9 @@
+// @ts-check
 import Minilog from 'cozy-minilog'
 
 import CookieManager from '@react-native-cookies/cookies'
 import debounce from 'lodash/debounce'
+// @ts-ignore no type declaration for microee
 import MicroEE from 'microee'
 import semverCompare from 'semver/functions/compare'
 
@@ -15,6 +17,7 @@ import { saveCookie, getCookie, removeCookie } from './keychain'
 import { updateCozyAppBundle } from '/libs/cozyAppBundle/cozyAppBundle'
 import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 
+// @ts-ignore "cozy-clisk has no exported member wrapTimerFactory" but it does
 import { wrapTimerFactory } from 'cozy-clisk'
 
 import {
@@ -31,6 +34,7 @@ export const ERRORS = {
     'ReactNativeLauncher.setWorkerState took more than 30000 ms'
 }
 
+// @ts-ignore
 Minilog.enable()
 
 function LauncherEvent() {}
@@ -39,6 +43,7 @@ MicroEE.mixin(LauncherEvent)
 
 const MIN_CLISK_SUPPORTED_VERSION = '0.10.0'
 
+// @ts-ignore
 export const launcherEvent = new LauncherEvent()
 
 /**
@@ -58,7 +63,13 @@ class ReactNativeLauncher extends Launcher {
     this.controller = new AbortController()
 
     const wrapTimer = wrapTimerFactory({
-      logFn: msg => this.log({ level: 'info', msg })
+      logFn: (/** @type {String} */ msg) =>
+        this.log({
+          namespace: 'ReactNativeLauncher',
+          label: 'Timer',
+          level: 'info',
+          msg
+        })
     })
 
     this.getExistingFilesIndex = wrapTimer(this, 'getExistingFilesIndex')
@@ -72,7 +83,7 @@ class ReactNativeLauncher extends Launcher {
     )
     this.restartWorkerConnection = wrapTimer(this, 'restartWorkerConnection')
     this.waitForWorkerEvent = wrapTimer(this, 'waitForWorkerEvent', {
-      suffixFn: args => args?.[0]
+      suffixFn: (/** @type {String[]} */ args) => args?.[0]
     })
     this.waitForWorkerVisible = wrapTimer(this, 'waitForWorkerVisible')
     this.ensureAccountName = wrapTimer(this, 'ensureAccountName')
@@ -80,6 +91,7 @@ class ReactNativeLauncher extends Launcher {
       this,
       'ensureAccountTriggerAndLaunch'
     )
+    // @ts-ignore
     this.onWorkerWillReload = debounce(this.onWorkerWillReload.bind(this))
   }
 
@@ -111,15 +123,18 @@ class ReactNativeLauncher extends Launcher {
     if (context.job) {
       jobId = context.job.id
     }
-    this.logger({
-      ...logContent,
-      slug,
-      jobId,
-      level: newLevel,
-      timestamp: timestamp ?? new Date().toISOString()
-    })
+    if (this.logger) {
+      this.logger({
+        ...logContent,
+        slug,
+        jobId,
+        level: newLevel,
+        timestamp: timestamp ?? new Date().toISOString()
+      })
+    }
   }
 
+  // @ts-ignore
   async init({ bridgeOptions, contentScript }) {
     const promises = [
       this.initPilotContentScriptBridge({
@@ -155,6 +170,7 @@ class ReactNativeLauncher extends Launcher {
 
     // we subscribe to this event only once both bridges are initialized or else we will
     // receive this event also for the first worker page load
+    // @ts-ignore
     this.on('NEW_WORKER_INITIALIZING', webviewRef =>
       this.onWorkerWillReload(webviewRef)
     )
@@ -192,7 +208,10 @@ class ReactNativeLauncher extends Launcher {
     } catch (error) {
       throw new Error(
         `Critical error while ensuring "${slug}" konnector is installed.
-        The konnector will not be able to run: ${error.message}`
+        The konnector will not be able to run: ${
+          // @ts-ignore
+          error.message
+        }`
       )
     }
   }
@@ -209,7 +228,12 @@ class ReactNativeLauncher extends Launcher {
     const { client, job } = this.getStartContext()
 
     if (message) {
-      this.log({ level: 'error', message })
+      this.log({
+        namespace: 'ReactNativeLauncher',
+        label: 'Konnector Error Result',
+        level: 'error',
+        msg: message
+      })
     }
     await sendKonnectorsLogs(client)
     if (job) {
@@ -404,7 +428,11 @@ class ReactNativeLauncher extends Launcher {
    * @param {*} obj
    */
   async sendToPilot(obj) {
-    await this.pilot.call('storeFromWorker', obj)
+    if (this.pilot) {
+      await this.pilot.call('storeFromWorker', obj)
+    } else {
+      throw new Error('ReactNativeLauncher.sendToPilot: no pilot available')
+    }
   }
 
   /**
@@ -665,3 +693,12 @@ class ReactNativeLauncher extends Launcher {
 
 MicroEE.mixin(ReactNativeLauncher)
 export default ReactNativeLauncher
+
+/**
+ * @typedef ContentScriptLogMessage
+ * @property {'debug'|'info'|'warning'|'error'|'critical'} level - Log level
+ * @property {string} msg             - message content
+ * @property {string | null} label     - user defined label
+ * @property {string | null} namespace - user defined namespace
+ * @property {String} [timestamp] - DateTime iso string when the log message was created
+ */
