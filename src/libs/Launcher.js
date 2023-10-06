@@ -357,15 +357,6 @@ export default class Launcher {
   }
 
   /**
-   * Get content script logs. This function is called by the content script via the bridge
-   *
-   * @param  {ContentScriptLogMessage} message - log message
-   */
-  log(message) {
-    Minilog('ContentScript').info(message)
-  }
-
-  /**
    * Calls cozy-konnector-libs' saveIdentifier function
    *
    * @param {Object} contact - contact object
@@ -542,14 +533,6 @@ export default class Launcher {
     }
   }
 }
-
-/**
- * @typedef ContentScriptLogMessage
- * @property {'debug'|'info'|'warning'|'error'|'critical'} level - Log level
- * @property {any} message             - message content
- * @property {string | null} label     - user defined label
- * @property {string | null} namespace - user defined namespace
- */
 
 /**
  * @typedef LauncherStartContext
