@@ -299,7 +299,7 @@ class ReactNativeLauncher extends Launcher {
       await this.pilot.call('fetch', pilotContext)
       await this.stop()
     } catch (err) {
-      log.error(err, 'start error')
+      log.error(JSON.stringify(err), 'start error')
       await this.stop({ message: err.message })
     }
     this.emit('KONNECTOR_EXECUTION_END')
