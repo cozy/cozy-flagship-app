@@ -8012,10 +8012,10 @@ cozy-logger@^1.10.0:
     chalk "^2.4.2"
     json-stringify-safe "5.0.1"
 
-cozy-minilog@3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/cozy-minilog/-/cozy-minilog-3.3.0.tgz#6e6d0ab49b72f5a8f7cb88cb2709ead1109a254e"
-  integrity sha512-tasP3kEDuPLGyyUSthGpcQxV71I7tJBGeN7BSUOWPYT/+Hh2YoLgL+pfFVLe4wVXrk3wsvzFWXLtJ0HFe1n1pA==
+cozy-minilog@3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/cozy-minilog/-/cozy-minilog-3.3.1.tgz#472dccf4a9391c479120a83d26b435cf9d609c72"
+  integrity sha512-NLQNQ1Q/bvJrqNv9w5bLjfAxYKv+pESobJgUKXondxP616kx7k0mpiRrCZBaJRbEbpKryT/eJ0JJwLdVaIP5NA==
   dependencies:
     microee "0.0.6"
 
