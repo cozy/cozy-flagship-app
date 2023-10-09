@@ -78,6 +78,14 @@ const backToHome = (): Promise<null> => {
   return Promise.resolve(null)
 }
 
+const isAvailable = (featureName: string): Promise<boolean> => {
+  if (featureName === 'geolocationTracking') {
+    return Promise.resolve(true)
+  }
+
+  return Promise.resolve(false)
+}
+
 /**
  * Get the fetchSessionCode function to be called with current CozyClient instance
  * fetchSessionCode gets a session code from the current cozy-client instance
@@ -172,6 +180,7 @@ interface CustomMethods {
   setGeolocationTrackingId: typeof setGeolocationTrackingId
   forceUploadGeolocationTrackingData: typeof forceUploadGeolocationTrackingData
   getDeviceInfo: typeof getDeviceInfo
+  isAvailable: typeof isAvailable
 }
 
 const prepareBackupWithClient = (
@@ -261,6 +270,7 @@ export const localMethods = (
     setGeolocationTrackingId,
     sendGeolocationTrackingLogs,
     forceUploadGeolocationTrackingData,
-    getDeviceInfo
+    getDeviceInfo,
+    isAvailable
   }
 }
