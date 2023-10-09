@@ -1,39 +1,47 @@
-import {
-  ConfirmedFile,
-  ReceivedFile
-} from '/app/domain/osReceive/models/ReceivedFile'
+import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
 
 export enum OsReceiveActionType {
   SetFilesToUpload = 'SET_FILES_TO_UPLOAD',
   SetRouteToUpload = 'SET_ROUTE_TO_UPLOAD',
   SetFlowErrored = 'SET_FLOW_ERRORED',
   SetRecoveryState = 'SET_RECOVERY_STATE',
-  SetFileUploaded = 'SET_FILE_UPLOADED',
   SetInitialState = 'SET_INITIAL_STATE',
-  SetFileUploadFailed = 'SET_FILE_UPLOAD_FAILED'
+  UpdateFileStatus = 'UPDATE_FILE_STATUS'
+}
+
+export enum OsReceiveFileStatus {
+  toUpload,
+  uploading,
+  uploaded,
+  error,
+  queued
+}
+
+export interface OsReceiveFile {
+  name: string
+  file: ReceivedFile
+  status: OsReceiveFileStatus
+  handledTimestamp?: number // Unix timestamp representing when the file was handled
 }
 
 export interface OsReceiveState {
-  filesToUpload: ReceivedFile[]
+  filesToUpload: OsReceiveFile[]
   routeToUpload: { href?: string; slug?: string }
   errored: boolean
-  fileUploaded: ReceivedFile | null
-  fileFailed: ReceivedFile | null
 }
 
 export type OsReceiveAction =
-  | { type: OsReceiveActionType.SetFilesToUpload; payload: ReceivedFile[] }
+  | { type: OsReceiveActionType.SetFilesToUpload; payload: OsReceiveFile[] }
   | {
       type: OsReceiveActionType.SetRouteToUpload
       payload: { href: string; slug: string }
     }
   | { type: OsReceiveActionType.SetFlowErrored; payload: boolean }
   | { type: OsReceiveActionType.SetRecoveryState }
-  | { type: OsReceiveActionType.SetFileUploaded; payload: ConfirmedFile | null }
   | { type: OsReceiveActionType.SetInitialState }
   | {
-      type: OsReceiveActionType.SetFileUploadFailed
-      payload: ConfirmedFile | null
+      type: OsReceiveActionType.UpdateFileStatus
+      payload: Omit<OsReceiveFile, 'file'>
     }
 
 export interface ServiceResponse<T> {
@@ -42,9 +50,9 @@ export interface ServiceResponse<T> {
 }
 
 export interface OsReceiveApiMethods {
-  getFilesToUpload: () => Promise<ReceivedFile[]>
+  getFilesToUpload: () => Promise<OsReceiveFile[]>
   hasFilesToHandle: () => Promise<UploadStatus>
-  uploadFiles: (arg: string) => Promise<boolean>
+  uploadFiles: (arg: string) => Promise<void>
   resetFilesToHandle: () => Promise<boolean>
 }
 

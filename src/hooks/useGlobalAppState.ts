@@ -13,27 +13,16 @@ import {
 } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
 import { synchronizeDevice } from '/app/domain/authentication/services/SynchronizeService'
-import {
-  useOsReceiveDispatch,
-  useOsReceiveState
-} from '/app/view/OsReceive/OsReceiveState'
-import {
-  OsReceiveAction,
-  OsReceiveActionType
-} from '/app/domain/osReceive/models/OsReceiveState'
 
 const log = Minilog('useGlobalAppState')
 
 // Runtime variables
 let appState: AppStateStatus = AppState.currentState
 
-const handleSleep = (
-  osReceiveDispatch?: React.Dispatch<OsReceiveAction>
-): void => {
+const handleSleep = (): void => {
   showSplashScreen()
     .then(async () => {
       setIsSecurityFlowPassed(false)
-      osReceiveDispatch?.({ type: OsReceiveActionType.SetInitialState })
       return await storeData(StorageKeys.LastActivity, Date.now().toString())
     })
     .catch(reason => log.error('Failed when going to sleep', reason))
@@ -51,10 +40,9 @@ const isGoingToWakeUp = (nextAppState: AppStateStatus): boolean =>
 
 const onStateChange = (
   nextAppState: AppStateStatus,
-  client: CozyClient,
-  osReceiveDispatch: React.Dispatch<OsReceiveAction>
+  client: CozyClient
 ): void => {
-  if (isGoingToSleep(nextAppState)) handleSleep(osReceiveDispatch)
+  if (isGoingToSleep(nextAppState)) handleSleep()
 
   if (isGoingToWakeUp(nextAppState)) {
     Promise.all([handleWakeUp(client), synchronizeDevice(client)]).catch(
@@ -83,8 +71,6 @@ export const useGlobalAppState = ({
   // Ref to track if the logic has already been executed
   const hasExecuted = useRef(false)
   const client = useClient()
-  const osReceiveState = useOsReceiveState()
-  const osReceiveDispatch = useOsReceiveDispatch()
 
   useEffect(() => {
     if (!client) return
@@ -104,14 +90,14 @@ export const useGlobalAppState = ({
 
       // We never unsubscribe from this event because it will last for the whole app lifecycle
       subscription = AppState.addEventListener('change', e =>
-        onStateChange(e, client, osReceiveDispatch)
+        onStateChange(e, client)
       )
     }
 
     return () => {
       appState = AppState.currentState
     }
-  }, [client, onNavigationRequest, osReceiveDispatch, osReceiveState])
+  }, [client, onNavigationRequest])
 
   // On app start
   useEffect(() => {
@@ -127,5 +113,5 @@ export const useGlobalAppState = ({
       log.info('useGlobalAppState: app start')
       void appStart()
     }
-  }, [onNavigationRequest, osReceiveState])
+  }, [onNavigationRequest])
 }

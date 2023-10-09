@@ -1,5 +1,7 @@
 import OsReceiveIntent from '@mythologi/react-native-receive-sharing-intent'
 
+import { OsReceiveFile, OsReceiveFileStatus } from '../models/OsReceiveState'
+
 import { OsReceiveLogger } from '/app/domain/osReceive'
 import {
   ReceivedFile,
@@ -33,13 +35,17 @@ const processReceivedFiles = (
 
 const mapFilesToUploadToArray = (
   filesMap: Map<string, ReceivedFile>
-): ReceivedFile[] => {
-  return Array.from(filesMap.values())
+): OsReceiveFile[] => {
+  return Array.from(filesMap.values()).map(file => ({
+    name: file.fileName,
+    file,
+    status: OsReceiveFileStatus.toUpload
+  }))
 }
 
 const onReceiveFiles = (
   files: ReceivedFile[],
-  callback?: (files: ReceivedFile[]) => void
+  callback?: (files: OsReceiveFile[]) => void
 ): void => {
   OsReceiveLogger.info('Received files', files)
   const processedFilesMap = processReceivedFiles(files)
@@ -52,7 +58,7 @@ const onFailure = (error: unknown): void => {
   OsReceiveLogger.error('Could not get received files', error)
 }
 
-type FileCallback = (files: ReceivedFile[]) => void
+type FileCallback = (files: OsReceiveFile[]) => void
 type CleanupFunction = () => void
 
 export const handleReceivedFiles = (

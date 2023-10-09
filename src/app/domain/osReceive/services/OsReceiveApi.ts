@@ -1,32 +1,33 @@
 import { Dispatch } from 'react'
+import Toast from 'react-native-toast-message'
 
 import CozyClient from 'cozy-client'
 
 import { OsReceiveLogger } from '/app/domain/osReceive'
 import { uploadFileWithConflictStrategy } from '/app/domain/upload/services/index'
-import {
-  IncomingFile,
-  ReceivedFile
-} from '/app/domain/osReceive/models/ReceivedFile'
+import { IncomingFile } from '/app/domain/osReceive/models/ReceivedFile'
 import {
   OsReceiveState,
   OsReceiveAction,
   OsReceiveActionType,
   OsReceiveApiMethods,
-  UploadStatus
+  UploadStatus,
+  OsReceiveFile,
+  OsReceiveFileStatus
 } from '/app/domain/osReceive/models/OsReceiveState'
+import { t } from '/locales/i18n'
 
 const getUrl = (
   client: CozyClient,
   file: { fileOptions: { dirId: string } },
-  fileToUpload: ReceivedFile
+  fileToUpload: OsReceiveFile
 ): string => {
   const createdAt = new Date().toISOString()
   const modifiedAt = new Date().toISOString()
 
   const toURL = new URL(client.getStackClient().uri)
   toURL.pathname = `/files/${file.fileOptions.dirId}`
-  toURL.searchParams.append('Name', fileToUpload.fileName)
+  toURL.searchParams.append('Name', fileToUpload.name)
   toURL.searchParams.append('Type', 'file')
   toURL.searchParams.append('Tags', 'library')
   toURL.searchParams.append('Executable', 'false')
@@ -38,7 +39,7 @@ const getUrl = (
 
 const getFilesToUpload = async (
   state: OsReceiveState
-): Promise<ReceivedFile[]> => {
+): Promise<OsReceiveFile[]> => {
   OsReceiveLogger.info('getFilesToUpload', state.filesToUpload)
   return Promise.resolve(state.filesToUpload)
 }
@@ -48,20 +49,20 @@ const uploadFiles = async (
   state: OsReceiveState,
   client: CozyClient | null,
   dispatch: Dispatch<OsReceiveAction>
-): Promise<boolean> => {
+): Promise<void> => {
   const file = JSON.parse(arg) as IncomingFile
   const fileToUpload = state.filesToUpload.find(
-    fileToUpload => fileToUpload.fileName === file.fileOptions.name
+    fileToUpload => fileToUpload.name === file.fileOptions.name
   )
 
   if (!fileToUpload) {
-    OsReceiveLogger.error('uploadFiles: fileToUpload is undefined, aborting')
-    return false
+    return OsReceiveLogger.error(
+      'uploadFiles: fileToUpload is undefined, aborting'
+    )
   }
 
   if (!client) {
-    OsReceiveLogger.error('uploadFiles: client is undefined, aborting')
-    return false
+    return OsReceiveLogger.error('uploadFiles: client is undefined, aborting')
   }
 
   OsReceiveLogger.info('starting to uploadFile', { fileToUpload })
@@ -76,27 +77,38 @@ const uploadFiles = async (
     await uploadFileWithConflictStrategy({
       url: getUrl(client, file, fileToUpload),
       token,
-      filename: fileToUpload.fileName,
-      filepath: fileToUpload.filePath,
-      mimetype: fileToUpload.mimeType
+      filename: fileToUpload.name,
+      filepath: fileToUpload.file.filePath,
+      mimetype: fileToUpload.file.mimeType
+    })
+
+    dispatch({
+      type: OsReceiveActionType.UpdateFileStatus,
+      payload: {
+        name: fileToUpload.name,
+        status: OsReceiveFileStatus.uploaded,
+        handledTimestamp: Date.now()
+      }
     })
   } catch (error) {
     OsReceiveLogger.error('uploadFiles: error', error)
 
-    dispatch({
-      type: OsReceiveActionType.SetFileUploadFailed,
-      payload: { ...fileToUpload, ...file.fileOptions }
+    Toast.show({
+      text1: t('services.osReceive.errors.uploadFailed', {
+        filename: fileToUpload.name
+      }),
+      type: 'error'
     })
 
-    return false
+    dispatch({
+      type: OsReceiveActionType.UpdateFileStatus,
+      payload: {
+        name: fileToUpload.name,
+        status: OsReceiveFileStatus.error,
+        handledTimestamp: Date.now()
+      }
+    })
   }
-
-  dispatch({
-    type: OsReceiveActionType.SetFileUploaded,
-    payload: { ...fileToUpload, ...file.fileOptions }
-  })
-
-  return true
 }
 
 const resetFilesToHandle = (
@@ -112,7 +124,11 @@ const hasFilesToHandle = async (
 ): Promise<UploadStatus> => {
   OsReceiveLogger.info('getUploadStatus called')
 
-  const uploadStatus = { filesToHandle: state.filesToUpload }
+  const uploadStatus = {
+    filesToHandle: state.filesToUpload.filter(
+      file => file.status === OsReceiveFileStatus.uploading
+    )
+  }
 
   OsReceiveLogger.info('getUploadStatus', { uploadStatus })
 

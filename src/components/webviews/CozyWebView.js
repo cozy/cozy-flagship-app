@@ -180,7 +180,7 @@ export const CozyWebView = ({
         tryCrypto(m, log, logId, onAnswer)
         tryNavigatorShare(m, log, logId, onAnswer)
         tryConsole(m, log, logId)
-        nativeIntent.tryEmit(m)
+        nativeIntent?.tryEmit(m)
 
         if (parentOnMessage) {
           parentOnMessage(m)
