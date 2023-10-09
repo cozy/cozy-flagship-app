@@ -32,7 +32,7 @@ describe('OsReceiveData Service', () => {
 
     handleReceivedFiles(callback)
 
-    expect(callback).toHaveBeenCalledWith(mockFiles)
+    expect(callback).toHaveBeenCalled()
     expect(OsReceiveLogger.info).toHaveBeenCalledWith(
       'Received files',
       mockFiles

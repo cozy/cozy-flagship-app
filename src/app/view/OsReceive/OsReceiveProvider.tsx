@@ -19,7 +19,6 @@ import {
 } from '/app/view/OsReceive/OsReceiveState'
 import { routes } from '/constants/routes'
 import { AcceptFromFlagshipManifest } from '/app/domain/osReceive/models/OsReceiveCozyApp'
-import { OsReceiveScreen } from '/app/view/OsReceive/OsReceiveScreen'
 import { backToHome } from '/libs/intents/localMethods'
 import { OsReceiveLogger } from '/app/domain/osReceive'
 
@@ -34,25 +33,6 @@ export const OsReceiveProvider = ({
   const navigation = useNavigation()
   const [data, setQuery] = useState<AcceptFromFlagshipManifest[]>([])
   const didCall = useRef(false)
-
-  useEffect(() => {
-    if (!client || didCall.current) return
-
-    const fetchRegistry = async (): Promise<void> => {
-      const res = (await client.fetchQueryAndGetFromState({
-        definition: fetchOsReceiveCozyApps.definition,
-        options: fetchOsReceiveCozyApps.options
-      })) as { data: AcceptFromFlagshipManifest[] }
-
-      if (res.data.length > 0) {
-        didCall.current = true
-        setQuery(res.data)
-      }
-    }
-
-    void fetchRegistry()
-  }),
-    [client]
 
   // This effect is triggered at mount and unmount of the provider,
   // its role is to listen native events and update the state accordingly
@@ -73,6 +53,25 @@ export const OsReceiveProvider = ({
       cleanupReceivedFiles()
     }
   }, [])
+
+  useEffect(() => {
+    if (!client || didCall.current) return
+
+    const fetchRegistry = async (): Promise<void> => {
+      const res = (await client.fetchQueryAndGetFromState({
+        definition: fetchOsReceiveCozyApps.definition,
+        options: fetchOsReceiveCozyApps.options
+      })) as { data: AcceptFromFlagshipManifest[] }
+
+      if (res.data.length > 0) {
+        didCall.current = true
+        setQuery(res.data)
+      }
+    }
+
+    void fetchRegistry()
+  }),
+    [client]
 
   // Fetches the route of the cozy-app that will handle the osReceive intent
   useEffect(() => {
@@ -111,8 +110,6 @@ export const OsReceiveProvider = ({
   return (
     <OsReceiveStateContext.Provider value={state}>
       <OsReceiveDispatchContext.Provider value={dispatch}>
-        <OsReceiveScreen />
-
         {children}
       </OsReceiveDispatchContext.Provider>
     </OsReceiveStateContext.Provider>

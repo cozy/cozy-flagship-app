@@ -22,6 +22,7 @@ import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import { launcherEvent } from '/libs/ReactNativeLauncher'
 import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
+import { OsReceiveScreen } from '/app/view/OsReceive/OsReceiveScreen'
 
 const log = Minilog('🏠 HomeView')
 
@@ -259,27 +260,30 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
   }
 
   return uri && shouldWaitCozyApp !== undefined && !shouldWaitCozyApp ? (
-    <CozyProxyWebView
-      setParentRef={setParentRef}
-      slug="home"
-      href={uri}
-      trackWebviewInnerUri={handleTrackWebviewInnerUri}
-      navigation={navigation}
-      route={route}
-      logId="HomeView"
-      onMessage={async event => {
-        const data = get(event, 'nativeEvent.data')
+    <>
+      <CozyProxyWebView
+        setParentRef={setParentRef}
+        slug="home"
+        href={uri}
+        trackWebviewInnerUri={handleTrackWebviewInnerUri}
+        navigation={navigation}
+        route={route}
+        logId="HomeView"
+        onMessage={async event => {
+          const data = get(event, 'nativeEvent.data')
 
-        if (data) {
-          const { methodName, message, value } = JSON.parse(data)
+          if (data) {
+            const { methodName, message, value } = JSON.parse(data)
 
-          if (methodName === 'openApp') nativeIntent?.call(uri, 'openApp')
+            if (methodName === 'openApp') nativeIntent?.call(uri, 'openApp')
 
-          if (message === 'startLauncher')
-            setLauncherContext({ state: 'launch', value })
-        }
-      }}
-    />
+            if (message === 'startLauncher')
+              setLauncherContext({ state: 'launch', value })
+          }
+        }}
+      />
+      <OsReceiveScreen />
+    </>
   ) : null
 }
 
