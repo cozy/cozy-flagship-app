@@ -6,6 +6,7 @@ import mockBackHandler from 'react-native/Libraries/Utilities/__mocks__/BackHand
 import mockRNDeviceInfo from 'react-native-device-info/jest/react-native-device-info-mock'
 import mockRNPermissions from 'react-native-permissions/mock'
 
+import { mockRNBackgroundGeolocation } from '../__mocks__/react-native-background-geolocation-mock'
 import { mockRNFS } from '../__mocks__/react-native-fs-mock'
 
 jest.mock('react-native-device-info', () => mockRNDeviceInfo)
@@ -100,3 +101,8 @@ jest.mock('../src/locales/i18n', () => {
 
 jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper')
 jest.mock('@notifee/react-native', () => mockNotifee)
+
+jest.mock(
+  'react-native-background-geolocation',
+  () => mockRNBackgroundGeolocation
+)
