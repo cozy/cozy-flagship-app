@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { NavigationContainer } from '@react-navigation/native'
 import { decode, encode } from 'base-64'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -92,16 +92,13 @@ const InnerNav = ({ client, setClient }) => {
   const osReceiveState = useOsReceiveState()
   const osReceiveDispatch = useOsReceiveDispatch()
 
-  const localMethodsMemoized = useMemo(() => {
-    if (!client) return null
-    return localMethods(
-      client,
-      OsReceiveApi(client, osReceiveState, osReceiveDispatch)
-    )
-  }, [client, osReceiveDispatch, osReceiveState])
-
   return (
-    <NativeIntentProvider localMethods={localMethodsMemoized}>
+    <NativeIntentProvider
+      localMethods={localMethods(
+        client,
+        OsReceiveApi(client, osReceiveState, osReceiveDispatch)
+      )}
+    >
       <View
         style={[
           styles.view,

@@ -4,7 +4,9 @@ import { OsReceiveLogger } from '/app/domain/osReceive'
 import {
   OsReceiveState,
   OsReceiveAction,
-  OsReceiveActionType
+  OsReceiveActionType,
+  OsReceiveFile,
+  OsReceiveFileStatus
 } from '/app/domain/osReceive/models/OsReceiveState'
 
 export const OsReceiveStateContext = createContext<OsReceiveState | undefined>(
@@ -33,29 +35,27 @@ export const osReceiveReducer = (
       nextState = { ...state, errored: action.payload }
       break
     }
-    case OsReceiveActionType.SetFileUploaded: {
-      nextState = {
-        ...state,
-        filesToUpload: state.filesToUpload.filter(
-          file => file.filePath !== action.payload?.filePath
-        ),
-        fileUploaded: action.payload
-      }
-      break
-    }
     case OsReceiveActionType.SetRecoveryState:
       nextState = initialState
       break
     case OsReceiveActionType.SetInitialState:
       nextState = initialState
       break
-    case OsReceiveActionType.SetFileUploadFailed: {
+    case OsReceiveActionType.UpdateFileStatus: {
+      const updateFile = (file: OsReceiveFile): OsReceiveFile => ({
+        ...file,
+        status: action.payload.status,
+        handledTimestamp: action.payload.handledTimestamp
+      })
+
+      const shouldUpdateFile = (file: OsReceiveFile): boolean =>
+        file.name === action.payload.name || action.payload.name === '*'
+
       nextState = {
         ...state,
-        filesToUpload: state.filesToUpload.filter(
-          file => file.filePath !== action.payload?.filePath
-        ),
-        fileFailed: action.payload
+        filesToUpload: state.filesToUpload.map(file =>
+          shouldUpdateFile(file) ? updateFile(file) : file
+        )
       }
       break
     }
@@ -63,8 +63,11 @@ export const osReceiveReducer = (
       break
   }
 
-  OsReceiveLogger.info(`osReceiveReducer handled action "${action.type}"`)
+  OsReceiveLogger.info(
+    `osReceiveReducer handled action ${JSON.stringify(action)}}`
+  )
   OsReceiveLogger.info('osReceiveReducer prevState', state)
+
   OsReceiveLogger.info('osReceiveReducer nextState', nextState)
 
   return nextState
@@ -73,9 +76,7 @@ export const osReceiveReducer = (
 export const initialState: OsReceiveState = {
   filesToUpload: [],
   routeToUpload: {},
-  errored: false,
-  fileUploaded: null,
-  fileFailed: null
+  errored: false
 }
 
 export const useOsReceiveState = (): OsReceiveState => {
@@ -94,4 +95,12 @@ export const useOsReceiveDispatch = (): Dispatch<OsReceiveAction> => {
     )
   }
   return context
+}
+
+export const useFilesToUpload = (): OsReceiveFile[] => {
+  const state = useOsReceiveState()
+
+  return state.filesToUpload.filter(
+    file => file.status === OsReceiveFileStatus.toUpload
+  )
 }

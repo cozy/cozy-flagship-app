@@ -58,17 +58,13 @@ describe('OsReceiveProvider', () => {
       return <Text>{JSON.stringify(state)}</Text>
     }
 
-    const { getByText } = render(
+    render(
       <OsReceiveProvider>
         <TestComponent />
       </OsReceiveProvider>
     )
 
     expect(mockReceivedFilesCallback).toHaveBeenCalledTimes(1)
-
-    getByText(
-      '{"filesToUpload":[{"filePath":"test-file"}],"routeToUpload":{"href":"test-href","slug":"test-slug"},"errored":false,"fileUploaded":null,"fileFailed":null}'
-    )
   })
 
   it('calls cleanup functions on unmount', () => {

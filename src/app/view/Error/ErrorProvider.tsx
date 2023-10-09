@@ -1,6 +1,5 @@
 import React, { ReactNode, useCallback, useEffect } from 'react'
-
-import { ErrorToaster } from '/app/view/Error/ErrorToaster'
+import Toast from 'react-native-toast-message'
 
 interface ErrorState {
   message: string | null
@@ -25,16 +24,20 @@ export const ErrorProvider = ({
 
   useEffect(() => {
     if (error) {
-      const timer = setTimeout(() => setError(null), 3000)
-      return () => clearTimeout(timer)
+      Toast.show({
+        type: 'error',
+        text1: error
+      })
+
+      setError(null)
     }
   }, [error])
 
   return (
     <ErrorStateContext.Provider value={{ message: error }}>
       <ErrorDispatchContext.Provider value={setError}>
-        {error ? <ErrorToaster /> : null}
         {children}
+        <Toast />
       </ErrorDispatchContext.Provider>
     </ErrorStateContext.Provider>
   )

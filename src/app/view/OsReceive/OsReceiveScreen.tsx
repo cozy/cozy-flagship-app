@@ -1,46 +1,48 @@
-import { useNavigation, useNavigationState } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React, { useCallback, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { View } from 'react-native'
 
 import { Typography } from '/ui/Typography'
-import { useOsReceiveState } from '/app/view/OsReceive/OsReceiveState'
-import { RootStackParamList, Routes } from '/constants/route-types'
-import { routes } from '/constants/routes'
+import {
+  useFilesToUpload,
+  useOsReceiveDispatch,
+  useOsReceiveState
+} from '/app/view/OsReceive/OsReceiveState'
+import { RootStackParamList } from '/constants/route-types'
 import { useDefaultIconParams } from '/libs/functions/openApp'
+import { navigate } from '/libs/RootNavigation'
+import { routes } from '/constants/routes'
+import {
+  OsReceiveActionType,
+  OsReceiveFileStatus
+} from '/app/domain/osReceive/models/OsReceiveState'
 
 export const OsReceiveScreen = (): JSX.Element | null => {
   const osReceiveState = useOsReceiveState()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
-  const navigationState = useNavigationState(state => state)
   const iconParams = useDefaultIconParams()
+  const filesToUpload = useFilesToUpload()
+  const osReceiveDispatch = useOsReceiveDispatch()
 
-  const navCallback = useCallback(
-    (href: string, slug: string) => {
-      navigation.navigate(Routes.cozyapp, {
+  useEffect(() => {
+    const { href, slug } = osReceiveState.routeToUpload
+    const shouldNavigate = href && slug && filesToUpload.length > 0
+
+    if (shouldNavigate) {
+      navigate(routes.cozyapp, {
         href,
         slug,
         iconParams
       })
-    },
-    [iconParams, navigation]
-  )
+      osReceiveDispatch({
+        type: OsReceiveActionType.UpdateFileStatus,
+        payload: { name: '*', status: OsReceiveFileStatus.queued }
+      })
+    }
+  }, [iconParams, navigation, osReceiveState, filesToUpload, osReceiveDispatch])
 
-  useEffect(() => {
-    const { href, slug } = osReceiveState.routeToUpload
-    const hasFilesToUpload = osReceiveState.filesToUpload.length > 0
-    const shouldNavigate = href && slug && hasFilesToUpload
-
-    if (shouldNavigate) navCallback(href, slug)
-  }, [navCallback, osReceiveState.filesToUpload, osReceiveState.routeToUpload])
-
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (navigationState?.routes[navigationState.index].name === routes.cozyapp)
-    return null
-
-  if (osReceiveState.filesToUpload.length === 0) return null
-
-  return (
+  return filesToUpload.length > 0 ? (
     <View
       style={{
         height: '100%',
@@ -50,5 +52,5 @@ export const OsReceiveScreen = (): JSX.Element | null => {
     >
       <Typography>...loading</Typography>
     </View>
-  )
+  ) : null
 }

@@ -110,6 +110,11 @@
         "onProgressTitle": "Uploading",
         "onProgressMessage": "A file is being uploaded"
       }
+    },
+    "osReceive": {
+      "errors": {
+        "uploadFailed": "Could not upload {{filename}}"
+      }
     }
   },
   "modals": {
