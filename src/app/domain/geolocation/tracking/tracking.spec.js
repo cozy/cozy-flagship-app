@@ -1,4 +1,4 @@
-import { createDataBatch } from './tracking'
+import { createDataBatch } from '/app/domain/geolocation/tracking/tracking'
 
 const maxBatchSize = 5
 

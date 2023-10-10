@@ -1,11 +1,7 @@
 import { getUniqueId } from 'react-native-device-info'
 
-import {
-  StorageKeys,
-  storeData,
-  getData
-} from '../../../../libs/localStore/storage'
-import { Log } from '../helpers'
+import { StorageKeys, storeData, getData } from '/libs/localStore/storage'
+import { Log } from '/app/domain/geolocation/helpers'
 
 const useUniqueDeviceId = false
 const serverURL = 'https://openpath.cozycloud.cc'

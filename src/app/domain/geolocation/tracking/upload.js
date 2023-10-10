@@ -1,13 +1,12 @@
 import BackgroundGeolocation from 'react-native-background-geolocation'
 
-import { setLastPointUploaded, smartSend } from './tracking'
-import { getOrCreateId } from './user'
 import {
-  StorageKeys,
-  storeData,
-  getData
-} from '../../../../libs/localStore/storage'
-import { Log } from '../helpers'
+  setLastPointUploaded,
+  smartSend
+} from '/app/domain/geolocation/tracking/tracking'
+import { getOrCreateId } from '/app/domain/geolocation/tracking/user'
+import { StorageKeys, storeData, getData } from '/libs/localStore/storage'
+import { Log } from '/app/domain/geolocation/helpers'
 
 const DestroyLocalOnSuccess = true
 

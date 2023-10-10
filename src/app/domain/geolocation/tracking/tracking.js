@@ -1,11 +1,7 @@
-import { uploadUserCache } from './upload'
-import { createUser } from './user'
-import {
-  StorageKeys,
-  storeData,
-  getData
-} from '../../../../libs/localStore/storage'
-import { getTs, Log, parseISOString } from '../helpers'
+import { uploadUserCache } from '/app/domain/geolocation/tracking/upload'
+import { createUser } from '/app/domain/geolocation/tracking/user'
+import { getTs, Log, parseISOString } from '/app/domain/geolocation/helpers'
+import { StorageKeys, storeData, getData } from '/libs/localStore/storage'
 
 const largeTemporalDeltaBetweenPoints = 30 * 60 // In seconds. Shouldn't have longer breaks without siginificant motion
 const maxTemporalDeltaBetweenPoints = 12 * 60 * 60 // In seconds. See https://github.com/e-mission/e-mission-server/blob/f6bf89a274e6cd10353da8f17ebb327a998c788a/emission/analysis/intake/segmentation/trip_segmentation_methods/dwell_segmentation_dist_filter.py#L194
