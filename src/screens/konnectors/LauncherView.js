@@ -32,7 +32,7 @@ import { deactivateKeepAwake } from '/app/domain/sleep/services/sleep'
 const log = Minilog('LauncherView')
 
 const colors = getColors()
-const { statusBarHeight } = getDimensions()
+const { statusBarHeight, navbarHeight } = getDimensions()
 const HEADER_PADDING_TOP = statusBarHeight + 8
 const HEADER_PADDING_BOTTOM = 8
 const HEADER_LINE_HEIGHT = 16
@@ -242,6 +242,16 @@ export class LauncherView extends Component {
       ? styles.workerVisible
       : styles.workerHidden
 
+    if (workerVisible) {
+      setFlagshipUI({
+        bottomTheme: 'dark'
+      })
+    } else {
+      setFlagshipUI({
+        bottomTheme: 'light'
+      })
+    }
+
     const debug = shouldEnableKonnectorExtensiveLog()
     const run = debug
       ? `
@@ -425,7 +435,9 @@ export class LauncherView extends Component {
 const styles = StyleSheet.create({
   workerVisible: {
     height: '100%',
-    width: '100%'
+    width: '100%',
+    paddingBottom: navbarHeight,
+    backgroundColor: '#fff'
   },
   workerHidden: {
     position: 'absolute',
