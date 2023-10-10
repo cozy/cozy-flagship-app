@@ -285,6 +285,31 @@ describe('ReactNativeLauncher', () => {
         cancel: true
       })
     })
+    it('should display a specific error when UserData sent by the konnector is incorrect', async () => {
+      const { launcher, client, launch } = setup()
+      const konnector = { slug: 'konnectorslug', clientSide: true }
+      launcher.setStartContext({
+        client,
+        account: fixtures.account,
+        trigger: fixtures.trigger,
+        konnector,
+        manifest: konnector,
+        launcherClient: {
+          setAppMetadata: () => null
+        }
+      })
+      client.query.mockResolvedValue({ data: fixtures.account })
+      client.save.mockImplementation(async doc => ({ data: doc }))
+      launch.mockResolvedValue({ data: fixtures.job })
+      launcher.pilot.call
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(null) // getUserDataFromWebsite
+      await launcher.start()
+      expect(launcherEvent.emit).toHaveBeenCalledWith('launchResult', {
+        errorMessage: `getUserDataFromWebsite did not return any sourceAccountIdentifier. Cannot continue the execution.`
+      })
+    })
     it('should update job with error message on error', async () => {
       const { launcher, client, launch } = setup()
       launcher.setStartContext({
