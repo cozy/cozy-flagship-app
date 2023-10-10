@@ -1,5 +1,8 @@
-import { handleMotionChange, handleConnectivityChange } from './index'
-import { Log } from '../helpers'
+import { Log } from '/app/domain/geolocation/helpers'
+import {
+  handleMotionChange,
+  handleConnectivityChange
+} from '/app/domain/geolocation/tracking'
 
 export const GeolocationTrackingHeadlessTask = async event => {
   const params = event.params

@@ -1,18 +1,21 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import BackgroundGeolocation from 'react-native-background-geolocation'
 
-import { uploadData, getFlagFailUpload } from './upload'
 import {
-  StorageKeys,
-  storeData,
-  getData
-} from '../../../../libs/localStore/storage'
-import { Log } from '../helpers'
+  uploadData,
+  getFlagFailUpload
+} from '/app/domain/geolocation/tracking/upload'
+import { StorageKeys, storeData, getData } from '/libs/localStore/storage'
+import { Log } from '/app/domain/geolocation/helpers'
 
-export { getAllLogs, sendLogFile } from '../helpers'
-export { getId, getOrCreateId, updateId } from './user'
-export { uploadData } from './upload'
-export { GeolocationTrackingHeadlessTask } from './headless'
+export { Log, getAllLogs, sendLogFile } from '/app/domain/geolocation/helpers'
+export {
+  getId,
+  getOrCreateId,
+  updateId
+} from '/app/domain/geolocation/tracking/user'
+export { uploadData } from '/app/domain/geolocation/tracking/upload'
+export { GeolocationTrackingHeadlessTask } from '/app/domain/geolocation/tracking/headless'
 
 const waitBeforeStopMotionEventMin = 10 // Align with openpath: https://github.com/e-mission/e-mission-server/blob/master/emission/analysis/intake/segmentation/trip_segmentation.py#L59
 
