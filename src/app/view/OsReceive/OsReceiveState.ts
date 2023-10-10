@@ -76,6 +76,21 @@ export const osReceiveReducer = (
 export const initialState: OsReceiveState = {
   filesToUpload: [],
   routeToUpload: {},
+  appsForUpload: [
+    {
+      name: 'Mes Papiers',
+      routeToUpload: '/drive',
+      slug: 'mespapiers',
+      reasonDisabled:
+        'La qualification de vos documents ne peut se faire sur plusieurs fichiers simultanément. Merci d’importer vos fichier un par un. Pour importer plusieurs fichiers, utiliser directement l’application Mes Papiers dans votre Cozy.'
+    },
+    {
+      name: 'Drive',
+      routeToUpload:
+        'http://drive.dev.192-168-1-65.nip.io:8080/upload?fromFlagshipUpload=true',
+      slug: 'drive'
+    }
+  ],
   errored: false
 }
 
@@ -103,4 +118,10 @@ export const useFilesToUpload = (): OsReceiveFile[] => {
   return state.filesToUpload.filter(
     file => file.status === OsReceiveFileStatus.toUpload
   )
+}
+
+export const useAppsForUpload = (): OsReceiveState['appsForUpload'] => {
+  const state = useOsReceiveState()
+
+  return state.appsForUpload
 }

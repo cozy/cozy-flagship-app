@@ -2,6 +2,7 @@
 import CozyClient, { Q } from 'cozy-client'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
+
 import Minilog from 'cozy-minilog'
 
 import strings from '/constants/strings.json'
@@ -12,7 +13,10 @@ import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
 import type { IconsCache } from '/libs/localStore/storage'
 const log = Minilog('Icon Table')
 
-export let iconTable: Record<string, { version: string; xml: string }> = {}
+export let iconTable: Record<
+  string,
+  { version: string; xml: string } | undefined
+> = {}
 
 const setIconTable = (table: IconsCache): void => {
   iconTable = table

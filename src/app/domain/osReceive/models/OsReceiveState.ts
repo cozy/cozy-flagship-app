@@ -1,3 +1,5 @@
+import { AppForUpload } from './OsReceiveCozyApp'
+
 import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
 
 export enum OsReceiveActionType {
@@ -27,6 +29,7 @@ export interface OsReceiveFile {
 export interface OsReceiveState {
   filesToUpload: OsReceiveFile[]
   routeToUpload: { href?: string; slug?: string }
+  appsForUpload: AppForUpload[]
   errored: boolean
 }
 

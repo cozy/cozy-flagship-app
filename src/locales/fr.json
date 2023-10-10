@@ -114,6 +114,14 @@
         "onProgressTitle": "Envoi en cours",
         "onProgressMessage": "Un fichier est en cours d'envoi"
       }
+    },
+    "osReceive": {
+      "importTitle": "Import to Cozy",
+      "documentType": "Document Type",
+      "submit": "Continue",
+      "errors": {
+        "uploadFailed": "Could not upload {{filename}}"
+      }
     }
   },
   "modals": {

@@ -111,6 +111,9 @@
       }
     },
     "osReceive": {
+      "importTitle": "Import to Cozy",
+      "documentType": "Document Type",
+      "submit": "Continue",
       "errors": {
         "uploadFailed": "Could not upload {{filename}}"
       }
