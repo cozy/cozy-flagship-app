@@ -277,7 +277,13 @@ class ReactNativeLauncher extends Launcher {
       }
       await this.pilot.call('ensureAuthenticated', { account: prevAccount })
 
-      this.setUserData(await this.pilot.call('getUserDataFromWebsite'))
+      const userDataResult = await this.pilot.call('getUserDataFromWebsite')
+      if (!userDataResult?.sourceAccountIdentifier) {
+        throw new Error(
+          'getUserDataFromWebsite did not return any sourceAccountIdentifier. Cannot continue the execution.'
+        )
+      }
+      this.setUserData(userDataResult)
 
       const ensureResult = await this.ensureAccountTriggerAndLaunch()
       await this.createTimeoutTrigger()
