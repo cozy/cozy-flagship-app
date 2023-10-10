@@ -45,6 +45,7 @@ describe('LauncherView', () => {
     })
     launcher.close = jest.fn()
     launcher.init = jest.fn()
+    launcher.log = jest.fn()
     launcher.setStartContext = jest.fn()
     launcher.ensureKonnectorIsInstalled = jest.fn().mockResolvedValue({})
 

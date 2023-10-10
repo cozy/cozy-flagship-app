@@ -131,6 +131,10 @@ export class LauncherView extends Component {
     }
     try {
       if (this.state.konnector) {
+        this.launcher.log({
+          level: 'info',
+          msg: `initKonnector konnector ${slug} version: ${this.state.konnector.manifest.version} sent to the webviews`
+        })
         await this.launcher.init({
           bridgeOptions: {
             pilotWebView: this.pilotWebView,

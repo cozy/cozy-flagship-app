@@ -185,6 +185,10 @@ class ReactNativeLauncher extends Launcher {
 
     try {
       const bundle = await getKonnectorBundle({ client, slug })
+      this.log({
+        level: 'info',
+        msg: `ensureKonnectorIsInstalled konnector ${slug} version: ${bundle.manifest.version}`
+      })
 
       if (!bundle) throw new Error('No konnector bundle found')
 
