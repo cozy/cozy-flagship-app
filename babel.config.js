@@ -8,8 +8,7 @@ module.exports = {
         root: ['./'],
         alias: {
           '^/(.+)': './src/\\1',
-          '@cozy/minilog': 'cozy-minilog',
-          CozyGPSMemory: './CozyGPSMemory'
+          '@cozy/minilog': 'cozy-minilog'
         },
         extensions: [
           '.ios.js',
