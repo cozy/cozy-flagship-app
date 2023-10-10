@@ -1,5 +1,9 @@
 import BackgroundGeolocation from 'react-native-background-geolocation'
 
+import Minilog from 'cozy-minilog'
+
+const log = Minilog('📍 Geolocation')
+
 export const getTs = location => {
   return parseISOString(location.timestamp).getTime() / 1000
 }
@@ -12,8 +16,7 @@ export const parseISOString = ISOString => {
 const Logger = BackgroundGeolocation.logger
 
 export const Log = message => {
-  // eslint-disable-next-line no-console
-  console.log(message)
+  log.debug(message)
   Logger.debug(message)
 }
 
