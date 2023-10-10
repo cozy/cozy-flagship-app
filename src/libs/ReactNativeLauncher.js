@@ -16,6 +16,7 @@ import { updateCozyAppBundle } from '/libs/cozyAppBundle/cozyAppBundle'
 import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 
 import { wrapTimerFactory } from 'cozy-clisk'
+import flag from 'cozy-flags'
 
 import {
   activateKeepAwake,
@@ -38,6 +39,7 @@ function LauncherEvent() {}
 MicroEE.mixin(LauncherEvent)
 
 const MIN_CLISK_SUPPORTED_VERSION = '0.10.0'
+const MIN_CLISK_DEBUGDATA_VERSION = '0.23.0'
 
 export const launcherEvent = new LauncherEvent()
 
@@ -250,6 +252,9 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async _start({ initKonnectorError } = {}) {
+    if (flag('debug.clisk.html-on-error')) {
+      Minilog.pipe(Minilog.backends.array)
+    }
     activateKeepAwake('clisk')
     const { account: prevAccount, konnector } = this.getStartContext()
     try {
@@ -304,9 +309,61 @@ class ReactNativeLauncher extends Launcher {
       await this.stop()
     } catch (err) {
       log.error(JSON.stringify(err), 'start error')
+      await this.fetchAndSaveDebugData()
       await this.stop({ message: err.message })
     }
     this.emit('KONNECTOR_EXECUTION_END')
+  }
+
+  async fetchAndSaveDebugData() {
+    const flagvalue = flag('debug.clisk.html-on-error')
+    if (!flagvalue) {
+      return true
+    }
+    try {
+      this.log('debug', 'Saving debug data...')
+      const consoleLogs = Minilog.backends.array.get()
+      const date = new Date().toISOString()
+      Minilog.backends.array.empty()
+      const { client, konnector, job } = this.getStartContext()
+      const name = `trace_${date}_${konnector.slug}${
+        job ? '_' + job._id : ''
+      }.html`
+
+      const cliskVersion = await this.pilot.call('getCliskVersion')
+      if (semverCompare(cliskVersion, MIN_CLISK_DEBUGDATA_VERSION) === -1) {
+        log(
+          'warn',
+          `The cozy-clisk version of this konnector is too low: ${cliskVersion}. ${MIN_CLISK_DEBUGDATA_VERSION} version should be used to be able to get debug data`
+        )
+        return
+      }
+
+      const { url, html } = await this.worker.call('getDebugData')
+
+      await client.save({
+        _type: 'io.cozy.files',
+        type: 'file',
+        data:
+          `<!-- ${url} -->
+        ` +
+          html +
+          `
+          <!--${consoleLogs
+            .map(
+              line =>
+                `${line[0]} : ${line[1]} : ${JSON.stringify(
+                  line[2][0]
+                )} : ${JSON.stringify(line[2].slice(1))}`
+            )
+            .join('\n')} -->`,
+        dirId: 'io.cozy.files.root-dir',
+        name
+      })
+      this.log('debug', `Saved debug data in /${name}}`)
+    } catch (err) {
+      this.log('warn', 'Error while saving debug data : ' + err.message)
+    }
   }
 
   /**
