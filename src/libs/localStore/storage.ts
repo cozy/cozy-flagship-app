@@ -12,7 +12,13 @@ export enum StorageKeys {
   LastActivity = '@cozy_AmiralApp_lastActivity',
   DefaultRedirectionUrl = '@cozy_AmiralAppDefaultRedirectionUrl',
   SessionCreatedFlag = 'SESSION_CREATED_FLAG',
-  IconsTable = '@cozy_AmiralAppIcons'
+  IconsTable = '@cozy_AmiralAppIcons',
+  IdStorageAdress = 'CozyGPSMemory.Id',
+  FlagFailUploadStorageAdress = 'CozyGPSMemory.FlagFailUpload',
+  LastPointUploadedAdress = 'CozyGPSMemory.LastPointUploaded',
+  ShouldBeTrackingFlagStorageAdress = 'CozyGPSMemory.ShouldBeTrackingFlag',
+  LastStopTransitionTsKey = 'CozyGPSMemory.LastStopTransitionTsKey',
+  LastStartTransitionTsKey = 'CozyGPSMemory.LastStartTransitionTsKey'
 }
 
 export type IconsCache = Record<string, { version: string; xml: string }>

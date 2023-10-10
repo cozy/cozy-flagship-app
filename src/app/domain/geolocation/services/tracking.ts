@@ -1,3 +1,5 @@
+import BackgroundGeolocation from 'react-native-background-geolocation'
+
 import {
   startTracking,
   stopTracking,
@@ -7,8 +9,7 @@ import {
   updateId,
   stopTrackingAndClearData,
   getShouldStartTracking
-} from 'CozyGPSMemory/geolocation/services'
-import BackgroundGeolocation from 'react-native-background-geolocation'
+} from '/app/domain/geolocation/tracking'
 
 export { stopTrackingAndClearData, getShouldStartTracking }
 
