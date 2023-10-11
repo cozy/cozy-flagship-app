@@ -1,7 +1,10 @@
 import OsReceiveIntent from '@mythologi/react-native-receive-sharing-intent'
+import RNFS from 'react-native-fs'
 
-import { OsReceiveFile, OsReceiveFileStatus } from '../models/OsReceiveState'
-
+import {
+  OsReceiveFile,
+  OsReceiveFileStatus
+} from '/app/domain/osReceive/models/OsReceiveState'
 import { OsReceiveLogger } from '/app/domain/osReceive'
 import {
   ReceivedFile,
@@ -39,7 +42,8 @@ const mapFilesToUploadToArray = (
   return Array.from(filesMap.values()).map(file => ({
     name: file.fileName,
     file,
-    status: OsReceiveFileStatus.toUpload
+    status: OsReceiveFileStatus.toUpload,
+    type: file.mimeType
   }))
 }
 
@@ -72,5 +76,16 @@ export const handleReceivedFiles = (
 
   return () => {
     OsReceiveIntent.clearReceivedFiles()
+  }
+}
+
+export const getBase64FromReceivedFile = async (
+  filePath: string
+): Promise<string | null> => {
+  try {
+    return await RNFS.readFile(filePath, 'base64')
+  } catch (error) {
+    OsReceiveLogger.error('getBase64FromReceivedFile: error', error)
+    return null
   }
 }

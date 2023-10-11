@@ -1,3 +1,5 @@
+import { AppForUpload } from './OsReceiveCozyApp'
+
 import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
 
 export enum OsReceiveActionType {
@@ -22,11 +24,14 @@ export interface OsReceiveFile {
   file: ReceivedFile
   status: OsReceiveFileStatus
   handledTimestamp?: number // Unix timestamp representing when the file was handled
+  source?: string // base64 of the file content
+  type?: string // mimetype of the file
 }
 
 export interface OsReceiveState {
   filesToUpload: OsReceiveFile[]
   routeToUpload: { href?: string; slug?: string }
+  appsForUpload: AppForUpload[]
   errored: boolean
 }
 
@@ -50,7 +55,10 @@ export interface ServiceResponse<T> {
 }
 
 export interface OsReceiveApiMethods {
-  getFilesToUpload: () => Promise<OsReceiveFile[]>
+  getFilesToUpload: (
+    base64: boolean,
+    state: OsReceiveState
+  ) => Promise<OsReceiveFile[]>
   hasFilesToHandle: () => Promise<UploadStatus>
   uploadFiles: (arg: string) => Promise<void>
   resetFilesToHandle: () => Promise<boolean>

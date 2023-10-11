@@ -16,6 +16,7 @@ import {
   OsReceiveFileStatus
 } from '/app/domain/osReceive/models/OsReceiveState'
 import { t } from '/locales/i18n'
+import { getBase64FromReceivedFile } from '/app/domain/osReceive/services/OsReceiveData'
 
 const getUrl = (
   client: CozyClient,
@@ -38,8 +39,20 @@ const getUrl = (
 }
 
 const getFilesToUpload = async (
+  base64: boolean,
   state: OsReceiveState
 ): Promise<OsReceiveFile[]> => {
+  if (base64) {
+    for (const file of state.filesToUpload) {
+      const base64File = await getBase64FromReceivedFile(file.file.filePath)
+      if (!base64File) throw new Error('getFilesToUpload: base64File is null')
+      file.source = base64File
+      file.type = file.file.mimeType
+    }
+
+    return Promise.resolve(state.filesToUpload)
+  }
+
   OsReceiveLogger.info('getFilesToUpload', state.filesToUpload)
   return Promise.resolve(state.filesToUpload)
 }
@@ -141,7 +154,7 @@ export const OsReceiveApi = (
   dispatch: Dispatch<OsReceiveAction>
 ): OsReceiveApiMethods => ({
   hasFilesToHandle: () => hasFilesToHandle(state),
-  getFilesToUpload: () => getFilesToUpload(state),
+  getFilesToUpload: (base64 = false) => getFilesToUpload(base64, state),
   uploadFiles: arg => uploadFiles(arg, state, client, dispatch),
   resetFilesToHandle: () => resetFilesToHandle(dispatch)
 })
