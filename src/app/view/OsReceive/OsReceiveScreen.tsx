@@ -96,7 +96,7 @@ export const OsReceiveScreen = (): JSX.Element | null => {
               </ListSubHeader>
             }
           >
-            {appsForUpload.map((app, index) => (
+            {appsForUpload?.map((app, index) => (
               <React.Fragment key={app.slug}>
                 <ListItem
                   button={!app.reasonDisabled && app.slug !== selectedOption}
