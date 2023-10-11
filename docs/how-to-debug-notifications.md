@@ -94,3 +94,27 @@ You can drag'n'drop on the iOS simulator a file called _test.apns_ with the cont
   "redirectLink": "contacts/#/new" // the link to open when you click on the notification
 }
 ```
+
+
+## Send a notification (end to end)
+
+It can be useful to test the end to end process locally, from cozy-banks to cozy-stack to cozy-flagship-app. In this example, I try with  cozy-flagship-app installed on an Android simulator.
+
+**cozy-flagship-app**
+
+Just log in to your regular Android simulator instance, like `http://bob.10-0-2-2.nip.io:8080`.
+
+**cozy-stack**
+
+Edit your cozy.yml file to add the config below :
+```
+notifications:
+  android_api_key: "<cozy-flagship-app-push-dev server key found on Firebase Console>"
+```
+
+Be careful to **not** have any overrides concerning cozy-banks in CouchDB `secrets/io-cozy-account_types` database.
+
+**cozy-banks**
+
+Log in to your regular Android simulator instance, and send a notification from the devtool (you need to have the `debug` flag) ! Do not forget that notifications are only displayed when the app is in background or quit.
+
