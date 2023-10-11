@@ -11,6 +11,13 @@
       "description": "The icon of the 'Cozy' application has been modified."
     }
   },
+  "services": {
+    "osReceive": {
+      "disableReasons": {
+        "multipleFiles": "This application does not support the import of multiple files. Please import your files one by one. To import multiple files, use the {{appname}} application directly in your Cozy."
+      }
+    }
+  },
   "software": {
     "name": "Cozy Mobile Application"
   }

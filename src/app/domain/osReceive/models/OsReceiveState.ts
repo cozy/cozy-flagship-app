@@ -1,4 +1,4 @@
-import { AppForUpload } from './OsReceiveCozyApp'
+import { AcceptFromFlagshipManifest } from './OsReceiveCozyApp'
 
 import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
 
@@ -8,7 +8,8 @@ export enum OsReceiveActionType {
   SetFlowErrored = 'SET_FLOW_ERRORED',
   SetRecoveryState = 'SET_RECOVERY_STATE',
   SetInitialState = 'SET_INITIAL_STATE',
-  UpdateFileStatus = 'UPDATE_FILE_STATUS'
+  UpdateFileStatus = 'UPDATE_FILE_STATUS',
+  SetCandidateApps = 'SET_CANDIDATE_APPS'
 }
 
 export enum OsReceiveFileStatus {
@@ -31,8 +32,8 @@ export interface OsReceiveFile {
 export interface OsReceiveState {
   filesToUpload: OsReceiveFile[]
   routeToUpload: { href?: string; slug?: string }
-  appsForUpload: AppForUpload[]
   errored: boolean
+  candidateApps?: AcceptFromFlagshipManifest[]
 }
 
 export type OsReceiveAction =
@@ -47,6 +48,10 @@ export type OsReceiveAction =
   | {
       type: OsReceiveActionType.UpdateFileStatus
       payload: Omit<OsReceiveFile, 'file'>
+    }
+  | {
+      type: OsReceiveActionType.SetCandidateApps
+      payload: AcceptFromFlagshipManifest[]
     }
 
 export interface ServiceResponse<T> {

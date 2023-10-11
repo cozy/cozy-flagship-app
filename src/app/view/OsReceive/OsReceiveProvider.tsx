@@ -65,6 +65,10 @@ export const OsReceiveProvider = ({
 
       if (res.data.length > 0) {
         didCall.current = true
+        dispatch({
+          type: OsReceiveActionType.SetCandidateApps,
+          payload: res.data
+        })
         setQuery(res.data)
       }
     }
