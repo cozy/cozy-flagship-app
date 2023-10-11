@@ -8,5 +8,9 @@
 	<array>
 		<string>applinks:links.mabullecozy.cloud</string>
 	</array>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.io.cozy.flagship.mobile.mabulle</string>
+	</array>
 </dict>
 </plist>
