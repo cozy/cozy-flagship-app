@@ -1,23 +1,41 @@
+interface AcceptDocumentsFromFlagship {
+  accepted_mime_types: string[]
+  max_number_of_files: number
+  max_size_per_file_in_MB: number
+  route_to_upload: string
+}
+
 export interface AcceptFromFlagshipManifest {
   _id: string
   _type: string
-  accept_documents_from_flagship?: {
-    accepted_mime_types: string[]
-    max_number_of_files: number
-    max_size_per_file_in_MB: number
-    route_to_upload: string
-  }
+  accept_documents_from_flagship?: AcceptDocumentsFromFlagship
   accept_from_flagship?: boolean
   attributes: {
-    accept_documents_from_flagship?: {
-      accepted_mime_types: string[]
-      max_number_of_files: number
-      max_size_per_file_in_MB: number
-      route_to_upload: string
-    }
+    accept_documents_from_flagship?: AcceptDocumentsFromFlagship
     accept_from_flagship?: boolean
   }
+  name: string
   slug: string
+}
+
+export interface WillAcceptFromFlagshipManifest
+  extends AcceptFromFlagshipManifest {
+  accept_documents_from_flagship: AcceptDocumentsFromFlagship
+  accept_from_flagship: true
+  attributes: {
+    accept_documents_from_flagship: AcceptDocumentsFromFlagship
+    accept_from_flagship: boolean
+  }
+  reasonDisabled: string[] | undefined
+}
+
+export const isWillAcceptFromFlagshipManifest = (
+  app: AcceptFromFlagshipManifest
+): app is WillAcceptFromFlagshipManifest => {
+  return (
+    app.accept_from_flagship === true &&
+    app.accept_documents_from_flagship !== undefined
+  )
 }
 
 /**
@@ -30,7 +48,7 @@ export interface AcceptFromFlagshipManifest {
  */
 export interface AppForUpload {
   name: string
-  reasonDisabled?: string
+  reasonDisabled: string[] | undefined
   routeToUpload: string
   slug: string
 }
