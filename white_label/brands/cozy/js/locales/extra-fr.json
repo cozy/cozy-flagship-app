@@ -32,6 +32,13 @@
       "body": "Vous semblez avoir révoqué cet appareil depuis votre Cozy. Pour accéder à nouveau à vos données, veuillez vous reconnecter. Si cette action ne vient pas de vous, n'hésitez pas à nous contacter à <linkTag>email</linkTag>."
     }
   },
+  "services": {
+    "osReceive": {
+      "disableReasons": {
+        "multipleFiles": "Cette application ne supporte pas l'import de plusieurs fichiers. Merci d'importer vos fichier un par un. Pour importer plusieurs fichiers, utiliser directement l'application {{appname}} dans votre Cozy."
+      }
+    }
+  },
   "software": {
     "name": "Application Mobile Cozy"
   }

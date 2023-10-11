@@ -17,7 +17,8 @@ import { routes } from '/constants/routes'
 import {
   useAppsForUpload,
   useFilesToUpload,
-  useOsReceiveDispatch
+  useOsReceiveDispatch,
+  useOsReceiveState
 } from '/app/view/OsReceive/OsReceiveState'
 import {
   OsReceiveActionType,
@@ -38,6 +39,7 @@ export const OsReceiveScreen = (): JSX.Element | null => {
   const osReceiveDispatch = useOsReceiveDispatch()
   const { t } = useI18n()
   const [selectedOption, setSelectedOption] = useState<string>()
+  const state = useOsReceiveState()
 
   const canProceed = useCallback(
     () => !(filesToUpload.length > 0),
@@ -45,6 +47,8 @@ export const OsReceiveScreen = (): JSX.Element | null => {
   )
 
   const proceedToWebview = useCallback(() => {
+    if (!appsForUpload) return
+
     navigate(routes.cozyapp, {
       href: appsForUpload.find(app => app.slug === selectedOption)
         ?.routeToUpload,
@@ -58,12 +62,14 @@ export const OsReceiveScreen = (): JSX.Element | null => {
   }, [appsForUpload, iconParams, osReceiveDispatch, selectedOption])
 
   useEffect(() => {
+    if (!appsForUpload) return
+
     const firstEnabledApp = appsForUpload.find(app => !app.reasonDisabled)
 
     if (firstEnabledApp) {
       setSelectedOption(firstEnabledApp.slug)
     }
-  }, [appsForUpload])
+  }, [appsForUpload, state])
 
   if (filesToUpload.length === 0) return null
 
@@ -94,7 +100,7 @@ export const OsReceiveScreen = (): JSX.Element | null => {
               </ListSubHeader>
             }
           >
-            {appsForUpload.map(app => (
+            {appsForUpload?.map(app => (
               <ListItem
                 button={!app.reasonDisabled && app.slug !== selectedOption}
                 onClick={(): void => setSelectedOption(app.slug)}

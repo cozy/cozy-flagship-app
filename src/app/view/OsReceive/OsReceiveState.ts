@@ -1,4 +1,4 @@
-import { createContext, Dispatch, useContext } from 'react'
+import { createContext, Dispatch, useContext, useEffect, useState } from 'react'
 
 import { OsReceiveLogger } from '/app/domain/osReceive'
 import {
@@ -8,6 +8,9 @@ import {
   OsReceiveFile,
   OsReceiveFileStatus
 } from '/app/domain/osReceive/models/OsReceiveState'
+import { getAppsForUpload } from '/app/domain/osReceive/services/OsReceiveCandidateApps'
+import { AppForUpload } from '/app/domain/osReceive/models/OsReceiveCozyApp'
+import { safePromise } from '/utils/safePromise'
 
 export const OsReceiveStateContext = createContext<OsReceiveState | undefined>(
   undefined
@@ -59,6 +62,9 @@ export const osReceiveReducer = (
       }
       break
     }
+    case OsReceiveActionType.SetCandidateApps:
+      nextState = { ...state, candidateApps: action.payload }
+      break
     default:
       break
   }
@@ -76,22 +82,8 @@ export const osReceiveReducer = (
 export const initialState: OsReceiveState = {
   filesToUpload: [],
   routeToUpload: {},
-  appsForUpload: [
-    {
-      name: 'Mes Papiers',
-      routeToUpload: '/drive',
-      slug: 'mespapiers',
-      reasonDisabled:
-        'La qualification de vos documents ne peut se faire sur plusieurs fichiers simultanément. Merci d’importer vos fichier un par un. Pour importer plusieurs fichiers, utiliser directement l’application Mes Papiers dans votre Cozy.'
-    },
-    {
-      name: 'Drive',
-      routeToUpload:
-        'http://drive.dev.192-168-1-65.nip.io:8080/upload?fromFlagshipUpload=true',
-      slug: 'drive'
-    }
-  ],
-  errored: false
+  errored: false,
+  candidateApps: undefined
 }
 
 export const useOsReceiveState = (): OsReceiveState => {
@@ -120,8 +112,27 @@ export const useFilesToUpload = (): OsReceiveFile[] => {
   )
 }
 
-export const useAppsForUpload = (): OsReceiveState['appsForUpload'] => {
+export const useAppsForUpload = (): AppForUpload[] | undefined => {
   const state = useOsReceiveState()
+  const [appsForUpload, setAppsForUpload] = useState<
+    AppForUpload[] | undefined
+  >(undefined)
 
-  return state.appsForUpload
+  useEffect(() => {
+    const computeAppsForUpload = async (): Promise<void> => {
+      const { candidateApps, filesToUpload } = state
+
+      if (!candidateApps) {
+        return
+      }
+
+      const appsForUpload = await getAppsForUpload(filesToUpload, candidateApps)
+
+      setAppsForUpload(appsForUpload)
+    }
+
+    safePromise(computeAppsForUpload)()
+  }, [state])
+
+  return appsForUpload
 }
