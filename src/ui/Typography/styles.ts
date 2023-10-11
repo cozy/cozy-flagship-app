@@ -41,11 +41,16 @@ export const styles = StyleSheet.create({
     fontFamily: 'Lato-Bold',
     color: palette.Grey['900']
   },
-  h5: { fontSize: 16 },
+  h5: { fontSize: 18, fontFamily: 'Lato-Bold', lineHeight: 23 },
   subtitle1: { fontSize: 16 },
-  subtitle2: { fontSize: 16 },
+  subtitle2: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontFamily: 'Lato-Bold',
+    textTransform: 'uppercase'
+  },
   body1: { fontSize: 16 },
-  caption: { fontSize: 16 },
+  caption: { fontSize: 12, lineHeight: 16, fontFamily: 'Lato-Regular' },
   link: {
     fontFamily: 'Lato-Regular',
     fontSize: 14,

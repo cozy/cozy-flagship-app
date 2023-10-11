@@ -282,6 +282,7 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
           }
         }}
       />
+
       <OsReceiveScreen />
     </>
   ) : null
