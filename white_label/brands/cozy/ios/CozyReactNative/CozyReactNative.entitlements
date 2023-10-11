@@ -8,5 +8,9 @@
 	<array>
 		<string>applinks:links.mycozy.cloud</string>
 	</array>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.io.cozy.flagship.mobile</string>
+	</array>
 </dict>
 </plist>
