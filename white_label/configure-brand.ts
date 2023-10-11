@@ -77,8 +77,12 @@ const configureIOS = async (brand: string): Promise<void> => {
   const pbxprojPath = './ios/CozyReactNative.xcodeproj/project.pbxproj'
   await replaceStringsInFile(pbxprojPath, [
     {
-      from: /PRODUCT_BUNDLE_IDENTIFIER = io\.cozy\.flagship\.mobile.*/g,
-      to: `PRODUCT_BUNDLE_IDENTIFIER = ${config.bundleId};`
+      from: /PRODUCT_BUNDLE_IDENTIFIER = io\.cozy\.flagship\.mobile.*CozyShare.*\n/g,
+      to: `PRODUCT_BUNDLE_IDENTIFIER = ${config.bundleId}.CozyShare;\n`
+    },
+    {
+      from: /PRODUCT_BUNDLE_IDENTIFIER = io\.cozy\.flagship\.mobile((?!CozyShare).)*\n/g,
+      to: `PRODUCT_BUNDLE_IDENTIFIER = ${config.bundleId};\n`
     },
     {
       from: /"PROVISIONING_PROFILE_SPECIFIER\[sdk=iphoneos\*\]" = "amiral-.*ci-profile";/g,
