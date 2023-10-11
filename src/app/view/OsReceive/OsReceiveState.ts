@@ -76,6 +76,7 @@ export const osReceiveReducer = (
 export const initialState: OsReceiveState = {
   filesToUpload: [],
   routeToUpload: {},
+  appsForUpload: [],
   errored: false
 }
 
@@ -103,4 +104,10 @@ export const useFilesToUpload = (): OsReceiveFile[] => {
   return state.filesToUpload.filter(
     file => file.status === OsReceiveFileStatus.toUpload
   )
+}
+
+export const useAppsForUpload = (): OsReceiveState['appsForUpload'] => {
+  const state = useOsReceiveState()
+
+  return state.appsForUpload
 }

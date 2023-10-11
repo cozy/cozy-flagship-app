@@ -115,6 +115,14 @@
         "onProgressTitle": "Envoi en cours",
         "onProgressMessage": "Un fichier est en cours d'envoi"
       }
+    },
+    "osReceive": {
+      "documentType": "Type de document :",
+      "submit": "Suivant",
+      "nElementsTitle": "{{n}} éléments",
+      "errors": {
+        "uploadFailed": "Erreur d'envoi pour {{filename}}"
+      }
     }
   },
   "modals": {

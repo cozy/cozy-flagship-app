@@ -6,6 +6,7 @@ import { styles } from '/ui/Icon/styles'
 
 interface IconProps {
   icon: (props: Omit<XmlProps, 'xml'>) => JSX.Element
+  color?: string
   size?: number
   style?: StyleProp<ViewStyle>
 }
@@ -15,5 +16,9 @@ export const Icon = ({
   size = 16,
   ...props
 }: IconProps): JSX.Element => (
-  <Icon style={[styles.icon, { width: size, height: size }]} {...props} />
+  <Icon
+    {...(props.color ? { fill: props.color } : {})}
+    style={[styles.icon, { width: size, height: size }]}
+    {...props}
+  />
 )

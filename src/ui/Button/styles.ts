@@ -18,5 +18,10 @@ export const styles = StyleSheet.create({
     backgroundColor: palette.Primary['600'],
     borderColor: 'rgba(255, 255, 255, 0.24)',
     borderWidth: 1
+  },
+  disabled: {
+    boxShadow: 'none',
+    color: 'rgba(29,33,42,0.24)',
+    backgroundColor: 'rgba(29,33,42,0.12)'
   }
 })
