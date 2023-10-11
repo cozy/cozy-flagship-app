@@ -1,0 +1,19 @@
+diff --git a/node_modules/@notifee/react-native/ios/NotifeeCore/NotifeeCore+UNUserNotificationCenter.m b/node_modules/@notifee/react-native/ios/NotifeeCore/NotifeeCore+UNUserNotificationCenter.m
+index cf8020d..f44e54f 100644
+--- a/node_modules/@notifee/react-native/ios/NotifeeCore/NotifeeCore+UNUserNotificationCenter.m
++++ b/node_modules/@notifee/react-native/ios/NotifeeCore/NotifeeCore+UNUserNotificationCenter.m
+@@ -180,10 +180,10 @@ - (void)userNotificationCenter:(UNUserNotificationCenter *)center
+   _notificationOpenedAppID = notifeeNotification[@"id"];
+ 
+   // handle notification outside of notifee
+-  if (notifeeNotification == nil) {
+-    notifeeNotification =
+-        [NotifeeCoreUtil parseUNNotificationRequest:response.notification.request];
+-  }
++  // if (notifeeNotification == nil) {
++  //   notifeeNotification =
++  //       [NotifeeCoreUtil parseUNNotificationRequest:response.notification.request];
++  // }
+ 
+   if (notifeeNotification != nil) {
+     if ([response.actionIdentifier isEqualToString:UNNotificationDismissActionIdentifier]) {
