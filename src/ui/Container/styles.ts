@@ -11,5 +11,8 @@ export const styles = StyleSheet.create({
     height: '100%',
     paddingHorizontal: 16,
     paddingTop: statusBarHeight + 16
+  },
+  inverted: {
+    backgroundColor: palette.Common.white
   }
 })

@@ -15,7 +15,12 @@ export const Button = ({
 }: ButtonProps): JSX.Element => (
   <TouchableOpacity
     onPress={onPress}
-    style={[styles.button, styles[variant], style]}
+    style={[
+      styles.button,
+      styles[variant],
+      disabled ? styles.disabled : {},
+      style
+    ]}
     disabled={disabled}
     {...props}
   >

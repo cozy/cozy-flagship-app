@@ -111,8 +111,11 @@
       }
     },
     "osReceive": {
+      "documentType": "Document Type:",
+      "submit": "Next",
+      "nElementsTitle": "{{n}} elements",
       "errors": {
-        "uploadFailed": "Could not upload {{filename}}"
+        "uploadFailed": "Error uploading {{filename}}"
       }
     }
   },
