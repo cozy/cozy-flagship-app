@@ -1,3 +1,4 @@
+import { generateWebLink, useClient } from 'cozy-client'
 import { FlagshipUI } from 'cozy-intent'
 
 import {
@@ -36,6 +37,7 @@ export const useOsReceiveScreenLogic = (): {
   const appsForUpload = useAppsForUpload()
   const osReceiveDispatch = useOsReceiveDispatch()
   const iconParams = useDefaultIconParams()
+  const client = useClient()
 
   const canProceed = useCallback(
     () => !(filesToUpload.length > 0),
@@ -43,9 +45,23 @@ export const useOsReceiveScreenLogic = (): {
   )
 
   const proceedToWebview = useCallback(() => {
+    if (!client) throw new Error('Client is not defined')
+    if (!appsForUpload) throw new Error('Apps for upload are not defined')
+    if (!selectedOption) return
+
+    const app = appsForUpload.find(app => app.slug === selectedOption)
+
+    if (!app) throw new Error('App is not defined')
+
     navigate(routes.cozyapp, {
-      href: appsForUpload.find(app => app.slug === selectedOption)
-        ?.routeToUpload,
+      href: generateWebLink({
+        cozyUrl: client.getStackClient().uri,
+        pathname: '',
+        slug: selectedOption,
+        subDomainType: client.capabilities.flat_subdomains ? 'flat' : 'nested',
+        hash: app.routeToUpload.replace(/^\/?#?\//, ''),
+        searchParams: []
+      }),
       slug: selectedOption,
       iconParams
     })
@@ -53,7 +69,7 @@ export const useOsReceiveScreenLogic = (): {
       type: OsReceiveActionType.UpdateFileStatus,
       payload: { name: '*', status: OsReceiveFileStatus.queued }
     })
-  }, [appsForUpload, iconParams, osReceiveDispatch, selectedOption])
+  }, [appsForUpload, iconParams, osReceiveDispatch, selectedOption, client])
 
   useEffect(() => {
     void setFlagshipUI(
@@ -63,7 +79,7 @@ export const useOsReceiveScreenLogic = (): {
   }, [filesToUpload])
 
   useEffect(() => {
-    const firstEnabledApp = appsForUpload.find(app => !app.reasonDisabled)
+    const firstEnabledApp = appsForUpload?.find(app => !app.reasonDisabled)
 
     if (firstEnabledApp) {
       setSelectedOption(firstEnabledApp.slug)
