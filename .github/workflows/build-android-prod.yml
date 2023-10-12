@@ -98,6 +98,13 @@ jobs:
           keyStorePassword: ${{ secrets[format('{0}_ANDROID_KEY_STORE_PASSWORD', inputs.brand)] }}
           keyPassword: ${{ secrets[format('{0}_ANDROID_KEY_PASSWORD', inputs.brand)] }}
 
+      - name: Upload AAB artifact to GitHub
+        uses: actions/upload-artifact@v3
+        with:
+          name: Signed Android AAB ${{ inputs.brand }}
+          path: |
+            android/app/build/outputs/bundle/prodRelease/*.aab
+
       - name: Upload App to Google Play
         uses: r0adkll/upload-google-play@v1
         with:
