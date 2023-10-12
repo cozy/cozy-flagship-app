@@ -13,6 +13,7 @@ import { navigate } from '/libs/RootNavigation'
 import { navigateToApp } from '/libs/functions/openApp'
 import { saveNotificationDeviceToken } from '/libs/client'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
+import { routes } from '/constants/routes.js'
 
 const log = Minilog('notifications')
 
@@ -37,12 +38,18 @@ export const navigateFromNotification = async (
       searchParams: []
     })
 
-    await navigateToApp({
-      navigation: { navigate },
-      slug,
-      href,
-      iconParams: undefined
-    })
+    if (slug === 'home') {
+      navigate(routes.home, {
+        href
+      })
+    } else {
+      await navigateToApp({
+        navigation: { navigate },
+        slug,
+        href,
+        iconParams: undefined
+      })
+    }
   } catch (error) {
     const errorMessage = getErrorMessage(error)
     log.error(
