@@ -38,23 +38,25 @@ const getUrl = (
   return toURL.toString()
 }
 
-const getFilesToUpload = async (
+const getFilesToHandle = async (
   base64: boolean,
   state: OsReceiveState
 ): Promise<OsReceiveFile[]> => {
+  OsReceiveLogger.info('getFilesToHandle called', { base64 })
+
   if (base64) {
     for (const file of state.filesToUpload) {
       const base64File = await getBase64FromReceivedFile(file.file.filePath)
-      if (!base64File) throw new Error('getFilesToUpload: base64File is null')
+      if (!base64File) throw new Error('getFilesToHandle: base64File is null')
       file.source = base64File
       file.type = file.file.mimeType
+      OsReceiveLogger.info(state.filesToUpload)
     }
-
-    return Promise.resolve(state.filesToUpload)
   }
 
-  OsReceiveLogger.info('getFilesToUpload', state.filesToUpload)
-  return Promise.resolve(state.filesToUpload)
+  return state.filesToUpload.filter(
+    file => file.status === OsReceiveFileStatus.queued
+  )
 }
 
 const uploadFiles = async (
@@ -154,7 +156,7 @@ export const OsReceiveApi = (
   dispatch: Dispatch<OsReceiveAction>
 ): OsReceiveApiMethods => ({
   hasFilesToHandle: () => hasFilesToHandle(state),
-  getFilesToUpload: (base64 = false) => getFilesToUpload(base64, state),
+  getFilesToHandle: (base64 = false) => getFilesToHandle(base64, state),
   uploadFiles: arg => uploadFiles(arg, state, client, dispatch),
   resetFilesToHandle: () => resetFilesToHandle(dispatch)
 })
