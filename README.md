@@ -96,7 +96,36 @@ for more information)
 
 A guide for debugging in release mode can be found here: [How to retrieve logs in release mode](docs/how-to-retrieve-logs-in-release.md)
 
-## [Debugging the webview in chrome](https://github.com/react-native-webview/react-native-webview/blob/master/docs/Debugging.md)
+### Inspecting a webview
+
+#### Android 
+
+In order to inspect the content of the webview & get access to the console: 
+In chrome: `chrome://inspect/#devices`
+
+(you can read https://github.com/cozy/react-native-webview/blob/cozy_main/docs/Debugging.md#android--chrome for more informations)
+
+#### iOS 
+
+If you have an iOS >= 16.4 you need to do the following: 
+
+Add : 
+```
+#if __MAC_OS_X_VERSION_MAX_ALLOWED >= 130300 || \
+    __IPHONE_OS_VERSION_MAX_ALLOWED >= 160400 || \
+    __TV_OS_VERSION_MAX_ALLOWED >= 160400
+    // https://webkit.org/blog/13936/enabling-the-inspection-of-web-content-in-apps/
+    if (@available(macos 13.3, ios 16.4, tvOS 16.4, *)) {
+        _webView.inspectable = YES;
+    }
+#endif
+```
+
+to the RNCWebview.m file within the `didMoveToWindow` function (line ~340)
+
+Then you can inspect the content from Safari
+
+See https://github.com/cozy/react-native-webview/blob/cozy_main/docs/Debugging.md#ios--safari for more information
 
 ## Build an offline apk
 
