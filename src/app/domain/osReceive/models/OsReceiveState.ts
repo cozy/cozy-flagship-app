@@ -55,7 +55,7 @@ export interface ServiceResponse<T> {
 }
 
 export interface OsReceiveApiMethods {
-  getFilesToUpload: (
+  getFilesToHandle: (
     base64: boolean,
     state: OsReceiveState
   ) => Promise<OsReceiveFile[]>
