@@ -25,7 +25,9 @@ export const getAppsForUpload = async (
         .map(checkFileSizeLimitAsync(filesToUpload))
         .map(toAppForUpload)
     )
-  ).sort(putDriveLast)
+  )
+    // @ts-expect-error type issue during rebasing
+    .sort(putDriveLast)
 
   return appsForUpload
 }
@@ -79,7 +81,8 @@ const checkFileMimes =
     const acceptAllMimes =
       acceptedMime.includes('*/*') ||
       filesToUpload.every(file => {
-        const guessedMimeType = mime.getType(file.file.mimeType) ?? ''
+        const guessedMimeType =
+          mime.getType(file.file.mimeType) ?? file.file.mimeType
 
         return app.accept_documents_from_flagship.accepted_mime_types.includes(
           guessedMimeType
