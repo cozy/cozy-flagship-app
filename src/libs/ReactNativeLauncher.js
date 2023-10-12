@@ -252,7 +252,7 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async _start({ initKonnectorError } = {}) {
-    if (flag('debug.clisk.html-on-error')) {
+    if (flag('clisk.html-on-error')) {
       Minilog.pipe(Minilog.backends.array)
     }
     activateKeepAwake('clisk')
@@ -322,7 +322,7 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async fetchAndSaveDebugData() {
-    const flagvalue = flag('debug.clisk.html-on-error')
+    const flagvalue = flag('clisk.html-on-error')
     if (!flagvalue) {
       return true
     }
