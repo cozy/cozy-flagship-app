@@ -6,7 +6,10 @@ import { useClient } from 'cozy-client'
 import { handleReceivedFiles } from '/app/domain/osReceive/services/OsReceiveData'
 import { useError } from '/app/view/Error/ErrorProvider'
 import { useI18n } from '/locales/i18n'
-import { OsReceiveActionType } from '/app/domain/osReceive/models/OsReceiveState'
+import {
+  OsReceiveActionType,
+  OsReceiveFileStatus
+} from '/app/domain/osReceive/models/OsReceiveState'
 import {
   fetchOsReceiveCozyApps,
   getRouteToUpload
@@ -110,6 +113,21 @@ export const OsReceiveProvider = ({
     state,
     t
   ])
+
+  // If every file is either uploaded or failed to upload, the flow is ended
+  useEffect(() => {
+    if (state.filesToUpload.length === 0) return
+
+    if (
+      state.filesToUpload.every(
+        file =>
+          file.status === OsReceiveFileStatus.uploaded ||
+          file.status === OsReceiveFileStatus.error
+      )
+    ) {
+      dispatch({ type: OsReceiveActionType.SetInitialState })
+    }
+  }, [state.filesToUpload])
 
   return (
     <OsReceiveStateContext.Provider value={state}>

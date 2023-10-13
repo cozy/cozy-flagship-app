@@ -38,7 +38,8 @@ export const OsReceiveScreen = (): JSX.Element | null => {
     setSelectedOption,
     canProceed,
     proceedToWebview,
-    onClose
+    onClose,
+    hasAppsForUpload
   } = useOsReceiveScreenLogic()
 
   const hasFilesToUpload = filesToUpload.length > 0
@@ -149,7 +150,11 @@ export const OsReceiveScreen = (): JSX.Element | null => {
           disabled={canProceed()}
         >
           <Typography color="secondary" variant="button">
-            {t('services.osReceive.submit')}
+            {t(
+              hasAppsForUpload()
+                ? 'services.osReceive.submit'
+                : 'services.osReceive.abort'
+            )}
           </Typography>
         </Button>
       </Grid>

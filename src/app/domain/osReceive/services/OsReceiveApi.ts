@@ -17,6 +17,8 @@ import {
 } from '/app/domain/osReceive/models/OsReceiveState'
 import { t } from '/locales/i18n'
 import { getBase64FromReceivedFile } from '/app/domain/osReceive/services/OsReceiveData'
+import { navigate } from '/libs/RootNavigation'
+import { routes } from '/constants/routes'
 
 const getUrl = (
   client: CozyClient,
@@ -158,5 +160,9 @@ export const OsReceiveApi = (
   hasFilesToHandle: () => hasFilesToHandle(state),
   getFilesToHandle: (base64 = false) => getFilesToHandle(base64, state),
   uploadFiles: arg => uploadFiles(arg, state, client, dispatch),
-  resetFilesToHandle: () => resetFilesToHandle(dispatch)
+  resetFilesToHandle: () => resetFilesToHandle(dispatch),
+  cancelUploadByCozyApp: (): boolean => {
+    navigate(routes.home)
+    return true
+  }
 })
