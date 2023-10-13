@@ -31,6 +31,7 @@ export const useOsReceiveScreenLogic = (): {
   canProceed: () => boolean
   proceedToWebview: () => void
   onClose: () => void
+  hasAppsForUpload: () => boolean
 } => {
   const [selectedOption, setSelectedOption] = useState<string>()
   const filesToUpload = useFilesToUpload()
@@ -38,6 +39,10 @@ export const useOsReceiveScreenLogic = (): {
   const osReceiveDispatch = useOsReceiveDispatch()
   const iconParams = useDefaultIconParams()
   const client = useClient()
+  const hasAppsForUpload = useCallback(
+    (): boolean => Boolean(appsForUpload?.find(app => !app.reasonDisabled)),
+    [appsForUpload]
+  )
 
   const canProceed = useCallback(
     () => !(filesToUpload.length > 0),
@@ -47,7 +52,13 @@ export const useOsReceiveScreenLogic = (): {
   const proceedToWebview = useCallback(() => {
     if (!client) throw new Error('Client is not defined')
     if (!appsForUpload) throw new Error('Apps for upload are not defined')
-    if (!selectedOption) return
+
+    // No selected option means that we couldn't not auto-select any app,
+    // Meaning every app is disabled or there are no apps
+    if (!selectedOption)
+      return osReceiveDispatch({
+        type: OsReceiveActionType.SetInitialState
+      })
 
     const app = appsForUpload.find(app => app.slug === selectedOption)
 
@@ -69,7 +80,7 @@ export const useOsReceiveScreenLogic = (): {
       type: OsReceiveActionType.UpdateFileStatus,
       payload: { name: '*', status: OsReceiveFileStatus.queued }
     })
-  }, [appsForUpload, iconParams, osReceiveDispatch, selectedOption, client])
+  }, [client, appsForUpload, selectedOption, iconParams, osReceiveDispatch])
 
   useEffect(() => {
     void setFlagshipUI(
@@ -91,6 +102,7 @@ export const useOsReceiveScreenLogic = (): {
     setSelectedOption,
     canProceed,
     proceedToWebview,
+    hasAppsForUpload,
     onClose: (): void => {
       osReceiveDispatch({
         type: OsReceiveActionType.SetInitialState
