@@ -67,6 +67,7 @@ export interface OsReceiveApiMethods {
   hasFilesToHandle: () => Promise<UploadStatus>
   uploadFiles: (arg: string) => Promise<void>
   resetFilesToHandle: () => Promise<boolean>
+  cancelUploadByCozyApp: () => boolean
 }
 
 export interface UploadStatus {

@@ -42,11 +42,13 @@ import { OsReceiveProvider } from '/app/view/OsReceive/OsReceiveProvider'
 import { ErrorProvider } from '/app/view/Error/ErrorProvider'
 import { OsReceiveApi } from '/app/domain/osReceive/services/OsReceiveApi'
 import {
+  useFilesToUpload,
   useOsReceiveDispatch,
   useOsReceiveState
 } from '/app/view/OsReceive/OsReceiveState'
 import { useOsReceiveApi } from '/app/view/OsReceive/useOsReceiveApi'
 import { useSecureBackgroundSplashScreen } from '/hooks/useSplashScreen'
+import { hideSplashScreen } from '/app/theme/SplashScreenService'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -91,13 +93,15 @@ const InnerNav = ({ client, setClient }) => {
   const colors = getColors()
   const osReceiveState = useOsReceiveState()
   const osReceiveDispatch = useOsReceiveDispatch()
+  const filesToUpload = useFilesToUpload()
 
   return (
     <NativeIntentProvider
-      localMethods={localMethods(
-        client,
-        OsReceiveApi(client, osReceiveState, osReceiveDispatch)
-      )}
+      localMethods={localMethods(client, {
+        ...OsReceiveApi(client, osReceiveState, osReceiveDispatch),
+        hideSplashScreen: () =>
+          hideSplashScreen(undefined, filesToUpload.length > 0)
+      })}
     >
       <View
         style={[
