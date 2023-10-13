@@ -18,7 +18,8 @@ export enum StorageKeys {
   LastPointUploadedAdress = 'CozyGPSMemory.LastPointUploaded',
   ShouldBeTrackingFlagStorageAdress = 'CozyGPSMemory.ShouldBeTrackingFlag',
   LastStopTransitionTsKey = 'CozyGPSMemory.LastStopTransitionTsKey',
-  LastStartTransitionTsKey = 'CozyGPSMemory.LastStartTransitionTsKey'
+  LastStartTransitionTsKey = 'CozyGPSMemory.LastStartTransitionTsKey',
+  GeolocationTrackingConfig = 'CozyGPSMemory.TrackingConfig'
 }
 
 export type IconsCache = Record<string, { version: string; xml: string }>
