@@ -19,16 +19,26 @@ export { GeolocationTrackingHeadlessTask } from '/app/domain/geolocation/trackin
 
 const waitBeforeStopMotionEventMin = 10 // Align with openpath: https://github.com/e-mission/e-mission-server/blob/master/emission/analysis/intake/segmentation/trip_segmentation.py#L59
 
+const DEFAULT_TRACKING_CONFIG = {
+  distanceFilter: 20,
+  elasticityMultiplier: 3,
+  desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH
+}
+
 export const startTracking = async () => {
   try {
     Log('Starting')
 
+    const trackingConfig = await getTrackingConfig()
+
+    Log(trackingConfig.toString())
+
     await BackgroundGeolocation.ready({
       // Geolocation Config
-      desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+      desiredAccuracy: trackingConfig.desiredAccuracy,
       showsBackgroundLocationIndicator: false, // Displays a blue pill on the iOS status bar when the location services are in use in the background (if the app doesn't have 'always' permission, the blue pill will always appear when location services are in use while the app isn't focused)
-      distanceFilter: 20,
-      elasticityMultiplier: 3,
+      distanceFilter: trackingConfig.distanceFilter,
+      elasticityMultiplier: trackingConfig.elasticityMultiplier,
       locationUpdateInterval: 10000, // Only used if on Android and if distanceFilter is 0
       stationaryRadius: 50, // Minimum is 25, but still usually takes 200m
       // Activity Recognition
@@ -74,6 +84,26 @@ export const stopTracking = async () => {
   }
 }
 
+export const getTrackingConfig = async () => {
+  const localTrackingConfig = await getData(
+    StorageKeys.GeolocationTrackingConfig
+  )
+
+  return localTrackingConfig ?? DEFAULT_TRACKING_CONFIG
+}
+
+export const setTrackingConfig = async newTrackingConfig => {
+  await BackgroundGeolocation.setConfig(newTrackingConfig)
+
+  Log(
+    `Tracking config updated in realtime with ${JSON.stringify(
+      newTrackingConfig
+    )}`
+  )
+
+  await storeData(StorageKeys.GeolocationTrackingConfig, newTrackingConfig)
+}
+
 export const handleMotionChange = async event => {
   Log('[MOTION CHANGE] - ' + JSON.stringify(event))
 
@@ -113,7 +143,8 @@ export const clearAllCozyGPSMemoryData = async () => {
     StorageKeys.FlagFailUploadStorageAdress,
     StorageKeys.LastPointUploadedAdress,
     StorageKeys.LastStopTransitionTsKey,
-    StorageKeys.LastStartTransitionTsKey
+    StorageKeys.LastStartTransitionTsKey,
+    StorageKeys.GeolocationTrackingConfig
   ])
   // Only exception : ShouldBeTrackingFlagStorageAdress, don't know the effects on the switch and would not feel natural anyway
   // await clearOldCozyGPSMemoryStorage()
@@ -131,7 +162,8 @@ export const stopTrackingAndClearData = async () => {
     StorageKeys.LastPointUploadedAdress,
     StorageKeys.ShouldBeTrackingFlagStorageAdress,
     StorageKeys.LastStopTransitionTsKey,
-    StorageKeys.LastStartTransitionTsKey
+    StorageKeys.LastStartTransitionTsKey,
+    StorageKeys.GeolocationTrackingConfig
   ])
   Log('Tracking stopped and everything cleared')
 }
