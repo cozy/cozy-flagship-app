@@ -205,7 +205,7 @@ const uploadPoints = async (points, user, lastBatchPoint, isLastBatch) => {
 
 // Add start transitions, within 0.1s of given ts
 const addStartTransitions = async (addedTo, ts) => {
-  Log('Add start transitions on ' + new Date(ts))
+  Log('Add start transitions on ' + new Date(ts * 1000))
 
   addedTo.push(
     transition('STATE_WAITING_FOR_TRIP_START', 'T_EXITED_GEOFENCE', ts + 0.01)
