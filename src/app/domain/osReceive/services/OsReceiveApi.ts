@@ -52,7 +52,6 @@ const getFilesToHandle = async (
       if (!base64File) throw new Error('getFilesToHandle: base64File is null')
       file.source = base64File
       file.type = file.file.mimeType
-      OsReceiveLogger.info(state.filesToUpload)
     }
   }
 
