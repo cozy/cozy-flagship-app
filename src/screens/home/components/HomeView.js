@@ -23,6 +23,7 @@ import { launcherEvent } from '/libs/ReactNativeLauncher'
 import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
 import { OsReceiveScreen } from '/app/view/OsReceive/OsReceiveScreen'
+import { useFilesToUpload } from '/app/view/OsReceive/OsReceiveState'
 
 const log = Minilog('🏠 HomeView')
 
@@ -71,6 +72,7 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
     navigation
   )
   const hasRenderedOnce = useRef(false)
+  const filesToUpload = useFilesToUpload()
 
   useEffect(() => {
     const subscription = AppState.addEventListener(
@@ -130,9 +132,9 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
 
         unzoomHomeView(webviewRef)
 
-        resetUIState(uri, setBarStyle)
+        if (filesToUpload.length === 0) resetUIState(uri, setBarStyle)
       }
-    }, [setBarStyle, uri, webviewRef])
+    }, [filesToUpload.length, setBarStyle, uri, webviewRef])
   )
 
   useFocusEffect(

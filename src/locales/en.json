@@ -113,6 +113,7 @@
     "osReceive": {
       "documentType": "Document Type:",
       "submit": "Next",
+      "abort": "Go Back",
       "nElementsTitle": "{{n}} elements",
       "errors": {
         "uploadFailed": "Could not upload {{filename}}"
