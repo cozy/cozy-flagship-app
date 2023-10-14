@@ -87,7 +87,7 @@ export const useOsReceiveScreenLogic = (): {
       osReceiveScreenStyles.setFlagshipUI as FlagshipUI,
       'OsReceiveScreen'
     )
-  }, [filesToUpload])
+  }, [filesToUpload.length, appsForUpload?.length])
 
   useEffect(() => {
     const firstEnabledApp = appsForUpload?.find(app => !app.reasonDisabled)
