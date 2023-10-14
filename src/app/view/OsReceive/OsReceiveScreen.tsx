@@ -47,8 +47,10 @@ export const OsReceiveScreen = (): JSX.Element | null => {
   const hasFilesToUpload = filesToUpload.length > 0
   const isSingleFile = filesToUpload.length === 1
   const isMultipleFiles = filesToUpload.length > 1
+  const shouldRender =
+    hasFilesToUpload && appsForUpload && appsForUpload.length > 0
 
-  if (!hasFilesToUpload) return null
+  if (!shouldRender) return null
 
   return (
     <Container style={osReceiveScreenStyles.page}>
@@ -99,7 +101,7 @@ export const OsReceiveScreen = (): JSX.Element | null => {
               </ListSubHeader>
             }
           >
-            {appsForUpload?.map((app, index) => (
+            {appsForUpload.map((app, index) => (
               <React.Fragment key={app.slug}>
                 <ListItem
                   button={!app.reasonDisabled && app.slug !== selectedOption}
