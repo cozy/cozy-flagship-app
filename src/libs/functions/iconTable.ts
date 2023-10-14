@@ -13,13 +13,16 @@ import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
 import type { IconsCache } from '/libs/localStore/storage'
 const log = Minilog('Icon Table')
 
-export let iconTable: Record<
-  string,
-  { version: string; xml: string } | undefined
-> = {}
+type IconTable = Record<string, { version: string; xml: string } | undefined>
+
+export let iconTable: IconTable = {}
 
 const setIconTable = (table: IconsCache): void => {
   iconTable = table
+}
+
+export const getIconTable = (): IconTable => {
+  return iconTable
 }
 
 export const TESTING_ONLY_clearIconTable = (): void => {
@@ -178,3 +181,10 @@ export const manageIconCache = async (client: CozyClient): Promise<void> => {
 
   if (apps && cache) return attemptCacheUpdate({ apps, cache, client })
 }
+
+// Immediately try to get iconTable from cache
+// Some view components render faster than the cache validation logic
+// In that case we need to retrieve the iconTable if any as soon as possible
+getPersistentIconTable()
+  .then(iconsCache => iconsCache && setIconTable(iconsCache))
+  .catch(error => log.warn('Failed to set iconTable at boot', error))
