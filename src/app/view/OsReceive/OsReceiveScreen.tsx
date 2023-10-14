@@ -7,7 +7,7 @@ import { IconButton } from '/ui/IconButton'
 import { Container } from '/ui/Container'
 import { Grid } from '/ui/Grid'
 import { Button } from '/ui/Button'
-import { iconFallback, iconTable } from '/libs/functions/iconTable'
+import { getIconTable } from '/libs/functions/iconTable'
 import { useI18n } from '/locales/i18n'
 import { Radio } from '/ui/Radio'
 import { Typography } from '/ui/Typography'
@@ -25,9 +25,11 @@ import {
 import { ArrowLeft } from '/ui/Icons/ArrowLeft'
 import { palette } from '/ui/palette'
 import { Divider } from '/ui/Divider'
-import { useOsReceiveScreenLogic } from '/app/view/OsReceive//OsReceiveScreen.logic'
+import { useOsReceiveScreenLogic } from '/app/view/OsReceive/OsReceiveScreen.logic'
 
 import { osReceiveScreenStyles } from '/app/view/OsReceive/OsReceiveScreen.styles'
+
+import { FileDuotone } from '/ui/Icons/FileDuotone'
 
 export const OsReceiveScreen = (): JSX.Element | null => {
   const filesToUpload = useFilesToUpload()
@@ -110,15 +112,20 @@ export const OsReceiveScreen = (): JSX.Element | null => {
                   }}
                 >
                   <ListItemIcon style={osReceiveScreenStyles.appIcon}>
-                    <Icon
-                      icon={(): JSX.Element => (
-                        <SvgXml
-                          xml={iconTable[app.slug]?.xml ?? iconFallback}
-                          width={24}
-                          height={24}
+                    {((): JSX.Element => {
+                      const iconFromCache =
+                        app.slug !== 'drive' && getIconTable()[app.slug]?.xml
+
+                      return iconFromCache ? (
+                        <SvgXml xml={iconFromCache} width={24} height={24} />
+                      ) : (
+                        <Icon
+                          icon={FileDuotone}
+                          size={24}
+                          color={palette.light.text.secondary}
                         />
-                      )}
-                    />
+                      )
+                    })()}
                   </ListItemIcon>
 
                   <ListItemText>
