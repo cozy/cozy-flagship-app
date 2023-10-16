@@ -176,7 +176,7 @@ const prepareAndUploadMedia = async (
 
   log.debug(`✅ ${mediaToUpload.name} uploaded`)
 
-  await postUpload(client, localBackupConfig, mediaToUpload, documentCreated)
+  await postUpload(client, mediaToUpload, documentCreated)
 
   await setMediaAsBackuped(client, mediaToUpload, documentCreated)
 
@@ -187,17 +187,11 @@ const prepareAndUploadMedia = async (
 
 const postUpload = async (
   client: CozyClient,
-  localBackupConfig: LocalBackupConfig,
   mediaToUpload: Media,
   documentCreated: IOCozyFile
 ): Promise<void> => {
   if (mediaToUpload.albums.length > 0 && areAlbumsEnabled()) {
-    await addMediaToAlbums(
-      client,
-      localBackupConfig,
-      mediaToUpload,
-      documentCreated
-    )
+    await addMediaToAlbums(client, mediaToUpload, documentCreated)
   }
 }
 

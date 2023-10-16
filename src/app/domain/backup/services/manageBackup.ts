@@ -10,16 +10,10 @@ import {
   setBackupAsRunning,
   setBackupAsDone,
   setLastBackup,
-  saveAlbums,
   updateRemoteBackupConfigLocally,
   addRemoteDuplicatesToBackupedMedias
 } from '/app/domain/backup/services/manageLocalBackupConfig'
-import {
-  areAlbumsEnabled,
-  getAlbums,
-  createRemoteAlbums,
-  fetchBackupedAlbums
-} from '/app/domain/backup/services/manageAlbums'
+import { fetchBackupedAlbums } from '/app/domain/backup/services/manageAlbums'
 import { getMediasToBackup } from '/app/domain/backup/services/getMedias'
 import {
   uploadMedias,
@@ -72,14 +66,6 @@ export const prepareBackup = async (
   await setBackupAsInitializing(client)
 
   void onProgress(await getBackupInfo(client))
-
-  if (areAlbumsEnabled()) {
-    const albums = await getAlbums()
-
-    const createdAlbums = await createRemoteAlbums(client, albums)
-
-    await saveAlbums(client, createdAlbums)
-  }
 
   const mediasToBackup = await getMediasToBackup(client, onProgress)
 
