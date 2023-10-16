@@ -60,25 +60,33 @@ export const createRemoteAlbums = async (
       !backupedAlbums.find(backupedAlbum => backupedAlbum.name === album.name)
   )
 
-  const deviceId = await getDeviceId()
-
   const createdAlbums = []
 
   for (const albumToCreate of albumsToCreate) {
-    const createdAlbum = (await client.save({
-      _type: 'io.cozy.photos.albums',
-      name: albumToCreate.name,
-      created_at: new Date().toISOString(),
-      backupDeviceIds: [deviceId]
-    })) as { data: { name: string; id: string } }
-
-    createdAlbums.push({
-      name: createdAlbum.data.name,
-      remoteId: createdAlbum.data.id
-    })
+    const createdAlbum = await createRemoteAlbum(client, albumToCreate.name)
+    createdAlbums.push(createdAlbum)
   }
 
   return createdAlbums
+}
+
+export const createRemoteAlbum = async (
+  client: CozyClient,
+  albumName: string
+): Promise<BackupedAlbum> => {
+  const deviceId = await getDeviceId()
+
+  const createdAlbum = (await client.save({
+    _type: 'io.cozy.photos.albums',
+    name: albumName,
+    created_at: new Date().toISOString(),
+    backupDeviceIds: [deviceId]
+  })) as { data: { name: string; id: string } }
+
+  return {
+    name: createdAlbum.data.name,
+    remoteId: createdAlbum.data.id
+  }
 }
 
 const formatBackupedAlbum = (album: AlbumDocument): BackupedAlbum => {
