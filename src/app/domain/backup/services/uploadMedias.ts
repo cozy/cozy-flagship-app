@@ -19,7 +19,10 @@ import {
   isFileTooBigError,
   isCancellationError
 } from '/app/domain/backup/helpers/error'
-import { areAlbumsEnabled } from '/app/domain/backup/services/manageAlbums'
+import {
+  areAlbumsEnabled,
+  addMediaToAlbums
+} from '/app/domain/backup/services/manageAlbums'
 import { t } from '/locales/i18n'
 
 import type CozyClient from 'cozy-client'
@@ -31,7 +34,6 @@ import { NetworkError } from '/app/domain/upload/models'
 const log = Minilog('💿 Backup')
 
 const DOCTYPE_FILES = 'io.cozy.files'
-const DOCTYPE_ALBUMS = 'io.cozy.photos.albums'
 
 let shouldStopBackup = false
 
@@ -195,36 +197,6 @@ const postUpload = async (
       localBackupConfig,
       mediaToUpload,
       documentCreated
-    )
-  }
-}
-
-const addMediaToAlbums = async (
-  client: CozyClient,
-  localBackupConfig: LocalBackupConfig,
-  mediaToUpload: Media,
-  documentCreated: IOCozyFile
-): Promise<void> => {
-  for (const album of mediaToUpload.albums) {
-    const { remoteId } =
-      localBackupConfig.backupedAlbums.find(
-        backupedAlbum => backupedAlbum.name === album.name
-      ) ?? {}
-
-    if (remoteId === undefined) {
-      return
-    }
-
-    await client.collection(DOCTYPE_FILES).addReferencesTo(
-      {
-        _id: remoteId,
-        _type: DOCTYPE_ALBUMS
-      },
-      [
-        {
-          _id: documentCreated.id
-        }
-      ]
     )
   }
 }
