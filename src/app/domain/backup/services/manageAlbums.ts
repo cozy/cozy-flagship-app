@@ -7,7 +7,10 @@ import {
   Media,
   LocalBackupConfig
 } from '/app/domain/backup/models'
-import { getLocalBackupConfig } from '/app/domain/backup/services/manageLocalBackupConfig'
+import {
+  getLocalBackupConfig,
+  saveAlbums
+} from '/app/domain/backup/services/manageLocalBackupConfig'
 import { getDeviceId } from '/app/domain/backup/services/manageRemoteBackupConfig'
 import {
   buildAlbumsQuery,
@@ -146,4 +149,25 @@ const addMediaToAlbum = async (
       }
     ]
   )
+}
+
+export const getOrCreateAlbum = async (
+  client: CozyClient,
+  albumName: string
+): Promise<BackupedAlbum> => {
+  const localBackupConfig = await getLocalBackupConfig(client)
+
+  const localAlbum = localBackupConfig.backupedAlbums.find(
+    backupedAlbum => backupedAlbum.name === albumName
+  )
+
+  if (localAlbum) {
+    return localAlbum
+  }
+
+  const newlyCreatedAlbum = await createRemoteAlbum(client, albumName)
+
+  await saveAlbums(client, [newlyCreatedAlbum])
+
+  return newlyCreatedAlbum
 }
