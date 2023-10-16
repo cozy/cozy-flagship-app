@@ -1,7 +1,12 @@
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
 import { Platform } from 'react-native'
 
-import { Album, BackupedAlbum } from '/app/domain/backup/models'
+import {
+  Album,
+  BackupedAlbum,
+  Media,
+  LocalBackupConfig
+} from '/app/domain/backup/models'
 import { getLocalBackupConfig } from '/app/domain/backup/services/manageLocalBackupConfig'
 import { getDeviceId } from '/app/domain/backup/services/manageRemoteBackupConfig'
 import {
@@ -11,7 +16,11 @@ import {
 } from '/app/domain/backup/queries'
 
 import type CozyClient from 'cozy-client'
+import type { IOCozyFile } from 'cozy-client'
 import flag from 'cozy-flags'
+
+const DOCTYPE_FILES = 'io.cozy.files'
+const DOCTYPE_ALBUMS = 'io.cozy.photos.albums'
 
 export const areAlbumsEnabled = (): boolean => {
   return Platform.OS === 'ios'
@@ -91,4 +100,34 @@ export const fetchBackupedAlbums = async (
   const backupedAlbums = data.map(album => formatBackupedAlbum(album))
 
   return backupedAlbums
+}
+
+export const addMediaToAlbums = async (
+  client: CozyClient,
+  localBackupConfig: LocalBackupConfig,
+  mediaToUpload: Media,
+  documentCreated: IOCozyFile
+): Promise<void> => {
+  for (const album of mediaToUpload.albums) {
+    const { remoteId } =
+      localBackupConfig.backupedAlbums.find(
+        backupedAlbum => backupedAlbum.name === album.name
+      ) ?? {}
+
+    if (remoteId === undefined) {
+      return
+    }
+
+    await client.collection(DOCTYPE_FILES).addReferencesTo(
+      {
+        _id: remoteId,
+        _type: DOCTYPE_ALBUMS
+      },
+      [
+        {
+          _id: documentCreated.id
+        }
+      ]
+    )
+  }
 }
