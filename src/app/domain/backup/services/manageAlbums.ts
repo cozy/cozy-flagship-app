@@ -118,16 +118,24 @@ export const addMediaToAlbums = async (
       return
     }
 
-    await client.collection(DOCTYPE_FILES).addReferencesTo(
-      {
-        _id: remoteId,
-        _type: DOCTYPE_ALBUMS
-      },
-      [
-        {
-          _id: documentCreated.id
-        }
-      ]
-    )
+    await addMediaToAlbum(client, remoteId, documentCreated.id!)
   }
+}
+
+const addMediaToAlbum = async (
+  client: CozyClient,
+  albumId: string,
+  documentId: string
+): Promise<void> => {
+  await client.collection(DOCTYPE_FILES).addReferencesTo(
+    {
+      _id: albumId,
+      _type: DOCTYPE_ALBUMS
+    },
+    [
+      {
+        _id: documentId
+      }
+    ]
+  )
 }
