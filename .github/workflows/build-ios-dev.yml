@@ -71,6 +71,7 @@ jobs:
         run: cd ios && pod install --repo-update && cd ..
 
       - name: Build IOS App
+        id: ios_build
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         uses: yukiarrr/ios-build-action@v1.5.0
@@ -93,3 +94,11 @@ jobs:
         with:
           name: iOS App Store Package
           path: 'output.ipa'
+
+      - name: Upload XCode error logs
+        uses: actions/upload-artifact@v3
+        if: always() && steps.ios_build.outcome == 'failure'
+        with:
+          name: XCode Build Logs
+          path: '/Users/runner/Library/Logs/gym/CozyReactNative-CozyReactNative.log'
+          
