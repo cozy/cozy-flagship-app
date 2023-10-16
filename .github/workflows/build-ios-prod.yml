@@ -71,6 +71,7 @@ jobs:
         run: cd ios && pod install --repo-update && cd ..
 
       - name: Build IOS App
+        id: ios_build
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         uses: yukiarrr/ios-build-action@v1.5.0
@@ -87,13 +88,6 @@ jobs:
           workspace-path: ios/CozyReactNative.xcworkspace
           scheme: CozyReactNative
 
-      - name: Upload CozyReactNative-CozyReactNative.log
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: CozyReactNative-CozyReactNative.log
-          path: /Users/runner/Library/Logs/gym/CozyReactNative-CozyReactNative.log
-
       - name: 'Upload app to TestFlight'
         uses: apple-actions/upload-testflight-build@v1
         with:
@@ -101,3 +95,10 @@ jobs:
           issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
           api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+
+      - name: Upload XCode error logs
+        uses: actions/upload-artifact@v3
+        if: always() && steps.ios_build.outcome == 'failure'
+        with:
+          name: XCode Build Logs
+          path: '/Users/runner/Library/Logs/gym/CozyReactNative-CozyReactNative.log'
