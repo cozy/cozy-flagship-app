@@ -190,7 +190,7 @@ const postUpload = async (
   documentCreated: IOCozyFile
 ): Promise<void> => {
   if (mediaToUpload.albums.length > 0 && areAlbumsEnabled()) {
-    await addMediaToAlbum(
+    await addMediaToAlbums(
       client,
       localBackupConfig,
       mediaToUpload,
@@ -199,7 +199,7 @@ const postUpload = async (
   }
 }
 
-const addMediaToAlbum = async (
+const addMediaToAlbums = async (
   client: CozyClient,
   localBackupConfig: LocalBackupConfig,
   mediaToUpload: Media,
