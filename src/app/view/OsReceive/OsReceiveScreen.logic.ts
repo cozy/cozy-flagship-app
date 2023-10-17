@@ -53,7 +53,7 @@ export const useOsReceiveScreenLogic = (): {
     if (!client) throw new Error('Client is not defined')
     if (!appsForUpload) throw new Error('Apps for upload are not defined')
 
-    // No selected option means that we couldn't not auto-select any app,
+    // No selected option means that we couldn't auto-select any app,
     // Meaning every app is disabled or there are no apps
     if (!selectedOption)
       return osReceiveDispatch({

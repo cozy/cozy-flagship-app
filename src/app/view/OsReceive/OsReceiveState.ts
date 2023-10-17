@@ -1,6 +1,6 @@
 import { createContext, Dispatch, useContext, useEffect, useState } from 'react'
 
-import { OsReceiveLogger, removeSourceProperty } from '/app/domain/osReceive'
+import { OsReceiveLogger, trimStateForLog } from '/app/domain/osReceive'
 import {
   OsReceiveState,
   OsReceiveAction,
@@ -72,15 +72,9 @@ export const osReceiveReducer = (
   OsReceiveLogger.info(
     `osReceiveReducer handled action ${JSON.stringify(action)}}`
   )
-  OsReceiveLogger.info(
-    'osReceiveReducer prevState',
-    removeSourceProperty(state)
-  )
+  OsReceiveLogger.info('osReceiveReducer prevState', trimStateForLog(state))
 
-  OsReceiveLogger.info(
-    'osReceiveReducer nextState',
-    removeSourceProperty(nextState)
-  )
+  OsReceiveLogger.info('osReceiveReducer nextState', trimStateForLog(nextState))
 
   return nextState
 }
