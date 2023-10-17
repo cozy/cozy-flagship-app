@@ -106,6 +106,17 @@
       "nElementsTitle": "{{n}} elementos",
       "errors": {
         "uploadFailed": "Error al subir {{filename}}"
+      },
+      "disableReasons": {
+        "multipleFiles": "{{appname}} no permite importar varios archivos simultáneamente. Por favor, importa tus archivos uno a uno o utiliza la aplicación {{appname}} directamente en tu Cozy.",
+        "tooManyFiles": "El número de archivos ({{numberOfFiles}}) es demasiado grande para {{appname}} (máx: {{maxNumberOfFiles}}).",
+        "incompatibleMime": "Le ou les types de fichiers ne sont pas compatible avec {{appname}}.",
+        "tooLargeFiles": "El tipo o tipos de archivo no son compatibles con {{appname}}."
+      },
+      "appNameOverrides": {
+        "mespapiers": "Documento administrativo",
+        "photo": "Foto",
+        "drive": "Otros"
       }
     }
   },

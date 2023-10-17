@@ -11,6 +11,13 @@
       "description": "El ícono de la aplicación 'Ma Bulle' ha sido modificado."
     }
   },
+  "services": {
+    "osReceive": {
+      "disableReasons": {
+        "multipleFiles": "{{appname}} no permite importar varios archivos simultáneamente. Por favor, importa tus archivos uno a uno o utiliza la aplicación {{appname}} directamente en tu cuenta."
+      }
+    }
+  },
   "software": {
     "name": "Aplicación Móvil Ma Bulle"
   }
