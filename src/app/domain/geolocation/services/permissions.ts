@@ -25,7 +25,7 @@ export const checkLocationPermissions =
       }
     }
 
-    if (Platform.OS === 'android') {
+    if (Platform.OS === 'android' && Platform.Version >= 29) {
       const fineLocationPermission = await checkNativePermission(
         NATIVE_PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
       )
@@ -40,6 +40,17 @@ export const checkLocationPermissions =
         canRequest:
           fineLocationPermission.canRequest &&
           activityRecognitionPermission.canRequest
+      }
+    }
+
+    if (Platform.OS === 'android' && Platform.Version < 29) {
+      const fineLocationPermission = await checkNativePermission(
+        NATIVE_PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
+      )
+
+      return {
+        granted: fineLocationPermission.granted,
+        canRequest: fineLocationPermission.canRequest
       }
     }
 
@@ -63,7 +74,7 @@ export const requestLocationPermissions =
       }
     }
 
-    if (Platform.OS === 'android') {
+    if (Platform.OS === 'android' && Platform.Version >= 29) {
       const fineLocationPermission = await requestNativePermission(
         NATIVE_PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
       )
@@ -78,6 +89,17 @@ export const requestLocationPermissions =
         canRequest:
           fineLocationPermission.canRequest &&
           activityRecognitionPermission.canRequest
+      }
+    }
+
+    if (Platform.OS === 'android' && Platform.Version < 29) {
+      const fineLocationPermission = await requestNativePermission(
+        NATIVE_PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
+      )
+
+      return {
+        granted: fineLocationPermission.granted,
+        canRequest: fineLocationPermission.canRequest
       }
     }
 
