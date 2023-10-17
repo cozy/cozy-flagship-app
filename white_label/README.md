@@ -82,6 +82,7 @@ Brand specific secrets are:
 - xxx_ANDROID_KEY_STORE_PASSWORD
 - xxx_ANDROID_SIGNING_KEY
 - xxx_IOS_MOBILE_PROVISION_BASE64
+- xxx_SHARE_IOS_MOBILE_PROVISION_BASE64
 
 ## Assets generation
 

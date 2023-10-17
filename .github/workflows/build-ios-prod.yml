@@ -77,7 +77,10 @@ jobs:
         with:
           project-path: ios/CozyReactNative.xcodeproj
           p12-base64: ${{ secrets.IOS_P12_BASE64 }}
-          mobileprovision-base64: ${{ secrets[format('{0}_IOS_MOBILE_PROVISION_BASE64', inputs.brand)] }}
+          export-options: ios/options-prod.plist
+          mobileprovision-base64: |
+            ${{ secrets[format('{0}_IOS_MOBILE_PROVISION_BASE64', inputs.brand)] }}
+            ${{ secrets[format('{0}_SHARE_IOS_MOBILE_PROVISION_BASE64', inputs.brand)] }}
           code-signing-identity: 'iPhone Distribution'
           team-id: ${{ secrets.IOS_TEAM_ID }}
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
