@@ -85,10 +85,6 @@ const configureIOS = async (brand: string): Promise<void> => {
       to: `PRODUCT_BUNDLE_IDENTIFIER = ${config.bundleId};\n`
     },
     {
-      from: /"PROVISIONING_PROFILE_SPECIFIER\[sdk=iphoneos\*\]" = "amiral-.*ci-profile";/g,
-      to: `"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "${config.provisionningProfile}";`
-    },
-    {
       from: /"PROVISIONING_PROFILE_SPECIFIER\[sdk=iphoneos\*\]" = "amiral-.*dev-profile";/g,
       to: `"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "${config.provisionningDevProfile}";`
     }
