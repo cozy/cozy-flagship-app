@@ -102,5 +102,21 @@ export const palette = {
   Common: {
     white: '#fff',
     black: '#000'
+  },
+
+  light: {
+    divider: {
+      divider: 'rgba(29, 33, 42, 0.12)'
+    },
+    text: {
+      primary: 'rgba(29, 33, 42, 0.9)',
+      secondary: 'rgba(29, 33, 42, 0.48)'
+    },
+    border: {
+      main: 'rgba(29, 33, 42, 0.16)'
+    },
+    primary: {
+      main: 'rgba(41, 126, 242, 1)'
+    }
   }
 }
