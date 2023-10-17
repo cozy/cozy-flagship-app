@@ -120,10 +120,10 @@
         "uploadFailed": "Could not upload {{filename}}"
       },
       "disableReasons": {
-        "multipleFiles": "This application does not support the import of multiple files. Please import your files one by one. To import multiple files, use the {{appname}} application directly in your Cozy.",
-        "tooManyFiles": "The number of files ({{numberOfFiles}}) is too large for this application (max: {{maxNumberOfFiles}}).",
-        "incompatibleMime": "The file type(s) are not compatible with this application",
-        "tooLargeFiles": "The file(s) are too big to be transferred to this application"
+        "multipleFiles": "{{appname}} does not allow you to import multiple files simultaneously. Please import your files one by one or use the {{appname}} application directly in your Cozy.",
+        "tooManyFiles": "The number of files ({{numberOfFiles}}) is too large for {{appname}} (max: {{maxNumberOfFiles}}).",
+        "incompatibleMime": "The file type(s) are not compatible with {{appname}}.",
+        "tooLargeFiles": "The file(s) are too big to be transferred to {{appname}}."
       },
       "appNameOverrides": {
         "mespapiers": "Administrative documents",

@@ -32,6 +32,13 @@
       "body": "Parece que has revocado el acceso a este dispositivo. Para volver a acceder a tus datos, inicia sesión de nuevo. Si esta acción no procede de usted, no dude en ponerse en contacto con nosotros en <linkTag>email</linkTag>."
     }
   },
+  "services": {
+    "osReceive": {
+      "disableReasons": {
+        "multipleFiles": "{{appname}} no permite importar varios archivos simultáneamente. Por favor, importa tus archivos uno a uno o utiliza la aplicación {{appname}} directamente en tu cuenta."
+      }
+    }
+  },
   "software": {
     "name": "Aplicación Móvil Ma Bulle"
   }

@@ -35,7 +35,7 @@
   "services": {
     "osReceive": {
       "disableReasons": {
-        "multipleFiles": "Cette application ne supporte pas l'import de plusieurs fichiers. Merci d'importer vos fichier un par un. Pour importer plusieurs fichiers, utiliser directement l'application {{appname}} dans votre espace personnel."
+        "multipleFiles": "{{appname}} ne permet pas d'importer plusieurs fichiers simultanément. Merci d'importer vos fichier un par un ou utiliser directement l'application {{appname}} dans votre espace personnel."
       }
     }
   },
