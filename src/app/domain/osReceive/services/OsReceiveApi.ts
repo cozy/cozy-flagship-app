@@ -151,6 +151,28 @@ const hasFilesToHandle = async (
   return Promise.resolve(uploadStatus)
 }
 
+// The osReceiveScreen should display again if every file is in toUpload state with no timestamp.
+// Note that this function assumes it is not possible to have files already handled when it is called.
+// Meaning, if it's called wrongly after some files already were uploaded, it will set them up again to upload.
+const cancelUploadByCozyApp = (
+  dispatch: Dispatch<OsReceiveAction>
+): boolean => {
+  OsReceiveLogger.info('cancelUploadByCozyApp called')
+
+  dispatch({
+    type: OsReceiveActionType.UpdateFileStatus,
+    payload: {
+      name: '*',
+      status: OsReceiveFileStatus.toUpload,
+      handledTimestamp: undefined
+    }
+  })
+
+  navigate(routes.home)
+
+  return true
+}
+
 export const OsReceiveApi = (
   client: CozyClient,
   state: OsReceiveState,
@@ -160,8 +182,5 @@ export const OsReceiveApi = (
   getFilesToHandle: (base64 = false) => getFilesToHandle(base64, state),
   uploadFiles: arg => uploadFiles(arg, state, client, dispatch),
   resetFilesToHandle: () => resetFilesToHandle(dispatch),
-  cancelUploadByCozyApp: (): boolean => {
-    navigate(routes.home)
-    return true
-  }
+  cancelUploadByCozyApp: () => cancelUploadByCozyApp(dispatch)
 })
