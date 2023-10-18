@@ -147,6 +147,7 @@ android {
         versionName "1.1.22"
         multiDexEnabled true
         resValue "string", "build_config_package", "io.cozy.flagship.mobile"
+        missingDimensionStrategy "store", "play"
     }
     splits {
         abi {

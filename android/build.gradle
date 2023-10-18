@@ -11,7 +11,7 @@ buildscript {
         googlePlayServicesLocationVersion = "20.0.0"
         DocumentScanner_compileSdkVersion = 33
         DocumentScanner_targetSdkVersion = 33
-        kotlinVersion = '1.6.10' // react-native-receive-sharing-intent requires a global kotlin version else the build fails
+        kotlinVersion = '1.8.0' // react-native-receive-sharing-intent requires a global kotlin version else the build fails
     }
     repositories {
         google()
