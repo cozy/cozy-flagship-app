@@ -24,10 +24,6 @@
 		A98E5EB52A8CC8EF00CAC55D /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98E5EB42A8CC8EF00CAC55D /* ShareViewController.swift */; };
 		A98E5EB82A8CC8EF00CAC55D /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A98E5EB62A8CC8EF00CAC55D /* MainInterface.storyboard */; };
 		A98E5EBC2A8CC8EF00CAC55D /* CozyShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A98E5EB22A8CC8EF00CAC55D /* CozyShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		E42E384B2A21515E0099D90A /* mabulle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E38492A21515E0099D90A /* mabulle@2x.png */; };
-		E42E384C2A21515E0099D90A /* mabulle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E38492A21515E0099D90A /* mabulle@2x.png */; };
-		E42E384D2A21515E0099D90A /* mabulle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E384A2A21515E0099D90A /* mabulle@3x.png */; };
-		E42E384E2A21515E0099D90A /* mabulle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E42E384A2A21515E0099D90A /* mabulle@3x.png */; };
 		E4924AAA29963CAD00F415CE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		E4924AAB29963CAD00F415CE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		E4924AAC29963CAD00F415CE /* HttpServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7AA454281584D30052F4D8 /* HttpServer.m */; };
