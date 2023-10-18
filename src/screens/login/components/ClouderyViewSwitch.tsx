@@ -88,7 +88,7 @@ export const ClouderyViewSwitch = forwardRef(
     const webviewLoginRef = useRef<WebView>()
     const webviewSigninRef = useRef<WebView>()
     const [loginLoaded, setLoginLoaded] = useState(false)
-    const [signinLoaded, setSigninLoaded] = useState(false)
+    const [signinLoaded, setSigninLoaded] = useState(urls.isOnboardingPartner)
 
     useEffect(() => {
       if (loginLoaded && signinLoaded) {
@@ -112,10 +112,6 @@ export const ClouderyViewSwitch = forwardRef(
 
     const onLoginLoadEnd = (): void => {
       setLoginLoaded(true)
-
-      if (urls.isOnboardingPartner) {
-        setSigninLoaded(true)
-      }
     }
 
     const processMessage = (event: WebViewMessageEvent): void => {
@@ -149,29 +145,31 @@ export const ClouderyViewSwitch = forwardRef(
             />
           </View>
         )}
-        <View
-          style={[
-            styles.clouderyLoginView,
-            { zIndex: clouderyMode === CLOUDERY_MODE_LOGIN ? 2 : 1 }
-          ]}
-          key="ViewLogin"
-          testID="ViewLogin"
-        >
-          <ClouderyWebView
-            applicationNameForUserAgent={APPLICATION_NAME_FOR_USER_AGENT}
-            ref={webviewLoginRef}
-            uri={urls.loginUrl}
-            key="WebViewLogin"
-            setCanGoBack={setCanGoBack}
-            handleNavigation={handleNavigation}
-            onLoadEnd={onLoginLoadEnd}
-            onMessage={processMessage}
-            clouderyTheme={clouderyTheme}
-            disableAutofocus={
-              disableAutofocus || clouderyMode !== CLOUDERY_MODE_LOGIN
-            }
-          />
-        </View>
+        {signinLoaded && (
+          <View
+            style={[
+              styles.clouderyLoginView,
+              { zIndex: clouderyMode === CLOUDERY_MODE_LOGIN ? 2 : 1 }
+            ]}
+            key="ViewLogin"
+            testID="ViewLogin"
+          >
+            <ClouderyWebView
+              applicationNameForUserAgent={APPLICATION_NAME_FOR_USER_AGENT}
+              ref={webviewLoginRef}
+              uri={urls.loginUrl}
+              key="WebViewLogin"
+              setCanGoBack={setCanGoBack}
+              handleNavigation={handleNavigation}
+              onLoadEnd={onLoginLoadEnd}
+              onMessage={processMessage}
+              clouderyTheme={clouderyTheme}
+              disableAutofocus={
+                disableAutofocus || clouderyMode !== CLOUDERY_MODE_LOGIN
+              }
+            />
+          </View>
+        )}
       </>
     )
   }
