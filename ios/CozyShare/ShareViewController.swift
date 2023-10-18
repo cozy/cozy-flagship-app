@@ -4,7 +4,7 @@ import Social
 import MobileCoreServices
 import Photos
 
-class ShareViewController: SLComposeServiceViewController {
+class ShareViewController: UIViewController {
  let hostAppBundleIdentifier = "io.cozy.flagship.mobile"
  let shareProtocol = "ShareMedia"
  let sharedKey = "ShareKey"
@@ -15,10 +15,6 @@ class ShareViewController: SLComposeServiceViewController {
  let textContentType = kUTTypeText as String
  let urlContentType = kUTTypeURL as String
  let fileURLType = kUTTypeFileURL as String;
- 
- override func isContentValid() -> Bool {
-   return true
- }
  
  override func viewDidLoad() {
        super.viewDidLoad();
@@ -44,15 +40,6 @@ class ShareViewController: SLComposeServiceViewController {
        }
      }
    }
- }
- 
- override func didSelectPost() {
-       print("didSelectPost");
-   }
-
- override func configurationItems() -> [Any]! {
-   // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
-   return []
  }
  
  private func handleText (content: NSExtensionItem, attachment: NSItemProvider, index: Int) {
