@@ -1,13 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import BackgroundGeolocation from 'react-native-background-geolocation'
 
+import Minilog from 'cozy-minilog'
+
 import {
   uploadData,
   getFlagFailUpload
 } from '/app/domain/geolocation/tracking/upload'
 import { StorageKeys, storeData, getData } from '/libs/localStore/storage'
 import { Log } from '/app/domain/geolocation/helpers'
-
 export { Log, getAllLogs, sendLogFile } from '/app/domain/geolocation/helpers'
 export {
   getId,
@@ -24,6 +25,8 @@ const DEFAULT_TRACKING_CONFIG = {
   elasticityMultiplier: 3,
   desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH
 }
+
+const log = Minilog('📍 Geolocation')
 
 export const startTracking = async () => {
   try {
@@ -63,7 +66,9 @@ export const startTracking = async () => {
     await storeData(StorageKeys.ShouldBeTrackingFlagStorageAdress, true)
 
     return true
-  } catch {
+  } catch (e) {
+    log.error(e)
+
     return false
   }
 }
@@ -79,7 +84,9 @@ export const stopTracking = async () => {
       Log('Already off')
     }
     return true
-  } catch {
+  } catch (e) {
+    log.error(e)
+
     return false
   }
 }
