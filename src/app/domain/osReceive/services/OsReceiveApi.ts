@@ -60,7 +60,7 @@ const getFilesToHandle = async (
   )
 }
 
-const uploadFiles = async (
+const uploadFile = async (
   arg: string,
   state: OsReceiveState,
   client: CozyClient | null,
@@ -73,12 +73,12 @@ const uploadFiles = async (
 
   if (!fileToUpload) {
     return OsReceiveLogger.error(
-      'uploadFiles: fileToUpload is undefined, aborting'
+      'uploadFile: fileToUpload is undefined, aborting'
     )
   }
 
   if (!client) {
-    return OsReceiveLogger.error('uploadFiles: client is undefined, aborting')
+    return OsReceiveLogger.error('uploadFile: client is undefined, aborting')
   }
 
   OsReceiveLogger.info('starting to uploadFile', { fileToUpload })
@@ -87,7 +87,7 @@ const uploadFiles = async (
     const token = client.getStackClient().token.accessToken
 
     if (!token) {
-      throw new Error('uploadFiles: token is undefined, aborting')
+      throw new Error('uploadFile: token is undefined, aborting')
     }
 
     await uploadFileWithConflictStrategy({
@@ -107,7 +107,7 @@ const uploadFiles = async (
       }
     })
   } catch (error) {
-    OsReceiveLogger.error('uploadFiles: error', error)
+    OsReceiveLogger.error('uploadFile: error', error)
 
     Toast.show({
       text1: t('services.osReceive.errors.uploadFailed', {
@@ -180,7 +180,7 @@ export const OsReceiveApi = (
 ): OsReceiveApiMethods => ({
   hasFilesToHandle: () => hasFilesToHandle(state),
   getFilesToHandle: (base64 = false) => getFilesToHandle(base64, state),
-  uploadFiles: arg => uploadFiles(arg, state, client, dispatch),
+  uploadFile: arg => uploadFile(arg, state, client, dispatch),
   resetFilesToHandle: () => resetFilesToHandle(dispatch),
   cancelUploadByCozyApp: () => cancelUploadByCozyApp(dispatch)
 })
