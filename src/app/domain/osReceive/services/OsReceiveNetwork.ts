@@ -58,7 +58,7 @@ export const isReceivedFile = (file: unknown): file is ReceivedFile => {
   )
 }
 
-export const uploadFiles = async (
+export const uploadFile = async (
   client: CozyClient,
   uploadUrl: string,
   media: ReceivedFile
@@ -70,7 +70,7 @@ export const uploadFiles = async (
   const token = client.getStackClient().token.accessToken
 
   if (!token) {
-    throw new Error('uploadFiles: token is undefined, aborting')
+    throw new Error('uploadFile: token is undefined, aborting')
   }
 
   return uploadFileWithConflictStrategy({
