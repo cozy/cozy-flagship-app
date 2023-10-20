@@ -83,6 +83,10 @@ const isAvailable = (featureName: string): Promise<boolean> => {
     return Promise.resolve(true)
   } else if (featureName === 'ocr') {
     return Promise.resolve(isOcrAvailable())
+  } else if (featureName === 'backup') {
+    return Promise.resolve(true)
+  } else if (featureName === 'scanner') {
+    return Promise.resolve(isScannerAvailable())
   }
 
   return Promise.resolve(false)
@@ -253,7 +257,7 @@ export const localMethods = (
     openAppOSSettings,
     isNativePassInstalledOnDevice,
     scanDocument,
-    isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
+    isScannerAvailable: () => Promise.resolve(isScannerAvailable()), // deprecated
     ocr: processOcr,
     // For now setTheme is only used for the home theme
     setTheme: setHomeThemeIntent,

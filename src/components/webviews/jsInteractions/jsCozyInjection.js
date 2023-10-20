@@ -17,7 +17,7 @@ const makeMetadata = routeName => {
     routeName,
     statusBarHeight,
     version,
-    backup_available: true
+    backup_available: true // deprecated
   })
 }
 
