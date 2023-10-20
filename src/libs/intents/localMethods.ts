@@ -4,6 +4,7 @@ import { getDeviceName } from 'react-native-device-info'
 
 import CozyClient from 'cozy-client'
 import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
+import Minilog from 'cozy-minilog'
 
 import * as RootNavigation from '/libs/RootNavigation'
 import {
@@ -54,6 +55,8 @@ import {
   checkPermissions,
   requestPermissions
 } from '/app/domain/nativePermissions'
+
+const log = Minilog('localMethods')
 
 export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   if (!client) {
@@ -257,7 +260,12 @@ export const localMethods = (
     openAppOSSettings,
     isNativePassInstalledOnDevice,
     scanDocument,
-    isScannerAvailable: () => Promise.resolve(isScannerAvailable()), // deprecated
+    isScannerAvailable: (): Promise<boolean> => {
+      log.debug(
+        "Please use intent.call('isAvailable', 'scanner') instead of intent.call('isScannerAvailable')"
+      )
+      return Promise.resolve(isScannerAvailable())
+    },
     ocr: processOcr,
     // For now setTheme is only used for the home theme
     setTheme: setHomeThemeIntent,
