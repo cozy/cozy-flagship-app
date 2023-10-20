@@ -81,6 +81,8 @@ const backToHome = (): Promise<null> => {
 const isAvailable = (featureName: string): Promise<boolean> => {
   if (featureName === 'geolocationTracking') {
     return Promise.resolve(true)
+  } else if (featureName === 'ocr') {
+    return Promise.resolve(isOcrAvailable())
   }
 
   return Promise.resolve(false)
@@ -253,7 +255,6 @@ export const localMethods = (
     scanDocument,
     isScannerAvailable: () => Promise.resolve(isScannerAvailable()),
     ocr: processOcr,
-    isOcrAvailable: () => Promise.resolve(isOcrAvailable()),
     // For now setTheme is only used for the home theme
     setTheme: setHomeThemeIntent,
     prepareBackup: () => prepareBackupWithClient(client),
