@@ -1,5 +1,6 @@
 import { useNavigation, useNavigationState } from '@react-navigation/native'
 import React, { useReducer, useEffect, useState, useRef } from 'react'
+import { Alert } from 'react-native'
 
 import { useClient } from 'cozy-client'
 
@@ -43,6 +44,17 @@ export const OsReceiveProvider = ({
     // Pass a callback to the low level function that handles the received files
     // We will have access to their paths in the provider state afterwards
     const cleanupReceivedFiles = handleReceivedFiles(files => {
+      if (!client?.isLogged) {
+        Alert.alert(
+          t('services.osReceive.errors.notLogged.title'),
+          t('services.osReceive.errors.notLogged.body'),
+          undefined,
+          {
+            cancelable: true
+          }
+        )
+        return
+      }
       dispatch({ type: OsReceiveActionType.SetFilesToUpload, payload: files })
       backToHome().catch(err => {
         OsReceiveLogger.warn(
@@ -55,7 +67,7 @@ export const OsReceiveProvider = ({
     return () => {
       cleanupReceivedFiles()
     }
-  }, [])
+  }, [client, t])
 
   useEffect(() => {
     if (!client || didCall.current) return

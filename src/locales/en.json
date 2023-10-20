@@ -117,7 +117,11 @@
       "abort": "Go Back",
       "nElementsTitle": "{{n}} elements",
       "errors": {
-        "uploadFailed": "Could not upload {{filename}}"
+        "uploadFailed": "Could not upload {{filename}}",
+        "notLogged": {
+          "title": "Impossible to share",
+          "body": "You must be logged to share documents with your Cozy."
+        }
       },
       "disableReasons": {
         "multipleFiles": "{{appname}} does not allow you to import multiple files simultaneously. Please import your files one by one or use the {{appname}} application directly in your Cozy.",

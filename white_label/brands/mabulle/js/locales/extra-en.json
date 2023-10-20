@@ -34,6 +34,11 @@
   },
   "services": {
     "osReceive": {
+      "errors": {
+        "notLogged": {
+          "body": "You must be logged to share documents with your personnal space."
+        }
+      },
       "disableReasons": {
         "multipleFiles": "{{appname}} does not allow you to import multiple files simultaneously. Please import your files one by one or use the {{appname}} application directly in your personnal space."
       }

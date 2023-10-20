@@ -106,7 +106,11 @@
       "abort": "Regresar",
       "nElementsTitle": "{{n}} elementos",
       "errors": {
-        "uploadFailed": "Error al subir {{filename}}"
+        "uploadFailed": "Error al subir {{filename}}",
+        "notLogged": {
+          "title": "Imposible de compartir",
+          "body": "Tienes que estar conectado para compartir documentos con tu Cozy."
+        }
       },
       "disableReasons": {
         "multipleFiles": "{{appname}} no permite importar varios archivos simultáneamente. Por favor, importa tus archivos uno a uno o utiliza la aplicación {{appname}} directamente en tu Cozy.",

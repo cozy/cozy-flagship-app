@@ -34,6 +34,11 @@
   },
   "services": {
     "osReceive": {
+      "errors": {
+        "notLogged": {
+          "body": "Vous devez être connecté pour partager des documents avec votre Cozy."
+        }
+      },
       "disableReasons": {
         "multipleFiles": "{{appname}} ne permet pas d'importer plusieurs fichiers simultanément. Merci d'importer vos fichier un par un ou utiliser directement l'application {{appname}} dans votre Cozy."
       }
