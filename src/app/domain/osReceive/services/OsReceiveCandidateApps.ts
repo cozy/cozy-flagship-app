@@ -57,7 +57,8 @@ const checkFileNumberLimit =
           })
         : t('services.osReceive.disableReasons.tooManyFiles', {
             numberOfFiles: filesToUpload.length,
-            maxNumberOfFiles: maxNumberOfFiles
+            maxNumberOfFiles: maxNumberOfFiles,
+            appname: app.name
           })
 
     const reasons = app.reasonDisabled
@@ -128,7 +129,9 @@ const checkFileSizeLimitAsync =
       return app
     }
 
-    const reason = t('services.osReceive.disableReasons.tooLargeFiles')
+    const reason = t('services.osReceive.disableReasons.tooLargeFiles', {
+      appname: app.name
+    })
     const reasons = app.reasonDisabled
       ? [...app.reasonDisabled, reason]
       : [reason]

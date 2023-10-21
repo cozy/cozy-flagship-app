@@ -5,7 +5,6 @@ import CozyClient from 'cozy-client'
 
 import { OsReceiveLogger } from '/app/domain/osReceive'
 import { uploadFileWithConflictStrategy } from '/app/domain/upload/services/index'
-import { IncomingFile } from '/app/domain/osReceive/models/ReceivedFile'
 import {
   OsReceiveState,
   OsReceiveAction,
@@ -19,18 +18,18 @@ import { t } from '/locales/i18n'
 import { getBase64FromReceivedFile } from '/app/domain/osReceive/services/OsReceiveData'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
+import { IncomingFile } from '/app/domain/osReceive/models/ReceivedFile'
 
 const getUrl = (
   client: CozyClient,
-  file: { fileOptions: { dirId: string } },
-  fileToUpload: OsReceiveFile
+  file: { fileOptions: { dirId: string; name: string } }
 ): string => {
   const createdAt = new Date().toISOString()
   const modifiedAt = new Date().toISOString()
 
   const toURL = new URL(client.getStackClient().uri)
   toURL.pathname = `/files/${file.fileOptions.dirId}`
-  toURL.searchParams.append('Name', fileToUpload.name)
+  toURL.searchParams.append('Name', file.fileOptions.name)
   toURL.searchParams.append('Type', 'file')
   toURL.searchParams.append('Tags', 'library')
   toURL.searchParams.append('Executable', 'false')
@@ -60,77 +59,98 @@ const getFilesToHandle = async (
   )
 }
 
-const uploadFile = async (
+const uploadFileMultiple = async (
   arg: string,
   state: OsReceiveState,
-  client: CozyClient | null,
+  client: CozyClient,
   dispatch: Dispatch<OsReceiveAction>
 ): Promise<void> => {
-  const file = JSON.parse(arg) as IncomingFile
-  const fileToUpload = state.filesToUpload.find(
-    fileToUpload => fileToUpload.name === file.fileOptions.name
-  )
+  const files = JSON.parse(arg) as IncomingFile[]
+  const token = client.getStackClient().token.accessToken
 
-  if (!fileToUpload) {
-    return OsReceiveLogger.error(
-      'uploadFile: fileToUpload is undefined, aborting'
-    )
+  if (!token) {
+    throw new Error('uploadFile: token is undefined, aborting')
   }
 
-  if (!client) {
-    return OsReceiveLogger.error('uploadFile: client is undefined, aborting')
-  }
+  for (const file of files) {
+    try {
+      const fileToUpload = state.filesToUpload.find(
+        fileToUpload => fileToUpload.name === file.fileOptions.name
+      )
 
-  OsReceiveLogger.info('starting to uploadFile', { fileToUpload })
+      if (!fileToUpload) {
+        throw new Error('uploadFile: fileToUpload is undefined, aborting')
+      }
 
-  try {
-    const token = client.getStackClient().token.accessToken
+      if (!file.fileOptions.dirId) {
+        throw new Error('uploadFile: dirId is undefined, aborting')
+      }
 
-    if (!token) {
-      throw new Error('uploadFile: token is undefined, aborting')
+      OsReceiveLogger.info('starting to uploadFile', { fileToUpload })
+
+      const url = getUrl(client, file)
+
+      await uploadFileWithConflictStrategy({
+        url,
+        token,
+        filename: fileToUpload.name,
+        filepath: fileToUpload.file.filePath,
+        mimetype: fileToUpload.file.mimeType
+      })
+
+      dispatch({
+        type: OsReceiveActionType.UpdateFileStatus,
+        payload: {
+          name: fileToUpload.name,
+          status: OsReceiveFileStatus.uploaded,
+          handledTimestamp: Date.now()
+        }
+      })
+    } catch (error) {
+      OsReceiveLogger.error('uploadFile: error', error)
+
+      Toast.show({
+        text1: t('services.osReceive.errors.uploadFailed', {
+          filename: file.fileOptions.name
+        }),
+        type: 'error'
+      })
+
+      dispatch({
+        type: OsReceiveActionType.UpdateFileStatus,
+        payload: {
+          name: file.fileOptions.name,
+          status: OsReceiveFileStatus.error,
+          handledTimestamp: Date.now()
+        }
+      })
     }
-
-    await uploadFileWithConflictStrategy({
-      url: getUrl(client, file, fileToUpload),
-      token,
-      filename: fileToUpload.name,
-      filepath: fileToUpload.file.filePath,
-      mimetype: fileToUpload.file.mimeType
-    })
-
-    dispatch({
-      type: OsReceiveActionType.UpdateFileStatus,
-      payload: {
-        name: fileToUpload.name,
-        status: OsReceiveFileStatus.uploaded,
-        handledTimestamp: Date.now()
-      }
-    })
-  } catch (error) {
-    OsReceiveLogger.error('uploadFile: error', error)
-
-    Toast.show({
-      text1: t('services.osReceive.errors.uploadFailed', {
-        filename: fileToUpload.name
-      }),
-      type: 'error'
-    })
-
-    dispatch({
-      type: OsReceiveActionType.UpdateFileStatus,
-      payload: {
-        name: fileToUpload.name,
-        status: OsReceiveFileStatus.error,
-        handledTimestamp: Date.now()
-      }
-    })
   }
+}
+
+const uploadFiles = (
+  arg: string,
+  state: OsReceiveState,
+  client: CozyClient,
+  dispatch: Dispatch<OsReceiveAction>
+): boolean => {
+  OsReceiveLogger.info('uploadFile called')
+
+  uploadFileMultiple(arg, state, client, dispatch)
+    .then(() => {
+      return OsReceiveLogger.info('uploadFiles ended without errors')
+    })
+    .catch(error => {
+      OsReceiveLogger.error('uploadFile: error', error)
+    })
+
+  return true
 }
 
 const resetFilesToHandle = (
   dispatch: Dispatch<OsReceiveAction>
 ): Promise<boolean> => {
-  OsReceiveLogger.info('resetFilesToHandle')
+  OsReceiveLogger.info('resetFilesToHandle called')
   setTimeout(() => dispatch({ type: OsReceiveActionType.SetRecoveryState }), 0)
   return Promise.resolve(true)
 }
@@ -180,7 +200,7 @@ export const OsReceiveApi = (
 ): OsReceiveApiMethods => ({
   hasFilesToHandle: () => hasFilesToHandle(state),
   getFilesToHandle: (base64 = false) => getFilesToHandle(base64, state),
-  uploadFile: arg => uploadFile(arg, state, client, dispatch),
+  uploadFiles: arg => uploadFiles(arg, state, client, dispatch),
   resetFilesToHandle: () => resetFilesToHandle(dispatch),
   cancelUploadByCozyApp: () => cancelUploadByCozyApp(dispatch)
 })
