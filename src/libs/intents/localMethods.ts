@@ -189,7 +189,6 @@ interface CustomMethods {
   setGeolocationTrackingId: typeof setGeolocationTrackingId
   forceUploadGeolocationTrackingData: typeof forceUploadGeolocationTrackingData
   getDeviceInfo: typeof getDeviceInfo
-  isAvailable: typeof isAvailable
 }
 
 const prepareBackupWithClient = (
