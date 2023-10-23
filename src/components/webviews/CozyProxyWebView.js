@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native'
 import React, { useCallback, useState, useEffect } from 'react'
-import { AppState, View } from 'react-native'
+import { AppState, KeyboardAvoidingView, Platform, View } from 'react-native'
 
 import { useClient } from 'cozy-client'
 import Minilog from 'cozy-minilog'
@@ -101,8 +101,10 @@ export const CozyProxyWebView = ({
     }
   })
 
+  const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
+
   return (
-    <View style={{ ...styles.view, ...style }}>
+    <Wrapper style={{ ...styles.view, ...style }} behavior="height">
       {state.source ? (
         <CozyWebView
           source={state.source}
@@ -117,6 +119,6 @@ export const CozyProxyWebView = ({
         />
       ) : null}
       {state.isLoading && <RemountProgress />}
-    </View>
+    </Wrapper>
   )
 }
