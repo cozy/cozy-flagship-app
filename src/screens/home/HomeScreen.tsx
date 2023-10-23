@@ -52,7 +52,9 @@ export const HomeScreen = ({
       <StatusBar barStyle={barStyle} />
 
       {shouldShowCliskDevMode() ? (
-        <CliskDevView setLauncherContext={trySetLauncherContext} />
+        launcherContext.state === 'default' ? (
+          <CliskDevView setLauncherContext={trySetLauncherContext} />
+        ) : null
       ) : (
         <HomeView
           navigation={navigation}
