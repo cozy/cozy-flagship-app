@@ -1,7 +1,5 @@
 import CozyClient, { generateWebLink, Q } from 'cozy-client'
 
-import { UploadResult } from '/app/domain/upload/models'
-import { uploadFileWithConflictStrategy } from '/app/domain/upload/services'
 import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
 import { OsReceiveLogger } from '/app/domain/osReceive'
 import { AcceptFromFlagshipManifest } from '/app/domain/osReceive/models/OsReceiveCozyApp'
@@ -56,28 +54,4 @@ export const isReceivedFile = (file: unknown): file is ReceivedFile => {
     'filePath' in file &&
     'mimeType' in file
   )
-}
-
-export const uploadFile = async (
-  client: CozyClient,
-  uploadUrl: string,
-  media: ReceivedFile
-): Promise<UploadResult> => {
-  if (!isReceivedFile(media)) {
-    throw new Error('Invalid file to upload')
-  }
-
-  const token = client.getStackClient().token.accessToken
-
-  if (!token) {
-    throw new Error('uploadFile: token is undefined, aborting')
-  }
-
-  return uploadFileWithConflictStrategy({
-    url: uploadUrl,
-    token,
-    filename: media.fileName,
-    filepath: media.filePath,
-    mimetype: media.mimeType
-  })
 }
