@@ -69,7 +69,7 @@ const uploadFileMultiple = async (
   const token = client.getStackClient().token.accessToken
 
   if (!token) {
-    throw new Error('uploadFile: token is undefined, aborting')
+    throw new Error('uploadFileMultiple: token is undefined, aborting')
   }
 
   for (const file of files) {
@@ -79,14 +79,16 @@ const uploadFileMultiple = async (
       )
 
       if (!fileToUpload) {
-        throw new Error('uploadFile: fileToUpload is undefined, aborting')
+        throw new Error(
+          'uploadFileMultiple: fileToUpload is undefined, aborting'
+        )
       }
 
       if (!file.fileOptions.dirId) {
-        throw new Error('uploadFile: dirId is undefined, aborting')
+        throw new Error('uploadFileMultiple: dirId is undefined, aborting')
       }
 
-      OsReceiveLogger.info('starting to uploadFile', { fileToUpload })
+      OsReceiveLogger.info('starting to uploadFileMultiple', { fileToUpload })
 
       const url = getUrl(client, file)
 
@@ -107,7 +109,7 @@ const uploadFileMultiple = async (
         }
       })
     } catch (error) {
-      OsReceiveLogger.error('uploadFile: error', error)
+      OsReceiveLogger.error('uploadFileMultiple: error', error)
 
       Toast.show({
         text1: t('services.osReceive.errors.uploadFailed', {
@@ -134,14 +136,14 @@ const uploadFiles = (
   client: CozyClient,
   dispatch: Dispatch<OsReceiveAction>
 ): boolean => {
-  OsReceiveLogger.info('uploadFile called')
+  OsReceiveLogger.info('uploadFiles called')
 
   uploadFileMultiple(arg, state, client, dispatch)
     .then(() => {
       return OsReceiveLogger.info('uploadFiles ended without errors')
     })
     .catch(error => {
-      OsReceiveLogger.error('uploadFile: error', error)
+      OsReceiveLogger.error('uploadFiles: error', error)
     })
 
   return true
