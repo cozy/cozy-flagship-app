@@ -1,21 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import WebView from 'react-native-webview'
+import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
 
 import { useClouderyOffer } from '/app/view/IAP/hooks/useClouderyOffer'
 
 export const ClouderyOffer = (): JSX.Element | null => {
-  const { popupUrl } = useClouderyOffer()
+  const { popupUrl, interceptNavigation, interceptOpenWindow } =
+    useClouderyOffer()
 
-  return popupUrl ? <WebViewWithLoadingOverlay popupUrl={popupUrl} /> : null
+  return popupUrl ? (
+    <WebViewWithLoadingOverlay
+      popupUrl={popupUrl}
+      interceptNavigation={interceptNavigation}
+    />
+  ) : null
 }
 
 interface WebViewWithLoadingOverlayProps {
   popupUrl: string
+  interceptNavigation: (request: WebViewNavigation) => boolean
 }
 
 const WebViewWithLoadingOverlay = ({
-  popupUrl
+  popupUrl,
+  interceptNavigation,
 }: WebViewWithLoadingOverlayProps): JSX.Element => {
   const [loading, setLoading] = useState(true)
 
@@ -23,6 +32,7 @@ const WebViewWithLoadingOverlay = ({
     <View style={styles.dialog}>
       <WebView
         source={{ uri: popupUrl }}
+        onShouldStartLoadWithRequest={interceptNavigation}
         onLoadEnd={(): void => setLoading(false)}
       />
       {loading && (
