@@ -74,7 +74,11 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
 }
 
 export const backToHome = (): Promise<null> => {
-  RootNavigation.navigate('home')
+  const isOnHomeScreen =
+    RootNavigation.navigationRef.current?.getCurrentRoute()?.name === 'default'
+
+  if (!isOnHomeScreen) RootNavigation.navigate('default')
+
   return Promise.resolve(null)
 }
 

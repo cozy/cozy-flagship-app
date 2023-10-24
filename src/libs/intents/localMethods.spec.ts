@@ -53,7 +53,7 @@ describe('backToHome', () => {
 
     await (localMethods(client) as NativeMethodsRegister).backToHome()
 
-    expect(RootNavigation.navigate).toHaveBeenCalledWith('home')
+    expect(RootNavigation.navigate).toHaveBeenCalledWith('default')
   })
 })
 
