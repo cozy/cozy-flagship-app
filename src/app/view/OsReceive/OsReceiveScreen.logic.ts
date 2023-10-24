@@ -1,3 +1,9 @@
+import {
+  Route,
+  useNavigation,
+  useNavigationState
+} from '@react-navigation/native'
+
 import { generateWebLink, useClient } from 'cozy-client'
 import { FlagshipUI } from 'cozy-intent'
 
@@ -6,7 +12,8 @@ import {
   useCallback,
   Dispatch,
   SetStateAction,
-  useEffect
+  useEffect,
+  useRef
 } from 'react'
 
 import { osReceiveScreenStyles } from './OsReceiveScreen.styles'
@@ -20,10 +27,11 @@ import {
   OsReceiveActionType,
   OsReceiveFileStatus
 } from '/app/domain/osReceive/models/OsReceiveState'
+import { CozyAppParams } from '/constants/route-types'
 import { routes } from '/constants/routes'
-import { useDefaultIconParams } from '/libs/functions/openApp'
+import { navigateToApp, useDefaultIconParams } from '/libs/functions/openApp'
 import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
-import { navigate } from '/libs/RootNavigation'
+import { navigate, navigationRef } from '/libs/RootNavigation'
 
 export const useOsReceiveScreenLogic = (): {
   selectedOption: string | undefined
@@ -43,6 +51,23 @@ export const useOsReceiveScreenLogic = (): {
     (): boolean => Boolean(appsForUpload?.find(app => !app.reasonDisabled)),
     [appsForUpload]
   )
+  const currentRouteRef = useRef<Route<string, CozyAppParams>>()
+  const navigation = useNavigation()
+  const navigationState = useNavigationState(state => state)
+
+  // Store the current route if it's cozyapp to be able to go back to it
+  useEffect(() => {
+    const currentRoute = navigationRef.getCurrentRoute() as Route<
+      string,
+      CozyAppParams
+    >
+
+    if (currentRoute.name === routes.cozyapp) {
+      currentRouteRef.current = currentRoute
+    } else {
+      currentRouteRef.current = undefined
+    }
+  }, [navigationState])
 
   const canProceed = useCallback(
     () => !(filesToUpload.length > 0),
@@ -82,6 +107,20 @@ export const useOsReceiveScreenLogic = (): {
     })
   }, [client, appsForUpload, selectedOption, iconParams, osReceiveDispatch])
 
+  const onClose = useCallback(() => {
+    osReceiveDispatch({
+      type: OsReceiveActionType.SetInitialState
+    })
+
+    // If we were on a cozyapp before starting, we go back to it
+    if (currentRouteRef.current?.name === routes.cozyapp) {
+      void navigateToApp({
+        navigation,
+        ...currentRouteRef.current.params
+      })
+    }
+  }, [navigation, osReceiveDispatch])
+
   useEffect(() => {
     void setFlagshipUI(
       osReceiveScreenStyles.setFlagshipUI as FlagshipUI,
@@ -103,10 +142,6 @@ export const useOsReceiveScreenLogic = (): {
     canProceed,
     proceedToWebview,
     hasAppsForUpload,
-    onClose: (): void => {
-      osReceiveDispatch({
-        type: OsReceiveActionType.SetInitialState
-      })
-    }
+    onClose
   }
 }

@@ -214,7 +214,9 @@ export const navigateToApp = ({ navigation, href, slug, iconParams }) => {
   return navigation.navigate('cozyapp', {
     href,
     iconParams:
-      (iconParams && JSON.parse(iconParams)) || getDefaultIconParams(),
+      (iconParams && typeof iconParams !== 'object'
+        ? JSON.parse(iconParams)
+        : iconParams) || getDefaultIconParams(),
     slug
   })
 }
