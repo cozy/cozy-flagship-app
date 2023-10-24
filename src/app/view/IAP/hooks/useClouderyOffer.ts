@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
 
 import { useClient } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import {
   CLOUDERY_OFFER,
+  interceptNavigation,
   clouderyOfferEventHandler
 } from '/app/domain/iap/services/clouderyOffer'
 
@@ -12,6 +14,7 @@ const log = Minilog('💳 Cloudery Offer')
 
 interface ClouderyOfferState {
   popupUrl: string | null
+  interceptNavigation: (request: WebViewNavigation) => boolean
 }
 
 export const useClouderyOffer = (): ClouderyOfferState => {
@@ -40,6 +43,7 @@ export const useClouderyOffer = (): ClouderyOfferState => {
   }, [client])
 
   return {
-    popupUrl
+    popupUrl,
+    interceptNavigation: interceptNavigation()
   }
 }
