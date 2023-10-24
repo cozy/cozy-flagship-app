@@ -69,7 +69,7 @@ export class LauncherView extends Component {
    * Run when the job is stopped by the user
    */
   onStopExecution() {
-    this.launcher.stop({ message: 'stopped by user' })
+    this.launcher.stop({ message: 'stopped by user', invisible: true })
     this.props.setLauncherContext({ state: 'default' })
   }
 

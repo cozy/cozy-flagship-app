@@ -207,10 +207,11 @@ class ReactNativeLauncher extends Launcher {
    * Finish the execution of the konnector. Sending logs and update current job state
    *
    * @param {object} options - options object
-   * @param {String} [options.message] - options object
+   * @param {String} [options.message] - Error message
+   * @param {Boolean} [options.invisible] - should harvest display an error message or not
    * @returns {Promise<void>}
    */
-  async stop({ message } = {}) {
+  async stop({ message, invisible = false } = {}) {
     deactivateKeepAwake('clisk')
     const { client, job } = this.getStartContext()
 
@@ -229,8 +230,12 @@ class ReactNativeLauncher extends Launcher {
         await this.updateJobResult()
       }
       this.emit('STOPPED_JOB')
-    } else {
+    } else if (!invisible) {
       launcherEvent.emit('launchResult', { errorMessage: message })
+    } else {
+      // we don't want to display this error message in harvest probably because
+      // the user stopped the execution himself
+      launcherEvent.emit('launchResult', { cancel: true })
     }
     this.close()
   }
