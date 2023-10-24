@@ -68,6 +68,7 @@ class FileReceiver extends EventEmitter {
   }
 
   clearReceivedFiles(): void {
+    OsReceiveLogger.info('Clearing received files')
     OsReceiveIntent.clearReceivedFiles()
   }
 }

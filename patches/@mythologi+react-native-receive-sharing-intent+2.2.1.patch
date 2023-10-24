@@ -1,0 +1,13 @@
+diff --git a/node_modules/@mythologi/react-native-receive-sharing-intent/src/ReceiveSharingIntent.ts b/node_modules/@mythologi/react-native-receive-sharing-intent/src/ReceiveSharingIntent.ts
+index 2ad1da2..97348a2 100644
+--- a/node_modules/@mythologi/react-native-receive-sharing-intent/src/ReceiveSharingIntent.ts
++++ b/node_modules/@mythologi/react-native-receive-sharing-intent/src/ReceiveSharingIntent.ts
+@@ -43,7 +43,7 @@ class ReceiveSharingIntentModule implements IReceiveSharingIntent {
+   }
+ 
+   clearReceivedFiles() {
+-    this.isClear = true;
++    ReceiveSharingIntent.clearFileNames()
+   }
+ 
+   protected getFileNames(
