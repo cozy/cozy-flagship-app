@@ -25,6 +25,10 @@ export const styles = StyleSheet.create({
     flex: 1
   },
   listItemIcon: {
-    marginRight: 16
+    marginRight: 16,
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 })
