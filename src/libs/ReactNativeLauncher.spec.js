@@ -389,6 +389,24 @@ describe('ReactNativeLauncher', () => {
       })
       expect(launcherEvent.emit).not.toHaveBeenCalledWith('loginSuccess')
     })
+    it('should not send an error message to harvest when the user stops the execution of the konnector himself', async () => {
+      const { launcher, client } = setup()
+      launcher.setStartContext({
+        client,
+        konnector: { slug: 'konnectorslug', clientSide: true },
+        launcherClient: {
+          setAppMetadata: () => null
+        }
+      })
+      launcher.pilot.call.mockImplementation(async () => {
+        launcher.stop({ message: 'stopped by user', invisible: true })
+      })
+      await launcher.start()
+
+      expect(launcherEvent.emit).toHaveBeenCalledWith('launchResult', {
+        cancel: true
+      })
+    })
     it('should run ensureNotAuthenticated when an account has been removed from database', async () => {
       const { launcher, client, launch } = setup()
       launcher.setStartContext({
