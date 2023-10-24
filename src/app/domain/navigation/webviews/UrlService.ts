@@ -28,6 +28,11 @@ import {
   isHttpOrHttps,
   openUrlWithOs
 } from '/app/domain/navigation/webviews/UrlUtils'
+import {
+  showClouderyOffer,
+  formatClouderyOfferUrlWithInAppPurchaseParams,
+  isClouderyOfferUrl
+} from '/app/domain/iap/services/clouderyOffer'
 
 /**
  * Navigate to a given url.
@@ -55,6 +60,13 @@ export const interceptNavigation = ({
 }: InterceptNavigationProps): boolean => {
   if (isOauthClientLimitExceededUrl(initialRequest.url)) {
     showOauthClientsLimitExceeded(targetUri)
+    return false
+  }
+
+  if (isClouderyOfferUrl(initialRequest.url)) {
+    const clouderyOfferUrlWithInAppPurchaseParams =
+      formatClouderyOfferUrlWithInAppPurchaseParams(initialRequest.url)
+    showClouderyOffer(clouderyOfferUrlWithInAppPurchaseParams)
     return false
   }
 
