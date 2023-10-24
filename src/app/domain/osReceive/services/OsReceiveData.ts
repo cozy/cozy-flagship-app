@@ -1,6 +1,8 @@
 import OsReceiveIntent from '@mythologi/react-native-receive-sharing-intent'
 import RNFS from 'react-native-fs'
 
+import { EventEmitter } from 'events'
+
 import {
   OsReceiveFile,
   OsReceiveFileStatus
@@ -47,37 +49,30 @@ const mapFilesToUploadToArray = (
   }))
 }
 
-const onReceiveFiles = (
-  files: ReceivedFile[],
-  callback?: (files: OsReceiveFile[]) => void
-): void => {
+const onReceiveFiles = (files: ReceivedFile[]): OsReceiveFile[] => {
   OsReceiveLogger.info('Received files', files)
   const processedFilesMap = processReceivedFiles(files)
   const filesArray = mapFilesToUploadToArray(processedFilesMap)
 
-  callback?.(filesArray)
+  return filesArray
 }
 
-const onFailure = (error: unknown): void => {
-  OsReceiveLogger.error('Could not get received files', error)
-}
+class FileReceiver extends EventEmitter {
+  receiveFiles(): void {
+    OsReceiveIntent.getReceivedFiles(
+      files =>
+        this.emit('filesReceived', onReceiveFiles(files as ReceivedFile[])),
+      error => this.emit('filesReceivedError', error),
+      OS_RECEIVE_PROTOCOL_NAME
+    )
+  }
 
-type FileCallback = (files: OsReceiveFile[]) => void
-type CleanupFunction = () => void
-
-export const handleReceivedFiles = (
-  callback?: FileCallback
-): CleanupFunction => {
-  OsReceiveIntent.getReceivedFiles(
-    files => onReceiveFiles(files as ReceivedFile[], callback),
-    onFailure,
-    OS_RECEIVE_PROTOCOL_NAME
-  )
-
-  return () => {
+  clearReceivedFiles(): void {
     OsReceiveIntent.clearReceivedFiles()
   }
 }
+
+export const OsReceiveEmitter = new FileReceiver()
 
 export const getBase64FromReceivedFile = async (
   filePath: string

@@ -3,11 +3,12 @@ import React, { useReducer, useEffect, useState, useRef } from 'react'
 
 import { useClient } from 'cozy-client'
 
-import { handleReceivedFiles } from '/app/domain/osReceive/services/OsReceiveData'
+import { OsReceiveEmitter } from '/app/domain/osReceive/services/OsReceiveData'
 import { useError } from '/app/view/Error/ErrorProvider'
 import { useI18n } from '/locales/i18n'
 import {
   OsReceiveActionType,
+  OsReceiveFile,
   OsReceiveFileStatus
 } from '/app/domain/osReceive/models/OsReceiveState'
 import {
@@ -37,25 +38,31 @@ export const OsReceiveProvider = ({
   const [data, setQuery] = useState<AcceptFromFlagshipManifest[]>([])
   const didCall = useRef(false)
 
-  // This effect is triggered at mount and unmount of the provider,
-  // its role is to listen native events and update the state accordingly
   useEffect(() => {
-    // Pass a callback to the low level function that handles the received files
-    // We will have access to their paths in the provider state afterwards
-    const cleanupReceivedFiles = handleReceivedFiles(files => {
+    const onFilesReceived = (files: OsReceiveFile[]): void => {
+      if (!client?.isLogged) return
       dispatch({ type: OsReceiveActionType.SetFilesToUpload, payload: files })
-      backToHome().catch(err => {
-        OsReceiveLogger.warn(
-          'Error while going back to home after receiving files from native',
-          err
-        )
+      backToHome().catch(error => {
+        OsReceiveLogger.error('Could not go back to home', error)
       })
-    })
+    }
+
+    const onError = (error: unknown): void => {
+      OsReceiveLogger.error('Could not get received files', error)
+      dispatch({ type: OsReceiveActionType.SetFlowErrored, payload: true })
+    }
+
+    OsReceiveEmitter.on('filesReceived', onFilesReceived)
+    OsReceiveEmitter.on('error', onError)
+
+    OsReceiveEmitter.receiveFiles()
 
     return () => {
-      cleanupReceivedFiles()
+      OsReceiveEmitter.off('filesReceived', onFilesReceived)
+      OsReceiveEmitter.off('error', onError)
+      OsReceiveEmitter.clearReceivedFiles()
     }
-  }, [])
+  }, [client?.isLogged])
 
   useEffect(() => {
     if (!client || didCall.current) return
