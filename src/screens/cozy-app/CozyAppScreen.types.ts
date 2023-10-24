@@ -1,14 +1,10 @@
-import type {
-  RouteProp,
-  NavigationContainerRef
-} from '@react-navigation/native'
+import type { NavigationContainerRef, Route } from '@react-navigation/native'
 import type { Dispatch, SetStateAction } from 'react'
 
-import { CozyAppRouteParams } from '/constants/route-types'
-import { routes } from '/constants/routes'
+import { CozyAppParams } from '/constants/route-types'
 
 export interface CozyAppScreenProps {
-  route: RouteProp<CozyAppRouteParams, typeof routes.cozyapp>
+  route: Route<'cozyapp', CozyAppParams>
   navigation: NavigationContainerRef<Record<string, unknown>>
 }
 

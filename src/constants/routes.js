@@ -1,3 +1,12 @@
+/*
+type Route = {
+  name: string,
+  path: string,
+  component: React.ComponentType<any>,
+  exact?: boolean,
+  routes?: Array<Route>
+}
+*/
 export const routes = {
   authenticate: 'authenticate',
   cozyapp: 'cozyapp',
@@ -16,4 +25,4 @@ export const routes = {
   osReceive: 'osReceive',
   stack: 'stack',
   welcome: 'welcome'
-} as const
+}
