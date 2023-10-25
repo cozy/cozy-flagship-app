@@ -122,10 +122,12 @@ export const useOsReceiveScreenLogic = (): {
   }, [navigation, osReceiveDispatch])
 
   useEffect(() => {
-    void setFlagshipUI(
-      osReceiveScreenStyles.setFlagshipUI as FlagshipUI,
-      'OsReceiveScreen'
-    )
+    if (filesToUpload.length > 0) {
+      void setFlagshipUI(
+        osReceiveScreenStyles.setFlagshipUI as FlagshipUI,
+        'OsReceiveScreen'
+      )
+    }
   }, [filesToUpload, appsForUpload])
 
   useEffect(() => {
