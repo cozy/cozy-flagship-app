@@ -43,7 +43,10 @@ const mapFilesToUploadToArray = (
 ): OsReceiveFile[] => {
   return Array.from(filesMap.values()).map(file => ({
     name: file.fileName,
-    file,
+    file: {
+      ...file,
+      fromFlagship: true
+    },
     status: OsReceiveFileStatus.toUpload,
     type: file.mimeType
   }))
