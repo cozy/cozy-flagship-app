@@ -1,22 +1,25 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import BackgroundGeolocation from 'react-native-background-geolocation'
 
 import Minilog from 'cozy-minilog'
 
-import {
-  uploadData,
-  getFlagFailUpload
-} from '/app/domain/geolocation/tracking/upload'
+import { uploadData } from '/app/domain/geolocation/tracking/upload'
 import { StorageKeys, storeData, getData } from '/libs/localStore/storage'
 import { Log } from '/app/domain/geolocation/helpers'
+import { saveActivity } from '/app/domain/geolocation/tracking/tracking'
+import {
+  clearAllData,
+  getFlagFailUpload
+} from '/app/domain/geolocation/tracking/storage'
+
 export { Log, getAllLogs, sendLogFile } from '/app/domain/geolocation/helpers'
-export {
-  getId,
-  getOrCreateId,
-  updateId
-} from '/app/domain/geolocation/tracking/user'
+export { getOrCreateId, updateId } from '/app/domain/geolocation/tracking/user'
 export { uploadData } from '/app/domain/geolocation/tracking/upload'
 export { GeolocationTrackingHeadlessTask } from '/app/domain/geolocation/tracking/headless'
+
+export {
+  clearAllCozyGPSMemoryData,
+  getShouldStartTracking
+} from '/app/domain/geolocation/tracking/storage'
 
 const waitBeforeStopMotionEventMin = 10 // Align with openpath: https://github.com/e-mission/e-mission-server/blob/master/emission/analysis/intake/segmentation/trip_segmentation.py#L59
 
@@ -91,6 +94,12 @@ export const stopTracking = async () => {
   }
 }
 
+export const stopTrackingAndClearData = async () => {
+  await stopTracking()
+  await clearAllData()
+  Log('Tracking stopped and everything cleared')
+}
+
 export const getTrackingConfig = async () => {
   const localTrackingConfig = await getData(
     StorageKeys.GeolocationTrackingConfig
@@ -142,39 +151,3 @@ BackgroundGeolocation.onMotionChange(async event => {
 BackgroundGeolocation.onConnectivityChange(async event => {
   return handleConnectivityChange(event)
 })
-
-export const clearAllCozyGPSMemoryData = async () => {
-  await BackgroundGeolocation.destroyLocations()
-  await AsyncStorage.multiRemove([
-    StorageKeys.IdStorageAdress,
-    StorageKeys.FlagFailUploadStorageAdress,
-    StorageKeys.LastPointUploadedAdress,
-    StorageKeys.LastStopTransitionTsKey,
-    StorageKeys.LastStartTransitionTsKey,
-    StorageKeys.GeolocationTrackingConfig
-  ])
-  // Only exception : ShouldBeTrackingFlagStorageAdress, don't know the effects on the switch and would not feel natural anyway
-  // await clearOldCozyGPSMemoryStorage()
-  await BackgroundGeolocation.logger.destroyLog()
-  Log('Everything cleared')
-}
-
-export const stopTrackingAndClearData = async () => {
-  await stopTracking()
-  await BackgroundGeolocation.destroyLocations()
-  await BackgroundGeolocation.logger.destroyLog()
-  await AsyncStorage.multiRemove([
-    StorageKeys.IdStorageAdress,
-    StorageKeys.FlagFailUploadStorageAdress,
-    StorageKeys.LastPointUploadedAdress,
-    StorageKeys.ShouldBeTrackingFlagStorageAdress,
-    StorageKeys.LastStopTransitionTsKey,
-    StorageKeys.LastStartTransitionTsKey,
-    StorageKeys.GeolocationTrackingConfig
-  ])
-  Log('Tracking stopped and everything cleared')
-}
-
-export const getShouldStartTracking = async () => {
-  return await getData(StorageKeys.ShouldBeTrackingFlagStorageAdress)
-}

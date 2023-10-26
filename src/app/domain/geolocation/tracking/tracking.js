@@ -1,38 +1,20 @@
 import { uploadUserCache } from '/app/domain/geolocation/tracking/upload'
 import { createUser } from '/app/domain/geolocation/tracking/user'
 import { getTs, Log, parseISOString } from '/app/domain/geolocation/helpers'
-import { StorageKeys, storeData, getData } from '/libs/localStore/storage'
+import {
+  getActivities,
+  getLastPointUploaded,
+  getLastStartTransitionTs,
+  getLastStopTransitionTs,
+  setLastStartTransitionTs,
+  setLastStopTransitionTs,
+  storeActivity
+} from '/app/domain/geolocation/tracking/storage'
 
 const largeTemporalDeltaBetweenPoints = 30 * 60 // In seconds. Shouldn't have longer breaks without siginificant motion
 const maxTemporalDeltaBetweenPoints = 12 * 60 * 60 // In seconds. See https://github.com/e-mission/e-mission-server/blob/f6bf89a274e6cd10353da8f17ebb327a998c788a/emission/analysis/intake/segmentation/trip_segmentation_methods/dwell_segmentation_dist_filter.py#L194
 const minSpeedBetweenDistantPoints = 0.1 // In m/s. Note the average walking speed is ~1.4 m/s
 const maxPointsPerBatch = 300 // Represents actual points, elements in the POST will probably be around this*2 + ~10*number of stops made
-
-const getLastPointUploaded = async () => {
-  return await getData(StorageKeys.LastPointUploadedAdress)
-}
-
-export const setLastPointUploaded = async value => {
-  await storeData(StorageKeys.LastPointUploadedAdress, value)
-}
-
-const setLastStopTransitionTs = async timestamp => {
-  await storeData(StorageKeys.LastStopTransitionTsKey, timestamp.toString())
-}
-
-const setLastStartTransitionTs = async timestamp => {
-  await storeData(StorageKeys.LastStartTransitionTsKey, timestamp.toString())
-}
-
-const getLastStopTransitionTs = async () => {
-  const ts = await getData(StorageKeys.LastStopTransitionTsKey)
-  return ts ? parseInt(ts, 10) : 0
-}
-
-const getLastStartTransitionTs = async () => {
-  const ts = await getData(StorageKeys.LastStartTransitionTsKey)
-  return ts ? parseInt(ts, 10) : 0
-}
 
 export const createDataBatch = (locations, nRun, maxBatchSize) => {
   const startBatchPoint = nRun * maxBatchSize

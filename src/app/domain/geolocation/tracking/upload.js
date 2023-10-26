@@ -1,45 +1,20 @@
 import BackgroundGeolocation from 'react-native-background-geolocation'
 
-import {
-  setLastPointUploaded,
-  smartSend
-} from '/app/domain/geolocation/tracking/tracking'
+import { smartSend } from '/app/domain/geolocation/tracking/tracking'
 import { getOrCreateId } from '/app/domain/geolocation/tracking/user'
-import { StorageKeys, storeData, getData } from '/libs/localStore/storage'
 import { Log } from '/app/domain/geolocation/helpers'
+import {
+  removeActivities,
+  setLastPointUploaded,
+  storeFlagFailUpload
+} from '/app/domain/geolocation/tracking/storage'
 
 const DestroyLocalOnSuccess = true
 
 const serverURL = 'https://openpath.cozycloud.cc'
 const heavyLogs = false // Log points, motion changes...
 
-const storeFlagFailUpload = async Flag => {
-  try {
-    await storeData(
-      StorageKeys.FlagFailUploadStorageAdress,
-      Flag ? 'true' : 'false'
-    )
-  } catch (error) {
-    Log('Error while storing FlagFailUpload:' + error.toString())
-    throw error
-  }
-}
-
-export const getFlagFailUpload = async () => {
-  try {
-    let value = await getData(StorageKeys.FlagFailUploadStorageAdress)
-    if (value == undefined) {
-      await storeFlagFailUpload(false)
-      return false
-    } else {
-      return value == 'true'
-    }
-  } catch (error) {
-    Log('Error while getting FlagFailUpload:' + error.toString())
-    throw error
-  }
-}
-
+// TODO: this should be refactor, to separate actual upload from data cleanup
 export const uploadUserCache = async (
   content,
   user,
