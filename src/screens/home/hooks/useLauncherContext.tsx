@@ -11,6 +11,7 @@ import {
   LauncherContext as LauncherContextInterface,
   LauncherContextValue
 } from '/libs/konnectors/models'
+import { launcherEvent } from '/libs/ReactNativeLauncher'
 
 const konnLog = Minilog('Konnector')
 
@@ -116,7 +117,11 @@ export const LauncherContextProvider: React.FC<Props> = ({
             <ErrorParallelKonnectors
               currentRunningKonnector={launcherContext.value.konnector.slug}
               concurrentKonnector={concurrentKonnector}
-              onClose={(): void => setConcurrentKonnector(undefined)}
+              onClose={(): void => {
+                setConcurrentKonnector(undefined)
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                launcherEvent.emit('launchResult', { cancel: true })
+              }}
             />
           ) : null,
         resetLauncherContext,
