@@ -1,18 +1,14 @@
 import { getUniqueId } from 'react-native-device-info'
 
-import { StorageKeys, storeData, getData } from '/libs/localStore/storage'
 import { Log } from '/app/domain/geolocation/helpers'
+import { storeId, getId } from '/app/domain/geolocation/tracking/storage'
 
 const useUniqueDeviceId = false
 const serverURL = 'https://openpath.cozycloud.cc'
 
-export const getId = async () => {
-  return await getData(StorageKeys.IdStorageAdress)
-}
-
 export const getOrCreateId = async () => {
   try {
-    let value = await getData(StorageKeys.IdStorageAdress)
+    let value = await getId()
     if (value == undefined) {
       Log('No current Id, generating a new one...')
       value = useUniqueDeviceId
@@ -61,8 +57,4 @@ export const updateId = async newId => {
   } else {
     return 'SAME_ID_OR_INVALID_ID'
   }
-}
-
-export const storeId = async Id => {
-  await storeData(StorageKeys.IdStorageAdress, Id)
 }
