@@ -19,12 +19,14 @@ export const uploadUserCache = async (
   content,
   user,
   uuidsToDeleteOnSuccess,
-  lastPointToSave = undefined
+  lastPointToSave = undefined,
+  lastActivityTs = null
 ) => {
   Log('Uploading content to usercache...')
-  let JsonRequest = {
+  const docs = filterBadContent(content)
+  const JsonRequest = {
     user: user,
-    phone_to_server: content
+    phone_to_server: docs
   }
 
   let response = await fetch(serverURL + '/usercache/put', {
@@ -67,8 +69,24 @@ export const uploadUserCache = async (
         await BackgroundGeolocation.destroyLocation(element)
       }
       Log('Done removing local locations')
+      if (lastActivityTs) {
+        await removeActivities({ beforeTs: lastActivityTs })
+        Log('Done removing activities')
+      }
     }
   }
+}
+
+/**
+ * Make sure the content is correctly formatted, to prevent
+ * upload failures
+ * @param {Array<object>} contentToUpload - The docs to upload
+ * @returns {Array<object} The filtered content
+ */
+const filterBadContent = contentToUpload => {
+  return contentToUpload.filter(doc => {
+    return doc && doc.data && doc.metadata
+  })
 }
 
 export const uploadData = async ({ untilTs = 0, force = false } = {}) => {

@@ -18,7 +18,8 @@ export { GeolocationTrackingHeadlessTask } from '/app/domain/geolocation/trackin
 
 export {
   clearAllCozyGPSMemoryData,
-  getShouldStartTracking
+  getShouldStartTracking,
+  getId
 } from '/app/domain/geolocation/tracking/storage'
 
 const waitBeforeStopMotionEventMin = 10 // Align with openpath: https://github.com/e-mission/e-mission-server/blob/master/emission/analysis/intake/segmentation/trip_segmentation.py#L59
@@ -120,6 +121,11 @@ export const setTrackingConfig = async newTrackingConfig => {
   await storeData(StorageKeys.GeolocationTrackingConfig, newTrackingConfig)
 }
 
+export const handleActivityChange = async event => {
+  Log('[ACTIVITY CHANGE] - ' + JSON.stringify(event))
+  await saveActivity(event)
+}
+
 export const handleMotionChange = async event => {
   Log('[MOTION CHANGE] - ' + JSON.stringify(event))
 
@@ -141,6 +147,12 @@ export const handleConnectivityChange = async event => {
     await uploadData()
   }
 }
+
+// Register on activity change
+BackgroundGeolocation.onActivityChange(async event => {
+  Log('Enter onActivity change event')
+  return handleActivityChange(event)
+})
 
 // Register on motion change
 BackgroundGeolocation.onMotionChange(async event => {
