@@ -61,7 +61,9 @@ const onReceiveFiles = (files: ReceivedFile[]): OsReceiveFile[] => {
 }
 
 class FileReceiver extends EventEmitter {
-  receiveFiles(): void {
+  private activated = false
+
+  private receiveFiles(): void {
     OsReceiveIntent.getReceivedFiles(
       files =>
         this.emit('filesReceived', onReceiveFiles(files as ReceivedFile[])),
@@ -70,9 +72,16 @@ class FileReceiver extends EventEmitter {
     )
   }
 
-  clearReceivedFiles(): void {
+  public clearReceivedFiles(): void {
     OsReceiveLogger.info('Clearing received files')
     OsReceiveIntent.clearReceivedFiles()
+  }
+
+  public ensureActivation(): void {
+    if (this.activated) return
+    OsReceiveLogger.info('Activating file receiver')
+    this.activated = true
+    this.receiveFiles()
   }
 }
 
