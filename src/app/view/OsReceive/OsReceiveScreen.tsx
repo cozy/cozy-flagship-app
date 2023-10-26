@@ -13,7 +13,7 @@ import { Typography } from '/ui/Typography'
 import {
   useAppsForUpload,
   useFilesToUpload
-} from '/app/view/OsReceive/OsReceiveState'
+} from '/app/view/OsReceive/state/OsReceiveState'
 import {
   List,
   ListItem,
@@ -23,7 +23,8 @@ import {
 } from '/ui/List'
 import { palette } from '/ui/palette'
 import { Divider } from '/ui/Divider'
-import { useOsReceiveScreenLogic } from '/app/view/OsReceive/OsReceiveScreen.logic'
+
+import { useOsReceiveScreenLogic } from './hooks/useOsReceiveScreen'
 
 import { osReceiveScreenStyles } from '/app/view/OsReceive/OsReceiveScreen.styles'
 

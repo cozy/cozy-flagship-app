@@ -43,8 +43,8 @@ import {
   useFilesToUpload,
   useOsReceiveDispatch,
   useOsReceiveState
-} from '/app/view/OsReceive/OsReceiveState'
-import { useOsReceiveApi } from '/app/view/OsReceive/useOsReceiveApi'
+} from '/app/view/OsReceive/state/OsReceiveState'
+import { useOsReceiveApi } from '/app/view/OsReceive/hooks/useOsReceiveApi'
 import { useSecureBackgroundSplashScreen } from '/hooks/useSplashScreen'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 

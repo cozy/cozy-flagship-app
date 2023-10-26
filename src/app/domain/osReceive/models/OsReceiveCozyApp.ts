@@ -1,3 +1,5 @@
+import { Q } from 'cozy-client'
+
 interface AcceptDocumentsFromFlagship {
   accepted_mime_types: string[]
   max_number_of_files: number
@@ -51,4 +53,11 @@ export interface AppForUpload {
   reasonDisabled: string[] | undefined
   routeToUpload: string
   slug: string
+}
+
+export const fetchOsReceiveCozyApps = {
+  definition: Q('io.cozy.apps'),
+  options: {
+    as: 'io.cozy.apps/accept_from_flagship'
+  }
 }

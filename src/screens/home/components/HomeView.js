@@ -23,7 +23,7 @@ import { launcherEvent } from '/libs/ReactNativeLauncher'
 import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
 import { OsReceiveScreen } from '/app/view/OsReceive/OsReceiveScreen'
-import { useFilesToUpload } from '/app/view/OsReceive/OsReceiveState'
+import { useFilesToUpload } from '/app/view/OsReceive/state/OsReceiveState'
 
 const log = Minilog('🏠 HomeView')
 
