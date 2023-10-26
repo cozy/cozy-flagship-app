@@ -52,10 +52,10 @@ export const OsReceiveProvider = ({
       dispatch({ type: OsReceiveActionType.SetFlowErrored, payload: true })
     }
 
+    OsReceiveEmitter.ensureActivation()
+
     OsReceiveEmitter.on('filesReceived', onFilesReceived)
     OsReceiveEmitter.on('error', onError)
-
-    OsReceiveEmitter.receiveFiles()
 
     return () => {
       OsReceiveEmitter.off('filesReceived', onFilesReceived)
