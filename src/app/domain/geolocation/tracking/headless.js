@@ -1,7 +1,8 @@
 import { Log } from '/app/domain/geolocation/helpers'
 import {
   handleMotionChange,
-  handleConnectivityChange
+  handleConnectivityChange,
+  handleActivityChange
 } from '/app/domain/geolocation/tracking'
 
 export const GeolocationTrackingHeadlessTask = async event => {
@@ -16,7 +17,7 @@ export const GeolocationTrackingHeadlessTask = async event => {
       await handleMotionChange(params)
       break
     case 'activitychange':
-      Log('[ACTIVITYCHANGE] -' + JSON.stringify(params))
+      await handleActivityChange(params)
       break
     case 'connectivitychange':
       await handleConnectivityChange(params)

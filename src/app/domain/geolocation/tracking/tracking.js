@@ -16,6 +16,15 @@ const maxTemporalDeltaBetweenPoints = 12 * 60 * 60 // In seconds. See https://gi
 const minSpeedBetweenDistantPoints = 0.1 // In m/s. Note the average walking speed is ~1.4 m/s
 const maxPointsPerBatch = 300 // Represents actual points, elements in the POST will probably be around this*2 + ~10*number of stops made
 
+const modeKeys = [
+  'cycling',
+  'running',
+  'walking',
+  'automotive',
+  'stationary',
+  'unknown'
+]
+
 export const createDataBatch = (locations, nRun, maxBatchSize) => {
   const startBatchPoint = nRun * maxBatchSize
   const endBatchPoint = (nRun + 1) * maxBatchSize
@@ -164,16 +173,22 @@ const uploadPoints = async (points, user, lastBatchPoint, isLastBatch) => {
     const filtered = !samePosAsPrev && point.coords.accuracy <= 200
 
     addPoint(contentToUpload, point, filtered)
-    addMotionActivity(contentToUpload, previousPoint, point)
+  }
+
+  // Add activities stored in local storage
+  const lastPointTs = getTs(points[points.length - 1])
+  const activities = await getFilteredActivities({ beforeTs: lastPointTs })
+  if (activities) {
+    Log('n activities : ' + activities.length)
+    contentToUpload.push(...activities)
   }
 
   // -----Step 3: Force end trip for the last point, as the device had been stopped long enough after motion
   if (isLastBatch) {
     // Force a stop transition for the last point
-    const lastPoint = points[points.length - 1]
-    const deltaLastPoint = Date.now() / 1000 - getTs(lastPoint)
+    const deltaLastPoint = Date.now() / 1000 - lastPointTs
     Log('Delta last point : ' + deltaLastPoint)
-    await addStopTransitions(contentToUpload, getTs(lastPoint) + 1)
+    await addStopTransitions(contentToUpload, lastPointTs + 1)
   }
 
   // -----Step 4: Upload data
@@ -181,8 +196,26 @@ const uploadPoints = async (points, user, lastBatchPoint, isLastBatch) => {
     contentToUpload,
     user,
     uuidsToDelete,
-    points[points.length - 1]
+    points[points.length - 1],
+    lastPointTs
   )
+}
+
+export const getFilteredActivities = async ({ beforeTs: lastPointTs }) => {
+  const activities = await getActivities({ beforeTs: lastPointTs })
+  if (!activities) {
+    return null
+  }
+
+  const filteredActivities = [activities[0]]
+  for (let i = 1; i < activities.length; i++) {
+    const prevMode = getActivityMode(activities[i - 1])
+    const mode = getActivityMode(activities[i])
+    if (mode !== prevMode) {
+      filteredActivities.push(activities[i])
+    }
+  }
+  return filteredActivities
 }
 
 // Add start transitions, within 0.1s of given ts
@@ -247,14 +280,13 @@ const addPoint = (content, point, filtered) => {
   }
 }
 
-const addMotionActivity = (content, previousPoint, point) => {
-  if (!previousPoint || previousPoint.activity?.type !== point.activity?.type) {
-    // Add new activity type when it's the first point, or when a new motion activity type (i.e. mode) is detected
-    // TODO: might be more relevant to use the activity events
-    const motionActivity = translateToEMissionMotionActivityPoint(point)
-    content.push(motionActivity)
+const getActivityMode = activity => {
+  for (const key of modeKeys) {
+    if (activity?.data[key] === true) {
+      return key
+    }
   }
-  return
+  return null
 }
 
 const translateToEMissionLocationPoint = location_point => {
@@ -269,12 +301,12 @@ const translateToEMissionLocationPoint = location_point => {
       latitude: location_point.coords.latitude,
       longitude: location_point.coords.longitude,
       sensed_speed: location_point.coords.speed,
-      ts: ts + 0.1, // It's silly, but some rare operations of e-mission will take a timestamp without a decimal point as an integer and crash. Since it would be a hard crash, the pipeline will not attempt again for this user so the user would never get new tracks without intervention. This was the simplest way to insure that JSON.stringify() will leave a decimal point.
+      ts: ts + 0.1, // FIXME: It's silly, but some rare operations of e-mission will take a timestamp without a decimal point as an integer and crash. Since it would be a hard crash, the pipeline will not attempt again for this user so the user would never get new tracks without intervention. This was the simplest way to insure that JSON.stringify() will leave a decimal point.
       vaccuracy: location_point.coords.altitude_accuracy
     },
     metadata: {
       platform: 'ios',
-      write_ts: ts + 0.1,
+      write_ts: ts + 0.1, // FIXME
       time_zone: 'UTC',
       key: 'background/location',
       read_ts: 0,
@@ -283,34 +315,33 @@ const translateToEMissionLocationPoint = location_point => {
   }
 }
 
-const translateToEMissionMotionActivityPoint = location => {
-  let ts = Math.floor(parseISOString(location.timestamp).getTime() / 1000)
-  Log('Activity type : ' + location.activity.type)
-  if (location.activity.type === 'unknown') {
-    Log('Unknown activity at: ' + location.timestamp)
+const translateEventToEMissionMotionActivity = event => {
+  const ts = Math.floor(parseISOString(event.timestamp).getTime() / 1000)
+  Log('Activity type : ' + event.activity.type + ' at ' + event.timestamp)
+  if (event.activity.type === 'unknown') {
+    Log('Unknown activity at: ' + event.timestamp)
   }
-  // See: https://transistorsoft.github.io/react-native-background-geolocation/interfaces/motionactivity.html#type
+  // See: https://transistorsoft.github.io/react-native-background-geoevent/interfaces/motionactivity.html#type
   return {
     data: {
-      cycling: location.activity.type === 'on_bicycle',
-      running: location.activity.type === 'running',
+      cycling: event.activity.type === 'on_bicycle',
+      running: event.activity.type === 'running',
       walking:
-        location.activity.type === 'walking' ||
-        location.activity.type === 'on_foot', // on_foot includes running or walking
-      automotive: location.activity.type === 'in_vehicle',
-      stationary: location.activity.type === 'still',
-      unknown: location.activity.type === 'unknown',
-      confidence: location.activity.confidence,
-      ts: ts + 0.2,
+        event.activity.type === 'walking' || event.activity.type === 'on_foot', // on_foot includes running or walking
+      automotive: event.activity.type === 'in_vehicle',
+      stationary: event.activity.type === 'still',
+      unknown: event.activity.type === 'unknown',
+      confidence: event.activity.confidence,
+      ts: ts + 0.1, // FIXME
       confidence_level:
-        location.activity.confidence > 75
+        event.activity.confidence > 75
           ? 'high'
-          : location.activity.confidence > 50
+          : event.activity.confidence > 50
           ? 'medium'
           : 'low'
     },
     metadata: {
-      write_ts: ts + 0.2,
+      write_ts: ts + 0.1, // FIXME
       time_zone: 'UTC',
       platform: 'ios',
       key: 'background/motion_activity',
@@ -320,10 +351,25 @@ const translateToEMissionMotionActivityPoint = location => {
   }
 }
 
+export const saveActivity = async event => {
+  const activityEvent = {
+    activity: {
+      confidence: event.confidence,
+      type: event.activity
+    },
+    timestamp: new Date().toISOString()
+  }
+  const activity = translateEventToEMissionMotionActivity(activityEvent)
+  Log('Save activity : ' + JSON.stringify(activity))
+  await storeActivity(activity)
+  return activity
+}
+
 const deg2rad = deg => {
   return deg * (Math.PI / 180)
 }
 
+// TODO: use cozy-client method
 const getDistanceFromLatLonInM = (point1, point2) => {
   const R = 6371 // Radius of the earth in km
   const dLat = deg2rad(point2.coords.latitude - point1.coords.latitude) // deg2rad below

@@ -24,7 +24,7 @@ export const clearAllCozyGPSMemoryData = async () => {
 
 export const clearAllData = async () => {
   await clearAllCozyGPSMemoryData()
-  await AsyncStorage.remove(StorageKeys.ShouldBeTrackingFlagStorageAdress)
+  await AsyncStorage.removeItem(StorageKeys.ShouldBeTrackingFlagStorageAdress)
 }
 
 export const getShouldStartTracking = async () => {
@@ -126,12 +126,12 @@ export const getActivities = async ({ beforeTs } = {}) => {
 }
 
 export const removeActivities = async ({ beforeTs } = {}) => {
-  console.log('remove activities')
+  Log('Remove activities')
   if (!beforeTs) {
     return clearAllActivities()
   }
   const activities = await getActivities()
-  Log('all activities to remove ' + JSON.stringify(activities)) // TODO: useful for debug, but should be removed eventually
+  Log('All activities to remove ' + JSON.stringify(activities)) // TODO: useful for debug, but should be removed eventually
   const activitiesToKeep = activities.filter(activity => {
     if (activity?.data?.ts) {
       return activity.data.ts > beforeTs
