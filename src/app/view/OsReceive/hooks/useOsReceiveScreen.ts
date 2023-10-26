@@ -1,8 +1,4 @@
 import { Route, useNavigationState } from '@react-navigation/native'
-
-import { generateWebLink, useClient } from 'cozy-client'
-import { FlagshipUI } from 'cozy-intent'
-
 import {
   useState,
   useCallback,
@@ -12,13 +8,14 @@ import {
   useRef
 } from 'react'
 
-import { osReceiveScreenStyles } from './OsReceiveScreen.styles'
+import { generateWebLink, useClient } from 'cozy-client'
+import { FlagshipUI } from 'cozy-intent'
+
 import {
   useFilesToUpload,
   useAppsForUpload,
   useOsReceiveDispatch
-} from './OsReceiveState'
-
+} from '/app/view/OsReceive/state/OsReceiveState'
 import {
   OsReceiveActionType,
   OsReceiveFileStatus
@@ -28,6 +25,8 @@ import { routes } from '/constants/routes'
 import { useDefaultIconParams } from '/libs/functions/openApp'
 import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { navigate, navigationRef } from '/libs/RootNavigation'
+
+import { osReceiveScreenStyles } from '/app/view/OsReceive/OsReceiveScreen.styles'
 
 export const useOsReceiveScreenLogic = (): {
   selectedOption: string | undefined
@@ -83,21 +82,29 @@ export const useOsReceiveScreenLogic = (): {
 
     if (!app) throw new Error('App is not defined')
 
+    const webLink = generateWebLink({
+      cozyUrl: client.getStackClient().uri,
+      pathname: '',
+      slug: selectedOption,
+      subDomainType: client.capabilities.flat_subdomains ? 'flat' : 'nested',
+      hash: app.routeToUpload.replace(/^\/?#?\//, ''),
+      searchParams: []
+    })
+
     navigate(routes.cozyapp, {
-      href: generateWebLink({
-        cozyUrl: client.getStackClient().uri,
-        pathname: '',
-        slug: selectedOption,
-        subDomainType: client.capabilities.flat_subdomains ? 'flat' : 'nested',
-        hash: app.routeToUpload.replace(/^\/?#?\//, ''),
-        searchParams: []
-      }),
+      href: webLink,
       slug: selectedOption,
       iconParams
     })
+
     osReceiveDispatch({
       type: OsReceiveActionType.UpdateFileStatus,
       payload: { name: '*', status: OsReceiveFileStatus.queued }
+    })
+
+    osReceiveDispatch({
+      type: OsReceiveActionType.SetRouteToUpload,
+      payload: { href: webLink, slug: selectedOption }
     })
   }, [client, appsForUpload, selectedOption, iconParams, osReceiveDispatch])
 

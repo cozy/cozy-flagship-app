@@ -20,6 +20,8 @@ import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { IncomingFile } from '/app/domain/osReceive/models/ReceivedFile'
 
+import { NativeService } from 'cozy-intent'
+
 const getUrl = (
   client: CozyClient,
   file: { fileOptions: { dirId: string; name: string } }
@@ -193,6 +195,50 @@ const cancelUploadByCozyApp = (
   navigate(routes.home)
 
   return true
+}
+
+export const isFileHandled = (file: OsReceiveFile): boolean =>
+  file.status === OsReceiveFileStatus.uploaded ||
+  file.status === OsReceiveFileStatus.error
+
+export const getMostRecentFile = (
+  recentFile: OsReceiveFile,
+  currentFile: OsReceiveFile
+): OsReceiveFile =>
+  !recentFile.handledTimestamp ||
+  (currentFile.handledTimestamp &&
+    currentFile.handledTimestamp > recentFile.handledTimestamp)
+    ? currentFile
+    : recentFile
+
+export const findMostRecentlyHandledFile = (
+  filesToUpload: OsReceiveFile[]
+): OsReceiveFile | null => {
+  const handledFiles = filesToUpload.filter(isFileHandled)
+  if (handledFiles.length > 0) {
+    return handledFiles.reduce(getMostRecentFile)
+  }
+  return null
+}
+
+export const sendMessageForFile = async (
+  file: OsReceiveFile,
+  routeToUpload: OsReceiveState['routeToUpload'],
+  nativeIntent: NativeService,
+  dispatch: Dispatch<OsReceiveAction>
+): Promise<void> => {
+  try {
+    if (!routeToUpload.href) throw new Error('No route to upload')
+
+    await nativeIntent.call(routeToUpload.href, 'onFileUploaded', file)
+  } catch (error) {
+    OsReceiveLogger.error('sendMessageForFile error', error)
+
+    dispatch({
+      type: OsReceiveActionType.SetFlowErrored,
+      payload: true
+    })
+  }
 }
 
 export const OsReceiveApi = (

@@ -1,5 +1,5 @@
 import { useNavigation, useNavigationState } from '@react-navigation/native'
-import React, { useReducer, useEffect, useState, useRef } from 'react'
+import React, { useReducer, useEffect, useRef } from 'react'
 
 import { useClient } from 'cozy-client'
 
@@ -11,16 +11,13 @@ import {
   OsReceiveFile,
   OsReceiveFileStatus
 } from '/app/domain/osReceive/models/OsReceiveState'
-import {
-  fetchOsReceiveCozyApps,
-  getRouteToUpload
-} from '/app/domain/osReceive/services/OsReceiveNetwork'
+import { fetchOsReceiveCozyApps } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import {
   initialState,
   OsReceiveDispatchContext,
   osReceiveReducer,
   OsReceiveStateContext
-} from '/app/view/OsReceive/OsReceiveState'
+} from '/app/view/OsReceive/state/OsReceiveState'
 import { routes } from '/constants/routes'
 import { AcceptFromFlagshipManifest } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import { backToHome } from '/libs/intents/localMethods'
@@ -35,7 +32,6 @@ export const OsReceiveProvider = ({
   const { handleError } = useError()
   const navigationState = useNavigationState(state => state)
   const navigation = useNavigation()
-  const [data, setQuery] = useState<AcceptFromFlagshipManifest[]>([])
   const didCall = useRef(false)
 
   useEffect(() => {
@@ -79,25 +75,12 @@ export const OsReceiveProvider = ({
           type: OsReceiveActionType.SetCandidateApps,
           payload: res.data
         })
-        setQuery(res.data)
       }
     }
 
     void fetchRegistry()
   }),
     [client]
-
-  // Fetches the route of the cozy-app that will handle the osReceive intent
-  useEffect(() => {
-    if (state.filesToUpload.length === 0 || state.routeToUpload.href) return
-    const { result, error } = getRouteToUpload(data, client)
-
-    if (error) {
-      dispatch({ type: OsReceiveActionType.SetFlowErrored, payload: true })
-    } else if (result !== undefined) {
-      dispatch({ type: OsReceiveActionType.SetRouteToUpload, payload: result })
-    }
-  }, [client, data, handleError, state])
 
   // If an error is detected, we handle that by abandoning the flow.
   // The user will be redirected to the home screen and the osReceive mode is ended until next file osReceive.
