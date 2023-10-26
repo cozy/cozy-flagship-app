@@ -2,7 +2,6 @@ import React from 'react'
 import { useState } from 'react'
 
 import CozyClient from 'cozy-client'
-
 import Minilog from 'cozy-minilog'
 const konnLog = Minilog('Konnector')
 
@@ -11,6 +10,7 @@ import { useLauncherWrapper } from '/screens/home/hooks/useLauncherWrapper'
 import { ErrorParallelKonnectors } from '/screens/home/components/ErrorParallelKonnectors'
 import { useKonnectors } from '/hooks/useKonnectors'
 import { LogObj } from '/redux/KonnectorState/KonnectorLogsSlice'
+import { launcherEvent } from '/libs/ReactNativeLauncher'
 
 interface useLauncherContextReturn {
   LauncherDialog: JSX.Element | null
@@ -69,7 +69,11 @@ export const useLauncherContext = (): useLauncherContextReturn => {
         <ErrorParallelKonnectors
           currentRunningKonnector={launcherContext.value.konnector.slug}
           concurrentKonnector={concurrentKonnector}
-          onClose={(): void => setConcurrentKonnector(undefined)}
+          onClose={(): void => {
+            setConcurrentKonnector(undefined)
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+            launcherEvent.emit('launchResult', { cancel: true })
+          }}
         />
       ) : null,
     resetLauncherContext,
