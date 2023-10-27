@@ -3,7 +3,6 @@ import { StyleProp, TextStyle } from 'react-native'
 import { SvgXml } from 'react-native-svg'
 
 import { Icon } from '/ui/Icon'
-import { IconButton } from '/ui/IconButton'
 import { Container } from '/ui/Container'
 import { Grid } from '/ui/Grid'
 import { Button } from '/ui/Button'
@@ -22,7 +21,6 @@ import {
   ListItemText,
   ListSubHeader
 } from '/ui/List'
-import { ArrowLeft } from '/ui/Icons/ArrowLeft'
 import { palette } from '/ui/palette'
 import { Divider } from '/ui/Divider'
 import { useOsReceiveScreenLogic } from '/app/view/OsReceive/OsReceiveScreen.logic'
@@ -40,7 +38,6 @@ export const OsReceiveScreen = (): JSX.Element | null => {
     setSelectedOption,
     canProceed,
     proceedToWebview,
-    onClose,
     hasAppsForUpload
   } = useOsReceiveScreenLogic()
 
@@ -56,17 +53,6 @@ export const OsReceiveScreen = (): JSX.Element | null => {
     <Container style={osReceiveScreenStyles.page}>
       <Grid container direction="column" justifyContent="space-between">
         <Grid alignItems="center">
-          <IconButton
-            onPress={onClose}
-            style={osReceiveScreenStyles.goBackButton}
-          >
-            <Icon
-              size={16}
-              icon={ArrowLeft}
-              color={palette.light.text.secondary}
-            />
-          </IconButton>
-
           {isMultipleFiles ? (
             <Typography variant="h4">
               {t('services.osReceive.nElementsTitle', {

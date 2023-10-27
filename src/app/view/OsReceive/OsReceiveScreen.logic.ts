@@ -1,8 +1,4 @@
-import {
-  Route,
-  useNavigation,
-  useNavigationState
-} from '@react-navigation/native'
+import { Route, useNavigationState } from '@react-navigation/native'
 
 import { generateWebLink, useClient } from 'cozy-client'
 import { FlagshipUI } from 'cozy-intent'
@@ -29,7 +25,7 @@ import {
 } from '/app/domain/osReceive/models/OsReceiveState'
 import { CozyAppParams } from '/constants/route-types'
 import { routes } from '/constants/routes'
-import { navigateToApp, useDefaultIconParams } from '/libs/functions/openApp'
+import { useDefaultIconParams } from '/libs/functions/openApp'
 import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { navigate, navigationRef } from '/libs/RootNavigation'
 
@@ -38,7 +34,6 @@ export const useOsReceiveScreenLogic = (): {
   setSelectedOption: Dispatch<SetStateAction<string | undefined>>
   canProceed: () => boolean
   proceedToWebview: () => void
-  onClose: () => void
   hasAppsForUpload: () => boolean
 } => {
   const [selectedOption, setSelectedOption] = useState<string>()
@@ -52,7 +47,6 @@ export const useOsReceiveScreenLogic = (): {
     [appsForUpload]
   )
   const currentRouteRef = useRef<Route<string, CozyAppParams>>()
-  const navigation = useNavigation()
   const navigationState = useNavigationState(state => state)
 
   // Store the current route if it's cozyapp to be able to go back to it
@@ -107,20 +101,6 @@ export const useOsReceiveScreenLogic = (): {
     })
   }, [client, appsForUpload, selectedOption, iconParams, osReceiveDispatch])
 
-  const onClose = useCallback(() => {
-    osReceiveDispatch({
-      type: OsReceiveActionType.SetInitialState
-    })
-
-    // If we were on a cozyapp before starting, we go back to it
-    if (currentRouteRef.current?.name === routes.cozyapp) {
-      void navigateToApp({
-        navigation,
-        ...currentRouteRef.current.params
-      })
-    }
-  }, [navigation, osReceiveDispatch])
-
   useEffect(() => {
     if (filesToUpload.length > 0) {
       void setFlagshipUI(
@@ -143,7 +123,6 @@ export const useOsReceiveScreenLogic = (): {
     setSelectedOption,
     canProceed,
     proceedToWebview,
-    hasAppsForUpload,
-    onClose
+    hasAppsForUpload
   }
 }
