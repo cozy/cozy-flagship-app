@@ -177,7 +177,7 @@ const uploadPoints = async (points, user, lastBatchPoint, isLastBatch) => {
 
   // Add activities stored in local storage
   const lastPointTs = getTs(points[points.length - 1])
-  const activities = await getFilteredActivities({ beforeTs: lastPointTs })
+  const activities = await getActivities({ beforeTs: lastPointTs })
   if (activities) {
     Log('n activities : ' + activities.length)
     contentToUpload.push(...activities)
@@ -199,23 +199,6 @@ const uploadPoints = async (points, user, lastBatchPoint, isLastBatch) => {
     points[points.length - 1],
     lastPointTs
   )
-}
-
-export const getFilteredActivities = async ({ beforeTs: lastPointTs }) => {
-  const activities = await getActivities({ beforeTs: lastPointTs })
-  if (!activities) {
-    return null
-  }
-
-  const filteredActivities = [activities[0]]
-  for (let i = 1; i < activities.length; i++) {
-    const prevMode = getActivityMode(activities[i - 1])
-    const mode = getActivityMode(activities[i])
-    if (mode !== prevMode) {
-      filteredActivities.push(activities[i])
-    }
-  }
-  return filteredActivities
 }
 
 // Add start transitions, within 0.1s of given ts
