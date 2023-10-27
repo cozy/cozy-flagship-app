@@ -45,7 +45,7 @@ export const HomeScreen = ({
       style={[
         styles.container,
         {
-          backgroundColor: colors.primaryColor
+          backgroundColor: '#00ff00'
         }
       ]}
     >

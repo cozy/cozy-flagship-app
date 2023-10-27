@@ -11,6 +11,8 @@ import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
 import { CozyProvider, useClient } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
 
+import ErrorBoundary from 'react-native-error-boundary'
+
 import { RootNavigator } from '/AppRouter'
 import * as RootNavigation from '/libs/RootNavigation'
 import NetStatusBoundary from '/libs/services/NetStatusBoundary'
@@ -107,7 +109,7 @@ const InnerNav = ({ client, setClient }) => {
         style={[
           styles.view,
           {
-            backgroundColor: colors.primaryColor
+            backgroundColor: '#ff0000'
           }
         ]}
       >
@@ -188,25 +190,27 @@ const Wrapper = () => {
       {__DEV__ && <FlipperAsyncStorage />}
       <CryptoWebView setHasCrypto={setHasCrypto} />
       {hasCrypto && (
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <HttpServerProvider>
-              <HomeStateProvider>
-                <SplashScreenProvider>
-                  <SecureBackgroundSplashScreenWrapper>
-                    <NetStatusBoundary>
-                      <ThemeProvider>
-                        <PermissionsChecker>
-                          <WrappedApp />
-                        </PermissionsChecker>
-                      </ThemeProvider>
-                    </NetStatusBoundary>
-                  </SecureBackgroundSplashScreenWrapper>
-                </SplashScreenProvider>
-              </HomeStateProvider>
-            </HttpServerProvider>
-          </PersistGate>
-        </Provider>
+        <ErrorBoundary>
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              <HttpServerProvider>
+                <HomeStateProvider>
+                  <SplashScreenProvider>
+                    <SecureBackgroundSplashScreenWrapper>
+                      <NetStatusBoundary>
+                        <ThemeProvider>
+                          <PermissionsChecker>
+                            <WrappedApp />
+                          </PermissionsChecker>
+                        </ThemeProvider>
+                      </NetStatusBoundary>
+                    </SecureBackgroundSplashScreenWrapper>
+                  </SplashScreenProvider>
+                </HomeStateProvider>
+              </HttpServerProvider>
+            </PersistGate>
+          </Provider>
+        </ErrorBoundary>
       )}
     </>
   )
