@@ -26,7 +26,7 @@ export const HomeScreen = ({
   navigation,
   route
 }: HomeScreenProps): JSX.Element => {
-  const [barStyle, setBarStyle] = useState(StatusBarStyle.Light)
+  const [barStyle, setBarStyle] = useState<StatusBarStyle>()
   const {
     LauncherDialog,
     canDisplayLauncher,
@@ -49,7 +49,7 @@ export const HomeScreen = ({
         }
       ]}
     >
-      <StatusBar barStyle={barStyle} />
+      {barStyle ? <StatusBar barStyle={barStyle} /> : null}
 
       {shouldShowCliskDevMode() ? (
         <CliskDevView setLauncherContext={trySetLauncherContext} />

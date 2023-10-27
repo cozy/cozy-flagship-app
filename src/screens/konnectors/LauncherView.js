@@ -16,7 +16,7 @@ import { handleBackPress, stopExecIfVisible } from './core/handleBackPress'
 import { withClient } from 'cozy-client'
 
 import { BackTo } from '/components/ui/icons/BackTo'
-import { getDimensions } from '/libs/dimensions'
+import { getDimensions, navbarHeight } from '/libs/dimensions'
 import ReactNativeLauncher from '/libs/ReactNativeLauncher'
 import { getColors } from '/ui/colors'
 import strings from '/constants/strings.json'
@@ -167,8 +167,14 @@ export class LauncherView extends Component {
     this.launcher = this.props.launcher || new ReactNativeLauncher()
     // made to measure the time between the launcher initialization and the display of the worker webview (when needed)
     // this is not await not to block the initialization of the launcher
+
+    // This call is important because the connection backdrop has normally set the icons to white on dark
+    // We want dark on white
     this.launcher.waitForWorkerVisible(() =>
-      setFlagshipUI({ topTheme: 'dark' })
+      setFlagshipUI(
+        { topTheme: 'dark', bottomTheme: 'dark' },
+        'LauncherView.js'
+      )
     )
     this.launcher.setLogger(this.props.onKonnectorLog)
 
@@ -234,6 +240,10 @@ export class LauncherView extends Component {
       this.launcher.removeAllListener()
     }
     this.launcher.close()
+
+    // Not strictly necessary, but to err on the side of caution we reset the flagship UI to dark
+    // In unlikely scenarios it is possible that the flagship UI is still set to light on white (connectionBackdrop)
+    setFlagshipUI({ topTheme: 'dark', bottomTheme: 'dark' }, 'LauncherView.js')
   }
 
   render() {
@@ -425,7 +435,9 @@ export class LauncherView extends Component {
 const styles = StyleSheet.create({
   workerVisible: {
     height: '100%',
-    width: '100%'
+    width: '100%',
+    paddingBottom: navbarHeight,
+    backgroundColor: '#fff'
   },
   workerHidden: {
     position: 'absolute',

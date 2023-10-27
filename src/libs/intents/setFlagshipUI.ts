@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events'
 
-import Minilog from 'cozy-minilog'
 import { Platform, StatusBar } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
 
@@ -15,13 +14,12 @@ import {
 import { navigationRef } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 
-const log = Minilog('SET_FLAGSHIP_UI')
-
 const isDarkMode = (bottomTheme: StatusBarStyle): boolean =>
   bottomTheme === StatusBarStyle.Light
 
 const handleLogging = (intent: FlagshipUI, name: string): void =>
-  log.info(`by ${name}`, intent)
+  themeLog.info(`setFlagshipUI by ${name}`, intent)
+
 export interface NormalisedFlagshipUI
   extends Omit<FlagshipUI, 'bottomTheme' | 'topTheme'> {
   bottomTheme?: StatusBarStyle
@@ -51,6 +49,7 @@ class Ui {
   }
 
   public set state(newState: NormalisedFlagshipUI) {
+    themeLog.info('UI state changed', newState)
     this._state = newState
   }
 }
@@ -179,7 +178,7 @@ export const setFlagshipUI = (
   intent: FlagshipUI,
   callerName?: string
 ): Promise<null> => {
-  callerName && handleLogging(intent, callerName)
+  handleLogging(intent, callerName ?? 'unknown')
 
   handleSideEffects(
     Object.fromEntries(
