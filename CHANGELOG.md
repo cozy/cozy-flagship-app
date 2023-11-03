@@ -1,4 +1,4 @@
-# 1.1.16
+# 1.1.17
 
 ## ✨ Features
 
@@ -8,6 +8,29 @@
 
 ## 🔧 Tech
 
+
+# 1.1.16
+
+## ✨ Features
+
+* The app can now track geolocation and show CO2 emissions in CoachCO2 app ([PR #973](https://github.com/cozy/cozy-react-native/pull/973), [PR #980](https://github.com/cozy/cozy-flagship-app/pull/980), [PR #981](https://github.com/cozy/cozy-flagship-app/pull/981), [PR #984](https://github.com/cozy/cozy-flagship-app/pull/984), [PR #986](https://github.com/cozy/cozy-flagship-app/pull/986))
+
+## 🐛 Bug Fixes
+
+* Fix error on login authorization check due to missing cookie ([PR #956](https://github.com/cozy/cozy-react-native/pull/956))
+* Fix error on login due to webview race condition ([PR #985](https://github.com/cozy/cozy-flagship-app/pull/985))
+* Improve destination folder handling on Client Side Connectors ([PR #964](https://github.com/cozy/cozy-react-native/pull/964))
+* Client Side Connectors should now correctly set source account for created files ([PR #970](https://github.com/cozy/cozy-react-native/pull/970))
+* Push notifications should now open the correct page on the correct webview when clicked ([PR #974](https://github.com/cozy/cozy-react-native/pull/974), [PR #979](https://github.com/cozy/cozy-flagship-app/pull/979))
+* Improve album creation handling ([PR #982](https://github.com/cozy/cozy-react-native/pull/982))
+
+## 🔧 Tech
+
+* Add foundations for OCR support ([PR #959](https://github.com/cozy/cozy-react-native/pull/959) and [PR #968](https://github.com/cozy/cozy-react-native/pull/968))
+* Improve debug logs for Client Side Connectors ([PR #965](https://github.com/cozy/cozy-react-native/pull/965) and [PR #969](https://github.com/cozy/cozy-react-native/pull/969))
+* Add documentation about white labels mechanism ([PR #963](https://github.com/cozy/cozy-react-native/pull/963))
+* Change flag name debug.clisk.html-on-error to clisk.html-on-error ([PR #978](https://github.com/cozy/cozy-flagship-app/pull/978))
+* Add an isAvailable intent supporting ocr, backup, scanner and geolocationTracking features ([PR #988](https://github.com/cozy/cozy-flagship-app/pull/988))
 
 # 1.1.15
 
