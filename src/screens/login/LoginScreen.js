@@ -558,7 +558,8 @@ const LoginSteps = ({
 
   if (state.step === PASSWORD_STEP) {
     const enforcedCozyBlueBackground = {
-      backgroundColor: colors.primaryColor
+      backgroundColor: colors.primaryColor,
+      themeUrl: `${state.instance}/assets/styles/theme.css`
     }
     return (
       <>
