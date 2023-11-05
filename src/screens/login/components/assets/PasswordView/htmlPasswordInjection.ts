@@ -70,7 +70,7 @@ export const getHtml = (
     <style type="text/css">${cssPadding}</style>
     ${getCustomThemeLink(clouderyTheme)}
   </head>
-  <body class="theme-inverted">
+  <body class="cirrus theme-inverted">
     <form id="login-form" method="POST" action="#" class="d-contents">
       <input id="trusted-device-token" type="hidden" name="trusted-device-token" value="" />
       <main class="wrapper">
