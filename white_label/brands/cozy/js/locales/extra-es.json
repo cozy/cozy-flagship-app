@@ -1,10 +1,28 @@
 {
+  "logout_dialog": {
+    "content": "¿Estás seguro de que quieres desconectarte de tu Cozy?"
+  },
   "screens": {
     "clouderyOffer": {
       "backButton": "VOLVER A MI COZY",
       "success": {
         "body": "Tu Cozy está siendo actualizado.\nRecibirás una notificación en cuanto finalice tu compra."
       }
+    },
+    "cozyBlocked": {
+      "title": "Tu Cozy ha sido bloqueado"
+    },
+    "cozyNotFound": {
+      "body": "No hemos encontrado ningún Cozy en esta dirección. Puede que sea un error de tipeo. Para saberlo, verifica la dirección de tu Cozy en el correo electrónico que te enviamos cuando se creó.",
+      "title": "La dirección de este Cozy no existe."
+    },
+    "SecureScreen": {
+      "passwordprompt_body": "El acceso a tu dispositivo no es seguro. Elige una contraseña para asegurar el acceso a tu Cozy.",
+      "passwordprompt_title": "Asegurar el acceso a tu Cozy",
+      "pinprompt_body": "Accede a tu aplicación más rápido activando el desbloqueo de la aplicación con código PIN"
+    },
+    "login": {
+      "invalidMagicCode": "El enlace para acceder a tu Cozy está truncado o ha expirado"
     },
     "welcome": {
       "body": "Accede a tu Nube Personal ahora, el hogar digital para reunir todos tus datos",
@@ -15,6 +33,9 @@
   "modals": {
     "IconChangedModal": {
       "description": "El ícono de la aplicación 'Cozy' ha sido modificado."
+    },
+    "ErrorToken": {
+      "body": "Parece que has revocado este dispositivo de tu Cozy. Para volver a acceder a tus datos, inicia sesión de nuevo. Si esta acción no procede de usted, no dude en ponerse en contacto con nosotros en <linkTag>{{email}}</linkTag>."
     }
   },
   "services": {

@@ -1,4 +1,7 @@
 {
+  "support": {
+    "email": "support@cozycloud.cc"
+  },
   "konnectors": {
     "errorDoubleRun": {
       "title": "Ya hay una cuenta en ejecución",
@@ -12,7 +15,11 @@
     "contactUs": "¿Un problema, una sugerencia? Contáctanos en",
     "unknown_error": "Ha ocurrido un error inesperado, por favor inténtalo de nuevo.",
     "reset": "Volver al inicio",
+    "showDetails": "Ver detalles del error",
     "platformNotSupported": "Plataforma no compatible con esta solicitud",
+    "serverError": "Se ha producido un error al procesar su solicitud",
+    "cacheCheckError": "Se ha producido un error al procesar su solicitud",
+    "print": "No se ha podido imprimir, inténtelo de nuevo.",
     "shareFiles_other": "No pudimos compartir tus archivos, por favor intenta de nuevo.",
     "shareFiles_interval": "(1)[No pudimos compartir tu archivo, por favor intenta de nuevo.]||||(2-inf)[No pudimos compartir tus archivos, por favor intenta de nuevo.]"
   },
@@ -37,9 +44,21 @@
         "close": "Cerrar"
       }
     },
+    "cozyBlocked": {
+      "body": "Póngase en contacto con nosotros, si desea más información, en <a id=\"mailto\" href=\"#\">contact@cozycloud.cc</a>.",
+      "title": "Tu Cozy ha sido bloqueado"
+    },
     "cozyNotFound": {
       "body": "No hemos encontrado ningún Cozy en esta dirección. Puede que sea un error de tipeo. Para saberlo, verifica la dirección de tu Cozy en el correo electrónico que te enviamos cuando se creó.",
       "title": "La dirección de este Cozy no existe."
+    },
+    "cozyNotOnboarded": {
+      "body": "Debe hacer clic en el correo electrónico enviado al final de su inscripción para completarla. Si no encuentra este correo electrónico, póngase en contacto con nosotros en <a id=\"mailto\" href=\"#\">contact@cozycloud.cc</a>.",
+      "title": "No ha completado su registro"
+    },
+    "genericError": {
+      "defaultBody": "La aplicación ha encontrado un error inesperado",
+      "title": "Ha ocurrido un problema"
     },
     "managerError": {
       "body": "Ha ocurrido un error al procesar tu enlace de conexión",
@@ -150,6 +169,11 @@
     }
   },
   "modals": {
+    "ErrorToken": {
+      "title": "Acceso revocado",
+      "body": "Parece que has revocado este dispositivo de tu Cozy. Para volver a acceder a tus datos, inicia sesión de nuevo. Si esta acción no procede de usted, no dude en ponerse en contacto con nosotros en <linkTag>{{email}}</linkTag>.",
+      "button": "Iniciar sesión de nuevo"
+    },
     "IconChangedModal": {
       "description": "El ícono de la aplicación 'Cozy' ha sido modificado."
     },

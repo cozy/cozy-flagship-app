@@ -1,10 +1,28 @@
 {
+  "logout_dialog": {
+    "content": "Are you sure you want to logout from your Cozy?"
+  },
   "screens": {
     "clouderyOffer": {
       "backButton": "BACK TO MY COZY",
       "success": {
         "body": "Your Cozy is being updated.\nYou will receive a notification as soon as your purchase is finalized."
       }
+    },
+    "cozyBlocked": {
+      "title": "Your Cozy has been blocked"
+    },
+    "cozyNotFound": {
+      "body": "We could not find any Cozy at this address. It may be a typo. To know, check the address of your Cozy in the email we sent you when it was created.",
+      "title": "This Cozy address does not exist."
+    },
+    "SecureScreen": {
+      "passwordprompt_body": "Access to your device is not secure. Choose a password to secure access to your Cozy.",
+      "passwordprompt_title": "Secure access to your Cozy",
+      "pinprompt_body": "Access your app faster by enabling app unlock with PIN code"
+    },
+    "login": {
+      "invalidMagicCode": "The link to access your Cozy is truncated or has expired"
     },
     "welcome": {
       "body": "Access your Personal Cloud now, the digital home to gather all your data",
@@ -15,6 +33,9 @@
   "modals": {
     "IconChangedModal": {
       "description": "The icon of the 'Cozy' application has been modified."
+    },
+    "ErrorToken": {
+      "body": "It seems you have revoked this device from your Cozy. To access your data again, please log in again. If you did not perform this action, please feel free to contact us at <linkTag>{{email}}</linkTag>."
     }
   },
   "services": {
