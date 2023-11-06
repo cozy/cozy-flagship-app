@@ -1,3 +1,5 @@
+import BackgroundGeolocation from 'react-native-background-geolocation'
+
 import { uploadUserCache } from '/app/domain/geolocation/tracking/upload'
 import { createUser } from '/app/domain/geolocation/tracking/user'
 import { getTs, Log, parseISOString } from '/app/domain/geolocation/helpers'
@@ -8,7 +10,9 @@ import {
   getLastStopTransitionTs,
   setLastStartTransitionTs,
   setLastStopTransitionTs,
-  storeActivity
+  storeActivity,
+  removeActivities,
+  setLastPointUploaded
 } from '/app/domain/geolocation/tracking/storage'
 
 const largeTemporalDeltaBetweenPoints = 30 * 60 // In seconds. Shouldn't have longer breaks without siginificant motion
@@ -17,16 +21,6 @@ const minSpeedBetweenDistantPoints = 0.1 // In m/s. Note the average walking spe
 const maxPointsPerBatch = 300 // Represents actual points, elements in the POST will probably be around this*2 + ~10*number of stops made
 
 const LOW_CONFIDENCE_THRESHOLD = 0.5
-
-
-const modeKeys = [
-  'cycling',
-  'running',
-  'walking',
-  'automotive',
-  'stationary',
-  'unknown'
-]
 
 export const createDataBatch = (locations, nRun, maxBatchSize) => {
   const startBatchPoint = nRun * maxBatchSize
@@ -37,12 +31,12 @@ export const createDataBatch = (locations, nRun, maxBatchSize) => {
 
 // Future entry point of algorithm
 // prepareTrackingData / extractTrackingDate
-export const smartSend = async (locations, user, { force = true } = {}) => {
+export const smartSend = async (locations, user, { force = false } = {}) => {
   await createUser(user) // Will throw on fail, skipping the rest (trying again later is handled a level above smartSend)
 
   if (locations.length === 0) {
     Log('No new locations')
-    await uploadWithNoNewPoints(user, force)
+    await uploadWithNoNewPoints({ user, force })
   } else {
     Log('Found pending locations, uploading: ' + locations.length)
     const nBatch = Math.floor(locations.length / maxPointsPerBatch) + 1
@@ -54,7 +48,18 @@ export const smartSend = async (locations, user, { force = true } = {}) => {
       const batchLocations = createDataBatch(locations, i, maxPointsPerBatch)
       const isLastBatch = i + 1 >= nBatch
 
-      await uploadPoints(batchLocations, user, previousPoint, isLastBatch)
+      const motionData = await prepareMotionData({
+        locations: batchLocations,
+        previousPoint,
+        isLastBatch
+      })
+      const resp = await uploadMotionData({ user, motionData })
+      if (resp?.ok) {
+        // Save last point and remove uploaded data
+        await setLastPointUploaded(locations[locations.length - 1])
+        Log('Saved last point')
+        await cleanupData(locations)
+      }
       previousPoint = batchLocations[batchLocations.length - 1]
     }
 
@@ -62,38 +67,28 @@ export const smartSend = async (locations, user, { force = true } = {}) => {
   }
 }
 
-const uploadWithNoNewPoints = async (user, force) => {
-  const lastPoint = await getLastPointUploaded()
-  const content = []
+const cleanupData = async locations => {
+  const uuidsToDelete = locations.map(location => location.uuid)
+  const lastPointTs = getTs(locations[locations.length - 1])
 
-  if (force) {
-    await addStopTransitions(content, Date.now() / 1000)
-    await uploadUserCache(content, user, [])
-  } else {
-    if (lastPoint == undefined) {
-      Log('No previous location either, no upload')
-    } else {
-      let deltaT = Date.now() / 1000 - getTs(lastPoint)
-      if (deltaT > largeTemporalDeltaBetweenPoints) {
-        // Note: no problem if we add a stop if there's already one
-        Log(
-          'Previous location old enough (' +
-            deltaT +
-            's ago), posting stop transitions at ' +
-            new Date(1000 * getTs(lastPoint))
-        )
-        await addStopTransitions(content, getTs(lastPoint))
-        await uploadUserCache(content, user, [])
-        Log('Finished upload of stop transtitions')
-      } else {
-        Log('Previous location too recent (' + deltaT + 's ago), no upload')
-      }
+  if (uuidsToDelete.length > 0) {
+    Log('Removing local location records that were just uploaded...')
+    for (const uuid of uuidsToDelete) {
+      await BackgroundGeolocation.destroyLocation(uuid)
+    }
+    Log('Done removing local locations')
+    if (lastPointTs) {
+      await removeActivities({ beforeTs: lastPointTs })
+      Log('Done removing activities')
     }
   }
 }
 
-// TODO: refacto this part
-const uploadPoints = async (points, user, lastBatchPoint, isLastBatch) => {
+const uploadMotionData = async (user, motionData) => {
+  await uploadUserCache(motionData, user)
+}
+
+const prepareMotionData = async ({ points, lastBatchPoint, isLastBatch }) => {
   const contentToUpload = []
   const uuidsToDelete = []
 
@@ -156,7 +151,7 @@ const uploadPoints = async (points, user, lastBatchPoint, isLastBatch) => {
       }
     }
 
-    // -----Step 2: Add location points and motion activity
+    // -----Step 2: Add filtered points and motion activity
 
     if (i === 0) {
       // Add a start transition when it's the first point of the batch, and no start transition had been set
@@ -186,6 +181,8 @@ const uploadPoints = async (points, user, lastBatchPoint, isLastBatch) => {
     contentToUpload.push(...activities)
   }
 
+  // TODO: filter points after last stationary event
+
   // -----Step 3: Force end trip for the last point, as the device had been stopped long enough after motion
   if (isLastBatch) {
     // Force a stop transition for the last point
@@ -193,15 +190,36 @@ const uploadPoints = async (points, user, lastBatchPoint, isLastBatch) => {
     Log('Delta last point : ' + deltaLastPoint)
     await addStopTransitions(contentToUpload, lastPointTs + 1)
   }
+}
 
-  // -----Step 4: Upload data
-  await uploadUserCache(
-    contentToUpload,
-    user,
-    uuidsToDelete,
-    points[points.length - 1],
-    lastPointTs
-  )
+const uploadWithNoNewPoints = async ({ user, force = false }) => {
+  const lastPoint = await getLastPointUploaded()
+  const content = []
+
+  if (force) {
+    await addStopTransitions(content, Date.now() / 1000)
+    await uploadUserCache(content, user)
+  } else {
+    if (lastPoint == undefined) {
+      Log('No previous location either, no upload')
+    } else {
+      let deltaT = Date.now() / 1000 - getTs(lastPoint)
+      if (deltaT > largeTemporalDeltaBetweenPoints) {
+        // Note: no problem if we add a stop if there's already one
+        Log(
+          'Previous location old enough (' +
+            deltaT +
+            's ago), posting stop transitions at ' +
+            new Date(1000 * getTs(lastPoint))
+        )
+        await addStopTransitions(content, getTs(lastPoint))
+        await uploadUserCache(content, user)
+        Log('Finished upload of stop transtitions')
+      } else {
+        Log('Previous location too recent (' + deltaT + 's ago), no upload')
+      }
+    }
+  }
 }
 
 // Add start transitions, within 0.1s of given ts
@@ -264,15 +282,6 @@ const addPoint = (content, point, filtered) => {
     content.push(translateToEMissionLocationPoint(point))
     content[content.length - 1].metadata.key = 'background/filtered_location'
   }
-}
-
-const getActivityMode = activity => {
-  for (const key of modeKeys) {
-    if (activity?.data[key] === true) {
-      return key
-    }
-  }
-  return null
 }
 
 const getFilteredActivities = async ({ beforeTs }) => {
