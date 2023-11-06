@@ -16,6 +16,9 @@ const maxTemporalDeltaBetweenPoints = 12 * 60 * 60 // In seconds. See https://gi
 const minSpeedBetweenDistantPoints = 0.1 // In m/s. Note the average walking speed is ~1.4 m/s
 const maxPointsPerBatch = 300 // Represents actual points, elements in the POST will probably be around this*2 + ~10*number of stops made
 
+const LOW_CONFIDENCE_THRESHOLD = 0.5
+
+
 const modeKeys = [
   'cycling',
   'running',
@@ -178,7 +181,7 @@ const uploadPoints = async (points, user, lastBatchPoint, isLastBatch) => {
   // Add activities stored in local storage
   const lastPointTs = getTs(points[points.length - 1])
   const activities = await getFilteredActivities({ beforeTs: lastPointTs })
-  if (activities) {
+  if (activities?.length > 0) {
     Log('n activities : ' + activities.length)
     contentToUpload.push(...activities)
   }
@@ -199,23 +202,6 @@ const uploadPoints = async (points, user, lastBatchPoint, isLastBatch) => {
     points[points.length - 1],
     lastPointTs
   )
-}
-
-export const getFilteredActivities = async ({ beforeTs: lastPointTs }) => {
-  const activities = await getActivities({ beforeTs: lastPointTs })
-  if (!activities) {
-    return null
-  }
-
-  const filteredActivities = [activities[0]]
-  for (let i = 1; i < activities.length; i++) {
-    const prevMode = getActivityMode(activities[i - 1])
-    const mode = getActivityMode(activities[i])
-    if (mode !== prevMode) {
-      filteredActivities.push(activities[i])
-    }
-  }
-  return filteredActivities
 }
 
 // Add start transitions, within 0.1s of given ts
@@ -289,6 +275,32 @@ const getActivityMode = activity => {
   return null
 }
 
+const getFilteredActivities = async ({ beforeTs }) => {
+  const activities = await getActivities({ beforeTs })
+  if (!activities) {
+    return null
+  }
+  const result = []
+  let previousActivity = null
+
+  // Filter out consecutives stationary activities
+  for (let activity of activities) {
+    if (
+      previousActivity &&
+      previousActivity.data.stationary &&
+      activity.data.stationary
+    ) {
+      // Skip the current activity as it's a consecutive stationary one
+      continue
+    }
+
+    result.push(activity)
+    previousActivity = activity
+  }
+
+  return result
+}
+
 const translateToEMissionLocationPoint = location_point => {
   let ts = Math.floor(parseISOString(location_point.timestamp).getTime() / 1000)
   return {
@@ -336,7 +348,7 @@ const translateEventToEMissionMotionActivity = event => {
       confidence_level:
         event.activity.confidence > 75
           ? 'high'
-          : event.activity.confidence > 50
+          : event.activity.confidence > LOW_CONFIDENCE_THRESHOLD
           ? 'medium'
           : 'low'
     },
@@ -352,6 +364,10 @@ const translateEventToEMissionMotionActivity = event => {
 }
 
 export const saveActivity = async event => {
+  if (event.confidence < LOW_CONFIDENCE_THRESHOLD) {
+    // Filter out low confidence activities
+    return null
+  }
   const activityEvent = {
     activity: {
       confidence: event.confidence,
