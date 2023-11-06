@@ -15,6 +15,7 @@
     "contactUs": "A problem, a suggestion? Contact us at",
     "unknown_error": "An unexpected error occurred, please try again.",
     "reset": "Return to home",
+    "showDetails": "Show error details",
     "platformNotSupported": "Platform not supported for this request",
     "serverError": "An error occurred while processing your request",
     "cacheCheckError": "An error occurred while processing your request",
@@ -54,6 +55,10 @@
     "cozyNotOnboarded": {
       "body": "You must click on the email sent at the end of your registration to complete it. If you can't find this email, please contact us at <a id=\"mailto\" href=\"#\">contact@cozycloud.cc</a>.",
       "title": "You have not completed your registration"
+    },
+    "genericError": {
+      "defaultBody": "The app encountered an unexpected error",
+      "title": "A problem occurred"
     },
     "managerError": {
       "body": "An error occurred while processing your login link",

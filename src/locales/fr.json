@@ -17,6 +17,9 @@
     "reset": "Revenir à l'accueil",
     "showDetails": "Voir les détails de l'erreur",
     "platformNotSupported": "Plateforme non supportée pour cette demande",
+    "serverError": "Une erreur est survenue pendant le traitement de votre requête",
+    "cacheCheckError": "Une erreur est survenue pendant le traitement de votre requête",
+    "print": "Échec de l'impression, merci de ressayer.",
     "shareFiles_other": "Nous n'avons pas pu partager vos fichiers, veuillez réessayer.",
     "shareFiles_interval": "(1)[Nous n'avons pas pu partager votre fichier, veuillez réessayer.]||||(2-inf)[Nous n'avons pas pu partager vos fichiers, veuillez réessayer.]"
   },
