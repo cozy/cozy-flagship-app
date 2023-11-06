@@ -3,25 +3,12 @@ import BackgroundGeolocation from 'react-native-background-geolocation'
 import { smartSend } from '/app/domain/geolocation/tracking/tracking'
 import { getOrCreateId } from '/app/domain/geolocation/tracking/user'
 import { Log } from '/app/domain/geolocation/helpers'
-import {
-  removeActivities,
-  setLastPointUploaded,
-  storeFlagFailUpload
-} from '/app/domain/geolocation/tracking/storage'
-
-const DestroyLocalOnSuccess = true
+import { storeFlagFailUpload } from '/app/domain/geolocation/tracking/storage'
 
 const serverURL = 'https://openpath.cozycloud.cc'
 const heavyLogs = false // Log points, motion changes...
 
-// TODO: this should be refactor, to separate actual upload from data cleanup
-export const uploadUserCache = async (
-  content,
-  user,
-  uuidsToDeleteOnSuccess,
-  lastPointToSave = undefined,
-  lastActivityTs = null
-) => {
+export const uploadUserCache = async (content, user) => {
   Log('Uploading content to usercache...')
   const docs = filterBadContent(content)
   const JsonRequest = {
@@ -50,31 +37,9 @@ export const uploadUserCache = async (
         await response.text()
       )
     )
-  } else {
-    Log('Success uploading')
-    if (lastPointToSave != undefined) {
-      await setLastPointUploaded(lastPointToSave)
-      Log('Saved last point')
-    } else {
-      Log('No last point to save')
-    }
-    if (DestroyLocalOnSuccess && uuidsToDeleteOnSuccess.length > 0) {
-      Log('Removing local location records that were just uploaded...')
-      for (
-        let deleteIndex = 0;
-        deleteIndex < uuidsToDeleteOnSuccess.length;
-        deleteIndex++
-      ) {
-        const element = uuidsToDeleteOnSuccess[deleteIndex]
-        await BackgroundGeolocation.destroyLocation(element)
-      }
-      Log('Done removing local locations')
-      if (lastActivityTs) {
-        await removeActivities({ beforeTs: lastActivityTs })
-        Log('Done removing activities')
-      }
-    }
   }
+  Log('Success uploading')
+  return { ok: true }
 }
 
 /**
