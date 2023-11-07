@@ -21,6 +21,9 @@ import io.cozy.flagship.mobile.keyboard.KeyboardPackage;
 import io.cozy.flagship.mobile.httpserver.HttpServerPackage;
 import io.cozy.flagship.mobile.webview.WebViewPackage;
 
+import android.database.CursorWindow;
+import java.lang.reflect.Field;
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -61,6 +64,16 @@ public class MainApplication extends Application implements ReactApplication {
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
     WebView.setWebContentsDebuggingEnabled(true);
     OkHttpClientProvider.setOkHttpClientFactory(new UserAgentClientFactory());
+
+    try {
+      Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
+      field.setAccessible(true);
+      field.set(null, 50 * 1024 * 1024); // 50MB
+    } catch (Exception e) {
+      if (BuildConfig.DEBUG) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**
