@@ -4,7 +4,7 @@ import RNFS from 'react-native-fs'
 import { logger } from '/libs/functions/logger'
 import {
   fetchCozyAppArchiveInfoForVersion,
-  fetchCozyAppVersion,
+  fetchCozyAppStackInfos,
   getInstanceAndFqdnFromClient
 } from '/libs/client'
 import { getBaseFolderForFqdnAndSlug } from '/libs/httpserver/httpPaths'
@@ -76,7 +76,11 @@ export const updateCozyAppBundle = async ({
 
   const { version: currentVersion } =
     (await getCurrentAppConfigurationForFqdnAndSlug(fqdn, slug)) ?? {}
-  const stackVersion = await fetchCozyAppVersion(slug, client, type)
+  const { stackVersion, stackSource } = await fetchCozyAppStackInfos(
+    slug,
+    client,
+    type
+  )
 
   const destinationPath = getCozyAppFolderPathForVersion({
     client,
@@ -113,7 +117,8 @@ export const updateCozyAppBundle = async ({
     destinationPath,
     slug,
     type,
-    version: stackVersion
+    version: stackVersion,
+    source: stackSource
   })
 
   await setCurrentAppVersionForFqdnAndSlug({
@@ -183,11 +188,13 @@ const downloadAndExtractCozyAppVersion = async ({
   destinationPath,
   slug,
   type,
-  version
+  version,
+  source
 }: AppInfo & {
   destinationPath: string
   type: AppType
   version: string
+  source: string
 }): Promise<void> => {
   log.debug(`Downloading '${slug}' version '${version}' from stack`)
 
@@ -206,7 +213,6 @@ const downloadAndExtractCozyAppVersion = async ({
   })
 
   await extractCozyAppArchive(archivePath, destinationPath)
-
   await removeCozyAppArchive(archivePath)
 }
 

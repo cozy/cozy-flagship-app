@@ -141,7 +141,7 @@ export const fetchCozyDataForSlug = async (slug, client, cookie) => {
 
 /**
  * @param {CozyClient} client - CozyClient instance
- * 
+ *
  * @description  Get The uri, fqdn and normalizedFqdn of a cozy instance
  *
  * @returns {getInstanceAndFqdnFromClient}
@@ -168,20 +168,24 @@ export const getInstanceAndFqdnFromClient = client => {
 /**
  * @param {string} slug - The slug of the cozy-app to update
  * @param {CozyClient} client - CozyClient instance
- * @returns {Promise<string>} - The version of the cozy-app
+ * @returns {Promise<{stackVersion: string, stackSource: string}>>} - The version of the cozy-app
  */
-export const fetchCozyAppVersion = async (slug, client, type = 'apps') => {
+export const fetchCozyAppStackInfos = async (slug, client, type = 'apps') => {
   const stackClient = client.getStackClient()
 
   const result = await stackClient.fetchJSON('GET', `/${type}/${slug}`)
 
-  const version = result?.data?.attributes?.version
+  const stackVersion = result?.data?.attributes?.version
+  const stackSource = result?.data?.attributes?.source
 
-  if (!version) {
+  if (!stackVersion) {
     throw new Error(`No version found for app ${slug}`)
   }
+  if (!stackSource) {
+    throw new Error(`No source found for app ${slug}`)
+  }
 
-  return version
+  return { stackVersion, stackSource }
 }
 
 const isClientErrorResponse = error =>
