@@ -21,7 +21,11 @@ import {
 import { getDevModeFunctions } from '/app/domain/authorization/utils/devMode'
 import { routes } from '/constants/routes'
 import { devlog } from '/core/tools/env'
-import { navigate, navigationRef } from '/libs/RootNavigation'
+import {
+  getCurrentRouteName,
+  navigate,
+  navigationRef
+} from '/libs/RootNavigation'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { authConstants } from '/app/domain/authorization/constants'
 import { safePromise } from '/utils/safePromise'
@@ -298,7 +302,7 @@ const tryLockingApp = async (
 export const handleSecurityFlowWakeUp = async (
   client: CozyClient
 ): Promise<void> => {
-  const currentRoute = navigationRef.getCurrentRoute()
+  const currentRoute = getCurrentRouteName()
   let parsedRoute: Route<string, { href: string; slug: string }>
 
   try {
@@ -310,10 +314,9 @@ export const handleSecurityFlowWakeUp = async (
   } catch (error) {
     devlog(
       'Could not parse the current route, defaulting to home screen:',
-      currentRoute,
-      error
+      currentRoute
     )
-    parsedRoute = { name: routes.home } as Route<
+    parsedRoute = { name: routes.default } as Route<
       string,
       { href: string; slug: string }
     >
