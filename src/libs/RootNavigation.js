@@ -9,6 +9,14 @@ const log = Minilog('RootNavigation')
 
 export const navigationRef = createNavigationContainerRef()
 
+export const getCurrentRouteName = () => {
+  if (!navigationRef.isReady()) {
+    return null
+  }
+
+  return navigationRef.getCurrentRoute().name
+}
+
 const isReady = () => navigationRef.isReady()
 
 export const goBack = () => navigationRef.goBack()
