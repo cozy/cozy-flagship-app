@@ -4,6 +4,7 @@ import { smartSend } from '/app/domain/geolocation/tracking/tracking'
 import { getOrCreateId } from '/app/domain/geolocation/tracking/user'
 import { Log } from '/app/domain/geolocation/helpers'
 import { storeFlagFailUpload } from '/app/domain/geolocation/tracking/storage'
+import { utf8ByteSize } from '/app/domain/geolocation/tracking/utils'
 
 const serverURL = 'https://openpath.cozycloud.cc'
 const heavyLogs = false // Log points, motion changes...
@@ -11,21 +12,26 @@ const heavyLogs = false // Log points, motion changes...
 export const uploadUserCache = async (content, user) => {
   Log('Uploading content to usercache...')
   const docs = filterBadContent(content)
-  const JsonRequest = {
+  const request = {
     user: user,
     phone_to_server: docs
   }
+
+  const body = JSON.stringify(request)
 
   let response = await fetch(serverURL + '/usercache/put', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(JsonRequest)
+    body: body
   })
 
+  const size = utf8ByteSize(body)
+  Log('Request size: ' + size)
+
   if (heavyLogs) {
-    Log('Uploaded: ' + JSON.stringify(JsonRequest))
+    Log('Uploaded: ' + JSON.stringify(request))
   }
 
   if (!response.ok) {
