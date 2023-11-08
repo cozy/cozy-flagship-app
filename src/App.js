@@ -1,11 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { NavigationContainer } from '@react-navigation/native'
 import { decode, encode } from 'base-64'
 import React, { useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
-import RNAsyncStorageFlipper from 'rn-async-storage-flipper'
 import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
 
 import { CozyProvider, useClient } from 'cozy-client'
@@ -177,11 +175,6 @@ const WrappedApp = () => {
 
 const Wrapper = () => {
   const [hasCrypto, setHasCrypto] = useState(false)
-  useEffect(() => {
-    if (__DEV__) {
-      RNAsyncStorageFlipper(AsyncStorage)
-    }
-  }, [])
 
   return (
     <>

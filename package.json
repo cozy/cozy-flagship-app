@@ -103,7 +103,6 @@
     "react-scripts": "4.0.3",
     "redux-logger": "3.0.6",
     "redux-persist": "^6.0.0",
-    "rn-async-storage-flipper": "^0.0.10",
     "rn-flipper-async-storage-advanced": "^1.0.4",
     "semver": "^7.3.2"
   },
