@@ -89,27 +89,25 @@ Use [flipper](https://fbflipper.com/docs/features/react-native/) to
 have access to a React Native Debuguer.
 If you are running MacOS on a M1 or M2 computer, use [this optimized version](https://github.com/chiragramani/FlipperReleases) instead.
 
-To have access to the AsyncStorage content you can install those
-2 plugins:
-async-storage and async-storage-advanced (see https://github.com/cozy/cozy-react-native/pull/270
-for more information)
+To have access to the AsyncStorage content you can install async-storage-advanced plugin (see https://github.com/cozy/cozy-react-native/pull/270
+for more information).
 
 A guide for debugging in release mode can be found here: [How to retrieve logs in release mode](docs/how-to-retrieve-logs-in-release.md)
 
 ### Inspecting a webview
 
-#### Android 
+#### Android
 
-In order to inspect the content of the webview & get access to the console: 
+In order to inspect the content of the webview & get access to the console:
 In chrome: `chrome://inspect/#devices`
 
 (you can read https://github.com/cozy/react-native-webview/blob/cozy_main/docs/Debugging.md#android--chrome for more informations)
 
-#### iOS 
+#### iOS
 
-If you have an iOS >= 16.4 you need to do the following: 
+If you have an iOS >= 16.4 you need to do the following:
 
-Add : 
+Add :
 ```
 #if __MAC_OS_X_VERSION_MAX_ALLOWED >= 130300 || \
     __IPHONE_OS_VERSION_MAX_ALLOWED >= 160400 || \
