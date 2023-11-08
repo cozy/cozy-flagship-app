@@ -18,7 +18,7 @@ import {
 const largeTemporalDeltaBetweenPoints = 30 * 60 // In seconds. Shouldn't have longer breaks without siginificant motion
 const maxTemporalDeltaBetweenPoints = 12 * 60 * 60 // In seconds. See https://github.com/e-mission/e-mission-server/blob/f6bf89a274e6cd10353da8f17ebb327a998c788a/emission/analysis/intake/segmentation/trip_segmentation_methods/dwell_segmentation_dist_filter.py#L194
 const minSpeedBetweenDistantPoints = 0.1 // In m/s. Note the average walking speed is ~1.4 m/s
-const maxPointsPerBatch = 300 // Represents actual points, elements in the POST will probably be around this*2 + ~10*number of stops made
+const MAX_DOCS_PER_BATCH = 10000
 
 const LOW_CONFIDENCE_THRESHOLD = 0.5
 
@@ -39,30 +39,25 @@ export const smartSend = async (locations, user, { force = false } = {}) => {
     await uploadWithNoNewPoints({ user, force })
   } else {
     Log('Found pending locations, uploading: ' + locations.length)
-    const nBatch = Math.floor(locations.length / maxPointsPerBatch) + 1
-    let previousPoint = await getLastPointUploaded()
+    const previousPoint = await getLastPointUploaded()
+    const motionData = await prepareMotionData({
+      locations,
+      lastBatchPoint: previousPoint
+    })
 
+    const nBatch = Math.floor(motionData.length / MAX_DOCS_PER_BATCH) + 1
     for (let i = 0; i < nBatch; i++) {
       Log('Creating batch ' + (i + 1) + '/' + nBatch)
-
-      const batchLocations = createDataBatch(locations, i, maxPointsPerBatch)
-      const isLastBatch = i + 1 >= nBatch
-
-      const motionData = await prepareMotionData({
-        locations: batchLocations,
-        previousPoint,
-        isLastBatch
-      })
-      const resp = await uploadMotionData({ user, motionData })
+      const data = createDataBatch(motionData, i, MAX_DOCS_PER_BATCH)
+      // FIXME: what if the upload fails for a batcgh, in the middle of a transition or activity?
+      const resp = await uploadUserCache(data, user)
       if (resp?.ok) {
         // Save last point and remove uploaded data
         await setLastPointUploaded(locations[locations.length - 1])
         Log('Saved last point')
         await cleanupData(locations)
       }
-      previousPoint = batchLocations[batchLocations.length - 1]
     }
-
     Log('Uploaded last batch')
   }
 }
@@ -84,27 +79,23 @@ const cleanupData = async locations => {
   }
 }
 
-const uploadMotionData = async (user, motionData) => {
-  await uploadUserCache(motionData, user)
-}
-
-const prepareMotionData = async ({ points, lastBatchPoint, isLastBatch }) => {
+const prepareMotionData = async ({ locations, lastBatchPoint }) => {
   const contentToUpload = []
-  const uuidsToDelete = []
 
-  if (points.length > 0) {
+  if (locations?.length < 1) {
+    return []
+  }
+  if (locations.length > 0) {
     Log(
       'upload points from ' +
-        points[0]?.timestamp +
+        locations[0]?.timestamp +
         ' - to ' +
-        points[points.length - 1]?.timestamp
+        locations[locations.length - 1]?.timestamp
     )
   }
 
   for (let i = 0; i < points.length; i++) {
     const point = points[i]
-    uuidsToDelete.push(point.uuid)
-
     const previousPoint =
       i === 0 // Handles setting up the case for the first point
         ? lastBatchPoint // Can be undefined
@@ -183,13 +174,13 @@ const prepareMotionData = async ({ points, lastBatchPoint, isLastBatch }) => {
 
   // TODO: filter points after last stationary event
 
-  // -----Step 3: Force end trip for the last point, as the device had been stopped long enough after motion
-  if (isLastBatch) {
-    // Force a stop transition for the last point
-    const deltaLastPoint = Date.now() / 1000 - lastPointTs
-    Log('Delta last point : ' + deltaLastPoint)
-    await addStopTransitions(contentToUpload, lastPointTs + 1)
-  }
+  // FIXME: what if the upload failed and more points were added before the retry?
+  // The stop transition might be missed?
+  const deltaLastPoint = Date.now() / 1000 - lastPointTs
+  Log('Delta last point : ' + deltaLastPoint)
+  await addStopTransitions(contentToUpload, lastPointTs + 1)
+
+  return contentToUpload
 }
 
 const uploadWithNoNewPoints = async ({ user, force = false }) => {
