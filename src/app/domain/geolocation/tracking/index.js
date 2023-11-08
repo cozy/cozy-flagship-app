@@ -9,6 +9,8 @@ import {
 } from '/app/domain/geolocation/tracking/upload'
 import { StorageKeys, storeData, getData } from '/libs/localStore/storage'
 import { Log } from '/app/domain/geolocation/helpers'
+import { t } from '/locales/i18n'
+
 export { Log, getAllLogs, sendLogFile } from '/app/domain/geolocation/helpers'
 export {
   getId,
@@ -58,8 +60,9 @@ export const startTracking = async () => {
       enableHeadless: true,
       foregroundService: true,
       backgroundPermissionRationale: {
-        message:
-          'Mémoriser vos déplacements nécessite de ≪ {backgroundPermissionOptionLabel} ≫'
+        message: t(
+          'services.geolocationTracking.androidBackgroundPermissionMessage'
+        )
       }
     })
     await BackgroundGeolocation.start()

@@ -110,6 +110,9 @@
         "onProgressTitle": "Uploading",
         "onProgressMessage": "A file is being uploaded"
       }
+    },
+    "geolocationTracking": {
+      "androidBackgroundPermissionMessage": "Recording your movements requires to ≪ {backgroundPermissionOptionLabel} ≫"
     }
   },
   "modals": {

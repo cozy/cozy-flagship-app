@@ -115,6 +115,9 @@
         "onProgressTitle": "Envoi en cours",
         "onProgressMessage": "Un fichier est en cours d'envoi"
       }
+    },
+    "geolocationTracking": {
+      "androidBackgroundPermissionMessage": "Mémoriser vos déplacements nécessite de ≪ {backgroundPermissionOptionLabel} ≫"
     }
   },
   "modals": {
