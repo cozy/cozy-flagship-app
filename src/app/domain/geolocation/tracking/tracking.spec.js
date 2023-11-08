@@ -35,11 +35,11 @@ describe('createDataBatch', () => {
 })
 
 describe('get activities', () => {
-  it('should filter the activities to keep distinct modes', async () => {
+  it('should filter the activities to remove consecutive stationary activities', async () => {
     const activity1 = { data: { cycling: true, walking: false, ts: 1 } }
-    const activity2 = { data: { walking: true, cycling: false, ts: 2 } }
-    const activity3 = { data: { walking: true, cycling: false, ts: 3 } }
-    const activity4 = { data: { walking: true, cycling: false, ts: 4 } }
+    const activity2 = { data: { walking: false, stationary: true, ts: 2 } }
+    const activity3 = { data: { walking: false, stationary: true, ts: 3 } }
+    const activity4 = { data: { walking: true, stationary: false, ts: 4 } }
 
     getActivities.mockResolvedValueOnce([
       activity1,
@@ -49,20 +49,18 @@ describe('get activities', () => {
     ])
 
     const activities = await getFilteredActivities({ beforeTs: 5 })
-    expect(activities).toEqual([activity1, activity2])
+    expect(activities).toEqual([activity1, activity2, activity4])
   })
 
-  it('should return all activities when they change', async () => {
-    const activity1 = { data: { cycling: true, walking: false, ts: 1 } }
-    const activity2 = {
-      data: { walking: false, cycling: false, in_vehicle: true, ts: 2 }
-    }
-    const activity3 = { data: { walking: true, cycling: false, ts: 3 } }
+  it('should only keep the most recent stationary activities', async () => {
+    const activity1 = { data: { stationary: true, ts: 1 } }
+    const activity2 = { data: { stationary: true, ts: 2 } }
+    const activity3 = { data: { stationary: true, ts: 3 } }
 
     getActivities.mockResolvedValueOnce([activity1, activity2, activity3])
 
-    const activities = await getFilteredActivities({ beforeTs: 5 })
-    expect(activities).toEqual([activity1, activity2, activity3])
+    const activities = await getFilteredActivities({ beforeTs: 4 })
+    expect(activities).toEqual([activity1])
   })
 
   it('should keep the only activity', async () => {

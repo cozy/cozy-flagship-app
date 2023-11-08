@@ -47,7 +47,7 @@ export const smartSend = async (locations, user, { force = false } = {}) => {
     for (let i = 0; i < nBatch; i++) {
       Log('Creating batch ' + (i + 1) + '/' + nBatch)
       const data = createDataBatch(motionData, i, MAX_DOCS_PER_BATCH)
-      // FIXME: what if the upload fails for a batcgh, in the middle of a transition or activity?
+      // FIXME: what if the upload fails for a batch, in the middle of a transition or activity?
       const resp = await uploadUserCache(data, user)
       if (resp?.ok) {
         // Save last point and remove uploaded data
@@ -74,6 +74,30 @@ const prepareMotionData = async ({ locations, lastBatchPoint }) => {
         locations[locations.length - 1]?.timestamp
     )
   }
+
+  // Add activities stored in local storage
+  const lastPointTs = getTs(locations[locations.length - 1])
+  let activities = await getFilteredActivities({ beforeTs: lastPointTs })
+  Log('n activities : ' + activities?.length)
+  if (activities?.length > 0) {
+    contentToUpload.push(...activities)
+  }
+  // Filter locations without heading and occuring after the last still activity
+  // Those points might cause artifically extended trips
+  let lastStillActivityTs = null
+  for (const activity of activities) {
+    if (activity?.data?.stationary) {
+      lastStillActivityTs = activity?.data?.ts
+    }
+  }
+  if (!lastStillActivityTs) {
+    lastStillActivityTs = lastPointTs
+  }
+
+  Log('last still activity ts : ' + lastStillActivityTs)
+  const points = locations.filter(loc => {
+    return getTs(loc) <= lastStillActivityTs || loc?.coords?.heading > -1
+  })
 
   for (let i = 0; i < points.length; i++) {
     const point = points[i]
@@ -145,15 +169,7 @@ const prepareMotionData = async ({ locations, lastBatchPoint }) => {
     addPoint(contentToUpload, point, filtered)
   }
 
-  // Add activities stored in local storage
-  const lastPointTs = getTs(points[points.length - 1])
-  const activities = await getFilteredActivities({ beforeTs: lastPointTs })
-  if (activities?.length > 0) {
-    Log('n activities : ' + activities.length)
-    contentToUpload.push(...activities)
-  }
-
-  // TODO: filter points after last stationary event
+  // -----Step 3: Force end trip for the last point, as the device had been stopped long enough after motion
 
   // FIXME: what if the upload failed and more points were added before the retry?
   // The stop transition might be missed?
@@ -256,7 +272,7 @@ const addPoint = (content, point, filtered) => {
   }
 }
 
-const getFilteredActivities = async ({ beforeTs }) => {
+export const getFilteredActivities = async ({ beforeTs }) => {
   const activities = await getActivities({ beforeTs })
   if (!activities) {
     return null
@@ -265,16 +281,15 @@ const getFilteredActivities = async ({ beforeTs }) => {
   let previousActivity = null
 
   // Filter out consecutives stationary activities
-  for (let activity of activities) {
+  for (const activity of activities) {
     if (
       previousActivity &&
-      previousActivity.data.stationary &&
-      activity.data.stationary
+      previousActivity?.data?.stationary &&
+      activity?.data?.stationary
     ) {
       // Skip the current activity as it's a consecutive stationary one
       continue
     }
-
     result.push(activity)
     previousActivity = activity
   }
