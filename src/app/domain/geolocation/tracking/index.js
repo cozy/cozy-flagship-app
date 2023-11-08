@@ -66,6 +66,11 @@ export const startTracking = async () => {
         message: t(
           'services.geolocationTracking.androidBackgroundPermissionMessage'
         )
+      },
+      notification: {
+        title: t('services.geolocationTracking.androidNotificationTitle'),
+        text: t('services.geolocationTracking.androidNotificationDescription'),
+        smallIcon: 'mipmap/ic_stat_ic_notification'
       }
     })
     await BackgroundGeolocation.start()
