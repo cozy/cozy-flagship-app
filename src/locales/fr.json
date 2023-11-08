@@ -117,7 +117,9 @@
       }
     },
     "geolocationTracking": {
-      "androidBackgroundPermissionMessage": "Mémoriser vos déplacements nécessite de ≪ {backgroundPermissionOptionLabel} ≫"
+      "androidBackgroundPermissionMessage": "Mémoriser vos déplacements nécessite de ≪ {backgroundPermissionOptionLabel} ≫",
+      "androidNotificationTitle": "Service de localisation actif",
+      "androidNotificationDescription": "Votre déplacement sera enregistré dans votre Cozy"
     }
   },
   "modals": {

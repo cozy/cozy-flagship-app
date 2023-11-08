@@ -112,7 +112,9 @@
       }
     },
     "geolocationTracking": {
-      "androidBackgroundPermissionMessage": "Recording your movements requires to ≪ {backgroundPermissionOptionLabel} ≫"
+      "androidBackgroundPermissionMessage": "Recording your movements requires to ≪ {backgroundPermissionOptionLabel} ≫",
+      "androidNotificationTitle": "Location service on",
+      "androidNotificationDescription": "Your journey will be recorded into your Cozy"
     }
   },
   "modals": {

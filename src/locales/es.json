@@ -99,6 +99,11 @@
         "onProgressTitle": "Subiendo",
         "onProgressMessage": "Se está subiendo un archivo"
       }
+    },
+    "geolocationTracking": {
+      "androidBackgroundPermissionMessage": "Registrar sus movimientos requiere ≪ {backgroundPermissionOptionLabel} ≫",
+      "androidNotificationTitle": "Servicio de localización en",
+      "androidNotificationDescription": "Tu viaje quedará registrado en tu Cozy"
     }
   },
   "modals": {

@@ -32,6 +32,11 @@
       "body": "You seem to have revoked access to this device. To access your data again, please log in again. If this action does not come from you, please do not hesitate to contact us at <linkTag>email</linkTag>."
     }
   },
+  "services": {
+    "geolocationTracking": {
+      "androidNotificationDescription": "Your journey will be recorded into your personal space"
+    }
+  },
   "software": {
     "name": "Ma Bulle Mobile Application"
   }

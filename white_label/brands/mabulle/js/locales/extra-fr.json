@@ -32,6 +32,11 @@
       "body": "Vous semblez avoir révoqué l'accès de cet appareil. Pour accéder à nouveau à vos données, veuillez vous reconnecter. Si cette action ne vient pas de vous, n'hésitez pas à nous contacter à <linkTag>email</linkTag>."
     }
   },
+  "services": {
+    "geolocationTracking": {
+      "androidNotificationDescription": "Votre déplacement sera enregistré dans votre espace personnel"
+    }
+  },
   "software": {
     "name": "Application Mobile Ma Bulle"
   }

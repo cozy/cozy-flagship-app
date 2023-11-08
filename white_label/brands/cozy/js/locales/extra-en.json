@@ -11,6 +11,11 @@
       "description": "The icon of the 'Cozy' application has been modified."
     }
   },
+  "services": {
+    "geolocationTracking": {
+      "androidNotificationDescription": "Your journey will be recorded into your Cozy"
+    }
+  },
   "software": {
     "name": "Cozy Mobile Application"
   }
