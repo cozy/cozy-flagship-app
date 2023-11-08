@@ -116,6 +116,9 @@
         "onProgressMessage": "Un fichier est en cours d'envoi"
       }
     },
+    "geolocationTracking": {
+      "androidBackgroundPermissionMessage": "Mémoriser vos déplacements nécessite de ≪ {backgroundPermissionOptionLabel} ≫"
+    },
     "osReceive": {
       "documentType": "Type de document :",
       "submit": "Suivant",

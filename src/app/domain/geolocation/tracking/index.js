@@ -10,6 +10,7 @@ import {
   clearAllData,
   getFlagFailUpload
 } from '/app/domain/geolocation/tracking/storage'
+import { t } from '/locales/i18n'
 
 export { Log, getAllLogs, sendLogFile } from '/app/domain/geolocation/helpers'
 export { getOrCreateId, updateId } from '/app/domain/geolocation/tracking/user'
@@ -62,8 +63,9 @@ export const startTracking = async () => {
       enableHeadless: true,
       foregroundService: true,
       backgroundPermissionRationale: {
-        message:
-          'Mémoriser vos déplacements nécessite de ≪ {backgroundPermissionOptionLabel} ≫'
+        message: t(
+          'services.geolocationTracking.androidBackgroundPermissionMessage'
+        )
       }
     })
     await BackgroundGeolocation.start()

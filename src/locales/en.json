@@ -111,6 +111,9 @@
         "onProgressMessage": "A file is being uploaded"
       }
     },
+    "geolocationTracking": {
+      "androidBackgroundPermissionMessage": "Recording your movements requires to ≪ {backgroundPermissionOptionLabel} ≫"
+    },
     "osReceive": {
       "documentType": "Document Type:",
       "submit": "Next",
