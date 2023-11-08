@@ -1,5 +1,3 @@
-import BackgroundGeolocation from 'react-native-background-geolocation'
-
 import { uploadUserCache } from '/app/domain/geolocation/tracking/upload'
 import { createUser } from '/app/domain/geolocation/tracking/user'
 import { getTs, Log, parseISOString } from '/app/domain/geolocation/helpers'
@@ -11,8 +9,8 @@ import {
   setLastStartTransitionTs,
   setLastStopTransitionTs,
   storeActivity,
-  removeActivities,
-  setLastPointUploaded
+  setLastPointUploaded,
+  cleanupTrackingData
 } from '/app/domain/geolocation/tracking/storage'
 
 const largeTemporalDeltaBetweenPoints = 30 * 60 // In seconds. Shouldn't have longer breaks without siginificant motion
@@ -55,27 +53,10 @@ export const smartSend = async (locations, user, { force = false } = {}) => {
         // Save last point and remove uploaded data
         await setLastPointUploaded(locations[locations.length - 1])
         Log('Saved last point')
-        await cleanupData(locations)
+        await cleanupTrackingData(locations)
       }
     }
     Log('Uploaded last batch')
-  }
-}
-
-const cleanupData = async locations => {
-  const uuidsToDelete = locations.map(location => location.uuid)
-  const lastPointTs = getTs(locations[locations.length - 1])
-
-  if (uuidsToDelete.length > 0) {
-    Log('Removing local location records that were just uploaded...')
-    for (const uuid of uuidsToDelete) {
-      await BackgroundGeolocation.destroyLocation(uuid)
-    }
-    Log('Done removing local locations')
-    if (lastPointTs) {
-      await removeActivities({ beforeTs: lastPointTs })
-      Log('Done removing activities')
-    }
   }
 }
 

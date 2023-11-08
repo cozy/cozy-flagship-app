@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import { Log } from '/app/domain/geolocation/helpers'
+import { getTs, Log } from '/app/domain/geolocation/helpers'
 import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
 
 import BackgroundGeolocation from 'react-native-background-geolocation'
@@ -140,4 +140,21 @@ export const removeActivities = async ({ beforeTs } = {}) => {
     }
   })
   await setActivities(activitiesToKeep)
+}
+
+export const cleanupTrackingData = async locations => {
+  const uuidsToDelete = locations.map(location => location.uuid)
+  const lastPointTs = getTs(locations[locations.length - 1])
+
+  if (uuidsToDelete.length > 0) {
+    Log('Removing local location records that were just uploaded...')
+    for (const uuid of uuidsToDelete) {
+      await BackgroundGeolocation.destroyLocation(uuid)
+    }
+    Log('Done removing local locations')
+    if (lastPointTs) {
+      await removeActivities({ beforeTs: lastPointTs })
+      Log('Done removing activities')
+    }
+  }
 }
