@@ -14,6 +14,11 @@ import { routes } from '/constants/routes'
 import { navigateToApp } from '/libs/functions/openApp'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { navigate, navigationRef } from '/libs/RootNavigation'
+import {
+  showClouderyOffer,
+  formatClouderyOfferUrlWithInAppPurchaseParams,
+  isClouderyOfferUrl
+} from '/app/domain/iap/services/clouderyOffer'
 
 const log = Minilog('⛔ OAuth Clients Limit Service')
 
@@ -48,6 +53,14 @@ export const interceptNavigation =
       }
 
       const destinationUrl = cleanUrl(request.url)
+
+      if (isClouderyOfferUrl(destinationUrl)) {
+        const clouderyOfferUrlWithInAppPurchaseParams =
+          formatClouderyOfferUrlWithInAppPurchaseParams(destinationUrl)
+        showClouderyOffer(clouderyOfferUrlWithInAppPurchaseParams)
+        return false
+      }
+
       const subdomainType = client.capabilities.flat_subdomains
         ? 'flat'
         : 'nested'
