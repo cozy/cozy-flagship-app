@@ -12,6 +12,9 @@
     }
   },
   "services": {
+    "geolocationTracking": {
+      "androidNotificationDescription": "Your journey will be recorded into your Cozy"
+    },
     "osReceive": {
       "disableReasons": {
         "multipleFiles": "{{appname}} does not allow you to import multiple files simultaneously. Please import your files one by one or use the {{appname}} application directly in your Cozy."
