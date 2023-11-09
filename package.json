@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android --variant=devDebug --main-activity=MainActivitybase",
-    "brand:configure:cozy": "yarn build:whitelabel && node ./white_label/dist/configure-brand.cmd.js configure cozy",
-    "brand:configure:mabulle": "yarn build:whitelabel && node ./white_label/dist/configure-brand.cmd.js configure mabulle",
-    "brand:check": "yarn build:whitelabel && node ./white_label/dist/configure-brand.cmd.js check",
+    "brand:configure:cozy": "yarn build:whitelabel && node ./white_label/dist/white_label/configure-brand.cmd.js configure cozy",
+    "brand:configure:mabulle": "yarn build:whitelabel && node ./white_label/dist/white_label/configure-brand.cmd.js configure mabulle",
+    "brand:check": "yarn build:whitelabel && node ./white_label/dist/white_label/configure-brand.cmd.js check",
     "build": "react-app-rewired build",
     "build:android:debug": "./scripts/build-debug-offline-apk.sh",
     "build:whitelabel": "yarn tsc --project white_label",
