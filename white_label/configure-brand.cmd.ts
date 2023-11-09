@@ -5,7 +5,8 @@ import Minilog from 'cozy-minilog'
 import {
   configureBrand,
   checkCozyBrandIso,
-  checkGitStatus
+  checkGitStatus,
+  checkLanguages
 } from './configure-brand'
 
 export const logger = Minilog('Configure Brand CLI')
@@ -73,7 +74,9 @@ async function main(): Promise<void> {
 
   program
     .command('check')
-    .description('Check that Cozy brand mirrors root files')
+    .description(
+      'Check that Cozy brand mirrors root files and that languages files are good'
+    )
     .action(
       handleErrors(async () => {
         logger.info(`Check Cozy brand`)
@@ -82,6 +85,12 @@ async function main(): Promise<void> {
 
         if (!isISO) {
           program.error('Cozy brand is not sync with original files')
+        }
+
+        const areLanguageOk = checkLanguages()
+
+        if (!areLanguageOk) {
+          program.error('Language files are not sync with each other')
         }
       })
     )

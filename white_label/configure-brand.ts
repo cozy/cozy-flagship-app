@@ -7,6 +7,7 @@ import fs from 'fs-extra'
 import Minilog from 'cozy-minilog'
 
 import configs from './config.json'
+import { diffJsonStructure } from '../src/utils/jsonUtils'
 
 export const logger = Minilog('Configure Brand')
 
@@ -23,6 +24,20 @@ export const checkCozyBrandIso = async (): Promise<boolean> => {
   const isJsIso = await checkBrandFolderIso('js', 'src')
 
   return isAndroidIso && isIosIso && isJsIso
+}
+
+export const checkLanguages = (): boolean => {
+  const languages = ['en', 'es', 'fr']
+
+  const areLangagesOk = languages.every(language =>
+    areLanguagesEquivalent('en', language)
+  )
+
+  const areExtraLangagesOk = languages.every(language =>
+    areExtraLanguagesEquivalent(language)
+  )
+
+  return areLangagesOk && areExtraLangagesOk
 }
 
 export const configureBrand = async (brand: string): Promise<void> => {
@@ -337,4 +352,42 @@ const areJsonFilesEqual = async (
   const file2Json = await mergeJsonFiles(file1, file2)
 
   return file1Json == file2Json
+}
+
+const areJsonEquivalent = (base: string, compare: string): boolean => {
+  const file1Json = fs.readFileSync(base, 'utf8')
+  const file2Json = fs.readFileSync(compare, 'utf8')
+
+  const file1Object = JSON.parse(file1Json)
+  const file2Object = JSON.parse(file2Json)
+
+  const diff = diffJsonStructure(file1Object, file2Object)
+
+  for (const key of diff.notIn1) {
+    logger.warn(
+      `Following key is present in ${compare} but not in ${base}: ${key}`
+    )
+  }
+
+  for (const key of diff.notIn2) {
+    logger.warn(
+      `Following key is present in ${base} but not in ${compare}: ${key}`
+    )
+  }
+
+  return diff.notIn1.length === 0 && diff.notIn2.length === 0
+}
+
+const areLanguagesEquivalent = (base: string, compare: string): boolean => {
+  return areJsonEquivalent(
+    `./src/locales/${base}.json`,
+    `./src/locales/${compare}.json`
+  )
+}
+
+const areExtraLanguagesEquivalent = (lang: string): boolean => {
+  return areJsonEquivalent(
+    `./white_label/brands/cozy/js/locales/extra-${lang}.json`,
+    `./white_label/brands/mabulle/js/locales/extra-${lang}.json`
+  )
 }
