@@ -354,11 +354,11 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				A98E5EA92A8CC1AB00CAC55D /* Embed Foundation Extensions */,
 				53A0BB98387310FC2DDBCB68 /* [CP] Embed Pods Frameworks */,
 				02F6E7460B106C0824136025 /* [CP] Copy Pods Resources */,
 				592D30E9601C4E6BAD83C8B3 /* Upload Debug Symbols to Sentry */,
 				A6FFA29AB5A56B37E2529745 /* [CP-User] [RNFB] Core Configuration */,
-				A98E5EA92A8CC1AB00CAC55D /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
