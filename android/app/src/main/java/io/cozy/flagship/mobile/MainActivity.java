@@ -27,6 +27,23 @@ public class MainActivity extends ReactActivity {
     ImmersiveBars.changeBarColors(this, isDarkMode);
     super.onCreate(null);
     RNBootSplash.init(R.drawable.bootsplash, MainActivity.this);
+
+    /**
+     * We want to prevent the app from opening inside another app's task.
+     * Some apps (like Google Files) will open the app inside their own task, even if the app is already running,
+     * And ignore the launchMode="singleTask" in the AndroidManifest.xml.
+     * 
+     * See:
+     * https://stackoverflow.com/questions/57750124/launchmode-being-overriden-by-google-files-app-when-sharing-new-instance-of-a-s
+     * https://github.com/facebook/react-native/issues/39553
+     * https://developer.android.com/guide/components/activities/tasks-and-back-stack#IntentFlagsForTasks
+     * */ 
+    if (!isTaskRoot()) {
+        Intent newIntent = new Intent(getIntent());
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(newIntent);
+        finish();
+    }
   }
 
   @Override
