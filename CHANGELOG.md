@@ -1,10 +1,21 @@
-# 1.1.17
+# 1.1.18
 
 ## ✨ Features
 
 
 ## 🐛 Bug Fixes
 
+
+## 🔧 Tech
+
+
+# 1.1.17
+
+## ✨ Features
+* Texts have been translated for Android geolocation notification and geolocation permission ([PR #1005](https://github.com/cozy/cozy-flagship-app/pull/1005))
+
+## 🐛 Bug Fixes
+* Icon for Android geolocation notification is correctly shown ([PR #1005](https://github.com/cozy/cozy-flagship-app/pull/1005))
 
 ## 🔧 Tech
 
