@@ -233,7 +233,62 @@ describe('Launcher', () => {
           sourceAccountIdentifier: 'testsourceaccountidentifier'
         })
       )
-      //
+    })
+    it('should ignore files without metadata or fileIdAttributes in the index', async () => {
+      const launcher = new Launcher()
+      launcher.setUserData({
+        sourceAccountIdentifier: 'testsourceaccountidentifier'
+      })
+
+      const konnector = { slug: 'testkonnectorslug' }
+      const trigger = {
+        message: {
+          folder_to_save: 'testfolderid',
+          account: 'testaccountid'
+        }
+      }
+      const job = {
+        message: { account: 'testaccountid', folder_to_save: 'testfolderid' }
+      }
+      const client = {
+        queryAll: jest.fn().mockResolvedValue([
+          {
+            _id: 'tokeep',
+            metadata: {
+              fileIdAttributes: 'fileidattribute'
+            }
+          },
+          {
+            _id: 'toignore'
+          }
+        ]),
+        query: jest.fn().mockResolvedValue({ data: { path: 'folderPath' } })
+      }
+      launcher.setStartContext({
+        konnector,
+        client,
+        launcherClient: client,
+        trigger,
+        job
+      })
+
+      await launcher.saveFiles([{}], {})
+
+      expect(saveFiles).toHaveBeenCalledWith(client, [{}], 'folderPath', {
+        downloadAndFormatFile: expect.any(Function),
+        manifest: expect.any(Object),
+        existingFilesIndex: new Map([
+          [
+            'fileidattribute',
+            {
+              _id: 'tokeep',
+              metadata: { fileIdAttributes: 'fileidattribute' }
+            }
+          ]
+        ]),
+        sourceAccount: 'testaccountid',
+        sourceAccountIdentifier: 'testsourceaccountidentifier'
+      })
     })
   })
 })

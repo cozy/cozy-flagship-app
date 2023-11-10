@@ -412,7 +412,7 @@ export default class Launcher {
     const createdByApp = konnector.slug
     if (!sourceAccountIdentifier) {
       throw new Error(
-        'createExistingFileIndex: unexpected undefined sourceAccountIdentifier'
+        'getExistingFilesIndex: unexpected undefined sourceAccountIdentifier'
       )
     }
 
@@ -443,7 +443,10 @@ export default class Launcher {
     )
     // @ts-ignore
     const existingFilesIndex = existingFiles.reduce((map, file) => {
-      map.set(file.metadata.fileIdAttributes, file)
+      if (file.metadata?.fileIdAttributes) {
+        // files without metadata will be replaced
+        map.set(file.metadata.fileIdAttributes, file)
+      }
       return map
     }, new Map())
     return (this.existingFilesIndex = existingFilesIndex)
