@@ -1,6 +1,7 @@
 import { makeHandlers } from '/libs/functions/makeHandlers'
 
 it('does not throw with bad HOF bad closure', () => {
+  // @ts-expect-error : we want to test this case
   const badHandler = makeHandlers(NaN)
   expect(() => badHandler()).not.toThrow()
 })
@@ -17,6 +18,7 @@ it('does not throw with good HOF bad closure 2', () => {
 
 it('does not throw with good HOF bad closure 3', () => {
   const goodHandler = makeHandlers({ foo: jest.fn() })
+  // @ts-expect-error : we want to test this case
   expect(() => goodHandler({ nativeEvent: '19' })).not.toThrow()
 })
 
