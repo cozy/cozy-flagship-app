@@ -15,3 +15,7 @@ it('does not throw if no url key', () => {
 it('does not throw if no event at all', () => {
   expect(getHostname()).toBeUndefined()
 })
+
+it('does not throw if event with empty url', () => {
+  expect(getHostname({ url: undefined })).toBeUndefined()
+})

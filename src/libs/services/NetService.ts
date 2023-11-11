@@ -1,8 +1,8 @@
-import Minilog from 'cozy-minilog'
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo'
 import { useEffect } from 'react'
 
 import CozyClient from 'cozy-client'
+import Minilog from 'cozy-minilog'
 
 import strings from '/constants/strings.json'
 import { navigate } from '/libs/RootNavigation'
@@ -36,7 +36,10 @@ export const useNetService = (client?: CozyClient): void =>
     }
   }, [client])
 
-const waitForOnline = (callbackRoute: string, params?: unknown): void => {
+const waitForOnline = (
+  callbackRoute: string,
+  params?: Record<string, unknown>
+): void => {
   log.debug('Adding NetInfo listener')
 
   // Define the unsubscribe function inside the listener
@@ -66,7 +69,10 @@ const isOffline = async (): Promise<NetInfoState['isConnected']> =>
   (await NetInfo.fetch()).isConnected === false
 
 // Function to handle offline state by navigating to an error route and setting up listener for online state
-const handleOffline = (callbackRoute: string, params?: unknown): void => {
+const handleOffline = (
+  callbackRoute: string,
+  params?: Record<string, unknown>
+): void => {
   navigate(routes.error, { type: strings.errorScreens.offline })
 
   waitForOnline(callbackRoute, params)

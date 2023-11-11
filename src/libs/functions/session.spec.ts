@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import { createMockClient } from 'cozy-client/dist/mock'
+import type CozyClient from 'cozy-client'
+// @ts-expect-error : cozy-client has to be updated
+import type { StackClient } from 'cozy-stack-client'
 
 import { makeSessionAPI } from './session'
 
@@ -8,13 +10,17 @@ import strings from '/constants/strings.json'
 
 const session_code = '123'
 const uri = 'http://cozy.10-0-2-2.nip.io:8080'
-const client = createMockClient({})
+const client = {} as jest.Mocked<CozyClient>
+
 const subdomain = 'nested'
 
-client.getStackClient = jest.fn(() => ({
-  fetchSessionCode: () => Promise.resolve({ session_code }),
-  uri
-}))
+client.getStackClient = jest.fn(
+  (): StackClient => ({
+    fetchSessionCode: (): Promise<{ session_code: string }> =>
+      Promise.resolve({ session_code }),
+    uri
+  })
+)
 
 const {
   shouldCreateSession,
@@ -27,12 +33,12 @@ const {
 
 describe('shouldCreateSession', () => {
   it('returns true when no token is found', async () => {
-    AsyncStorage.clear()
+    void AsyncStorage.clear()
     expect(await shouldCreateSession()).toBe(true)
   })
 
   it('returns false when a token is found', async () => {
-    AsyncStorage.setItem(strings.SESSION_CREATED_FLAG, '1')
+    void AsyncStorage.setItem(strings.SESSION_CREATED_FLAG, '1')
     expect(await shouldCreateSession()).toBe(false)
   })
 })

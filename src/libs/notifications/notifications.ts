@@ -13,7 +13,7 @@ import { navigate } from '/libs/RootNavigation'
 import { navigateToApp } from '/libs/functions/openApp'
 import { saveNotificationDeviceToken } from '/libs/client'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
-import { routes } from '/constants/routes.js'
+import { routes } from '/constants/routes'
 
 const log = Minilog('notifications')
 

@@ -7,21 +7,25 @@ import Minilog from 'cozy-minilog'
 
 const log = Minilog('RootNavigation')
 
-export const navigationRef = createNavigationContainerRef()
+export const navigationRef =
+  createNavigationContainerRef<Record<string, unknown>>()
 
-export const getCurrentRouteName = () => {
+export const getCurrentRouteName = (): string | null => {
   if (!navigationRef.isReady()) {
     return null
   }
 
-  return navigationRef.getCurrentRoute().name
+  return navigationRef.getCurrentRoute()?.name ?? null
 }
 
-const isReady = () => navigationRef.isReady()
+const isReady = (): boolean => navigationRef.isReady()
 
-export const goBack = () => navigationRef.goBack()
+export const goBack = (): void => navigationRef.goBack()
 
-export const navigate = (name, params) => {
+export const navigate = (
+  name: string,
+  params?: Record<string, unknown>
+): void => {
   try {
     if (isReady()) return navigationRef.navigate(name, params)
 
@@ -34,7 +38,7 @@ export const navigate = (name, params) => {
   }
 }
 
-export const reset = (name, params = {}) => {
+export const reset = (name: string, params = {}): void => {
   try {
     if (isReady())
       return navigationRef.dispatch(

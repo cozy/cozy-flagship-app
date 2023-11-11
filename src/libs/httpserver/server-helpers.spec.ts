@@ -14,7 +14,7 @@ jest.mock('react-native-safe-area-context', () => ({
   }
 }))
 
-jest.mock('/libs/RootNavigation.js', () => ({
+jest.mock('/libs/RootNavigation', () => ({
   navigationRef: {
     getCurrentRoute: jest.fn().mockReturnValue({ name: 'home' })
   }
