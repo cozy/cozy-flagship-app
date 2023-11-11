@@ -1,8 +1,8 @@
-import Minilog from 'cozy-minilog'
 import * as Keychain from 'react-native-keychain'
 
 // eslint-disable-next-line no-unused-vars
-import { AccountsDoctype } from 'cozy-client/dist/types.js'
+import { AccountsDoctype } from 'cozy-client/dist/types'
+import Minilog from 'cozy-minilog'
 
 const log = Minilog('Keychain')
 

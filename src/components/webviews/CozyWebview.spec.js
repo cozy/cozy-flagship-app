@@ -18,7 +18,7 @@ jest.mock('react-native-file-viewer', () => ({
 jest.mock('@react-native-cookies/cookies', () => ({
   set: jest.fn()
 }))
-jest.mock('/libs/RootNavigation.js', () => ({
+jest.mock('/libs/RootNavigation', () => ({
   navigationRef: {
     getCurrentRoute: jest.fn().mockReturnValue({ name: 'home' })
   }
@@ -65,7 +65,7 @@ jest.mock('@react-navigation/native', () => ({
   useIsFocused: () => mockUseIsFocused()
 }))
 
-jest.mock('../../hooks/useSession.js', () => ({
+jest.mock('../../hooks/useSession', () => ({
   useSession: () => ({
     shouldInterceptAuth: false,
     handleInterceptAuth: jest.fn(),

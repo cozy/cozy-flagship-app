@@ -39,7 +39,7 @@ jest.mock('/libs/monitoring/Sentry', () => ({
   setSentryTag: jest.fn()
 }))
 
-jest.mock('/libs/RootNavigation.js', () => ({
+jest.mock('/libs/RootNavigation', () => ({
   navigate: jest.fn()
 }))
 
