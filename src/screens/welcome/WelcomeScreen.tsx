@@ -1,5 +1,8 @@
+import { NavigationProp, RouteProp } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { BackHandler, StyleSheet, View } from 'react-native'
+
+import type CozyClient from 'cozy-client'
 
 import { WelcomePage } from '/components/html/WelcomePage'
 import { makeHTML } from '/components/makeHTML'
@@ -16,7 +19,15 @@ import { useWelcomeInit } from '/app/view/Welcome/useWelcomeInit'
 import { ErrorTokenModal } from '/app/view/Auth/ErrorTokenModal'
 import { handleSupportEmail } from '/app/domain/authentication/services/AuthService'
 
-const WelcomeView = ({ setIsWelcomeModalDisplayed, setClouderyMode }) => {
+interface WelcomeViewProps {
+  setIsWelcomeModalDisplayed: (value: boolean) => void
+  setClouderyMode: (value: string) => void
+}
+
+const WelcomeView = ({
+  setIsWelcomeModalDisplayed,
+  setClouderyMode
+}: WelcomeViewProps): JSX.Element => {
   const colors = getColors()
   return (
     <View
@@ -48,13 +59,23 @@ const WelcomeView = ({ setIsWelcomeModalDisplayed, setClouderyMode }) => {
   )
 }
 
-export const WelcomeScreen = ({ navigation, route, setClient }) => {
+interface WelcomeScreenProps {
+  navigation: NavigationProp<Record<string, unknown>>
+  route: RouteProp<Record<string, Record<string, unknown>>, string>
+  setClient: (client: CozyClient) => void
+}
+
+export const WelcomeScreen = ({
+  navigation,
+  route,
+  setClient
+}: WelcomeScreenProps): JSX.Element | null => {
   useWelcomeInit()
   const [isWelcomeModalDisplayed, setIsWelcomeModalDisplayed] = useState(true)
   const { isInitialized, onboardingPartner } = useInstallReferrer()
   const [clouderyMode, setClouderyMode] = useState(CLOUDERY_MODE_LOGIN)
 
-  const handleBackPress = () => {
+  const handleBackPress = (): void => {
     if (isWelcomeModalDisplayed || onboardingPartner?.hasReferral) {
       BackHandler.exitApp()
     } else {
@@ -68,6 +89,7 @@ export const WelcomeScreen = ({ navigation, route, setClient }) => {
     <>
       <LoginScreen
         clouderyMode={clouderyMode}
+        // @ts-expect-error: the LoginScreen component is not typed
         style={styles.view}
         disableAutofocus={isWelcomeModalDisplayed}
         navigation={navigation}
@@ -76,14 +98,14 @@ export const WelcomeScreen = ({ navigation, route, setClient }) => {
         goBack={handleBackPress}
       />
 
-      {route.params?.options === 'showTokenError' && (
+      {route.params.options === 'showTokenError' && (
         <ErrorTokenModal
-          onClose={() => navigation.setParams({ options: '' })}
+          onClose={(): void => navigation.setParams({ options: '' })}
           handleEmail={handleSupportEmail}
         />
       )}
 
-      {isWelcomeModalDisplayed && !onboardingPartner.hasReferral && (
+      {isWelcomeModalDisplayed && !onboardingPartner?.hasReferral && (
         <WelcomeView
           setIsWelcomeModalDisplayed={setIsWelcomeModalDisplayed}
           setClouderyMode={setClouderyMode}

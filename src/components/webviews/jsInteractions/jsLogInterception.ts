@@ -23,11 +23,20 @@ export const jsLogInterception = `
   }
 `
 
-export const tryConsole = (payload, logger, logId) => {
+export const tryConsole = (
+  payload: { nativeEvent: { data: string } } | undefined,
+  logger: MiniLogger | undefined,
+  logId: string | undefined
+): void => {
   try {
+    if (!payload || !logger || !logId) return console.error('no payload')
+
     const { data: rawData } = payload.nativeEvent
 
-    const dataPayload = JSON.parse(rawData)
+    const dataPayload = JSON.parse(rawData) as {
+      type: string
+      data?: { type: string; log: string[] }
+    }
 
     if (!dataPayload.data || dataPayload.type !== 'Console') return
 
@@ -35,7 +44,9 @@ export const tryConsole = (payload, logger, logId) => {
 
     if (rawData.includes('@post-me')) return console.debug(...log)
 
-    logger[type](`[Console ${logId}]`, ...log)
+    if (typeof logger[type as keyof MiniLogger] === 'function') {
+      logger[type as keyof MiniLogger](`[Console ${logId}]`, ...log)
+    }
   } catch (e) {
     console.error('error', e)
   }

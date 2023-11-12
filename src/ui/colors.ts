@@ -5,6 +5,6 @@ const colors = {
   paperBackgroundColor: palette.Common.white
 }
 
-export const getColors = () => {
+export const getColors = (): typeof colors => {
   return colors
 }
