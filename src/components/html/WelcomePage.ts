@@ -7,7 +7,10 @@ const colors = getColors()
 const body = `
   <div class="d-flex flex-grow-1 flex-column justify-content-center text-center">
     <div class="mb-4">
-      ${getLogoSvg({ backgroundColor: colors.primaryColor })}
+      ${getLogoSvg({
+        backgroundColor: colors.primaryColor,
+        foregroundColor: colors.paperBackgroundColor
+      })}
     </div>
 
     <div class="h2 mb-3">${t('screens.welcome.title')}</div>

@@ -10,7 +10,7 @@ import { styles } from '/components/ProgressContainer.styles'
 const colors = getColors()
 
 const progressBarConfig = {
-  width: null,
+  width: undefined,
   indeterminate: false,
   unfilledColor: palette.Grey[200],
   color: colors.primaryColor,

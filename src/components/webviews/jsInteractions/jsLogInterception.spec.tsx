@@ -1,16 +1,26 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console */ // we're mocking console
 import { tryConsole } from './jsLogInterception'
 
 const logId = 'logId'
 const logger = {
   log: jest.fn(),
   debug: jest.fn()
-}
-const makePayload = ({ type, args }) => ({
+} as unknown as MiniLogger
+const makePayload = ({
+  type,
+  args
+}: {
+  type: string
+  args?: string[]
+}): {
+  nativeEvent: {
+    data: string
+  }
+} => ({
   nativeEvent: {
     data: JSON.stringify({
       type: 'Console',
-      data: { type, log: ['one', 'two', 'three', ...(args || [])] }
+      data: { type, log: ['one', 'two', 'three', ...(args ?? [])] }
     })
   }
 })
@@ -66,6 +76,7 @@ it('handles post-me case', () => {
 it('recovers when erroring', () => {
   console.error = jest.fn()
 
+  // @ts-expect-error - we're testing error handling
   tryConsole()
 
   expect(console.error).toHaveBeenCalledTimes(1)

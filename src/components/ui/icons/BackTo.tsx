@@ -7,8 +7,12 @@ const xml = `
 </svg>
 `
 
-class SVG extends React.Component {
-  render() {
+class SVG extends React.Component<{
+  width: number
+  height: number
+  color: string
+}> {
+  render(): JSX.Element {
     return (
       <SvgXml
         xml={xml}

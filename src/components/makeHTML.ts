@@ -5,7 +5,13 @@ import { themeCss } from '/screens/login/components/assets/common/css/cssTheme'
 
 import { getLocalFonts } from './getLocalFonts'
 
-const makeDOM = ({ body, isInverted }) => {
+const makeDOM = ({
+  body,
+  isInverted
+}: {
+  body: string
+  isInverted: boolean
+}): string => {
   const { navbarHeight, statusBarHeight } = getDimensions()
 
   const theme = isInverted ? 'theme-inverted' : ''
@@ -32,10 +38,10 @@ const makeDOM = ({ body, isInverted }) => {
 `
 }
 
-export const makeHTML = body => {
+export const makeHTML = (body: string): string => {
   return makeDOM({ body, isInverted: false })
 }
 
-export const makeInvertedHTML = body => {
+export const makeInvertedHTML = (body: string): string => {
   return makeDOM({ body, isInverted: true })
 }

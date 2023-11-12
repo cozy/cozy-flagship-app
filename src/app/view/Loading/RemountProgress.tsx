@@ -16,7 +16,7 @@ export const RemountProgress = (): JSX.Element => {
 }
 
 const progressBarConfig = {
-  width: null,
+  width: undefined,
   indeterminate: true,
   unfilledColor: palette.Grey[200],
   color: palette.Primary[600],
