@@ -179,7 +179,9 @@ const generateMetadataObject = async (
   const deviceId = await getDeviceId()
 
   const metadataObject: UploadMetadata = {
-    backupDeviceIds: [deviceId]
+    backupDeviceIds: [deviceId],
+    idFromLibrary: media.id,
+    creationDateFromLibrary: new Date(media.creationDate).toISOString()
   }
 
   if (
