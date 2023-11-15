@@ -26,14 +26,6 @@ export const isUploadError = (error: unknown): error is UploadError => {
     Array.isArray(error.errors)
   )
 }
-
-export const isMetadataExpiredError = (error: UploadError): boolean => {
-  return (
-    error.statusCode === 422 &&
-    error.errors[0]?.detail === 'Invalid or expired MetadataID'
-  )
-}
-
 export const isQuotaExceededError = (error: UploadError): boolean => {
   return (
     error.statusCode === 413 &&
@@ -59,8 +51,7 @@ export const isCancellationError = (error: UploadError): boolean => {
 export const shouldRetryCallbackBackup = (error: Error): boolean => {
   const notRetryableError =
     isUploadError(error) &&
-    (isMetadataExpiredError(error) ||
-      isQuotaExceededError(error) ||
+    (isQuotaExceededError(error) ||
       isFileTooBigError(error) ||
       isCancellationError(error))
 

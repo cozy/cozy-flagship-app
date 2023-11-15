@@ -41,3 +41,13 @@ export interface BackupedMedia {
   remoteId: string
   md5: string
 }
+
+/**
+ * Backup related metadata to store in an io.cozy.files
+ * @member {string[]} backupDeviceIds e.g. ["96EEA830-D697-4AB8-A6C0-1940A4EEB231"]
+ * @member {string} [pairedVideoId] for the image part of a Live Photo, the id of the video part
+ */
+export interface UploadMetadata {
+  backupDeviceIds: string[]
+  pairedVideoId?: string
+}
