@@ -10,6 +10,7 @@ import { Album } from '/app/domain/backup/models'
  * @member {number} modificationDate  timestamp with ms set to 0
  */
 export interface Media {
+  id: string
   name: string
   uri: string
   path: string
@@ -50,4 +51,6 @@ export interface BackupedMedia {
 export interface UploadMetadata {
   backupDeviceIds: string[]
   pairedVideoId?: string
+  idFromLibrary: string
+  creationDateFromLibrary: string
 }

@@ -84,6 +84,7 @@ export const formatMediasFromPhotoIdentifier = (
 ): Media[] => {
   const {
     node: {
+      id,
       image: { filename, uri, fileSize },
       type,
       subTypes,
@@ -99,6 +100,7 @@ export const formatMediasFromPhotoIdentifier = (
   if (subTypes.includes('PhotoLive')) {
     return [
       {
+        id,
         name: getPathWithoutExtension(filename) + '.MOV',
         uri: uri,
         path: uri,
@@ -111,6 +113,7 @@ export const formatMediasFromPhotoIdentifier = (
         fileSize: null
       },
       {
+        id,
         name: filename,
         uri: uri,
         path: uri,
@@ -127,6 +130,7 @@ export const formatMediasFromPhotoIdentifier = (
 
   return [
     {
+      id,
       name: filename,
       uri: uri,
       path: uri,
