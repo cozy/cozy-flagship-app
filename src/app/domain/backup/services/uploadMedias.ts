@@ -7,6 +7,7 @@ import { setMediaAsBackuped } from '/app/domain/backup/services/manageLocalBacku
 import { getDeviceId } from '/app/domain/backup/services/manageRemoteBackupConfig'
 import {
   Media,
+  UploadMetadata,
   LocalBackupConfig,
   ProgressCallback
 } from '/app/domain/backup/models'
@@ -14,7 +15,6 @@ import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
 import {
   BackupError,
   isUploadError,
-  isMetadataExpiredError,
   isQuotaExceededError,
   isFileTooBigError,
   isCancellationError
@@ -62,8 +62,6 @@ export const uploadMedias = async (
     currentBackup: { mediasToBackup: mediasToUpload }
   } = localBackupConfig
 
-  let commonMetadataId = await getCommonMetadataId(client)
-
   let lastUploadedDocument
 
   let firstPartialSuccessMessage: string | undefined
@@ -83,7 +81,6 @@ export const uploadMedias = async (
         client,
         localBackupConfig,
         mediaToUpload,
-        commonMetadataId,
         lastUploadedDocument
       )
     } catch (error) {
@@ -106,16 +103,6 @@ export const uploadMedias = async (
         } else if (isFileTooBigError(error)) {
           firstPartialSuccessMessage =
             firstPartialSuccessMessage ?? t('services.backup.errors.fileTooBig')
-        } else if (isMetadataExpiredError(error)) {
-          commonMetadataId = await getCommonMetadataId(client)
-
-          lastUploadedDocument = await prepareAndUploadMedia(
-            client,
-            localBackupConfig,
-            mediaToUpload,
-            commonMetadataId,
-            lastUploadedDocument
-          )
         } else if (isCancellationError(error)) {
           shouldStopBackup = false
           return t('services.backup.errors.backupStopped')
@@ -139,7 +126,6 @@ const prepareAndUploadMedia = async (
   client: CozyClient,
   localBackupConfig: LocalBackupConfig,
   mediaToUpload: Media,
-  commonMetadataId: string,
   lastUploadedDocument: IOCozyFile | undefined
 ): Promise<IOCozyFile> => {
   const uploadFolderId = await getUploadFolderId(
@@ -148,24 +134,15 @@ const prepareAndUploadMedia = async (
     mediaToUpload
   )
 
-  let metadataId = commonMetadataId
-
-  if (
-    mediaToUpload.type === 'image' &&
-    mediaToUpload.subType === 'PhotoLive' &&
+  const uploadMetadata = await generateMetadataObject(
+    mediaToUpload,
     lastUploadedDocument
-  ) {
-    metadataId = await getLivePhotoMetadataId(
-      client,
-      mediaToUpload,
-      lastUploadedDocument
-    )
-  }
+  )
 
   const uploadUrl = getUploadUrl(
     client,
     uploadFolderId,
-    metadataId,
+    uploadMetadata,
     mediaToUpload
   )
   const { data: documentCreated } = await uploadMedia(
@@ -195,33 +172,25 @@ const postUpload = async (
   }
 }
 
-const getCommonMetadataId = async (client: CozyClient): Promise<string> => {
-  const deviceId = await getDeviceId()
-
-  const {
-    data: { id: metadataId }
-  } = await client.collection(DOCTYPE_FILES).createFileMetadata({
-    backupDeviceIds: [deviceId]
-  })
-
-  return metadataId
-}
-
-const getLivePhotoMetadataId = async (
-  client: CozyClient,
+const generateMetadataObject = async (
   media: Media,
-  lastUploadedDocument: IOCozyFile
-): Promise<string> => {
+  lastUploadedDocument?: IOCozyFile
+): Promise<UploadMetadata> => {
   const deviceId = await getDeviceId()
 
-  const {
-    data: { id: metadataId }
-  } = await client.collection(DOCTYPE_FILES).createFileMetadata({
-    backupDeviceIds: [deviceId],
-    pairedVideoId: lastUploadedDocument.id
-  })
+  const metadataObject: UploadMetadata = {
+    backupDeviceIds: [deviceId]
+  }
 
-  return metadataId
+  if (
+    media.type === 'image' &&
+    media.subType === 'PhotoLive' &&
+    lastUploadedDocument
+  ) {
+    metadataObject.pairedVideoId = lastUploadedDocument.id
+  }
+
+  return metadataObject
 }
 
 const getUploadFolderId = async (
@@ -249,7 +218,7 @@ const getUploadFolderId = async (
 const getUploadUrl = (
   client: CozyClient,
   backupFolderId: string,
-  metadataId: string,
+  uploadMetadata: UploadMetadata,
   media: Media
 ): string => {
   const createdAt = new Date(media.creationDate).toISOString()
@@ -263,7 +232,7 @@ const getUploadUrl = (
   toURL.searchParams.append('Executable', 'false')
   toURL.searchParams.append('CreatedAt', createdAt)
   toURL.searchParams.append('UpdatedAt', modifiedAt)
-  toURL.searchParams.append('MetadataID', metadataId)
+  toURL.searchParams.append('Metadata', JSON.stringify(uploadMetadata))
   if (media.fileSize !== null) {
     toURL.searchParams.append('Size', media.fileSize.toString())
   }
