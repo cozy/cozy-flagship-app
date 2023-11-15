@@ -12,6 +12,8 @@ export const buildAllMediasFilesQuery = (): QueryDefinition => {
     .indexFields(['class', 'type'])
     .select([
       'class',
+      'metadata.idFromLibrary',
+      'metadata.creationDateFromLibrary',
       'type',
       'name',
       'path',
@@ -33,6 +35,8 @@ export const buildFilesQuery = (deviceId: string): QueryDefinition => {
     .indexFields(['metadata.backupDeviceIds', 'type'])
     .select([
       'metadata.backupDeviceIds',
+      'metadata.idFromLibrary',
+      'metadata.creationDateFromLibrary',
       'type',
       'name',
       'path',
@@ -54,6 +58,10 @@ export interface File {
   created_at: number
   updated_at: number
   md5sum: string
+  metadata: {
+    idFromLibrary?: string
+    creationDateFromLibrary?: string
+  }
 }
 
 export type FilesQueryAllResult = File[]
