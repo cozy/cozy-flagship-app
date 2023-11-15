@@ -48,7 +48,7 @@ export const HttpServerProvider = props => {
   useLayoutEffect(() => {
     const server = new HttpServer(port, path, {
       localOnly: true,
-      keepAlive: false
+      keepAlive: true
     })
 
     const startingHttpServer = async () => {
