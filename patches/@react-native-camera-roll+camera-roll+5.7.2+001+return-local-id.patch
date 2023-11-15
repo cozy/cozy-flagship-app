@@ -1,0 +1,99 @@
+diff --git a/node_modules/@react-native-camera-roll/camera-roll/android/src/main/java/com/reactnativecommunity/cameraroll/CameraRollModule.java b/node_modules/@react-native-camera-roll/camera-roll/android/src/main/java/com/reactnativecommunity/cameraroll/CameraRollModule.java
+index 698fcd3..1e995a2 100644
+--- a/node_modules/@react-native-camera-roll/camera-roll/android/src/main/java/com/reactnativecommunity/cameraroll/CameraRollModule.java
++++ b/node_modules/@react-native-camera-roll/camera-roll/android/src/main/java/com/reactnativecommunity/cameraroll/CameraRollModule.java
+@@ -565,6 +565,7 @@ public class CameraRollModule extends NativeCameraRollModuleSpec {
+           Set<String> include) {
+     WritableArray edges = new WritableNativeArray();
+     media.moveToFirst();
++    int idIndex = media.getColumnIndex(Images.Media._ID);
+     int mimeTypeIndex = media.getColumnIndex(Images.Media.MIME_TYPE);
+     int groupNameIndex = media.getColumnIndex(Images.Media.BUCKET_DISPLAY_NAME);
+     int dateTakenIndex = media.getColumnIndex(Images.Media.DATE_TAKEN);
+@@ -592,7 +593,7 @@ public class CameraRollModule extends NativeCameraRollModuleSpec {
+                       mimeTypeIndex, includeFilename, includeFileSize, includeFileExtension, includeImageSize,
+                       includePlayableDuration, includeOrientation);
+       if (imageInfoSuccess) {
+-        putBasicNodeInfo(media, node, mimeTypeIndex, groupNameIndex, dateTakenIndex, dateAddedIndex, dateModifiedIndex);
++        putBasicNodeInfo(media, node, idIndex, mimeTypeIndex, groupNameIndex, dateTakenIndex, dateAddedIndex, dateModifiedIndex);
+         putLocationInfo(media, node, dataIndex, includeLocation, mimeTypeIndex, resolver);
+ 
+         edge.putMap("node", node);
+@@ -610,11 +611,13 @@ public class CameraRollModule extends NativeCameraRollModuleSpec {
+   private static void putBasicNodeInfo(
+           Cursor media,
+           WritableMap node,
++          int idIndex,
+           int mimeTypeIndex,
+           int groupNameIndex,
+           int dateTakenIndex,
+           int dateAddedIndex,
+           int dateModifiedIndex) {
++    node.putString("id", Long.toString(media.getLong(idIndex)));
+     node.putString("type", media.getString(mimeTypeIndex));
+     WritableArray subTypes = Arguments.createArray();
+     node.putArray("subTypes", subTypes);
+diff --git a/node_modules/@react-native-camera-roll/camera-roll/ios/RNCCameraRoll.mm b/node_modules/@react-native-camera-roll/camera-roll/ios/RNCCameraRoll.mm
+index c2b47d2..7bdf8a5 100644
+--- a/node_modules/@react-native-camera-roll/camera-roll/ios/RNCCameraRoll.mm
++++ b/node_modules/@react-native-camera-roll/camera-roll/ios/RNCCameraRoll.mm
+@@ -441,9 +441,11 @@ static void RCTResolvePromise(RCTPromiseResolveBlock resolve,
+       }
+ 
+       CLLocation *const loc = asset.location;
++      NSString *localIdentifier = asset.localIdentifier;
+ 
+       [assets addObject:@{
+         @"node": @{
++          @"id": localIdentifier,
+           @"type": assetMediaTypeLabel, // TODO: switch to mimeType?
+           @"subTypes":assetMediaSubtypesLabel,
+           @"group_name": albums,
+diff --git a/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/CameraRoll.d.ts b/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/CameraRoll.d.ts
+index 71fba8c..f1ffeda 100644
+--- a/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/CameraRoll.d.ts
++++ b/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/CameraRoll.d.ts
+@@ -53,6 +53,7 @@ export declare type GetPhotosParams = {
+ };
+ export declare type PhotoIdentifier = {
+     node: {
++        id: string;
+         type: string;
+         subTypes: SubTypes;
+         group_name: string | string [];
+diff --git a/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/NativeCameraRollModule.d.ts b/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/NativeCameraRollModule.d.ts
+index db3b502..0c5adf7 100644
+--- a/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/NativeCameraRollModule.d.ts
++++ b/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/NativeCameraRollModule.d.ts
+@@ -16,6 +16,7 @@ declare type Album = {
+ declare type SubTypes = 'PhotoPanorama' | 'PhotoHDR' | 'PhotoScreenshot' | 'PhotoLive' | 'PhotoDepthEffect' | 'VideoStreamed' | 'VideoHighFrameRate' | 'VideoTimelapse';
+ declare type PhotoIdentifier = {
+     node: {
++        id: string;
+         type: string;
+         subTypes: SubTypes;
+         group_name: string | string[];
+diff --git a/node_modules/@react-native-camera-roll/camera-roll/src/CameraRoll.ts b/node_modules/@react-native-camera-roll/camera-roll/src/CameraRoll.ts
+index eb0a2be..8b16459 100644
+--- a/node_modules/@react-native-camera-roll/camera-roll/src/CameraRoll.ts
++++ b/node_modules/@react-native-camera-roll/camera-roll/src/CameraRoll.ts
+@@ -114,6 +114,7 @@ export type GetPhotosParams = {
+ 
+ export type PhotoIdentifier = {
+   node: {
++    id: string;
+     type: string;
+     subTypes: SubTypes;
+     group_name: string | string[];
+diff --git a/node_modules/@react-native-camera-roll/camera-roll/src/NativeCameraRollModule.ts b/node_modules/@react-native-camera-roll/camera-roll/src/NativeCameraRollModule.ts
+index f52e7b6..67d3fc5 100644
+--- a/node_modules/@react-native-camera-roll/camera-roll/src/NativeCameraRollModule.ts
++++ b/node_modules/@react-native-camera-roll/camera-roll/src/NativeCameraRollModule.ts
+@@ -31,6 +31,7 @@ type SubTypes =
+ 
+ type PhotoIdentifier = {
+   node: {
++    id: string;
+     type: string;
+     subTypes: SubTypes;
+     group_name: string | string [];
