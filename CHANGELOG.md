@@ -1,4 +1,4 @@
-# 1.1.18
+# 1.1.19
 
 ## ✨ Features
 
@@ -9,12 +9,42 @@
 ## 🔧 Tech
 
 
+# 1.1.18
+
+## ✨ Features
+
+* It is now possible to send files and images from the phone to the app ([PR #906](https://github.com/cozy/cozy-flagship-app/pull/906), [PR #996](https://github.com/cozy/cozy-flagship-app/pull/996), [PR #1001](https://github.com/cozy/cozy-flagship-app/pull/1001), [PR #1009](https://github.com/cozy/cozy-flagship-app/pull/1009), [PR #994](https://github.com/cozy/cozy-flagship-app/pull/994), [PR #1022](https://github.com/cozy/cozy-flagship-app/pull/1022), [PR #1023](https://github.com/cozy/cozy-flagship-app/pull/1023), [PR #1025](https://github.com/cozy/cozy-flagship-app/pull/1025), [PR #1027](https://github.com/cozy/cozy-flagship-app/pull/1027) and [PR #1029](https://github.com/cozy/cozy-flagship-app/pull/1029))
+* Improve activities detection (walking, driving etc) when tracking CO2 emissions using GPS ([PR #906](https://github.com/cozy/cozy-flagship-app/pull/906) and [PR #1006](https://github.com/cozy/cozy-flagship-app/pull/1006))
+* The CO2 emission tracking feature now shows a better description when requestion for GPS permissions ([PR #1005](https://github.com/cozy/cozy-flagship-app/pull/1005))
+* Improve theming on login screen for our partners ([PR #1000](https://github.com/cozy/cozy-flagship-app/pull/1000))
+* Improve Backup feature by adding more metadata to saved files ([PR #1016](https://github.com/cozy/cozy-flagship-app/pull/1016))
+
+## 🐛 Bug Fixes
+
+* Client Side Connectors should not appear as errored anymore when stopped by the user ([PR #990](https://github.com/cozy/cozy-flagship-app/pull/990))
+* The app should not be hidden behind phone's keyboard anymore when an editable field is selected ([PR #989](https://github.com/cozy/cozy-flagship-app/pull/989) and [PR #1024](https://github.com/cozy/cozy-flagship-app/pull/1024))
+* Fix UI bugs ([PR #995](https://github.com/cozy/cozy-flagship-app/pull/995))
+* Improve Client Side Connectors stability ([PR #1012](https://github.com/cozy/cozy-flagship-app/pull/1012) and [PR #998](https://github.com/cozy/cozy-flagship-app/pull/998))
+* Improve Backup stability ([PR #1003](https://github.com/cozy/cozy-flagship-app/pull/1003), [PR #1019](https://github.com/cozy/cozy-flagship-app/pull/1019), [PR #1020](https://github.com/cozy/cozy-flagship-app/pull/1020) and [PR #1026](https://github.com/cozy/cozy-flagship-app/pull/1026))
+* Fix a bug that could produce an app freeze due to GPS running in background ([PR #1015](https://github.com/cozy/cozy-flagship-app/pull/1015))
+* Fix a bug that could prevent login by email ([PR #1032](https://github.com/cozy/cozy-flagship-app/pull/1032), [PR #1050](https://github.com/cozy/cozy-flagship-app/pull/1050))
+
+## 🔧 Tech
+
+* Remove `rn-async-storage-flipper` flipper plugin ([PR #1004](https://github.com/cozy/cozy-flagship-app/pull/1004) and [PR #1013](https://github.com/cozy/cozy-flagship-app/pull/1013))
+* Add support for XCode 15 ([PR #1008](https://github.com/cozy/cozy-flagship-app/pull/1008))
+* Improve documentation for Backup feature ([PR #1011](https://github.com/cozy/cozy-flagship-app/pull/1011))
+* Enable CSS vars injection when HttpServer is disabled on dev environment ([PR #997](https://github.com/cozy/cozy-flagship-app/pull/997))
+* Migrate some old Javascript code to Typescript ([PR #1010](https://github.com/cozy/cozy-flagship-app/pull/1010))
+
 # 1.1.17
 
 ## ✨ Features
+
 * Texts have been translated for Android geolocation notification and geolocation permission ([PR #1005](https://github.com/cozy/cozy-flagship-app/pull/1005))
 
 ## 🐛 Bug Fixes
+
 * Icon for Android geolocation notification is correctly shown ([PR #1005](https://github.com/cozy/cozy-flagship-app/pull/1005))
 
 ## 🔧 Tech
