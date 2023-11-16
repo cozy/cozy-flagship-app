@@ -2,11 +2,20 @@ import { getActivities } from './storage'
 
 import {
   createDataBatch,
+  filterNonHeadingPointsAfterStillActivity,
   getFilteredActivities
 } from '/app/domain/geolocation/tracking/tracking'
 
 jest.mock('/app/domain/geolocation/tracking/storage', () => ({
   getActivities: jest.fn()
+}))
+
+jest.mock('/app/domain/geolocation/tracking/user', () => ({
+  getOrCreateId: jest.fn()
+}))
+jest.mock('/app/domain/geolocation/helpers/index', () => ({
+  ...jest.requireActual('/app/domain/geolocation/helpers/index'),
+  Log: jest.fn()
 }))
 
 const maxBatchSize = 5
@@ -69,5 +78,31 @@ describe('get activities', () => {
 
     const activities = await getFilteredActivities({ beforeTs: 5 })
     expect(activities).toEqual([activity1])
+  })
+})
+
+describe('filterNonHeadingPointsAfterStillActivity', () => {
+  it('handles empty locations and activities', () => {
+    const result = filterNonHeadingPointsAfterStillActivity([], [])
+    expect(result).toEqual([])
+  })
+
+  it('filters out locations without heading after the last still activity', () => {
+    const locations = [
+      { timestamp: '2023-06-01', coords: { heading: 10 } },
+      { timestamp: '2023-06-02', coords: { heading: -1 } },
+      { timestamp: '2023-06-03', coords: { heading: 5 } }
+    ]
+    const activities = [{ data: { stationary: true, ts: '2023-06-02' } }]
+
+    const expectedLocations = [
+      { timestamp: '2023-06-01', coords: { heading: 10 } },
+      { timestamp: '2023-06-03', coords: { heading: 5 } }
+    ]
+    const result = filterNonHeadingPointsAfterStillActivity(
+      locations,
+      activities
+    )
+    expect(result).toEqual(expectedLocations)
   })
 })

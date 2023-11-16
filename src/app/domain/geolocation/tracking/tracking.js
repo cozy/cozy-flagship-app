@@ -82,22 +82,8 @@ const prepareMotionData = async ({ locations, lastBatchPoint }) => {
   if (activities?.length > 0) {
     contentToUpload.push(...activities)
   }
-  // Filter locations without heading and occuring after the last still activity
-  // Those points might cause artifically extended trips
-  let lastStillActivityTs = null
-  for (const activity of activities) {
-    if (activity?.data?.stationary) {
-      lastStillActivityTs = activity?.data?.ts
-    }
-  }
-  if (!lastStillActivityTs) {
-    lastStillActivityTs = lastPointTs
-  }
 
-  Log('last still activity ts : ' + lastStillActivityTs)
-  const points = locations.filter(loc => {
-    return getTs(loc) <= lastStillActivityTs || loc?.coords?.heading > -1
-  })
+  const points = filterNonHeadingPointsAfterStillActivity(locations, activities)
 
   for (let i = 0; i < points.length; i++) {
     const point = points[i]
@@ -270,6 +256,35 @@ const addPoint = (content, point, filtered) => {
     content.push(translateToEMissionLocationPoint(point))
     content[content.length - 1].metadata.key = 'background/filtered_location'
   }
+}
+
+export const filterNonHeadingPointsAfterStillActivity = (
+  locations,
+  activities
+) => {
+  // Filter locations without heading and occuring after the last still activity
+  // Those points might cause artifically extended trips
+  if (!activities || activities?.length < 1) {
+    return locations
+  }
+  const lastPointTs = getTs(locations[locations.length - 1])
+  let lastStillActivityTs = null
+  for (const activity of activities) {
+    if (activity?.data?.stationary) {
+      lastStillActivityTs = activity?.data?.ts
+    }
+  }
+  if (!lastStillActivityTs) {
+    lastStillActivityTs = lastPointTs
+  }
+
+  Log('last still activity ts : ' + lastStillActivityTs)
+  Log('n locations : ' + locations.length)
+  const points = locations.filter(loc => {
+    return getTs(loc) <= lastStillActivityTs || loc?.coords?.heading > -1
+  })
+  Log('n filtered locations : ' + points.length)
+  return points
 }
 
 export const getFilteredActivities = async ({ beforeTs }) => {
