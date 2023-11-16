@@ -11,6 +11,7 @@ import {
   getFlagFailUpload
 } from '/app/domain/geolocation/tracking/storage'
 import { t } from '/locales/i18n'
+import { STILL_ACTIVITY } from './consts'
 
 export { Log, getAllLogs, sendLogFile } from '/app/domain/geolocation/helpers'
 export { getOrCreateId, updateId } from '/app/domain/geolocation/tracking/user'
@@ -130,6 +131,15 @@ export const setTrackingConfig = async newTrackingConfig => {
 
 export const handleActivityChange = async event => {
   Log('[ACTIVITY CHANGE] - ' + JSON.stringify(event))
+  if (event?.activity !== STILL_ACTIVITY) {
+    // Force fetching current position to ensure there is a location corresponding to an activity change
+    // Skip still activities as it could artifically extend a trip
+    await BackgroundGeolocation.getCurrentPosition({
+      persist: true, // Persist location in SQLite storage
+      maximumAge: 10000 // Accept the last-recorded-location if no older than supplied value in ms. Default is 0.
+    })
+  }
+
   await saveActivity(event)
 }
 
