@@ -25,8 +25,8 @@ export {
 const waitBeforeStopMotionEventMin = 10 // Align with openpath: https://github.com/e-mission/e-mission-server/blob/master/emission/analysis/intake/segmentation/trip_segmentation.py#L59
 
 const DEFAULT_TRACKING_CONFIG = {
-  distanceFilter: 20,
-  elasticityMultiplier: 3,
+  distanceFilter: 25,
+  elasticityMultiplier: 6,
   desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH
 }
 
@@ -47,7 +47,7 @@ export const startTracking = async () => {
       distanceFilter: trackingConfig.distanceFilter,
       elasticityMultiplier: trackingConfig.elasticityMultiplier,
       locationUpdateInterval: 10000, // Only used if on Android and if distanceFilter is 0
-      stationaryRadius: 50, // Minimum is 25, but still usually takes 200m
+      stationaryRadius: 30, // Minimum is 25, but still usually takes 200m
       // Activity Recognition
       stopTimeout: waitBeforeStopMotionEventMin,
       // Application config
