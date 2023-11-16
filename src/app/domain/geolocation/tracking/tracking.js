@@ -200,6 +200,7 @@ const uploadWithNoNewPoints = async ({ user, force = false }) => {
 const addStartTransitions = async (addedTo, ts) => {
   Log('Add start transitions on ' + new Date(ts * 1000))
 
+  // TODO: some of those transitions seem useless
   addedTo.push(
     transition('STATE_WAITING_FOR_TRIP_START', 'T_EXITED_GEOFENCE', ts + 0.01)
   )
@@ -216,6 +217,7 @@ const addStartTransitions = async (addedTo, ts) => {
 const addStopTransitions = async (addedTo, ts) => {
   Log('Add stop transitions on ' + new Date(ts * 1000))
 
+  // TODO: some of those transitions seem useless
   addedTo.push(transition('STATE_ONGOING_TRIP', 'T_VISIT_STARTED', ts + 0.01))
   addedTo.push(
     transition('STATE_ONGOING_TRIP', 'T_TRIP_END_DETECTED', ts + 0.02)
@@ -225,8 +227,19 @@ const addStopTransitions = async (addedTo, ts) => {
   )
   addedTo.push(transition('STATE_ONGOING_TRIP', 'T_TRIP_ENDED', ts + 0.04))
   addedTo.push(transition('STATE_WAITING_FOR_TRIP_START', 'T_NOP', ts + 0.05))
+  // This one is important as it is used to force a tracking stop by the server.
+  // Missing it can result on wrong starting point as it will try to attach the end of the previous trip,
+  // both spatially and temporally.
+  // See https://github.com/e-mission/e-mission-server/blob/81c4314a776eff5dee61b01f1ca16a85ee267a10/emission/analysis/intake/segmentation/restart_checking.py#L96
   addedTo.push(
-    transition('STATE_WAITING_FOR_TRIP_START', 'T_DATA_PUSHED', ts + 0.06)
+    transition(
+      'STATE_WAITING_FOR_TRIP_START',
+      'T_FORCE_STOP_TRACKING',
+      ts + 0.06
+    )
+  )
+  addedTo.push(
+    transition('STATE_WAITING_FOR_TRIP_START', 'T_DATA_PUSHED', ts + 0.07)
   )
   await setLastStopTransitionTs(ts)
 }
