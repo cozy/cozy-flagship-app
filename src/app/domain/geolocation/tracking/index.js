@@ -123,6 +123,11 @@ export const setTrackingConfig = async newTrackingConfig => {
 
 export const handleActivityChange = async event => {
   Log('[ACTIVITY CHANGE] - ' + JSON.stringify(event))
+  // Force fetching current position to ensure there is a location corresponding to an activity change
+  await BackgroundGeolocation.getCurrentPosition({
+    persist: true, // Persist location in SQLite storage
+    maximumAge: 10000 // Accept the last-recorded-location if no older than supplied value in ms. Default is 0.
+  })
   await saveActivity(event)
 }
 
