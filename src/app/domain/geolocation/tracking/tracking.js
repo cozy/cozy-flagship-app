@@ -1,5 +1,5 @@
 import { uploadUserCache } from '/app/domain/geolocation/tracking/upload'
-import { createUser } from '/app/domain/geolocation/tracking/user'
+import { getOrCreateUser } from '/app/domain/geolocation/tracking/user'
 import { getTs, Log, parseISOString } from '/app/domain/geolocation/helpers'
 import {
   getActivities,
@@ -30,9 +30,9 @@ export const createDataBatch = (locations, nRun, maxBatchSize) => {
 // Future entry point of algorithm
 // prepareTrackingData / extractTrackingDate
 export const smartSend = async (locations, user, { force = false } = {}) => {
-  await createUser(user) // Will throw on fail, skipping the rest (trying again later is handled a level above smartSend)
+  await getOrCreateUser(user)
 
-  if (locations.length === 0) {
+  if (!locations || locations.length === 0) {
     Log('No new locations')
     await uploadWithNoNewPoints({ user, force })
   } else {
