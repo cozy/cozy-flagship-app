@@ -42,6 +42,30 @@ export const createUser = async user => {
   }
 }
 
+export const getOrCreateUser = async user => {
+  let response
+  try {
+    const respFetch = await fetch(serverURL + '/profile/get', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ user: user })
+    })
+    if (respFetch.status === 403) {
+      return createUser(user)
+    }
+    response = await respFetch.json()
+    const uuid = response?.user_id?.['$uuid']
+    if (!uuid) {
+      await createUser(user)
+    }
+    return uuid
+  } catch (err) {
+    return createUser(user)
+  }
+}
+
 export const updateId = async newId => {
   // If there are still non-uploaded locations, it should be handled before changing the Id or they will be sent with the new one
   Log('Updating Id to ' + newId)
