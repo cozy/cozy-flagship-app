@@ -156,7 +156,7 @@ export const formatMediasFromPhotoIdentifier = (
 
   If it is merged one day, we will not need anymore to compare type.
 */
-const getAlbums = (photoIdentifier: PhotoIdentifier): Album[] => {
+export const getAlbums = (photoIdentifier: PhotoIdentifier): Album[] => {
   const {
     node: { group_name }
   } = photoIdentifier
@@ -167,8 +167,10 @@ const getAlbums = (photoIdentifier: PhotoIdentifier): Album[] => {
         name: group_name
       }
     ]
-  } else {
+  } else if (Array.isArray(group_name)) {
     return group_name.map(name => ({ name }))
+  } else {
+    return []
   }
 }
 

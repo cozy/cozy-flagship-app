@@ -34,6 +34,64 @@ describe('getRemotePath', () => {
   })
 })
 
+describe('getAlbums', () => {
+  test('return array when group_name is a string', () => {
+    // Given
+    const photoIdentifier = {
+      node: {
+        group_name: 'Holiday'
+      }
+    } as PhotoIdentifier
+
+    // When
+    const albums = getMedias.getAlbums(photoIdentifier)
+
+    // Then
+    expect(albums).toEqual([
+      {
+        name: 'Holiday'
+      }
+    ])
+  })
+
+  test('return array when group_name is an array', () => {
+    // Given
+    const photoIdentifier = {
+      node: {
+        group_name: ['Holiday', '2023']
+      }
+    } as PhotoIdentifier
+
+    // When
+    const albums = getMedias.getAlbums(photoIdentifier)
+
+    // Then
+    expect(albums).toEqual([
+      {
+        name: 'Holiday'
+      },
+      {
+        name: '2023'
+      }
+    ])
+  })
+
+  test('return empty array when group_name is null', () => {
+    // Given
+    const photoIdentifier = {
+      node: {
+        group_name: null
+      }
+    } as unknown as PhotoIdentifier // we already got null group_name in production even if react-native-camera-roll does not consider it
+
+    // When
+    const albums = getMedias.getAlbums(photoIdentifier)
+
+    // Then
+    expect(albums).toEqual([])
+  })
+})
+
 describe('formatMediasFromPhotoIdentifier', () => {
   test('format Android image', () => {
     // Given
