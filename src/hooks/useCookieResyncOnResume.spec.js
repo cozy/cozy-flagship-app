@@ -21,15 +21,13 @@ jest.mock('cozy-client', () => ({
 function AppStateMock() {}
 MicroEE.mixin(AppStateMock)
 const mockAppState = new AppStateMock()
-jest.mock('react-native', () => ({
-  AppState: {
-    currentState: '',
-    addEventListener: jest.fn().mockImplementation((name, fn) => {
-      mockAppState.on(name, fn)
+jest.mock('react-native/Libraries/AppState/AppState', () => ({
+  currentState: '',
+  addEventListener: jest.fn().mockImplementation((name, fn) => {
+    mockAppState.on(name, fn)
 
-      return () => mockAppState.removeListener(name, fn)
-    })
-  }
+    return () => mockAppState.removeListener(name, fn)
+  })
 }))
 
 const FakeApp = () => {
