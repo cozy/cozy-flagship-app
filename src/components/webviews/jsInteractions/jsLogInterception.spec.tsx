@@ -6,17 +6,14 @@ const logger = {
   log: jest.fn(),
   debug: jest.fn()
 } as unknown as MiniLogger
-const makePayload = ({
-  type,
-  args
-}: {
-  type: string
-  args?: string[]
-}): {
+
+type MakePayload = ({ type, args }: { type: string; args?: string[] }) => {
   nativeEvent: {
     data: string
   }
-} => ({
+}
+
+const makePayload: MakePayload = ({ type, args }) => ({
   nativeEvent: {
     data: JSON.stringify({
       type: 'Console',
