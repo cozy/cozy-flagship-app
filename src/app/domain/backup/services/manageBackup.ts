@@ -57,23 +57,31 @@ export const prepareBackup = async (
 ): Promise<BackupInfo> => {
   log.debug('Backup preparation started')
 
-  const backupConfig = await initializeBackup(client)
+  try {
+    const backupConfig = await initializeBackup(client)
 
-  if (backupConfig.currentBackup.status === 'running') {
-    return await getBackupInfo(client)
+    if (backupConfig.currentBackup.status === 'running') {
+      return await getBackupInfo(client)
+    }
+
+    await setBackupAsInitializing(client)
+
+    void onProgress(await getBackupInfo(client))
+
+    const mediasToBackup = await getMediasToBackup(client, onProgress)
+
+    await setBackupAsReady(client, mediasToBackup)
+
+    void onProgress(await getBackupInfo(client))
+
+    log.debug('Backup preparation done')
+  } catch (e) {
+    log.debug('Backup preparation failed')
+
+    log.warn(e)
+
+    throw e
   }
-
-  await setBackupAsInitializing(client)
-
-  void onProgress(await getBackupInfo(client))
-
-  const mediasToBackup = await getMediasToBackup(client, onProgress)
-
-  await setBackupAsReady(client, mediasToBackup)
-
-  void onProgress(await getBackupInfo(client))
-
-  log.debug('Backup preparation done')
 
   return await getBackupInfo(client)
 }
