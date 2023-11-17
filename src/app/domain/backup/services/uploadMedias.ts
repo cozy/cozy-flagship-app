@@ -69,10 +69,12 @@ export const uploadMedias = async (
   for (const mediaToUpload of mediasToUpload) {
     if (shouldStopBackup) {
       shouldStopBackup = false
+      log.debug('Backup stopped because asked by the user')
       return t('services.backup.errors.backupStopped')
     }
 
     if (shouldStopBecauseBackground()) {
+      log.debug('Backup stopped because in background')
       return t('services.backup.errors.appKilled')
     }
 
