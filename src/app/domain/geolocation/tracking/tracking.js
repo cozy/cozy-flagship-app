@@ -302,7 +302,7 @@ export const filterNonHeadingPointsAfterStillActivity = (
 
 export const getFilteredActivities = async ({ beforeTs }) => {
   const activities = await getActivities({ beforeTs })
-  if (!activities) {
+  if (!activities || activities?.length < 1) {
     return null
   }
   const result = []
