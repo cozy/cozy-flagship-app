@@ -100,6 +100,7 @@ export const formatMediasFromPhotoIdentifier = (
   if (subTypes.includes('PhotoLive')) {
     return [
       {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         id,
         name: getPathWithoutExtension(filename) + '.MOV',
         uri: uri,
@@ -113,6 +114,7 @@ export const formatMediasFromPhotoIdentifier = (
         fileSize: null
       },
       {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         id,
         name: filename,
         uri: uri,
@@ -130,6 +132,7 @@ export const formatMediasFromPhotoIdentifier = (
 
   return [
     {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       id,
       name: filename,
       uri: uri,
