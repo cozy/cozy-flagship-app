@@ -120,3 +120,10 @@ jest.mock('../src/app/view/OsReceive/state/OsReceiveState', () => ({
     candidateApps: undefined
   })
 }))
+
+jest.mock('react-native/Libraries/Components/Switch/Switch', () => {
+  const mockComponent = require('react-native/jest/mockComponent')
+  return {
+    default: mockComponent('react-native/Libraries/Components/Switch/Switch')
+  }
+})
