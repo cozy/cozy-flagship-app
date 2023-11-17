@@ -116,6 +116,9 @@ export const storeActivity = async activity => {
 
 export const getActivities = async ({ beforeTs } = {}) => {
   const activities = await getData(StorageKeys.Activities)
+  if (!activities) {
+    return []
+  }
   if (beforeTs) {
     const activitiesBeforeTs = activities.filter(activity => {
       return activity?.data?.ts <= beforeTs
@@ -131,7 +134,6 @@ export const removeActivities = async ({ beforeTs } = {}) => {
     return clearAllActivities()
   }
   const activities = await getActivities()
-  Log('All activities to remove ' + JSON.stringify(activities)) // TODO: useful for debug, but should be removed eventually
   const activitiesToKeep = activities.filter(activity => {
     if (activity?.data?.ts) {
       return activity.data.ts > beforeTs
