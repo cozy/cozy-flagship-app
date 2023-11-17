@@ -1,3 +1,5 @@
+import './openHandleFix'
+
 import mockNotifee from '@notifee/react-native/jest-mock'
 import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock'
 import mockRNCameraRoll from '@react-native-camera-roll/camera-roll/src/__mocks__/nativeInterface'
