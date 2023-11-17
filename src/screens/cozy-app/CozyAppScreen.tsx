@@ -64,9 +64,7 @@ export const CozyAppScreen = ({
 
       <View
         style={{
-          height: isFirstHalf
-            ? dimensions.statusBarHeight
-            : styles.immersiveHeight.height,
+          height: dimensions.statusBarHeight,
           backgroundColor: topBackground
         }}
       >
@@ -79,19 +77,6 @@ export const CozyAppScreen = ({
       </View>
 
       <View style={styles.mainView}>
-        {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          route.params.iconParams && !isReady && (
-            <Animation
-              onFirstHalf={setFirstHalf}
-              onFinished={setReady}
-              shouldExit={shouldExitAnimation}
-              params={route.params.iconParams}
-              slug={route.params.slug}
-            />
-          )
-        }
-
         <CozyProxyWebView
           style={webViewStyle}
           slug={route.params.slug}
@@ -106,9 +91,7 @@ export const CozyAppScreen = ({
 
       <View
         style={{
-          height: isFirstHalf
-            ? dimensions.navbarHeight
-            : styles.immersiveHeight.height,
+          height: dimensions.navbarHeight,
           backgroundColor: bottomBackground
         }}
       >
@@ -119,6 +102,18 @@ export const CozyAppScreen = ({
           }}
         />
       </View>
+      {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        route.params.iconParams && !isReady && (
+          <Animation
+            onFirstHalf={setFirstHalf}
+            onFinished={setReady}
+            shouldExit={shouldExitAnimation}
+            params={route.params.iconParams}
+            slug={route.params.slug}
+          />
+        )
+      }
     </>
   )
 }
