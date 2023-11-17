@@ -104,7 +104,11 @@ export const CozyProxyWebView = ({
   const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView
 
   return (
-    <Wrapper style={{ ...styles.view, ...style }} behavior="height">
+    <Wrapper
+      style={{ ...styles.view, ...style }}
+      behavior="height"
+      keyboardVerticalOffset={props.keyboardVerticalOffset || 0}
+    >
       {state.source ? (
         <CozyWebView
           source={state.source}

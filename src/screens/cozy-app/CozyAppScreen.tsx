@@ -86,6 +86,7 @@ export const CozyAppScreen = ({
           logId="AppScreen"
           onLoadEnd={onLoadEnd}
           onError={handleError}
+          keyboardVerticalOffset={dimensions.statusBarHeight}
         />
       </View>
 
