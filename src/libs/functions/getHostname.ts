@@ -10,8 +10,10 @@ export const getHostname = (
     typeof nativeEvent !== 'object' ||
     !('url' in nativeEvent) ||
     typeof nativeEvent.url !== 'string'
-  )
+  ) {
+    devlog('getHostname failed, nativeEvent:', nativeEvent)
     return
+  }
 
   try {
     return new URL(nativeEvent.url).hostname

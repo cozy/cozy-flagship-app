@@ -9,7 +9,9 @@ export const getTs = (location: { timestamp: string }): number => {
 }
 
 export const parseISOString = (ISOString: string): Date => {
-  const b = ISOString.split(/\D+/).map(Number)
+  const b = ISOString.split(/\D+/)
+  // @ts-expect-error - Date.UTC() expects number arguments, not stringed numbers
+  // But at the time of this refactoring, not feeling safe enough to change this
   return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]))
 }
 
