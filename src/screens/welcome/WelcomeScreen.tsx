@@ -61,7 +61,7 @@ const WelcomeView = ({
 
 interface WelcomeScreenProps {
   navigation: NavigationProp<Record<string, unknown>>
-  route: RouteProp<Record<string, Record<string, unknown>>, string>
+  route: RouteProp<Record<string, Record<string, unknown> | undefined>, string>
   setClient: (client: CozyClient) => void
 }
 
@@ -98,7 +98,7 @@ export const WelcomeScreen = ({
         goBack={handleBackPress}
       />
 
-      {route.params.options === 'showTokenError' && (
+      {route.params?.options === 'showTokenError' && (
         <ErrorTokenModal
           onClose={(): void => navigation.setParams({ options: '' })}
           handleEmail={handleSupportEmail}
