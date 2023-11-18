@@ -94,7 +94,9 @@ const checkFileMimes =
       return app
     }
 
-    const reason = t('services.osReceive.disableReasons.incompatibleMime')
+    const reason = t('services.osReceive.disableReasons.incompatibleMime', {
+      appname: app.name
+    })
     const reasons = app.reasonDisabled
       ? [...app.reasonDisabled, reason]
       : [reason]
