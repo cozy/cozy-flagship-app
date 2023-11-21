@@ -410,7 +410,8 @@ const jpgFile: OsReceiveFile = {
     mimeType: '.jpg',
     contentUri: null,
     fileName: 'SOME_IMAGE.JPG',
-    extension: 'JPG'
+    extension: 'JPG',
+    fromFlagship: true
   },
   status: 0
 }
@@ -424,7 +425,8 @@ const pdfFile: OsReceiveFile = {
     mimeType: '.pdf',
     contentUri: null,
     fileName: 'SOME_IMAGE.PDF',
-    extension: 'PDF'
+    extension: 'PDF',
+    fromFlagship: true
   },
   status: 0
 }

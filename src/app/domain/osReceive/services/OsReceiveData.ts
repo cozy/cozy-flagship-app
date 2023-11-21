@@ -1,7 +1,8 @@
-import OsReceiveIntent from '@mythologi/react-native-receive-sharing-intent'
-import RNFS from 'react-native-fs'
-
 import { EventEmitter } from 'events'
+
+import OsReceiveIntent from '@mythologi/react-native-receive-sharing-intent'
+import { Platform } from 'react-native'
+import RNFS from 'react-native-fs'
 
 import {
   OsReceiveFile,
@@ -12,6 +13,8 @@ import {
   ReceivedFile,
   OS_RECEIVE_PROTOCOL_NAME
 } from '/app/domain/osReceive/models/ReceivedFile'
+import { Media } from '/app/domain/backup/models'
+import { getMimeType } from '/app/domain/backup/services/getMedias'
 
 const getDeduplicationKey = (file: ReceivedFile): string | null => {
   return file.filePath
@@ -38,18 +41,36 @@ const processReceivedFiles = (
   return filesToUpload
 }
 
+const decodeFileName = (fileName: string): string => decodeURI(fileName)
+
+const determineMimeType = (fileName: string, mimeType: string): string =>
+  getMimeType({
+    name: decodeFileName(fileName),
+    mimeType: Platform.OS === 'android' ? mimeType : undefined
+  } as Media)
+
+const createOsReceiveFile = (file: ReceivedFile): OsReceiveFile => {
+  const decodedFileName = decodeFileName(file.fileName)
+  const mimeType = determineMimeType(file.fileName, file.mimeType)
+
+  return {
+    name: decodedFileName,
+    file: {
+      ...file,
+      fromFlagship: true,
+      filePath: decodeURI(file.filePath),
+      fileName: decodedFileName,
+      mimeType: mimeType
+    },
+    status: OsReceiveFileStatus.toUpload,
+    type: mimeType
+  }
+}
+
 const mapFilesToUploadToArray = (
   filesMap: Map<string, ReceivedFile>
 ): OsReceiveFile[] => {
-  return Array.from(filesMap.values()).map(file => ({
-    name: file.fileName,
-    file: {
-      ...file,
-      fromFlagship: true
-    },
-    status: OsReceiveFileStatus.toUpload,
-    type: file.mimeType
-  }))
+  return Array.from(filesMap.values()).map(createOsReceiveFile)
 }
 
 const onReceiveFiles = (files: ReceivedFile[]): OsReceiveFile[] => {
@@ -59,6 +80,8 @@ const onReceiveFiles = (files: ReceivedFile[]): OsReceiveFile[] => {
 
   return filesArray
 }
+
+export const _onReceiveFiles = onReceiveFiles // for testing
 
 class FileReceiver extends EventEmitter {
   private activated = false
