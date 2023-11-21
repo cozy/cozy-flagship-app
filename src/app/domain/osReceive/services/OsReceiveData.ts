@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events'
 
 import OsReceiveIntent from '@mythologi/react-native-receive-sharing-intent'
-import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 
 import {
@@ -46,7 +45,10 @@ const decodeFileName = (fileName: string): string => decodeURI(fileName)
 const determineMimeType = (fileName: string, mimeType: string): string =>
   getMimeType({
     name: decodeFileName(fileName),
-    mimeType: Platform.OS === 'android' ? mimeType : undefined
+    mimeType: mimeType.includes('/')
+      ? mimeType
+      : // Want to handle the case where mimeType is only the extension, shouldn't happen but better safe than sorry
+        getMimeType({ name: fileName } as Media)
   } as Media)
 
 const createOsReceiveFile = (file: ReceivedFile): OsReceiveFile => {
