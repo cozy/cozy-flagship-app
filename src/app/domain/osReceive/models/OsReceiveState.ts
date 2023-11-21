@@ -22,7 +22,7 @@ export enum OsReceiveFileStatus {
 
 export interface OsReceiveFile {
   name: string
-  file: ReceivedFile
+  file: ReceivedFile & { fromFlagship: true }
   status: OsReceiveFileStatus
   handledTimestamp?: number // Unix timestamp representing when the file was handled
   source?: string // base64 of the file content
