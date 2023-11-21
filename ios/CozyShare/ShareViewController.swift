@@ -90,12 +90,12 @@ class ShareViewController: UIViewController {
      if error == nil, let url = data as? URL, let this = self {
        //  this.redirectToHostApp(type: .media)
        // Always copy
-       let fileExtension = this.getExtension(from: url, type: .video)
-       let newName = UUID().uuidString
-       let newPath = FileManager.default
-         .containerURL(forSecurityApplicationGroupIdentifier: "group.\(this.hostAppBundleIdentifier)")!
-         .appendingPathComponent("\(newName).\(fileExtension)")
-       let copied = this.copyFile(at: url, to: newPath)
+      let newName = this.getFileName(from :url)
+      let newPath = FileManager.default
+          .containerURL(forSecurityApplicationGroupIdentifier: "group.\(this.hostAppBundleIdentifier)")!
+          .appendingPathComponent(originalFileName) // Use the original file name
+      let copied = this.copyFile(at: url, to: newPath)
+
        if(copied) {
          this.sharedMedia.append(SharedMediaFile(path: newPath.absoluteString, thumbnail: nil, duration: nil, type: .image))
        }
@@ -120,12 +120,12 @@ class ShareViewController: UIViewController {
      if error == nil, let url = data as? URL, let this = self {
        
        // Always copy
-       let fileExtension = this.getExtension(from: url, type: .video)
-       let newName = UUID().uuidString
+       let newName = this.getFileName(from :url)
        let newPath = FileManager.default
-         .containerURL(forSecurityApplicationGroupIdentifier: "group.\(this.hostAppBundleIdentifier)")!
-         .appendingPathComponent("\(newName).\(fileExtension)")
+          .containerURL(forSecurityApplicationGroupIdentifier: "group.\(this.hostAppBundleIdentifier)")!
+          .appendingPathComponent(originalFileName) // Use the original file name
        let copied = this.copyFile(at: url, to: newPath)
+
        if(copied) {
          guard let sharedFile = this.getSharedMediaFile(forVideo: newPath) else {
            return

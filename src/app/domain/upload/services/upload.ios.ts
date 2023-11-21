@@ -32,9 +32,13 @@ export const uploadFile = async ({
       files: [
         {
           name: filename,
-          filename: filename,
-          filetype: mimetype,
-          filepath
+          filename,
+          // We need to remove the file:// prefix or the upload will be empty but successful (silent error)
+          // Doing it at the last moment is preferrable to avoid breaking other platforms or side effects
+          filepath: filepath.startsWith('file://')
+            ? filepath.replace('file://', '')
+            : filepath,
+          filetype: mimetype
         }
       ],
       binaryStreamOnly: true,
