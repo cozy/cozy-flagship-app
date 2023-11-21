@@ -93,7 +93,7 @@ class ShareViewController: UIViewController {
       let newName = this.getFileName(from :url)
       let newPath = FileManager.default
           .containerURL(forSecurityApplicationGroupIdentifier: "group.\(this.hostAppBundleIdentifier)")!
-          .appendingPathComponent(originalFileName) // Use the original file name
+          .appendingPathComponent("\(newName)")
       let copied = this.copyFile(at: url, to: newPath)
 
        if(copied) {
@@ -123,7 +123,7 @@ class ShareViewController: UIViewController {
        let newName = this.getFileName(from :url)
        let newPath = FileManager.default
           .containerURL(forSecurityApplicationGroupIdentifier: "group.\(this.hostAppBundleIdentifier)")!
-          .appendingPathComponent(originalFileName) // Use the original file name
+          .appendingPathComponent("\(newName)")
        let copied = this.copyFile(at: url, to: newPath)
 
        if(copied) {
