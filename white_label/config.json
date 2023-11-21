@@ -6,7 +6,10 @@
     "provisionningProfile": "amiral-ci-profile",
     "provisionningDevProfile": "amiral-dev-profile",
     "scheme": "cozy",
-    "userAgent": "io.cozy.flagship.mobile"
+    "userAgent": "io.cozy.flagship.mobile",
+    "packages": {
+      "react-native-iap": "^12.10.8"
+    }
   },
   "mabulle": {
     "appName": "Cozy Métropole de Lyon",
@@ -15,6 +18,9 @@
     "provisionningProfile": "amiral-mabulle-ci-profile",
     "provisionningDevProfile": "amiral-mabulle-dev-profile",
     "scheme": "cozygrandlyon",
-    "userAgent": "io.cozy.mabulle.mobile"
+    "userAgent": "io.cozy.mabulle.mobile",
+    "packages": {
+      "react-native-iap": "remove"
+    }
   }
 }

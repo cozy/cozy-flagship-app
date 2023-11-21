@@ -34,12 +34,34 @@ export const configureBrand = async (brand: string): Promise<void> => {
       return
     }
 
+    await configurePackage(brand)
     await configureAndroid(brand)
     await configureIOS(brand)
     await configureJS(brand)
     await configureEnv(brand)
   } catch (error) {
     logger.error('Could not apply changes:', error)
+  }
+}
+
+const configurePackage = async (brand: string): Promise<void> => {
+  logger.info('Configure Node Package')
+
+  const config = configs[brand as keyof typeof configs]
+
+  for (const [key, value] of Object.entries(config.packages)) {
+    if (value === 'remove') {
+      await executeCommand(
+        `echo "\`jq 'del(.dependencies."react-native-iap")' package.json\`" > package.json`
+      )
+    } else {
+      await executeCommand(
+        `echo "\`jq '.dependencies."${key}"="${value}"' package.json\`" > package.json`
+      )
+      await executeCommand(
+        `echo "\`jq '.dependencies=(.dependencies | to_entries | sort_by(.key) | from_entries)' package.json\`" > package.json`
+      )
+    }
   }
 }
 
