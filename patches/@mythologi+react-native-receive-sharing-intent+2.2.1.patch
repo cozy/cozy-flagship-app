@@ -1,19 +1,8 @@
 diff --git a/node_modules/@mythologi/react-native-receive-sharing-intent/src/ReceiveSharingIntent.ts b/node_modules/@mythologi/react-native-receive-sharing-intent/src/ReceiveSharingIntent.ts
-index 2ad1da2..3381534 100644
+index 2ad1da2..97348a2 100644
 --- a/node_modules/@mythologi/react-native-receive-sharing-intent/src/ReceiveSharingIntent.ts
 +++ b/node_modules/@mythologi/react-native-receive-sharing-intent/src/ReceiveSharingIntent.ts
-@@ -33,17 +33,12 @@ class ReceiveSharingIntentModule implements IReceiveSharingIntent {
-         }
-       });
-     } else {
--      AppState.addEventListener('change', (status: string) => {
--        if (status === 'active' && !this.isClear) {
--          this.getFileNames(handler, errorHandler, '');
--        }
--      });
--      if (!this.isClear) this.getFileNames(handler, errorHandler, '');
-+      this.getFileNames(handler,errorHandler, "");
-     }
+@@ -43,7 +43,7 @@ class ReceiveSharingIntentModule implements IReceiveSharingIntent {
    }
  
    clearReceivedFiles() {
