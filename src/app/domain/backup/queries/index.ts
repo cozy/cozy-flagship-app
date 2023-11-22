@@ -58,7 +58,7 @@ export interface File {
   created_at: number
   updated_at: number
   md5sum: string
-  metadata: {
+  metadata?: {
     idFromLibrary?: string
     creationDateFromLibrary?: string
   }
