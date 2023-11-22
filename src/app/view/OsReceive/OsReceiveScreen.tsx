@@ -124,7 +124,11 @@ export const OsReceiveScreen = (): JSX.Element | null => {
 
                     {app.reasonDisabled && (
                       <Typography variant="caption">
-                        {app.reasonDisabled}
+                        {
+                          // We only show the first reason for the app being disabled.
+                          // We don't want to remove the other reasons instead, because they might be useful for debugging
+                          app.reasonDisabled[0]
+                        }
                       </Typography>
                     )}
                   </ListItemText>
