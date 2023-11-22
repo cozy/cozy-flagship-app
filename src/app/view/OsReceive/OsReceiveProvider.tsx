@@ -38,6 +38,7 @@ export const OsReceiveProvider = ({
     const onFilesReceived = (files: OsReceiveFile[]): void => {
       if (!client?.isLogged) return
       dispatch({ type: OsReceiveActionType.SetFilesToUpload, payload: files })
+      OsReceiveEmitter.clearReceivedFiles()
       backToHome().catch(error => {
         OsReceiveLogger.error('Could not go back to home', error)
       })
