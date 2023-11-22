@@ -95,7 +95,10 @@ export const uploadFileWithConflictStrategy = async ({
         name: oldName
       } as IOCozyFile) as SplitFilenameResult
 
-      const newName = `${filename}_conflict_${new Date().toISOString()}${extension}`
+      const newName =
+        models.file.generateNewFileNameOnConflict(filename, {
+          delimiter: '_cozy'
+        }) + extension
 
       urlWithNewName.searchParams.set('Name', newName)
 
