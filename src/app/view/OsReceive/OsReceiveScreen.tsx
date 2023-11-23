@@ -23,12 +23,12 @@ import {
 } from '/ui/List'
 import { palette } from '/ui/palette'
 import { Divider } from '/ui/Divider'
-
-import { useOsReceiveScreenLogic } from './hooks/useOsReceiveScreen'
+import { useOsReceiveScreenLogic } from '/app/view/OsReceive/hooks/useOsReceiveScreen'
 
 import { osReceiveScreenStyles } from '/app/view/OsReceive/OsReceiveScreen.styles'
 
 import { FileDuotone } from '/ui/Icons/FileDuotone'
+import { FileThumbnail } from '/ui/ImageThumbnail'
 
 export const OsReceiveScreen = (): JSX.Element | null => {
   const filesToUpload = useFilesToUpload()
@@ -65,14 +65,21 @@ export const OsReceiveScreen = (): JSX.Element | null => {
 
         <Grid direction="column">
           {isSingleFile ? (
-            <Typography
-              variant="h5"
-              style={
-                osReceiveScreenStyles.singleFileTitle as StyleProp<TextStyle>
-              }
-            >
-              {filesToUpload[0].name}
-            </Typography>
+            <>
+              <FileThumbnail
+                filePath={filesToUpload[0].file.filePath}
+                mimeType={filesToUpload[0].file.mimeType}
+                style={osReceiveScreenStyles.thumbnail}
+              />
+              <Typography
+                variant="h5"
+                style={
+                  osReceiveScreenStyles.singleFileTitle as StyleProp<TextStyle>
+                }
+              >
+                {filesToUpload[0].name}
+              </Typography>
+            </>
           ) : null}
 
           <List

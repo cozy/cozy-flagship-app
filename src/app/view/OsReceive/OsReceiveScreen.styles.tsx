@@ -1,3 +1,5 @@
+import { FlexAlignType } from 'react-native'
+
 import { palette } from '/ui/palette'
 
 export const osReceiveScreenStyles = {
@@ -22,5 +24,9 @@ export const osReceiveScreenStyles = {
   },
   appName: {
     lineHeight: 21
+  },
+  thumbnail: {
+    marginBottom: 16,
+    alignSelf: 'center' as FlexAlignType
   }
 }
