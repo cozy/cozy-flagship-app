@@ -225,7 +225,7 @@ describe('getOrFetchDefaultRedirectionUrl', () => {
   >
 
   beforeAll(() => {
-    jest.resetAllMocks()
+    jest.restoreAllMocks()
 
     spyFetchAndSetDefaultRedirectionUrlInBackground = jest
       .spyOn(DefaultRedirection, 'fetchAndSetDefaultRedirectionUrlInBackground')
