@@ -353,10 +353,6 @@ const translateToEMissionLocationPoint = location_point => {
 
 const translateEventToEMissionMotionActivity = event => {
   const ts = Math.floor(parseISOString(event.timestamp).getTime() / 1000)
-  Log('Activity type : ' + event.activity.type + ' at ' + event.timestamp)
-  if (event.activity.type === 'unknown') {
-    Log('Unknown activity at: ' + event.timestamp)
-  }
   // See: https://transistorsoft.github.io/react-native-background-geoevent/interfaces/motionactivity.html#type
   return {
     data: {

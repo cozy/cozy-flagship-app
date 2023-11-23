@@ -39,8 +39,7 @@ export const startTracking = async () => {
     Log('Starting')
 
     const trackingConfig = await getTrackingConfig()
-
-    Log(trackingConfig.toString())
+    Log('Config : ' + JSON.stringify(trackingConfig))
 
     await BackgroundGeolocation.ready({
       // Geolocation Config
