@@ -68,7 +68,7 @@ const prepareMotionData = async ({ locations, lastBatchPoint }) => {
   }
   if (locations.length > 0) {
     Log(
-      'upload points from ' +
+      'Process points from ' +
         locations[0]?.timestamp +
         ' - to ' +
         locations[locations.length - 1]?.timestamp
@@ -77,13 +77,19 @@ const prepareMotionData = async ({ locations, lastBatchPoint }) => {
 
   // Add activities stored in local storage
   const lastPointTs = getTs(locations[locations.length - 1])
-  let activities = await getFilteredActivities({ beforeTs: lastPointTs })
-  Log('n activities : ' + activities?.length)
+  let activities = await getFilteredActivities({
+    beforeTs: lastPointTs,
+    locations
+  })
+  Log('Activities found : ' + activities?.length)
   if (activities?.length > 0) {
     contentToUpload.push(...activities)
   }
-
   const points = filterNonHeadingPointsAfterStillActivity(locations, activities)
+  Log('Process points : ' + points?.length)
+  if (!points) {
+    return []
+  }
 
   for (let i = 0; i < points.length; i++) {
     const point = points[i]
@@ -291,19 +297,29 @@ export const filterNonHeadingPointsAfterStillActivity = (
     lastStillActivityTs = lastPointTs
   }
 
-  Log('last still activity ts : ' + lastStillActivityTs)
-  Log('n locations : ' + locations.length)
   const points = locations.filter(loc => {
     return getTs(loc) <= lastStillActivityTs || loc?.coords?.heading > -1
   })
-  Log('n filtered locations : ' + points.length)
   return points
 }
 
-export const getFilteredActivities = async ({ beforeTs }) => {
-  const activities = await getActivities({ beforeTs })
-  if (!activities || activities?.length < 1) {
+const getActivitiesFromLocations = locations => {
+  if (!locations || locations.length < 1) {
     return null
+  }
+  const activities = locations.map(loc =>
+    translateEventToEMissionMotionActivity(loc)
+  )
+  return activities
+}
+
+export const getFilteredActivities = async ({ beforeTs, locations }) => {
+  let activities = await getActivities({ beforeTs })
+  if (!activities || activities?.length < 1) {
+    Log('No activity found in local storage. Get it from locations')
+    // Fallback when no activity was captured
+    const activitiesFromLoc = getActivitiesFromLocations(locations)
+    return activitiesFromLoc
   }
   const result = []
   let previousActivity = null
