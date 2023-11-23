@@ -290,5 +290,133 @@ describe('Launcher', () => {
         sourceAccountIdentifier: 'testsourceaccountidentifier'
       })
     })
+    it('should retry on MAIN_FOLDER_REMOVED error', async () => {
+      const launcher = new Launcher()
+      launcher.setUserData({
+        sourceAccountIdentifier: 'testsourceaccountidentifier'
+      })
+
+      const konnector = {
+        slug: 'testkonnectorslug',
+        id: 'testkonnectorid',
+        name: 'Test Konnector'
+      }
+      const trigger = {
+        _type: 'io.cozy.triggers',
+        message: {
+          folder_to_save: 'testfolderid',
+          account: 'testaccountid'
+        }
+      }
+      const job = {
+        message: { account: 'testaccountid', folder_to_save: 'testfolderid' }
+      }
+      const client = {
+        collection: doctype => {
+          if (doctype === 'io.cozy.permissions') {
+            return { add: jest.fn() }
+          }
+          return client
+        },
+        addReferencesTo: jest.fn(),
+        statByPath: jest
+          .fn()
+          .mockImplementation(path => ({ data: { _id: path } })),
+        findReferencedBy: jest
+          .fn()
+          .mockResolvedValue({ included: existingMagicFolder }),
+        getInstanceOptions: jest.fn().mockReturnValue(() => ({ locale: 'fr' })),
+        queryAll: jest.fn().mockResolvedValue([
+          {
+            _id: 'tokeep',
+            metadata: {
+              fileIdAttributes: 'fileidattribute'
+            }
+          },
+          {
+            _id: 'toignore'
+          }
+        ]),
+        query: jest.fn().mockResolvedValue({ data: { path: 'folderPath' } }),
+        save: jest.fn().mockImplementation(() => ({ _id: 'triggerid' }))
+      }
+      launcher.setStartContext({
+        konnector,
+        account: { _id: 'testaccountid' },
+        client,
+        launcherClient: client,
+        trigger,
+        job
+      })
+      saveFiles.mockRejectedValueOnce(new Error('MAIN_FOLDER_REMOVED'))
+
+      await launcher.saveFiles([{}], {})
+
+      expect(saveFiles).toHaveBeenNthCalledWith(1, client, [{}], 'folderPath', {
+        downloadAndFormatFile: expect.any(Function),
+        manifest: expect.any(Object),
+        existingFilesIndex: new Map([
+          [
+            'fileidattribute',
+            {
+              _id: 'tokeep',
+              metadata: { fileIdAttributes: 'fileidattribute' }
+            }
+          ]
+        ]),
+        sourceAccount: 'testaccountid',
+        sourceAccountIdentifier: 'testsourceaccountidentifier'
+      })
+      expect(saveFiles).toHaveBeenNthCalledWith(2, client, [{}], 'folderPath', {
+        downloadAndFormatFile: expect.any(Function),
+        manifest: expect.any(Object),
+        existingFilesIndex: new Map([
+          [
+            'fileidattribute',
+            {
+              _id: 'tokeep',
+              metadata: { fileIdAttributes: 'fileidattribute' }
+            }
+          ]
+        ]),
+        sourceAccount: 'testaccountid',
+        sourceAccountIdentifier: 'testsourceaccountidentifier'
+      })
+      expect(client.save).toHaveBeenCalledTimes(1)
+      expect(client.save).toHaveBeenNthCalledWith(1, {
+        _type: 'io.cozy.triggers',
+        message: {
+          account: 'testaccountid',
+          folder_to_save: '/Administratif/Test Konnector/testaccountid'
+        }
+      })
+      expect(client.queryAll).toHaveBeenCalledTimes(2)
+      expect(client.queryAll).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          doctype: 'io.cozy.files',
+          selector: {
+            cozyMetadata: {
+              createdByApp: 'testkonnectorslug',
+              sourceAccountIdentifier: 'testsourceaccountidentifier'
+            },
+            trashed: false
+          }
+        })
+      )
+      expect(client.queryAll).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          doctype: 'io.cozy.files',
+          selector: {
+            cozyMetadata: {
+              createdByApp: 'testkonnectorslug',
+              sourceAccountIdentifier: 'testsourceaccountidentifier'
+            },
+            trashed: false
+          }
+        })
+      )
+    })
   })
 })

@@ -402,8 +402,8 @@ export default class Launcher {
    *
    * @return {Promise<Map<String, import('cozy-client/types/types').FileDocument>>} - index of existing files
    */
-  async getExistingFilesIndex() {
-    if (this.existingFilesIndex) {
+  async getExistingFilesIndex(reset = false) {
+    if (!reset && this.existingFilesIndex) {
       return this.existingFilesIndex
     }
 
@@ -472,7 +472,7 @@ export default class Launcher {
 
     const existingFilesIndex = await this.getExistingFilesIndex()
 
-    const result = await saveFiles(client, entries, folderPath, {
+    const saveFilesOptions = {
       ...options,
       manifest: konnector,
       // @ts-ignore
@@ -485,10 +485,70 @@ export default class Launcher {
         dataUri: await this.worker.call('downloadFileInWorker', entry)
       }),
       existingFilesIndex
-    })
-    log.debug(result, 'saveFiles result')
+    }
 
-    return result
+    try {
+      const result = await saveFiles(
+        client,
+        entries,
+        folderPath,
+        saveFilesOptions
+      )
+      log.debug(result, 'saveFiles result')
+      return result
+    } catch (err) {
+      if (
+        (err instanceof Error && err.message !== 'MAIN_FOLDER_REMOVED') ||
+        !(err instanceof Error) // instanceof Error is here to fix typing error
+      ) {
+        throw err
+      }
+      // main destination folder has been removed during the execution of the konnector. Trying one time to reset all and relaunch saveFiles
+      return await this.retrySaveFiles(entries, saveFilesOptions)
+    }
+  }
+
+  /**
+   * Rerun the saveFiles function after have reindexed files and created the destination folder
+   * @param {Array<FileDocument>} entries - list of file entries to save
+   * @param {object} options - options object
+   * @returns {Promise<Array<object>>} list of saved files
+   */
+  async retrySaveFiles(entries, options) {
+    const {
+      launcherClient: client,
+      account,
+      trigger,
+      konnector
+    } = this.getStartContext() || {}
+
+    const folderPath = await this.getFolderPath(trigger.message?.folder_to_save)
+    this.log({
+      level: 'warning',
+      namespace: 'Launcher',
+      label: 'saveFiles',
+      message:
+        'Destination folder removed during konnector execution, trying again'
+    })
+    const folder = await models.konnectorFolder.ensureKonnectorFolder(client, {
+      konnector: { ...konnector, _id: konnector.id }, // _id attribute is missing in konnector object, which causes the reference to the konnector in the destination folder to be null
+      account,
+      lang: client.getInstanceOptions().locale
+    })
+    trigger.message.folder_to_save = folder._id
+    const { data: triggerResult } = await client.save(trigger)
+
+    this.setStartContext({
+      ...this.getStartContext(),
+      trigger: triggerResult
+    })
+
+    const updatedFilesIndex = await this.getExistingFilesIndex(true) // update files index since the destination folder was removed
+
+    return await saveFiles(client, entries, folderPath, {
+      ...options,
+      existingFilesIndex: updatedFilesIndex
+    })
   }
 
   /**
