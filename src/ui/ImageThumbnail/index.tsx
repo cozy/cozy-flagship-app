@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Image, ImageStyle, View } from 'react-native'
 
 import {
@@ -9,6 +9,7 @@ import {
 import { Icon } from '/ui/Icon'
 import { createImageStyles, createViewStyles } from '/ui/ImageThumbnail/styles'
 import { ImageThumbnailProps } from '/ui/ImageThumbnail/types'
+import { FileTypeImage } from '/ui/Icons/Illus/FileTypeImage'
 
 /**
  * Displays a thumbnail for a file.
@@ -20,21 +21,30 @@ export const FileThumbnail = ({
   filePath = '',
   mimeType = '',
   size = 128,
-  style
-}: ImageThumbnailProps): JSX.Element => (
-  <View style={[createViewStyles(size).view, style]}>
-    {isImageType(mimeType) ? (
-      <Image
-        source={{ uri: getImageUri(filePath) }}
-        // Casting to ImageStyle is necessary here to resolve a TypeScript type mismatch.
-        // The style object returned by StyleSheet.create includes a union of ViewStyle, TextStyle, and ImageStyle.
-        // However, the Image component's style prop specifically expects an ImageStyle.
-        // This cast ensures that TypeScript recognizes the style as ImageStyle, aligning with the expected type for the Image component.
-        style={createImageStyles(size).image as ImageStyle}
-        resizeMode="cover" // Will fill the frame and crop excess parts
-      />
-    ) : (
-      <Icon icon={getIconForMimeType(mimeType)} size={size} />
-    )}
-  </View>
-)
+  style = {}
+}: ImageThumbnailProps): JSX.Element => {
+  const [loadError, setLoadError] = useState(false)
+
+  return (
+    <View style={[createViewStyles(size).view, style]}>
+      {isImageType(mimeType) ? (
+        loadError ? (
+          <Icon icon={FileTypeImage} size={size} />
+        ) : (
+          <Image
+            source={{ uri: getImageUri(filePath) }}
+            // Casting to ImageStyle is necessary here to resolve a TypeScript type mismatch.
+            // The style object returned by StyleSheet.create includes a union of ViewStyle, TextStyle, and ImageStyle.
+            // However, the Image component's style prop specifically expects an ImageStyle.
+            // This cast ensures that TypeScript recognizes the style as ImageStyle, aligning with the expected type for the Image component.
+            style={createImageStyles(size).image as ImageStyle}
+            resizeMode="cover" // Will fill the frame and crop excess parts
+            onError={(): void => setLoadError(true)}
+          />
+        )
+      ) : (
+        <Icon icon={getIconForMimeType(mimeType)} size={size} />
+      )}
+    </View>
+  )
+}
