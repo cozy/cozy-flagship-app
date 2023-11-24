@@ -1,4 +1,7 @@
-import { parseOnboardLink } from '/app/domain/deeplinks/services/DeeplinksParserService'
+import {
+  parseFallbackURL,
+  parseOnboardLink
+} from '/app/domain/deeplinks/services/DeeplinksParserService'
 import { routes } from '/constants/routes'
 
 describe('DeeplinksParserService', () => {
@@ -67,6 +70,29 @@ describe('DeeplinksParserService', () => {
           managerUrl: 'SOME_FALLBACK'
         }
       })
+    })
+  })
+
+  describe('parseFallbackURL', () => {
+    it('should not intercept cozy:// links as cozyAppFallbackURL', () => {
+      const deeplink =
+        'https://links.mycozy.cloud/flagship/onboarding?flagship=true&fallback=cozy%3A%2F%2Fonboarding%3Fflagship%3Dtrue%26fqdn%3Dclaude.mycozy.cloud&fqdn=claude.mycozy.cloud'
+
+      const { mainAppFallbackURL, cozyAppFallbackURL } =
+        parseFallbackURL(deeplink)
+
+      expect(mainAppFallbackURL).toBeUndefined()
+      expect(cozyAppFallbackURL).toBeUndefined()
+    })
+    it('should not intercept manager.cozycloud.cc links as cozyAppFallbackURL', () => {
+      const deeplink =
+        'https://links.mycozy.cloud/flagship/manager?fallback=https%3A%2F%2Fmanager.cozycloud.cc%2Fv2%2Fcozy%2Fstart%2FSOME_ID%3Fredirect%3Dhttps%253A%252F%252Flinks.mycozy.cloud%252Fflagship%252Fonboarding%253Fflagship%253Dtrue%2526fallback%253Dcozy%25253A%25252F%25252Fonboarding%25253Fflagship%25253Dtrue'
+
+      const { mainAppFallbackURL, cozyAppFallbackURL } =
+        parseFallbackURL(deeplink)
+
+      expect(mainAppFallbackURL).toBeUndefined()
+      expect(cozyAppFallbackURL).toBeUndefined()
     })
   })
 })
