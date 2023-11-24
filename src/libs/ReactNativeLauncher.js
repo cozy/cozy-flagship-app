@@ -355,6 +355,9 @@ class ReactNativeLauncher extends Launcher {
       await client.save({
         _type: 'io.cozy.files',
         type: 'file',
+        metadata: {
+          cliskTraceFile: true
+        },
         data:
           `<!-- ${url} -->
         ` +
