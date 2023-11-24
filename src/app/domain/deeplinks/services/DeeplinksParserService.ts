@@ -95,7 +95,17 @@ export const parseFallbackURL = (url: string | null): FallbackUrl => {
 
   try {
     const makeURL = new URL(url)
-    const fallback = makeURL.searchParams.get(FALLBACK_PARAM) ?? undefined
+    let fallback = makeURL.searchParams.get(FALLBACK_PARAM) ?? undefined
+
+    if (
+      fallback?.startsWith('cozy://') ||
+      fallback?.startsWith('https://manager.cozycloud.cc') ||
+      fallback?.startsWith('https://staging-manager.cozycloud.cc') ||
+      fallback?.startsWith('https://manager-dev.cozycloud.cc')
+    ) {
+      fallback = undefined
+    }
+
     const isMainApp =
       makeURL.pathname.startsWith(`/${MAIN_APP}`) ||
       makeURL.pathname.startsWith(`/${UNIVERSAL_LINK_BASE_PATH}/${MAIN_APP}`) ||
