@@ -152,6 +152,8 @@ export const useAppBootstrap = client => {
     client && manageIconCache(client)
     client && setSentryTag(SentryCustomTags.Instance, client.stackClient?.uri)
 
+    console.log('🌈 URLS useEffect')
+
     const subscription = Linking.addEventListener('url', ({ url }) => {
       log.debug(`🔗 Linking URL is ${url}`)
 
@@ -172,6 +174,8 @@ export const useAppBootstrap = client => {
         }
       } else {
         const { mainAppFallbackURL, cozyAppFallbackURL } = parseFallbackURL(url)
+
+        console.log('🌈 URLS 1', mainAppFallbackURL, cozyAppFallbackURL)
 
         if (mainAppFallbackURL || cozyAppFallbackURL) {
           const href = mainAppFallbackURL || cozyAppFallbackURL
