@@ -36,46 +36,56 @@ const log = Minilog('📍 Geolocation')
 
 export const startTracking = async () => {
   try {
-    Log('Starting')
-
     const trackingConfig = await getTrackingConfig()
     Log('Config : ' + JSON.stringify(trackingConfig))
 
-    await BackgroundGeolocation.ready({
-      // Geolocation Config
-      desiredAccuracy: trackingConfig.desiredAccuracy,
-      showsBackgroundLocationIndicator: false, // Displays a blue pill on the iOS status bar when the location services are in use in the background (if the app doesn't have 'always' permission, the blue pill will always appear when location services are in use while the app isn't focused)
-      distanceFilter: trackingConfig.distanceFilter,
-      elasticityMultiplier: trackingConfig.elasticityMultiplier,
-      locationUpdateInterval: 10000, // Only used if on Android and if distanceFilter is 0
-      stationaryRadius: 30, // Minimum is 25, but still usually takes 200m
-      // Activity Recognition
-      stopTimeout: waitBeforeStopMotionEventMin,
-      // Application config
-      debug: false, // <-- enable this hear sounds for background-geolocation life-cycle and notifications
-      logLevel: BackgroundGeolocation.LOG_LEVEL_DEBUG,
-      startOnBoot: true, // <-- Auto start tracking when device is powered-up.
-      // HTTP / SQLite config
+    await BackgroundGeolocation.ready(
+      {
+        // Geolocation Config
+        desiredAccuracy: trackingConfig.desiredAccuracy,
+        showsBackgroundLocationIndicator: false, // Displays a blue pill on the iOS status bar when the location services are in use in the background (if the app doesn't have 'always' permission, the blue pill will always appear when location services are in use while the app isn't focused)
+        distanceFilter: trackingConfig.distanceFilter,
+        elasticityMultiplier: trackingConfig.elasticityMultiplier,
+        locationUpdateInterval: 10000, // Only used if on Android and if distanceFilter is 0
+        stationaryRadius: 30, // Minimum is 25, but still usually takes 200m
+        // Activity Recognition
+        stopTimeout: waitBeforeStopMotionEventMin,
+        // Application config
+        debug: false, // <-- enable this hear sounds for background-geolocation life-cycle and notifications
+        logLevel: BackgroundGeolocation.LOG_LEVEL_DEBUG,
+        startOnBoot: true, // <-- Auto start tracking when device is powered-up.
+        // HTTP / SQLite config
 
-      batchSync: false, // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
-      autoSync: false, // <-- [Default: true] Set true to sync each location to server as it arrives.
-      stopOnTerminate: false, // Allow the background-service to continue tracking when user closes the app, for Android. Maybe also useful for ios https://transistorsoft.github.io/react-native-background-geolocation/interfaces/config.html#stoponterminate
-      enableHeadless: true,
-      foregroundService: true,
-      backgroundPermissionRationale: {
-        message: t(
-          'services.geolocationTracking.androidBackgroundPermissionMessage'
-        )
+        batchSync: false, // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
+        autoSync: false, // <-- [Default: true] Set true to sync each location to server as it arrives.
+        stopOnTerminate: false, // Allow the background-service to continue tracking when user closes the app, for Android. Maybe also useful for ios https://transistorsoft.github.io/react-native-background-geolocation/interfaces/config.html#stoponterminate
+        enableHeadless: true,
+        foregroundService: true,
+        backgroundPermissionRationale: {
+          message: t(
+            'services.geolocationTracking.androidBackgroundPermissionMessage'
+          )
+        },
+        notification: {
+          title: t('services.geolocationTracking.androidNotificationTitle'),
+          text: t(
+            'services.geolocationTracking.androidNotificationDescription'
+          ),
+          smallIcon: 'mipmap/ic_stat_ic_notification'
+        }
       },
-      notification: {
-        title: t('services.geolocationTracking.androidNotificationTitle'),
-        text: t('services.geolocationTracking.androidNotificationDescription'),
-        smallIcon: 'mipmap/ic_stat_ic_notification'
+      state => {
+        if (!state.enabled) {
+          // Start tracking only if it's not already started
+          BackgroundGeolocation.start(() => {
+            Log('Tracking started')
+            storeData(StorageKeys.ShouldBeTrackingFlagStorageAdress, true)
+          })
+        } else {
+          Log('Tracking already started')
+        }
       }
-    })
-    await BackgroundGeolocation.start()
-    await storeData(StorageKeys.ShouldBeTrackingFlagStorageAdress, true)
-
+    )
     return true
   } catch (e) {
     log.error(e)
@@ -84,15 +94,24 @@ export const startTracking = async () => {
   }
 }
 
+const isTrackingEnabled = async () => {
+  const state = await BackgroundGeolocation.getState()
+  if (!state) {
+    return false
+  }
+  return Boolean(state.enabled)
+}
+
 export const stopTracking = async () => {
   try {
-    if ((await BackgroundGeolocation.getState()).enabled) {
+    const isTrackingStarted = await isTrackingEnabled()
+    if (isTrackingStarted) {
       await BackgroundGeolocation.stop()
       await storeData(StorageKeys.ShouldBeTrackingFlagStorageAdress, false)
       Log('Turned off tracking, uploading...')
       await uploadData({ force: true }) // Forced end, but if fails no current solution (won't retry until turned back on)
     } else {
-      Log('Already off')
+      Log('Tracking already off')
     }
     return true
   } catch (e) {
