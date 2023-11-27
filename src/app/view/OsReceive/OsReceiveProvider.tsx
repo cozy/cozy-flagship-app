@@ -62,7 +62,7 @@ export const OsReceiveProvider = ({
   }, [client?.isLogged])
 
   useEffect(() => {
-    if (!client || didCall.current) return
+    if (!client || didCall.current || state.filesToUpload.length === 0) return
 
     const fetchRegistry = async (): Promise<void> => {
       const res = (await client.fetchQueryAndGetFromState({
@@ -81,7 +81,7 @@ export const OsReceiveProvider = ({
 
     void fetchRegistry()
   }),
-    [client]
+    [client, state.filesToUpload.length]
 
   // If an error is detected, we handle that by abandoning the flow.
   // The user will be redirected to the home screen and the osReceive mode is ended until next file osReceive.
