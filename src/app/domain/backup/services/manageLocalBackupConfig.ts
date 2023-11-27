@@ -155,7 +155,7 @@ export const setMediaAsBackuped = async (
   await setLocalBackupConfig(client, localBackupConfig)
 }
 
-export const updateRemoteBackupConfigLocally = async (
+export const fixLocalBackupConfigIfNecessary = async (
   client: CozyClient
 ): Promise<void> => {
   const localBackupConfig = await getLocalBackupConfig(client)
