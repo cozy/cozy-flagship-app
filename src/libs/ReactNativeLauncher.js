@@ -60,7 +60,13 @@ class ReactNativeLauncher extends Launcher {
     this.controller = new AbortController()
 
     const wrapTimer = wrapTimerFactory({
-      logFn: msg => this.log({ level: 'info', msg })
+      logFn: (/** @type {String} */ msg) =>
+        this.log({
+          namespace: 'ReactNativeLauncher',
+          label: 'Timer',
+          level: 'info',
+          msg
+        })
     })
 
     this.getExistingFilesIndex = wrapTimer(this, 'getExistingFilesIndex')
@@ -74,7 +80,7 @@ class ReactNativeLauncher extends Launcher {
     )
     this.restartWorkerConnection = wrapTimer(this, 'restartWorkerConnection')
     this.waitForWorkerEvent = wrapTimer(this, 'waitForWorkerEvent', {
-      suffixFn: args => args?.[0]
+      suffixFn: (/** @type {String[]} */ args) => args?.[0]
     })
     this.waitForWorkerVisible = wrapTimer(this, 'waitForWorkerVisible')
     this.ensureAccountName = wrapTimer(this, 'ensureAccountName')
@@ -122,6 +128,12 @@ class ReactNativeLauncher extends Launcher {
     })
   }
 
+  /**
+   * Inject the content script and initialize the bridge to communicate it
+   *
+   * @param  {import('./Launcher').InitOptions} options - init options
+   * @returns {Promise<void>}
+   */
   async init({ bridgeOptions, contentScript }) {
     const promises = [
       this.initPilotContentScriptBridge({
@@ -157,7 +169,7 @@ class ReactNativeLauncher extends Launcher {
 
     // we subscribe to this event only once both bridges are initialized or else we will
     // receive this event also for the first worker page load
-    this.on('NEW_WORKER_INITIALIZING', webviewRef =>
+    this.on('NEW_WORKER_INITIALIZING', (/** @type {WebView} */ webviewRef) =>
       this.onWorkerWillReload(webviewRef)
     )
   }
@@ -168,7 +180,7 @@ class ReactNativeLauncher extends Launcher {
    * @param {object} options - options object
    * @param {String} options.slug - konnector slug
    * @param {import('cozy-client').default} options.client - CozyClient instance
-   * @returns {getKonnectorBundle}
+   * @returns {Promise<import('/libs/cozyAppBundle/cozyAppBundle.functions').KonnectorBundle>}
    */
   async ensureKonnectorIsInstalled({ slug, client }) {
     try {
@@ -188,6 +200,8 @@ class ReactNativeLauncher extends Launcher {
     try {
       const bundle = await getKonnectorBundle({ client, slug })
       this.log({
+        namespace: 'ReactNativeLauncher',
+        label: 'ensureKonnectorIsInstalled',
         level: 'info',
         msg: `ensureKonnectorIsInstalled konnector ${slug} version: ${bundle.manifest.version}`
       })
@@ -196,9 +210,10 @@ class ReactNativeLauncher extends Launcher {
 
       return bundle
     } catch (error) {
+      const message = error instanceof Error ? error.message : error
       throw new Error(
         `Critical error while ensuring "${slug}" konnector is installed.
-        The konnector will not be able to run: ${error.message}`
+          The konnector will not be able to run: ${message}`
       )
     }
   }
@@ -224,7 +239,12 @@ class ReactNativeLauncher extends Launcher {
       })
     }
     if (message) {
-      this.log({ level: 'error', msg: message })
+      this.log({
+        namespace: 'ReactNativeLauncher',
+        label: 'stop',
+        level: 'error',
+        msg: message
+      })
     }
     await sendKonnectorsLogs(client)
     if (job) {
@@ -249,19 +269,21 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async start(...args) {
-    return new Promise(resolve => {
-      this.controller.signal.addEventListener('abort', () => {
-        log('info', `Konnector launch was aborted`)
-        resolve('abort')
+    return /** @type {Promise<void|string>} */ (
+      new Promise(resolve => {
+        this.controller.signal.addEventListener('abort', () => {
+          log('info', `Konnector launch was aborted`)
+          resolve('abort')
+        })
+        this._start(...args)
+          .then(() => {
+            return resolve()
+          })
+          .catch(err => {
+            log('err', 'An error in launcher.start was not caught : ', err)
+          })
       })
-      this._start(...args)
-        .then(() => {
-          return resolve()
-        })
-        .catch(err => {
-          log('err', 'An error in launcher.start was not caught : ', err)
-        })
-    })
+    )
   }
 
   async _start({ initKonnectorError } = {}) {
@@ -340,7 +362,13 @@ class ReactNativeLauncher extends Launcher {
       return true
     }
     try {
-      this.log('debug', 'Saving debug data...')
+      this.log({
+        namespace: 'ReactNativeLauncher',
+        label: 'fetchAndSaveDebugDatalevel',
+        level: 'debug',
+        msg: 'Saving debug data...'
+      })
+      // @ts-ignore
       const consoleLogs = Minilog.backends.array.get()
       const date = new Date().toISOString()
       Minilog.backends.array.empty()
@@ -379,15 +407,26 @@ class ReactNativeLauncher extends Launcher {
         dirId: 'io.cozy.files.root-dir',
         name
       })
-      this.log('debug', `Saved debug data in /${name}}`)
+      this.log({
+        namespace: 'ReactNativeLauncher',
+        label: 'fetchAndSaveDebugData',
+        level: 'debug',
+        msg: `Saved debug data in /${name}}`
+      })
     } catch (err) {
-      this.log('warn', 'Error while saving debug data : ' + err.message)
+      const message = err instanceof Error ? err.message : err
+      this.log({
+        namespace: 'ReactNativeLauncher',
+        label: 'fetchAndSaveDebugData',
+        level: 'warning',
+        msg: 'Error while saving debug data : ' + message
+      })
     }
   }
 
   /**
    * Clean all remaining active objects when closing the connector
-   * @returns {Promise<vod>}
+   * @returns {Promise<void>}
    */
   async close() {
     this.controller.abort()
@@ -471,7 +510,7 @@ class ReactNativeLauncher extends Launcher {
           .catch(err => reject(err))
       })
     } catch (err) {
-      if (err.message !== 'WORKER_RELOADED') {
+      if (err instanceof Error && err.message !== 'WORKER_RELOADED') {
         throw err
       }
       return false
@@ -543,9 +582,11 @@ class ReactNativeLauncher extends Launcher {
    * This method creates and inits the pilot content script bridge to the launcher with some facilities to make
    * it's own method callable by the content script
    *
-   * @param {WebView} options.webViewRef : WebView object to link to the launcher thanks to the bridge
-   * @param {Array.<String>} options.exposedMethodsNames : list of methods of the launcher to expose to the content script
-   * @param {Array.<String>} options.listenedEventsNames : list of methods of the launcher to link to content script emitted events
+   * @param {object} options : options object
+   * @param {WebView} options.webViewRef - WebView object to link to the launcher thanks to the bridge
+   * @param {string} options.contentScript - Contentscript content
+   * @param {Array.<String>} options.exposedMethodsNames - list of methods of the launcher to expose to the content script
+   * @param {Array.<String>} options.listenedEventsNames - list of methods of the launcher to link to content script emitted events
    */
   async initPilotContentScriptBridge({
     webViewRef,
@@ -572,9 +613,11 @@ class ReactNativeLauncher extends Launcher {
    * This method creates and inits the worker content script bridge to the launcher with some facilities to make
    * it's own method callable by the content script
    *
-   * @param {WebView} options.webViewRef : WebView object to link to the launcher thanks to the bridge
-   * @param {Array.<String>} options.exposedMethodsNames : list of methods of the launcher to expose to the content script
-   * @param {Array.<String>} options.listenedEventsNames : list of methods of the launcher to link to content script emitted events
+   * @param {object} options - Options object
+   * @param {WebView} options.webViewRef - WebView object to link to the launcher thanks to the bridge
+   * @param {string} options.contentScript - Contentscript content
+   * @param {Array.<String>} options.exposedMethodsNames - list of methods of the launcher to expose to the content script
+   * @param {Array.<String>} options.listenedEventsNames - list of methods of the launcher to link to content script emitted events
    */
   async initWorkerContentScriptBridge({
     webViewRef,

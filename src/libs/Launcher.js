@@ -629,6 +629,7 @@ export default class Launcher {
  * @property {string} msg             - message content
  * @property {string | null} label     - user defined label
  * @property {string | null} namespace - user defined namespace
+ * @property {String} [timestamp] - DateTime iso string when the log message was created
  */
 
 /**
@@ -669,4 +670,16 @@ export default class Launcher {
  * @property {Function} [downloadAndFormatFile] - this callback will download the file and format to be useable by cozy-client
  * @property {string} [qualificationLabel] - qualification label defined in cozy-client which will be used on all given files
  * @property {number} [retry] - number of retries if the download of a file failes. No retry by default
+ */
+
+/**
+ * @typedef InitOptions
+ * @property {BridgeOptions} bridgeOptions - options which will be given as is to the bridge. Bridge options depend on the environment of the launcher
+ * @property {string} contentScript - source code of the content script which will be injected
+ */
+
+/**
+ * @typedef BridgeOptions
+ * @property {import('react-native-webview').WebView} pilotWebView - pilot webview reference
+ * @property {import('react-native-webview').WebView} workerWebview - worker webview reference
  */
