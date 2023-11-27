@@ -64,7 +64,7 @@ export const OsReceiveProvider = ({
   useEffect(() => {
     if (!client || didCall.current || state.filesToUpload.length === 0) return
 
-    const fetchRegistry = async (): Promise<void> => {
+    const fetchAppsAndSetCandidates = async (): Promise<void> => {
       const res = (await client.fetchQueryAndGetFromState({
         definition: fetchOsReceiveCozyApps.definition,
         options: fetchOsReceiveCozyApps.options
@@ -79,7 +79,7 @@ export const OsReceiveProvider = ({
       }
     }
 
-    void fetchRegistry()
+    void fetchAppsAndSetCandidates()
   }),
     [client, state.filesToUpload.length]
 
