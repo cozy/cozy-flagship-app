@@ -2,10 +2,12 @@ import { format } from 'date-fns'
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 import RNPrint from 'react-native-print'
+import Toast from 'react-native-toast-message'
 
 import MiniLog from 'cozy-minilog'
 
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
+import { t } from '/locales/i18n'
 
 const log = MiniLog('intents:print')
 
@@ -58,7 +60,11 @@ export const printBase64Doc = async (base64?: string): Promise<void> => {
         err
       )}`
     )
-    return undefined
+
+    Toast.show({
+      type: 'error',
+      text1: t('error.unknown_error')
+    })
   } finally {
     await safeDeleteFile(path)
   }
