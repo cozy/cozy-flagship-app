@@ -69,11 +69,7 @@ const App = ({ setClient }) => {
 
   const { initialRoute, isLoading } = useAppBootstrap(client)
 
-  useGlobalAppState({
-    onNavigationRequest: route => {
-      RootNavigation.navigate(route)
-    }
-  })
+  useGlobalAppState()
   useSecureBackgroundSplashScreen()
   useCookieResyncOnResume()
   useNotifications()
