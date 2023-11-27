@@ -66,7 +66,7 @@ export const setLocalBackupConfig = async (
   )
 }
 
-export const initiazeLocalBackupConfig = async (
+export const initializeLocalBackupConfig = async (
   client: CozyClient,
   remoteBackupConfig: RemoteBackupConfig,
   backupedMedias: BackupedMedia[],
