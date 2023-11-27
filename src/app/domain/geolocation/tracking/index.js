@@ -61,6 +61,8 @@ export const startTracking = async () => {
         stopOnTerminate: false, // Allow the background-service to continue tracking when user closes the app, for Android. Maybe also useful for ios https://transistorsoft.github.io/react-native-background-geolocation/interfaces/config.html#stoponterminate
         enableHeadless: true,
         foregroundService: true,
+        logMaxDays: 5, // Default is 3
+        maxDaysToPersist: 10, // The maximum retention days for local location data. Default is 1 day, which can result in removal of local points in case of upload failures.
         backgroundPermissionRationale: {
           message: t(
             'services.geolocationTracking.androidBackgroundPermissionMessage'
