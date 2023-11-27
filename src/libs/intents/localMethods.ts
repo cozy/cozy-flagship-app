@@ -1,6 +1,6 @@
 import { Linking } from 'react-native'
-import { BrowserResult } from 'react-native-inappbrowser-reborn'
 import { getDeviceName } from 'react-native-device-info'
+import { BrowserResult } from 'react-native-inappbrowser-reborn'
 
 import CozyClient from 'cozy-client'
 import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
@@ -12,9 +12,8 @@ import {
   isScannerAvailable
 } from '/app/domain/scanner/services/scanner'
 import { processOcr, isOcrAvailable } from '/app/domain/ocr/services/ocr'
-
-import { setHomeThemeIntent } from './setHomeThemeIntent'
-
+import { printBase64Doc as print } from '/libs/intents/printBase64Doc'
+import { setHomeThemeIntent } from '/libs/intents/setHomeThemeIntent'
 import strings from '/constants/strings.json'
 import { EnvService } from '/core/tools/env'
 import { clearClient } from '/libs/client'
@@ -194,6 +193,7 @@ interface CustomMethods {
   forceUploadGeolocationTrackingData: typeof forceUploadGeolocationTrackingData
   getDeviceInfo: typeof getDeviceInfo
   isAvailable: typeof isAvailable
+  print: typeof print
 }
 
 const prepareBackupWithClient = (
@@ -295,6 +295,7 @@ export const localMethods = (
     forceUploadGeolocationTrackingData,
     getDeviceInfo,
     isAvailable,
+    print,
     ...mergedMethods
   }
 }
