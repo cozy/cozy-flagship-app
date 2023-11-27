@@ -220,21 +220,24 @@ export const getBackupInfo = async (
 const initializeBackup = async (
   client: CozyClient
 ): Promise<LocalBackupConfig> => {
+  let localBackupConfig
+
   try {
-    let backupConfig = await getLocalBackupConfig(client)
-
-    log.debug('Backup found')
-
-    if (flag('flagship.backup.dedup')) {
-      await addRemoteDuplicatesToBackupedMedias(client)
-      backupConfig = await getLocalBackupConfig(client)
-    }
-
-    return backupConfig
+    localBackupConfig = await getLocalBackupConfig(client)
   } catch {
-    // if there is no local backup config
-    const localBackupConfig = await initializeLocalBackupConfig(client)
+    log.debug('Backup not found')
 
-    return localBackupConfig
+    const newLocalBackupConfig = await initializeLocalBackupConfig(client)
+
+    return newLocalBackupConfig
   }
+
+  log.debug('Backup found')
+
+  if (flag('flagship.backup.dedup')) {
+    await addRemoteDuplicatesToBackupedMedias(client)
+    localBackupConfig = await getLocalBackupConfig(client)
+  }
+
+  return localBackupConfig
 }
