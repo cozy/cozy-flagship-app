@@ -13,7 +13,6 @@ import {
   updateRemoteBackupConfigLocally,
   addRemoteDuplicatesToBackupedMedias
 } from '/app/domain/backup/services/manageLocalBackupConfig'
-import { fetchBackupedAlbums } from '/app/domain/backup/services/manageAlbums'
 import { getMediasToBackup } from '/app/domain/backup/services/getMedias'
 import {
   uploadMedias,
@@ -24,19 +23,12 @@ import {
   getCurrentUploadId
 } from '/app/domain/upload/services/upload'
 import {
-  fetchDeviceRemoteBackupConfig,
-  fetchBackupedMedias,
-  createRemoteBackupFolder
-} from '/app/domain/backup/services/manageRemoteBackupConfig'
-import {
   activateKeepAwake,
   deactivateKeepAwake
 } from '/app/domain/sleep/services/sleep'
 import {
   BackupInfo,
   ProgressCallback,
-  BackupedMedia,
-  BackupedAlbum,
   LocalBackupConfig,
   LastBackup
 } from '/app/domain/backup/models'
@@ -241,30 +233,8 @@ const initializeBackup = async (
     return backupConfig
   } catch {
     // if there is no local backup config
-    let deviceRemoteBackupConfig = await fetchDeviceRemoteBackupConfig(client)
-    let backupedMedias
-    let backupedAlbums
+    const localBackupConfig = await initializeLocalBackupConfig(client)
 
-    if (deviceRemoteBackupConfig) {
-      log.debug('Backup will be restored')
-
-      backupedMedias = await fetchBackupedMedias(client)
-      backupedAlbums = await fetchBackupedAlbums(client)
-    } else {
-      log.debug('Backup will be created')
-
-      deviceRemoteBackupConfig = await createRemoteBackupFolder(client)
-      backupedMedias = [] as BackupedMedia[]
-      backupedAlbums = [] as BackupedAlbum[]
-    }
-
-    const backupConfig = await initializeLocalBackupConfig(
-      client,
-      deviceRemoteBackupConfig,
-      backupedMedias,
-      backupedAlbums
-    )
-
-    return backupConfig
+    return localBackupConfig
   }
 }

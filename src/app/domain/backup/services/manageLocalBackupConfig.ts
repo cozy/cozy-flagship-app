@@ -4,13 +4,17 @@ import Minilog from 'cozy-minilog'
 import {
   Media,
   LocalBackupConfig,
-  RemoteBackupConfig,
   BackupedMedia,
   BackupedAlbum,
   LastBackup
 } from '/app/domain/backup/models'
 import { buildFileQuery } from '/app/domain/backup/queries'
-import { fetchBackupedMedias } from '/app/domain/backup/services/manageRemoteBackupConfig'
+import {
+  fetchBackupedMedias,
+  fetchDeviceRemoteBackupConfig,
+  createRemoteBackupFolder
+} from '/app/domain/backup/services/manageRemoteBackupConfig'
+import { fetchBackupedAlbums } from '/app/domain/backup/services/manageAlbums'
 import { isSameMedia } from '/app/domain/backup/helpers'
 import {
   getUserPersistedData,
@@ -67,14 +71,28 @@ export const setLocalBackupConfig = async (
 }
 
 export const initializeLocalBackupConfig = async (
-  client: CozyClient,
-  remoteBackupConfig: RemoteBackupConfig,
-  backupedMedias: BackupedMedia[],
-  backupedAlbums: BackupedAlbum[]
+  client: CozyClient
 ): Promise<LocalBackupConfig> => {
+  let deviceRemoteBackupConfig = await fetchDeviceRemoteBackupConfig(client)
+  let backupedMedias
+  let backupedAlbums
+
+  if (deviceRemoteBackupConfig) {
+    log.debug('Backup will be restored')
+
+    backupedMedias = await fetchBackupedMedias(client)
+    backupedAlbums = await fetchBackupedAlbums(client)
+  } else {
+    log.debug('Backup will be created')
+
+    deviceRemoteBackupConfig = await createRemoteBackupFolder(client)
+    backupedMedias = [] as BackupedMedia[]
+    backupedAlbums = [] as BackupedAlbum[]
+  }
+
   const newLocalBackupConfig = {
     ...INITIAL_BACKUP_CONFIG,
-    remoteBackupConfig: remoteBackupConfig,
+    remoteBackupConfig: deviceRemoteBackupConfig,
     backupedMedias: backupedMedias,
     backupedAlbums: backupedAlbums
   }
