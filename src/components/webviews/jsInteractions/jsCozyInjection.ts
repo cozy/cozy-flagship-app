@@ -4,7 +4,7 @@ import Minilog from 'cozy-minilog'
 
 import { shouldDisableGetIndex } from '/core/tools/env'
 import { getDimensions } from '/libs/dimensions'
-import { navigationRef } from '/libs/RootNavigation'
+import { getCurrentRouteName, navigationRef } from '/libs/RootNavigation'
 
 import { version } from '../../../../package.json'
 
@@ -35,7 +35,7 @@ export const jsCozyGlobal = (
     window.cozy.ClientKonnectorLauncher = 'react-native'
     window.cozy.ClientConnectorLauncher = 'react-native' // deprecated
     window.cozy.flagship = ${makeMetadata(
-      routeName ?? navigationRef.getCurrentRoute()?.name ?? ''
+      routeName ?? getCurrentRouteName() ?? ''
     )}
     window.cozy.isSecureProtocol = ${isSecureProtocol ? 'true' : 'false'}
     // We have random issue on iOS when the app's script is executed

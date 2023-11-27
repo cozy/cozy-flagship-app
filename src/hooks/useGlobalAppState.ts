@@ -61,13 +61,7 @@ const onStateChange = (
  * for it could create unintended side effects.
  */
 
-interface GlobalAppStateProps {
-  onNavigationRequest: (route: string) => void
-}
-
-export const useGlobalAppState = ({
-  onNavigationRequest
-}: GlobalAppStateProps): void => {
+export const useGlobalAppState = (): void => {
   // Ref to track if the logic has already been executed
   const hasExecuted = useRef(false)
   const client = useClient()
@@ -76,7 +70,7 @@ export const useGlobalAppState = ({
     if (!client) return
 
     void handleWakeUp(client)
-  }, [client, onNavigationRequest])
+  }, [client])
 
   useEffect(() => {
     let subscription: NativeEventSubscription | undefined
@@ -97,7 +91,7 @@ export const useGlobalAppState = ({
     return () => {
       appState = AppState.currentState
     }
-  }, [client, onNavigationRequest])
+  }, [client])
 
   // On app start
   useEffect(() => {
@@ -113,5 +107,5 @@ export const useGlobalAppState = ({
       log.info('useGlobalAppState: app start')
       void appStart()
     }
-  }, [onNavigationRequest])
+  }, [])
 }
