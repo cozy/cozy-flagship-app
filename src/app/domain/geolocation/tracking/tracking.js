@@ -16,7 +16,7 @@ import {
 const largeTemporalDeltaBetweenPoints = 30 * 60 // In seconds. Shouldn't have longer breaks without siginificant motion
 const maxTemporalDeltaBetweenPoints = 12 * 60 * 60 // In seconds. See https://github.com/e-mission/e-mission-server/blob/f6bf89a274e6cd10353da8f17ebb327a998c788a/emission/analysis/intake/segmentation/trip_segmentation_methods/dwell_segmentation_dist_filter.py#L194
 const minSpeedBetweenDistantPoints = 0.1 // In m/s. Note the average walking speed is ~1.4 m/s
-const MAX_DOCS_PER_BATCH = 10000
+const MAX_DOCS_PER_BATCH = 30000 // Should be less than 10 MB. Should never reach 15 MB.
 
 const LOW_CONFIDENCE_THRESHOLD = 0.5
 
@@ -318,6 +318,7 @@ export const getFilteredActivities = async ({ beforeTs, locations }) => {
   if (!activities || activities?.length < 1) {
     Log('No activity found in local storage. Get it from locations')
     // Fallback when no activity was captured
+    // TODO: filter stationary
     const activitiesFromLoc = getActivitiesFromLocations(locations)
     return activitiesFromLoc
   }
