@@ -4,7 +4,7 @@ import Minilog from 'cozy-minilog'
 
 import {
   getLocalBackupConfig,
-  initiazeLocalBackupConfig,
+  initializeLocalBackupConfig,
   setBackupAsInitializing,
   setBackupAsReady,
   setBackupAsRunning,
@@ -258,7 +258,7 @@ const initializeBackup = async (
       backupedAlbums = [] as BackupedAlbum[]
     }
 
-    const backupConfig = await initiazeLocalBackupConfig(
+    const backupConfig = await initializeLocalBackupConfig(
       client,
       deviceRemoteBackupConfig,
       backupedMedias,
