@@ -215,6 +215,14 @@ class ReactNativeLauncher extends Launcher {
     deactivateKeepAwake('clisk')
     const { client, job } = this.getStartContext()
 
+    if (message && !job) {
+      this.log({
+        namespace: 'ReactNativeLauncher',
+        label: 'stop',
+        level: 'info',
+        msg: `Konnector failure: ${message}`
+      })
+    }
     if (message) {
       this.log({ level: 'error', msg: message })
     }
