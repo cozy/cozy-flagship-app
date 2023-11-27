@@ -93,6 +93,8 @@ const isAvailable = (featureName: string): Promise<boolean> => {
     return Promise.resolve(true)
   } else if (featureName === 'scanner') {
     return Promise.resolve(isScannerAvailable())
+  } else if (featureName === 'print') {
+    return Promise.resolve(true)
   }
 
   return Promise.resolve(false)
