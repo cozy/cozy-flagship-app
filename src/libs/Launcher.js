@@ -294,7 +294,7 @@ export default class Launcher {
         level: 'debug',
         namespace: 'Launcher',
         label: 'ensureAccountTriggerAndLaunch',
-        message: 'Destination folder changed, updating the trigger'
+        msg: 'Destination folder changed, updating the trigger'
       })
 
       const triggerUpdateResponse = await client.save({
@@ -527,8 +527,7 @@ export default class Launcher {
       level: 'warning',
       namespace: 'Launcher',
       label: 'saveFiles',
-      message:
-        'Destination folder removed during konnector execution, trying again'
+      msg: 'Destination folder removed during konnector execution, trying again'
     })
     const folder = await models.konnectorFolder.ensureKonnectorFolder(client, {
       konnector: { ...konnector, _id: konnector.id }, // _id attribute is missing in konnector object, which causes the reference to the konnector in the destination folder to be null
@@ -627,7 +626,7 @@ export default class Launcher {
 /**
  * @typedef ContentScriptLogMessage
  * @property {'debug'|'info'|'warning'|'error'|'critical'} level - Log level
- * @property {any} message             - message content
+ * @property {string} msg             - message content
  * @property {string | null} label     - user defined label
  * @property {string | null} namespace - user defined namespace
  */
