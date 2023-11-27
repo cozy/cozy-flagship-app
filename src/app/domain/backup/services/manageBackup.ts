@@ -10,7 +10,7 @@ import {
   setBackupAsRunning,
   setBackupAsDone,
   setLastBackup,
-  updateRemoteBackupConfigLocally,
+  fixLocalBackupConfigIfNecessary,
   addRemoteDuplicatesToBackupedMedias
 } from '/app/domain/backup/services/manageLocalBackupConfig'
 import { getMediasToBackup } from '/app/domain/backup/services/getMedias'
@@ -83,8 +83,6 @@ export const startBackup = async (
   onProgress: ProgressCallback
 ): Promise<BackupInfo> => {
   log.debug('Backup started')
-
-  await updateRemoteBackupConfigLocally(client)
 
   const localBackupConfig = await getLocalBackupConfig(client)
 
@@ -233,6 +231,8 @@ const initializeBackup = async (
   }
 
   log.debug('Backup found')
+
+  await fixLocalBackupConfigIfNecessary(client)
 
   if (flag('flagship.backup.dedup')) {
     await addRemoteDuplicatesToBackupedMedias(client)
