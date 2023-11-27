@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-print/android/build.gradle b/node_modules/react-native-print/android/build.gradle
+index 34e2591..375c1e3 100755
+--- a/node_modules/react-native-print/android/build.gradle
++++ b/node_modules/react-native-print/android/build.gradle
+@@ -1,7 +1,7 @@
+ apply plugin: 'com.android.library'
+ 
+ android {
+-    buildToolsVersion = "31.0.0"
++    buildToolsVersion = "33.0.0"
+      
+     defaultConfig {
+         minSdkVersion = 21
