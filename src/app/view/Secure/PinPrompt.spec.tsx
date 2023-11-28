@@ -20,7 +20,8 @@ jest.mock('/libs/RootNavigation', () => ({
   navigate: jest.fn()
 }))
 jest.mock('/core/tools/env', () => ({
-  devlog: jest.fn()
+  devlog: jest.fn(),
+  shouldDisableAutolock: jest.fn().mockReturnValue(false)
 }))
 
 // This is our main test suite for the PinPrompt component

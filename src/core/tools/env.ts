@@ -56,7 +56,8 @@ const {
   enableReduxLogger,
   enforcedInstallReferrer,
   forceInstallReferrer,
-  enableKonnectorExtensiveLog
+  enableKonnectorExtensiveLog,
+  disableAutoLock
 } = getDevConfig(isDev())
 
 if (enableLocalSentry) toggleLocalSentry(true)
@@ -75,6 +76,8 @@ export const shouldEnableReduxLogger = (): boolean =>
 
 export const shouldEnableKonnectorExtensiveLog = (): boolean =>
   enableKonnectorExtensiveLog
+
+export const shouldDisableAutolock = (): boolean => disableAutoLock
 
 export const EnvService = {
   name,

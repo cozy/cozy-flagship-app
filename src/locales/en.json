@@ -15,7 +15,9 @@
     "contactUs": "A problem, a suggestion? Contact us at",
     "unknown_error": "An unexpected error occurred, please try again.",
     "reset": "Return to home",
-    "platformNotSupported": "Platform not supported for this request"
+    "platformNotSupported": "Platform not supported for this request",
+    "serverError": "An error occurred while processing your request",
+    "cacheCheckError": "An error occurred while processing your request"
   },
   "logout_dialog": {
     "cancel": "Cancel",
