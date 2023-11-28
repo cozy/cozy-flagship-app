@@ -1,5 +1,4 @@
 import * as manageRemoteBackupConfig from '/app/domain/backup/services/manageRemoteBackupConfig'
-import * as manageLocalBackupConfig from '/app/domain/backup/services/manageLocalBackupConfig'
 
 import type CozyClient from 'cozy-client'
 
@@ -109,26 +108,6 @@ describe('fetchDeviceRemoteBackupConfig', () => {
         }
       ])
     jest
-      .spyOn(manageLocalBackupConfig, 'getLocalBackupConfig')
-      .mockResolvedValue({
-        remoteBackupConfig: {
-          backupFolder: {
-            id: '1',
-            name: 'Device 1',
-            path: '/Backup/Device 1'
-          },
-          backupDeviceIds: ['A']
-        },
-        lastBackupDate: 0,
-        backupedMedias: [],
-        backupedAlbums: [],
-        currentBackup: {
-          status: 'to_do',
-          mediasToBackup: [],
-          totalMediasToBackupCount: 0
-        }
-      })
-    jest
       .spyOn(manageRemoteBackupConfig, 'isRemoteBackupConfigFromDevice')
       .mockReturnValue(true)
 
@@ -149,26 +128,6 @@ describe('fetchDeviceRemoteBackupConfig', () => {
           backupDeviceIds: ['A']
         }
       ])
-    jest
-      .spyOn(manageLocalBackupConfig, 'getLocalBackupConfig')
-      .mockResolvedValue({
-        remoteBackupConfig: {
-          backupFolder: {
-            id: '1',
-            name: 'Device 1',
-            path: '/Backup/Device 1'
-          },
-          backupDeviceIds: ['A']
-        },
-        lastBackupDate: 0,
-        backupedMedias: [],
-        backupedAlbums: [],
-        currentBackup: {
-          status: 'to_do',
-          mediasToBackup: [],
-          totalMediasToBackupCount: 0
-        }
-      })
     jest
       .spyOn(manageRemoteBackupConfig, 'isRemoteBackupConfigFromDevice')
       .mockReturnValue(false)
