@@ -110,6 +110,9 @@ declare module 'cozy-client' {
       metadata?: {
         backupDeviceIds: string[]
       }
+      attributes: {
+        path: string
+      }
     }
   }
 

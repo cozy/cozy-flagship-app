@@ -56,7 +56,7 @@ interface BackupFolderAttributes {
   metadata: { backupDeviceIds: string[] }
 }
 
-const isInTrash = (path: string): boolean => {
+export const isInTrash = (path: string): boolean => {
   return path.startsWith('/.cozy_trash')
 }
 
