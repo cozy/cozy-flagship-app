@@ -12,13 +12,13 @@ import {
   setLastPointUploaded,
   cleanupTrackingData
 } from '/app/domain/geolocation/tracking/storage'
-
-const largeTemporalDeltaBetweenPoints = 30 * 60 // In seconds. Shouldn't have longer breaks without siginificant motion
-const maxTemporalDeltaBetweenPoints = 12 * 60 * 60 // In seconds. See https://github.com/e-mission/e-mission-server/blob/f6bf89a274e6cd10353da8f17ebb327a998c788a/emission/analysis/intake/segmentation/trip_segmentation_methods/dwell_segmentation_dist_filter.py#L194
-const minSpeedBetweenDistantPoints = 0.1 // In m/s. Note the average walking speed is ~1.4 m/s
-const MAX_DOCS_PER_BATCH = 30000 // Should be less than 10 MB. Should never reach 15 MB.
-
-const LOW_CONFIDENCE_THRESHOLD = 0.5
+import {
+  LARGE_TEMPORAL_DELTA,
+  LOW_CONFIDENCE_THRESHOLD,
+  MAX_DOCS_PER_BATCH,
+  MAX_TEMPORAL_DELTA,
+  MIN_SPEED_BETWEEN_DISTANT_POINTS
+} from '/app/domain/geolocation/tracking/consts'
 
 export const createDataBatch = (locations, nRun, maxBatchSize) => {
   const startBatchPoint = nRun * maxBatchSize
@@ -108,7 +108,7 @@ const prepareMotionData = async ({ locations, lastBatchPoint }) => {
       await addStartTransitions(contentToUpload, getTs(point) - 1)
     } else {
       const deltaT = getTs(point) - getTs(previousPoint)
-      if (deltaT > maxTemporalDeltaBetweenPoints) {
+      if (deltaT > MAX_TEMPORAL_DELTA) {
         Log(
           'Noticed very long break: ' +
             deltaT +
@@ -124,12 +124,12 @@ const prepareMotionData = async ({ locations, lastBatchPoint }) => {
         // flight of 12h+ should behave as one trip, even with this transition.
         await addStopTransitions(contentToUpload, getTs(previousPoint) + 1)
         await addStartTransitions(contentToUpload, getTs(point) - 1)
-      } else if (deltaT > largeTemporalDeltaBetweenPoints) {
+      } else if (deltaT > LARGE_TEMPORAL_DELTA) {
         const distanceM = getDistanceFromLatLonInM(previousPoint, point)
         Log('Distance between points : ' + distanceM)
         const speed = distanceM / deltaT
 
-        if (speed < minSpeedBetweenDistantPoints) {
+        if (speed < MIN_SPEED_BETWEEN_DISTANT_POINTS) {
           Log('Very slow speed: force transition')
           await addStopTransitions(contentToUpload, getTs(previousPoint) + 1)
           await addStartTransitions(contentToUpload, getTs(point) - 1)
@@ -184,7 +184,7 @@ const uploadWithNoNewPoints = async ({ user, force = false }) => {
       Log('No previous location either, no upload')
     } else {
       let deltaT = Date.now() / 1000 - getTs(lastPoint)
-      if (deltaT > largeTemporalDeltaBetweenPoints) {
+      if (deltaT > LARGE_TEMPORAL_DELTA) {
         // Note: no problem if we add a stop if there's already one
         Log(
           'Previous location old enough (' +
