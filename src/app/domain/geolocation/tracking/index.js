@@ -44,7 +44,7 @@ export const startTracking = async () => {
         desiredAccuracy: trackingConfig.desiredAccuracy || ACCURACY,
         showsBackgroundLocationIndicator: false, // Displays a blue pill on the iOS status bar when the location services are in use in the background (if the app doesn't have 'always' permission, the blue pill will always appear when location services are in use while the app isn't focused)
         distanceFilter: trackingConfig.distanceFilter || DISTANCE_FILTER,
-        elasticityMultiplier: trackingConfig.elasticityMultiplier,
+        elasticityMultiplier: 1,
         stationaryRadius: 30, // Minimum is 25, but still usually takes 200m
         // Activity Recognition
         stopTimeout: WAIT_BEFORE_STOP_MOTION_EVENT,
@@ -133,7 +133,7 @@ export const getTrackingConfig = async () => {
   return localTrackingConfig ?? DEFAULT_TRACKING_CONFIG
 }
 
-export const setTrackingConfig = async newTrackingConfig => {
+export const saveTrackingConfig = async newTrackingConfig => {
   await BackgroundGeolocation.setConfig(newTrackingConfig)
 
   Log(
@@ -145,15 +145,39 @@ export const setTrackingConfig = async newTrackingConfig => {
   await storeData(StorageKeys.GeolocationTrackingConfig, newTrackingConfig)
 }
 
+const enableElasticity = async () => {
+  const state = await BackgroundGeolocation.getState()
+  if (state?.elasticityMultiplier <= 1) {
+    Log('Enable elasticity')
+    const trackingConfig = await getTrackingConfig()
+    return BackgroundGeolocation.setConfig({
+      elasticityMultiplier:
+        trackingConfig.elasticityMultiplier || ELASTICITY_MULTIPLIER
+    })
+  }
+}
+
+const disableElasticity = async () => {
+  Log('Disable elasticity')
+  return BackgroundGeolocation.setConfig({
+    elasticityMultiplier: 1
+  })
+}
+
 export const handleActivityChange = async event => {
   Log('[ACTIVITY CHANGE] - ' + JSON.stringify(event))
   if (event?.activity !== STILL_ACTIVITY) {
     // Force fetching current position to ensure there is a location corresponding to an activity change
     // Skip still activities as it could artifically extend a trip
-    await BackgroundGeolocation.getCurrentPosition({
+    const location = await BackgroundGeolocation.getCurrentPosition({
       persist: true, // Persist location in SQLite storage
-      maximumAge: 10000 // Accept the last-recorded-location if no older than supplied value in ms. Default is 0.
+      maximumAge: 5 * 60 * 1000, // Accept the last-recorded-location if no older than supplied value in ms. Default is 0.
+      desiredAccuracy: 20,
+      samples: 6
     })
+    Log('Forced location: ' + JSON.stringify(location))
+    // Motion activity: enable elasticity after first location to reduce battery impact
+    enableElasticity()
   }
 
   await saveActivity(event)
@@ -168,6 +192,8 @@ export const handleMotionChange = async event => {
     const stationaryTs = event.location?.timestamp
     Log('Auto uploading from stop')
     await uploadData({ untilTs: stationaryTs })
+    // Disable elasticity to improve next point accuracy
+    disableElasticity()
   }
 }
 
