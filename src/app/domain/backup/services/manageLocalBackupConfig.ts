@@ -1,4 +1,8 @@
-import CozyClient, { FileCollectionGetResult, IOCozyFile } from 'cozy-client'
+import CozyClient, {
+  FileCollectionGetResult,
+  IOCozyFile,
+  StackErrors
+} from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import {
@@ -165,9 +169,23 @@ export const fixLocalBackupConfigIfNecessary = async (
     localBackupConfig.remoteBackupConfig.backupFolder.id
   )
 
-  const { data: remoteBackupFolderUpdated } = (await client.query(
-    fileQuery
-  )) as FileCollectionGetResult
+  let remoteBackupFolderUpdated
+
+  try {
+    const { data } = (await client.query(fileQuery)) as FileCollectionGetResult
+
+    remoteBackupFolderUpdated = data
+  } catch (e) {
+    if (e instanceof Error) {
+      const { errors } = JSON.parse(e.message) as StackErrors
+
+      if (errors.find(e => e.status === '404')) {
+        throw new Error('Remote backup folder has been deleted.')
+      }
+    }
+
+    throw e
+  }
 
   if (isInTrash(remoteBackupFolderUpdated.attributes.path)) {
     throw new Error('Remote backup folder has been trashed.')
