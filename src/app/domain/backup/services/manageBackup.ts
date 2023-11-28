@@ -232,7 +232,17 @@ const initializeBackup = async (
 
   log.debug('Backup found')
 
-  localBackupConfig = await fixLocalBackupConfigIfNecessary(client)
+  try {
+    localBackupConfig = await fixLocalBackupConfigIfNecessary(client)
+  } catch (e) {
+    if (e instanceof Error) {
+      if (e.message === 'Remote backup folder has been trashed.') {
+        return await initializeLocalBackupConfig(client)
+      }
+    }
+
+    throw e
+  }
 
   if (flag('flagship.backup.dedup')) {
     await addRemoteDuplicatesToBackupedMedias(client)

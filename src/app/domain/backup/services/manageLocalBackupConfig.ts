@@ -12,7 +12,8 @@ import { buildFileQuery } from '/app/domain/backup/queries'
 import {
   fetchBackupedMedias,
   fetchDeviceRemoteBackupConfig,
-  createRemoteBackupFolder
+  createRemoteBackupFolder,
+  isInTrash
 } from '/app/domain/backup/services/manageRemoteBackupConfig'
 import { fetchBackupedAlbums } from '/app/domain/backup/services/manageAlbums'
 import { isSameMedia } from '/app/domain/backup/helpers'
@@ -167,6 +168,10 @@ export const fixLocalBackupConfigIfNecessary = async (
   const { data: remoteBackupFolderUpdated } = (await client.query(
     fileQuery
   )) as FileCollectionGetResult
+
+  if (isInTrash(remoteBackupFolderUpdated.attributes.path)) {
+    throw new Error('Remote backup folder has been trashed.')
+  }
 
   localBackupConfig.remoteBackupConfig.backupFolder.name =
     remoteBackupFolderUpdated.name
