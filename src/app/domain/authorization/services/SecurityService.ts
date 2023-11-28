@@ -20,7 +20,7 @@ import {
 } from '/app/domain/settings/services/SettingsService'
 import { getDevModeFunctions } from '/app/domain/authorization/utils/devMode'
 import { routes } from '/constants/routes'
-import { devlog } from '/core/tools/env'
+import { devlog, shouldDisableAutolock } from '/core/tools/env'
 import {
   getCurrentRouteName,
   navigate,
@@ -42,9 +42,15 @@ const fns = getDevModeFunctions(
     hasDefinedPassword
   },
   {
-    isDeviceSecured: undefined, // async (): Promise<boolean> => Promise.resolve(false),
-    isAutoLockEnabled: undefined, // async (): Promise<boolean> => Promise.resolve(false),
-    hasDefinedPassword: undefined // async (): Promise<boolean> => Promise.resolve(false)
+    isDeviceSecured: shouldDisableAutolock()
+      ? async (): Promise<boolean> => Promise.resolve(true)
+      : undefined,
+    isAutoLockEnabled: shouldDisableAutolock()
+      ? async (): Promise<boolean> => Promise.resolve(false)
+      : undefined,
+    hasDefinedPassword: shouldDisableAutolock()
+      ? async (): Promise<boolean> => Promise.resolve(true)
+      : undefined
   }
 )
 

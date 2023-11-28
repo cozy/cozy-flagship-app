@@ -8,14 +8,92 @@ import { Fingerprint } from '/ui/Icons/Fingerprint'
 import { asyncLogout } from '/libs/intents/localMethods'
 import { doHashPassword } from '/libs/functions/passwordHelpers'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
-import { getVaultInformation } from '/libs/keychain'
+import {
+  getVaultInformation,
+  removeVaultInformation,
+  saveVaultInformation
+} from '/libs/keychain'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { setLockScreenUI } from '/app/domain/authorization/events/LockScreenUiManager'
 import { UnlockWithPassword } from '/app/domain/authentication/models/User'
 import { devlog } from '/core/tools/env'
 import { t } from '/locales/i18n'
+import { LoginData } from '/screens/login/components/types'
+import { isHttpError } from '/libs/functions/getErrorMessage'
+
+import { getErrorMessage } from 'cozy-intent'
 
 const rnBiometrics = new ReactNativeBiometrics()
+
+const hashInputPassword = async (
+  client: CozyClient,
+  input: string
+): Promise<LoginData> => {
+  const { fqdn } = getInstanceAndFqdnFromClient(client)
+  const { KdfIterations } = await client
+    .getStackClient()
+    .fetchJSON<{ KdfIterations: number }>('GET', '/public/prelogin')
+  return doHashPassword({ password: input }, fqdn, KdfIterations)
+}
+
+const checkCachedPassword = async (
+  client: CozyClient,
+  hashedInputPassword: LoginData,
+  storedHash: string
+): Promise<void> => {
+  await client
+    .getStackClient()
+    .fetchJSON('POST', '/settings/passphrase/check', {
+      passphrase: storedHash
+    })
+
+  if (hashedInputPassword.passwordHash !== storedHash) {
+    throw new Error('Cached password mismatch')
+  }
+}
+
+const checkInputPassword = async (
+  client: CozyClient,
+  hashedInputPassword: LoginData
+): Promise<void> => {
+  await client
+    .getStackClient()
+    .fetchJSON('POST', '/settings/passphrase/check', {
+      passphrase: hashedInputPassword.passwordHash
+    })
+
+  await updateCachedPassword(hashedInputPassword)
+}
+
+const updateCachedPassword = async (
+  hashedInputPassword: LoginData
+): Promise<void> => {
+  await removeVaultInformation('passwordHash')
+  await saveVaultInformation('passwordHash', hashedInputPassword.passwordHash)
+}
+
+const handleInvalidCachedPassword = async (
+  client: CozyClient,
+  hashedInputPassword: LoginData,
+  onSuccess: () => void,
+  onFailure: (error: string) => void
+): Promise<void> => {
+  try {
+    await checkInputPassword(client, hashedInputPassword)
+    await updateCachedPassword(hashedInputPassword)
+    return onSuccess() // Cached password was incorrect, input password is correct
+  } catch (inputError) {
+    if (isHttpError(inputError)) {
+      if (inputError.status === 403) {
+        return onFailure(t('errors.badUnlockPassword')) // Cached password is incorrect, input password is incorrect
+      } else {
+        return onFailure(t('errors.serverError')) // Unexpected server error
+      }
+    } else {
+      return onFailure(t('errors.unknown_error')) // Unexpected error
+    }
+  }
+}
 
 export const validatePassword = async ({
   client,
@@ -26,31 +104,36 @@ export const validatePassword = async ({
   client: CozyClient
   input: string
   onSuccess: () => void
-  onFailure: (reason: string) => void
+  onFailure: (error: string) => void
 }): Promise<void> => {
-  const { fqdn } = getInstanceAndFqdnFromClient(client)
+  try {
+    const hashedInputPassword = await hashInputPassword(client, input)
+    const storedHash = (await getVaultInformation('passwordHash')) as string
 
-  const { KdfIterations } = await client
-    .getStackClient()
-    .fetchJSON<{ KdfIterations: number }>('GET', '/public/prelogin')
-
-  const hashedPassword = await doHashPassword(
-    { password: input },
-    fqdn,
-    KdfIterations
-  )
-
-  const storedHash = await getVaultInformation('passwordHash')
-
-  if (hashedPassword.passwordHash === storedHash) {
     try {
-      return onSuccess()
-    } catch (error) {
-      return onFailure(t('errors.unknown_error'))
+      await checkCachedPassword(client, hashedInputPassword, storedHash)
+      return onSuccess() // Cached password is correct, input password is correct
+    } catch (cacheError) {
+      if (isHttpError(cacheError)) {
+        if (cacheError.status === 403) {
+          return await handleInvalidCachedPassword(
+            client,
+            hashedInputPassword,
+            onSuccess,
+            onFailure
+          ) // Cached password is incorrect, changing flow to input password check
+        } else {
+          return onFailure(t('errors.serverError')) // Unexpected server error
+        }
+      } else if (getErrorMessage(cacheError) === 'Cached password mismatch') {
+        return onFailure(t('errors.badUnlockPassword')) // Cached password is correct, input password is incorrect
+      } else {
+        return onFailure(t('errors.unknown_error')) // Unexpected error
+      }
     }
+  } catch (error) {
+    return onFailure(t('errors.unknown_error')) // Unexpected error
   }
-
-  return onFailure(t('errors.badUnlockPassword'))
 }
 
 export const validatePin = async (pinCode: string): Promise<boolean> =>
