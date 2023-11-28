@@ -24,13 +24,14 @@ describe('fetchRemoteBackupConfigs', () => {
     expect(remoteBackupConfigs).toEqual([])
   })
 
-  test('returns an array with the correct backup folders when findReferencedBy returns an array with two items', async () => {
+  test('returns an array with backup folders sorted by most recent first when findReferencedBy returns an array with two items', async () => {
     // Given
     const client = mockClientWithFindReferencedByResult({
       included: [
         {
           _id: '1',
           attributes: {
+            created_at: '2023-11-28T12:00:31.541756+01:00',
             name: 'Device 1',
             path: '/Backup/Device 1',
             metadata: { backupDeviceIds: ['A'] }
@@ -39,6 +40,7 @@ describe('fetchRemoteBackupConfigs', () => {
         {
           _id: '2',
           attributes: {
+            created_at: '2023-11-28T12:10:00.402741+01:00',
             name: 'Device 2',
             path: '/Backup/Device 2',
             metadata: { backupDeviceIds: ['B'] }
@@ -54,12 +56,12 @@ describe('fetchRemoteBackupConfigs', () => {
     // Then
     expect(remoteBackupConfigs).toEqual([
       {
-        backupFolder: { id: '1', name: 'Device 1', path: '/Backup/Device 1' },
-        backupDeviceIds: ['A']
-      },
-      {
         backupFolder: { id: '2', name: 'Device 2', path: '/Backup/Device 2' },
         backupDeviceIds: ['B']
+      },
+      {
+        backupFolder: { id: '1', name: 'Device 1', path: '/Backup/Device 1' },
+        backupDeviceIds: ['A']
       }
     ])
   })
