@@ -157,7 +157,7 @@ export const setMediaAsBackuped = async (
 
 export const fixLocalBackupConfigIfNecessary = async (
   client: CozyClient
-): Promise<void> => {
+): Promise<LocalBackupConfig> => {
   const localBackupConfig = await getLocalBackupConfig(client)
 
   const fileQuery = buildFileQuery(
@@ -174,6 +174,8 @@ export const fixLocalBackupConfigIfNecessary = async (
     remoteBackupFolderUpdated.path
 
   await setLocalBackupConfig(client, localBackupConfig)
+
+  return localBackupConfig
 }
 
 export const setBackupAsToDo = async (client: CozyClient): Promise<void> => {
