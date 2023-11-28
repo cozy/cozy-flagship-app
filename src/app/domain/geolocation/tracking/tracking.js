@@ -73,6 +73,7 @@ const prepareMotionData = async ({ locations, lastBatchPoint }) => {
         ' - to ' +
         locations[locations.length - 1]?.timestamp
     )
+    Log('Total points : ' + locations.length)
   }
 
   // Add activities stored in local storage
@@ -287,8 +288,11 @@ export const filterNonHeadingPointsAfterStillActivity = (
     return locations
   }
   const lastPointTs = getTs(locations[locations.length - 1])
+  const sortedActivities = activities.sort(
+    (a, b) => new Date(a.data.ts) - new Date(b.data.ts)
+  )
   let lastStillActivityTs = null
-  for (const activity of activities) {
+  for (const activity of sortedActivities) {
     if (activity?.data?.stationary) {
       lastStillActivityTs = activity?.data?.ts
     }
@@ -296,7 +300,6 @@ export const filterNonHeadingPointsAfterStillActivity = (
   if (!lastStillActivityTs) {
     lastStillActivityTs = lastPointTs
   }
-
   const points = locations.filter(loc => {
     return getTs(loc) <= lastStillActivityTs || loc?.coords?.heading > -1
   })
