@@ -232,7 +232,7 @@ const initializeBackup = async (
 
   log.debug('Backup found')
 
-  await fixLocalBackupConfigIfNecessary(client)
+  localBackupConfig = await fixLocalBackupConfigIfNecessary(client)
 
   if (flag('flagship.backup.dedup')) {
     await addRemoteDuplicatesToBackupedMedias(client)
