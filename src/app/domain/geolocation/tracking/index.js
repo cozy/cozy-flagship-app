@@ -11,7 +11,14 @@ import {
   getFlagFailUpload
 } from '/app/domain/geolocation/tracking/storage'
 import { t } from '/locales/i18n'
-import { STILL_ACTIVITY } from './consts'
+import {
+  ACCURACY,
+  DEFAULT_TRACKING_CONFIG,
+  DISTANCE_FILTER,
+  ELASTICITY_MULTIPLIER,
+  STILL_ACTIVITY,
+  WAIT_BEFORE_STOP_MOTION_EVENT
+} from '/app/domain/geolocation/tracking/consts'
 
 export { Log, getAllLogs, sendLogFile } from '/app/domain/geolocation/helpers'
 export { getOrCreateId, updateId } from '/app/domain/geolocation/tracking/user'
@@ -24,14 +31,6 @@ export {
   getId
 } from '/app/domain/geolocation/tracking/storage'
 
-const waitBeforeStopMotionEventMin = 10 // Align with openpath: https://github.com/e-mission/e-mission-server/blob/master/emission/analysis/intake/segmentation/trip_segmentation.py#L59
-
-const DEFAULT_TRACKING_CONFIG = {
-  distanceFilter: 10,
-  elasticityMultiplier: 4,
-  desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH
-}
-
 const log = Minilog('📍 Geolocation')
 
 export const startTracking = async () => {
@@ -42,20 +41,17 @@ export const startTracking = async () => {
     await BackgroundGeolocation.ready(
       {
         // Geolocation Config
-        desiredAccuracy: trackingConfig.desiredAccuracy,
+        desiredAccuracy: trackingConfig.desiredAccuracy || ACCURACY,
         showsBackgroundLocationIndicator: false, // Displays a blue pill on the iOS status bar when the location services are in use in the background (if the app doesn't have 'always' permission, the blue pill will always appear when location services are in use while the app isn't focused)
-        distanceFilter: trackingConfig.distanceFilter,
+        distanceFilter: trackingConfig.distanceFilter || DISTANCE_FILTER,
         elasticityMultiplier: trackingConfig.elasticityMultiplier,
-        locationUpdateInterval: 10000, // Only used if on Android and if distanceFilter is 0
         stationaryRadius: 30, // Minimum is 25, but still usually takes 200m
         // Activity Recognition
-        stopTimeout: waitBeforeStopMotionEventMin,
+        stopTimeout: WAIT_BEFORE_STOP_MOTION_EVENT,
         // Application config
         debug: false, // <-- enable this hear sounds for background-geolocation life-cycle and notifications
         logLevel: BackgroundGeolocation.LOG_LEVEL_DEBUG,
         startOnBoot: true, // <-- Auto start tracking when device is powered-up.
-        // HTTP / SQLite config
-
         batchSync: false, // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
         autoSync: false, // <-- [Default: true] Set true to sync each location to server as it arrives.
         stopOnTerminate: false, // Allow the background-service to continue tracking when user closes the app, for Android. Maybe also useful for ios https://transistorsoft.github.io/react-native-background-geolocation/interfaces/config.html#stoponterminate

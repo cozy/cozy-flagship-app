@@ -1,10 +1,10 @@
 import { getUniqueId } from 'react-native-device-info'
 
+import { SERVER_URL } from '/app/domain/geolocation/tracking/consts'
 import { Log } from '/app/domain/geolocation/helpers'
 import { storeId, getId } from '/app/domain/geolocation/tracking/storage'
 
 const useUniqueDeviceId = false
-const serverURL = 'https://openpath.cozycloud.cc'
 
 export const getOrCreateId = async () => {
   try {
@@ -26,7 +26,7 @@ export const getOrCreateId = async () => {
 }
 
 export const createUser = async user => {
-  let response = await fetch(serverURL + '/profile/create', {
+  let response = await fetch(SERVER_URL + '/profile/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -45,7 +45,7 @@ export const createUser = async user => {
 export const getOrCreateUser = async user => {
   let response
   try {
-    const respFetch = await fetch(serverURL + '/profile/get', {
+    const respFetch = await fetch(SERVER_URL + '/profile/get', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

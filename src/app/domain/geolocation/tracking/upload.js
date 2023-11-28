@@ -5,8 +5,8 @@ import { getOrCreateId } from '/app/domain/geolocation/tracking/user'
 import { Log } from '/app/domain/geolocation/helpers'
 import { storeFlagFailUpload } from '/app/domain/geolocation/tracking/storage'
 import { utf8ByteSize } from '/app/domain/geolocation/tracking/utils'
+import { SERVER_URL } from '/app/domain/geolocation/tracking/consts'
 
-const serverURL = 'https://openpath.cozycloud.cc'
 const heavyLogs = false // Log points, motion changes...
 
 export const uploadUserCache = async (content, user) => {
@@ -19,7 +19,7 @@ export const uploadUserCache = async (content, user) => {
 
   const body = JSON.stringify(request)
 
-  let response = await fetch(serverURL + '/usercache/put', {
+  let response = await fetch(SERVER_URL + '/usercache/put', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
