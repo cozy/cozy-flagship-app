@@ -42,6 +42,7 @@ interface BackupFolder {
   attributes: {
     name: string
     path: string
+    created_at: string
     metadata?: {
       backupDeviceIds: string[]
     }
@@ -72,6 +73,11 @@ export const fetchRemoteBackupConfigs = async (
 
   const remoteBackupConfigs: RemoteBackupConfig[] = backupFolders
     .filter(folder => !isInTrash(folder.attributes.path))
+    .sort(
+      (a, b) =>
+        new Date(b.attributes.created_at).getTime() -
+        new Date(a.attributes.created_at).getTime()
+    )
     .map(backupFolder => ({
       backupFolder: {
         id: backupFolder._id,
