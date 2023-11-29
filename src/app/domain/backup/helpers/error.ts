@@ -1,4 +1,4 @@
-import { UploadError } from '/app/domain/upload/models'
+import { NetworkError, UploadError } from '/app/domain/upload/models'
 
 export class BackupError extends Error {
   textMessage: string
@@ -17,6 +17,13 @@ export class BackupError extends Error {
   }
 }
 
+export const isNetworkError = (error: unknown): boolean => {
+  return (
+    error instanceof NetworkError ||
+    (error instanceof Error && error.message === 'Network request failed')
+  )
+}
+
 export const isUploadError = (error: unknown): error is UploadError => {
   return (
     typeof error === 'object' &&
@@ -26,6 +33,7 @@ export const isUploadError = (error: unknown): error is UploadError => {
     Array.isArray(error.errors)
   )
 }
+
 export const isQuotaExceededError = (error: UploadError): boolean => {
   return (
     error.statusCode === 413 &&
