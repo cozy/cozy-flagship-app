@@ -14,6 +14,7 @@ import {
 import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
 import {
   BackupError,
+  isNetworkError,
   isUploadError,
   isQuotaExceededError,
   isFileTooBigError,
@@ -28,8 +29,6 @@ import { t } from '/locales/i18n'
 import type CozyClient from 'cozy-client'
 import type { IOCozyFile } from 'cozy-client'
 import Minilog from 'cozy-minilog'
-
-import { NetworkError } from '/app/domain/upload/models'
 
 const log = Minilog('💿 Backup')
 
@@ -92,7 +91,7 @@ export const uploadMedias = async (
         } not uploaded or set as backuped correctly (${JSON.stringify(error)})`
       )
 
-      if (error instanceof NetworkError) {
+      if (isNetworkError(error)) {
         throw new BackupError(t('services.backup.errors.networkIssue'))
       }
 
