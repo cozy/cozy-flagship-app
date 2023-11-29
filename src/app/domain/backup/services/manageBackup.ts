@@ -104,11 +104,13 @@ export const startBackup = async (
     let status: LastBackup['status'] = 'success'
     let titleKey = 'services.backup.notifications.backupSuccessTitle'
     let bodyKey = 'services.backup.notifications.backupSuccessBody'
+    let message
 
     if (partialSuccessMessage) {
       status = 'partial_success'
       titleKey = 'services.backup.notifications.backupPartialSuccessTitle'
       bodyKey = 'services.backup.notifications.backupPartialSuccessBody'
+      message = partialSuccessMessage
     }
 
     await setLastBackup(client, {
@@ -117,7 +119,8 @@ export const startBackup = async (
         postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
         postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
       totalMediasToBackupCount:
-        postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
+        postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount,
+      message
     })
 
     await showLocalNotification({
