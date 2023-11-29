@@ -17,7 +17,8 @@ import {
   DISTANCE_FILTER,
   ELASTICITY_MULTIPLIER,
   STILL_ACTIVITY,
-  WAIT_BEFORE_STOP_MOTION_EVENT
+  WAIT_BEFORE_STOP_MOTION_EVENT,
+  WALKING_ACTIVITY
 } from '/app/domain/geolocation/tracking/consts'
 
 export { Log, getAllLogs, sendLogFile } from '/app/domain/geolocation/helpers'
@@ -155,9 +156,13 @@ const disableElasticity = async () => {
 
 export const handleActivityChange = async event => {
   Log('[ACTIVITY CHANGE] - ' + JSON.stringify(event))
-  if (event?.activity !== STILL_ACTIVITY) {
+  if (
+    event?.activity !== STILL_ACTIVITY &&
+    event?.activity !== WALKING_ACTIVITY
+  ) {
     // Force fetching current position to ensure there is a location corresponding to an activity change
-    // Skip still activities as it could artifically extend a trip
+    // Skip still activities as it could artifically extend a trip, and walk activity as it might capture
+    // noisy locations, e.g. at home
     const location = await BackgroundGeolocation.getCurrentPosition({
       persist: true, // Persist location in SQLite storage
       maximumAge: 5 * 60 * 1000, // 5min. Accept the last-recorded-location if no older than supplied value in ms. Default is 0.
