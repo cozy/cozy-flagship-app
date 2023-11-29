@@ -4,6 +4,7 @@ import BackgroundGeolocation from 'react-native-background-geolocation'
  * Motion activities
  */
 export const STILL_ACTIVITY = 'still'
+export const WALKING_ACTIVITY = 'walking'
 
 /**
  * Tracking plugin config
