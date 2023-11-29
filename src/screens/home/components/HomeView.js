@@ -24,6 +24,7 @@ import { determineSecurityFlow } from '/app/domain/authorization/services/Securi
 import { devlog } from '/core/tools/env'
 import { OsReceiveScreen } from '/app/view/OsReceive/OsReceiveScreen'
 import { useFilesToUpload } from '/app/view/OsReceive/state/OsReceiveState'
+import { hideSplashScreen } from '/app/theme/SplashScreenService'
 
 const log = Minilog('🏠 HomeView')
 
@@ -237,11 +238,26 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
 
       // If client exists and this is the first render, determine the security flow.
       if (uri && client && !hasRenderedOnce.current) {
+        const hasFilesToUpload = filesToUpload.length > 0
+
         devlog(
           `HomeView: setting hasRenderedOnce.current set to "true" and calling determineSecurityFlowHook()`
         )
+
         hasRenderedOnce.current = true
-        await determineSecurityFlow(client, navigationObject, true)
+
+        await determineSecurityFlow(
+          client,
+          hasFilesToUpload ? undefined : navigationObject, // If there are files to upload, we don't want to navigate to the cozy app
+          true
+        )
+
+        // If there are files to upload, we don't want to wait for the cozy app to render at all
+        // We want to hide the splash screen as soon as possible and display the HomeView with the files to upload screen
+        if (hasFilesToUpload) {
+          setShouldWaitCozyApp(false)
+          hideSplashScreen() // Is needeed since we told the SecurityService not to hide it
+        }
       }
     }
 
@@ -252,7 +268,8 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
     navigation,
     shouldWaitCozyApp,
     setShouldWaitCozyApp,
-    uri
+    uri,
+    filesToUpload.length
   ])
 
   const handleTrackWebviewInnerUri = webviewInneruri => {
