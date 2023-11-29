@@ -18,7 +18,7 @@ export const jsLogInterception = `
     log: (...log) => consoleLog('log', log),
     debug: (...log) => consoleLog('debug', log),
     info: (...log) => consoleLog('info', log),
-    warn: (...log) => consoleLog('warn', log),
+    warn: (...log) => consoleLog('log', 'warn: ' + log),
     error: (...log) => consoleLog('error', log),
   }
 `
