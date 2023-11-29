@@ -38,52 +38,41 @@ export const startTracking = async () => {
     const trackingConfig = await getTrackingConfig()
     Log('Config : ' + JSON.stringify(trackingConfig))
 
-    await BackgroundGeolocation.ready(
-      {
-        // Geolocation Config
-        desiredAccuracy: trackingConfig.desiredAccuracy || ACCURACY,
-        showsBackgroundLocationIndicator: false, // Displays a blue pill on the iOS status bar when the location services are in use in the background (if the app doesn't have 'always' permission, the blue pill will always appear when location services are in use while the app isn't focused)
-        distanceFilter: trackingConfig.distanceFilter || DISTANCE_FILTER,
-        elasticityMultiplier: 1,
-        stationaryRadius: 30, // Minimum is 25, but still usually takes 200m
-        // Activity Recognition
-        stopTimeout: WAIT_BEFORE_STOP_MOTION_EVENT,
-        // Application config
-        debug: false, // <-- enable this hear sounds for background-geolocation life-cycle and notifications
-        logLevel: BackgroundGeolocation.LOG_LEVEL_DEBUG,
-        startOnBoot: true, // <-- Auto start tracking when device is powered-up.
-        batchSync: false, // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
-        autoSync: false, // <-- [Default: true] Set true to sync each location to server as it arrives.
-        stopOnTerminate: false, // Allow the background-service to continue tracking when user closes the app, for Android. Maybe also useful for ios https://transistorsoft.github.io/react-native-background-geolocation/interfaces/config.html#stoponterminate
-        enableHeadless: true,
-        foregroundService: true,
-        logMaxDays: 5, // Default is 3
-        maxDaysToPersist: 10, // The maximum retention days for local location data. Default is 1 day, which can result in removal of local points in case of upload failures.
-        backgroundPermissionRationale: {
-          message: t(
-            'services.geolocationTracking.androidBackgroundPermissionMessage'
-          )
-        },
-        notification: {
-          title: t('services.geolocationTracking.androidNotificationTitle'),
-          text: t(
-            'services.geolocationTracking.androidNotificationDescription'
-          ),
-          smallIcon: 'mipmap/ic_stat_ic_notification'
-        }
+    await BackgroundGeolocation.ready({
+      // Geolocation Config
+      desiredAccuracy: trackingConfig.desiredAccuracy || ACCURACY,
+      showsBackgroundLocationIndicator: false, // Displays a blue pill on the iOS status bar when the location services are in use in the background (if the app doesn't have 'always' permission, the blue pill will always appear when location services are in use while the app isn't focused)
+      distanceFilter: trackingConfig.distanceFilter || DISTANCE_FILTER,
+      elasticityMultiplier: 1,
+      stationaryRadius: 30, // Minimum is 25, but still usually takes 200m
+      // Activity Recognition
+      stopTimeout: WAIT_BEFORE_STOP_MOTION_EVENT,
+      // Application config
+      debug: false, // <-- enable this hear sounds for background-geolocation life-cycle and notifications
+      logLevel: BackgroundGeolocation.LOG_LEVEL_DEBUG,
+      startOnBoot: true, // <-- Auto start tracking when device is powered-up.
+      batchSync: false, // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
+      autoSync: false, // <-- [Default: true] Set true to sync each location to server as it arrives.
+      stopOnTerminate: false, // Allow the background-service to continue tracking when user closes the app, for Android. Maybe also useful for ios https://transistorsoft.github.io/react-native-background-geolocation/interfaces/config.html#stoponterminate
+      enableHeadless: true,
+      foregroundService: true,
+      logMaxDays: 5, // Default is 3
+      maxDaysToPersist: 10, // The maximum retention days for local location data. Default is 1 day, which can result in removal of local points in case of upload failures.
+      backgroundPermissionRationale: {
+        message: t(
+          'services.geolocationTracking.androidBackgroundPermissionMessage'
+        )
       },
-      state => {
-        if (!state.enabled) {
-          // Start tracking only if it's not already started
-          BackgroundGeolocation.start(() => {
-            Log('Tracking started')
-            storeData(StorageKeys.ShouldBeTrackingFlagStorageAdress, true)
-          })
-        } else {
-          Log('Tracking already started')
-        }
+      notification: {
+        title: t('services.geolocationTracking.androidNotificationTitle'),
+        text: t('services.geolocationTracking.androidNotificationDescription'),
+        smallIcon: 'mipmap/ic_stat_ic_notification'
       }
-    )
+    })
+    BackgroundGeolocation.start(() => {
+      Log('Tracking started')
+      storeData(StorageKeys.ShouldBeTrackingFlagStorageAdress, true)
+    })
     return true
   } catch (e) {
     log.error(e)
@@ -171,7 +160,7 @@ export const handleActivityChange = async event => {
     // Skip still activities as it could artifically extend a trip
     const location = await BackgroundGeolocation.getCurrentPosition({
       persist: true, // Persist location in SQLite storage
-      maximumAge: 5 * 60 * 1000, // Accept the last-recorded-location if no older than supplied value in ms. Default is 0.
+      maximumAge: 5 * 60 * 1000, // 5min. Accept the last-recorded-location if no older than supplied value in ms. Default is 0.
       desiredAccuracy: 20,
       samples: 6
     })
