@@ -34,8 +34,10 @@ export const config = {
   driver: true
 }
 
+// Width has to be null at start even if it's not a valid value (was set to undefined and it broke the progress bar)
+// At the time of this fix we want to go back the previously working value but we have to investigate why it has to be null
 export const progressBarConfig = {
-  width: undefined,
+  width: null as unknown as number,
   indeterminate: true,
   unfilledColor: palette.Grey[200],
   color: palette.Primary[600],
