@@ -36,8 +36,7 @@ export const Animation = ({
     render(): JSX.Element {
       return (
         <SvgXml
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          xml={iconTable[slug]?.xml || iconFallback}
+          xml={iconTable[slug]?.xml ?? iconFallback}
           width={config.width}
           height={config.height}
         />
