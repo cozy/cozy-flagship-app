@@ -13,6 +13,7 @@ import {
 } from '/app/theme/themeManager'
 import { navigationRef } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
+import { getDangerousOsReceiveState } from '/app/view/OsReceive/state/OsReceiveState'
 
 const isDarkMode = (bottomTheme: StatusBarStyle): boolean =>
   bottomTheme === StatusBarStyle.Light
@@ -207,9 +208,20 @@ export const resetUIState = (
   uri: string,
   callback?: (theme: StatusBarStyle) => void
 ): void => {
-  const theme = urlHasKonnectorOpen(uri)
+  let theme = urlHasKonnectorOpen(uri)
     ? ThemeInput.Dark
     : getHomeThemeAsThemeInput()
+
+  // If the theme is light, and there are files to upload (OsReceiveScreen visible), then set the theme to dark
+  // This is done because the file upload dialog is light background, so we want to use dark icons
+  // This is a temporary fix until we have a proper React context
+  // see src/app/view/OsReceive/state/OsReceiveState.ts#getDangerousOsReceiveState
+  if (theme === ThemeInput.Light) {
+    const hasFilesToUpload =
+      getDangerousOsReceiveState().filesToUpload.length > 0
+
+    if (hasFilesToUpload) theme = ThemeInput.Dark
+  }
 
   themeLog.info('resetUIState', { uri, theme })
 

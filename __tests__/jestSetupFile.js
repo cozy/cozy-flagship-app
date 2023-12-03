@@ -106,3 +106,15 @@ jest.mock(
   'react-native-background-geolocation',
   () => mockRNBackgroundGeolocation
 )
+
+// This function isn't meant to be tested
+// It is breaking the tests just by being imported
+// Have to remove that mock when we refactor the actual function
+jest.mock('../src/app/view/OsReceive/state/OsReceiveState', () => ({
+  getDangerousOsReceiveState: jest.fn().mockReturnValue({
+    filesToUpload: [],
+    routeToUpload: {},
+    errored: false,
+    candidateApps: undefined
+  })
+}))
