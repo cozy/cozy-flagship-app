@@ -6,6 +6,7 @@ import Minilog from 'cozy-minilog'
 import { useNativeIntent } from 'cozy-intent'
 
 import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
+import { useLauncherContext } from '/screens/home/hooks/useLauncherContext'
 import {
   jsEnsureCrypto,
   tryCrypto
@@ -21,6 +22,7 @@ import {
 import { postMessageFunctionDeclaration } from '/components/webviews/CryptoWebView/jsInteractions/jsFunctions/jsMessaging'
 import { jsSubscribers } from '/components/webviews/jsInteractions/jsSubscribers'
 import strings from '/constants/strings.json'
+import { launcherEvent } from '/libs/ReactNativeLauncher'
 import { useSession } from '/hooks/useSession'
 import ReloadInterceptorWebView from '/components/webviews/ReloadInterceptorWebView'
 import { getHostname } from '/libs/functions/getHostname'
@@ -52,6 +54,9 @@ export const CozyWebView = ({
   const { shouldInterceptAuth, handleInterceptAuth, consumeSessionToken } =
     useSession()
   const isFocused = useIsFocused()
+
+  const { tryHandleLauncherMessage } = useLauncherContext()
+
   /**
    * First render: no uri
    * Second render: use uri from props
@@ -101,6 +106,35 @@ export const CozyWebView = ({
     },
     [webviewRef]
   )
+
+  useEffect(() => {
+    const handleLoginSucess = accountId => {
+      const payload = JSON.stringify({
+        type: 'Clisk',
+        message: 'loginSuccess',
+        param: {
+          accountId
+        }
+      })
+      webviewRef?.postMessage(payload)
+    }
+    launcherEvent.on('loginSuccess', handleLoginSucess)
+    return () => launcherEvent.removeListener('loginSuccess', handleLoginSucess)
+  }, [webviewRef])
+
+  useEffect(() => {
+    const handleLaunchResult = param => {
+      const payload = JSON.stringify({
+        type: 'Clisk',
+        message: 'launchResult',
+        param
+      })
+      webviewRef?.postMessage(payload)
+    }
+    launcherEvent.on('launchResult', handleLaunchResult)
+    return () =>
+      launcherEvent.removeListener('launchResult', handleLaunchResult)
+  }, [webviewRef])
 
   const run = `
     (function() {
@@ -181,7 +215,7 @@ export const CozyWebView = ({
         tryNavigatorShare(m, log, logId, onAnswer)
         tryConsole(m, log, logId)
         nativeIntent?.tryEmit(m)
-
+        tryHandleLauncherMessage(m)
         if (parentOnMessage) {
           parentOnMessage(m)
         }

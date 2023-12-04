@@ -1,3 +1,5 @@
+import { useLauncherContext } from '/screens/home/hooks/useLauncherContext'
+
 import {
   NavigationProp,
   ParamListBase,
@@ -8,14 +10,13 @@ import { StatusBar, View } from 'react-native'
 
 import { OauthClientsLimitExceeded } from '/app/view/Limits/OauthClientsLimitExceeded'
 import HomeView from '/screens/home/components/HomeView'
-import LauncherView from '/screens/konnectors/LauncherView'
-import CliskDevView from '/screens/konnectors/CliskDevView'
 import { StatusBarStyle } from '/libs/intents/setFlagshipUI'
-import { useLauncherContext } from '/screens/home/hooks/useLauncherContext'
-import { shouldShowCliskDevMode } from '/core/tools/env'
 import { getColors } from '/ui/colors'
+import { shouldShowCliskDevMode } from '/core/tools/env'
 
 import { styles } from '/screens/home/HomeScreen.styles'
+
+import CliskDevView from '../konnectors/CliskDevView'
 
 interface HomeScreenProps {
   navigation: NavigationProp<ParamListBase>
@@ -27,18 +28,8 @@ export const HomeScreen = ({
   route
 }: HomeScreenProps): JSX.Element => {
   const [barStyle, setBarStyle] = useState<StatusBarStyle>()
-  const {
-    LauncherDialog,
-    canDisplayLauncher,
-    launcherClient,
-    launcherContext,
-    onKonnectorLog,
-    onKonnectorJobUpdate,
-    resetLauncherContext,
-    setLauncherContext,
-    trySetLauncherContext
-  } = useLauncherContext()
   const colors = getColors()
+  const { trySetLauncherContext, launcherContext } = useLauncherContext()
 
   return (
     <View
@@ -60,22 +51,8 @@ export const HomeScreen = ({
           navigation={navigation}
           route={route}
           setBarStyle={setBarStyle}
-          setLauncherContext={trySetLauncherContext}
         />
       )}
-
-      {canDisplayLauncher() && (
-        <LauncherView
-          launcherClient={launcherClient}
-          launcherContext={launcherContext.value}
-          retry={resetLauncherContext}
-          setLauncherContext={setLauncherContext}
-          onKonnectorLog={onKonnectorLog}
-          onKonnectorJobUpdate={onKonnectorJobUpdate}
-        />
-      )}
-
-      {LauncherDialog}
 
       <OauthClientsLimitExceeded navigation={navigation} />
     </View>

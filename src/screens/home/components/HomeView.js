@@ -19,7 +19,6 @@ import {
 import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { useSession } from '/hooks/useSession'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
-import { launcherEvent } from '/libs/ReactNativeLauncher'
 import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
 import { OsReceiveScreen } from '/app/view/OsReceive/OsReceiveScreen'
@@ -44,7 +43,6 @@ const unzoomHomeView = webviewRef => {
 
 /**
  * @typedef Props
- * @prop {(arg: import('/libs/konnectors/models').LauncherContext) => void} setLauncherContext
  * @prop {unknown} navigation
  * @prop {unknown} route
  * @prop {(arg: import('/libs/intents/setFlagshipUI').BarStyle) => void} setBarStyle
@@ -53,7 +51,7 @@ const unzoomHomeView = webviewRef => {
 /**
  * @param {Props} props
  */
-const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
+const HomeView = ({ route, navigation, setBarStyle }) => {
   const client = useClient()
   const [uri, setUri] = useState('')
   const { shouldWaitCozyApp, setShouldWaitCozyApp } = useHomeStateContext()
@@ -82,35 +80,6 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
     )
 
     return subscription.remove
-  }, [webviewRef])
-
-  useEffect(() => {
-    const handleLoginSucess = accountId => {
-      const payload = JSON.stringify({
-        type: 'Clisk',
-        message: 'loginSuccess',
-        param: {
-          accountId
-        }
-      })
-      webviewRef?.postMessage(payload)
-    }
-    launcherEvent.on('loginSuccess', handleLoginSucess)
-    return () => launcherEvent.removeListener('loginSuccess', handleLoginSucess)
-  }, [webviewRef])
-
-  useEffect(() => {
-    const handleLaunchResult = param => {
-      const payload = JSON.stringify({
-        type: 'Clisk',
-        message: 'launchResult',
-        param
-      })
-      webviewRef?.postMessage(payload)
-    }
-    launcherEvent.on('launchResult', handleLaunchResult)
-    return () =>
-      launcherEvent.removeListener('launchResult', handleLaunchResult)
   }, [webviewRef])
 
   useEffect(() => {
@@ -292,12 +261,9 @@ const HomeView = ({ route, navigation, setLauncherContext, setBarStyle }) => {
           const data = get(event, 'nativeEvent.data')
 
           if (data) {
-            const { methodName, message, value } = JSON.parse(data)
+            const { methodName } = JSON.parse(data)
 
             if (methodName === 'openApp') nativeIntent?.call(uri, 'openApp')
-
-            if (message === 'startLauncher')
-              setLauncherContext({ state: 'launch', value })
           }
         }}
       />
