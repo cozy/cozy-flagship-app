@@ -1,8 +1,9 @@
-import Minilog from 'cozy-minilog'
 import React, { useEffect } from 'react'
 import { Linking } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
 import { WebViewMessageEvent } from 'react-native-webview/lib/WebViewTypes'
+
+import Minilog from 'cozy-minilog'
 
 import { ErrorPageGenerator } from '/app/view/Error/Pages/makeHtmlErrorPage'
 import { CozyBlockedPage } from '/app/view/Error/Pages/CozyBlockedPage'
@@ -15,6 +16,7 @@ import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { routes } from '/constants/routes'
 import { goBack, reset } from '/libs/RootNavigation'
 import { getColors } from '/ui/colors'
+import { hideSplashScreen } from '/app/theme/SplashScreenService'
 
 const log = Minilog('ErrorScreen')
 
@@ -114,8 +116,10 @@ export const ErrorScreen = (props: ErrorScreenProps): JSX.Element => {
   /*
    * All error pages are in immersive mode with blue background, so we need light icons every time.
    * To err on the side of caution, we set the icon colors to white everytime this page is rendered.
+   * Also, we hide the splash screen here in case the error page is shown before the app is mounted.
    */
   useEffect(() => {
+    void hideSplashScreen()
     changeBarColors(true)
   }, [])
 

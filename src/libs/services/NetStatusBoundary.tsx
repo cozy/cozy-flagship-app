@@ -1,9 +1,9 @@
-import NetInfo from '@react-native-community/netinfo'
-import React, { ReactNode, useEffect, useRef, useState } from 'react'
+import type { NetInfoState } from '@react-native-community/netinfo'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { ErrorScreen } from '/app/view/Error/ErrorScreen'
-import { useSplashScreen } from '/hooks/useSplashScreen'
-import { devlog } from '/core/tools/env'
+import { netLogger, NetService } from '/libs/services/NetService'
+import { safePromise } from '/utils/safePromise'
 
 interface Props {
   children: ReactNode
@@ -15,34 +15,42 @@ const NetStatusBoundary = ({
   offlineScreen
 }: Props): JSX.Element | null => {
   const [isConnected, setIsConnected] = useState<boolean | null>(null)
-  const subscription = useRef<ReturnType<typeof NetInfo.addEventListener>>()
-  const { hideSplashScreen } = useSplashScreen()
 
   useEffect(() => {
-    const main = async (): Promise<void> => {
-      const state = await NetInfo.fetch()
+    const doAppMountCheck = async (): Promise<void> => {
+      try {
+        const isConnected = await NetService.isConnected()
 
-      if (state.isConnected) setIsConnected(true)
-      else {
-        setIsConnected(false)
+        if (isConnected) {
+          netLogger.info('NetStatusBoundary is connected')
+          setIsConnected(true)
+        } else {
+          netLogger.info(
+            'NetStatusBoundary is not connected, waiting for online event and hiding splash screen to show offline screen'
+          )
+          setIsConnected(false)
 
-        devlog('NetStatusBoundary hiding splashscreen')
-        await hideSplashScreen()
-
-        subscription.current = NetInfo.addEventListener(state => {
-          if (state.isConnected) {
+          NetService.waitForOnline((state: NetInfoState) => {
+            netLogger.info('NetStatusBoundary got online event', state)
             setIsConnected(true)
-          }
-        })
+          })
+        }
+      } catch (error) {
+        netLogger.error(
+          'NetStatusBoundary error at startup, could not check if connected. Showing children.',
+          error
+        )
+        setIsConnected(true)
       }
     }
 
-    void main()
+    // Check on app launch if we are connected
+    // If we are not connected, we will wait for the online event
+    // If we are connected, we will render the children, they will handle further disconnections
+    safePromise(doAppMountCheck)()
+  }, [])
 
-    return () => subscription.current?.()
-  }, [hideSplashScreen])
-
-  if (isConnected === null) return null
+  if (isConnected === null) return null // wait for app mount check before rendering children
 
   return isConnected
     ? (children as JSX.Element)
