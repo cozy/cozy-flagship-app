@@ -1,5 +1,4 @@
 import { format } from 'date-fns'
-import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 import RNPrint from 'react-native-print'
 import Toast from 'react-native-toast-message'
@@ -13,14 +12,13 @@ const log = MiniLog('intents:print')
 
 // File Handling
 const getPrintFolderPath = (): string => {
-  return `${RNFS.TemporaryDirectoryPath}/print/`
+  return `${RNFS.TemporaryDirectoryPath}/print`
 }
 
 const getTemporaryPrintFilePath = (fileExtension: string): string => {
   const date = format(new Date(), 'yyyyMMddHHmmssSSS')
   const tempFileName = `temp_print_${date}.${fileExtension}`
-  const pathPrefix = Platform.OS === 'android' ? 'file://' : ''
-  const path = `${pathPrefix}${getPrintFolderPath()}${tempFileName}`
+  const path = `${getPrintFolderPath()}/${tempFileName}`
   return path
 }
 
@@ -36,6 +34,10 @@ const safeDeleteFile = async (path: string): Promise<void> => {
   } catch (err) {
     log.error(`Error deleting document: ${getErrorMessage(err)}`)
   }
+}
+
+const writeFile = async (filePath: string, content: string): Promise<void> => {
+  return await RNFS.writeFile(`${filePath}`, content, 'base64')
 }
 
 // Data URI Handling
@@ -59,16 +61,15 @@ const getContentFromBase64 = (base64String: string): string => {
 
 // Print Handling (main feature)
 export const printBase64Doc = async (base64?: string): Promise<void> => {
-  let path = ''
+  let filePath = ''
 
   try {
     if (!base64) throw new Error('No base64 provided')
-    path = getTemporaryPrintFilePath(getFileTypeFromDataURI(base64))
+    filePath = getTemporaryPrintFilePath(getFileTypeFromDataURI(base64))
     const fileContent = getContentFromBase64(base64)
-
     await ensurePrintFolder()
-    await RNFS.writeFile(path, fileContent, 'base64')
-    await RNPrint.print({ filePath: path.replace('file://', '') })
+    await writeFile(filePath, fileContent)
+    await RNPrint.print({ filePath })
   } catch (err) {
     log.error(`Error while printing document: ${getErrorMessage(err)}`)
     Toast.show({
@@ -76,6 +77,6 @@ export const printBase64Doc = async (base64?: string): Promise<void> => {
       text1: t('error.unknown_error')
     })
   } finally {
-    await safeDeleteFile(path)
+    await safeDeleteFile(filePath)
   }
 }
