@@ -9,7 +9,7 @@ import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { showSplashScreen } from '/app/theme/SplashScreenService'
 
-const log = Minilog('NetService')
+export const netLogger = Minilog('🛜 NetService')
 
 // Function to configure NetInfo service with the given client
 const configureService = (client?: CozyClient): void => {
@@ -37,25 +37,32 @@ export const useNetService = (client?: CozyClient): void =>
   }, [client])
 
 const waitForOnline = (
-  callbackRoute: string,
+  callbackArg?: string | ((state: NetInfoState) => void),
   params?: Record<string, unknown>
 ): void => {
-  log.debug('Adding NetInfo listener')
+  netLogger.debug('Adding NetInfo listener')
 
   // Define the unsubscribe function inside the listener
   const unsubscribe = NetInfo.addEventListener(state => {
-    if (state.isConnected) {
-      log.debug('NetService is online, navigating to callback route')
+    const isCallbackRoute = typeof callbackArg === 'string' && callbackArg
+    const isCallbackFunction = typeof callbackArg === 'function'
 
-      callbackRoute === routes.stack && showSplashScreen().catch(log.error)
+    if (state.isConnected) {
+      netLogger.debug('Online, using callback parameters')
 
       try {
-        navigate(callbackRoute, params)
+        if (callbackArg === routes.stack)
+          showSplashScreen().catch(netLogger.error)
+
+        if (isCallbackRoute) navigate(callbackArg, params)
+
+        if (isCallbackFunction) callbackArg(state)
       } catch (error) {
-        log.error(error)
+        netLogger.error(error)
       }
 
-      log.debug('NetService redirect done, removing NetInfo listener')
+      netLogger.debug('Redirect done, removing NetInfo listener')
+
       unsubscribe()
     }
   })
@@ -81,5 +88,6 @@ const handleOffline = (
 export const NetService = {
   handleOffline,
   isConnected,
-  isOffline
+  isOffline,
+  waitForOnline
 }
