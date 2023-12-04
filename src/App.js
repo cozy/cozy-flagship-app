@@ -48,6 +48,13 @@ import { useOsReceiveApi } from '/app/view/OsReceive/hooks/useOsReceiveApi'
 import { useSecureBackgroundSplashScreen } from '/hooks/useSplashScreen'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 
+import {
+  useLauncherContext,
+  LauncherContextProvider
+} from './screens/home/hooks/useLauncherContext'
+
+import LauncherView from '/screens/konnectors/LauncherView'
+
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
   global.btoa = encode
@@ -76,11 +83,37 @@ const App = ({ setClient }) => {
   useGeolocationTracking()
   useCozyEnvironmentOverride()
 
+  const {
+    LauncherDialog,
+    canDisplayLauncher,
+    launcherClient,
+    launcherContext,
+    onKonnectorLog,
+    onKonnectorJobUpdate,
+    resetLauncherContext,
+    setLauncherContext
+  } = useLauncherContext()
+
   if (isLoading) {
     return null
   }
 
-  return <RootNavigator initialRoute={initialRoute} setClient={setClient} />
+  return (
+    <>
+      <RootNavigator initialRoute={initialRoute} setClient={setClient} />
+      {canDisplayLauncher() && (
+        <LauncherView
+          launcherClient={launcherClient}
+          launcherContext={launcherContext.value}
+          retry={resetLauncherContext}
+          setLauncherContext={setLauncherContext}
+          onKonnectorLog={onKonnectorLog}
+          onKonnectorJobUpdate={onKonnectorJobUpdate}
+        />
+      )}
+      {LauncherDialog}
+    </>
+  )
 }
 
 const InnerNav = ({ client, setClient }) => {
@@ -111,7 +144,9 @@ const InnerNav = ({ client, setClient }) => {
           translucent
         />
         <IconChangedModal />
-        <App setClient={setClient} />
+        <LauncherContextProvider>
+          <App setClient={setClient} />
+        </LauncherContextProvider>
       </View>
     </NativeIntentProvider>
   )
