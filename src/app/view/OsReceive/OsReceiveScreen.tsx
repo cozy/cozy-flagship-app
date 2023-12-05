@@ -29,6 +29,7 @@ import { osReceiveScreenStyles } from '/app/view/OsReceive/OsReceiveScreen.style
 
 import { FileDuotone } from '/ui/Icons/FileDuotone'
 import { FileThumbnail } from '/ui/ImageThumbnail'
+import { safePromise } from '/utils/safePromise'
 
 export const OsReceiveScreen = (): JSX.Element | null => {
   const filesToUpload = useFilesToUpload()
@@ -45,8 +46,7 @@ export const OsReceiveScreen = (): JSX.Element | null => {
   const hasFilesToUpload = filesToUpload.length > 0
   const isSingleFile = filesToUpload.length === 1
   const isMultipleFiles = filesToUpload.length > 1
-  const shouldRender =
-    hasFilesToUpload && appsForUpload && appsForUpload.length > 0
+  const shouldRender = hasFilesToUpload
 
   if (!shouldRender) return null
 
@@ -95,7 +95,7 @@ export const OsReceiveScreen = (): JSX.Element | null => {
               </ListSubHeader>
             }
           >
-            {appsForUpload.map((app, index) => (
+            {appsForUpload?.map((app, index) => (
               <React.Fragment key={app.slug}>
                 <ListItem
                   button={!app.reasonDisabled && app.slug !== selectedOption}
@@ -153,7 +153,7 @@ export const OsReceiveScreen = (): JSX.Element | null => {
 
         <Button
           variant="secondary"
-          onPress={proceedToWebview}
+          onPress={safePromise(proceedToWebview)}
           disabled={canProceed()}
         >
           <Typography color="secondary" variant="button">

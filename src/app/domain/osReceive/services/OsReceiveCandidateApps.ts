@@ -1,11 +1,17 @@
+import CozyClient, { Registry } from 'cozy-client'
+import { RegistryApp } from 'cozy-client/types/registry'
+import { getErrorMessage } from 'cozy-intent'
+
 import mime from 'mime/lite'
 import RNFS from 'react-native-fs'
 
+import { OsReceiveLogger } from '/app/domain/osReceive'
 import {
   AcceptFromFlagshipManifest,
   AppForUpload,
   WillAcceptFromFlagshipManifest,
-  isWillAcceptFromFlagshipManifest
+  isWillAcceptFromFlagshipManifest,
+  fetchStackApp
 } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import { OsReceiveFile } from '/app/domain/osReceive/models/OsReceiveState'
 import { t } from '/locales/i18n'
@@ -175,4 +181,49 @@ const overrideAppName = (app: WillAcceptFromFlagshipManifest): string => {
   }
 
   return app.name
+}
+
+// TODO: remove this type when cozy-client types are fixed
+type RegistryAppWithAcceptFromFlagship = RegistryApp & {
+  latest_version?: {
+    manifest: AcceptFromFlagshipManifest
+  }
+}
+
+export const fetchRegistryApps = async (
+  client: CozyClient
+): Promise<AcceptFromFlagshipManifest[]> => {
+  try {
+    const registry = new Registry({ client })
+    const apps = (await registry.fetchApps({
+      channel: 'stable',
+      type: 'webapp',
+      limit: '200'
+    })) as RegistryAppWithAcceptFromFlagship[]
+
+    return apps
+      .filter(app => app.latest_version?.manifest.accept_from_flagship)
+      .map(app => app.latest_version?.manifest as AcceptFromFlagshipManifest)
+  } catch (error) {
+    OsReceiveLogger.error(
+      'fetchRegistryApps error, defaulting to empty array',
+      error
+    )
+    return []
+  }
+}
+
+export const hasAppInstalled = async (
+  client: CozyClient,
+  slug: string
+): Promise<boolean> => {
+  try {
+    const params = fetchStackApp(slug)
+    await client.query(params.definition, params.options)
+    return true
+  } catch (error) {
+    if (getErrorMessage(error).includes('not installed')) return false
+
+    throw error
+  }
 }

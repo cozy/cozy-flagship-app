@@ -1,4 +1,5 @@
-import { Q } from 'cozy-client'
+import { Q, QueryDefinition } from 'cozy-client'
+import { QueryOptions } from 'cozy-client/types/types'
 
 interface AcceptDocumentsFromFlagship {
   accepted_mime_types: string[]
@@ -55,9 +56,16 @@ export interface AppForUpload {
   slug: string
 }
 
-export const fetchOsReceiveCozyApps = {
-  definition: Q('io.cozy.apps'),
-  options: {
-    as: 'io.cozy.apps/accept_from_flagship'
+export const fetchStackApp = (
+  slug: string
+): {
+  definition: QueryDefinition
+  options: QueryOptions
+} => {
+  return {
+    definition: Q('io.cozy.apps').getById(`io.cozy.apps/${slug}`),
+    options: {
+      as: `io.cozy.apps/${slug}`
+    }
   }
 }

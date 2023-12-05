@@ -11,7 +11,6 @@ import {
   OsReceiveFile,
   OsReceiveFileStatus
 } from '/app/domain/osReceive/models/OsReceiveState'
-import { fetchOsReceiveCozyApps } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import {
   initialState,
   OsReceiveDispatchContext,
@@ -19,9 +18,9 @@ import {
   OsReceiveStateContext
 } from '/app/view/OsReceive/state/OsReceiveState'
 import { routes } from '/constants/routes'
-import { AcceptFromFlagshipManifest } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import { backToHome } from '/libs/intents/localMethods'
 import { OsReceiveLogger } from '/app/domain/osReceive'
+import { fetchRegistryApps } from '/app/domain/osReceive/services/OsReceiveCandidateApps'
 
 export const OsReceiveProvider = ({
   children
@@ -64,22 +63,27 @@ export const OsReceiveProvider = ({
   useEffect(() => {
     if (!client || didCall.current || state.filesToUpload.length === 0) return
 
-    const fetchAppsAndSetCandidates = async (): Promise<void> => {
-      const res = (await client.fetchQueryAndGetFromState({
-        definition: fetchOsReceiveCozyApps.definition,
-        options: fetchOsReceiveCozyApps.options
-      })) as { data: AcceptFromFlagshipManifest[] }
+    const fetchRegistryAppsAndSetCandidates = async (): Promise<void> => {
+      const apps = await fetchRegistryApps(client)
 
-      if (res.data.length > 0) {
-        didCall.current = true
-        dispatch({
-          type: OsReceiveActionType.SetCandidateApps,
-          payload: res.data
+      if (apps.length === 0) {
+        OsReceiveLogger.error('No app found in registry, exiting flow')
+
+        return dispatch({
+          type: OsReceiveActionType.SetFlowErrored,
+          payload: true
         })
       }
+
+      didCall.current = true
+
+      dispatch({
+        type: OsReceiveActionType.SetCandidateApps,
+        payload: apps
+      })
     }
 
-    void fetchAppsAndSetCandidates()
+    void fetchRegistryAppsAndSetCandidates()
   }),
     [client, state.filesToUpload.length]
 
@@ -88,10 +92,10 @@ export const OsReceiveProvider = ({
   useEffect(() => {
     if (state.errored) {
       dispatch({ type: OsReceiveActionType.SetRecoveryState })
+
       if (navigationState.routes[navigationState.index].name !== routes.lock) {
-        handleError(t('errors.unknown_error'), () => {
-          navigation.navigate(routes.home as never)
-        })
+        handleError(t('errors.unknown_error'))
+        OsReceiveEmitter.clearReceivedFiles()
       }
     }
   }, [

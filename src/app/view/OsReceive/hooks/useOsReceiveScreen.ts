@@ -28,11 +28,14 @@ import { navigate, navigationRef } from '/libs/RootNavigation'
 
 import { osReceiveScreenStyles } from '/app/view/OsReceive/OsReceiveScreen.styles'
 
+import { hasAppInstalled } from '/app/domain/osReceive/services/OsReceiveCandidateApps'
+import { OsReceiveLogger } from '/app/domain/osReceive'
+
 export const useOsReceiveScreenLogic = (): {
   selectedOption: string | undefined
   setSelectedOption: Dispatch<SetStateAction<string | undefined>>
   canProceed: () => boolean
-  proceedToWebview: () => void
+  proceedToWebview: () => Promise<void>
   hasAppsForUpload: () => boolean
 } => {
   const [selectedOption, setSelectedOption] = useState<string>()
@@ -67,45 +70,78 @@ export const useOsReceiveScreenLogic = (): {
     [filesToUpload]
   )
 
-  const proceedToWebview = useCallback(() => {
-    if (!client) throw new Error('Client is not defined')
-    if (!appsForUpload) throw new Error('Apps for upload are not defined')
+  const proceedToWebview = useCallback(async () => {
+    try {
+      if (!client) throw new Error('Client is not defined')
+      if (!appsForUpload) throw new Error('Apps for upload are not defined')
 
-    // No selected option means that we couldn't auto-select any app,
-    // Meaning every app is disabled or there are no apps
-    if (!selectedOption)
-      return osReceiveDispatch({
-        type: OsReceiveActionType.SetInitialState
+      // No selected option means that we couldn't auto-select any app,
+      // Meaning every app is disabled or there are no apps
+      if (!selectedOption)
+        return osReceiveDispatch({
+          type: OsReceiveActionType.SetInitialState
+        })
+
+      const app = appsForUpload.find(app => app.slug === selectedOption)
+
+      if (!app) throw new Error('App is not defined')
+
+      const webLink = generateWebLink({
+        cozyUrl: client.getStackClient().uri,
+        pathname: '',
+        slug: selectedOption,
+        subDomainType: client.capabilities.flat_subdomains ? 'flat' : 'nested',
+        hash: app.routeToUpload.replace(/^\/?#?\//, ''),
+        searchParams: []
       })
 
-    const app = appsForUpload.find(app => app.slug === selectedOption)
+      const hasApp = await hasAppInstalled(client, selectedOption)
 
-    if (!app) throw new Error('App is not defined')
+      if (hasApp) {
+        navigate(routes.cozyapp, {
+          href: webLink,
+          slug: selectedOption,
+          iconParams
+        })
+      } else {
+        const storeLink = generateWebLink({
+          cozyUrl: client.getStackClient().uri,
+          pathname: '',
+          slug: 'store',
+          subDomainType: client.capabilities.flat_subdomains
+            ? 'flat'
+            : 'nested',
+          hash: `/discover/${selectedOption}/install?redirectTo=${webLink}`.replace(
+            /^\/?#?\//,
+            ''
+          ),
+          searchParams: []
+        })
 
-    const webLink = generateWebLink({
-      cozyUrl: client.getStackClient().uri,
-      pathname: '',
-      slug: selectedOption,
-      subDomainType: client.capabilities.flat_subdomains ? 'flat' : 'nested',
-      hash: app.routeToUpload.replace(/^\/?#?\//, ''),
-      searchParams: []
-    })
+        navigate(routes.cozyapp, {
+          href: storeLink,
+          slug: 'store',
+          iconParams
+        })
+      }
 
-    navigate(routes.cozyapp, {
-      href: webLink,
-      slug: selectedOption,
-      iconParams
-    })
+      osReceiveDispatch({
+        type: OsReceiveActionType.UpdateFileStatus,
+        payload: { name: '*', status: OsReceiveFileStatus.queued }
+      })
 
-    osReceiveDispatch({
-      type: OsReceiveActionType.UpdateFileStatus,
-      payload: { name: '*', status: OsReceiveFileStatus.queued }
-    })
+      osReceiveDispatch({
+        type: OsReceiveActionType.SetRouteToUpload,
+        payload: { href: webLink, slug: selectedOption }
+      })
+    } catch (error) {
+      OsReceiveLogger.error('critical proceedToWebview error', error)
 
-    osReceiveDispatch({
-      type: OsReceiveActionType.SetRouteToUpload,
-      payload: { href: webLink, slug: selectedOption }
-    })
+      osReceiveDispatch({
+        type: OsReceiveActionType.SetFlowErrored,
+        payload: true
+      })
+    }
   }, [client, appsForUpload, selectedOption, iconParams, osReceiveDispatch])
 
   useEffect(() => {
