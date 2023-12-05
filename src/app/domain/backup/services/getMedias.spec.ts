@@ -35,25 +35,6 @@ describe('getRemotePath', () => {
 })
 
 describe('getAlbums', () => {
-  test('return array when group_name is a string', () => {
-    // Given
-    const photoIdentifier = {
-      node: {
-        group_name: 'Holiday'
-      }
-    } as PhotoIdentifier
-
-    // When
-    const albums = getMedias.getAlbums(photoIdentifier)
-
-    // Then
-    expect(albums).toEqual([
-      {
-        name: 'Holiday'
-      }
-    ])
-  })
-
   test('return array when group_name is an array', () => {
     // Given
     const photoIdentifier = {
@@ -98,7 +79,8 @@ describe('formatMediasFromPhotoIdentifier', () => {
     Platform.OS = 'android'
     const photoIdentifier = {
       node: {
-        group_name: 'Pictures',
+        id: '1234',
+        group_name: ['Pictures'],
         image: {
           extension: 'jpg',
           fileSize: 1234,
@@ -123,6 +105,7 @@ describe('formatMediasFromPhotoIdentifier', () => {
     // Then
     expect(media).toEqual([
       {
+        id: '1234',
         name: 'IMG_20230519_204453.jpg',
         uri: 'file:///storage/emulated/0/Pictures/IMG_20230519_204453.jpg',
         path: 'file:///storage/emulated/0/Pictures/IMG_20230519_204453.jpg',

@@ -38,7 +38,7 @@ const getPhotoIdentifiersPage = async (
   const photoIdentifiersPage = await CameraRoll.getPhotos({
     first: MEDIAS_BY_PAGE,
     after: after,
-    include: ['filename', 'fileExtension', 'fileSize'],
+    include: ['filename', 'fileExtension', 'fileSize', 'albums'],
     includeSharedAlbums: shouldIncludeSharedAlbums
   })
 
@@ -148,26 +148,12 @@ export const formatMediasFromPhotoIdentifier = (
   ]
 }
 
-/*
-  This code is linked to a patch-package of @react-native-camera-roll/camera-roll
-  returning for each asset its albums.
-
-  With this patch-package, group_name can be a string or a string[].
-
-  If it is merged one day, we will not need anymore to compare type.
-*/
 export const getAlbums = (photoIdentifier: PhotoIdentifier): Album[] => {
   const {
     node: { group_name }
   } = photoIdentifier
 
-  if (typeof group_name === 'string') {
-    return [
-      {
-        name: group_name
-      }
-    ]
-  } else if (Array.isArray(group_name)) {
+  if (Array.isArray(group_name)) {
     return group_name.map(name => ({ name }))
   } else {
     return []
