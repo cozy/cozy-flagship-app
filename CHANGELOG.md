@@ -1,4 +1,4 @@
-# 1.1.19
+# 1.1.20
 
 ## ✨ Features
 
@@ -8,6 +8,22 @@
 
 ## 🔧 Tech
 
+
+# 1.1.19
+
+## ✨ Features
+* Allow mespapiers app to control clisk konnectors ([PR #1047](https://github.com/cozy/cozy-flagship-app/pull/1047))
+
+## 🐛 Bug Fixes
+* Fix send files locales ([PR #1031](https://github.com/cozy/cozy-flagship-app/pull/1031))
+* Fix UI bugs ([PR #1036](https://github.com/cozy/cozy-flagship-app/pull/1036), [PR #1037](https://github.com/cozy/cozy-flagship-app/pull/1037), [PR #1041](https://github.com/cozy/cozy-flagship-app/pull/1041), [PR #1043](https://github.com/cozy/cozy-flagship-app/pull/1043), [PR #1045](https://github.com/cozy/cozy-flagship-app/pull/1045))
+* Fix backup bugs especially when backup folder has been deleted ([PR #1040](https://github.com/cozy/cozy-flagship-app/pull/1040), [PR #1044](https://github.com/cozy/cozy-flagship-app/pull/1044))
+* Manage when destination folder is removed during konnector execution ([PR #1030](https://github.com/cozy/cozy-flagship-app/pull/1030))
+
+## 🔧 Tech
+* Improve logs ([PR #1035](https://github.com/cozy/cozy-flagship-app/pull/1035), [PR #1042](https://github.com/cozy/cozy-flagship-app/pull/1042), [PR #1039](https://github.com/cozy/cozy-flagship-app/pull/1039))
+* Remove react-native-cameraroll patches ([PR #1048](https://github.com/cozy/cozy-flagship-app/pull/1048))
+* Fix open handles in tests and update testing tools ([PR #1028](https://github.com/cozy/cozy-flagship-app/pull/1028))
 
 # 1.1.18
 
