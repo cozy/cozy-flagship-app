@@ -5,6 +5,7 @@ import { FallbackUrl } from '/app/domain/deeplinks/models/FallbackUrl'
 import { MagicLinkUrl } from '/app/domain/deeplinks/models/MagicLinkUrl'
 import { OnboardingParams } from '/app/domain/deeplinks/models/OnboardingParams'
 import { routes } from '/constants/routes'
+import strings from '/constants/strings.json'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 const log = Minilog('DeeplinksParserService')
@@ -98,10 +99,10 @@ export const parseFallbackURL = (url: string | null): FallbackUrl => {
     let fallback = makeURL.searchParams.get(FALLBACK_PARAM) ?? undefined
 
     if (
-      fallback?.startsWith('cozy://') ||
-      fallback?.startsWith('https://manager.cozycloud.cc') ||
-      fallback?.startsWith('https://staging-manager.cozycloud.cc') ||
-      fallback?.startsWith('https://manager-dev.cozycloud.cc')
+      fallback?.startsWith(strings.COZY_SCHEME) ||
+      fallback?.startsWith(strings.cloudery.prodBaseUri) ||
+      fallback?.startsWith(strings.cloudery.intBaseUri) ||
+      fallback?.startsWith(strings.cloudery.devBaseUri)
     ) {
       fallback = undefined
     }
