@@ -59,6 +59,11 @@ export const interceptNavigation =
   (request: WebViewNavigation): boolean => {
     log.debug('Navigating to', request.url)
     try {
+      if (isOsStoreUrl(request.url)) {
+        void Linking.openURL(request.url)
+        return false
+      }
+
       if (isStartIapUrl(request.url)) {
         const url = new URL(request.url)
         const productId = url.searchParams.get('productId')
@@ -92,6 +97,13 @@ export const interceptNavigation =
 
 const isStartIapUrl = (url: string): boolean => {
   return url.startsWith(START_IAP_URL)
+}
+
+const isOsStoreUrl = (url: string): boolean => {
+  return (
+    url.startsWith('https://apps.apple.com/account/subscriptions') ||
+    url.startsWith('https://play.google.com/store/account/subscriptions')
+  )
 }
 
 const buySubscription = async (
