@@ -18,6 +18,8 @@ import {
   MAX_DOCS_PER_BATCH,
   MAX_TEMPORAL_DELTA,
   MIN_SPEED_BETWEEN_DISTANT_POINTS,
+  STILL_ACTIVITY,
+  UNKNOWN_ACTIVITY,
   WALKING_SPEED_AVG
 } from '/app/domain/geolocation/tracking/consts'
 
@@ -193,7 +195,7 @@ const prepareMotionData = async ({ locations, lastUploadedPoint }) => {
     addPoint(contentToUpload, point, filtered)
   }
 
-  // -----Step 3: Force stop transition after last last point, as the device had been stopped long enough after motion
+  // -----Step 3: Force stop transition after last point, as the device had been stopped long enough after motion
 
   // FIXME: what if the upload failed and more points were added before the retry?
   // The stop transition might be missed?
@@ -402,25 +404,43 @@ export const filterNonHeadingPointsAfterStillActivity = (
   return points
 }
 
-const getActivitiesFromLocations = locations => {
-  if (!locations || locations.length < 1) {
-    return null
-  }
-  const activities = locations.map(loc =>
-    translateEventToEMissionMotionActivity(loc)
+/**
+ * We noticed that some "stationary" activities were in fact in motion
+ * This detects this strange behaviour that we experienced on some Android devices
+ *
+ * @param {Location} location - The location point
+ * @returns {boolean} whether or not this a moving stationary activity
+ */
+const isMovingStill = location => {
+  return (
+    (location.activity.type === STILL_ACTIVITY && location.is_moving) ||
+    (location.activity.type === STILL_ACTIVITY &&
+      location?.coords?.speed > 0 &&
+      location?.coords?.speed_accuracy > 0)
   )
-  return activities
 }
 
 export const getFilteredActivities = async ({ beforeTs, locations }) => {
-  let activities = await getActivities({ beforeTs })
-  if (!activities || activities?.length < 1) {
-    Log('No activity found in local storage. Get it from locations')
-    // Fallback when no activity was captured
-    // TODO: filter stationary
-    const activitiesFromLoc = getActivitiesFromLocations(locations)
-    return activitiesFromLoc
+  const savedActivities = await getActivities({ beforeTs })
+  let activitiesFromLocations = []
+  if (locations && locations.length > 0) {
+    activitiesFromLocations = locations.map(loc => {
+      const location = { ...loc }
+      if (isMovingStill(loc)) {
+        Log('Detect moving "still" activity: change to "unknwon"')
+        // Turn "motion stationary" into "unknown" activity
+        location.activity.type = UNKNOWN_ACTIVITY
+      }
+      return translateEventToEMissionMotionActivity(location)
+    })
   }
+  // Merge activities from activity event and locations.
+  // This is useful because the server relies heavily on those motion activities, and we noticed that some devices
+  // are not very active on activities event, and some others do not capture activity in locations. Thus,
+  // we use both.
+  const activities = savedActivities.concat(activitiesFromLocations)
+  activities.sort((a, b) => a.data.ts - b.data.ts)
+
   const result = []
   let previousActivity = null
 
@@ -467,7 +487,7 @@ const translateToEMissionLocationPoint = location_point => {
   }
 }
 
-const translateEventToEMissionMotionActivity = event => {
+export const translateEventToEMissionMotionActivity = event => {
   const ts = Math.floor(parseISOString(event.timestamp).getTime() / 1000)
   // See: https://transistorsoft.github.io/react-native-background-geoevent/interfaces/motionactivity.html#type
   return {
@@ -520,7 +540,6 @@ export const saveActivity = async event => {
 const deg2rad = deg => {
   return deg * (Math.PI / 180)
 }
-
 // TODO: use cozy-client method
 const getDistanceFromLatLonInM = (point1, point2) => {
   const R = 6371 // Radius of the earth in km

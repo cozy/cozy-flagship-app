@@ -3,8 +3,9 @@ import { getActivities } from './storage'
 import {
   createDataBatch,
   filterNonHeadingPointsAfterStillActivity,
+  createNewStartPoint,
   getFilteredActivities,
-  createNewStartPoint
+  translateEventToEMissionMotionActivity
 } from '/app/domain/geolocation/tracking/tracking'
 
 jest.mock('/app/domain/geolocation/tracking/storage', () => ({
@@ -79,6 +80,70 @@ describe('get activities', () => {
 
     const activities = await getFilteredActivities({ beforeTs: 5 })
     expect(activities).toEqual([activity1])
+  })
+
+  it('should merge and sort stored activities and locations', async () => {
+    const activity1 = {
+      data: {
+        cycling: true,
+        walking: false,
+        ts: new Date('2023-12-10T12:00:05.000Z').getTime() / 1000
+      }
+    }
+    const activity2 = {
+      data: {
+        cycling: true,
+        walking: false,
+        ts: new Date('2023-12-10T12:00:10.000Z').getTime() / 1000
+      }
+    }
+    getActivities.mockResolvedValueOnce([activity1, activity2])
+    const locations = [
+      { activity: { type: 'walking' }, timestamp: '2023-12-10T12:00:00.000Z' },
+      { activity: { type: 'walking' }, timestamp: '2023-12-10T12:00:30.000Z' }
+    ]
+
+    const activities = await getFilteredActivities({ beforeTs: 5, locations })
+    expect(activities).toEqual([
+      translateEventToEMissionMotionActivity(locations[0]),
+      activity1,
+      activity2,
+      translateEventToEMissionMotionActivity(locations[1])
+    ])
+  })
+  it('should detect and replace still activities with motion', async () => {
+    const locations = [
+      { activity: { type: 'walking' }, timestamp: '2023-12-10T12:00:00.000Z' },
+      {
+        activity: { type: 'still' },
+        timestamp: '2023-12-10T12:00:30.000Z',
+        is_moving: true
+      },
+      {
+        activity: { type: 'still' },
+        timestamp: '2023-12-10T12:00:35.000Z',
+        is_moving: false,
+        coords: {
+          speed: 2,
+          speed_accuracy: 4
+        }
+      },
+      {
+        activity: { type: 'still' },
+        timestamp: '2023-12-10T12:00:40.000Z',
+        is_moving: false,
+        coords: {
+          speed: -1,
+          speed_accuracy: -1
+        }
+      }
+    ]
+    getActivities.mockResolvedValueOnce([])
+
+    const activities = await getFilteredActivities({ beforeTs: 5, locations })
+    expect(activities[1].data.unknown).toBe(true)
+    expect(activities[2].data.unknown).toBe(true)
+    expect(activities[3].data.stationary).toBe(true)
   })
 })
 
