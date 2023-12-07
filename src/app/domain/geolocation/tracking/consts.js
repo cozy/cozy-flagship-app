@@ -9,7 +9,7 @@ export const WALKING_ACTIVITY = 'walking'
 /**
  * Tracking plugin config
  */
-export const DISTANCE_FILTER = 10
+export const DISTANCE_FILTER = 20
 export const ELASTICITY_MULTIPLIER = 4
 export const ACCURACY = BackgroundGeolocation.DESIRED_ACCURACY_HIGH
 export const DEFAULT_TRACKING_CONFIG = {
