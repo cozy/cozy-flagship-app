@@ -23,6 +23,9 @@
     "title": "Desconexión"
   },
   "screens": {
+    "clouderyOffer": {
+      "backButton": "VOLVER A MI COZY"
+    },
     "cozyNotFound": {
       "body": "No hemos encontrado ningún Cozy en esta dirección. Puede que sea un error de tipeo. Para saberlo, verifica la dirección de tu Cozy en el correo electrónico que te enviamos cuando se creó.",
       "title": "La dirección de este Cozy no existe."
