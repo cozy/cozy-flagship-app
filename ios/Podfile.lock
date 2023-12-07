@@ -507,7 +507,7 @@ PODS:
     - React-Core
   - RNBootSplash (3.2.3):
     - React-Core
-  - RNCAsyncStorage (1.17.11):
+  - RNCAsyncStorage (1.21.0):
     - React-Core
   - RNDeviceInfo (10.3.0):
     - React-Core
@@ -905,7 +905,7 @@ SPEC CHECKSUMS:
   RNBackgroundFetch: 501c34ad6e880818ba17e7840b23f20a2d112923
   RNBackgroundGeolocation: f2a2052e63d3bf255de1e2f84a24029f89d91601
   RNBootSplash: 8ef5ffa03dadd35f66510b42960ce40f397c98bf
-  RNCAsyncStorage: 8616bd5a58af409453ea4e1b246521bb76578d60
+  RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNDeviceInfo: 4701f0bf2a06b34654745053db0ce4cb0c53ada7
   RNFBApp: e4439717c23252458da2b41b81b4b475c86f90c4
   RNFBMessaging: 40dac204b4197a2661dec5be964780c6ec39bf65
