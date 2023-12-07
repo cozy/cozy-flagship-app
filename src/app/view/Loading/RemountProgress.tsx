@@ -16,7 +16,7 @@ export const RemountProgress = (): JSX.Element => {
 }
 
 const progressBarConfig = {
-  width: undefined,
+  width: null as unknown as number | undefined, // TODO: understand why the width has to be set to null to avoid progress bar to be cut
   indeterminate: true,
   unfilledColor: palette.Grey[200],
   color: palette.Primary[600],
