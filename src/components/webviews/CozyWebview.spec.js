@@ -63,7 +63,8 @@ jest.mock('cozy-intent', () => ({
 }))
 
 jest.mock('cozy-client', () => ({
-  useClient: jest.fn().mockReturnValue({})
+  useClient: jest.fn().mockReturnValue({}),
+  useInstanceInfo: jest.fn().mockReturnValue({})
 }))
 
 jest.mock('@react-navigation/native', () => ({
