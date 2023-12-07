@@ -10,7 +10,7 @@ import { styles } from '/components/ProgressContainer.styles'
 const colors = getColors()
 
 const progressBarConfig = {
-  width: undefined,
+  width: null as unknown as number | undefined, // TODO: understand why the width has to be set to null to avoid progress bar to be cut
   indeterminate: false,
   unfilledColor: palette.Grey[200],
   color: colors.primaryColor,
