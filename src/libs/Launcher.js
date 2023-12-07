@@ -438,7 +438,8 @@ export default class Launcher {
           'size',
           'md5sum',
           'mime',
-          'trashed'
+          'trashed',
+          '_rev'
         ])
     )
     // @ts-ignore
