@@ -22,6 +22,7 @@ const ANDROID_OFFERS = ['2024_standard_01', '2024_premium_01']
 const SKUS = Platform.OS === 'ios' ? IOS_OFFERS : ANDROID_OFFERS
 
 interface ClouderyOfferState {
+  hidePopup: () => void
   popupUrl: string | null
   interceptNavigation: (request: WebViewNavigation) => boolean
   isBuying: boolean
@@ -74,6 +75,7 @@ export const useClouderyOffer = (): ClouderyOfferState => {
   )
 
   return {
+    hidePopup: () => setPopupUrl(null),
     popupUrl,
     interceptNavigation: interceptNavigation(
       instancesInfo,
