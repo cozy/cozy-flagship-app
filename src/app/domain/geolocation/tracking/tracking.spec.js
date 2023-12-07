@@ -3,7 +3,8 @@ import { getActivities } from './storage'
 import {
   createDataBatch,
   filterNonHeadingPointsAfterStillActivity,
-  getFilteredActivities
+  getFilteredActivities,
+  createNewStartPoint
 } from '/app/domain/geolocation/tracking/tracking'
 
 jest.mock('/app/domain/geolocation/tracking/storage', () => ({
@@ -104,5 +105,45 @@ describe('filterNonHeadingPointsAfterStillActivity', () => {
       activities
     )
     expect(result).toEqual(expectedLocations)
+  })
+})
+
+describe('shouldCreateNewStartPoint', () => {
+  it('should not create new start point when distance is too small', () => {
+    const prevPoint = { coords: { latitude: 48.8566, longitude: 2.3522 } }
+    const nextPoint = { coords: { latitude: 48.85669, longitude: 2.3522 } }
+    expect(shouldCreateNewStartPoint(prevPoint, nextPoint)).toEqual(false)
+  })
+  it('should not create new start point when distance is too high', () => {
+    const prevPoint = { coords: { latitude: 48.8566, longitude: 2.3522 } }
+    const nextPoint = { coords: { latitude: 48.94652, longitude: 2.3522 } }
+    expect(shouldCreateNewStartPoint(prevPoint, nextPoint)).toEqual(false)
+  })
+  it('should create new start point when distance is in range', () => {
+    const prevPoint = { coords: { latitude: 48.8566, longitude: 2.3522 } }
+    const nextPoint = { coords: { latitude: 48.8575, longitude: 2.3522 } }
+    expect(shouldCreateNewStartPoint(prevPoint, nextPoint)).toEqual(true)
+  })
+})
+
+describe('createNewStartPoint', () => {
+  it('should create a new point based on next point timestamp and previous point coordinates', () => {
+    const prevPoint = {
+      coords: { latitude: 51.502681, longitude: -0.137321 },
+      timestamp: '2023-12-01T10:00:00'
+    }
+    const nextPoint = {
+      coords: { latitude: 51.502781, longitude: -0.138321 },
+      timestamp: '2023-12-01T12:00:00'
+    }
+
+    let newPoint = createNewStartPoint(prevPoint, nextPoint)
+    expect(newPoint.coords).toEqual(prevPoint.coords)
+    expect(new Date(newPoint.timestamp).getTime()).toBeGreaterThan(
+      new Date(prevPoint.timestamp).getTime()
+    )
+    expect(new Date(newPoint.timestamp).getTime()).toBeLessThan(
+      new Date(nextPoint.timestamp).getTime()
+    )
   })
 })

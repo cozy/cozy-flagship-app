@@ -17,8 +17,13 @@ import {
   LOW_CONFIDENCE_THRESHOLD,
   MAX_DOCS_PER_BATCH,
   MAX_TEMPORAL_DELTA,
-  MIN_SPEED_BETWEEN_DISTANT_POINTS
+  MIN_SPEED_BETWEEN_DISTANT_POINTS,
+  WALKING_SPEED_AVG
 } from '/app/domain/geolocation/tracking/consts'
+
+/**
+ * @typedef {import('react-native-background-geolocation').Location} Location
+ */
 
 export const createDataBatch = (locations, nRun, maxBatchSize) => {
   const startBatchPoint = nRun * maxBatchSize
@@ -37,10 +42,10 @@ export const smartSend = async (locations, user, { force = false } = {}) => {
     await uploadWithNoNewPoints({ user, force })
   } else {
     Log('Found pending locations, uploading: ' + locations.length)
-    const previousPoint = await getLastPointUploaded()
+    const lastUploadedPoint = await getLastPointUploaded()
     const motionData = await prepareMotionData({
       locations,
-      lastBatchPoint: previousPoint
+      lastUploadedPoint
     })
 
     const nBatch = Math.floor(motionData.length / MAX_DOCS_PER_BATCH) + 1
@@ -60,7 +65,7 @@ export const smartSend = async (locations, user, { force = false } = {}) => {
   }
 }
 
-const prepareMotionData = async ({ locations, lastBatchPoint }) => {
+const prepareMotionData = async ({ locations, lastUploadedPoint }) => {
   const contentToUpload = []
 
   if (locations?.length < 1) {
@@ -92,11 +97,19 @@ const prepareMotionData = async ({ locations, lastBatchPoint }) => {
     return []
   }
 
+  // Create new starting point based on previous point, if necessary
+  if (shouldCreateNewStartPoint(lastUploadedPoint, points[0])) {
+    const newPoint = createNewStartPoint(lastUploadedPoint, points[0])
+    Log('Built new starting point : ' + JSON.stringify(newPoint))
+    points.unshift(newPoint)
+  }
+
   for (let i = 0; i < points.length; i++) {
     const point = points[i]
+    let builtNewPoint = null
     const previousPoint =
       i === 0 // Handles setting up the case for the first point
-        ? lastBatchPoint // Can be undefined
+        ? lastUploadedPoint // Can be undefined
         : points[i - 1]
 
     // ----- Step 1: Decide if transitions should be added
@@ -127,15 +140,26 @@ const prepareMotionData = async ({ locations, lastBatchPoint }) => {
         await addStartTransitions(contentToUpload, getTs(point) - 1)
       } else if (deltaT > LARGE_TEMPORAL_DELTA) {
         const distanceM = getDistanceFromLatLonInM(previousPoint, point)
-        Log('Distance between points : ' + distanceM)
+        Log('Spatial distance between points : ' + distanceM)
+        Log('temporal distance between points : ' + deltaT)
         const speed = distanceM / deltaT
 
         if (speed < MIN_SPEED_BETWEEN_DISTANT_POINTS) {
           Log('Very slow speed: force transition')
           await addStopTransitions(contentToUpload, getTs(previousPoint) + 1)
           await addStartTransitions(contentToUpload, getTs(point) - 1)
+          // Here we forced a hard stop transition. This typically happens when the tracking was lost for
+          // a significant time, for a significant distance, but with a speed not significant enough to be
+          // considered as a continuing trip.
+          // Thus, we try to re-attach the previous point to deal with trip transitions where the new starting
+          // point took some time to be fetched.
+          if (shouldCreateNewStartPoint(previousPoint, point)) {
+            const newPoint = createNewStartPoint(previousPoint, point)
+            Log('Built new starting point : ' + JSON.stringify(newPoint))
+            builtNewPoint = newPoint
+          }
         } else {
-          Log('Long distance, leaving uninterrupted trip: ' + distanceM + 'm')
+          Log('Long distance, leaving uninterrupted trip')
         }
       }
     }
@@ -159,6 +183,9 @@ const prepareMotionData = async ({ locations, lastBatchPoint }) => {
       point.coords.latitude === previousPoint.coords.latitude
     const filtered = !samePosAsPrev && point.coords.accuracy <= 200
 
+    if (builtNewPoint) {
+      addPoint(contentToUpload, builtNewPoint, filtered)
+    }
     addPoint(contentToUpload, point, filtered)
   }
 
@@ -171,6 +198,58 @@ const prepareMotionData = async ({ locations, lastBatchPoint }) => {
   await addStopTransitions(contentToUpload, lastPointTs + 1)
 
   return contentToUpload
+}
+
+/**
+ * The starting point is sometimes a bit far from the actual start.
+ * This can happen because of the geofence on iOS, or simply because the plugin
+ * took some time to detect motion.
+ * The openpath server has a start/end place strategy to re-use the  and use it to correctly
+ * infer the starting point, when it but it can result in completely wrong trips when the points
+ * are far away, typically after moving without tracking.
+ *
+ * Thus, when we detect that the starting point is close enough from the last end point,
+ * we take the previous point coordinates and compute a timestamp based on the speed.
+ *
+ * @param {Location} previousPoint - The previous point
+ * @param {Location} nextPoint - The next point
+ * @returns {Location} The new starting point
+ */
+export const createNewStartPoint = (previousPoint, nextPoint) => {
+  const distance = getDistanceFromLatLonInM(previousPoint, nextPoint)
+  const date = new Date(nextPoint.timestamp)
+  const speed =
+    nextPoint.coords.speed > 0 ? nextPoint.coords.speed : AVG_WALKING_SPEED
+  // Calculate the time to subtract based on speed and distance
+  const timeToSubtract = (distance / speed) * 1000
+  const newTime = date.getTime() - timeToSubtract
+  if (newTime > new Date(previousPoint.timestamp).getTime()) {
+    // Subtract the time from the date
+    date.setTime(date.getTime() - timeToSubtract)
+  }
+  const newTimestamp = date.toISOString()
+  const newPoint = { ...previousPoint, timestamp: newTimestamp }
+  return newPoint
+}
+
+/**
+ * Whether or not a new point should be created between the 2 given points,
+ * based on their distance.
+ *
+ * @param {Location} previousPoint - The previous point
+ * @param {Location} newPoint - The next point
+ * @returns {boolean} whether or not a new point should be created
+ */
+export const shouldCreateNewStartPoint = (previousPoint, nextPoint) => {
+  if (!previousPoint || !nextPoint) {
+    return null
+  }
+  const distance = getDistanceFromLatLonInM(previousPoint, nextPoint)
+  Log('Distance from previous point : ' + distance)
+  return (
+    distance > MIN_DISTANCE_TO_USE_LAST_POINT &&
+    distance < MAX_DISTANCE_TO_USE_LAST_POINT
+  )
 }
 
 const uploadWithNoNewPoints = async ({ user, force = false }) => {
