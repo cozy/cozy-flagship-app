@@ -1,10 +1,11 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-const { getDefaultConfig } = require('metro-config')
+const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config')
+
+const {
+  resolver: { sourceExts, assetExts }
+} = getDefaultConfig()
 
 const transformerConfig = {
   transformer: {
-    experimentalImportSupport: false,
-    inlineRequires: true,
     babelTransformerPath: require.resolve('react-native-svg-transformer')
   }
 }
@@ -19,18 +20,19 @@ const getStorybookResolverConfig = sourceExts => ({
   sourceExts: ['storybook.js', ...sourceExts]
 })
 
-module.exports = (async () => {
-  const defaultConfig = await getDefaultConfig()
-  const {
-    resolver: { sourceExts, assetExts }
-  } = defaultConfig
+const resolverConfig = process.env.STORYBOOK_ENABLED
+  ? getStorybookResolverConfig(sourceExts)
+  : getDefaultResolverConfig(sourceExts, assetExts)
 
-  const resolverConfig = process.env.STORYBOOK_ENABLED
-    ? getStorybookResolverConfig(sourceExts)
-    : getDefaultResolverConfig(sourceExts, assetExts)
+/**
+ * Metro configuration
+ * https://facebook.github.io/metro/docs/configuration
+ *
+ * @type {import('metro-config').MetroConfig}
+ */
+const config = {
+  ...transformerConfig,
+  resolver: resolverConfig
+}
 
-  return {
-    ...transformerConfig,
-    resolver: resolverConfig
-  }
-})()
+module.exports = mergeConfig(getDefaultConfig(__dirname), config)
