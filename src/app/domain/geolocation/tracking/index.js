@@ -160,17 +160,7 @@ export const handleActivityChange = async event => {
     event?.activity !== STILL_ACTIVITY &&
     event?.activity !== WALKING_ACTIVITY
   ) {
-    // Force fetching current position to ensure there is a location corresponding to an activity change
-    // Skip still activities as it could artifically extend a trip, and walk activity as it might capture
-    // noisy locations, e.g. at home
-    const location = await BackgroundGeolocation.getCurrentPosition({
-      persist: true, // Persist location in SQLite storage
-      maximumAge: 5 * 60 * 1000, // 5min. Accept the last-recorded-location if no older than supplied value in ms. Default is 0.
-      desiredAccuracy: 20,
-      samples: 6
-    })
-    Log('Forced location: ' + JSON.stringify(location))
-    // Motion activity: enable elasticity after first location to reduce battery impact
+    // Enable elasticity after first fast-enough location to reduce battery impact
     enableElasticity()
   }
 
