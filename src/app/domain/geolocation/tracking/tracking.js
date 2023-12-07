@@ -136,7 +136,9 @@ const prepareMotionData = async ({ locations, lastUploadedPoint }) => {
         // Force a stop/start transition when the temporal delta is too high
         // Note forcing the transition won't automatically create a new trip, typically a long-distance
         // flight of 12h+ should behave as one trip, even with this transition.
-        await addStopTransitions(contentToUpload, getTs(previousPoint) + 1)
+        await addStopTransitions(contentToUpload, getTs(previousPoint) + 1, {
+          withForceStop: true
+        })
         await addStartTransitions(contentToUpload, getTs(point) - 1)
       } else if (deltaT > LARGE_TEMPORAL_DELTA) {
         const distanceM = getDistanceFromLatLonInM(previousPoint, point)
@@ -146,7 +148,9 @@ const prepareMotionData = async ({ locations, lastUploadedPoint }) => {
 
         if (speed < MIN_SPEED_BETWEEN_DISTANT_POINTS) {
           Log('Very slow speed: force transition')
-          await addStopTransitions(contentToUpload, getTs(previousPoint) + 1)
+          await addStopTransitions(contentToUpload, getTs(previousPoint) + 1, {
+            withForceStop: true
+          })
           await addStartTransitions(contentToUpload, getTs(point) - 1)
           // Here we forced a hard stop transition. This typically happens when the tracking was lost for
           // a significant time, for a significant distance, but with a speed not significant enough to be
@@ -189,13 +193,15 @@ const prepareMotionData = async ({ locations, lastUploadedPoint }) => {
     addPoint(contentToUpload, point, filtered)
   }
 
-  // -----Step 3: Force end trip for the last point, as the device had been stopped long enough after motion
+  // -----Step 3: Force stop transition after last last point, as the device had been stopped long enough after motion
 
   // FIXME: what if the upload failed and more points were added before the retry?
   // The stop transition might be missed?
   const deltaLastPoint = Date.now() / 1000 - lastPointTs
   Log('Delta last point : ' + deltaLastPoint)
-  await addStopTransitions(contentToUpload, lastPointTs + 1)
+  await addStopTransitions(contentToUpload, lastPointTs + 1, {
+    withForceStop: false
+  })
 
   return contentToUpload
 }
@@ -257,7 +263,9 @@ const uploadWithNoNewPoints = async ({ user, force = false }) => {
   const content = []
 
   if (force) {
-    await addStopTransitions(content, Date.now() / 1000)
+    await addStopTransitions(content, Date.now() / 1000, {
+      withForceStop: true
+    })
     await uploadUserCache(content, user)
   } else {
     if (lastPoint == undefined) {
@@ -272,7 +280,9 @@ const uploadWithNoNewPoints = async ({ user, force = false }) => {
             's ago), posting stop transitions at ' +
             new Date(1000 * getTs(lastPoint))
         )
-        await addStopTransitions(content, getTs(lastPoint))
+        await addStopTransitions(content, getTs(lastPoint), {
+          withForceStop: true
+        })
         await uploadUserCache(content, user)
         Log('Finished upload of stop transtitions')
       } else {
@@ -300,7 +310,11 @@ const addStartTransitions = async (addedTo, ts) => {
 }
 
 // Add stop transitions, within 0.1s of given ts
-const addStopTransitions = async (addedTo, ts) => {
+const addStopTransitions = async (
+  addedTo,
+  ts,
+  { withForceStop = false } = {}
+) => {
   Log('Add stop transitions on ' + new Date(ts * 1000))
 
   // TODO: some of those transitions seem useless
@@ -317,13 +331,16 @@ const addStopTransitions = async (addedTo, ts) => {
   // Missing it can result on wrong starting point as it will try to attach the end of the previous trip,
   // both spatially and temporally.
   // See https://github.com/e-mission/e-mission-server/blob/81c4314a776eff5dee61b01f1ca16a85ee267a10/emission/analysis/intake/segmentation/restart_checking.py#L96
-  addedTo.push(
-    transition(
-      'STATE_WAITING_FOR_TRIP_START',
-      'T_FORCE_STOP_TRACKING',
-      ts + 0.06
+  if (withForceStop) {
+    addedTo.push(
+      transition(
+        'STATE_WAITING_FOR_TRIP_START',
+        'T_FORCE_STOP_TRACKING',
+        ts + 0.06
+      )
     )
-  )
+  }
+
   addedTo.push(
     transition('STATE_WAITING_FOR_TRIP_START', 'T_DATA_PUSHED', ts + 0.07)
   )
