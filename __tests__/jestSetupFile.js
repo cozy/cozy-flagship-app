@@ -10,6 +10,7 @@ import mockRNPermissions from 'react-native-permissions/mock'
 
 import { mockRNBackgroundGeolocation } from '../__mocks__/react-native-background-geolocation-mock'
 import { mockRNFS } from '../__mocks__/react-native-fs-mock'
+import { mockRNIAP } from '../__mocks__/react-native-iap-mock'
 
 jest.mock('react-native-device-info', () => mockRNDeviceInfo)
 
@@ -32,6 +33,7 @@ jest.mock(
 )
 
 jest.mock('react-native-fs', () => mockRNFS)
+jest.mock('react-native-iap', () => mockRNIAP)
 
 jest.mock('redux-persist', () => {
   const real = jest.requireActual('redux-persist')

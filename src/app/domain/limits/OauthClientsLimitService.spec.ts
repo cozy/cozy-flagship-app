@@ -5,7 +5,12 @@ import type {
 } from 'react-native-webview/lib/WebViewTypes'
 
 import CozyClient from 'cozy-client'
+import { InstanceInfo } from 'cozy-client/types/types'
 
+import {
+  clouderyOfferEventHandler,
+  CLOUDERY_OFFER
+} from '/app/domain/iap/services/clouderyOffer'
 import {
   interceptNavigation,
   interceptOpenWindow
@@ -50,6 +55,11 @@ const mockCurrentRouteName = (currentRouteName: string): void => {
 }
 
 describe('interceptNavigation', () => {
+  let mockClouderyOfferEventHandler: () => void
+  beforeEach(() => {
+    mockClouderyOfferEventHandler = jest.fn()
+  })
+
   it('should do nothing if client is null', () => {
     const initialUrl = 'SOME_URL'
     const destinationUrl = 'SOME_DESTINATION_URL'
@@ -58,11 +68,14 @@ describe('interceptNavigation', () => {
     const closePopup = jest.fn()
     const navigationRequest = mockWebViewNavigationRequest(destinationUrl)
 
+    const instanceInfo = getFakeContext()
+
     const allowNavigation = interceptNavigation(
       initialUrl,
       closePopup,
       client,
-      mockNavigationProp
+      mockNavigationProp,
+      instanceInfo
     )(navigationRequest)
 
     expect(allowNavigation).toBe(false)
@@ -79,13 +92,16 @@ describe('interceptNavigation', () => {
     const closePopup = jest.fn()
     const navigationRequest = mockWebViewNavigationRequest(destinationUrl)
 
+    const instanceInfo = getFakeContext()
+
     mockCurrentRouteName(routes.default)
 
     const allowNavigation = interceptNavigation(
       initialUrl,
       closePopup,
       client,
-      mockNavigationProp
+      mockNavigationProp,
+      instanceInfo
     )(navigationRequest)
 
     expect(allowNavigation).toBe(false)
@@ -102,13 +118,16 @@ describe('interceptNavigation', () => {
     const closePopup = jest.fn()
     const navigationRequest = mockWebViewNavigationRequest(destinationUrl)
 
+    const instanceInfo = getFakeContext()
+
     mockCurrentRouteName(routes.default)
 
     const allowNavigation = interceptNavigation(
       initialUrl,
       closePopup,
       client,
-      mockNavigationProp
+      mockNavigationProp,
+      instanceInfo
     )(navigationRequest)
 
     expect(allowNavigation).toBe(false)
@@ -129,13 +148,16 @@ describe('interceptNavigation', () => {
     const closePopup = jest.fn()
     const navigationRequest = mockWebViewNavigationRequest(destinationUrl)
 
+    const instanceInfo = getFakeContext()
+
     mockCurrentRouteName(routes.cozyapp)
 
     const allowNavigation = interceptNavigation(
       initialUrl,
       closePopup,
       client,
-      mockNavigationProp
+      mockNavigationProp,
+      instanceInfo
     )(navigationRequest)
 
     expect(allowNavigation).toBe(false)
@@ -152,13 +174,16 @@ describe('interceptNavigation', () => {
     const closePopup = jest.fn()
     const navigationRequest = mockWebViewNavigationRequest(destinationUrl)
 
+    const instanceInfo = getFakeContext()
+
     mockCurrentRouteName(routes.default)
 
     const allowNavigation = interceptNavigation(
       initialUrl,
       closePopup,
       client,
-      mockNavigationProp
+      mockNavigationProp,
+      instanceInfo
     )(navigationRequest)
 
     expect(allowNavigation).toBe(true)
@@ -175,13 +200,16 @@ describe('interceptNavigation', () => {
     const closePopup = jest.fn()
     const navigationRequest = mockWebViewNavigationRequest(destinationUrl)
 
+    const instanceInfo = getFakeContext()
+
     mockCurrentRouteName(routes.default)
 
     const allowNavigation = interceptNavigation(
       initialUrl,
       closePopup,
       client,
-      mockNavigationProp
+      mockNavigationProp,
+      instanceInfo
     )(navigationRequest)
 
     expect(allowNavigation).toBe(true)
@@ -206,16 +234,48 @@ describe('interceptNavigation', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any
 
+    const instanceInfo = getFakeContext()
+
     const allowNavigation = interceptNavigation(
       initialUrl,
       closePopup,
       client,
-      mockNavigationProp
+      mockNavigationProp,
+      instanceInfo
     )(navigationRequest)
 
     expect(allowNavigation).toBe(false)
     expect(closePopup).not.toHaveBeenCalled()
     expect(navigateToApp).not.toHaveBeenCalled()
+  })
+
+  it('should intercept ClouderyOffer url', () => {
+    const initialUrl =
+      'http://claude.mycozy.cloud/settings/clients/limit-exceeded?redirect=http%3A%2F%2Fclaude-drive.mycozy.cloud%2F'
+    const destinationUrl =
+      'https://manager.cozycloud.cc/cozy/instances/SOME_UUID/premium'
+
+    const client = mockClient()
+    const closePopup = jest.fn()
+    const navigationRequest = mockWebViewNavigationRequest(destinationUrl)
+    clouderyOfferEventHandler.on(CLOUDERY_OFFER, mockClouderyOfferEventHandler)
+
+    const instanceInfo = getFakeContext()
+
+    const allowNavigation = interceptNavigation(
+      initialUrl,
+      closePopup,
+      client,
+      mockNavigationProp,
+      instanceInfo
+    )(navigationRequest)
+
+    expect(allowNavigation).toBe(false)
+    expect(closePopup).not.toHaveBeenCalled()
+    expect(navigateToApp).not.toHaveBeenCalled()
+    expect(mockClouderyOfferEventHandler).toHaveBeenCalledWith(
+      'https://manager.cozycloud.cc/cozy/instances/SOME_UUID/premium?iap_vendor=ios&iap_url=https%3A%2F%2Fiapflagship'
+    )
   })
 })
 
@@ -262,3 +322,18 @@ describe('interceptOpenWindow', () => {
     expect(true).toBe(true)
   })
 })
+
+const getFakeContext = (): InstanceInfo => {
+  return {
+    context: {
+      data: {
+        manager_url: 'https://manager.cozycloud.cc'
+      }
+    },
+    instance: {
+      data: {
+        uuid: 'SOME_UUID'
+      }
+    }
+  } as unknown as InstanceInfo
+}
