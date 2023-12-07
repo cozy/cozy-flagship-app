@@ -545,7 +545,7 @@ PODS:
   - RNSentry (3.4.3):
     - React-Core
     - Sentry (= 7.11.0)
-  - RNSVG (12.3.0):
+  - RNSVG (13.14.0):
     - React-Core
   - Sentry (7.11.0):
     - Sentry/Core (= 7.11.0)
@@ -920,7 +920,7 @@ SPEC CHECKSUMS:
   RNPermissions: 83168e00be08bd043f51fb738256bf761f38952d
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   RNSentry: 85f6525b5fe8d2ada065858026b338605b3c09da
-  RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
+  RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   Sentry: 0c5cd63d714187b4a39c331c1f0eb04ba7868341
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
