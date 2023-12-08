@@ -1,5 +1,6 @@
 import { Platform } from 'react-native'
 import ReactNativeBiometrics, { BiometryType } from 'react-native-biometrics'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 
 import CozyClient from 'cozy-client'
 
@@ -16,12 +17,10 @@ import {
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { setLockScreenUI } from '/app/domain/authorization/events/LockScreenUiManager'
 import { UnlockWithPassword } from '/app/domain/authentication/models/User'
-import { devlog } from '/core/tools/env'
 import { t } from '/locales/i18n'
 import { LoginData } from '/screens/login/components/types'
-import { isHttpError } from '/libs/functions/getErrorMessage'
-
-import { getErrorMessage } from 'cozy-intent'
+import { getErrorMessage, isHttpError } from '/libs/functions/getErrorMessage'
+import { AuthLogger } from '/app/domain/authorization'
 
 const rnBiometrics = new ReactNativeBiometrics()
 
@@ -139,8 +138,28 @@ export const validatePassword = async ({
 export const validatePin = async (pinCode: string): Promise<boolean> =>
   (await getVaultInformation('pinCode')) === pinCode
 
-export const logout = (client: CozyClient): (() => void) => {
-  return (): void => void asyncLogout(client)
+export const logout = (
+  client: CozyClient,
+  toggleLogoutDialog: (arg: boolean) => void
+): (() => void) => {
+  return () => {
+    const asyncClosure = async (): Promise<void> => {
+      try {
+        await asyncLogout(client)
+      } catch (error) {
+        AuthLogger.error('🔏 logout() error:', error)
+
+        toggleLogoutDialog(false)
+
+        Toast.show({
+          type: 'error',
+          text1: t('errors.unknown_error')
+        })
+      }
+    }
+
+    void asyncClosure()
+  }
 }
 
 export const getBiometryType = async (
@@ -207,6 +226,6 @@ export const ensureLockScreenUi = async (): Promise<void> => {
     topOverlay: 'transparent'
   })
 
-  devlog('🔏 ensureLockScreenUi() hiding splash screen')
+  AuthLogger.info('🔏 ensureLockScreenUi() hiding splash screen')
   await hideSplashScreen()
 }
