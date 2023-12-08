@@ -484,7 +484,8 @@ export default class Launcher {
         // @ts-ignore
         dataUri: await this.worker.call('downloadFileInWorker', entry)
       }),
-      existingFilesIndex
+      existingFilesIndex,
+      log: this.log.bind(this)
     }
 
     try {
