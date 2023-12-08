@@ -277,6 +277,7 @@ describe('Launcher', () => {
       expect(saveFiles).toHaveBeenCalledWith(client, [{}], 'folderPath', {
         downloadAndFormatFile: expect.any(Function),
         manifest: expect.any(Object),
+        log: expect.any(Function),
         existingFilesIndex: new Map([
           [
             'fileidattribute',
@@ -355,6 +356,7 @@ describe('Launcher', () => {
       expect(saveFiles).toHaveBeenNthCalledWith(1, client, [{}], 'folderPath', {
         downloadAndFormatFile: expect.any(Function),
         manifest: expect.any(Object),
+        log: expect.any(Function),
         existingFilesIndex: new Map([
           [
             'fileidattribute',
@@ -370,6 +372,7 @@ describe('Launcher', () => {
       expect(saveFiles).toHaveBeenNthCalledWith(2, client, [{}], 'folderPath', {
         downloadAndFormatFile: expect.any(Function),
         manifest: expect.any(Object),
+        log: expect.any(Function),
         existingFilesIndex: new Map([
           [
             'fileidattribute',
