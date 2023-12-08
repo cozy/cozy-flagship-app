@@ -17,7 +17,7 @@ const getPrintFolderPath = (): string => {
 
 const getTemporaryPrintFilePath = (fileExtension: string): string => {
   const date = format(new Date(), 'yyyyMMddHHmmssSSS')
-  const tempFileName = `temp_print_${date}.${fileExtension}`
+  const tempFileName = `file_${date}.${fileExtension}`
   const path = `${getPrintFolderPath()}/${tempFileName}`
   return path
 }
@@ -37,7 +37,7 @@ const safeDeleteFile = async (path: string): Promise<void> => {
 }
 
 const writeFile = async (filePath: string, content: string): Promise<void> => {
-  return await RNFS.writeFile(`${filePath}`, content, 'base64')
+  return await RNFS.writeFile(filePath, content, 'base64')
 }
 
 // Data URI Handling
@@ -74,7 +74,7 @@ export const printBase64Doc = async (base64?: string): Promise<void> => {
     log.error(`Error while printing document: ${getErrorMessage(err)}`)
     Toast.show({
       type: 'error',
-      text1: t('error.unknown_error')
+      text1: t('errors.print')
     })
   } finally {
     await safeDeleteFile(filePath)
