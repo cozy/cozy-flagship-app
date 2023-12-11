@@ -12,6 +12,8 @@ import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.reactnativecommunity.webview.RNCWebViewManager;
+import com.reactnativecommunity.webview.RNCWebViewClient;
+import com.reactnativecommunity.webview.RNCWebView;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -33,8 +35,8 @@ public class IndexInjectionWebViewManager extends RNCWebViewManager {
   private static final String TAG = "IndexInjectionWebView";
 
   @Override
-  protected RNCWebView createRNCWebViewInstance(ThemedReactContext reactContext) {
-    return new IndexInjectionWebView(reactContext);
+  protected RNCWebView createViewInstance(ThemedReactContext reactContext) {
+    return super.createViewInstance(reactContext, new IndexInjectionWebView(reactContext));
   }
 
   @Override
@@ -43,7 +45,7 @@ public class IndexInjectionWebViewManager extends RNCWebViewManager {
   }
 
   @Override
-  protected void addEventEmitters(ThemedReactContext reactContext, WebView view) {
+  protected void addEventEmitters(ThemedReactContext reactContext, RNCWebView view) {
     view.setWebViewClient(new IndexInjectionWebViewClient());
   }
 
