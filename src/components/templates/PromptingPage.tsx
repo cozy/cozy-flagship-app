@@ -36,14 +36,12 @@ export const PromptingPage = ({
 
         <Typography
           variant="h4"
-          color="secondary"
           style={{ marginBottom: 24, maxWidth: 296, textAlign: 'center' }}
         >
           {title}
         </Typography>
 
         <Typography
-          color="secondary"
           style={{ maxWidth: 296, textAlign: 'center' }}
           variant="body1"
         >
