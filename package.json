@@ -47,7 +47,7 @@
     "@sentry/react-native": "3.4.3",
     "base-64": "^1.0.0",
     "cozy-client": "^44.0.0",
-    "cozy-clisk": "^0.27.0",
+    "cozy-clisk": "^0.28.0",
     "cozy-device-helper": "^2.7.0",
     "cozy-flags": "^2.11.0",
     "cozy-intent": "^2.18.0",
