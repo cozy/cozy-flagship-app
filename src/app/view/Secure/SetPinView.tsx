@@ -23,6 +23,7 @@ import { TextField } from '/ui/TextField'
 import { ConditionalWrapper } from '/components/ConditionalWrapper'
 import { palette } from '/ui/palette'
 import { useI18n } from '/locales/i18n'
+import { CozyTheme } from '/ui/CozyTheme/CozyTheme'
 
 const SetPinViewSimple = ({
   onSuccess
@@ -57,14 +58,12 @@ const SetPinViewSimple = ({
             <Grid alignItems="center" direction="column">
               <Typography
                 variant="h4"
-                color="secondary"
                 style={{ maxWidth: 296, marginBottom: 24, textAlign: 'center' }}
               >
                 {t('screens.SecureScreen.pinsave_step1_title')}
               </Typography>
 
               <Typography
-                color="secondary"
                 style={{ marginBottom: 24, textAlign: 'center' }}
                 variant="body1"
               >
@@ -104,12 +103,11 @@ const SetPinViewSimple = ({
         {step === 2 && (
           <>
             <Grid alignItems="center" direction="column">
-              <Typography variant="h4" color="secondary">
+              <Typography variant="h4">
                 {t('screens.SecureScreen.pinsave_step2_title')}
               </Typography>
 
               <Typography
-                color="secondary"
                 style={{ marginBottom: 24, textAlign: 'center' }}
                 variant="body2"
               >
@@ -172,7 +170,12 @@ export const SetPinView = (props: SetPinProps): JSX.Element => (
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <SetPinViewSimple {...props} onSuccess={props.route.params.onSuccess} />
+        <CozyTheme variant="inverted">
+          <SetPinViewSimple
+            {...props}
+            onSuccess={props.route.params.onSuccess}
+          />
+        </CozyTheme>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   </ConditionalWrapper>
