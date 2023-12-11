@@ -21,12 +21,12 @@ import {
   ListItemText,
   ListSubHeader
 } from '/ui/List'
-import { palette } from '/ui/palette'
 import { Divider } from '/ui/Divider'
 import { useOsReceiveScreenLogic } from '/app/view/OsReceive/hooks/useOsReceiveScreen'
 
 import { osReceiveScreenStyles } from '/app/view/OsReceive/OsReceiveScreen.styles'
 
+import { useCozyTheme } from '/ui/CozyTheme/CozyTheme'
 import { FileDuotone } from '/ui/Icons/FileDuotone'
 import { FileThumbnail } from '/ui/ImageThumbnail'
 
@@ -41,6 +41,7 @@ export const OsReceiveScreen = (): JSX.Element | null => {
     proceedToWebview,
     hasAppsForUpload
   } = useOsReceiveScreenLogic()
+  const { colors } = useCozyTheme('normal')
 
   const hasFilesToUpload = filesToUpload.length > 0
   const isSingleFile = filesToUpload.length === 1
@@ -85,11 +86,7 @@ export const OsReceiveScreen = (): JSX.Element | null => {
           <List
             subheader={
               <ListSubHeader>
-                <Typography
-                  // @ts-expect-error There is an issue with the palette secondary color
-                  color={palette.light.text.secondary}
-                  variant="subtitle2"
-                >
+                <Typography variant="subtitle2">
                   {t('services.osReceive.documentType')}
                 </Typography>
               </ListSubHeader>
@@ -118,7 +115,7 @@ export const OsReceiveScreen = (): JSX.Element | null => {
                         <Icon
                           icon={FileDuotone}
                           size={24}
-                          color={palette.light.text.secondary}
+                          color={colors.secondaryTextColor}
                         />
                       )
                     })()}
@@ -152,14 +149,14 @@ export const OsReceiveScreen = (): JSX.Element | null => {
         </Grid>
 
         <Button
-          variant="secondary"
+          variant="primary"
           onPress={proceedToWebview}
           disabled={canProceed()}
           label={t(
-              hasAppsForUpload()
-                ? 'services.osReceive.submit'
-                : 'services.osReceive.abort'
-            )}
+            hasAppsForUpload()
+              ? 'services.osReceive.submit'
+              : 'services.osReceive.abort'
+          )}
         />
       </Grid>
     </Container>
