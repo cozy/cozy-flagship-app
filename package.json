@@ -27,7 +27,9 @@
     "typecheck": "yarn tsc",
     "validate:locales": "node scripts/dist/validate-locales.cmd.js",
     "web": "webpack serve --open --config webpack.config.js --inline --hot --port=9999",
-    "web:test": "react-app-rewired test --env=jsdom"
+    "web:test": "react-app-rewired test --env=jsdom",
+    "prestorybook": "sb-rn-get-stories",
+    "storybook": "STORYBOOK_ENABLED=true react-native start"
   },
   "dependencies": {
     "@fengweichong/react-native-gzip": "^2.0.0",
@@ -116,6 +118,13 @@
     "@babel/preset-react": "7.18.6",
     "@babel/preset-typescript": "7.18.6",
     "@babel/runtime": "^7.17.9",
+    "@react-native-community/datetimepicker": "7.6.2",
+    "@react-native-community/slider": "4.4.4",
+    "@storybook/addon-actions": "^6.5.16",
+    "@storybook/addon-controls": "^6.5.16",
+    "@storybook/addon-ondevice-actions": "^6.5.7",
+    "@storybook/addon-ondevice-controls": "^6.5.7",
+    "@storybook/react-native": "^6.5.7",
     "@svgr/webpack": "5.5.0",
     "@testing-library/jest-native": "5.4.3",
     "@testing-library/react-hooks": "8.0.1",

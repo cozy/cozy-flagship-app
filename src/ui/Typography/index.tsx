@@ -27,7 +27,7 @@ type TypographyColor =
   | 'textSecondary'
   | 'error'
 
-interface TypographyProps extends TextProps {
+export interface TypographyProps extends TextProps {
   color?: TypographyColor
   variant?: TypographyVariant
 }
