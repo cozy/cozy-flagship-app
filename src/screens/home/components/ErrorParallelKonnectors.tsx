@@ -2,7 +2,6 @@ import React from 'react'
 
 import { Button } from '/ui/Button'
 import { ConfirmDialog } from '/ui/CozyDialogs/ConfirmDialog'
-import { Typography } from '/ui/Typography'
 import { useI18n } from '/locales/i18n'
 
 interface ErrorParallelKonnectorsProps {
@@ -21,11 +20,11 @@ export const ErrorParallelKonnectors = ({
   return (
     <ConfirmDialog
       actions={
-        <Button onPress={onClose} variant="secondary">
-          <Typography color="textSecondary" variant="button">
-            {t('konnectors.errorDoubleRun.button')}
-          </Typography>
-        </Button>
+        <Button
+          onPress={onClose}
+          variant="secondary"
+          label={t('konnectors.errorDoubleRun.button')}
+        />
       }
       content={t('konnectors.errorDoubleRun.body', {
         running_konnector: currentRunningKonnector,

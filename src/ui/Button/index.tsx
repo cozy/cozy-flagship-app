@@ -3,11 +3,27 @@ import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
 
 import { ButtonStyles, styles as computeStyles } from '/ui/Button/styles'
 import { useCozyTheme } from '/ui/CozyTheme/CozyTheme'
+import { Typography } from '/ui/Typography'
 
-type ButtonProps = TouchableOpacityProps & { variant?: 'primary' | 'secondary' }
+type ButtonPropsbase = TouchableOpacityProps & {
+  variant?: 'primary' | 'secondary'
+}
+
+type ButtonPropsWithChildren = ButtonPropsbase & {
+  label?: never
+  children: React.ReactNode
+}
+
+type ButtonPropsWithLabel = ButtonPropsbase & {
+  label: string
+  children?: never
+}
+
+type ButtonProps = ButtonPropsWithChildren | ButtonPropsWithLabel
 
 export const Button = ({
   children,
+  label,
   disabled,
   onPress,
   style,
@@ -18,18 +34,32 @@ export const Button = ({
   const styles = useMemo<ButtonStyles>(() => computeStyles(colors), [colors])
 
   return (
-  <TouchableOpacity
-    onPress={onPress}
-    style={[
-      styles.button,
-      styles[variant],
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        styles.button,
+        styles[variant],
         disabled ? styles[`disabled_${variant}`] : {},
-      style
-    ]}
-    disabled={disabled}
-    {...props}
-  >
-    {children}
-  </TouchableOpacity>
-)
+        style
+      ]}
+      disabled={disabled}
+      {...props}
+    >
+      {children ? (
+        children
+      ) : (
+        <Typography
+          variant="button"
+          style={[
+            variant === 'primary' && {
+              color: colors.primaryContrastTextColor
+            },
+            disabled && { color: colors.actionColorDisabled }
+          ]}
+        >
+          {label}
+        </Typography>
+      )}
+    </TouchableOpacity>
+  )
 }

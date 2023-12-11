@@ -96,11 +96,8 @@ const SetPinViewSimple = ({
               onPress={handleFirstInputSubmit}
               disabled={firstInput.length !== 4}
               testID="pin-next"
-            >
-              <Typography color="primary" variant="button">
-                {t('screens.SecureScreen.pinsave_step1_cta')}
-              </Typography>
-            </Button>
+              label={t('screens.SecureScreen.pinsave_step1_cta')}
+            />
           </>
         )}
 
@@ -144,11 +141,10 @@ const SetPinViewSimple = ({
               </Tooltip>
             </Grid>
 
-            <Button onPress={handleSecondInputSubmit}>
-              <Typography color="primary" variant="button">
-                {t('screens.SecureScreen.pinsave_step2_cta')}
-              </Typography>
-            </Button>
+            <Button
+              onPress={handleSecondInputSubmit}
+              label={t('screens.SecureScreen.pinsave_step2_cta')}
+            />
           </>
         )}
       </Grid>

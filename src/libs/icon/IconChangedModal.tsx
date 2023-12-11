@@ -57,11 +57,11 @@ export const IconChangedModal = (): JSX.Element | null => {
       }
       actions={
         <>
-          <Button variant="secondary" onPress={(): void => setShow(!show)}>
-            <Typography variant="button" color="secondary">
-              OK
-            </Typography>
-          </Button>
+          <Button
+            variant="secondary"
+            onPress={(): void => setShow(!show)}
+            label="OK"
+          />
         </>
       }
       onClose={(): void => setShow(!show)}
