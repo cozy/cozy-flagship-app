@@ -10,7 +10,7 @@ export const palette = {
     '700': '#0054d2',
     '800': '#0047b2',
     '900': '#002b6c',
-    ContrastText: '#fff'
+    ContrastText: '#ffffff'
   },
 
   Secondary: {
@@ -24,7 +24,7 @@ export const palette = {
     '700': '#7a349a',
     '800': '#4e1f63',
     '900': '#230c2e',
-    ContrastText: '#fff'
+    ContrastText: '#ffffff'
   },
 
   Error: {
@@ -38,7 +38,7 @@ export const palette = {
     '700': '#d31f1f',
     '800': '#771212',
     '900': '#340b0b',
-    ContrastText: '#fff'
+    ContrastText: '#ffffff'
   },
 
   Warning: {
@@ -52,7 +52,7 @@ export const palette = {
     '700': '#986100',
     '800': '#553804',
     '900': '#281c07',
-    ContrastText: '#fff'
+    ContrastText: '#ffffff'
   },
 
   Success: {
@@ -100,8 +100,8 @@ export const palette = {
   },
 
   Common: {
-    white: '#fff',
-    black: '#000'
+    white: '#ffffff',
+    black: '#000000'
   },
 
   light: {
