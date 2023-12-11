@@ -31,6 +31,7 @@ import { getBiometryIcon } from '/app/domain/authorization/services/LockScreenSe
 import { palette } from '/ui/palette'
 import { useLockScreenProps } from '/app/view/Lock/useLockScreen'
 import { useI18n } from '/locales/i18n'
+import { CozyTheme, useCozyTheme } from '/ui/CozyTheme/CozyTheme'
 
 const LockView = ({
   biometryEnabled,
@@ -50,6 +51,7 @@ const LockView = ({
   uiError
 }: LockViewProps): JSX.Element => {
   const { t } = useI18n()
+  const { colors } = useCozyTheme()
 
   return (
     <Container>
@@ -78,12 +80,15 @@ const LockView = ({
       <Grid container direction="column" justifyContent="space-between">
         <Grid justifyContent="space-between">
           <IconButton onPress={toggleLogoutDialog}>
-            <Icon icon={LogoutFlipped} />
+            <Icon icon={LogoutFlipped} color={colors.primaryColor} />
           </IconButton>
 
           {biometryType && biometryEnabled ? (
             <IconButton onPress={(): void => void handleBiometry()}>
-              <Icon icon={getBiometryIcon(biometryType)} />
+              <Icon
+                icon={getBiometryIcon(biometryType)}
+                color={colors.primaryColor}
+              />
             </IconButton>
           ) : null}
         </Grid>
@@ -91,13 +96,13 @@ const LockView = ({
         <Grid alignItems="center" direction="column">
           <Icon icon={CozyCircle} style={{ marginBottom: 14 }} />
 
-          <Typography variant="h4" color="secondary">
+          <Typography variant="h4" color="primary">
             {mode === 'password' ? t('screens.lock.title') : null}
             {mode === 'PIN' ? t('screens.lock.pin_title') : null}
           </Typography>
 
           <Typography
-            color="secondary"
+            color="primary"
             style={{ opacity: 0.64, marginBottom: 24 }}
             variant="body2"
           >
@@ -109,7 +114,10 @@ const LockView = ({
               <TextField
                 endAdornment={
                   <IconButton onPress={togglePasswordVisibility}>
-                    <Icon icon={!passwordVisibility ? EyeClosed : Eye} />
+                    <Icon
+                      icon={!passwordVisibility ? EyeClosed : Eye}
+                      color={colors.primaryColor}
+                    />
                   </IconButton>
                 }
                 label={t('screens.lock.password_label')}
@@ -126,7 +134,10 @@ const LockView = ({
               <TextField
                 endAdornment={
                   <IconButton onPress={togglePasswordVisibility}>
-                    <Icon icon={!passwordVisibility ? EyeClosed : Eye} />
+                    <Icon
+                      icon={!passwordVisibility ? EyeClosed : Eye}
+                      color={colors.primaryColor}
+                    />
                   </IconButton>
                 }
                 inputComponent={RnMaskInput}
@@ -148,7 +159,7 @@ const LockView = ({
             onPress={toggleMode}
             style={{ alignSelf: 'flex-start', marginVertical: 16 }}
           >
-            <Typography color="textSecondary" variant="underline">
+            <Typography variant="underline">
               {mode === 'PIN' ? t('ui.buttons.forgotPin') : null}
 
               {mode === 'password' ? t('ui.buttons.forgotPassword') : null}
@@ -184,7 +195,9 @@ export const LockScreen = (props: LockScreenProps): React.ReactNode => {
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           >
-            <LockView {...useLockScreenProps(props)} />
+            <CozyTheme variant="inverted">
+              <LockView {...useLockScreenProps(props)} />
+            </CozyTheme>
           </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
       </>
