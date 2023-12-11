@@ -155,15 +155,12 @@ export const OsReceiveScreen = (): JSX.Element | null => {
           variant="secondary"
           onPress={proceedToWebview}
           disabled={canProceed()}
-        >
-          <Typography color="secondary" variant="button">
-            {t(
+          label={t(
               hasAppsForUpload()
                 ? 'services.osReceive.submit'
                 : 'services.osReceive.abort'
             )}
-          </Typography>
-        </Button>
+        />
       </Grid>
     </Container>
   )

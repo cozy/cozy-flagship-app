@@ -57,17 +57,16 @@ const LockView = ({
         <ConfirmDialog
           actions={
             <>
-              <Button onPress={toggleLogoutDialog}>
-                <Typography variant="button">
-                  {t('logout_dialog.cancel')}
-                </Typography>
-              </Button>
+              <Button
+                onPress={toggleLogoutDialog}
+                label={t('logout_dialog.cancel')}
+              />
 
-              <Button onPress={logout} variant="secondary">
-                <Typography color="textSecondary" variant="button">
-                  {t('logout_dialog.confirm')}
-                </Typography>
-              </Button>
+              <Button
+                onPress={logout}
+                variant="secondary"
+                label={t('logout_dialog.confirm')}
+              />
             </>
           }
           content={t('logout_dialog.content')}
@@ -158,11 +157,7 @@ const LockView = ({
         </Grid>
 
         <Grid direction="column">
-          <Button onPress={tryUnlock}>
-            <Typography color="primary" variant="button">
-              {t('ui.buttons.unlock')}
-            </Typography>
-          </Button>
+          <Button onPress={tryUnlock} label={t('ui.buttons.unlock')} />
         </Grid>
       </Grid>
     </Container>

@@ -20,11 +20,11 @@ export const ErrorTokenModal = ({
   return (
     <ConfirmDialog
       actions={
-        <Button onPress={onClose} variant="secondary">
-          <Typography color="textSecondary" variant="button">
-            {t('modals.ErrorToken.button')}
-          </Typography>
-        </Button>
+        <Button
+          onPress={onClose}
+          variant="secondary"
+          label={t('modals.ErrorToken.button')}
+        />
       }
       content={
         <Typography>

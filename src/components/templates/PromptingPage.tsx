@@ -52,18 +52,18 @@ export const PromptingPage = ({
       </Grid>
 
       <Grid direction="column">
-        <Button onPress={button1.onPress} style={{ marginBottom: 8 }}>
-          <Typography color="primary" variant="button">
-            {button1.label}
-          </Typography>
-        </Button>
+        <Button
+          onPress={button1.onPress}
+          style={{ marginBottom: 8 }}
+          label={button1.label}
+        />
 
         {button2 && (
-          <Button variant="secondary" onPress={button2.onPress}>
-            <Typography color="secondary" variant="button">
-              {button2.label}
-            </Typography>
-          </Button>
+          <Button
+            variant="secondary"
+            onPress={button2.onPress}
+            label={button2.label}
+          />
         )}
       </Grid>
     </Grid>
