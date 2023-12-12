@@ -199,7 +199,9 @@ interface CustomMethods {
   print: typeof print
 }
 
-const prepareBackupWithClient = (
+let prepareBackupLock = false
+
+const prepareBackupWithClient = async (
   client: CozyClient | undefined
 ): Promise<BackupInfo> => {
   if (!client) {
@@ -209,7 +211,22 @@ const prepareBackupWithClient = (
   const onProgress = (backupInfo: BackupInfo): Promise<void> =>
     sendProgressToWebview(client, backupInfo)
 
-  return prepareBackup(client, onProgress)
+  if (prepareBackupLock) {
+    throw new Error(t('services.backup.errors.backupPreparing'))
+  }
+
+  prepareBackupLock = true
+
+  let backupInfo
+
+  try {
+    backupInfo = await prepareBackup(client, onProgress)
+  } catch (e) {
+    prepareBackupLock = false
+    throw e
+  }
+  prepareBackupLock = false
+  return backupInfo
 }
 
 let startBackupLock = false

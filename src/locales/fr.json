@@ -108,7 +108,8 @@
         "quotaExceeded": "Espace de stockage plein",
         "networkIssue": "Problème réseau",
         "unknownIssue": "Autre erreur",
-        "backupRunning": "Sauvegarde déjà en cours"
+        "backupRunning": "Sauvegarde déjà en cours",
+        "backupPreparing": "Sauvegarde déjà en préparation"
       }
     },
     "upload": {
