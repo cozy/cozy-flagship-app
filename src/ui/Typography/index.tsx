@@ -26,6 +26,7 @@ type TypographyColor =
   | 'textPrimary'
   | 'textSecondary'
   | 'error'
+  | 'disabled'
 
 interface TypographyProps extends TextProps {
   color?: TypographyColor
