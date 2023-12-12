@@ -18,7 +18,7 @@ export const Button = ({
     style={[
       styles.button,
       styles[variant],
-      disabled ? styles[`disabled_${variant}`] : {},
+      disabled ? styles.disabled : {},
       style
     ]}
     disabled={disabled}
