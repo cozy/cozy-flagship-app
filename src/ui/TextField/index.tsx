@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Platform, TextInput, TextInputProps, View } from 'react-native'
 import { MaskInputProps } from 'react-native-mask-input'
 
+import { useCozyTheme } from '/ui/CozyTheme/CozyTheme'
+import { TextFieldStyles, styles as computeStyles } from '/ui/TextField/styles'
 import { Typography } from '/ui/Typography'
-import { styles } from '/ui/TextField/styles'
 
 export interface TextFieldProps extends TextInputProps {
   cursorColor?: string
@@ -25,34 +26,43 @@ export const TextField = ({
   inputComponentProps,
   value = '',
   ...props
-}: TextFieldProps): JSX.Element => (
-  <View style={[styles.textField, style]}>
-    <Typography color="secondary" style={styles.label}>
-      {label}
-    </Typography>
+}: TextFieldProps): JSX.Element | null => {
+  const { colors } = useCozyTheme()
+  const styles = useMemo<TextFieldStyles>(() => computeStyles(colors), [colors])
 
-    {InputComponent ? (
-      <InputComponent
-        cursorColor={styles.input.color}
-        selectionColor={Platform.OS === 'ios' ? styles.input.color : undefined}
-        style={[styles.input, { letterSpacing: 10 }]}
-        value={value}
-        placeholderTextColor={styles.input.color}
-        {...props}
-        {...inputComponentProps}
-      />
-    ) : (
-      <TextInput
-        cursorColor={styles.input.color}
-        selectionColor={Platform.OS === 'ios' ? styles.input.color : undefined}
-        style={styles.input}
-        value={value}
-        {...props}
-      />
-    )}
+  return (
+    <View style={[styles.textField, style]}>
+      <Typography color="primary" style={styles.label}>
+        {label}
+      </Typography>
 
-    {endAdornment ? (
-      <View style={styles.endAdornment}>{endAdornment}</View>
-    ) : null}
-  </View>
-)
+      {InputComponent ? (
+        <InputComponent
+          cursorColor={styles.input.color}
+          selectionColor={
+            Platform.OS === 'ios' ? styles.input.color : undefined
+          }
+          style={[styles.input, { letterSpacing: 10 }]}
+          value={value}
+          placeholderTextColor={styles.input.color}
+          {...props}
+          {...inputComponentProps}
+        />
+      ) : (
+        <TextInput
+          cursorColor={styles.input.color}
+          selectionColor={
+            Platform.OS === 'ios' ? styles.input.color : undefined
+          }
+          style={styles.input}
+          value={value}
+          {...props}
+        />
+      )}
+
+      {endAdornment ? (
+        <View style={styles.endAdornment}>{endAdornment}</View>
+      ) : null}
+    </View>
+  )
+}
