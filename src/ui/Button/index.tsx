@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
 
-import { styles } from '/ui/Button/styles'
+import { ButtonStyles, styles as computeStyles } from '/ui/Button/styles'
+import { useCozyTheme } from '/ui/CozyTheme/CozyTheme'
 
 type ButtonProps = TouchableOpacityProps & { variant?: 'primary' | 'secondary' }
 
@@ -12,13 +13,17 @@ export const Button = ({
   style,
   variant = 'primary',
   ...props
-}: ButtonProps): JSX.Element => (
+}: ButtonProps): JSX.Element | null => {
+  const { colors } = useCozyTheme()
+  const styles = useMemo<ButtonStyles>(() => computeStyles(colors), [colors])
+
+  return (
   <TouchableOpacity
     onPress={onPress}
     style={[
       styles.button,
       styles[variant],
-      disabled ? styles.disabled : {},
+        disabled ? styles[`disabled_${variant}`] : {},
       style
     ]}
     disabled={disabled}
@@ -27,3 +32,4 @@ export const Button = ({
     {children}
   </TouchableOpacity>
 )
+}
