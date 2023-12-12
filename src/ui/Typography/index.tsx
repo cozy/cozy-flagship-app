@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Text, TextProps } from 'react-native'
 
-import { styles } from '/ui/Typography/styles'
+import { useCozyTheme } from '/ui/CozyTheme/CozyTheme'
+import {
+  TypographyStyles,
+  styles as computeStyles
+} from '/ui/Typography/styles'
 
 type TypographyVariant =
   | 'h1'
@@ -38,8 +42,19 @@ export const Typography = ({
   variant = 'body2',
   style,
   ...props
-}: TypographyProps): JSX.Element => (
-  <Text style={[styles.base, styles[variant], styles[color], style]} {...props}>
-    {children}
-  </Text>
-)
+}: TypographyProps): JSX.Element | null => {
+  const { colors } = useCozyTheme()
+  const styles = useMemo<TypographyStyles>(
+    () => computeStyles(colors),
+    [colors]
+  )
+
+  return (
+    <Text
+      style={[styles.base, styles[variant], styles[color], style]}
+      {...props}
+    >
+      {children}
+    </Text>
+  )
+}
