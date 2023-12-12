@@ -48,6 +48,9 @@ const SetPinViewSimple = ({
     }
   }
 
+  const isPasswordComplete = (password: string): boolean =>
+    password.length === 4
+
   return (
     <Container>
       <Grid container direction="column" justifyContent="space-between">
@@ -93,7 +96,7 @@ const SetPinViewSimple = ({
 
             <Button
               onPress={handleFirstInputSubmit}
-              disabled={firstInput.length !== 4}
+              disabled={!isPasswordComplete(firstInput)}
               testID="pin-next"
               label={t('screens.SecureScreen.pinsave_step1_cta')}
             />
@@ -141,6 +144,7 @@ const SetPinViewSimple = ({
 
             <Button
               onPress={handleSecondInputSubmit}
+              disabled={!isPasswordComplete(secondInput)}
               label={t('screens.SecureScreen.pinsave_step2_cta')}
             />
           </>
