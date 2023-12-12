@@ -54,6 +54,7 @@ import {
   checkPermissions,
   requestPermissions
 } from '/app/domain/nativePermissions'
+import { t } from '/locales/i18n'
 
 const log = Minilog('localMethods')
 
@@ -211,7 +212,9 @@ const prepareBackupWithClient = (
   return prepareBackup(client, onProgress)
 }
 
-const startBackupWithClient = (
+let startBackupLock = false
+
+const startBackupWithClient = async (
   client: CozyClient | undefined
 ): Promise<BackupInfo> => {
   if (!client) {
@@ -221,7 +224,22 @@ const startBackupWithClient = (
   const onProgress = (backupInfo: BackupInfo): Promise<void> =>
     sendProgressToWebview(client, backupInfo)
 
-  return startBackup(client, onProgress)
+  if (startBackupLock) {
+    throw new Error(t('services.backup.errors.backupRunning'))
+  }
+
+  startBackupLock = true
+
+  let backupInfo
+
+  try {
+    backupInfo = await startBackup(client, onProgress)
+  } catch (e) {
+    startBackupLock = false
+    throw e
+  }
+  startBackupLock = false
+  return backupInfo
 }
 
 const stopBackupWithClient = (

@@ -105,7 +105,8 @@
         "configNotInitialized": "Local backup config not initialized",
         "quotaExceeded": "Storage space full",
         "networkIssue": "Network issue",
-        "unknownIssue": "Unknown issue"
+        "unknownIssue": "Unknown issue",
+        "backupRunning": "Backup already running"
       }
     },
     "upload": {

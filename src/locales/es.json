@@ -91,7 +91,8 @@
         "configNotInitialized": "Configuración de copia de seguridad local no inicializada",
         "quotaExceeded": "Espacio de almacenamiento completo",
         "networkIssue": "Problema de red",
-        "unknownIssue": "Problema desconocido"
+        "unknownIssue": "Problema desconocido",
+        "backupRunning": "Copia de seguridad ya en marcha"
       }
     },
     "upload": {
