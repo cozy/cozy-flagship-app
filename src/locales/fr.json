@@ -107,7 +107,8 @@
         "configNotInitialized": "Configuration locale de sauvegarde non initialisée",
         "quotaExceeded": "Espace de stockage plein",
         "networkIssue": "Problème réseau",
-        "unknownIssue": "Autre erreur"
+        "unknownIssue": "Autre erreur",
+        "backupRunning": "Sauvegarde déjà en cours"
       }
     },
     "upload": {
