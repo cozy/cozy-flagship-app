@@ -47,9 +47,6 @@ const SetPinViewSimple = ({
     }
   }
 
-  const isPasswordComplete = (password: string): boolean =>
-    password.length === 4
-
   return (
     <Container>
       <Grid container direction="column" justifyContent="space-between">
@@ -97,13 +94,10 @@ const SetPinViewSimple = ({
 
             <Button
               onPress={handleFirstInputSubmit}
-              disabled={!isPasswordComplete(firstInput)}
+              disabled={firstInput.length !== 4}
               testID="pin-next"
             >
-              <Typography
-                color={!isPasswordComplete(firstInput) ? 'disabled' : 'primary'}
-                variant="button"
-              >
+              <Typography color="primary" variant="button">
                 {t('screens.SecureScreen.pinsave_step1_cta')}
               </Typography>
             </Button>
@@ -150,16 +144,8 @@ const SetPinViewSimple = ({
               </Tooltip>
             </Grid>
 
-            <Button
-              onPress={handleSecondInputSubmit}
-              disabled={!isPasswordComplete(secondInput)}
-            >
-              <Typography
-                color={
-                  !isPasswordComplete(secondInput) ? 'disabled' : 'primary'
-                }
-                variant="button"
-              >
+            <Button onPress={handleSecondInputSubmit}>
+              <Typography color="primary" variant="button">
                 {t('screens.SecureScreen.pinsave_step2_cta')}
               </Typography>
             </Button>
