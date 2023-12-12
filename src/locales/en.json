@@ -106,7 +106,8 @@
         "quotaExceeded": "Storage space full",
         "networkIssue": "Network issue",
         "unknownIssue": "Unknown issue",
-        "backupRunning": "Backup already running"
+        "backupRunning": "Backup already running",
+        "backupPreparing": "Backup already preparing"
       }
     },
     "upload": {

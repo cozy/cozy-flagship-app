@@ -92,7 +92,8 @@
         "quotaExceeded": "Espacio de almacenamiento completo",
         "networkIssue": "Problema de red",
         "unknownIssue": "Problema desconocido",
-        "backupRunning": "Copia de seguridad ya en marcha"
+        "backupRunning": "Copia de seguridad ya en marcha",
+        "backupPreparing": "Copia de seguridad ya se está preparando"
       }
     },
     "upload": {
