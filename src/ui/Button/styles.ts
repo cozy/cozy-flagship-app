@@ -19,7 +19,15 @@ export const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.24)',
     borderWidth: 1
   },
-  disabled: {
+  // TODO: this is actually the inverted theme with Primary style
+  disabled_primary: {
+    boxShadow: 'none',
+    color: 'rgba(255,255,255,0.32)',
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    borderWidth: 0
+  },
+  // TODO: this is actually the normal theme with Primary style
+  disabled_secondary: {
     boxShadow: 'none',
     color: 'rgba(29,33,42,0.24)',
     backgroundColor: 'rgba(29,33,42,0.12)'

@@ -11,6 +11,7 @@ export const styles = StyleSheet.create({
   textPrimary: { color: palette.Grey['900'] },
   textSecondary: { color: palette.Common.white },
   error: { color: palette.Primary.ContrastText },
+  disabled: { color: 'rgba(255,255,255,0.32)' }, // TODO: clarify palette object
   h4: {
     fontFamily: 'Lato-Bold',
     fontSize: 20,
