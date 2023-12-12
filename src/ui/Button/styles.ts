@@ -1,27 +1,39 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, ViewStyle } from 'react-native'
 
-import { palette } from '/ui/palette'
+import { CozyThemeColors } from '/ui/colors'
 
-export const styles = StyleSheet.create({
-  button: {
-    borderRadius: 2,
-    paddingHorizontal: 16,
-    paddingVertical: 11,
-    width: '100%'
-  },
-  primary: {
-    backgroundColor: palette.Common.white,
-    borderColor: 'rgba(255, 255, 255, 1)',
-    borderWidth: 1
-  },
-  secondary: {
-    backgroundColor: palette.Primary['600'],
-    borderColor: 'rgba(255, 255, 255, 0.24)',
-    borderWidth: 1
-  },
-  disabled: {
-    boxShadow: 'none',
-    color: 'rgba(29,33,42,0.24)',
-    backgroundColor: 'rgba(29,33,42,0.12)'
-  }
-})
+export interface ButtonStyles {
+  button: ViewStyle
+  primary: ViewStyle
+  secondary: ViewStyle
+  disabled_primary: ViewStyle
+  disabled_secondary: ViewStyle
+}
+
+export const styles = (colors: CozyThemeColors): ButtonStyles =>
+  StyleSheet.create({
+    button: {
+      borderRadius: 2,
+      paddingHorizontal: 16,
+      paddingVertical: 11,
+      width: '100%'
+    },
+    primary: {
+      backgroundColor: colors.primaryColor
+    },
+    secondary: {
+      backgroundColor: colors.paperBackgroundColor,
+      borderColor: colors.borderMainColor,
+      borderWidth: 1
+    },
+    disabled_primary: {
+      boxShadow: 'none',
+      color: colors.actionColorDisabled,
+      backgroundColor: colors.actionColorDisabledBackground
+    },
+    disabled_secondary: {
+      boxShadow: 'none',
+      color: colors.actionColorDisabled,
+      backgroundColor: 'transparent'
+    }
+  })
