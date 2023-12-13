@@ -2,7 +2,7 @@ import messaging from '@react-native-firebase/messaging'
 
 import Minilog from 'cozy-minilog'
 
-import notifee from '@notifee/react-native'
+import notifee, { Event } from '@notifee/react-native'
 
 import CozyClient, {
   generateWebLink,
@@ -15,7 +15,7 @@ import { saveNotificationDeviceToken } from '/libs/client'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { routes } from '/constants/routes'
 
-const log = Minilog('notifications')
+const log = Minilog('🔔 notifications')
 
 export const navigateFromNotification = async (
   client: CozyClient,
@@ -58,30 +58,55 @@ export const navigateFromNotification = async (
   }
 }
 
-export const handleInitialNotification = async (
+const handleNotificationEvent = async (
+  client: CozyClient,
+  notification: Record<string, string | number | object> | undefined
+): Promise<void> => {
+  if (!notification) return
+
+  if (
+    notification.redirectLink &&
+    typeof notification.redirectLink === 'string'
+  ) {
+    log.debug('Handle navigation notification')
+    await navigateFromNotification(client, notification.redirectLink)
+  }
+}
+
+/**
+ * Called when the user clicks on a notificaiton received from Firebase
+ * and when the app is not running
+ *
+ * @param client - CozyClient instance
+ */
+export const handleInitialServerNotification = async (
   client: CozyClient
 ): Promise<void> => {
   const notification = await messaging().getInitialNotification()
 
-  if (notification?.data?.redirectLink) {
-    await navigateFromNotification(client, notification.data.redirectLink)
-  }
+  await handleNotificationEvent(client, notification?.data)
 }
 
-export const handleNotificationOpening = (client: CozyClient): (() => void) => {
-  notifee.onBackgroundEvent(async ({ detail }) => {
-    if (detail.notification?.data?.redirectLink) {
-      await navigateFromNotification(
-        client,
-        detail.notification.data.redirectLink as string
-      )
-    }
+/**
+ * Called when the user clicks on a notificaiton received from Firebase
+ * and when the app is in Background
+ *
+ * @param client - CozyClient instance
+ * @returns Method to unregister the handler
+ */
+export const handleServerNotificationOpening = (
+  client: CozyClient
+): (() => void) => {
+  notifee.onBackgroundEvent(async (event: Event) => {
+    log.debug('Received notification from onBackgroundEvent event')
+
+    await handleNotificationEvent(client, event.detail.notification?.data)
   })
 
   return messaging().onNotificationOpenedApp(async notification => {
-    if (notification.data?.redirectLink) {
-      await navigateFromNotification(client, notification.data.redirectLink)
-    }
+    log.debug('Received notification from onNotificationOpenedApp event')
+
+    await handleNotificationEvent(client, notification.data)
   })
 }
 
