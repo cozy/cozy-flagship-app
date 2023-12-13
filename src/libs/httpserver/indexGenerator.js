@@ -40,7 +40,7 @@ const initLocalBundleIfNotExist = async (fqdn, slug) => {
     return
   }
 
-  const basePath = await getBaseFolderForFqdnAndSlug(fqdn, slug)
+  const basePath = getBaseFolderForFqdnAndSlug(fqdn, slug)
 
   const embeddedBundlePath = `${basePath}/embedded`
 
