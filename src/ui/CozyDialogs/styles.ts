@@ -24,13 +24,22 @@ export const styles = StyleSheet.create({
     width: '100%'
   },
   dialogContainer: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
+    width: '100%',
     height: '100%',
+    margin: 0,
+    alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
-    width: '100%'
+    padding: 24
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000
+  },
+  overlayBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
   footer: {
     display: 'flex',
