@@ -525,7 +525,7 @@ export default class Launcher {
 
     const folderPath = await this.getFolderPath(trigger.message?.folder_to_save)
     this.log({
-      level: 'warning',
+      level: 'warn',
       namespace: 'Launcher',
       label: 'saveFiles',
       msg: 'Destination folder removed during konnector execution, trying again'
@@ -626,7 +626,7 @@ export default class Launcher {
 
 /**
  * @typedef ContentScriptLogMessage
- * @property {'debug'|'info'|'warning'|'error'|'critical'} level - Log level
+ * @property {'debug'|'info'|'warn'|'error'|'critical'} level - Log level
  * @property {string} msg             - message content
  * @property {string | null} label     - user defined label
  * @property {string | null} namespace - user defined namespace
