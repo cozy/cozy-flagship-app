@@ -5,8 +5,11 @@ import React, {
   useLayoutEffect,
   useState
 } from 'react'
+
+import type CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import HttpServer from '/libs/httpserver/HttpServer'
 import { fetchAppDataForSlug } from '/libs/httpserver/indexDataFetcher'
 import { getServerBaseFolder } from '/libs/httpserver/httpPaths'
@@ -29,21 +32,45 @@ const log = Minilog('HttpServerProvider')
 
 const DEFAULT_PORT = 5757
 
-export const HttpServerContext = createContext(undefined)
+interface HttpServerState {
+  server: HttpServer | undefined
+  securityKey: string
+  isRunning: () => Promise<boolean>
+  getIndexHtmlForSlug: (
+    slug: string,
+    client: CozyClient
+  ) => Promise<string | false>
+}
 
-export const useHttpServerContext = () => {
+interface SecurityKeyResult {
+  securityKey: string
+}
+
+export const HttpServerContext = createContext<HttpServerState | undefined>(
+  undefined
+)
+
+export const useHttpServerContext = (): HttpServerState | undefined => {
   const httpServerContext = useContext(HttpServerContext)
 
   return httpServerContext
 }
 
-export const HttpServerProvider = props => {
+interface HttpServerProviderProps {
+  children: React.ReactNode
+}
+
+export const HttpServerProvider = (
+  props: HttpServerProviderProps
+): JSX.Element => {
   const [serverSecurityKey, setServerSecurityKey] = useState('')
 
   const port = DEFAULT_PORT
   const path = getServerBaseFolder()
 
-  const [serverInstance, setServerInstance] = useState(undefined)
+  const [serverInstance, setServerInstance] = useState<HttpServer | undefined>(
+    undefined
+  )
 
   useLayoutEffect(() => {
     const server = new HttpServer(port, path, {
@@ -51,7 +78,7 @@ export const HttpServerProvider = props => {
       keepAlive: true
     })
 
-    const startingHttpServer = async () => {
+    const startingHttpServer = (): Promise<unknown> => {
       log.debug('🚀 Starting server')
       return server.start()
     }
@@ -60,11 +87,11 @@ export const HttpServerProvider = props => {
       .then(async url => {
         log.debug('🚀 Serving at URL', url)
 
-        const { securityKey } = await queryResultToCrypto(
+        const { securityKey } = (await queryResultToCrypto(
           'generateHttpServerSecurityKey'
-        )
+        )) as unknown as SecurityKeyResult
 
-        server.setSecurityKey(securityKey)
+        await server.setSecurityKey(securityKey)
         setServerSecurityKey(securityKey)
 
         setServerInstance(server)
@@ -79,11 +106,18 @@ export const HttpServerProvider = props => {
     }
   }, [path, port])
 
-  const isRunning = async () =>
+  const isRunning = async (): Promise<boolean> =>
     (await serverInstance?.isRunning()) ?? false
 
-  const getIndexHtmlForSlug = async (slug, client) => {
+  const getIndexHtmlForSlug = async (
+    slug: string,
+    client: CozyClient
+  ): Promise<string | false> => {
     try {
+      if (!serverInstance) {
+        throw new Error('ServerInstance is null, should not happen')
+      }
+
       const rootURL = client.getStackClient().uri
 
       const { host: fqdn } = new URL(rootURL)
@@ -122,8 +156,9 @@ export const HttpServerProvider = props => {
         )(computedHtml)
       }
     } catch (err) {
+      const errorMessage = getErrorMessage(err)
       log.error(
-        `Error while generating Index.html for ${slug}. Cozy-stack version will be used instead. Error was: ${err.message}`
+        `Error while generating Index.html for ${slug}. Cozy-stack version will be used instead. Error was: ${errorMessage}`
       )
 
       return false

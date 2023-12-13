@@ -1,19 +1,23 @@
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
+
 import Minilog from 'cozy-minilog'
 
 import {
   getBaseFolderForFqdnAndSlug,
   getBaseFolderForFqdnAndSlugAndCurrentVersion,
   getBaseRelativePathForFqdnAndSlugAndCurrentVersion
-} from './httpPaths'
-import { getAssetVersion, prepareAssets } from './copyAllFilesFromBundleAssets'
+} from '/libs/httpserver/httpPaths'
+import {
+  getAssetVersion,
+  prepareAssets
+} from '/libs/httpserver/copyAllFilesFromBundleAssets'
+import { TemplateValues } from '/libs/httpserver/indexDataFetcher'
 import {
   getCurrentAppConfigurationForFqdnAndSlug,
   setCurrentAppVersionForFqdnAndSlug
-} from '../cozyAppBundle/cozyAppBundleConfiguration'
-import { replaceAll } from '../functions/stringHelpers'
-
+} from '/libs/cozyAppBundle/cozyAppBundleConfiguration'
+import { replaceAll } from '/libs/functions/stringHelpers'
 import { shouldDisableGetIndex } from '/core/tools/env'
 
 const log = Minilog('IndexGenerator')
@@ -35,7 +39,10 @@ const slugAllowList = [
 
 const slugBlockList = [{ platform: 'ALL', slug: 'passwords' }]
 
-const initLocalBundleIfNotExist = async (fqdn, slug) => {
+const initLocalBundleIfNotExist = async (
+  fqdn: string,
+  slug: string
+): Promise<void> => {
   if (slug !== 'home') {
     return
   }
@@ -63,7 +70,7 @@ const initLocalBundleIfNotExist = async (fqdn, slug) => {
   }
 }
 
-const isSlugInAllowlist = currentSlug =>
+const isSlugInAllowlist = (currentSlug: string): boolean =>
   slugAllowList.some(
     ({ slug, platform }) =>
       (slug === 'ALL' && platform === Platform.OS) ||
@@ -71,14 +78,17 @@ const isSlugInAllowlist = currentSlug =>
       (slug === currentSlug && platform === Platform.OS)
   )
 
-const isSlugInBlocklist = currentSlug =>
+const isSlugInBlocklist = (currentSlug: string): boolean =>
   slugBlockList.some(
     ({ slug, platform }) =>
       (slug === currentSlug && platform === 'ALL') ||
       (slug === currentSlug && platform === Platform.OS)
   )
 
-export const getIndexForFqdnAndSlug = async (fqdn, slug) => {
+export const getIndexForFqdnAndSlug = async (
+  fqdn: string,
+  slug: string
+): Promise<string | false> => {
   if (shouldDisableGetIndex()) return false // Make cozy-app hosted by webpack-dev-server work with HTTPServer
 
   if (!isSlugInAllowlist(slug) || isSlugInBlocklist(slug)) return false
@@ -106,6 +116,15 @@ export const getIndexForFqdnAndSlug = async (fqdn, slug) => {
   return fileContent
 }
 
+interface FillIndexWithDataParams {
+  fqdn: string
+  slug: string
+  port: string
+  securityKey: string
+  indexContent: string
+  indexData: TemplateValues
+}
+
 export const fillIndexWithData = async ({
   fqdn,
   slug,
@@ -113,7 +132,7 @@ export const fillIndexWithData = async ({
   securityKey,
   indexContent,
   indexData
-}) => {
+}: FillIndexWithDataParams): Promise<string> => {
   let output = indexContent
 
   const basePath = await getBaseRelativePathForFqdnAndSlugAndCurrentVersion(
@@ -135,16 +154,19 @@ export const fillIndexWithData = async ({
   return output
 }
 
-const replaceRelativeUrlsWithAbsoluteUrls = (str, absoluteUrlBasePath) => {
+const replaceRelativeUrlsWithAbsoluteUrls = (
+  str: string,
+  absoluteUrlBasePath: string
+): string => {
   return str
     .replace(/href="\/(?!\/)/g, `href="${absoluteUrlBasePath}/`)
     .replace(/src="\/(?!\/)/g, `src="${absoluteUrlBasePath}/`)
 }
 
 const replaceProtocolRelativeUrlsWithAbsoluteUrls = (
-  str,
-  absoluteUrlBasePath
-) => {
+  str: string,
+  absoluteUrlBasePath: string
+): string => {
   return str
     .replace(/href="(?!http|\/\/)/g, `href="${absoluteUrlBasePath}/`)
     .replace(/src="(?!http|\/\/)/g, `src="${absoluteUrlBasePath}/`)

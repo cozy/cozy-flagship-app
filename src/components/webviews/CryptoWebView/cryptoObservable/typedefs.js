@@ -6,7 +6,7 @@
  */
 
 /**
- * @typedef {('computePass'|'computePKCE')} CryptoMethodName
+ * @typedef {('computePass'|'computePKCE'|'generateHttpServerSecurityKey')} CryptoMethodName
  */
 
 /**
