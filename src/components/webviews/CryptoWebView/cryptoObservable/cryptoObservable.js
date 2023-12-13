@@ -46,7 +46,7 @@ export const unsubscribeFromCrypto = callbackToRemove => {
  * Ask to the CryptoObservable's subscribers to execute the given cryptography method
  * with given params and then to return the computed result
  * @param {CryptoMethodName} methodName - name of the cryptography method to be called
- * @param {object} param - parameters to be passed into the called cryptography method
+ * @param {object} [param] - parameters to be passed into the called cryptography method
  * @returns {Promise<CryptoMessage>}
  */
 export const queryResultToCrypto = (methodName, param) => {

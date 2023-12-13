@@ -1,16 +1,48 @@
 import { NativeModules, AppState, Platform } from 'react-native'
 
-const { HttpServer: NativeHttpServer } = NativeModules
+interface NativeHttpServer {
+  start: (
+    port: string | null,
+    root: string | null,
+    localOnly: boolean,
+    keepAlive: boolean
+  ) => Promise<string>
+
+  stop: () => void
+  origin: () => Promise<string>
+  setSecurityKey: (securityKey: string) => Promise<boolean>
+  isRunning: () => Promise<boolean>
+}
+
+const NativeHttpServer = NativeModules.HttpServer as NativeHttpServer
 
 const PORT = ''
 const ROOT = null
 
+interface ServerOptions {
+  localOnly?: boolean
+  keepAlive?: boolean
+}
+
 class HttpServer {
-  constructor(port, root, opts) {
+  private _origin: string | undefined
+
+  started = false
+  running = false
+
+  port: string
+  root: string | null
+  securityKey: string
+  keepAlive = false
+  localOnly = false
+
+  _handleAppStateChangeFn: (appState: string) => void
+
+  constructor(port: number, root?: string, opts?: ServerOptions) {
     this.port = `${port}` || PORT
-    this.root = root || ROOT
-    this.localOnly = (opts && opts.localOnly) || false
-    this.keepAlive = (opts && opts.keepAlive) || false
+    this.root = root ?? ROOT
+    this.localOnly = opts?.localOnly ?? false
+    this.keepAlive = opts?.keepAlive ?? false
 
     this.started = false
     this._origin = undefined
@@ -18,8 +50,14 @@ class HttpServer {
     this._handleAppStateChangeFn = this._handleAppStateChange.bind(this)
   }
 
-  start() {
+  start(): Promise<string> {
     if (this.running) {
+      if (!this.origin) {
+        throw new Error(
+          'Origin is null when server is running, should not happen'
+        )
+      }
+
       return Promise.resolve(this.origin)
     }
 
@@ -46,26 +84,26 @@ class HttpServer {
       })
   }
 
-  stop() {
+  stop(): void {
     this.running = false
 
     return NativeHttpServer.stop()
   }
 
-  kill() {
+  kill(): void {
     this.stop()
     this.started = false
     this._origin = undefined
     AppState.removeEventListener('change', this._handleAppStateChangeFn)
   }
 
-  _handleAppStateChange(appState) {
+  _handleAppStateChange(appState: string): void {
     if (!this.started) {
       return
     }
 
     if (appState === 'active' && !this.running) {
-      this.start()
+      void this.start()
     }
 
     if (appState === 'background' && this.running) {
@@ -77,11 +115,11 @@ class HttpServer {
     }
   }
 
-  get origin() {
+  get origin(): string | undefined {
     return this._origin
   }
 
-  isRunning() {
+  isRunning(): Promise<boolean> {
     return NativeHttpServer.isRunning().then(running => {
       this.running = running
 
@@ -89,7 +127,7 @@ class HttpServer {
     })
   }
 
-  setSecurityKey(key) {
+  setSecurityKey(key: string): Promise<boolean> {
     this.securityKey = key
     return NativeHttpServer.setSecurityKey(key)
   }

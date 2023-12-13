@@ -9,7 +9,7 @@ import { normalizeFqdn } from '/libs/functions/stringHelpers'
  *
  * @returns {string}
  */
-export const getServerBaseFolder = () => {
+export const getServerBaseFolder = (): string => {
   return RNFS.DocumentDirectoryPath
 }
 
@@ -25,7 +25,10 @@ export const getServerBaseFolder = () => {
  * @param {string} slug - the cozy-app's slug
  * @returns {string}
  */
-export const getBaseRelativePathForFqdnAndSlug = (fqdn, slug) => {
+export const getBaseRelativePathForFqdnAndSlug = (
+  fqdn: string,
+  slug: string
+): string => {
   const normalizedFqdn = normalizeFqdn(fqdn)
 
   return `/${normalizedFqdn}/${slug}`
@@ -44,9 +47,9 @@ export const getBaseRelativePathForFqdnAndSlug = (fqdn, slug) => {
  * @returns {Promise<string>}
  */
 export const getBaseRelativePathForFqdnAndSlugAndCurrentVersion = async (
-  fqdn,
-  slug
-) => {
+  fqdn: string,
+  slug: string
+): Promise<string> => {
   const normalizedFqdn = normalizeFqdn(fqdn)
 
   const appConfiguration = await getCurrentAppConfigurationForFqdnAndSlug(
@@ -71,9 +74,9 @@ export const getBaseRelativePathForFqdnAndSlugAndCurrentVersion = async (
  * @returns {Promise<string>}
  */
 export const getBaseFolderForFqdnAndSlugAndCurrentVersion = async (
-  fqdn,
-  slug
-) => {
+  fqdn: string,
+  slug: string
+): Promise<string> => {
   const serverBasePath = getServerBaseFolder()
 
   const baseRelativePathForFqdnAndSlug =
@@ -94,7 +97,10 @@ export const getBaseFolderForFqdnAndSlugAndCurrentVersion = async (
  * @param {string} slug - the cozy-app's slug
  * @returns {string}
  */
-export const getBaseFolderForFqdnAndSlug = (fqdn, slug) => {
+export const getBaseFolderForFqdnAndSlug = (
+  fqdn: string,
+  slug: string
+): string => {
   const serverBasePath = getServerBaseFolder()
 
   const baseRelativePathForFqdnAndSlug = getBaseRelativePathForFqdnAndSlug(

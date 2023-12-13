@@ -6,9 +6,13 @@ import { getCookie } from '/libs/httpserver/httpCookieManager'
 import { logToSentry } from '/libs/monitoring/Sentry'
 import { replaceAll } from '/libs/functions/stringHelpers'
 
+export type TemplateValues = Omit<AppAttributes, 'Cookie'> & {
+  CozyData: string
+}
+
 interface FetchAppDataForSlugResult {
   cookie: AppAttributes['Cookie']
-  templateValues: Omit<AppAttributes, 'Cookie'> & { CozyData: string }
+  templateValues: TemplateValues
 }
 
 const sanitizeQuotes = (str: string): string => replaceAll(str, '"', '&#34;')
