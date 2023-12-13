@@ -54,7 +54,7 @@ const LockView = ({
   const { colors } = useCozyTheme()
 
   return (
-    <Container>
+    <>
       {hasLogoutDialog && (
         <ConfirmDialog
           actions={
@@ -74,104 +74,129 @@ const LockView = ({
           content={t('logout_dialog.content')}
           onClose={toggleLogoutDialog}
           title={t('logout_dialog.title')}
+          native={false}
         />
       )}
 
-      <Grid container direction="column" justifyContent="space-between">
-        <Grid justifyContent="space-between">
-          <IconButton onPress={toggleLogoutDialog}>
-            <Icon icon={LogoutFlipped} color={colors.primaryColor} />
-          </IconButton>
+      <Container>
+        {hasLogoutDialog && (
+          <ConfirmDialog
+            actions={
+              <>
+                <Button
+                  onPress={toggleLogoutDialog}
+                  label={t('logout_dialog.cancel')}
+                />
 
-          {biometryType && biometryEnabled ? (
-            <IconButton onPress={(): void => void handleBiometry()}>
-              <Icon
-                icon={getBiometryIcon(biometryType)}
-                color={colors.primaryColor}
-              />
+                <Button
+                  onPress={logout}
+                  variant="secondary"
+                  label={t('logout_dialog.confirm')}
+                />
+              </>
+            }
+            content={t('logout_dialog.content')}
+            onClose={toggleLogoutDialog}
+            title={t('logout_dialog.title')}
+          />
+        )}
+
+        <Grid container direction="column" justifyContent="space-between">
+          <Grid justifyContent="space-between">
+            <IconButton onPress={toggleLogoutDialog}>
+              <Icon icon={LogoutFlipped} color={colors.primaryColor} />
             </IconButton>
-          ) : null}
-        </Grid>
 
-        <Grid alignItems="center" direction="column">
-          <Icon icon={CozyCircle} style={{ marginBottom: 14 }} />
-
-          <Typography variant="h4" color="primary">
-            {mode === 'password' ? t('screens.lock.title') : null}
-            {mode === 'PIN' ? t('screens.lock.pin_title') : null}
-          </Typography>
-
-          <Typography
-            color="primary"
-            style={{ opacity: 0.64, marginBottom: 24 }}
-            variant="body2"
-          >
-            {fqdn}
-          </Typography>
-
-          <Tooltip title={uiError}>
-            {mode === 'password' ? (
-              <TextField
-                endAdornment={
-                  <IconButton onPress={togglePasswordVisibility}>
-                    <Icon
-                      icon={!passwordVisibility ? EyeClosed : Eye}
-                      color={colors.primaryColor}
-                    />
-                  </IconButton>
-                }
-                label={t('screens.lock.password_label')}
-                onChangeText={handleInput}
-                onSubmitEditing={tryUnlock}
-                returnKeyType="go"
-                secureTextEntry={!passwordVisibility}
-                value={input}
-                autoCapitalize="none"
-              />
+            {biometryType && biometryEnabled ? (
+              <IconButton onPress={(): void => void handleBiometry()}>
+                <Icon
+                  icon={getBiometryIcon(biometryType)}
+                  color={colors.primaryColor}
+                />
+              </IconButton>
             ) : null}
+          </Grid>
 
-            {mode === 'PIN' ? (
-              <TextField
-                endAdornment={
-                  <IconButton onPress={togglePasswordVisibility}>
-                    <Icon
-                      icon={!passwordVisibility ? EyeClosed : Eye}
-                      color={colors.primaryColor}
-                    />
-                  </IconButton>
-                }
-                inputComponent={RnMaskInput}
-                inputComponentProps={{
-                  onChangeText: handleInput,
-                  mask: [[/\d/], [/\d/], [/\d/], [/\d/]]
-                }}
-                keyboardType="numeric"
-                label={t('screens.lock.pin_label')}
-                onSubmitEditing={tryUnlock}
-                returnKeyType="go"
-                secureTextEntry={!passwordVisibility}
-                value={input}
-              />
-            ) : null}
-          </Tooltip>
+          <Grid alignItems="center" direction="column">
+            <Icon icon={CozyCircle} style={{ marginBottom: 14 }} />
 
-          <Link
-            onPress={toggleMode}
-            style={{ alignSelf: 'flex-start', marginVertical: 16 }}
-          >
-            <Typography variant="underline">
-              {mode === 'PIN' ? t('ui.buttons.forgotPin') : null}
-
-              {mode === 'password' ? t('ui.buttons.forgotPassword') : null}
+            <Typography variant="h4" color="primary">
+              {mode === 'password' ? t('screens.lock.title') : null}
+              {mode === 'PIN' ? t('screens.lock.pin_title') : null}
             </Typography>
-          </Link>
-        </Grid>
 
-        <Grid direction="column">
-          <Button onPress={tryUnlock} label={t('ui.buttons.unlock')} />
+            <Typography
+              color="primary"
+              style={{ opacity: 0.64, marginBottom: 24 }}
+              variant="body2"
+            >
+              {fqdn}
+            </Typography>
+
+            <Tooltip title={uiError}>
+              {mode === 'password' ? (
+                <TextField
+                  endAdornment={
+                    <IconButton onPress={togglePasswordVisibility}>
+                      <Icon
+                        icon={!passwordVisibility ? EyeClosed : Eye}
+                        color={colors.primaryColor}
+                      />
+                    </IconButton>
+                  }
+                  label={t('screens.lock.password_label')}
+                  onChangeText={handleInput}
+                  onSubmitEditing={tryUnlock}
+                  returnKeyType="go"
+                  secureTextEntry={!passwordVisibility}
+                  value={input}
+                  autoCapitalize="none"
+                />
+              ) : null}
+
+              {mode === 'PIN' ? (
+                <TextField
+                  endAdornment={
+                    <IconButton onPress={togglePasswordVisibility}>
+                      <Icon
+                        icon={!passwordVisibility ? EyeClosed : Eye}
+                        color={colors.primaryColor}
+                      />
+                    </IconButton>
+                  }
+                  inputComponent={RnMaskInput}
+                  inputComponentProps={{
+                    onChangeText: handleInput,
+                    mask: [[/\d/], [/\d/], [/\d/], [/\d/]]
+                  }}
+                  keyboardType="numeric"
+                  label={t('screens.lock.pin_label')}
+                  onSubmitEditing={tryUnlock}
+                  returnKeyType="go"
+                  secureTextEntry={!passwordVisibility}
+                  value={input}
+                />
+              ) : null}
+            </Tooltip>
+
+            <Link
+              onPress={toggleMode}
+              style={{ alignSelf: 'flex-start', marginVertical: 16 }}
+            >
+              <Typography variant="underline">
+                {mode === 'PIN' ? t('ui.buttons.forgotPin') : null}
+
+                {mode === 'password' ? t('ui.buttons.forgotPassword') : null}
+              </Typography>
+            </Link>
+          </Grid>
+
+          <Grid direction="column">
+            <Button onPress={tryUnlock} label={t('ui.buttons.unlock')} />
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </>
   )
 }
 

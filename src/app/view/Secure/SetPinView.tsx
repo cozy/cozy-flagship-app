@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView
 } from 'react-native'
 import RnMaskInput from 'react-native-mask-input'
-import { FullWindowOverlay } from 'react-native-screens'
 
 import { savePinCode } from '/app/domain/authorization/services/SecurityService'
 import { Container } from '/ui/Container'
@@ -20,7 +19,6 @@ import { IconButton } from '/ui/IconButton'
 import { Eye } from '/ui/Icons/Eye'
 import { EyeClosed } from '/ui/Icons/EyeClosed'
 import { TextField } from '/ui/TextField'
-import { ConditionalWrapper } from '/components/ConditionalWrapper'
 import { palette } from '/ui/palette'
 import { useI18n } from '/locales/i18n'
 import { CozyTheme } from '/ui/CozyTheme/CozyTheme'
@@ -161,26 +159,16 @@ interface SetPinProps {
 }
 
 export const SetPinView = (props: SetPinProps): JSX.Element => (
-  <ConditionalWrapper
-    condition={Platform.OS === 'ios'}
-    wrapper={(children): JSX.Element => (
-      <FullWindowOverlay>{children}</FullWindowOverlay>
-    )}
+  <TouchableWithoutFeedback
+    onPress={Keyboard.dismiss}
+    style={{ backgroundColor: palette.Primary[600], height: '100%' }}
   >
-    <TouchableWithoutFeedback
-      onPress={Keyboard.dismiss}
-      style={{ backgroundColor: palette.Primary[600], height: '100%' }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <CozyTheme variant="inverted">
-          <SetPinViewSimple
-            {...props}
-            onSuccess={props.route.params.onSuccess}
-          />
-        </CozyTheme>
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
-  </ConditionalWrapper>
+      <CozyTheme variant="inverted">
+        <SetPinViewSimple {...props} onSuccess={props.route.params.onSuccess} />
+      </CozyTheme>
+    </KeyboardAvoidingView>
+  </TouchableWithoutFeedback>
 )
