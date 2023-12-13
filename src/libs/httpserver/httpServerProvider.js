@@ -79,7 +79,8 @@ export const HttpServerProvider = props => {
     }
   }, [path, port])
 
-  const isRunning = () => serverInstance?.isRunning()
+  const isRunning = async () =>
+    (await serverInstance?.isRunning()) ?? false
 
   const getIndexHtmlForSlug = async (slug, client) => {
     try {

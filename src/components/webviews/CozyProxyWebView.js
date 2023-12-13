@@ -64,24 +64,28 @@ export const CozyProxyWebView = ({
   }, [htmlContentCreationDate, reload])
 
   useEffect(() => {
-    if (httpServerContext.isRunning()) {
-      if (slug) {
-        initHtmlContent({
-          httpServerContext,
-          slug,
-          href,
-          client,
-          dispatch,
-          setHtmlContentCreationDate
-        })
-      } else {
-        dispatch({
-          html: undefined,
-          nativeConfig: undefined,
-          source: { uri: href }
-        })
+    const init = async () => {
+      if (await httpServerContext.isRunning()) {
+        if (slug) {
+          initHtmlContent({
+            httpServerContext,
+            slug,
+            href,
+            client,
+            dispatch,
+            setHtmlContentCreationDate
+          })
+        } else {
+          dispatch({
+            html: undefined,
+            nativeConfig: undefined,
+            source: { uri: href }
+          })
+        }
       }
     }
+
+    void init()
   }, [client, httpServerContext, slug, href])
 
   useFocusEffect(
