@@ -4,8 +4,9 @@ import { Modal, Pressable, StyleProp, View, ViewStyle } from 'react-native'
 import { Cross } from '/ui/Icons/Cross'
 import { Icon } from '/ui/Icon'
 import { IconButton } from '/ui/IconButton'
-import { Typography } from '/ui/Typography'
+import { Typography, TypographyColor } from '/ui/Typography'
 import { styles } from '/ui/CozyDialogs/styles'
+import { useCozyTheme } from '/ui/CozyTheme/CozyTheme'
 
 interface ConfirmDialogProps {
   /**
@@ -76,29 +77,40 @@ const ModalContent = ({
   headerStyle,
   content,
   actions
-}: Partial<ConfirmDialogProps>): JSX.Element => (
-  <>
-    <Pressable style={styles.dialog}>
-      <View style={[styles.header, headerStyle]}>
-        <Typography variant="h3">{title}</Typography>
+}: Partial<ConfirmDialogProps>): JSX.Element => {
+  const { colors } = useCozyTheme()
 
-        <IconButton onPress={onClose}>
-          <Icon icon={Cross} />
-        </IconButton>
-      </View>
+  return (
+    <>
+      <Pressable style={styles.dialog}>
+        <View style={[styles.header, headerStyle]}>
+          <Typography
+            variant="h3"
+            color={colors.primaryTextColor as TypographyColor}
+          >
+            {title}
+          </Typography>
 
-      <View style={styles.content}>
-        {typeof content === 'string' ? (
-          <Typography>{content}</Typography>
-        ) : (
-          content
-        )}
-      </View>
+          <IconButton onPress={onClose}>
+            <Icon icon={Cross} />
+          </IconButton>
+        </View>
 
-      <View style={styles.footer}>{actions && renderActions(actions)}</View>
-    </Pressable>
-  </>
-)
+        <View style={styles.content}>
+          {typeof content === 'string' ? (
+            <Typography color={colors.primaryTextColor as TypographyColor}>
+              {content}
+            </Typography>
+          ) : (
+            content
+          )}
+        </View>
+
+        <View style={styles.footer}>{actions && renderActions(actions)}</View>
+      </Pressable>
+    </>
+  )
+}
 
 export const ConfirmDialog = ({
   actions,

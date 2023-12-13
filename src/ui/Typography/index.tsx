@@ -22,7 +22,7 @@ type TypographyVariant =
   | 'underline'
   | 'link'
 
-type TypographyColor =
+export type TypographyColor =
   | 'initial'
   | 'inherit'
   | 'primary'
