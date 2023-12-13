@@ -259,7 +259,7 @@ ifTestEnabled('indexGenerator', () => {
 
   describe('getIndexForFqdnAndSlug', () => {
     beforeEach(() => {
-      getBaseFolderForFqdnAndSlug.mockResolvedValue('SOME_BASE_PATH')
+      getBaseFolderForFqdnAndSlug.mockReturnValue('SOME_BASE_PATH')
       getBaseFolderForFqdnAndSlugAndCurrentVersion.mockResolvedValue(
         'SOME_BASE_PATH_CURRENT_VERSION'
       )
