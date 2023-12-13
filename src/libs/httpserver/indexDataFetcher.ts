@@ -16,7 +16,7 @@ const sanitizeQuotes = (str: string): string => replaceAll(str, '"', '&#34;')
 export const fetchAppDataForSlug = async (
   slug: string,
   client: CozyClient
-): Promise<FetchAppDataForSlugResult | undefined> => {
+): Promise<FetchAppDataForSlugResult> => {
   try {
     const storedCookie = await getCookie(client)
     const cozyDataResult = await fetchCozyDataForSlug<{ data: AppData }>(
@@ -65,5 +65,6 @@ export const fetchAppDataForSlug = async (
     }
   } catch (error) {
     logToSentry(error)
+    throw error
   }
 }
