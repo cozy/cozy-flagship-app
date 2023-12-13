@@ -74,33 +74,12 @@ const LockView = ({
           content={t('logout_dialog.content')}
           onClose={toggleLogoutDialog}
           title={t('logout_dialog.title')}
-          native={false}
+          // Don't use the native modal on iOS because it interferes with the FullWindowOverlay
+          native={Platform.OS === 'ios' ? false : true}
         />
       )}
 
       <Container>
-        {hasLogoutDialog && (
-          <ConfirmDialog
-            actions={
-              <>
-                <Button
-                  onPress={toggleLogoutDialog}
-                  label={t('logout_dialog.cancel')}
-                />
-
-                <Button
-                  onPress={logout}
-                  variant="secondary"
-                  label={t('logout_dialog.confirm')}
-                />
-              </>
-            }
-            content={t('logout_dialog.content')}
-            onClose={toggleLogoutDialog}
-            title={t('logout_dialog.title')}
-          />
-        )}
-
         <Grid container direction="column" justifyContent="space-between">
           <Grid justifyContent="space-between">
             <IconButton onPress={toggleLogoutDialog}>
