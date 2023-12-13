@@ -7,7 +7,9 @@ import {
   handleInitialToken,
   handleNotificationTokenReceiving,
   handleInitialServerNotification,
-  handleServerNotificationOpening
+  handleServerNotificationOpening,
+  handleServerNotificationOnForeground,
+  handleLocalNotificationOpening
 } from '/libs/notifications/notifications'
 import { checkNotifications } from '/app/domain/nativePermissions'
 
@@ -41,10 +43,15 @@ export const useNotifications = (): void => {
 
     const removeTokenReceivingHandler = handleNotificationTokenReceiving(client)
     const removeOpeningHandler = handleServerNotificationOpening(client)
+    const removeLocalNotificationHandler =
+      handleLocalNotificationOpening(client)
+    const removeServerForegroundHandler = handleServerNotificationOnForeground()
 
     return () => {
       removeTokenReceivingHandler()
       removeOpeningHandler()
+      removeServerForegroundHandler()
+      removeLocalNotificationHandler()
     }
   }, [client, areNotificationsEnabled])
 }
