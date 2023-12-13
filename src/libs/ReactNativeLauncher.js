@@ -418,7 +418,7 @@ class ReactNativeLauncher extends Launcher {
       this.log({
         namespace: 'ReactNativeLauncher',
         label: 'fetchAndSaveDebugData',
-        level: 'warning',
+        level: 'warn',
         msg: 'Error while saving debug data : ' + message
       })
     }
