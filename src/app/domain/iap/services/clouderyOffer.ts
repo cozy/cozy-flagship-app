@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction } from 'react'
 import { Linking, Platform } from 'react-native'
 import {
   clearTransactionIOS,
+  ProrationModesAndroid,
   requestSubscription,
   Subscription,
   SubscriptionAndroid,
@@ -71,6 +72,8 @@ export const interceptNavigation =
       if (isStartIapUrl(request.url)) {
         const url = new URL(request.url)
         const productId = url.searchParams.get('productId')
+        const purchaseToken = url.searchParams.get('purchaseToken')
+        const prorationMode = url.searchParams.get('prorationMode')
 
         if (!productId) {
           log.error('The IAP url do not contain any product ID')
@@ -81,6 +84,8 @@ export const interceptNavigation =
         void buySubscription(
           client,
           productId,
+          purchaseToken,
+          prorationMode,
           instanceInfo,
           subscriptions,
           setBuyingState,
@@ -114,6 +119,8 @@ const isOsStoreUrl = (url: string): boolean => {
 export const buySubscription = async (
   client: CozyClient | null,
   itemId: string,
+  purchaseToken: string | null,
+  prorationMode: string | null,
   instanceInfo: InstanceInfo,
   subscriptions: Subscription[],
   setBuyingState: Dispatch<SetStateAction<BuyingState>>,
@@ -128,7 +135,9 @@ export const buySubscription = async (
   try {
     setBuyingState({
       state: 'BUYING',
-      itemId
+      itemId,
+      purchaseToken,
+      prorationMode
     })
     if (Platform.OS === 'ios') {
       const productId = itemId
@@ -153,7 +162,9 @@ export const buySubscription = async (
         sku: productId,
         appAccountToken: accountId,
         obfuscatedAccountIdAndroid: accountId,
-        subscriptionOffers: offers
+        subscriptionOffers: offers,
+        purchaseTokenAndroid: purchaseToken ?? undefined,
+        prorationModeAndroid: parseProrationMode(prorationMode)
       })
     }
 
@@ -173,7 +184,9 @@ export const buySubscription = async (
     )
     setBuyingState({
       state: 'ERROR',
-      itemId
+      itemId,
+      purchaseToken,
+      prorationMode
     })
   }
 }
@@ -235,4 +248,24 @@ const extractBaseCozyDomain = (client: CozyClient): string => {
   const baseDomain = cozyDomain.split('.').slice(1).join('.')
 
   return baseDomain
+}
+
+const parseProrationMode = (
+  prorationMode: string | null
+): ProrationModesAndroid | undefined => {
+  if (!prorationMode) {
+    return undefined
+  }
+
+  switch (prorationMode) {
+    case 'DEFERRED': {
+      return ProrationModesAndroid.DEFERRED
+    }
+    case 'CHARGE_PRORATED_PRICE': {
+      return ProrationModesAndroid.IMMEDIATE_AND_CHARGE_PRORATED_PRICE
+    }
+    default: {
+      throw new Error(`Unknown prorationMode ${prorationMode}`)
+    }
+  }
 }
