@@ -35,11 +35,6 @@
   "services": {
     "geolocationTracking": {
       "androidNotificationDescription": "Tu viaje quedará registrado en tu cuenta"
-    },
-    "osReceive": {
-      "disableReasons": {
-        "multipleFiles": "{{appname}} no permite importar varios archivos simultáneamente. Por favor, importa tus archivos uno a uno o utiliza la aplicación {{appname}} directamente en tu cuenta."
-      }
     }
   },
   "software": {
