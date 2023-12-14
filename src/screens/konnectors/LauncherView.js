@@ -349,8 +349,15 @@ export class LauncherView extends Component {
    * @param {Object} event
    */
   onWorkerError({ nativeEvent }) {
-    log.error('onWorkerError', { nativeEvent })
-    this.stop({ message: 'VENDOR_DOWN' })
+    if (this.launcher) {
+      this.launcher.log({
+        level: 'error',
+        msg: 'Worker webview error: ' + JSON.stringify(nativeEvent)
+      })
+      this.launcher.stop({ message: 'VENDOR_DOWN' })
+    } else {
+      log.error('onWorkerError', JSON.stringify(nativeEvent))
+    }
   }
   /**
    * When an error is detected in the pilot webview
@@ -358,8 +365,15 @@ export class LauncherView extends Component {
    * @param {Object} event
    */
   onPilotError({ nativeEvent }) {
-    log.error('onPilotError', { nativeEvent })
-    this.stop({ message: 'VENDOR_DOWN' })
+    if (this.launcher) {
+      this.launcher.log({
+        level: 'error',
+        msg: 'Pilot webview error: ' + JSON.stringify(nativeEvent)
+      })
+      this.launcher.stop({ message: 'VENDOR_DOWN' })
+    } else {
+      log.error('onPilotError', JSON.stringify(nativeEvent))
+    }
   }
   /**
    * Postmessage relay from the pilot to  the launcher
@@ -379,10 +393,14 @@ export class LauncherView extends Component {
    */
   onPilotWebviewKilled(syntheticEvent) {
     const { nativeEvent } = syntheticEvent
-    this.launcher.log({
-      level: 'error',
-      msg: 'Pilot webview terminated: ' + JSON.stringify(nativeEvent)
-    })
+    if (this.launcher) {
+      this.launcher.log({
+        level: 'error',
+        msg: 'Pilot webview terminated: ' + JSON.stringify(nativeEvent)
+      })
+    } else {
+      log.error('onPilotWebviewKilled', JSON.stringify(nativeEvent))
+    }
   }
   /**
    * When the worker webview is killed
@@ -391,10 +409,14 @@ export class LauncherView extends Component {
    */
   onWorkerWebviewKilled(syntheticEvent) {
     const { nativeEvent } = syntheticEvent
-    this.launcher.log({
-      level: 'error',
-      msg: 'Worker webview terminated: ' + JSON.stringify(nativeEvent)
-    })
+    if (this.launcher) {
+      this.launcher.log({
+        level: 'error',
+        msg: 'Worker webview terminated: ' + JSON.stringify(nativeEvent)
+      })
+    } else {
+      log.error('onWorkerWebviewKilled', JSON.stringify(nativeEvent))
+    }
   }
   /**
    * Postmessage relay from the worker to  the launcher
