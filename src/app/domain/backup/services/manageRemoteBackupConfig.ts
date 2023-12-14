@@ -244,15 +244,45 @@ export const createRemoteBackupFolder = async (
   return remoteBackupConfig
 }
 
-const isFileCorrespondingToMedia = (file: File, media: Media): boolean => {
-  const creationDate = new Date(
-    file?.metadata?.creationDateFromLibrary ?? file.created_at
-  )
-  creationDate.setMilliseconds(0)
+export const isFileCorrespondingToMedia = (
+  file: File,
+  media: Media
+): boolean => {
+  const creationDateFromLibrary = file.metadata?.creationDateFromLibrary
 
-  return (
-    file.name === media.name && creationDate.getTime() === media.creationDate
-  )
+  /* File come from the new backup */
+
+  if (creationDateFromLibrary) {
+    const creationDate = new Date(creationDateFromLibrary)
+    creationDate.setMilliseconds(0)
+
+    return (
+      file.name === media.name && creationDate.getTime() === media.creationDate
+    )
+  }
+
+  if (flag('flagship.backup.dedup')) {
+    const creationDate = new Date(file.created_at)
+    creationDate.setMilliseconds(0)
+
+    const mediaCreationDate = new Date(media.creationDate)
+
+    return (
+      file.name === media.name &&
+      creationDate.getFullYear() === mediaCreationDate.getFullYear() &&
+      creationDate.getMonth() === mediaCreationDate.getMonth() &&
+      creationDate.getDate() === mediaCreationDate.getDate() &&
+      creationDate.getMinutes() === mediaCreationDate.getMinutes() &&
+      creationDate.getSeconds() === mediaCreationDate.getSeconds()
+    )
+  } else {
+    const creationDate = new Date(file.created_at)
+    creationDate.setMilliseconds(0)
+
+    return (
+      file.name === media.name && creationDate.getTime() === media.creationDate
+    )
+  }
 }
 
 const formatBackupedMedia = (
