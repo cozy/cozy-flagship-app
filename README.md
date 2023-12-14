@@ -40,6 +40,8 @@ $ yarn ios
 
 ```
 
+Do not forget to check our [Tips for a better developer experience](docs/tips-for-a-better-developer-experience.md) !
+
 More information about Android variant [here](https://github.com/cozy/cozy-flagship-app/blob/master/docs/how-to-debug-notifications.md).
 
 ### Working with locally hosted webviews
