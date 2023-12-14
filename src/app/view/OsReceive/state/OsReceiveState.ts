@@ -139,9 +139,11 @@ export const useFilesQueueStatus = (): FileQueueStatus => {
   const state = useOsReceiveState()
 
   return {
-    hasAllFilesQueued: state.filesToUpload.every(
-      file => file.status === OsReceiveFileStatus.queued
-    )
+    hasAllFilesQueued:
+      state.filesToUpload.length > 0 &&
+      state.filesToUpload.every(
+        file => file.status === OsReceiveFileStatus.queued
+      )
   }
 }
 
