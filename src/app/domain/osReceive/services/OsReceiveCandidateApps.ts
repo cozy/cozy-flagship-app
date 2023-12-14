@@ -52,9 +52,7 @@ const checkFileNumberLimit =
 
     const reason =
       maxNumberOfFiles === 1
-        ? t('services.osReceive.disableReasons.multipleFiles', {
-            appname: app.name
-          })
+        ? t('services.osReceive.disableReasons.multipleFiles')
         : t('services.osReceive.disableReasons.tooManyFiles', {
             numberOfFiles: filesToUpload.length,
             maxNumberOfFiles: maxNumberOfFiles,
