@@ -1,6 +1,14 @@
 import * as manageRemoteBackupConfig from '/app/domain/backup/services/manageRemoteBackupConfig'
 
 import type CozyClient from 'cozy-client'
+import flag from 'cozy-flags'
+
+import { Media } from '/app/domain/backup/models'
+import { File } from '/app/domain/backup/queries'
+
+jest.mock('cozy-flags')
+
+const mockedFlag = flag as jest.MockedFunction<typeof flag>
 
 describe('fetchRemoteBackupConfigs', () => {
   const mockClientWithFindReferencedByResult = (
@@ -140,5 +148,101 @@ describe('fetchDeviceRemoteBackupConfig', () => {
       )
 
     expect(remoteBackupConfig).toBeUndefined()
+  })
+})
+
+describe('isFileCorrespondingToMedia', () => {
+  it('true when creationDateFromLibrary exists in file and corresponds to creationDate in media', () => {
+    const file = {
+      metadata: {
+        creationDateFromLibrary: new Date(2021, 0, 0, 10, 0, 0).getTime() // good date
+      },
+      created_at: new Date(2021, 0, 0, 9, 0, 0).getTime() // bad date (bad EXIF)
+    } as unknown as File
+
+    const media = {
+      creationDate: new Date(2021, 0, 0, 10, 0, 0).getTime()
+    } as unknown as Media
+
+    expect(
+      manageRemoteBackupConfig.isFileCorrespondingToMedia(file, media)
+    ).toBe(true)
+  })
+
+  it('false when creationDateFromLibrary exists in file and do not correspond to creationDate in media', () => {
+    const file = {
+      metadata: {
+        creationDateFromLibrary: new Date(2021, 0, 0, 10, 0, 0).getTime() // good date
+      },
+      created_at: new Date(2021, 0, 0, 9, 0, 0).getTime() // bad date (bad EXIF)
+    } as unknown as File
+
+    const media = {
+      creationDate: new Date(2021, 0, 1, 10, 0, 0).getTime()
+    } as unknown as Media
+
+    expect(
+      manageRemoteBackupConfig.isFileCorrespondingToMedia(file, media)
+    ).toBe(false)
+  })
+
+  it('true when only created_at exists in file and corresponds to creationDate in media', () => {
+    const file = {
+      created_at: new Date(2021, 0, 0, 10, 0, 0).getTime() // good date (lucky EXIF)
+    } as unknown as File
+
+    const media = {
+      creationDate: new Date(2021, 0, 0, 10, 0, 0).getTime()
+    } as unknown as Media
+
+    expect(
+      manageRemoteBackupConfig.isFileCorrespondingToMedia(file, media)
+    ).toBe(true)
+  })
+
+  it('false when file only created_at exists and do not correspond to creationDate in media', () => {
+    const file = {
+      created_at: new Date(2021, 0, 0, 10, 0, 0).getTime() // good date (lucky EXIF)
+    } as unknown as File
+
+    const media = {
+      creationDate: new Date(2021, 0, 1, 10, 0, 0).getTime()
+    } as unknown as Media
+
+    expect(
+      manageRemoteBackupConfig.isFileCorrespondingToMedia(file, media)
+    ).toBe(false)
+  })
+
+  it('true when only created_at exists in file and corresponds with day/minute to creationDate in media with dedup mode', () => {
+    mockedFlag.mockReturnValue(true)
+
+    const file = {
+      created_at: new Date(2021, 0, 0, 9, 0, 0).getTime() // bad date (bad EXIF)
+    } as unknown as File
+
+    const media = {
+      creationDate: new Date(2021, 0, 0, 10, 0, 0).getTime()
+    } as unknown as Media
+
+    expect(
+      manageRemoteBackupConfig.isFileCorrespondingToMedia(file, media)
+    ).toBe(true)
+  })
+
+  it('false when only created_at exists in file and corresponds with day/minute to creationDate in media without dedup mode', () => {
+    mockedFlag.mockReturnValue(false)
+
+    const file = {
+      created_at: new Date(2021, 0, 0, 9, 0, 0).getTime() // bad date (bad EXIF)
+    } as unknown as File
+
+    const media = {
+      creationDate: new Date(2021, 0, 0, 10, 0, 0).getTime()
+    } as unknown as Media
+
+    expect(
+      manageRemoteBackupConfig.isFileCorrespondingToMedia(file, media)
+    ).toBe(false)
   })
 })
