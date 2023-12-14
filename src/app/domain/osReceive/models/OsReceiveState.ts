@@ -73,3 +73,7 @@ export interface OsReceiveApiMethods {
 export interface UploadStatus {
   filesToHandle: OsReceiveState['filesToUpload']
 }
+
+export interface FileQueueStatus {
+  hasAllFilesQueued: boolean
+}

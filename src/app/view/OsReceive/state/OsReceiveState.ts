@@ -10,7 +10,8 @@ import {
   OsReceiveAction,
   OsReceiveActionType,
   OsReceiveFile,
-  OsReceiveFileStatus
+  OsReceiveFileStatus,
+  FileQueueStatus
 } from '/app/domain/osReceive/models/OsReceiveState'
 import { getAppsForUpload } from '/app/domain/osReceive/services/OsReceiveCandidateApps'
 import { AppForUpload } from '/app/domain/osReceive/models/OsReceiveCozyApp'
@@ -132,6 +133,16 @@ export const useFilesToUpload = (): OsReceiveFile[] => {
   return state.filesToUpload.filter(
     file => file.status === OsReceiveFileStatus.toUpload
   )
+}
+
+export const useFilesQueueStatus = (): FileQueueStatus => {
+  const state = useOsReceiveState()
+
+  return {
+    hasAllFilesQueued: state.filesToUpload.every(
+      file => file.status === OsReceiveFileStatus.queued
+    )
+  }
 }
 
 export const useAppsForUpload = (): AppForUpload[] | undefined => {
