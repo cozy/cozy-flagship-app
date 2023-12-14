@@ -12,6 +12,7 @@ import { Radio } from '/ui/Radio'
 import { Typography } from '/ui/Typography'
 import {
   useAppsForUpload,
+  useFilesQueueStatus,
   useFilesToUpload
 } from '/app/view/OsReceive/state/OsReceiveState'
 import {
@@ -32,6 +33,7 @@ import { FileThumbnail } from '/ui/ImageThumbnail'
 
 export const OsReceiveScreen = (): JSX.Element | null => {
   const filesToUpload = useFilesToUpload()
+  const { hasAllFilesQueued } = useFilesQueueStatus()
   const appsForUpload = useAppsForUpload()
   const { t } = useI18n()
   const {
@@ -47,7 +49,8 @@ export const OsReceiveScreen = (): JSX.Element | null => {
   const isSingleFile = filesToUpload.length === 1
   const isMultipleFiles = filesToUpload.length > 1
   const shouldRender =
-    hasFilesToUpload && appsForUpload && appsForUpload.length > 0
+    (hasFilesToUpload && appsForUpload && appsForUpload.length > 0) ||
+    hasAllFilesQueued
 
   if (!shouldRender) return null
 
@@ -92,7 +95,7 @@ export const OsReceiveScreen = (): JSX.Element | null => {
               </ListSubHeader>
             }
           >
-            {appsForUpload.map((app, index) => (
+            {appsForUpload?.map((app, index) => (
               <React.Fragment key={app.slug}>
                 <ListItem
                   button={!app.reasonDisabled && app.slug !== selectedOption}
