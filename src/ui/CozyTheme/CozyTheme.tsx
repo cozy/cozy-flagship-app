@@ -10,7 +10,9 @@ interface CozyThemeState {
   variant: CozyThemeVariant
 }
 
-export const CozyThemeContext = createContext<CozyThemeState>({
+// We'll consider the context as possibly undefined
+// This will allow us to use the runtime hook with a fallback value and correctly type it
+export const CozyThemeContext = createContext<CozyThemeState | undefined>({
   variant: 'normal'
 })
 
@@ -38,9 +40,10 @@ export const useCozyTheme = (
 ): CozyThemeHook => {
   const context = useContext(CozyThemeContext)
 
+  // Using optional chaining here to avoid a runtime error
   const colors = useMemo<CozyThemeColors>(
-    () => getColors(forcedVariant ? forcedVariant : context.variant),
-    [forcedVariant, context.variant]
+    () => getColors(forcedVariant ? forcedVariant : context?.variant),
+    [forcedVariant, context?.variant]
   )
 
   if (forcedVariant) {

@@ -56,27 +56,29 @@ const LockView = ({
   return (
     <>
       {hasLogoutDialog && (
-        <ConfirmDialog
-          actions={
-            <>
-              <Button
-                onPress={toggleLogoutDialog}
-                label={t('logout_dialog.cancel')}
-              />
+        <CozyTheme variant="normal">
+          <ConfirmDialog
+            actions={
+              <>
+                <Button
+                  onPress={toggleLogoutDialog}
+                  label={t('logout_dialog.cancel')}
+                />
 
-              <Button
-                onPress={logout}
-                variant="secondary"
-                label={t('logout_dialog.confirm')}
-              />
-            </>
-          }
-          content={t('logout_dialog.content')}
-          onClose={toggleLogoutDialog}
-          title={t('logout_dialog.title')}
-          // Don't use the native modal on iOS because it interferes with the FullWindowOverlay
-          native={Platform.OS === 'ios' ? false : true}
-        />
+                <Button
+                  onPress={logout}
+                  variant="secondary"
+                  label={t('logout_dialog.confirm')}
+                />
+              </>
+            }
+            content={t('logout_dialog.content')}
+            onClose={toggleLogoutDialog}
+            title={t('logout_dialog.title')}
+            // Don't use the native modal because it interferes with the FullWindowOverlay
+            native={false}
+          />
+        </CozyTheme>
       )}
 
       <Container>
