@@ -238,11 +238,16 @@ const initializeBackup = async (
   try {
     localBackupConfig = await fixLocalBackupConfigIfNecessary(client)
   } catch (e) {
+    log.debug('Error trying to fix local backup config', e)
+
     if (e instanceof Error) {
       if (
         e.message === 'Remote backup folder has been trashed.' ||
         e.message === 'Remote backup folder has been deleted.'
       ) {
+        log.debug(
+          'Reseting local backup config because folder has been trashed or deleted'
+        )
         return await initializeLocalBackupConfig(client)
       }
     }
