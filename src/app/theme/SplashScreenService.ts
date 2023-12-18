@@ -1,5 +1,6 @@
 import RNBootSplash, { VisibilityStatus } from 'react-native-bootsplash'
 
+import { flagshipUIEventHandler, flagshipUIEvents } from '/app/view/FlagshipUI'
 import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { navigationRef } from '/libs/RootNavigation'
 import { devlog } from '/core/tools/env'
@@ -11,8 +12,19 @@ export class SplashScreenService {
 
 export const showSplashScreen = (bootsplashName?: string): Promise<void> => {
   devlog('☁️ showSplashScreen called')
+
+  flagshipUIEventHandler.emit(
+    flagshipUIEvents.SET_COMPONENT_COLORS,
+    `Splashscreen`,
+    {
+      topTheme: 'light',
+      bottomTheme: 'light'
+    }
+  )
+
   return RNBootSplash.show({ fade: true, bootsplashName })
 }
+
 export const hideSplashScreen = (
   bootsplashName?: string,
   override?: boolean
@@ -29,6 +41,12 @@ export const hideSplashScreen = (
   } else {
     devlog('☁️ hideSplashScreen called with non-default route')
   }
+
+  flagshipUIEventHandler.emit(
+    flagshipUIEvents.SET_COMPONENT_COLORS,
+    `Splashscreen`,
+    undefined
+  )
 
   return RNBootSplash.hide({ fade: true, bootsplashName })
 }
