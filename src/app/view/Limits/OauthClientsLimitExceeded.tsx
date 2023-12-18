@@ -7,6 +7,9 @@ import type {
   WebViewNavigation
 } from 'react-native-webview/lib/WebViewTypes'
 
+import { FlagshipUI } from 'cozy-intent'
+
+import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import { useOAuthClientsLimitExceeded } from '/app/view/Limits/hooks/useOAuthClientsLimitExceeded'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import { palette } from '/ui/palette'
@@ -40,6 +43,11 @@ export const OauthClientsLimitExceeded = ({
   ) : null
 }
 
+const defaultFlagshipUI: FlagshipUI = {
+  bottomTheme: 'light',
+  topTheme: 'light'
+}
+
 interface WebViewWithLoadingOverlayProps {
   popupUrl: string
   interceptNavigation: (request: WebViewNavigation) => boolean
@@ -53,6 +61,12 @@ const WebViewWithLoadingOverlay = ({
 }: WebViewWithLoadingOverlayProps): JSX.Element => {
   const [loading, setLoading] = useState(true)
 
+  useFlagshipUI(
+    'OauthClientsLimitExceeded',
+    ScreenIndexes.OAUTH_CLIENT_LIMIT_EXCEDEED,
+    defaultFlagshipUI
+  )
+
   return (
     <View style={styles.dialog}>
       <WebView
@@ -61,28 +75,42 @@ const WebViewWithLoadingOverlay = ({
         onOpenWindow={interceptOpenWindow}
         onLoadEnd={(): void => setLoading(false)}
       />
-      {loading && (
-        <>
-          <View
-            style={[
-              styles.loadingOverlay,
-              {
-                backgroundColor: 'white'
-              }
-            ]}
-          />
-          <View
-            style={[
-              styles.loadingOverlay,
-              {
-                backgroundColor: palette.Grey[900],
-                opacity: 0.5
-              }
-            ]}
-          />
-        </>
-      )}
+      {loading && <LoadingOverlay />}
     </View>
+  )
+}
+
+const LoadingOverlay = (): JSX.Element => {
+  const { setFlagshipColors } = useFlagshipUI(
+    'OauthClientsLimitExceededOverlay',
+    ScreenIndexes.OAUTH_CLIENT_LIMIT_EXCEDEED + 1
+  )
+
+  setFlagshipColors({
+    topTheme: 'light',
+    bottomTheme: 'light'
+  })
+
+  return (
+    <>
+      <View
+        style={[
+          styles.loadingOverlay,
+          {
+            backgroundColor: 'white'
+          }
+        ]}
+      />
+      <View
+        style={[
+          styles.loadingOverlay,
+          {
+            backgroundColor: palette.Grey[900],
+            opacity: 0.5
+          }
+        ]}
+      />
+    </>
   )
 }
 
