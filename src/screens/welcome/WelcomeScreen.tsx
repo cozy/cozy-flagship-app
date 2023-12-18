@@ -3,7 +3,9 @@ import React, { useState } from 'react'
 import { BackHandler, StyleSheet, View } from 'react-native'
 
 import type CozyClient from 'cozy-client'
+import { FlagshipUI } from 'cozy-intent'
 
+import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import { WelcomePage } from '/components/html/WelcomePage'
 import { makeHTML } from '/components/makeHTML'
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
@@ -65,6 +67,11 @@ interface WelcomeScreenProps {
   setClient: (client: CozyClient) => void
 }
 
+const defaultFlagshipUI: FlagshipUI = {
+  bottomTheme: 'dark',
+  topTheme: 'dark'
+}
+
 export const WelcomeScreen = ({
   navigation,
   route,
@@ -74,6 +81,12 @@ export const WelcomeScreen = ({
   const [isWelcomeModalDisplayed, setIsWelcomeModalDisplayed] = useState(true)
   const { isInitialized, onboardingPartner } = useInstallReferrer()
   const [clouderyMode, setClouderyMode] = useState(CLOUDERY_MODE_LOGIN)
+
+  useFlagshipUI(
+    'WelcomeScreen',
+    ScreenIndexes.WELCOME_SCREEN,
+    defaultFlagshipUI
+  )
 
   const handleBackPress = (): void => {
     if (isWelcomeModalDisplayed || onboardingPartner?.hasReferral) {
