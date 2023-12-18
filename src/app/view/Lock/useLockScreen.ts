@@ -21,6 +21,7 @@ import {
   validatePin
 } from '/app/domain/authorization/services/LockScreenService'
 import { useI18n } from '/locales/i18n'
+import { SecurityNavigationService } from '/app/domain/authorization/services/SecurityNavigationService'
 
 export const useLockScreenProps = (props: LockScreenProps): LockViewProps => {
   const [biometryEnabled, setBiometryEnabled] = useState(false)
@@ -35,6 +36,16 @@ export const useLockScreenProps = (props: LockScreenProps): LockViewProps => {
   const client = useClient()!
   const { fqdn } = getInstanceAndFqdnFromClient(client)
   const { t } = useI18n()
+
+  // This is intended to ensure that the backpress listener is always active,
+  // and will always quit the app when the user is on the lock screen.
+  useEffect(() => {
+    SecurityNavigationService.startListening()
+
+    return () => {
+      SecurityNavigationService.stopListening()
+    }
+  })
 
   const onUnlock = useCallback((): void => {
     if (!props.route.params?.onSuccess) return reset(routes.home)
