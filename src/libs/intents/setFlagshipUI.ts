@@ -105,7 +105,7 @@ export const updateStatusBarAndBottomBar = (
   } else {
     // On iOS we don't have BottomBar so we only need to
     // change the BarStyle.
-    bottomTheme && StatusBar.setBarStyle(bottomTheme)
+    topTheme && StatusBar.setBarStyle(topTheme)
   }
 }
 
