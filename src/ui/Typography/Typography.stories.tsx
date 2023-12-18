@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { StoryWrapper } from '/../.storybook/StoryWrapper'
-import { Typography } from '/ui/Typography/index'
+import { StoryWrapper } from '/storybook/StoryWrapper'
+import { Typography } from '/ui/Typography'
 
 const TypographyMeta = {
   title: 'Typography',

@@ -28,8 +28,10 @@
     "validate:locales": "node scripts/dist/validate-locales.cmd.js",
     "web": "webpack serve --open --config webpack.config.js --inline --hot --port=9999",
     "web:test": "react-app-rewired test --env=jsdom",
-    "prestorybook": "sb-rn-get-stories",
-    "storybook": "STORYBOOK_ENABLED=true react-native start"
+    "prestorybook": "yarn storybook:update",
+    "storybook": "STORYBOOK_ENABLED=true react-native start",
+    "storybook:watch": "sb-rn-watcher",
+    "storybook:update": "sb-rn-get-stories"
   },
   "dependencies": {
     "@fengweichong/react-native-gzip": "^2.0.0",
