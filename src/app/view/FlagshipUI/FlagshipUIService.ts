@@ -55,7 +55,17 @@ export interface FlagshipUiUpdateEvent {
 }
 
 export const flagshipState: FlagshipState = {
-  state: []
+  state: [
+    // We insert Splashscreen as a special entry as SplashScreen is handled ouside of React
+    {
+      id: 'Splashscreen',
+      ui: {
+        topTheme: 'light',
+        bottomTheme: 'light'
+      },
+      zIndex: ScreenIndexes.SPLASH_SCREEN
+    }
+  ]
 }
 
 export const DEFAULT_FLAGSHIP_UI: FlagshipUI = {
