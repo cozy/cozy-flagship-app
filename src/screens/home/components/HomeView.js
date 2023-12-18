@@ -21,6 +21,7 @@ import { useSession } from '/hooks/useSession'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
+import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import { OsReceiveScreen } from '/app/view/OsReceive/OsReceiveScreen'
 import { useFilesToUpload } from '/app/view/OsReceive/state/OsReceiveState'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
@@ -72,6 +73,8 @@ const HomeView = ({ route, navigation, setBarStyle }) => {
   )
   const hasRenderedOnce = useRef(false)
   const filesToUpload = useFilesToUpload()
+
+  const { componentId } = useFlagshipUI('HomeView', ScreenIndexes.HOME_VIEW)
 
   useEffect(() => {
     const subscription = AppState.addEventListener(
@@ -266,6 +269,7 @@ const HomeView = ({ route, navigation, setBarStyle }) => {
             if (methodName === 'openApp') nativeIntent?.call(uri, 'openApp')
           }
         }}
+        componentId={componentId}
       />
 
       <OsReceiveScreen />
