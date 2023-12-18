@@ -1,39 +1,36 @@
-// eslint-disable-next-line import/no-extraneous-dependencies -- We rely on react-native here
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { getDefaultConfig } = require('metro-config')
 
+const transformerConfig = {
+  transformer: {
+    experimentalImportSupport: false,
+    inlineRequires: true,
+    babelTransformerPath: require.resolve('react-native-svg-transformer')
+  }
+}
+
+const getDefaultResolverConfig = (sourceExts, assetExts) => ({
+  assetExts: assetExts.filter(ext => ext !== 'svg'),
+  sourceExts: [...sourceExts, 'jsx', 'svg']
+})
+
+const getStorybookResolverConfig = sourceExts => ({
+  resolverMainFields: ['sbmodern', 'react-native', 'browser', 'main'],
+  sourceExts: ['storybook.js', ...sourceExts]
+})
+
 module.exports = (async () => {
+  const defaultConfig = await getDefaultConfig()
   const {
     resolver: { sourceExts, assetExts }
-  } = await getDefaultConfig()
+  } = defaultConfig
 
-  if (process.env.STORYBOOK_ENABLED) {
-    return {
-      transformer: {
-        getTransformOptions: async () => ({
-          transform: {
-            experimentalImportSupport: false,
-            inlineRequires: false
-          }
-        })
-      },
-      resolver: {
-        resolverMainFields: ['sbmodern', 'react-native', 'browser', 'main'],
-        // We do a little bit of tomfoolery and pick *.storybook.js instead of *.js files (if available)
-        // (this is how metro 'prefers' .android.js or .ios.js files)
-        sourceExts: ['storybook.js'].concat(sourceExts)
-      }
-    }
-  }
+  const resolverConfig = process.env.STORYBOOK_ENABLED
+    ? getStorybookResolverConfig(sourceExts)
+    : getDefaultResolverConfig(sourceExts, assetExts)
 
   return {
-    transformer: {
-      experimentalImportSupport: false,
-      inlineRequires: true,
-      babelTransformerPath: require.resolve('react-native-svg-transformer')
-    },
-    resolver: {
-      assetExts: assetExts.filter(ext => ext !== 'svg'),
-      sourceExts: [...sourceExts, 'jsx', 'svg']
-    }
+    ...transformerConfig,
+    resolver: resolverConfig
   }
 })()
