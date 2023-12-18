@@ -1,4 +1,4 @@
-# 1.1.20
+# 1.1.21
 
 ## ✨ Features
 
@@ -8,6 +8,24 @@
 
 ## 🔧 Tech
 
+# 1.1.20
+
+## ✨ Features
+* Manage normal and inverted themes ([PR #1062](https://github.com/cozy/cozy-flagship-app/pull/1062))
+* Improve dedup backup algorithm to support old backup ([PR #1077](https://github.com/cozy/cozy-flagship-app/pull/1077))
+* Add new non native modal ([PR #1066](https://github.com/cozy/cozy-flagship-app/pull/1066))
+
+## 🐛 Bug Fixes
+* Fix client side connectors bugs ([PR #1057](https://github.com/cozy/cozy-flagship-app/pull/1057), [PR #1073](https://github.com/cozy/cozy-flagship-app/pull/1073))
+* Fix send files bugs ([PR #1068](https://github.com/cozy/cozy-flagship-app/pull/1068), [PR #1074](https://github.com/cozy/cozy-flagship-app/pull/1074))
+* Fix UI bugs ([PR #1061](https://github.com/cozy/cozy-flagship-app/pull/1061), [PR #1071](https://github.com/cozy/cozy-flagship-app/pull/1071), [PR #1075](https://github.com/cozy/cozy-flagship-app/pull/1075), [PR #1052](https://github.com/cozy/cozy-flagship-app/pull/1052))
+* Avoid to start multiple backup in parallel ([PR #1064](https://github.com/cozy/cozy-flagship-app/pull/1064))
+
+## 🔧 Tech
+* Improve logging ([PR #1055](https://github.com/cozy/cozy-flagship-app/pull/1055), [PR #1067](https://github.com/cozy/cozy-flagship-app/pull/1067), [PR #1078](https://github.com/cozy/cozy-flagship-app/pull/1078))
+* Add Storybook ([PR #1056](https://github.com/cozy/cozy-flagship-app/pull/1056))
+* Update dependencies ([PR #1053](https://github.com/cozy/cozy-flagship-app/pull/1053), [PR #1060](https://github.com/cozy/cozy-flagship-app/pull/1060))
+* Update icons on Android to latest standard ([PR #1063](https://github.com/cozy/cozy-flagship-app/pull/1063))
 
 # 1.1.19
 
