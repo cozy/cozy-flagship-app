@@ -16,7 +16,6 @@ import {
   consumeRouteParameter,
   useInitialParam
 } from '/libs/functions/routeHelpers'
-import { resetUIState } from '/libs/intents/setFlagshipUI'
 import { useSession } from '/hooks/useSession'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
@@ -46,13 +45,12 @@ const unzoomHomeView = webviewRef => {
  * @typedef Props
  * @prop {unknown} navigation
  * @prop {unknown} route
- * @prop {(arg: import('/libs/intents/setFlagshipUI').BarStyle) => void} setBarStyle
  */
 
 /**
  * @param {Props} props
  */
-const HomeView = ({ route, navigation, setBarStyle }) => {
+const HomeView = ({ route, navigation }) => {
   const client = useClient()
   const [uri, setUri] = useState('')
   const { shouldWaitCozyApp, setShouldWaitCozyApp } = useHomeStateContext()
@@ -100,14 +98,12 @@ const HomeView = ({ route, navigation, setBarStyle }) => {
     useCallback(() => {
       if (didBlurOnce.current) {
         devlog(
-          'HomeView: useFocusEffect, didBlurOnce.current: true, unzoom Home View, resetting UI State'
+          'HomeView: useFocusEffect, didBlurOnce.current: true, unzoom Home View'
         )
 
         unzoomHomeView(webviewRef)
-
-        if (filesToUpload.length === 0) resetUIState(uri, setBarStyle)
       }
-    }, [filesToUpload.length, setBarStyle, uri, webviewRef])
+    }, [webviewRef])
   )
 
   useFocusEffect(
