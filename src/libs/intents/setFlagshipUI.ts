@@ -1,5 +1,3 @@
-import { EventEmitter } from 'events'
-
 import { Platform, StatusBar } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
 
@@ -85,7 +83,6 @@ const handleSideEffects = ({
   bottomTheme,
   ...parsedIntent
 }: NormalisedFlagshipUI): void => {
-  flagshipUI.emit('change', parsedIntent)
   updateStatusBarAndBottomBar(bottomTheme, parsedIntent.topTheme)
 
   ui.state = { bottomTheme, ...parsedIntent }
@@ -175,8 +172,6 @@ const formatBasedOnInput = (
     : input?.includes(ThemeInput.Dark)
     ? StatusBarStyle.Dark
     : undefined
-
-export const flagshipUI = new EventEmitter()
 
 type FlagshipUiWithComponentId = FlagshipUI & {
   componentId?: string
