@@ -4,6 +4,9 @@ import { StatusBar, View } from 'react-native'
 import { FlagshipUI } from 'cozy-intent'
 
 import {
+  flagshipUIEventHandler,
+  flagshipUIEvents,
+  FlagshipUiUpdateEvent,
   ScreenIndexes,
   useFlagshipUI
 } from '/app/view/FlagshipUI'
@@ -50,14 +53,26 @@ export const CozyAppScreen = ({
   )
 
   useEffect(() => {
-    flagshipUI.on('change', (state: NormalisedFlagshipUI) => {
-      setUIState({ ...UIState, ...state })
-    })
+    const handleFlagshipUiUpdateEvent = (
+      state: FlagshipUiUpdateEvent
+    ): void => {
+      if (state.id === componentId) {
+        setUIState({ ...UIState, ...state.ui })
+      }
+    }
+
+    flagshipUIEventHandler.on(
+      flagshipUIEvents.UPDATED_COMPONENT,
+      handleFlagshipUiUpdateEvent
+    )
 
     return () => {
-      flagshipUI.removeAllListeners()
+      flagshipUIEventHandler.removeListener(
+        flagshipUIEvents.UPDATED_COMPONENT,
+        handleFlagshipUiUpdateEvent
+      )
     }
-  }, [UIState, route])
+  }, [UIState, route, componentId])
 
   useEffect(() => {
     if (isReady) return // We don't want to trigger the animation UI changes twice (in case of app unlock for instance)
