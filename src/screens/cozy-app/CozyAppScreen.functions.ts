@@ -4,19 +4,8 @@ import { styles } from './CozyAppScreen.styles'
 
 import { routes } from '/constants/routes'
 import { getDimensions } from '/libs/dimensions'
-import { internalMethods } from '/libs/intents/localMethods'
 import { NetService } from '/libs/services/NetService'
 import { palette } from '/ui/palette'
-
-export const firstHalfUI = (): Promise<null> =>
-  internalMethods.setFlagshipUI({
-    bottomBackground: 'white',
-    bottomTheme: 'dark',
-    bottomOverlay: 'transparent',
-    topBackground: 'white',
-    topTheme: 'dark',
-    topOverlay: 'transparent'
-  })
 
 export const handleError = ({ nativeEvent }: WebViewErrorEvent): void => {
   const { code, description } = nativeEvent

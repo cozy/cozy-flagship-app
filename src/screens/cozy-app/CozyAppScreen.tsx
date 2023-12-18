@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { StatusBar, View } from 'react-native'
+import { View } from 'react-native'
 
 import { FlagshipUI } from 'cozy-intent'
 
@@ -11,12 +11,11 @@ import {
   useFlagshipUI
 } from '/app/view/FlagshipUI'
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
-import { flagshipUI, NormalisedFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { useDimensions } from '/libs/dimensions'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
 import { Animation } from './CozyAppScreen.Animation'
-import { firstHalfUI, handleError } from './CozyAppScreen.functions'
+import { handleError } from './CozyAppScreen.functions'
 import { styles } from './CozyAppScreen.styles'
 import { CozyAppScreenProps } from './CozyAppScreen.types'
 
@@ -33,14 +32,8 @@ export const CozyAppScreen = ({
   route,
   navigation
 }: CozyAppScreenProps): JSX.Element => {
-  const [UIState, setUIState] = useState<NormalisedFlagshipUI>({})
-  const {
-    bottomBackground,
-    bottomOverlay,
-    topBackground,
-    topTheme,
-    topOverlay
-  } = UIState
+  const [UIState, setUIState] = useState<FlagshipUI>({})
+  const { bottomBackground, bottomOverlay, topBackground, topOverlay } = UIState
   const [isReady, setReady] = useState(false)
   const [isFirstHalf, setFirstHalf] = useState(false)
   const [shouldExitAnimation, setShouldExitAnimation] = useState(false)
@@ -79,9 +72,8 @@ export const CozyAppScreen = ({
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     !route.params.iconParams && setReady(true)
+  }, [isReady, route.params.iconParams])
 
-    isFirstHalf && void firstHalfUI()
-  }, [isFirstHalf, isReady, route.params.iconParams])
   const dimensions = useDimensions()
 
   const onLoadEnd = useCallback(() => {
@@ -96,8 +88,6 @@ export const CozyAppScreen = ({
 
   return (
     <>
-      <StatusBar translucent barStyle={topTheme} />
-
       <View
         style={{
           height: dimensions.statusBarHeight,
