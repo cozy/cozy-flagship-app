@@ -40,7 +40,6 @@ import { OsReceiveProvider } from '/app/view/OsReceive/OsReceiveProvider'
 import { ErrorProvider } from '/app/view/Error/ErrorProvider'
 import { OsReceiveApi } from '/app/domain/osReceive/services/OsReceiveApi'
 import {
-  useFilesToUpload,
   useOsReceiveDispatch,
   useOsReceiveState
 } from '/app/view/OsReceive/state/OsReceiveState'
@@ -122,14 +121,12 @@ const InnerNav = ({ client, setClient }) => {
   const colors = getColors()
   const osReceiveState = useOsReceiveState()
   const osReceiveDispatch = useOsReceiveDispatch()
-  const filesToUpload = useFilesToUpload()
 
   return (
     <NativeIntentProvider
       localMethods={localMethods(client, {
         ...OsReceiveApi(client, osReceiveState, osReceiveDispatch),
-        hideSplashScreen: () =>
-          hideSplashScreen(undefined, filesToUpload.length > 0)
+        hideSplashScreen: () => hideSplashScreen()
       })}
     >
       <View
