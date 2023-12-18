@@ -44,6 +44,7 @@ export const CozyWebView = ({
   route,
   injectedJavaScriptBeforeContentLoaded,
   setParentRef,
+  componentId,
   ...rest
 }) => {
   const isSecureProtocol = useIsSecureProtocol()
@@ -214,7 +215,7 @@ export const CozyWebView = ({
         tryCrypto(m, log, logId, onAnswer)
         tryNavigatorShare(m, log, logId, onAnswer)
         tryConsole(m, log, logId)
-        nativeIntent?.tryEmit(m)
+        nativeIntent?.tryEmit(m, componentId)
         tryHandleLauncherMessage(m)
         if (parentOnMessage) {
           parentOnMessage(m)
