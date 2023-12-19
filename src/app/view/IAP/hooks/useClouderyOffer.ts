@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Platform } from 'react-native'
 import { initConnection, useIAP } from 'react-native-iap'
 import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
@@ -9,7 +9,8 @@ import Minilog from 'cozy-minilog'
 import {
   CLOUDERY_OFFER,
   interceptNavigation,
-  clouderyOfferEventHandler
+  clouderyOfferEventHandler,
+  buySubscription
 } from '/app/domain/iap/services/clouderyOffer'
 
 const log = Minilog('💳 Cloudery Offer')
@@ -21,13 +22,29 @@ const IOS_OFFERS = [
 const ANDROID_OFFERS = ['2024_standard_01', '2024_premium_01']
 const SKUS = Platform.OS === 'ios' ? IOS_OFFERS : ANDROID_OFFERS
 
+interface BuyingStateIDLE {
+  state: 'IDLE'
+}
+interface BuyingStateBuying {
+  state: 'BUYING'
+  itemId: string
+}
+interface BuyingStateError {
+  state: 'ERROR'
+  itemId: string
+}
+
+export type BuyingState = BuyingStateIDLE | BuyingStateBuying | BuyingStateError
+
 interface ClouderyOfferState {
   hidePopup: () => void
   popupUrl: string | null
   instanceInfoLoaded: boolean
   interceptNavigation: (request: WebViewNavigation) => boolean
-  isBuying: boolean
-  setIsBuying: (isBuying: boolean) => void
+  retryBuySubscription: () => void
+  buyingState: BuyingState
+  setBuyingState: Dispatch<SetStateAction<BuyingState>>
+  backToOffers: () => void
 }
 
 export const useClouderyOffer = (): ClouderyOfferState => {
@@ -36,11 +53,22 @@ export const useClouderyOffer = (): ClouderyOfferState => {
   const { subscriptions, getSubscriptions } = useIAP()
 
   const [popupUrl, setPopupUrl] = useState<string | null>(null)
-  const [isBuying, setIsBuying] = useState<boolean>(false)
+  const [buyingState, setBuyingState] = useState<BuyingState>({
+    state: 'IDLE'
+  })
 
   const subscribed = (): void => {
     setPopupUrl(null)
-    setIsBuying(false)
+    setBuyingState({
+      state: 'IDLE'
+    })
+  }
+
+  const hidePopup = (): void => {
+    setPopupUrl(null)
+    setBuyingState({
+      state: 'IDLE'
+    })
   }
 
   useEffect(() => {
@@ -76,18 +104,47 @@ export const useClouderyOffer = (): ClouderyOfferState => {
     [subscriptions]
   )
 
+  const retryBuySubscription = (): void => {
+    if (buyingState.state !== 'ERROR') {
+      log.error('Buying state is not errored, should not happen')
+      return
+    }
+
+    void buySubscription(
+      client,
+      buyingState.itemId,
+      instancesInfo,
+      subscriptions,
+      setBuyingState,
+      subscribed
+    )
+  }
+
+  const backToOffers = (): void => {
+    if (buyingState.state !== 'ERROR') {
+      log.error('Buying state is not errored, should not happen')
+      return
+    }
+
+    setBuyingState({
+      state: 'IDLE'
+    })
+  }
+
   return {
-    hidePopup: () => setPopupUrl(null),
+    hidePopup,
     popupUrl,
     instanceInfoLoaded: instancesInfo.isLoaded,
     interceptNavigation: interceptNavigation(
       client,
       instancesInfo,
       subscriptions,
-      setIsBuying,
+      setBuyingState,
       subscribed
     ),
-    isBuying,
-    setIsBuying
+    retryBuySubscription,
+    buyingState,
+    setBuyingState,
+    backToOffers
   }
 }

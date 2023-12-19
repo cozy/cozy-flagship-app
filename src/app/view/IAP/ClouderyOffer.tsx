@@ -5,6 +5,8 @@ import WebView from 'react-native-webview'
 import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
 
 import { useClouderyOffer } from '/app/view/IAP/hooks/useClouderyOffer'
+import { IapProgress } from '/app/view/IAP/IapProgress'
+import { IapError } from '/app/view/IAP/IapError'
 import { BackTo } from '/components/ui/icons/BackTo'
 import { getDimensions } from '/libs/dimensions'
 import { useI18n } from '/locales/i18n'
@@ -23,8 +25,10 @@ const ClouderyOfferWithIAPContext = (): JSX.Element | null => {
     popupUrl,
     instanceInfoLoaded,
     interceptNavigation,
-    isBuying,
-    hidePopup
+    buyingState,
+    retryBuySubscription,
+    hidePopup,
+    backToOffers
   } = useClouderyOffer()
 
   return popupUrl && instanceInfoLoaded ? (
@@ -34,17 +38,9 @@ const ClouderyOfferWithIAPContext = (): JSX.Element | null => {
         popupUrl={popupUrl}
         interceptNavigation={interceptNavigation}
       />
-      {isBuying && (
-        <>
-          <View
-            style={[
-              styles.loadingOverlay,
-              {
-                backgroundColor: colors.primaryColor
-              }
-            ]}
-          />
-        </>
+      {buyingState.state === 'BUYING' && <IapProgress />}
+      {buyingState.state === 'ERROR' && (
+        <IapError backToOffers={backToOffers} tryAgain={retryBuySubscription} />
       )}
     </>
   ) : null

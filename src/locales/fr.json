@@ -28,7 +28,13 @@
   },
   "screens": {
     "clouderyOffer": {
-      "backButton": "RETOUR À MON COZY"
+      "backButton": "RETOUR À MON COZY",
+      "iapProgress": "Achat en cours",
+      "error": {
+        "title": "Une erreur est survenue",
+        "tryAgain": "Essayer à nouveau",
+        "backToOffers": "Retour aux offres"
+      }
     },
     "cozyBlocked": {
       "body": "Contactez-nous, si vous souhaitez en savoir plus, à l'adresse <a id=\"mailto\" href=\"#\">contact@cozycloud.cc</a>.",

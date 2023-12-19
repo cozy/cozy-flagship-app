@@ -24,7 +24,13 @@
   },
   "screens": {
     "clouderyOffer": {
-      "backButton": "VOLVER A MI COZY"
+      "backButton": "VOLVER A MI COZY",
+      "iapProgress": "Compra en curso",
+      "error": {
+        "title": "Se ha producido un error",
+        "tryAgain": "Inténtalo de nuevo",
+        "backToOffers": "Volver a las ofertas"
+      }
     },
     "cozyNotFound": {
       "body": "No hemos encontrado ningún Cozy en esta dirección. Puede que sea un error de tipeo. Para saberlo, verifica la dirección de tu Cozy en el correo electrónico que te enviamos cuando se creó.",

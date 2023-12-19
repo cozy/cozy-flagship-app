@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events'
 
+import { Dispatch, SetStateAction } from 'react'
 import { Linking, Platform } from 'react-native'
 import {
   clearTransactionIOS,
@@ -14,6 +15,7 @@ import CozyClient from 'cozy-client'
 import type { InstanceInfo } from 'cozy-client/types/types'
 import Minilog from 'cozy-minilog'
 
+import { BuyingState } from '/app/view/IAP/hooks/useClouderyOffer'
 import { navigate } from '/libs/RootNavigation'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
@@ -55,7 +57,7 @@ export const interceptNavigation =
     client: CozyClient | null,
     instanceInfo: InstanceInfo,
     subscriptions: Subscription[],
-    setIsBuying: (isBuying: boolean) => void,
+    setBuyingState: Dispatch<SetStateAction<BuyingState>>,
     subscribed: () => void
   ) =>
   (request: WebViewNavigation): boolean => {
@@ -81,7 +83,7 @@ export const interceptNavigation =
           productId,
           instanceInfo,
           subscriptions,
-          setIsBuying,
+          setBuyingState,
           subscribed
         )
         return false
@@ -109,12 +111,12 @@ const isOsStoreUrl = (url: string): boolean => {
   )
 }
 
-const buySubscription = async (
+export const buySubscription = async (
   client: CozyClient | null,
   itemId: string,
   instanceInfo: InstanceInfo,
   subscriptions: Subscription[],
-  setIsBuying: (isBuying: boolean) => void,
+  setBuyingState: Dispatch<SetStateAction<BuyingState>>,
   subscribed: () => void
 ): Promise<void> => {
   log.debug('Buy subscription', itemId)
@@ -124,7 +126,10 @@ const buySubscription = async (
   }
 
   try {
-    setIsBuying(true)
+    setBuyingState({
+      state: 'BUYING',
+      itemId
+    })
     if (Platform.OS === 'ios') {
       const productId = itemId
 
@@ -156,7 +161,9 @@ const buySubscription = async (
   } catch (error: unknown) {
     if (isUserCanceledError(error)) {
       log.debug('User canceled purchase')
-      setIsBuying(false)
+      setBuyingState({
+        state: 'IDLE'
+      })
       return
     }
 
@@ -164,7 +171,10 @@ const buySubscription = async (
     log.error(
       `Error while analysing WebView navigation. Intercept it anyway to prevent unexpected behavior: ${errorMessage}`
     )
-    setIsBuying(false)
+    setBuyingState({
+      state: 'ERROR',
+      itemId
+    })
   }
 }
 

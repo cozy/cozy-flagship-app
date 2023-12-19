@@ -30,7 +30,13 @@
   },
   "screens": {
     "clouderyOffer": {
-      "backButton": "BACK TO MY COZY"
+      "backButton": "BACK TO MY COZY",
+      "iapProgress": "Purchase in progress",
+      "error": {
+        "title": "An error occured",
+        "tryAgain": "Try again",
+        "backToOffers": "Back to offers"
+      }
     },
     "cozyBlocked": {
       "body": "Contact us, if you want to know more, at <a id=\"mailto\" href=\"#\">contact@cozycloud.cc</a>.",
