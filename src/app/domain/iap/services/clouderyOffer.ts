@@ -269,3 +269,53 @@ const parseProrationMode = (
     }
   }
 }
+
+export const formatOffers = (subscriptions: Subscription[]): string => {
+  const result = subscriptions.flatMap(subscription => {
+    if (subscription.platform === 'ios') {
+      return [
+        {
+          productId: subscription.productId,
+          title: subscription.title,
+          subscriptionPeriod:
+            subscription.subscriptionPeriodUnitIOS?.toString() ?? '',
+          currency: subscription.currency,
+          price: subscription.price,
+          localizedPrice: subscription.localizedPrice
+        }
+      ]
+    } else if (subscription.platform === 'android') {
+      return subscription.subscriptionOfferDetails.map(offerDetails => {
+        const pricingPhase = offerDetails.pricingPhases.pricingPhaseList[0]
+        return {
+          productId: subscription.productId,
+          title: subscription.name,
+          subscriptionPeriod: parseAndroidBillingPeriod(
+            pricingPhase.billingPeriod as AndroidBillingPeriodEnum
+          ),
+          basePlanId: offerDetails.basePlanId,
+          currency: pricingPhase.priceCurrencyCode,
+          price: pricingPhase.priceAmountMicros,
+          localizedPrice: pricingPhase.formattedPrice
+        }
+      })
+    }
+    return []
+  })
+
+  return JSON.stringify(result)
+}
+
+type AndroidBillingPeriodEnum = 'P1W' | 'P1M' | 'P1Y'
+
+const parseAndroidBillingPeriod = (
+  billingPeriod: AndroidBillingPeriodEnum
+): string => {
+  const map = {
+    P1W: 'WEEK',
+    P1M: 'MONTH',
+    P1Y: 'YEAR'
+  }
+
+  return map[billingPeriod]
+}
