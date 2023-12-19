@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { StatusBar, View } from 'react-native'
 
+import { FlagshipUI } from 'cozy-intent'
+
+import {
+  ScreenIndexes,
+  useFlagshipUI
+} from '/app/view/FlagshipUI'
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { flagshipUI, NormalisedFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { useDimensions } from '/libs/dimensions'
@@ -10,6 +16,15 @@ import { Animation } from './CozyAppScreen.Animation'
 import { firstHalfUI, handleError } from './CozyAppScreen.functions'
 import { styles } from './CozyAppScreen.styles'
 import { CozyAppScreenProps } from './CozyAppScreen.types'
+
+const defaultFlagshipUI: FlagshipUI = {
+  bottomBackground: 'white',
+  bottomTheme: 'dark',
+  bottomOverlay: 'transparent',
+  topBackground: 'white',
+  topTheme: 'dark',
+  topOverlay: 'transparent'
+}
 
 export const CozyAppScreen = ({
   route,
@@ -27,6 +42,12 @@ export const CozyAppScreen = ({
   const [isFirstHalf, setFirstHalf] = useState(false)
   const [shouldExitAnimation, setShouldExitAnimation] = useState(false)
   const { setShouldWaitCozyApp } = useHomeStateContext()
+
+  const { componentId } = useFlagshipUI(
+    'CozyAppScreen',
+    ScreenIndexes.COZY_APP_VIEW,
+    defaultFlagshipUI
+  )
 
   useEffect(() => {
     flagshipUI.on('change', (state: NormalisedFlagshipUI) => {
@@ -65,7 +86,9 @@ export const CozyAppScreen = ({
       <View
         style={{
           height: dimensions.statusBarHeight,
-          backgroundColor: topBackground
+          backgroundColor: isFirstHalf
+            ? topBackground ?? 'white'
+            : 'transparent'
         }}
       >
         <View
@@ -87,13 +110,16 @@ export const CozyAppScreen = ({
           onLoadEnd={onLoadEnd}
           onError={handleError}
           keyboardVerticalOffset={dimensions.statusBarHeight}
+          componentId={componentId}
         />
       </View>
 
       <View
         style={{
           height: dimensions.navbarHeight,
-          backgroundColor: bottomBackground
+          backgroundColor: isFirstHalf
+            ? bottomBackground ?? 'white'
+            : 'transparent'
         }}
       >
         <View
