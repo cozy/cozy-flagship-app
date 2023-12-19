@@ -5,11 +5,7 @@ import { FlagshipUI } from 'cozy-intent'
 import Minilog from 'cozy-minilog'
 
 import { flagshipUIEventHandler, flagshipUIEvents } from '/app/view/FlagshipUI'
-import { urlHasKonnectorOpen } from '/libs/functions/urlHasKonnector'
-import {
-  getHomeThemeAsStatusBarStyle,
-  getHomeThemeAsThemeInput
-} from '/app/theme/themeManager'
+import { getHomeThemeAsStatusBarStyle } from '/app/theme/themeManager'
 import { navigationRef } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 
@@ -234,23 +230,4 @@ export const cleanTheme = (
       .filter(([, v]) => v)
       .map(([k, v]) => [k, v?.trim()])
   )
-}
-
-export const resetUIState = (
-  uri: string,
-  callback?: (theme: StatusBarStyle) => void
-): void => {
-  let theme = urlHasKonnectorOpen(uri)
-    ? ThemeInput.Dark
-    : getHomeThemeAsThemeInput()
-
-  themeLog.info('resetUIState', { uri, theme })
-
-  void setFlagshipUI({ bottomTheme: theme, topTheme: theme }, 'resetUIState')
-
-  callback?.(
-    theme === ThemeInput.Dark ? StatusBarStyle.Dark : StatusBarStyle.Light
-  )
-
-  Platform.OS === 'android' && StatusBar.setBackgroundColor('transparent')
 }
