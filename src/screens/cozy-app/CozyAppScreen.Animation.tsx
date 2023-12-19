@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { Animated } from 'react-native'
 import { SvgXml } from 'react-native-svg'
 
+import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import ProgressBar from '/components/Bar'
 import { iconTable, iconFallback } from '/libs/functions/iconTable'
 
@@ -32,6 +33,11 @@ export const Animation = ({
   const animateFadeOut = useRef(new Animated.Value(1)).current
   const animateBarOpacity = useRef(new Animated.Value(0)).current
 
+  const { setFlagshipColors } = useFlagshipUI(
+    'CozyAppScreenAnimation',
+    ScreenIndexes.COZY_APP_VIEW + 1
+  )
+
   class SVG extends React.Component {
     render(): JSX.Element {
       return (
@@ -60,10 +66,20 @@ export const Animation = ({
       })
     ]).start(() => {
       onFirstHalf(true)
+      setFlagshipColors({
+        topTheme: 'dark',
+        bottomTheme: 'dark'
+      })
 
       Animated.timing(animateBarOpacity, progressBarAnimConfig.fadeIn).start()
     })
-  }, [animateBarOpacity, animateScale, animateTranslate, onFirstHalf])
+  }, [
+    animateBarOpacity,
+    animateScale,
+    animateTranslate,
+    onFirstHalf,
+    setFlagshipColors
+  ])
 
   useEffect(() => {
     shouldExit &&
