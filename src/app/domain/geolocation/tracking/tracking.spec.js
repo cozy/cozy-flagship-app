@@ -5,8 +5,21 @@ import {
   filterNonHeadingPointsAfterStillActivity,
   createNewStartPoint,
   getFilteredActivities,
-  translateEventToEMissionMotionActivity
+  translateEventToEMissionMotionActivity,
+  inferMotionActivity,
+  shouldCreateNewStartPoint
 } from '/app/domain/geolocation/tracking/tracking'
+import {
+  MAX_WALKING_SPEED,
+  MAX_RUNNING_SPEED,
+  MAX_BICYCLING_SPEED,
+  AUTOMOTIVE_SPEED,
+  WALKING_ACTIVITY,
+  RUNNING_ACTIVITY,
+  BICYCLE_ACTIVITY,
+  VEHICLE_ACTIVITY,
+  STILL_ACTIVITY
+} from '/app/domain/geolocation/tracking/consts'
 
 jest.mock('/app/domain/geolocation/tracking/storage', () => ({
   getActivities: jest.fn()
@@ -111,7 +124,7 @@ describe('get activities', () => {
       translateEventToEMissionMotionActivity(locations[1])
     ])
   })
-  it('should detect and replace still activities with motion', async () => {
+  it('should detect and replace still and unknown activities with motion', async () => {
     const locations = [
       { activity: { type: 'walking' }, timestamp: '2023-12-10T12:00:00.000Z' },
       {
@@ -122,28 +135,59 @@ describe('get activities', () => {
       {
         activity: { type: 'still' },
         timestamp: '2023-12-10T12:00:35.000Z',
-        is_moving: false,
+        is_moving: true,
         coords: {
-          speed: 2,
+          speed: 20,
           speed_accuracy: 4
         }
       },
       {
         activity: { type: 'still' },
         timestamp: '2023-12-10T12:00:40.000Z',
-        is_moving: false,
+        is_moving: true,
         coords: {
           speed: -1,
           speed_accuracy: -1
+        }
+      },
+      {
+        activity: { type: 'unknown' },
+        timestamp: '2023-12-10T12:00:40.000Z',
+        is_moving: false,
+        coords: {
+          speed: 5,
+          speed_accuracy: 1
+        }
+      },
+      {
+        activity: { type: 'unknown' },
+        timestamp: '2023-12-10T12:00:40.000Z',
+        is_moving: false,
+        coords: {
+          speed: 3,
+          speed_accuracy: 1
+        }
+      },
+      {
+        activity: { type: 'unknown' },
+        timestamp: '2023-12-10T12:00:40.000Z',
+        is_moving: false,
+        coords: {
+          speed: 0,
+          speed_accuracy: 1
         }
       }
     ]
     getActivities.mockResolvedValueOnce([])
 
     const activities = await getFilteredActivities({ beforeTs: 5, locations })
-    expect(activities[1].data.unknown).toBe(true)
-    expect(activities[2].data.unknown).toBe(true)
+    expect(activities[0].data.walking).toBe(true)
+    expect(activities[1].data.stationary).toBe(true)
+    expect(activities[2].data.automotive).toBe(true)
     expect(activities[3].data.stationary).toBe(true)
+    expect(activities[4].data.cycling).toBe(true)
+    expect(activities[5].data.running).toBe(true)
+    expect(activities[6].data.stationary).toBe(true)
   })
 })
 
@@ -210,5 +254,71 @@ describe('createNewStartPoint', () => {
     expect(new Date(newPoint.timestamp).getTime()).toBeLessThan(
       new Date(nextPoint.timestamp).getTime()
     )
+  })
+})
+
+describe('inferMotionActivity', () => {
+  it('returns WALKING_ACTIVITY for speeds within walking range', () => {
+    expect(
+      inferMotionActivity({ coords: { speed: 1.0, speed_accuracy: 1 } })
+    ).toBe(WALKING_ACTIVITY)
+    expect(
+      inferMotionActivity({
+        coords: { speed: MAX_WALKING_SPEED, speed_accuracy: 1 }
+      })
+    ).toBe(WALKING_ACTIVITY)
+  })
+
+  it('returns RUNNING_ACTIVITY for speeds within running range', () => {
+    expect(
+      inferMotionActivity({
+        coords: { speed: MAX_WALKING_SPEED + 0.1, speed_accuracy: 1 }
+      })
+    ).toBe(RUNNING_ACTIVITY)
+    expect(
+      inferMotionActivity({
+        coords: { speed: MAX_RUNNING_SPEED, speed_accuracy: 1 }
+      })
+    ).toBe(RUNNING_ACTIVITY)
+  })
+
+  it('returns BICYCLE_ACTIVITY for speeds within cycling range', () => {
+    expect(
+      inferMotionActivity({
+        coords: { speed: MAX_RUNNING_SPEED + 0.1, speed_accuracy: 1 }
+      })
+    ).toBe(BICYCLE_ACTIVITY)
+    expect(
+      inferMotionActivity({
+        coords: { speed: MAX_BICYCLING_SPEED, speed_accuracy: 1 }
+      })
+    ).toBe(BICYCLE_ACTIVITY)
+  })
+
+  it('returns VEHICLE_ACTIVITY for speeds above cycling range', () => {
+    expect(
+      inferMotionActivity({
+        coords: { speed: MAX_BICYCLING_SPEED + 0.1, speed_accuracy: 1 }
+      })
+    ).toBe(VEHICLE_ACTIVITY)
+    expect(
+      inferMotionActivity({
+        coords: { speed: AUTOMOTIVE_SPEED, speed_accuracy: 1 }
+      })
+    ).toBe(VEHICLE_ACTIVITY)
+  })
+
+  it('returns STILL_ACTIVITY for a speed of 0', () => {
+    expect(
+      inferMotionActivity({ coords: { speed: 0, speed_accuracy: 1 } })
+    ).toBe(STILL_ACTIVITY)
+  })
+
+  it('handles cases with missing or invalid speed', () => {
+    expect(
+      inferMotionActivity({ coords: { speed: -1, speed_accuracy: 1 } })
+    ).toBe(STILL_ACTIVITY)
+    expect(inferMotionActivity({})).toBe(STILL_ACTIVITY)
+    expect(inferMotionActivity({ coords: {} })).toBe(STILL_ACTIVITY)
   })
 })
