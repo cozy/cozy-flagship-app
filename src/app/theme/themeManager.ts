@@ -9,7 +9,7 @@ import Minilog from 'cozy-minilog'
 import { HomeThemeType } from '/app/theme/models'
 import { StatusBarStyle, ThemeInput } from '/libs/intents/setFlagshipUI'
 
-export const themeLog = Minilog('🎨 THEME_MANAGER')
+const themeLog = Minilog('🎨 THEME_MANAGER')
 
 const eventEmitter = new EventEmitter()
 

@@ -1,100 +1,77 @@
 import { Platform } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
 
-import { flagshipUI, setFlagshipUI } from '/libs/intents/setFlagshipUI'
+import Minilog from 'cozy-minilog'
+
+import {
+  applyFlagshipUI,
+  cleanTheme,
+  setFlagshipUI
+} from '/libs/intents/setFlagshipUI'
+import { flagshipUIEventHandler } from '/app/view/FlagshipUI'
 
 jest.mock('react-native-immersive-bars')
+jest.mock('/app/view/FlagshipUI')
+
+jest.mock('cozy-minilog', () => {
+  const mockLogFunctions = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    log: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+  }
+
+  return {
+    __esModule: true,
+    default: (): MiniLogger => mockLogFunctions
+  }
+})
 
 const defaultOS = Platform.OS
 
-describe('setFlagshipUI', () => {
-  let mockOnChange: () => void
-  beforeEach(() => {
-    mockOnChange = jest.fn()
-  })
-
-  it('should parse topTheme light', async () => {
-    flagshipUI.on('change', mockOnChange)
-
-    await setFlagshipUI({
+describe('cleanTheme', () => {
+  it('should parse topTheme light', () => {
+    const result = cleanTheme({
       topTheme: 'light'
     })
 
-    expect(mockOnChange).toHaveBeenNthCalledWith(1, {
+    expect(result).toStrictEqual({
       topTheme: 'light-content'
     })
-    expect(changeBarColors).not.toHaveBeenCalled()
   })
 
-  it('should parse topTheme dark', async () => {
-    flagshipUI.on('change', mockOnChange)
-
-    await setFlagshipUI({
+  it('should parse topTheme dark', () => {
+    const result = cleanTheme({
       topTheme: 'dark'
     })
 
-    expect(mockOnChange).toHaveBeenNthCalledWith(1, {
+    expect(result).toStrictEqual({
       topTheme: 'dark-content'
     })
-    expect(changeBarColors).not.toHaveBeenCalled()
   })
 
-  it('should parse incomplete object', async () => {
-    flagshipUI.on('change', mockOnChange)
-
-    await setFlagshipUI({
+  it('should parse incomplete object', () => {
+    const result = cleanTheme({
       topTheme: undefined,
       topBackground: '#fff'
     })
 
-    expect(mockOnChange).toHaveBeenNthCalledWith(1, { topBackground: '#fff' })
-    expect(changeBarColors).not.toHaveBeenCalled()
+    expect(result).toStrictEqual({ topBackground: '#fff' })
   })
 
-  it('should parse padded values', async () => {
-    flagshipUI.on('change', mockOnChange)
-
-    await setFlagshipUI({
+  it('should parse padded values', () => {
+    const result = cleanTheme({
       bottomBackground: '    #fff    '
     })
 
-    expect(mockOnChange).toHaveBeenNthCalledWith(1, {
+    expect(result).toStrictEqual({
       bottomBackground: '#fff'
     })
-    expect(changeBarColors).not.toHaveBeenCalled()
   })
 
-  it('should parse full objects with bottomTheme special case dark, and not call changeBarColors on iOS', async () => {
-    flagshipUI.on('change', mockOnChange)
-
-    Platform.OS = 'ios'
-
-    await setFlagshipUI({
-      bottomBackground: 'white',
-      bottomTheme: 'dark',
-      bottomOverlay: 'transparent',
-      topBackground: 'white',
-      topTheme: 'dark',
-      topOverlay: 'transparent'
-    })
-
-    expect(mockOnChange).toHaveBeenNthCalledWith(1, {
-      bottomBackground: 'white',
-      bottomOverlay: 'transparent',
-      topBackground: 'white',
-      topOverlay: 'transparent',
-      topTheme: 'dark-content'
-    })
-
-    expect(changeBarColors).not.toHaveBeenCalled()
-  })
-
-  it('should emit parse full objects with bottomTheme special case light, and call changeBarColors on Android', async () => {
-    flagshipUI.on('change', mockOnChange)
-
-    Platform.OS = 'android'
-
-    await setFlagshipUI({
+  it('should emit parse full objects with bottomTheme special case light', () => {
+    const result = cleanTheme({
       bottomBackground: 'white',
       bottomTheme: 'light',
       bottomOverlay: 'transparent',
@@ -103,12 +80,63 @@ describe('setFlagshipUI', () => {
       topOverlay: 'transparent'
     })
 
-    expect(mockOnChange).toHaveBeenNthCalledWith(1, {
+    expect(result).toStrictEqual({
       bottomBackground: 'white',
       bottomOverlay: 'transparent',
+      bottomTheme: 'light-content',
       topBackground: 'white',
       topOverlay: 'transparent',
       topTheme: 'dark-content'
+    })
+  })
+
+  it('should parse full objects with bottomTheme special case dark', () => {
+    const result = cleanTheme({
+      bottomBackground: 'white',
+      bottomTheme: 'dark',
+      bottomOverlay: 'transparent',
+      topBackground: 'white',
+      topTheme: 'dark',
+      topOverlay: 'transparent'
+    })
+
+    expect(result).toStrictEqual({
+      bottomBackground: 'white',
+      bottomOverlay: 'transparent',
+      bottomTheme: 'dark-content',
+      topBackground: 'white',
+      topOverlay: 'transparent',
+      topTheme: 'dark-content'
+    })
+  })
+})
+
+describe('applyFlagshipUI', () => {
+  it('should not call changeBarColors on iOS', () => {
+    Platform.OS = 'ios'
+
+    applyFlagshipUI({
+      bottomBackground: 'white',
+      bottomTheme: 'dark',
+      bottomOverlay: 'transparent',
+      topBackground: 'white',
+      topTheme: 'dark',
+      topOverlay: 'transparent'
+    })
+
+    expect(changeBarColors).not.toHaveBeenCalled()
+  })
+
+  it('should call changeBarColors on Android', () => {
+    Platform.OS = 'android'
+
+    applyFlagshipUI({
+      bottomBackground: 'white',
+      bottomTheme: 'light',
+      bottomOverlay: 'transparent',
+      topBackground: 'white',
+      topTheme: 'dark',
+      topOverlay: 'transparent'
     })
 
     expect(changeBarColors).toHaveBeenNthCalledWith(1, true)
@@ -116,5 +144,33 @@ describe('setFlagshipUI', () => {
 
   afterAll(() => {
     Platform.OS = defaultOS
+  })
+})
+
+describe('setFlagshipUI', () => {
+  it('should redirect to the new FlagshipUIService API (when called from cozy-apps)', async () => {
+    await setFlagshipUI({
+      topTheme: 'light',
+      componentId: 'SOME_COMPONENT_ID'
+    })
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(flagshipUIEventHandler.emit).toHaveBeenCalledWith(
+      'SET_COMPONENT_COLORS',
+      'SOME_COMPONENT_ID',
+      { topTheme: 'light' }
+    )
+  })
+
+  it('should log error when called without componentId to warn sentry when old API is still called', async () => {
+    const mockLog = Minilog('test')
+
+    await setFlagshipUI({
+      topTheme: 'light'
+    })
+
+    expect(mockLog.error).toHaveBeenCalledWith(
+      "SetFlagshipUI shouldn't be called without componentId, this means that the old setFlagshipUI architecture has not been migrated completly"
+    )
   })
 })
