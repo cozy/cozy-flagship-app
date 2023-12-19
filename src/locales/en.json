@@ -36,6 +36,11 @@
         "title": "An error occured",
         "tryAgain": "Try again",
         "backToOffers": "Back to offers"
+      },
+      "success": {
+        "title": "Payment completed",
+        "body": "Your Cozy is being updated.\nYou will receive a notification as soon as your purchase is finalized.",
+        "close": "Close"
       }
     },
     "cozyBlocked": {

@@ -34,6 +34,11 @@
         "title": "Une erreur est survenue",
         "tryAgain": "Essayer à nouveau",
         "backToOffers": "Retour aux offres"
+      },
+      "success": {
+        "title": "Paiement effectué",
+        "body": "Votre Cozy est en cours de mise à jour.\nVous recevrez une notification dès que votre achat sera finalisé.",
+        "close": "Fermer"
       }
     },
     "cozyBlocked": {

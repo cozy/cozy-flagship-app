@@ -33,8 +33,15 @@ interface BuyingStateError {
   state: 'ERROR'
   itemId: string
 }
+interface BuyingStateSuccess {
+  state: 'SUCCESS'
+}
 
-export type BuyingState = BuyingStateIDLE | BuyingStateBuying | BuyingStateError
+export type BuyingState =
+  | BuyingStateIDLE
+  | BuyingStateBuying
+  | BuyingStateError
+  | BuyingStateSuccess
 
 interface ClouderyOfferState {
   hidePopup: () => void
@@ -58,9 +65,8 @@ export const useClouderyOffer = (): ClouderyOfferState => {
   })
 
   const subscribed = (): void => {
-    setPopupUrl(null)
     setBuyingState({
-      state: 'IDLE'
+      state: 'SUCCESS'
     })
   }
 
