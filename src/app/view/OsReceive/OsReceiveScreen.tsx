@@ -2,6 +2,11 @@ import React from 'react'
 import { StyleProp, TextStyle } from 'react-native'
 import { SvgXml } from 'react-native-svg'
 
+import { FlagshipUI } from 'cozy-intent'
+
+import { OsReceiveFile } from '/app/domain/osReceive/models/OsReceiveState'
+import { AppForUpload } from '/app/domain/osReceive/models/OsReceiveCozyApp'
+import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import { Icon } from '/ui/Icon'
 import { Container } from '/ui/Container'
 import { Grid } from '/ui/Grid'
@@ -31,10 +36,40 @@ import { useCozyTheme } from '/ui/CozyTheme/CozyTheme'
 import { FileDuotone } from '/ui/Icons/FileDuotone'
 import { FileThumbnail } from '/ui/ImageThumbnail'
 
+const defaultFlagshipUI: FlagshipUI = {
+  bottomTheme: 'dark',
+  topTheme: 'dark'
+}
+
 export const OsReceiveScreen = (): JSX.Element | null => {
   const filesToUpload = useFilesToUpload()
   const { hasAllFilesQueued } = useFilesQueueStatus()
   const appsForUpload = useAppsForUpload()
+
+  const hasFilesToUpload = filesToUpload.length > 0
+  const shouldRender =
+    (hasFilesToUpload && appsForUpload && appsForUpload.length > 0) ||
+    hasAllFilesQueued
+
+  if (!shouldRender) return null
+
+  return (
+    <OsReceiveScreenView
+      filesToUpload={filesToUpload}
+      appsForUpload={appsForUpload}
+    />
+  )
+}
+
+interface OsReceiveScreenViewProps {
+  filesToUpload: OsReceiveFile[]
+  appsForUpload: AppForUpload[] | undefined
+}
+
+export const OsReceiveScreenView = ({
+  filesToUpload,
+  appsForUpload
+}: OsReceiveScreenViewProps): JSX.Element | null => {
   const { t } = useI18n()
   const {
     selectedOption,
@@ -45,14 +80,14 @@ export const OsReceiveScreen = (): JSX.Element | null => {
   } = useOsReceiveScreenLogic()
   const { colors } = useCozyTheme('normal')
 
-  const hasFilesToUpload = filesToUpload.length > 0
+  useFlagshipUI(
+    'OsReceiveScreen',
+    ScreenIndexes.OS_RECEIVE_SCREEN,
+    defaultFlagshipUI
+  )
+
   const isSingleFile = filesToUpload.length === 1
   const isMultipleFiles = filesToUpload.length > 1
-  const shouldRender =
-    (hasFilesToUpload && appsForUpload && appsForUpload.length > 0) ||
-    hasAllFilesQueued
-
-  if (!shouldRender) return null
 
   return (
     <Container style={osReceiveScreenStyles.page}>
