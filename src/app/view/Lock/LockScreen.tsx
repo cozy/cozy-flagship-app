@@ -8,6 +8,9 @@ import {
 import RnMaskInput from 'react-native-mask-input'
 import { FullWindowOverlay } from 'react-native-screens'
 
+import { FlagshipUI } from 'cozy-intent'
+
+import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import { routes } from '/constants/routes'
 import { navigationRef } from '/libs/RootNavigation'
 import { Button } from '/ui/Button'
@@ -21,7 +24,6 @@ import { Grid } from '/ui/Grid'
 import { Icon } from '/ui/Icon'
 import { IconButton } from '/ui/IconButton'
 import { Link } from '/ui/Link'
-import { LockScreenBars } from '/app/view/Lock/LockScreenBars'
 import { LockViewProps, LockScreenProps } from '/app/view/Lock/LockScreenTypes'
 import { LogoutFlipped } from '/ui/Icons/LogoutFlipped'
 import { TextField } from '/ui/TextField'
@@ -32,6 +34,11 @@ import { palette } from '/ui/palette'
 import { useLockScreenProps } from '/app/view/Lock/useLockScreen'
 import { useI18n } from '/locales/i18n'
 import { CozyTheme, useCozyTheme } from '/ui/CozyTheme/CozyTheme'
+
+const defaultFlagshipUI: FlagshipUI = {
+  bottomTheme: 'light',
+  topTheme: 'light'
+}
 
 const LockView = ({
   biometryEnabled,
@@ -52,6 +59,8 @@ const LockView = ({
 }: LockViewProps): JSX.Element => {
   const { t } = useI18n()
   const { colors } = useCozyTheme()
+
+  useFlagshipUI('LockScreen', ScreenIndexes.LOCK_SCREEN, defaultFlagshipUI)
 
   return (
     <>
@@ -193,22 +202,18 @@ export const LockScreen = (props: LockScreenProps): React.ReactNode => {
         <FullWindowOverlay>{children}</FullWindowOverlay>
       )}
     >
-      <>
-        <LockScreenBars />
-
-        <TouchableWithoutFeedback
-          onPress={Keyboard.dismiss}
-          style={{ backgroundColor: palette.Primary[600], height: '100%' }}
+      <TouchableWithoutFeedback
+        onPress={Keyboard.dismiss}
+        style={{ backgroundColor: palette.Primary[600], height: '100%' }}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          >
-            <CozyTheme variant="inverted">
-              <LockView {...useLockScreenProps(props)} />
-            </CozyTheme>
-          </KeyboardAvoidingView>
-        </TouchableWithoutFeedback>
-      </>
+          <CozyTheme variant="inverted">
+            <LockView {...useLockScreenProps(props)} />
+          </CozyTheme>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     </ConditionalWrapper>
   )
 }
