@@ -3,6 +3,12 @@
     "content": "Are you sure you want to disconnect this app from your personal space?"
   },
   "screens": {
+    "clouderyOffer": {
+      "backButton": "BACK TO MY PERSONAL CLOUD",
+      "success": {
+        "body": "Your Personal Cloud is being updated.\nYou will receive a notification as soon as your purchase is finalized."
+      }
+    },
     "cozyBlocked": {
       "title": "Your personal space has been suspended"
     },

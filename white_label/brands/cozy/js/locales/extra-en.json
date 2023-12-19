@@ -1,5 +1,11 @@
 {
   "screens": {
+    "clouderyOffer": {
+      "backButton": "BACK TO MY COZY",
+      "success": {
+        "body": "Your Cozy is being updated.\nYou will receive a notification as soon as your purchase is finalized."
+      }
+    },
     "welcome": {
       "body": "Access your Personal Cloud now, the digital home to gather all your data",
       "buttonLogin": "I already have a Personal Cloud",
