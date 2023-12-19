@@ -9,7 +9,6 @@ import {
 } from 'react'
 
 import { generateWebLink, useClient } from 'cozy-client'
-import { FlagshipUI } from 'cozy-intent'
 
 import {
   useFilesToUpload,
@@ -23,10 +22,7 @@ import {
 import { CozyAppParams } from '/constants/route-types'
 import { routes } from '/constants/routes'
 import { useDefaultIconParams } from '/libs/functions/openApp'
-import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { navigate, navigationRef } from '/libs/RootNavigation'
-
-import { osReceiveScreenStyles } from '/app/view/OsReceive/OsReceiveScreen.styles'
 
 export const useOsReceiveScreenLogic = (): {
   selectedOption: string | undefined
@@ -107,15 +103,6 @@ export const useOsReceiveScreenLogic = (): {
       payload: { href: webLink, slug: selectedOption }
     })
   }, [client, appsForUpload, selectedOption, iconParams, osReceiveDispatch])
-
-  useEffect(() => {
-    if (filesToUpload.length > 0) {
-      void setFlagshipUI(
-        osReceiveScreenStyles.setFlagshipUI as FlagshipUI,
-        'OsReceiveScreen'
-      )
-    }
-  }, [filesToUpload, appsForUpload])
 
   useEffect(() => {
     const firstEnabledApp = appsForUpload?.find(app => !app.reasonDisabled)

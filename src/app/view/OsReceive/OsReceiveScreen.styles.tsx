@@ -14,14 +14,6 @@ export const osReceiveScreenStyles = {
   },
   singleFileTitle: { alignSelf: 'center', marginBottom: 24 },
   appIcon: { minWidth: 32 },
-  setFlagshipUI: {
-    bottomBackground: 'white',
-    bottomTheme: 'dark',
-    bottomOverlay: 'transparent',
-    topBackground: 'white',
-    topTheme: 'dark',
-    topOverlay: 'transparent'
-  },
   appName: {
     lineHeight: 21
   },
