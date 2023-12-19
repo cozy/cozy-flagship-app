@@ -7,7 +7,7 @@ import {
 import { shouldEnableKonnectorExtensiveLog } from '/core/tools/env'
 
 import get from 'lodash/get'
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { WebView } from 'react-native-webview'
 
@@ -15,6 +15,7 @@ import { handleBackPress, stopExecIfVisible } from './core/handleBackPress'
 
 import { withClient } from 'cozy-client'
 
+import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import { BackTo } from '/components/ui/icons/BackTo'
 import { getDimensions, navbarHeight } from '/libs/dimensions'
 import ReactNativeLauncher from '/libs/ReactNativeLauncher'
@@ -26,7 +27,6 @@ import {
 } from '/screens/konnectors/core/handleTimeout'
 import { navigationRef } from '/libs/RootNavigation'
 import { TIMEOUT_KONNECTOR_ERROR } from '/libs/Launcher'
-import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { deactivateKeepAwake } from '/app/domain/sleep/services/sleep'
 
 const log = Minilog('LauncherView')
@@ -168,14 +168,6 @@ export class LauncherView extends Component {
     // made to measure the time between the launcher initialization and the display of the worker webview (when needed)
     // this is not await not to block the initialization of the launcher
 
-    // This call is important because the connection backdrop has normally set the icons to white on dark
-    // We want dark on white
-    this.launcher.waitForWorkerVisible(() =>
-      setFlagshipUI(
-        { topTheme: 'dark', bottomTheme: 'dark' },
-        'LauncherView.js'
-      )
-    )
     this.launcher.setLogger(this.props.onKonnectorLog)
 
     this.launcher.setStartContext({
@@ -240,10 +232,6 @@ export class LauncherView extends Component {
       this.launcher.removeAllListener()
     }
     this.launcher.close()
-
-    // Not strictly necessary, but to err on the side of caution we reset the flagship UI to dark
-    // In unlikely scenarios it is possible that the flagship UI is still set to light on white (connectionBackdrop)
-    setFlagshipUI({ topTheme: 'dark', bottomTheme: 'dark' }, 'LauncherView.js')
   }
 
   render() {
@@ -286,19 +274,7 @@ export class LauncherView extends Component {
               />
             </View>
             <View testID="workerView" style={workerStyle}>
-              <View style={styles.headerStyle}>
-                <TouchableOpacity
-                  activeOpacity={0.5}
-                  onPress={this.onStopExecution}
-                  style={styles.headerTouchableStyle}
-                >
-                  <BackTo color={colors.primaryColor} width={16} height={16} />
-                  <Text style={styles.headerTextStyle}>
-                    {strings.konnectors.worker.backButton}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <WebView
+              <WorkerView
                 key={this.state.workerKey}
                 mediaPlaybackRequiresUserAction={true}
                 ref={ref => {
@@ -320,18 +296,13 @@ export class LauncherView extends Component {
                 injectedJavaScriptBeforeContentLoaded={run}
                 javaScriptCanOpenWindowsAutomatically={true}
                 onOpenWindow={this.onWorkerOpenWindow}
+                onStopExecution={this.onStopExecution}
+                showInteractionBlocker={
+                  workerVisible && this.state.workerInteractionBlockerVisible
+                }
+                workerVisible={workerVisible}
+                isDebug={this.DEBUG}
               />
-              {workerVisible && this.state.workerInteractionBlockerVisible ? (
-                <View
-                  testID="workerInteractionBlocker"
-                  style={[
-                    styles.workerInteractionBlockerStyle,
-                    this.DEBUG
-                      ? styles.workerInteractionBlockerDebugStyle
-                      : null
-                  ]}
-                />
-              ) : null}
             </View>
           </>
         ) : null}
@@ -452,6 +423,75 @@ export class LauncherView extends Component {
       url: targetUrl
     })
   }
+}
+
+const WorkerView = React.forwardRef((props, ref) => {
+  const { setFlagshipColors } = useFlagshipUI(
+    'LauncherView',
+    ScreenIndexes.LAUNCHER_VIEW
+  )
+
+  const {
+    isDebug,
+    onStopExecution,
+    showInteractionBlocker,
+    workerVisible,
+    ...webViewProps
+  } = props
+
+  useEffect(() => {
+    if (workerVisible) {
+      setFlagshipColors({
+        bottomTheme: 'dark',
+        topTheme: 'dark'
+      })
+    } else {
+      setFlagshipColors(undefined)
+    }
+  }, [setFlagshipColors, workerVisible])
+
+  return (
+    <>
+      <View style={styles.headerStyle}>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={onStopExecution}
+          style={styles.headerTouchableStyle}
+        >
+          <BackTo color={colors.primaryColor} width={16} height={16} />
+          <Text style={styles.headerTextStyle}>
+            {strings.konnectors.worker.backButton}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <WebView ref={ref} {...webViewProps} />
+      {showInteractionBlocker ? <InteractionBlocker isDebug={isDebug} /> : null}
+    </>
+  )
+})
+WorkerView.displayName = 'WorkerView'
+
+const interactionBlockerDefaultFlagshipUI = {
+  bottomTheme: 'light',
+  topTheme: 'light'
+}
+
+const InteractionBlocker = ({ isDebug }) => {
+  useFlagshipUI(
+    'LauncherViewInteractionBlocker',
+    ScreenIndexes.CLISK_LAUNCHER + 1,
+    interactionBlockerDefaultFlagshipUI
+  )
+
+  return (
+    <View
+      testID="workerInteractionBlocker"
+      style={[
+        styles.workerInteractionBlockerStyle,
+        isDebug ? styles.workerInteractionBlockerDebugStyle : null
+      ]}
+    />
+  )
 }
 
 const styles = StyleSheet.create({
