@@ -3,6 +3,12 @@
     "content": "Êtes-vous sûr de vouloir déconnecter cette app de votre espace personnel ?"
   },
   "screens": {
+    "clouderyOffer": {
+      "backButton": "RETOUR À MON CLOUD PERSONNEL",
+      "success": {
+        "body": "Votre Cloud Personnel est en cours de mise à jour.\nVous recevrez une notification dès que votre achat sera finalisé."
+      }
+    },
     "cozyBlocked": {
       "title": "Le fonctionnement de votre espace personnel a été suspendu"
     },

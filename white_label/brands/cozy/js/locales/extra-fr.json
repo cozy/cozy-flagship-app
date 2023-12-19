@@ -3,6 +3,12 @@
     "content": "Êtes-vous sûr de vouloir vous déconnecter de votre Cozy ?"
   },
   "screens": {
+    "clouderyOffer": {
+      "backButton": "RETOUR À MON COZY",
+      "success": {
+        "body": "Votre Cozy est en cours de mise à jour.\nVous recevrez une notification dès que votre achat sera finalisé."
+      }
+    },
     "cozyBlocked": {
       "title": "Le fonctionnement de votre Cozy a été momentanément interrompu"
     },
