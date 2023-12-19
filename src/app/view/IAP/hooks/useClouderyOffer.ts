@@ -10,7 +10,8 @@ import {
   CLOUDERY_OFFER,
   interceptNavigation,
   clouderyOfferEventHandler,
-  buySubscription
+  buySubscription,
+  formatOffers
 } from '/app/domain/iap/services/clouderyOffer'
 
 const log = Minilog('💳 Cloudery Offer')
@@ -63,6 +64,7 @@ export const useClouderyOffer = (): ClouderyOfferState => {
   const instancesInfo = useInstanceInfo()
   const { subscriptions, getSubscriptions } = useIAP()
 
+  const [partialPopupUrl, setPartialPopupUrl] = useState<string | null>(null)
   const [popupUrl, setPopupUrl] = useState<string | null>(null)
   const [buyingState, setBuyingState] = useState<BuyingState>({
     state: 'IDLE'
@@ -91,7 +93,7 @@ export const useClouderyOffer = (): ClouderyOfferState => {
       const doAsync = async (): Promise<void> => {
         await initConnection()
         await getSubscriptions({ skus: SKUS })
-        setPopupUrl(current => current ?? href)
+        setPartialPopupUrl(current => current ?? href)
       }
 
       void doAsync()
@@ -106,6 +108,18 @@ export const useClouderyOffer = (): ClouderyOfferState => {
       subscription.removeListener(CLOUDERY_OFFER, eventCallback)
     }
   }, [client, getSubscriptions])
+
+  useEffect(() => {
+    if (!partialPopupUrl) {
+      setPopupUrl(null)
+    } else {
+      const offersParam = formatOffers(subscriptions)
+
+      const url = new URL(partialPopupUrl)
+      url.searchParams.append('iap_offers', offersParam)
+      setPopupUrl(url.toString())
+    }
+  }, [partialPopupUrl, subscriptions])
 
   useEffect(
     function logSubscriptions() {
