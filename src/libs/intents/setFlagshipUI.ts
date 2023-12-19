@@ -4,22 +4,25 @@ import { Platform, StatusBar } from 'react-native'
 import { changeBarColors } from 'react-native-immersive-bars'
 
 import { FlagshipUI } from 'cozy-intent'
+import Minilog from 'cozy-minilog'
 
+import { flagshipUIEventHandler, flagshipUIEvents } from '/app/view/FlagshipUI'
 import { urlHasKonnectorOpen } from '/libs/functions/urlHasKonnector'
 import {
   getHomeThemeAsStatusBarStyle,
-  getHomeThemeAsThemeInput,
-  themeLog
+  getHomeThemeAsThemeInput
 } from '/app/theme/themeManager'
 import { navigationRef } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { getDangerousOsReceiveState } from '/app/view/OsReceive/state/OsReceiveState'
 
+const log = Minilog('🎨 FLAGSHIP_UI')
+
 const isDarkMode = (bottomTheme: StatusBarStyle): boolean =>
   bottomTheme === StatusBarStyle.Light
 
 const handleLogging = (intent: FlagshipUI, name: string): void =>
-  themeLog.info(`setFlagshipUI by ${name}`, intent)
+  log.info(`setFlagshipUI by ${name}`, intent)
 
 export interface NormalisedFlagshipUI
   extends Omit<FlagshipUI, 'bottomTheme' | 'topTheme'> {
@@ -50,7 +53,7 @@ class Ui {
   }
 
   public set state(newState: NormalisedFlagshipUI) {
-    themeLog.info('UI state changed', newState)
+    log.info('UI state changed', newState)
     this._state = newState
   }
 }
@@ -148,7 +151,7 @@ const formatBasedOnGlobalTheme = (
     callerName?.includes(ON_OPEN_UNMOUNT) &&
     (callerName.includes(FULLSCREEN) || callerName.includes(IMMERSIVE))
   ) {
-    themeLog.info(
+    log.info(
       `formatBasedOnGlobalTheme uses home theme "${homeTheme}" for ${key} instead of "${String(
         input
       )}" because of callerName "${callerName}"`
@@ -175,33 +178,68 @@ const formatBasedOnInput = (
 
 export const flagshipUI = new EventEmitter()
 
+type FlagshipUiWithComponentId = FlagshipUI & {
+  componentId?: string
+}
+
+/**
+ * This API should be called only from cozy-intent
+ * React-native components should now call `useFlagshipUI` instead
+ */
 export const setFlagshipUI = (
-  intent: FlagshipUI,
+  intent: FlagshipUiWithComponentId,
   callerName?: string
 ): Promise<null> => {
   handleLogging(intent, callerName ?? 'unknown')
 
-  handleSideEffects(
-    Object.fromEntries(
-      Object.entries({
-        ...intent,
-        bottomTheme: formatTheme(
-          'bottomTheme',
-          intent.bottomTheme as ThemeInput,
-          callerName
-        ),
-        topTheme: formatTheme(
-          'topTheme',
-          intent.topTheme as ThemeInput,
-          callerName
-        )
-      })
-        .filter(([, v]) => v)
-        .map(([k, v]) => [k, v?.trim()])
+  const { componentId, ...uiIntent } = intent
+
+  if (componentId) {
+    flagshipUIEventHandler.emit(
+      flagshipUIEvents.SET_COMPONENT_COLORS,
+      componentId,
+      uiIntent
     )
-  )
+  } else {
+    log.error(
+      `SetFlagshipUI shouldn't be called without componentId, this means that the old setFlagshipUI architecture has not been migrated completly`
+    )
+  }
 
   return Promise.resolve(null)
+}
+
+/**
+ * This API should be called only from FlagshipUIService
+ */
+export const applyFlagshipUI = (
+  intent: FlagshipUI,
+  callerName?: string
+): void => {
+  handleSideEffects(cleanTheme(intent, callerName))
+}
+
+export const cleanTheme = (
+  intent: FlagshipUI,
+  callerName?: string
+): NormalisedFlagshipUI => {
+  return Object.fromEntries(
+    Object.entries({
+      ...intent,
+      bottomTheme: formatTheme(
+        'bottomTheme',
+        intent.bottomTheme as ThemeInput,
+        callerName
+      ),
+      topTheme: formatTheme(
+        'topTheme',
+        intent.topTheme as ThemeInput,
+        callerName
+      )
+    })
+      .filter(([, v]) => v)
+      .map(([k, v]) => [k, v?.trim()])
+  )
 }
 
 export const resetUIState = (

@@ -48,6 +48,8 @@ import { useOsReceiveApi } from '/app/view/OsReceive/hooks/useOsReceiveApi'
 import { useSecureBackgroundSplashScreen } from '/hooks/useSplashScreen'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 
+import { initFlagshipUIService } from '/app/view/FlagshipUI'
+
 import {
   useLauncherContext,
   LauncherContextProvider
@@ -206,6 +208,10 @@ const WrappedApp = () => {
 
 const Wrapper = () => {
   const [hasCrypto, setHasCrypto] = useState(false)
+
+  useEffect(() => {
+    initFlagshipUIService()
+  }, [])
 
   return (
     <>
