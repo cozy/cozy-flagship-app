@@ -13,14 +13,24 @@ import {
   cleanupTrackingData
 } from '/app/domain/geolocation/tracking/storage'
 import {
+  BICYCLE_ACTIVITY,
   LARGE_TEMPORAL_DELTA,
   LOW_CONFIDENCE_THRESHOLD,
+  MAX_BICYCLING_SPEED,
+  MAX_DISTANCE_TO_USE_LAST_POINT,
   MAX_DOCS_PER_BATCH,
+  MAX_RUNNING_SPEED,
   MAX_TEMPORAL_DELTA,
+  MAX_WALKING_SPEED,
+  MIN_DISTANCE_TO_USE_LAST_POINT,
   MIN_SPEED_BETWEEN_DISTANT_POINTS,
+  ON_FOOT_ACTIVITY,
+  RUNNING_ACTIVITY,
   STILL_ACTIVITY,
   UNKNOWN_ACTIVITY,
-  WALKING_SPEED_AVG
+  VEHICLE_ACTIVITY,
+  WALKING_ACTIVITY,
+  AVG_WALKING_SPEED
 } from '/app/domain/geolocation/tracking/consts'
 
 /**
@@ -411,7 +421,7 @@ export const filterNonHeadingPointsAfterStillActivity = (
  * @param {Location} location - The location point
  * @returns {boolean} whether or not this a moving stationary activity
  */
-const isMovingStill = location => {
+const isMovingStillActivity = location => {
   return (
     (location.activity.type === STILL_ACTIVITY && location.is_moving) ||
     (location.activity.type === STILL_ACTIVITY &&
@@ -420,16 +430,47 @@ const isMovingStill = location => {
   )
 }
 
+const isUnknownActivity = location => {
+  return location.activity.type === UNKNOWN_ACTIVITY
+}
+
+/**
+ * Try to infer the activity based on location speed.
+ *
+ * This is obvisouly not very robust nor reliable, but better than nothing in order
+ * to prevent "unknown" activities that are filtered by the openpath server,
+ * leading to missing trips
+ * @param {Location} location - The location point including the activity and speed
+ * @returns {string} The infered activity
+ */
+export const inferMotionActivity = location => {
+  const speed = location?.coords?.speed
+  const speedAccuracy = location?.coords?.speed_accuracy || -1
+  if (speed <= 0 || speedAccuracy < 0) {
+    return STILL_ACTIVITY
+  }
+  if (speed <= MAX_WALKING_SPEED) {
+    return WALKING_ACTIVITY
+  }
+  if (speed <= MAX_RUNNING_SPEED) {
+    return RUNNING_ACTIVITY
+  }
+  if (speed <= MAX_BICYCLING_SPEED) {
+    return BICYCLE_ACTIVITY
+  }
+  return VEHICLE_ACTIVITY
+}
+
 export const getFilteredActivities = async ({ beforeTs, locations }) => {
   const savedActivities = await getActivities({ beforeTs })
   let activitiesFromLocations = []
   if (locations && locations.length > 0) {
     activitiesFromLocations = locations.map(loc => {
       const location = { ...loc }
-      if (isMovingStill(loc)) {
-        Log('Detect moving "still" activity: change to "unknwon"')
-        // Turn "motion stationary" into "unknown" activity
-        location.activity.type = UNKNOWN_ACTIVITY
+      if (isMovingStillActivity(loc) || isUnknownActivity(loc)) {
+        // Avoid unknown or "moving" still activities
+        location.activity.type = inferMotionActivity(loc)
+        Log('Changed ' + loc.activity.type + ' to: ' + location.activity.type)
       }
       return translateEventToEMissionMotionActivity(location)
     })
@@ -492,13 +533,14 @@ export const translateEventToEMissionMotionActivity = event => {
   // See: https://transistorsoft.github.io/react-native-background-geoevent/interfaces/motionactivity.html#type
   return {
     data: {
-      cycling: event.activity.type === 'on_bicycle',
-      running: event.activity.type === 'running',
+      cycling: event.activity.type === BICYCLE_ACTIVITY,
+      running: event.activity.type === RUNNING_ACTIVITY,
       walking:
-        event.activity.type === 'walking' || event.activity.type === 'on_foot', // on_foot includes running or walking
-      automotive: event.activity.type === 'in_vehicle',
-      stationary: event.activity.type === 'still',
-      unknown: event.activity.type === 'unknown',
+        event.activity.type === WALKING_ACTIVITY ||
+        event.activity.type === ON_FOOT_ACTIVITY, // on_foot includes running or walking
+      automotive: event.activity.type === VEHICLE_ACTIVITY,
+      stationary: event.activity.type === STILL_ACTIVITY,
+      unknown: event.activity.type === UNKNOWN_ACTIVITY,
       confidence: event.activity.confidence,
       ts: ts + 0.1, // FIXME
       confidence_level:
