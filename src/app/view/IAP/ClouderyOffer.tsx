@@ -4,6 +4,9 @@ import { withIAPContext } from 'react-native-iap'
 import WebView from 'react-native-webview'
 import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
 
+import { FlagshipUI } from 'cozy-intent'
+
+import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import { useClouderyOffer } from '/app/view/IAP/hooks/useClouderyOffer'
 import { IapProgress } from '/app/view/IAP/IapProgress'
 import { IapError } from '/app/view/IAP/IapError'
@@ -50,6 +53,11 @@ const ClouderyOfferWithIAPContext = (): JSX.Element | null => {
 
 export const ClouderyOffer = withIAPContext(ClouderyOfferWithIAPContext)
 
+const defaultFlagshipUI: FlagshipUI = {
+  bottomTheme: 'dark',
+  topTheme: 'dark'
+}
+
 interface WebViewWithLoadingOverlayProps {
   hidePopup: () => void
   popupUrl: string
@@ -63,6 +71,12 @@ const WebViewWithLoadingOverlay = ({
 }: WebViewWithLoadingOverlayProps): JSX.Element => {
   const [loading, setLoading] = useState(true)
 
+  useFlagshipUI(
+    'ClouderyOffer',
+    ScreenIndexes.CLOUDERY_OFFER,
+    defaultFlagshipUI
+  )
+
   return (
     <View style={styles.dialog}>
       <BackButton onPress={hidePopup} />
@@ -71,19 +85,32 @@ const WebViewWithLoadingOverlay = ({
         onShouldStartLoadWithRequest={interceptNavigation}
         onLoadEnd={(): void => setLoading(false)}
       />
-      {loading && (
-        <>
-          <View
-            style={[
-              styles.loadingOverlay,
-              {
-                backgroundColor: colors.primaryColor
-              }
-            ]}
-          />
-        </>
-      )}
+      {loading && <LoadingOverlay />}
     </View>
+  )
+}
+
+const overlayDefaultFlagshipUI: FlagshipUI = {
+  bottomTheme: 'light',
+  topTheme: 'light'
+}
+
+const LoadingOverlay = (): JSX.Element => {
+  useFlagshipUI(
+    'ClouderyOfferOverlay',
+    ScreenIndexes.CLOUDERY_OFFER,
+    overlayDefaultFlagshipUI
+  )
+
+  return (
+    <View
+      style={[
+        styles.loadingOverlay,
+        {
+          backgroundColor: colors.primaryColor
+        }
+      ]}
+    />
   )
 }
 
