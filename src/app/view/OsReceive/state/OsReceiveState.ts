@@ -29,7 +29,6 @@ export const osReceiveReducer = (
   action: OsReceiveAction
 ): OsReceiveState => {
   let nextState = state
-  dangerousOsReceiveState = nextState
 
   switch (action.type) {
     case OsReceiveActionType.SetFilesToUpload:
@@ -93,21 +92,6 @@ export const initialState: OsReceiveState = {
   errored: false,
   candidateApps: undefined
 }
-
-/**
- * This variable is used to expose the state to the outside world.
- *
- * It is meant to be a temporary solution to fix an issue where resetUIstate()
- * has to know the state of this feature before executing its logic,
- * but at the time of writing resetUIState has no connection to the React tree.
- *
- * It should not be used anywhere else unless absolutely necessary.
- * ResetUIState() should be refactored to use a proper React context.
- * It can't be done at the time of this commit for time constraints.
- */
-let dangerousOsReceiveState = initialState
-export const getDangerousOsReceiveState = (): OsReceiveState =>
-  dangerousOsReceiveState
 
 export const useOsReceiveState = (): OsReceiveState => {
   const context = useContext(OsReceiveStateContext)
