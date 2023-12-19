@@ -8,7 +8,7 @@
     "userAgent": "io.cozy.flagship.mobile"
   },
   "mabulle": {
-    "appName": "Ma Bulle",
+    "appName": "Cozy Métropole de Lyon",
     "bundleId": "io.cozy.flagship.mobile.mabulle",
     "provisionningProfile": "amiral-mabulle-ci-profile",
     "provisionningDevProfile": "amiral-mabulle-dev-profile",

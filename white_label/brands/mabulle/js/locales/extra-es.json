@@ -21,12 +21,12 @@
     "welcome": {
       "body": "Accede a tu Nube Personal ahora, el hogar digital para reunir todos tus datos",
       "buttonLogin": "Ya tengo una Nube Personal",
-      "title": "Ma Bulle"
+      "title": "Cozy Métropole de Lyon"
     }
   },
   "modals": {
     "IconChangedModal": {
-      "description": "El ícono de la aplicación 'Ma Bulle' ha sido modificado."
+      "description": "El ícono de la aplicación 'Cozy Métropole de Lyon' ha sido modificado."
     },
     "ErrorToken": {
       "body": "Parece que has revocado el acceso a este dispositivo. Para volver a acceder a tus datos, inicia sesión de nuevo. Si esta acción no procede de usted, no dude en ponerse en contacto con nosotros en <linkTag>email</linkTag>."
@@ -38,6 +38,6 @@
     }
   },
   "software": {
-    "name": "Aplicación Móvil Ma Bulle"
+    "name": "Aplicación Móvil Cozy Métropole de Lyon"
   }
 }

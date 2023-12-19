@@ -19,14 +19,14 @@
       "invalidMagicCode": "Le lien pour accéder à votre espace personnel est tronqué ou a expiré"
     },
     "welcome": {
-      "body": "Au sein de votre espace Ma Bulle, vous êtes chez vous !<br /><br />Rangez vos papiers, gérez votre consommation énergétique, suivez vos dépenses… La Métropole de Lyon vous propose un service pour vous faciliter votre vie numérique.",
+      "body": "Au sein de votre espace Cozy Métropole de Lyon, vous êtes chez vous !<br /><br />Rangez vos papiers, gérez votre consommation énergétique, suivez vos dépenses… La Métropole de Lyon vous propose un service pour vous faciliter votre vie numérique.",
       "buttonLogin": "J'ai déjà un Cloud Personnel Cozy",
-      "title": "Ma Bulle"
+      "title": "Cozy Métropole de Lyon"
     }
   },
   "modals": {
     "IconChangedModal": {
-      "description": "L'icône de l'application « Ma Bulle » a été modifiée."
+      "description": "L'icône de l'application « Cozy Métropole de Lyon » a été modifiée."
     },
     "ErrorToken": {
       "body": "Vous semblez avoir révoqué l'accès de cet appareil. Pour accéder à nouveau à vos données, veuillez vous reconnecter. Si cette action ne vient pas de vous, n'hésitez pas à nous contacter à <linkTag>email</linkTag>."
@@ -38,6 +38,6 @@
     }
   },
   "software": {
-    "name": "Application Mobile Ma Bulle"
+    "name": "Application Mobile Cozy Métropole de Lyon"
   }
 }

@@ -21,12 +21,12 @@
     "welcome": {
       "body": "Access your Personal Cloud now, the digital home to gather all your data",
       "buttonLogin": "I already have a Cozy Personal Cloud",
-      "title": "Ma Bulle"
+      "title": "Cozy Métropole de Lyon"
     }
   },
   "modals": {
     "IconChangedModal": {
-      "description": "The icon of the 'Ma Bulle' application has been modified."
+      "description": "The icon of the 'Cozy Métropole de Lyon' application has been modified."
     },
     "ErrorToken": {
       "body": "You seem to have revoked access to this device. To access your data again, please log in again. If this action does not come from you, please do not hesitate to contact us at <linkTag>email</linkTag>."
@@ -38,6 +38,6 @@
     }
   },
   "software": {
-    "name": "Ma Bulle Mobile Application"
+    "name": "Cozy Métropole de Lyon Mobile Application"
   }
 }
