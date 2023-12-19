@@ -1,4 +1,3 @@
-import { Platform } from 'react-native'
 import ReactNativeBiometrics, { BiometryType } from 'react-native-biometrics'
 
 import CozyClient from 'cozy-client'
@@ -14,7 +13,6 @@ import {
   saveVaultInformation
 } from '/libs/keychain'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
-import { setLockScreenUI } from '/app/domain/authorization/events/LockScreenUiManager'
 import { UnlockWithPassword } from '/app/domain/authentication/models/User'
 import { devlog } from '/core/tools/env'
 import { t } from '/locales/i18n'
@@ -179,34 +177,15 @@ export const promptBiometry = async (): Promise<{
   success: boolean
   error?: string
 }> => {
-  if (Platform.OS === 'android') {
-    await setLockScreenUI({
-      bottomOverlay: 'rgba(0,0,0,0.5)',
-      topOverlay: 'rgba(0,0,0,0.5)'
-    })
-  }
-
   const promptResult = await rnBiometrics.simplePrompt({
     promptMessage: t('screens.lock.promptTitle'),
     cancelButtonText: t('screens.lock.promptCancel')
   })
 
-  if (Platform.OS === 'android') {
-    await setLockScreenUI({
-      bottomOverlay: 'transparent',
-      topOverlay: 'transparent'
-    })
-  }
-
   return promptResult
 }
 
 export const ensureLockScreenUi = async (): Promise<void> => {
-  await setLockScreenUI({
-    bottomOverlay: 'transparent',
-    topOverlay: 'transparent'
-  })
-
   devlog('🔏 ensureLockScreenUi() hiding splash screen')
   await hideSplashScreen()
 }
