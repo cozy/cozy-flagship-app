@@ -30,6 +30,11 @@
         "title": "Se ha producido un error",
         "tryAgain": "Inténtalo de nuevo",
         "backToOffers": "Volver a las ofertas"
+      },
+      "success": {
+        "title": "Pago efectuado",
+        "body": "Tu Cozy está siendo actualizado.\nRecibirás una notificación en cuanto finalice tu compra.",
+        "close": "Cerrar"
       }
     },
     "cozyNotFound": {

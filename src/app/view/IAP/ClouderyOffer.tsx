@@ -7,6 +7,7 @@ import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
 import { useClouderyOffer } from '/app/view/IAP/hooks/useClouderyOffer'
 import { IapProgress } from '/app/view/IAP/IapProgress'
 import { IapError } from '/app/view/IAP/IapError'
+import { IapSuccess } from '/app/view/IAP/IapSuccess'
 import { BackTo } from '/components/ui/icons/BackTo'
 import { getDimensions } from '/libs/dimensions'
 import { useI18n } from '/locales/i18n'
@@ -42,6 +43,7 @@ const ClouderyOfferWithIAPContext = (): JSX.Element | null => {
       {buyingState.state === 'ERROR' && (
         <IapError backToOffers={backToOffers} tryAgain={retryBuySubscription} />
       )}
+      {buyingState.state === 'SUCCESS' && <IapSuccess hidePopup={hidePopup} />}
     </>
   ) : null
 }
