@@ -21,11 +21,7 @@ import {
 import { getDevModeFunctions } from '/app/domain/authorization/utils/devMode'
 import { routes } from '/constants/routes'
 import { devlog, shouldDisableAutolock } from '/core/tools/env'
-import {
-  getCurrentRouteName,
-  navigate,
-  navigationRef
-} from '/libs/RootNavigation'
+import { getCurrentRoute, navigate, navigationRef } from '/libs/RootNavigation'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { authConstants } from '/app/domain/authorization/constants'
 import { safePromise } from '/utils/safePromise'
@@ -308,7 +304,7 @@ const tryLockingApp = async (
 export const handleSecurityFlowWakeUp = async (
   client: CozyClient
 ): Promise<void> => {
-  const currentRoute = getCurrentRouteName()
+  const currentRoute = getCurrentRoute()
   let parsedRoute: Route<string, { href: string; slug: string }>
 
   try {

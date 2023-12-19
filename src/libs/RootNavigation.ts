@@ -1,6 +1,7 @@
 import {
   createNavigationContainerRef,
-  CommonActions
+  CommonActions,
+  Route
 } from '@react-navigation/native'
 
 import Minilog from 'cozy-minilog'
@@ -9,6 +10,14 @@ const log = Minilog('RootNavigation')
 
 export const navigationRef =
   createNavigationContainerRef<Record<string, unknown>>()
+
+export const getCurrentRoute = (): Route<string> | null => {
+  if (!navigationRef.isReady()) {
+    return null
+  }
+
+  return navigationRef.getCurrentRoute() ?? null
+}
 
 export const getCurrentRouteName = (): string | null => {
   if (!navigationRef.isReady()) {
