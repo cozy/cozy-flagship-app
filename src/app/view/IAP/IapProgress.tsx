@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from 'react'
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native'
 
+import { FlagshipUI } from 'cozy-intent'
+
+import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import { useI18n } from '/locales/i18n'
 import { getColors } from '/ui/colors'
 import { Icon } from '/ui/Icon'
@@ -8,8 +11,19 @@ import { Spinner } from '/ui/Icons/Spinner'
 
 const colors = getColors()
 
+const defaultFlagshipUI: FlagshipUI = {
+  bottomTheme: 'light',
+  topTheme: 'light'
+}
+
 export const IapProgress = (): JSX.Element => {
   const { t } = useI18n()
+
+  useFlagshipUI(
+    'ClouderyOfferLoading',
+    ScreenIndexes.CLOUDERY_OFFER + 1,
+    defaultFlagshipUI
+  )
 
   const animateRotate = useRef(new Animated.Value(0)).current
 
