@@ -48,7 +48,7 @@ export const useOAuthClientsLimitExceeded = (
       setPopupUrl(
         current =>
           current ??
-          `${rootURL}${OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH}?isFlagship=true&redirect=${encodedRedirect}`
+          `${rootURL}${OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH}?isFlagship=true&isIapAvailable=true&redirect=${encodedRedirect}`
       )
     }
 
