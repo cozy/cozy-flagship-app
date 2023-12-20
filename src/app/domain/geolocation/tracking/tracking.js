@@ -30,7 +30,8 @@ import {
   UNKNOWN_ACTIVITY,
   VEHICLE_ACTIVITY,
   WALKING_ACTIVITY,
-  AVG_WALKING_SPEED
+  AVG_WALKING_SPEED,
+  MIN_VEHICLE_DISTANCE,
   LOW_CONFIDENCE,
   MEDIUM_CONFIDENCE,
   HIGH_CONFIDENCE
@@ -464,11 +465,87 @@ export const inferMotionActivity = location => {
   return VEHICLE_ACTIVITY
 }
 
+/**
+ * Set a low activity confidence for short vehicle motions
+ *
+ * Sometimes, the mobile might produce a wrong vehicle activity for a short time/distance.
+ * The openpath server filters such activities based on their duration (e.g. <5min), but not for
+ * the distance. We noticed situtations where the activity last several minutes but with very few
+ * distance, typiczally few meters.
+ * That's why we force a low activity confidence for such cases: Android will always have a 100
+ * confidence, while the server exploits this to filter such activities.
+ *
+ * @param {Array<Location>} locations - The locations containing the activity type
+ * @returns {Array<Location>} the locations with the updated activity confidence
+ */
+export const setLowConfidenceForShortVehicleMotion = locations => {
+  let consecutiveVehiclePoints = []
+  let currentStartingVehicleMotion = null
+  const vehicleMotions = []
+
+  // Group vehicle motions
+  for (let i = 0; i < locations.length; i++) {
+    if (locations[i].activity.type === VEHICLE_ACTIVITY) {
+      consecutiveVehiclePoints.push(locations[i])
+      if (consecutiveVehiclePoints.length === 1) {
+        // First new vehicle motion
+        currentStartingVehicleMotion = locations[i]
+      }
+    } else if (consecutiveVehiclePoints.length > 0) {
+      if (currentStartingVehicleMotion) {
+        const distance = getDistanceFromLatLonInM(
+          currentStartingVehicleMotion,
+          locations[i]
+        )
+        currentStartingVehicleMotion = null
+        vehicleMotions.push({ points: consecutiveVehiclePoints, distance })
+        consecutiveVehiclePoints = []
+      }
+    }
+  }
+  // In case there are still points to process
+  if (consecutiveVehiclePoints.length > 1) {
+    const distance = getDistanceFromLatLonInM(
+      currentStartingVehicleMotion,
+      consecutiveVehiclePoints[consecutiveVehiclePoints.length - 1]
+    )
+    vehicleMotions.push({ points: consecutiveVehiclePoints, distance })
+  }
+
+  const uuidsToUpdate = []
+  for (const vehicleMotion of vehicleMotions) {
+    if (vehicleMotion.distance < MIN_VEHICLE_DISTANCE) {
+      Log('Vehicle motion with small distance: ' + vehicleMotion.distance)
+      // The vehicle distance range is too short
+      // Note the server adds additional checks to filter out vehicle trips below 5min
+      // See https://github.com/e-mission/e-mission-server/blob/978a7199f5577e44ff3174cbf6507ff6d42a7367/emission/analysis/intake/segmentation/section_segmentation_methods/flip_flop_detection.py#L401
+      vehicleMotion.points.forEach(point => uuidsToUpdate.push(point.uuid))
+    }
+  }
+  if (uuidsToUpdate.length < 1) {
+    return locations
+  }
+
+  const newLocations = locations.map(location => {
+    if (uuidsToUpdate.includes(location.uuid)) {
+      // Low confidence, will be filtered by the server
+      const newLocation = {
+        ...location,
+        activity: { ...location.activity, confidence: LOW_CONFIDENCE }
+      }
+      return newLocation
+    }
+    return location
+  })
+  return newLocations
+}
+
 export const getFilteredActivities = async ({ beforeTs, locations }) => {
   const savedActivities = await getActivities({ beforeTs })
   let activitiesFromLocations = []
   if (locations && locations.length > 0) {
-    activitiesFromLocations = locations.map(loc => {
+    const updatedLocations = setLowConfidenceForShortVehicleMotion(locations)
+    activitiesFromLocations = updatedLocations.map(loc => {
       const location = { ...loc }
       if (isMovingStillActivity(loc) || isUnknownActivity(loc)) {
         // Avoid unknown or "moving" still activities

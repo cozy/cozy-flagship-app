@@ -7,7 +7,8 @@ import {
   getFilteredActivities,
   translateEventToEMissionMotionActivity,
   inferMotionActivity,
-  shouldCreateNewStartPoint
+  shouldCreateNewStartPoint,
+  setLowConfidenceForShortVehicleMotion
 } from '/app/domain/geolocation/tracking/tracking'
 import {
   MAX_WALKING_SPEED,
@@ -18,7 +19,8 @@ import {
   RUNNING_ACTIVITY,
   BICYCLE_ACTIVITY,
   VEHICLE_ACTIVITY,
-  STILL_ACTIVITY
+  STILL_ACTIVITY,
+  LOW_CONFIDENCE
 } from '/app/domain/geolocation/tracking/consts'
 
 jest.mock('/app/domain/geolocation/tracking/storage', () => ({
@@ -320,5 +322,154 @@ describe('inferMotionActivity', () => {
     ).toBe(STILL_ACTIVITY)
     expect(inferMotionActivity({})).toBe(STILL_ACTIVITY)
     expect(inferMotionActivity({ coords: {} })).toBe(STILL_ACTIVITY)
+  })
+})
+
+describe('setLowConfidenceForShortVehicleMotion', () => {
+  it('should return same location points when there is no vehicle activity', () => {
+    const points = [
+      { activity: { type: WALKING_ACTIVITY, confidence: 100 }, uuid: 1 },
+      { activity: { type: WALKING_ACTIVITY, confidence: 100 }, uuid: 2 }
+    ]
+    const newPoints = setLowConfidenceForShortVehicleMotion(points)
+    for (let i = 0; i < newPoints.length; i++) {
+      expect(newPoints[i]).toMatchObject(points[i])
+    }
+    expect(setLowConfidenceForShortVehicleMotion([])).toEqual([])
+  })
+  it('should return same location points when vehicle distance is long enough', () => {
+    const points = [
+      {
+        activity: { type: VEHICLE_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.8566, longitude: 2.3522 },
+        uuid: 1
+      },
+      {
+        activity: { type: VEHICLE_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.94652, longitude: 2.3522 },
+        uuid: 2
+      }
+    ]
+    const newPoints = setLowConfidenceForShortVehicleMotion(points)
+    for (let i = 0; i < newPoints.length; i++) {
+      expect(newPoints[i]).toMatchObject(points[i])
+    }
+  })
+  it('should return same location points when vehicle distance is long enough, mixed with other activities', () => {
+    let points = [
+      {
+        activity: { type: VEHICLE_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.8566, longitude: 2.3522 },
+        uuid: 1
+      },
+      {
+        activity: { type: WALKING_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.94652, longitude: 2.3522 },
+        uuid: 2
+      }
+    ]
+    let newPoints = setLowConfidenceForShortVehicleMotion(points)
+    for (let i = 0; i < newPoints.length; i++) {
+      expect(newPoints[i]).toMatchObject(points[i])
+    }
+
+    points = [
+      {
+        activity: { type: WALKING_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.8566, longitude: 2.3522 },
+        uuid: 1
+      },
+      {
+        activity: { type: VEHICLE_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.94652, longitude: 2.3522 },
+        uuid: 2
+      }
+    ]
+    newPoints = setLowConfidenceForShortVehicleMotion(points)
+    for (let i = 0; i < newPoints.length; i++) {
+      expect(newPoints[i]).toMatchObject(points[i])
+    }
+
+    points = [
+      {
+        activity: { type: WALKING_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.8566, longitude: 2.3522 },
+        uuid: 1
+      },
+      {
+        activity: { type: VEHICLE_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.94652, longitude: 2.3522 },
+        uuid: 2
+      },
+      {
+        activity: { type: WALKING_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.8566, longitude: 2.3522 },
+        uuid: 3
+      }
+    ]
+    newPoints = setLowConfidenceForShortVehicleMotion(points)
+    for (let i = 0; i < newPoints.length; i++) {
+      expect(newPoints[i]).toMatchObject(points[i])
+    }
+  })
+
+  it('should set low confidence for short vehicle motions', () => {
+    let points = [
+      {
+        activity: { type: VEHICLE_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.8566, longitude: 2.3522 },
+        uuid: 1
+      },
+      {
+        activity: { type: WALKING_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.85659, longitude: 2.3522 },
+        uuid: 2
+      }
+    ]
+    let newPoints = setLowConfidenceForShortVehicleMotion(points)
+    expect(
+      setLowConfidenceForShortVehicleMotion(points)[0].activity.confidence
+    ).toEqual(LOW_CONFIDENCE)
+
+    points = [
+      {
+        activity: { type: VEHICLE_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.8566, longitude: 2.3522 },
+        uuid: 1
+      },
+      {
+        activity: { type: VEHICLE_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.85659, longitude: 2.3522 },
+        uuid: 2
+      }
+    ]
+    newPoints = setLowConfidenceForShortVehicleMotion(points)
+    for (let i = 0; i < newPoints.length; i++) {
+      expect(
+        setLowConfidenceForShortVehicleMotion(points)[i].activity.confidence
+      ).toEqual(LOW_CONFIDENCE)
+    }
+
+    points = [
+      {
+        activity: { type: WALKING_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.8566, longitude: 2.3522 },
+        uuid: 1
+      },
+      {
+        activity: { type: VEHICLE_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.8566, longitude: 2.3522 },
+        uuid: 1
+      },
+      {
+        activity: { type: WALKING_ACTIVITY, confidence: 100 },
+        coords: { latitude: 48.85659, longitude: 2.3522 },
+        uuid: 2
+      }
+    ]
+    newPoints = setLowConfidenceForShortVehicleMotion(points)
+    expect(
+      setLowConfidenceForShortVehicleMotion(points)[1].activity.confidence
+    ).toEqual(LOW_CONFIDENCE)
   })
 })
