@@ -22,6 +22,7 @@ import {
   activateKeepAwake,
   deactivateKeepAwake
 } from '/app/domain/sleep/services/sleep'
+import { hasPermission } from '/app/domain/manifest/permissions'
 
 const log = Minilog('ReactNativeLauncher')
 
@@ -345,6 +346,13 @@ class ReactNativeLauncher extends Launcher {
         trigger,
         job,
         sourceAccountIdentifier
+      }
+
+      if (hasPermission(manifest, 'io.cozy.files')) {
+        const existingFilesIndex = await this.getExistingFilesIndex()
+        const serializableExistingFilesIndex =
+          Object.fromEntries(existingFilesIndex)
+        pilotContext.existingFilesIndex = serializableExistingFilesIndex
       }
       await this.pilot.call('fetch', pilotContext)
       await this.stop()
