@@ -73,6 +73,7 @@ describe('ReactNativeLauncher', () => {
       save: jest.fn(),
       create: jest.fn(),
       query: jest.fn(),
+      queryAll: jest.fn(),
       destroy: jest.fn(),
       getStackClient: () => ({
         uri: 'http://cozy.localhost:8080'
@@ -310,12 +311,57 @@ describe('ReactNativeLauncher', () => {
         errorMessage: `getUserDataFromWebsite did not return any sourceAccountIdentifier. Cannot continue the execution.`
       })
     })
+    it('should send existingFilesIndex to the konnector if it has files permission', async () => {
+      const { launcher, client, launch } = setup()
+      launcher.setStartContext({
+        client,
+        account: fixtures.account,
+        trigger: fixtures.trigger,
+        manifest: { permissions: { files: { type: 'io.cozy.files' } } },
+        konnector: {
+          slug: 'testkonnector',
+          name: 'Test Konnector'
+        },
+        launcherClient: {
+          setAppMetadata: () => null
+        }
+      })
+      client.query.mockResolvedValue({ data: fixtures.account })
+      client.queryAll.mockResolvedValueOnce([
+        {
+          name: 'file1.txt',
+          metadata: { fileIdAttributes: 'sourceaccountidentifier1' }
+        }
+      ])
+      client.save.mockImplementation(async doc => ({ data: doc }))
+      launch.mockResolvedValue({ data: fixtures.job })
+      launcher.pilot.call
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce({
+          sourceAccountIdentifier: 'testsourceaccountidentifier'
+        })
+        .mockResolvedValueOnce(true) // fetch
+      await launcher.start()
+      expect(launcher.pilot.call).toHaveBeenLastCalledWith(
+        'fetch',
+        expect.objectContaining({
+          existingFilesIndex: {
+            sourceaccountidentifier1: {
+              name: 'file1.txt',
+              metadata: { fileIdAttributes: 'sourceaccountidentifier1' }
+            }
+          }
+        })
+      )
+    })
     it('should update job with error message on error', async () => {
       const { launcher, client, launch } = setup()
       launcher.setStartContext({
         client,
         account: fixtures.account,
         trigger: fixtures.trigger,
+        manifest: {},
         konnector: {
           slug: 'testkonnector',
           name: 'Test Konnector'
