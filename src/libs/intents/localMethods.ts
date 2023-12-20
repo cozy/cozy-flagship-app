@@ -98,6 +98,8 @@ const isAvailable = (featureName: string): Promise<boolean> => {
     return Promise.resolve(true)
   } else if (featureName === 'shareFiles') {
     return Promise.resolve(true)
+  } else if (featureName === 'iap') {
+    return Promise.resolve(true)
   }
 
   return Promise.resolve(false)
