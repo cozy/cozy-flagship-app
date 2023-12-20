@@ -8,7 +8,10 @@ import {
   getShouldStartTracking,
   setGeolocationTracking
 } from '/app/domain/geolocation/services/tracking'
-import { isGeolocationQuotaExceeded } from '/app/domain/geolocation/helpers/quota'
+import {
+  isGeolocationQuotaExceeded,
+  showQuotaExceededNotification
+} from '/app/domain/geolocation/helpers/quota'
 
 const log = Minilog('📍 Geolocation')
 
@@ -27,6 +30,7 @@ export const useGeolocationTracking = (): void => {
         if (quotaExceeded) {
           log.debug('Geolocation quota exceeded')
           await setGeolocationTracking(false)
+          await showQuotaExceededNotification()
           return
         }
       } else {

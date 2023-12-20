@@ -4,6 +4,9 @@ import { Q } from 'cozy-client'
 import CozyClient from 'cozy-client'
 import flag from 'cozy-flags'
 
+import { showLocalNotification } from '/libs/notifications/notifications'
+import { t } from '/locales/i18n'
+
 const MAX_DAYS_TO_CAPTURE_UNLIMITED = -1
 const ONE_DAY = 24 * 60 * 60 * 1000
 interface FirstTimeserie {
@@ -55,4 +58,25 @@ export const isGeolocationQuotaExceeded = async (
   )
 
   return daysSinceFirstCapture > maxDaysToCapture
+}
+
+export const showQuotaExceededNotification = async (): Promise<void> => {
+  const maxDaysToCapture = flag('coachco2.max-days-to-capture') as number | null
+
+  if (typeof maxDaysToCapture !== 'number') {
+    return
+  }
+
+  await showLocalNotification({
+    title: t('services.geolocationTracking.quotaExceededNotificationTitle'),
+    body: t(
+      'services.geolocationTracking.quotaExceededNotificationDescription',
+      {
+        days: maxDaysToCapture.toString()
+      }
+    ),
+    data: {
+      redirectLink: 'coachco2/'
+    }
+  })
 }

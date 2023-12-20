@@ -121,7 +121,9 @@
     "geolocationTracking": {
       "androidBackgroundPermissionMessage": "Recording your movements requires to ≪ {backgroundPermissionOptionLabel} ≫",
       "androidNotificationTitle": "Location service on",
-      "androidNotificationDescription": "Your journey will be recorded into your Cozy"
+      "androidNotificationDescription": "Your journey will be recorded into your Cozy",
+      "quotaExceededNotificationTitle": "Journey recording disabled",
+      "quotaExceededNotificationDescription": "You have reached the limit of {{days}} days of journeys included in your offer."
     },
     "osReceive": {
       "documentType": "Document Type:",
