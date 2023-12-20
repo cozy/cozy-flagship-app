@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { useClient } from 'cozy-client'
 
 import {
+  isGeolocationTrackingEnabled,
   getShouldStartTracking,
   setGeolocationTracking
 } from '/app/domain/geolocation/services/tracking'
@@ -14,10 +15,14 @@ export const useGeolocationTracking = (): void => {
     const initializeTracking = async (): Promise<void> => {
       if (!client) return
 
-      const shouldStartTracking = (await getShouldStartTracking()) as boolean
+      const trackingEnabled = await isGeolocationTrackingEnabled()
 
-      if (shouldStartTracking) {
-        await setGeolocationTracking(true)
+      if (!trackingEnabled) {
+        const shouldStartTracking = (await getShouldStartTracking()) as boolean
+
+        if (shouldStartTracking) {
+          await setGeolocationTracking(true)
+        }
       }
     }
 

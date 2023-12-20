@@ -45,6 +45,12 @@ interface GeolocationTrackingStatus {
   enabled: boolean
 }
 
+export const isGeolocationTrackingEnabled = async (): Promise<boolean> => {
+  const status = await BackgroundGeolocation.getState()
+
+  return status.enabled
+}
+
 export const getGeolocationTrackingStatus =
   async (): Promise<GeolocationTrackingStatus> => {
     const status = await BackgroundGeolocation.getState()
