@@ -55,6 +55,7 @@ import {
   requestPermissions
 } from '/app/domain/nativePermissions'
 import { t } from '/locales/i18n'
+import { shareFiles } from '/app/domain/osReceive/services/shareFilesApi'
 
 const log = Minilog('localMethods')
 
@@ -95,6 +96,8 @@ const isAvailable = (featureName: string): Promise<boolean> => {
   } else if (featureName === 'scanner') {
     return Promise.resolve(isScannerAvailable())
   } else if (featureName === 'print') {
+    return Promise.resolve(true)
+  } else if (featureName === 'shareFiles') {
     return Promise.resolve(true)
   }
 
@@ -197,6 +200,7 @@ interface CustomMethods {
   getDeviceInfo: typeof getDeviceInfo
   isAvailable: typeof isAvailable
   print: typeof print
+  shareFiles: (files: string[]) => void
 }
 
 let prepareBackupLock = false
@@ -333,6 +337,7 @@ export const localMethods = (
     getDeviceInfo,
     isAvailable,
     print,
+    shareFiles,
     ...mergedMethods
   }
 }
