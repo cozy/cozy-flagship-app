@@ -326,7 +326,7 @@ export const localMethods = (
     checkBackupPermissions,
     requestBackupPermissions,
     setLang,
-    getGeolocationTrackingStatus,
+    getGeolocationTrackingStatus: () => getGeolocationTrackingStatus(client),
     setGeolocationTracking,
     getGeolocationTrackingId,
     setGeolocationTrackingId,
