@@ -31,6 +31,9 @@ import {
   VEHICLE_ACTIVITY,
   WALKING_ACTIVITY,
   AVG_WALKING_SPEED
+  LOW_CONFIDENCE,
+  MEDIUM_CONFIDENCE,
+  HIGH_CONFIDENCE
 } from '/app/domain/geolocation/tracking/consts'
 
 /**
@@ -171,7 +174,7 @@ const prepareMotionData = async ({ locations, lastUploadedPoint }) => {
           // point took some time to be fetched.
           if (shouldCreateNewStartPoint(previousPoint, point)) {
             const newPoint = createNewStartPoint(previousPoint, point)
-            Log('Built new starting point : ' + JSON.stringify(newPoint))
+            Log('Built new point : ' + JSON.stringify(newPoint))
             builtNewPoint = newPoint
           }
         } else {
@@ -544,9 +547,9 @@ export const translateEventToEMissionMotionActivity = event => {
       confidence: event.activity.confidence,
       ts: ts + 0.1, // FIXME
       confidence_level:
-        event.activity.confidence > 75
+        event.activity.confidence > HIGH_CONFIDENCE
           ? 'high'
-          : event.activity.confidence > LOW_CONFIDENCE_THRESHOLD
+          : event.activity.confidence > MEDIUM_CONFIDENCE
           ? 'medium'
           : 'low'
     },
