@@ -428,7 +428,7 @@ const isMovingStillActivity = location => {
   return (
     (location.activity.type === STILL_ACTIVITY && location.is_moving) ||
     (location.activity.type === STILL_ACTIVITY &&
-      location?.coords?.speed > 0 &&
+      location?.coords?.speed > 0.1 &&
       location?.coords?.speed_accuracy > 0)
   )
 }
