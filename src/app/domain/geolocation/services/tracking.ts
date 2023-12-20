@@ -10,6 +10,9 @@ import {
   stopTrackingAndClearData,
   getShouldStartTracking
 } from '/app/domain/geolocation/tracking'
+import { isGeolocationQuotaExceeded } from '/app/domain/geolocation/helpers/quota'
+
+import CozyClient from 'cozy-client/types/CozyClient'
 
 export { stopTrackingAndClearData, getShouldStartTracking }
 
@@ -43,6 +46,7 @@ export const forceUploadGeolocationTrackingData = async (): Promise<void> => {
 
 interface GeolocationTrackingStatus {
   enabled: boolean
+  quotaExceeded: boolean
 }
 
 export const isGeolocationTrackingEnabled = async (): Promise<boolean> => {
@@ -51,11 +55,15 @@ export const isGeolocationTrackingEnabled = async (): Promise<boolean> => {
   return status.enabled
 }
 
-export const getGeolocationTrackingStatus =
-  async (): Promise<GeolocationTrackingStatus> => {
-    const status = await BackgroundGeolocation.getState()
-
-    return {
-      enabled: status.enabled
-    }
+export const getGeolocationTrackingStatus = async (
+  client: CozyClient | undefined
+): Promise<GeolocationTrackingStatus> => {
+  if (!client) {
+    throw new Error('You must be logged in to use geolocation tracking feature')
   }
+
+  return {
+    enabled: await isGeolocationTrackingEnabled(),
+    quotaExceeded: await isGeolocationQuotaExceeded(client)
+  }
+}
