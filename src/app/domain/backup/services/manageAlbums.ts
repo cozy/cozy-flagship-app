@@ -28,8 +28,9 @@ export const areAlbumsEnabled = (): boolean => {
 }
 
 export const getAlbums = async (): Promise<Album[]> => {
-  const shouldIncludeSharedAlbums =
-    flag('flagship.backup.includeSharedAlbums') || false
+  const shouldIncludeSharedAlbums = !!flag(
+    'flagship.backup.includeSharedAlbums'
+  )
 
   const cameraRollAlbums = await CameraRoll.getAlbums()
   const albums = cameraRollAlbums

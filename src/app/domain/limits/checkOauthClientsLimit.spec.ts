@@ -6,7 +6,7 @@ import { checkOauthClientsLimit } from '/app/domain/limits/checkOauthClientsLimi
 jest.mock('cozy-client')
 jest.mock('cozy-flags')
 
-const mockFlag = flag as jest.Mock
+const mockFlag = flag as jest.MockedFunction<typeof flag>
 
 describe('checkOauthClientsLimit', () => {
   let client: CozyClient

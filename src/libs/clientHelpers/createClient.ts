@@ -57,7 +57,6 @@ export const finalizeClientCreation = async (
 }
 
 const registerPlugins = async (client: CozyClient): Promise<void> => {
-  // @ts-expect-error Plugins are not typed yet
   await client.registerPlugin(flag.plugin, null)
 }
 

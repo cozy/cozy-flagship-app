@@ -32,8 +32,9 @@ type CameraRollCursor = string | undefined
 const getPhotoIdentifiersPage = async (
   after: CameraRollCursor
 ): Promise<PhotoIdentifiersPage> => {
-  const shouldIncludeSharedAlbums =
-    flag('flagship.backup.includeSharedAlbums') || false
+  const shouldIncludeSharedAlbums = !!flag(
+    'flagship.backup.includeSharedAlbums'
+  )
 
   const photoIdentifiersPage = await CameraRoll.getPhotos({
     first: MEDIAS_BY_PAGE,
