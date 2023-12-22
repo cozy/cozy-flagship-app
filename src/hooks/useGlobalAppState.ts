@@ -20,7 +20,7 @@ const log = Minilog('useGlobalAppState')
 let appState: AppStateStatus = AppState.currentState
 
 const handleSleep = (): void => {
-  showSplashScreen()
+  showSplashScreen('LOCK_SCREEN')
     .then(async () => {
       setIsSecurityFlowPassed(false)
       return await storeData(StorageKeys.LastActivity, Date.now().toString())
