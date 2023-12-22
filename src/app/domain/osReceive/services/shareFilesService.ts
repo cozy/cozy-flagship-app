@@ -4,6 +4,7 @@ import Share from 'react-native-share'
 import type CozyClient from 'cozy-client'
 
 import { FileMetadata } from '/app/domain/osReceive/models/Files'
+import { OsReceiveLogger } from '/app/domain/osReceive'
 
 const downloadFilesInParallel = async (
   fileInfos: FileMetadata[],
@@ -53,7 +54,8 @@ const fetchFileMetadata = async (
 
 export const fetchFilesByIds = async (
   client: CozyClient,
-  fileIds: string[]
+  fileIds: string[],
+  callback?: () => void
 ): Promise<void> => {
   try {
     const fileInfos = await Promise.all(
@@ -71,7 +73,10 @@ export const fetchFilesByIds = async (
     await Share.open({
       urls: fileURIs
     })
+
+    callback?.()
   } catch (error) {
+    OsReceiveLogger.error('fetchFilesByIds: error', error)
     throw new Error('Failed to fetch file metadata or download files')
   }
 }

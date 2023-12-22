@@ -241,6 +241,17 @@ export const sendMessageForFile = async (
   }
 }
 
+const shareFiles = (arg: string, dispatch: Dispatch<OsReceiveAction>): void => {
+  try {
+    const payload = JSON.parse(arg) as string[]
+    OsReceiveLogger.info(`shareFiles called with arg: ${arg}`)
+
+    dispatch({ type: OsReceiveActionType.SetFilesToShare, payload })
+  } catch (error) {
+    OsReceiveLogger.error('shareFiles: error', error)
+  }
+}
+
 export const OsReceiveApi = (
   client: CozyClient,
   state: OsReceiveState,
@@ -250,5 +261,6 @@ export const OsReceiveApi = (
   getFilesToHandle: (base64 = false) => getFilesToHandle(base64, state),
   uploadFiles: arg => uploadFiles(arg, state, client, dispatch),
   resetFilesToHandle: () => resetFilesToHandle(dispatch),
-  cancelUploadByCozyApp: () => cancelUploadByCozyApp(dispatch)
+  cancelUploadByCozyApp: () => cancelUploadByCozyApp(dispatch),
+  shareFiles: arg => shareFiles(arg, dispatch)
 })

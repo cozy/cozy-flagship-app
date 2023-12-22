@@ -71,6 +71,12 @@ export const osReceiveReducer = (
     case OsReceiveActionType.SetCandidateApps:
       nextState = { ...state, candidateApps: action.payload }
       break
+    case OsReceiveActionType.SetFilesToShare:
+      nextState = {
+        ...state,
+        filesToShare: action.payload
+      }
+      break
     default:
       break
   }
@@ -91,7 +97,8 @@ export const initialState: OsReceiveState = {
   filesToUpload: [],
   routeToUpload: {},
   errored: false,
-  candidateApps: undefined
+  candidateApps: undefined,
+  filesToShare: []
 }
 
 /**

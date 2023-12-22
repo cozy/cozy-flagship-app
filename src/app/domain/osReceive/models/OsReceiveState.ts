@@ -9,7 +9,8 @@ export enum OsReceiveActionType {
   SetRecoveryState = 'SET_RECOVERY_STATE',
   SetInitialState = 'SET_INITIAL_STATE',
   UpdateFileStatus = 'UPDATE_FILE_STATUS',
-  SetCandidateApps = 'SET_CANDIDATE_APPS'
+  SetCandidateApps = 'SET_CANDIDATE_APPS',
+  SetFilesToShare = 'SET_FILES_TO_SHARE'
 }
 
 export enum OsReceiveFileStatus {
@@ -19,6 +20,8 @@ export enum OsReceiveFileStatus {
   error,
   queued
 }
+
+type FileToShare = string
 
 export interface OsReceiveFile {
   name: string
@@ -34,6 +37,7 @@ export interface OsReceiveState {
   routeToUpload: { href?: string; slug?: string }
   errored: boolean
   candidateApps?: AcceptFromFlagshipManifest[]
+  filesToShare: FileToShare[]
 }
 
 export type OsReceiveAction =
@@ -53,6 +57,7 @@ export type OsReceiveAction =
       type: OsReceiveActionType.SetCandidateApps
       payload: AcceptFromFlagshipManifest[]
     }
+  | { type: OsReceiveActionType.SetFilesToShare; payload: string[] }
 
 export interface ServiceResponse<T> {
   result?: T
@@ -68,6 +73,7 @@ export interface OsReceiveApiMethods {
   uploadFiles: (arg: string) => boolean
   resetFilesToHandle: () => Promise<boolean>
   cancelUploadByCozyApp: () => boolean
+  shareFiles: (arg: string) => void
 }
 
 export interface UploadStatus {
