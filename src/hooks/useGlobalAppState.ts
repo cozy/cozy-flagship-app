@@ -6,11 +6,7 @@ import Minilog from 'cozy-minilog'
 
 import { StorageKeys, storeData } from '/libs/localStore/storage'
 import { showSplashScreen } from '/app/theme/SplashScreenService'
-import {
-  getIsSecurityFlowPassed,
-  handleSecurityFlowWakeUp,
-  setIsSecurityFlowPassed
-} from '/app/domain/authorization/services/SecurityService'
+import { handleSecurityFlowWakeUp } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
 import { synchronizeDevice } from '/app/domain/authentication/services/SynchronizeService'
 
@@ -22,7 +18,6 @@ let appState: AppStateStatus = AppState.currentState
 const handleSleep = (): void => {
   showSplashScreen('LOCK_SCREEN')
     .then(async () => {
-      setIsSecurityFlowPassed(false)
       return await storeData(StorageKeys.LastActivity, Date.now().toString())
     })
     .catch(reason => log.error('Failed when going to sleep', reason))
@@ -92,20 +87,4 @@ export const useGlobalAppState = (): void => {
       appState = AppState.currentState
     }
   }, [client])
-
-  // On app start
-  useEffect(() => {
-    const appStart = async (): Promise<void> => {
-      if (await getIsSecurityFlowPassed()) {
-        log.info('useGlobalAppState: app start, security flow passed')
-      } else {
-        log.info('useGlobalAppState: app start, security flow not passed')
-      }
-    }
-
-    if (!hasExecuted.current) {
-      log.info('useGlobalAppState: app start')
-      void appStart()
-    }
-  }, [])
 }

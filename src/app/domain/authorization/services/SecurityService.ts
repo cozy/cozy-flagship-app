@@ -51,34 +51,6 @@ const fns = getDevModeFunctions(
   }
 )
 
-let isSecurityFlowPassed = false
-
-export const setIsSecurityFlowPassed = (value: boolean): void => {
-  isSecurityFlowPassed = value
-}
-
-export const getIsSecurityFlowPassed = async (): Promise<boolean> => {
-  if (isSecurityFlowPassed) return isSecurityFlowPassed
-
-  try {
-    const [isSecured, isAutoLock] = await Promise.all([
-      fns.isDeviceSecured(),
-      fns.isAutoLockEnabled()
-    ])
-
-    setIsSecurityFlowPassed(isSecured && !isAutoLock)
-
-    return isSecurityFlowPassed
-  } catch (error) {
-    // This would be a huge error blocking the user from the application
-    // In this case let's assume the security flow is passed to avoid locking the user out
-    // In theory, this should never happen, but async functions can be unpredictable
-    devlog('🔏', 'Error getting security flow status', error)
-    setIsSecurityFlowPassed(true)
-    return isSecurityFlowPassed
-  }
-}
-
 export const determineSecurityFlow = async (
   client: CozyClient
 ): Promise<void> => {
