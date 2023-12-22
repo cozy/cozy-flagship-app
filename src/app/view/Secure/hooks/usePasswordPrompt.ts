@@ -4,6 +4,10 @@ import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
 import { devlog } from '/core/tools/env'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
+import {
+  lockScreens,
+  showSecurityScreen
+} from '/app/view/Lock/useLockScreenWrapper'
 
 export const usePasswordPrompt = (onSuccess: () => void): (() => void) => {
   // The HomeView should have called hideSplashScreen() already,
@@ -24,12 +28,12 @@ export const usePasswordPrompt = (onSuccess: () => void): (() => void) => {
 
       // User acknowledged the prompt, so we can navigate to the password setting screen
       // We pass the onSuccess callback to the password setting screen so that it can be called when the password is set
-      navigate(routes.setPassword, { onSuccess })
+      showSecurityScreen(lockScreens.SET_PASSWORD)
     } catch (error) {
       devlog(error)
 
       // If there is any kind of error, we fallback to the home screen as a last resort to avoid the user being stuck
-      navigate(routes.setPassword, { onSuccess: () => navigate(routes.home) })
+      showSecurityScreen(lockScreens.SET_PASSWORD)
     }
   }
 

@@ -19,7 +19,11 @@ import {
   toggleSetting
 } from '/app/domain/settings/services/SettingsService'
 import { getDevModeFunctions } from '/app/domain/authorization/utils/devMode'
-import { routes } from '/constants/routes'
+import {
+  hideSecurityScreen,
+  lockScreens,
+  showSecurityScreen
+} from '/app/view/Lock/useLockScreenWrapper'
 import { devlog, shouldDisableAutolock } from '/core/tools/env'
 import { getCurrentRoute, navigate, navigationRef } from '/libs/RootNavigation'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
@@ -105,14 +109,12 @@ export const determineSecurityFlow = async (
     devlog('🔏', 'Application has autolock activated')
     devlog('🔏', 'Device should be secured or autolock would not work')
 
-    navigate(routes.lock, { onSuccess: callbackNav })
+    showSecurityScreen(lockScreens.LOCK_SCREEN)
     void hideSplashScreen()
   } else if (await fns.isDeviceSecured()) {
     devlog('🔏', 'Application does not have autolock activated')
     devlog('🔏', 'Device is secured')
     devlog('🔏', 'No security action taken')
-
-    if (navigationObject) await navigateToApp(navigationObject)
 
     // This might be redundant but some cases require a hideSplashScreen() failsafe
     // @TODO: should be refactored into a proper app-wide splashscreen handling service
@@ -141,11 +143,11 @@ export const determineSecurityFlow = async (
     if (params.createPassword) {
       void hideSplashScreen() // This might be redundant but some cases require a hideSplashScreen() failsafe
 
-      return navigate(routes.promptPassword, { onSuccess: callbackNav })
+      return showSecurityScreen(lockScreens.PASSWORD_PROMPT)
     } else {
       void hideSplashScreen() // This might be redundant but some cases require a hideSplashScreen() failsafe
 
-      return navigate(routes.promptPin, { onSuccess: callbackNav })
+      return showSecurityScreen(lockScreens.PIN_PROMPT)
     }
   }
 }
@@ -185,14 +187,10 @@ export const savePinCode = async (
 ): Promise<void> => {
   try {
     await toggleSetting('PINLock', { pinCode })
-
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!onSuccess) throw new Error('No success callback provided')
-    onSuccess()
   } catch (error) {
     devlog('🔏', 'Error saving pin code, fallback navigation to home', error)
-    navigate(routes.home)
   }
+  hideSecurityScreen(lockScreens.SET_PIN)
 }
 
 export const doPinCodeAutoLock = async (): Promise<void> => {
@@ -214,7 +212,7 @@ async function safeSetKeysAsync(
 
     await savePassword(client, keys)
 
-    navigate(routes.promptPin, { onSuccess })
+    showSecurityScreen(lockScreens.PIN_PROMPT)
   } catch (error) {
     devlog('🔏', 'Error saving password')
     devlog(getErrorMessage(error))

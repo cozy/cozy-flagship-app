@@ -5,6 +5,11 @@ import { doPinCodeAutoLock } from '/app/domain/authorization/services/SecuritySe
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
+import {
+  hideSecurityScreen,
+  lockScreens,
+  showSecurityScreen
+} from '/app/view/Lock/useLockScreenWrapper'
 
 export const usePinPrompt = (
   onSuccess?: () => void
@@ -20,13 +25,13 @@ export const usePinPrompt = (
     try {
       void doPinCodeAutoLock()
 
-      navigate(routes.setPin, { onSuccess })
+      showSecurityScreen(lockScreens.SET_PIN)
     } catch (error) {
       devlog(error)
 
       // Navigate to the setPin route as a fallback
       // with a dummy onSuccess callback returning to the home route
-      navigate(routes.setPin, { onSuccess: () => navigate(routes.home) })
+      showSecurityScreen(lockScreens.SET_PIN)
     }
   }
 
@@ -36,12 +41,12 @@ export const usePinPrompt = (
         throw new Error('No onSuccess callback given to PinPrompt')
 
       void doPinCodeAutoLock()
-      onSuccess()
+      hideSecurityScreen(lockScreens.PIN_PROMPT)
     } catch (error) {
       devlog(error)
 
-      // Navigate to the home route as a fallback
-      navigate(routes.home)
+    // Navigate to the home route as a fallback
+    hideSecurityScreen(lockScreens.PIN_PROMPT)
     }
   }
 
