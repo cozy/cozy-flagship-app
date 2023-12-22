@@ -4,7 +4,7 @@ import { AppState, AppStateStatus, NativeEventSubscription } from 'react-native'
 import CozyClient, { useClient } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
-import { StorageKeys, storeData } from '/libs/localStore/storage'
+import { StorageKeys, removeData, storeData } from '/libs/localStore/storage'
 import { showSplashScreen } from '/app/theme/SplashScreenService'
 import { handleSecurityFlowWakeUp } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
@@ -23,7 +23,14 @@ const handleSleep = (): void => {
     .catch(reason => log.error('Failed when going to sleep', reason))
 }
 
-const handleWakeUp = async (client: CozyClient): Promise<void> => {
+const handleWakeUp = async (
+  client: CozyClient,
+  isAppStart?: boolean
+): Promise<void> => {
+  if (isAppStart) {
+    await removeData(StorageKeys.LastActivity)
+  }
+
   await handleSecurityFlowWakeUp(client)
 }
 
@@ -57,12 +64,14 @@ const onStateChange = (
  */
 
 export const useGlobalAppState = (): void => {
+  const isFirstStart = useRef(true)
   const client = useClient()
 
   useEffect(() => {
     if (!client) return
+    void handleWakeUp(client, isFirstStart.current)
 
-    void handleWakeUp(client)
+    isFirstStart.current = false
   }, [client])
 
   useEffect(() => {
