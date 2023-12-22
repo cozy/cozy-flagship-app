@@ -1,4 +1,3 @@
-import { RouteProp } from '@react-navigation/native'
 import React, { useState } from 'react'
 import {
   Platform,
@@ -23,11 +22,7 @@ import { palette } from '/ui/palette'
 import { useI18n } from '/locales/i18n'
 import { CozyTheme } from '/ui/CozyTheme/CozyTheme'
 
-const SetPinViewSimple = ({
-  onSuccess
-}: {
-  onSuccess: () => void
-}): JSX.Element => {
+const SetPinViewSimple = (): JSX.Element => {
   const [step, setStep] = useState(1)
   const [firstInput, setFirstInput] = useState('')
   const [secondInput, setSecondInput] = useState('')
@@ -40,7 +35,7 @@ const SetPinViewSimple = ({
 
   const handleSecondInputSubmit = (): void => {
     if (secondInput === firstInput) {
-      void savePinCode(secondInput, onSuccess)
+      void savePinCode(secondInput)
     } else {
       setError(t('screens.SecureScreen.confirm_pin_error'))
     }
@@ -152,13 +147,7 @@ const SetPinViewSimple = ({
   )
 }
 
-type RootStackParamList = Record<string, { onSuccess: () => void }>
-
-interface SetPinProps {
-  route: RouteProp<RootStackParamList, 'pinView'>
-}
-
-export const SetPinView = (props: SetPinProps): JSX.Element => (
+export const SetPinView = (): JSX.Element => (
   <TouchableWithoutFeedback
     onPress={Keyboard.dismiss}
     style={{ backgroundColor: palette.Primary[600], height: '100%' }}
@@ -167,7 +156,7 @@ export const SetPinView = (props: SetPinProps): JSX.Element => (
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <CozyTheme variant="inverted">
-        <SetPinViewSimple {...props} onSuccess={props.route.params.onSuccess} />
+        <SetPinViewSimple />
       </CozyTheme>
     </KeyboardAvoidingView>
   </TouchableWithoutFeedback>

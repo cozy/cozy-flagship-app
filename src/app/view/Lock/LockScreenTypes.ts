@@ -1,12 +1,5 @@
-import { RouteProp } from '@react-navigation/native'
 import { TextInputProps, TouchableWithoutFeedbackProps } from 'react-native'
 import { BiometryType } from 'react-native-biometrics'
-
-type RootStackParamList = Record<string, undefined | { onSuccess: () => void }>
-
-export interface LockScreenProps {
-  route: RouteProp<RootStackParamList, 'lock'>
-}
 
 export interface LockViewProps {
   biometryEnabled: boolean

@@ -181,10 +181,7 @@ export const getSecFlowInitParams = async (
   }
 }
 
-export const savePinCode = async (
-  pinCode: string,
-  onSuccess: () => void
-): Promise<void> => {
+export const savePinCode = async (pinCode: string): Promise<void> => {
   try {
     await toggleSetting('PINLock', { pinCode })
   } catch (error) {
@@ -204,8 +201,7 @@ export const doPinCodeAutoLock = async (): Promise<void> => {
 
 async function safeSetKeysAsync(
   client: CozyClient,
-  keys: SetKeys,
-  onSuccess?: () => void
+  keys: SetKeys
 ): Promise<void> {
   try {
     devlog('🔏', 'Saving password', keys)
@@ -223,10 +219,7 @@ async function safeSetKeysAsync(
   }
 }
 
-export const getPasswordParams = (
-  client: CozyClient,
-  onSuccess?: () => void
-): PasswordParams => {
+export const getPasswordParams = (client: CozyClient): PasswordParams => {
   const { uri: instance, normalizedFqdn: fqdn } =
     getInstanceAndFqdnFromClient(client)
 
@@ -240,7 +233,7 @@ export const getPasswordParams = (
     setKeys: (keys: SetKeys): void => {
       // Errors to be handled in `safeSetKeysAsync()`
       const setKeys = safePromise(safeSetKeysAsync)
-      setKeys(client, keys, onSuccess)
+      setKeys(client, keys)
     }
   }
 }
