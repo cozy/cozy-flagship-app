@@ -12,10 +12,6 @@ import { OnboardingScreen } from '/screens/login/OnboardingScreen'
 import { WelcomeScreen } from '/screens/welcome/WelcomeScreen'
 import { routes } from '/constants/routes'
 import { OsReceiveScreen } from '/app/view/OsReceive/OsReceiveScreen'
-import { PasswordPrompt } from '/app/view/Secure/PasswordPrompt'
-import { PinPrompt } from '/app/view/Secure/PinPrompt'
-import { SetPasswordView } from '/app/view/Secure/SetPasswordView'
-import { SetPinView } from '/app/view/Secure/SetPinView'
 
 const Root = createStackNavigator()
 const Stack = createStackNavigator()
@@ -110,11 +106,6 @@ export const RootNavigator = ({ initialRoute, setClient }) => (
         animationEnabled: false
       }}
     />
-
-    <Root.Screen name={routes.promptPassword} component={PasswordPrompt} />
-    <Root.Screen name={routes.promptPin} component={PinPrompt} />
-    <Root.Screen name={routes.setPin} component={SetPinView} />
-    <Root.Screen name={routes.setPassword} component={SetPasswordView} />
   </Root.Navigator>
 )
 
