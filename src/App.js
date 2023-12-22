@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { decode, encode } from 'base-64'
 import React, { useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
@@ -44,6 +45,7 @@ import {
   useOsReceiveState
 } from '/app/view/OsReceive/state/OsReceiveState'
 import { useOsReceiveApi } from '/app/view/OsReceive/hooks/useOsReceiveApi'
+import { LockScreenWrapper } from '/app/view/Lock/LockScreenWrapper'
 import { useSecureBackgroundSplashScreen } from '/hooks/useSplashScreen'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 
@@ -144,7 +146,10 @@ const InnerNav = ({ client, setClient }) => {
         />
         <IconChangedModal />
         <LauncherContextProvider>
-          <App setClient={setClient} />
+          <SafeAreaProvider>
+            <App setClient={setClient} />
+            <LockScreenWrapper />
+          </SafeAreaProvider>
         </LauncherContextProvider>
       </View>
     </NativeIntentProvider>
