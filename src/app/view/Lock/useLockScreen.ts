@@ -5,7 +5,7 @@ import { BiometryType } from 'react-native-biometrics'
 
 import { useClient } from 'cozy-client'
 
-import { LockScreenProps, LockViewProps } from '/app/view/Lock/LockScreenTypes'
+import { LockViewProps } from '/app/view/Lock/LockScreenTypes'
 import { getData, StorageKeys } from '/libs/localStore/storage'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { getVaultInformation } from '/libs/keychain'
@@ -25,7 +25,7 @@ import {
   lockScreens
 } from '/app/view/Lock/useLockScreenWrapper'
 
-export const useLockScreenProps = (props: LockScreenProps): LockViewProps => {
+export const useLockScreenProps = (): LockViewProps => {
   const [biometryEnabled, setBiometryEnabled] = useState(false)
   const [biometryType, setBiometryType] = useState<BiometryType | null>(null)
   const [hasLogoutDialog, toggleLogoutDialog] = useState(false)

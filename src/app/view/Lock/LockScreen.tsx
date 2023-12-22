@@ -24,7 +24,7 @@ import { Grid } from '/ui/Grid'
 import { Icon } from '/ui/Icon'
 import { IconButton } from '/ui/IconButton'
 import { Link } from '/ui/Link'
-import { LockViewProps, LockScreenProps } from '/app/view/Lock/LockScreenTypes'
+import { LockViewProps } from '/app/view/Lock/LockScreenTypes'
 import { LogoutFlipped } from '/ui/Icons/LogoutFlipped'
 import { TextField } from '/ui/TextField'
 import { Tooltip } from '/ui/Tooltip'
@@ -210,7 +210,7 @@ export const LockScreen = (props: LockScreenProps): React.ReactNode => {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
           <CozyTheme variant="inverted">
-            <LockView {...useLockScreenProps(props)} />
+            <LockView {...useLockScreenProps()} />
           </CozyTheme>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

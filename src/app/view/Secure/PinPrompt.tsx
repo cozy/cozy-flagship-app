@@ -1,4 +1,3 @@
-import { RouteProp } from '@react-navigation/native'
 import React from 'react'
 
 import { PromptingPage } from '/components/templates/PromptingPage'
@@ -6,16 +5,8 @@ import { usePinPrompt } from '/app/view/Secure/hooks/usePinPrompt'
 import { useI18n } from '/locales/i18n'
 import { CozyTheme } from '/ui/CozyTheme/CozyTheme'
 
-type RootStackParamList = Record<string, undefined | { onSuccess: () => void }>
-
-interface PinPromptProps {
-  route: RouteProp<RootStackParamList, 'pinPrompt'>
-}
-
-export const PinPrompt = (props: PinPromptProps): JSX.Element => {
-  const { handleSetPinCode, handleIgnorePinCode } = usePinPrompt(
-    props.route.params?.onSuccess
-  )
+export const PinPrompt = (): JSX.Element => {
+  const { handleSetPinCode, handleIgnorePinCode } = usePinPrompt()
   const { t } = useI18n()
 
   return (
