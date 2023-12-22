@@ -57,8 +57,6 @@ const onStateChange = (
  */
 
 export const useGlobalAppState = (): void => {
-  // Ref to track if the logic has already been executed
-  const hasExecuted = useRef(false)
   const client = useClient()
 
   useEffect(() => {
@@ -72,7 +70,7 @@ export const useGlobalAppState = (): void => {
 
     // If there's no client, we don't need to listen to app state changes
     // because we can't lock the app anyway
-    if (!hasExecuted.current && client && !subscription) {
+    if (client && !subscription) {
       devlog(
         'useGlobalAppState: subscribing to AppState changes, synchronizing device'
       )
