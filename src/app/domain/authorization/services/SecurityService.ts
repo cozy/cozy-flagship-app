@@ -1,4 +1,3 @@
-import type { NavigationContainerRef, Route } from '@react-navigation/native'
 import { Platform } from 'react-native'
 
 import CozyClient from 'cozy-client'
@@ -25,13 +24,11 @@ import {
   showSecurityScreen
 } from '/app/view/Lock/useLockScreenWrapper'
 import { devlog, shouldDisableAutolock } from '/core/tools/env'
-import { getCurrentRoute, navigate, navigationRef } from '/libs/RootNavigation'
+import { navigationRef } from '/libs/RootNavigation'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { authConstants } from '/app/domain/authorization/constants'
 import { safePromise } from '/utils/safePromise'
-import { navigateToApp } from '/libs/functions/openApp'
 import { hideSplashScreen, splashScreens } from '/app/theme/SplashScreenService'
-import { SecurityNavigationService } from '/app/domain/authorization/services/SecurityNavigationService'
 import { getData, StorageKeys } from '/libs/localStore'
 
 // Can use mock functions in dev environment
@@ -83,26 +80,8 @@ export const getIsSecurityFlowPassed = async (): Promise<boolean> => {
 }
 
 export const determineSecurityFlow = async (
-  client: CozyClient,
-  navigationObject?: {
-    navigation: NavigationContainerRef<Record<string, unknown>>
-    href: string
-    slug: string
-  },
+  client: CozyClient
 ): Promise<void> => {
-  const callbackNav = async (): Promise<void> => {
-    try {
-      if (navigationObject) {
-        await navigateToApp(navigationObject)
-      } else navigate(routes.home)
-    } catch (error) {
-      devlog('🔏', 'Error navigating to app, defaulting to home', error)
-      navigate(routes.home)
-    } finally {
-      setIsSecurityFlowPassed(true)
-    }
-  }
-
   if (await fns.isAutoLockEnabled()) {
     devlog('🔏', 'Application has autolock activated')
     devlog('🔏', 'Device should be secured or autolock would not work')
