@@ -12,7 +12,9 @@
     "contactUs": "¿Un problema, una sugerencia? Contáctanos en",
     "unknown_error": "Ha ocurrido un error inesperado, por favor inténtalo de nuevo.",
     "reset": "Volver al inicio",
-    "platformNotSupported": "Plataforma no compatible con esta solicitud"
+    "platformNotSupported": "Plataforma no compatible con esta solicitud",
+    "shareFiles_one": "No pudimos compartir tu archivo, por favor intenta de nuevo.",
+    "shareFiles_other": "No pudimos compartir tus archivos, por favor intenta de nuevo."
   },
   "logout_dialog": {
     "cancel": "Cancelar",

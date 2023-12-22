@@ -16,7 +16,9 @@
     "unknown_error": "Une erreur inattendue s'est produite, veuillez ré-essayer.",
     "reset": "Revenir à l'accueil",
     "showDetails": "Voir les détails de l'erreur",
-    "platformNotSupported": "Plateforme non supportée pour cette demande"
+    "platformNotSupported": "Plateforme non supportée pour cette demande",
+    "shareFiles_one": "Nous n'avons pas pu partager votre fichier, veuillez réessayer.",
+    "shareFiles_other": "Nous n'avons pas pu partager vos fichiers, veuillez réessayer."
   },
   "logout_dialog": {
     "cancel": "Annuler",
