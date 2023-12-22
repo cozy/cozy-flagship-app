@@ -100,7 +100,6 @@ export const determineSecurityFlow = async (
       navigate(routes.home)
     } finally {
       setIsSecurityFlowPassed(true)
-      SecurityNavigationService.stopListening()
     }
   }
 
@@ -113,8 +112,6 @@ export const determineSecurityFlow = async (
     devlog('🔏', 'Application does not have autolock activated')
     devlog('🔏', 'Device is secured')
     devlog('🔏', 'No security action taken')
-
-    SecurityNavigationService.stopListening()
   } else {
     devlog('🔏', 'Application does not have autolock activated')
     devlog('🔏', 'Device is unsecured')
