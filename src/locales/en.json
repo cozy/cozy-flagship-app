@@ -139,6 +139,9 @@
         "mespapiers": "Administrative documents",
         "photo": "Photo",
         "drive": "Other file type"
+      },
+      "shareFiles": {
+        "downloadingFiles": "Getting your files…"
       }
     }
   },

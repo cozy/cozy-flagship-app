@@ -3869,6 +3869,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-camera-roll/camera-roll/-/camera-roll-7.2.0.tgz#e1de34175619048019f766858d3563608c2b3ef8"
   integrity sha512-7y1lW+b9lpXsqUDCi4Ow0XozVe8OLqN/Pfq6lJpAxbgZ0TEVpVKniQj2ZeLMWsA28eae7JMqGqqj4e9uVp8eOw==
 
+"@react-native-community/blur@4.3.2":
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/@react-native-community/blur/-/blur-4.3.2.tgz#185a2c7dd03ba168cc95069bc4742e9505fd6c6c"
+  integrity sha512-0ID+pyZKdC4RdgC7HePxUQ6JmsbNrgz03u+6SgqYpmBoK/rE+7JffqIw7IEsfoKitLEcRNLGekIBsfwCqiEkew==
+
 "@react-native-community/cli-debugger-ui@^6.0.0-rc.0":
   version "6.0.0-rc.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-6.0.0-rc.0.tgz#774378626e4b70f5e1e2e54910472dcbaffa1536"

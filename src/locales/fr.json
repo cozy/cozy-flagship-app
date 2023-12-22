@@ -141,6 +141,9 @@
         "mespapiers": "Document administratif",
         "photo": "Photo",
         "drive": "Autre type de fichier"
+      },
+      "shareFiles": {
+        "downloadingFiles": "Rassemblement de vos papiers…"
       }
     }
   },

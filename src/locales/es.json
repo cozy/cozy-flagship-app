@@ -125,6 +125,9 @@
         "mespapiers": "Documento administrativo",
         "photo": "Foto",
         "drive": "Otro tipo de archivo"
+      },
+      "shareFiles": {
+        "downloadingFiles": "Recogiendo tus papeles..."
       }
     }
   },
