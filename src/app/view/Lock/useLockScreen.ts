@@ -10,8 +10,6 @@ import { getData, StorageKeys } from '/libs/localStore/storage'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { getVaultInformation } from '/libs/keychain'
 import { openForgotPasswordLink } from '/libs/functions/openForgotPasswordLink'
-import { reset } from '/libs/RootNavigation'
-import { routes } from '/constants/routes'
 import {
   ensureLockScreenUi,
   getBiometryType,
@@ -22,6 +20,10 @@ import {
 } from '/app/domain/authorization/services/LockScreenService'
 import { useI18n } from '/locales/i18n'
 import { SecurityNavigationService } from '/app/domain/authorization/services/SecurityNavigationService'
+import {
+  hideSecurityScreen,
+  lockScreens
+} from '/app/view/Lock/useLockScreenWrapper'
 
 export const useLockScreenProps = (props: LockScreenProps): LockViewProps => {
   const [biometryEnabled, setBiometryEnabled] = useState(false)
@@ -48,10 +50,8 @@ export const useLockScreenProps = (props: LockScreenProps): LockViewProps => {
   })
 
   const onUnlock = useCallback((): void => {
-    if (!props.route.params?.onSuccess) return reset(routes.home)
-
-    props.route.params.onSuccess()
-  }, [props.route.params])
+    hideSecurityScreen(lockScreens.LOCK_SCREEN)
+  }, [])
 
   const tryBiometry = useCallback((): Promise<void> => {
     const handleBiometryParam = async (): Promise<void> => {
