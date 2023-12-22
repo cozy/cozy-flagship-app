@@ -226,18 +226,7 @@ const TIMEOUT_VALUE = 5 * 60 * 1000
  *
  * In any other case, we just check the inactivity timer and ask to lock the app if needed
  */
-export const _shouldLockApp = (
-  parsedRoute?: Route<string>,
-  timeSinceLastActivity?: number
-): boolean => {
-  try {
-    // Accessing a property of parsedRoute will throw an error if it's null or undefined
-    if (parsedRoute?.name === routes.lock) return false
-  } catch (error) {
-    // If an error is thrown (i.e., parsedRoute is null or undefined), we default to locking the app
-    return true
-  }
-
+export const _shouldLockApp = (timeSinceLastActivity?: number): boolean => {
   if (!timeSinceLastActivity || timeSinceLastActivity < 0) return true
 
   if (Platform.OS === 'ios') return true
@@ -245,55 +234,17 @@ export const _shouldLockApp = (
   return timeSinceLastActivity > TIMEOUT_VALUE
 }
 
-const tryLockingApp = async (
-  parsedRoute?: Route<string, { href: string; slug: string }>,
-  client?: CozyClient
-): Promise<void> => {
-  devlog('tryLockingApp with', { parsedRoute, client })
-  const { href, slug } = parsedRoute?.params ?? {}
-  const hasParsedRoute = parsedRoute && href && slug
-
+const tryLockingApp = async (client?: CozyClient): Promise<void> => {
+  devlog('tryLockingApp with', { client })
   return await determineSecurityFlow(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    client!,
-    // Let's assume the parsedRoute could be undefined for unknown reasons
-    // In that case we just don't pass the navigation object and the security flow will default to home
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    hasParsedRoute
-      ? {
-          navigation: navigationRef as NavigationContainerRef<
-            Record<string, unknown>
-          >,
-          href,
-          slug
-        }
-      : undefined
+    client!
   )
 }
 
 export const handleSecurityFlowWakeUp = async (
   client: CozyClient
 ): Promise<void> => {
-  const currentRoute = getCurrentRoute()
-  let parsedRoute: Route<string, { href: string; slug: string }>
-
-  try {
-    if (!currentRoute) throw new Error('No current route')
-    parsedRoute = JSON.parse(JSON.stringify(currentRoute)) as Route<
-      string,
-      { href: string; slug: string }
-    >
-  } catch (error) {
-    devlog(
-      'Could not parse the current route, defaulting to home screen:',
-      currentRoute
-    )
-    parsedRoute = { name: routes.default } as Route<
-      string,
-      { href: string; slug: string }
-    >
-  }
-
   return getData<string>(StorageKeys.LastActivity)
     .then((lastActivity): number => {
       const now = Date.now()
@@ -302,15 +253,12 @@ export const handleSecurityFlowWakeUp = async (
       return now - lastActivityDate.getTime()
     })
     .then(timeSinceLastActivity => {
-      if (_shouldLockApp(parsedRoute, timeSinceLastActivity))
-        return tryLockingApp(parsedRoute, client)
-      else {
-        devlog(
-          'handleWakeUp: no need to check the security status, hiding splash screen'
-        )
-        if (parsedRoute.name !== routes.lock) setIsSecurityFlowPassed(true)
-        return hideSplashScreen(splashScreens.LOCK_SCREEN)
+      if (_shouldLockApp(timeSinceLastActivity)) {
+        return tryLockingApp(client)
       }
+
+      devlog('handleWakeUp: no need to check the security status')
+      return hideSplashScreen(splashScreens.LOCK_SCREEN)
     })
     .catch(reason => devlog('Failed when waking up', reason))
 }

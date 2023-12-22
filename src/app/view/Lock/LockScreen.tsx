@@ -11,8 +11,6 @@ import { FullWindowOverlay } from 'react-native-screens'
 import { FlagshipUI } from 'cozy-intent'
 
 import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
-import { routes } from '/constants/routes'
-import { navigationRef } from '/libs/RootNavigation'
 import { Button } from '/ui/Button'
 import { ConditionalWrapper } from '/components/ConditionalWrapper'
 import { ConfirmDialog } from '/ui/CozyDialogs/ConfirmDialog'
@@ -192,12 +190,10 @@ const LockView = ({
   )
 }
 
-export const LockScreen = (props: LockScreenProps): React.ReactNode => {
-  const currentRouteName = navigationRef.current?.getCurrentRoute()?.name ?? ''
-
+export const LockScreen = (): JSX.Element => {
   return (
     <ConditionalWrapper
-      condition={Platform.OS === 'ios' && currentRouteName === routes.lock}
+      condition={Platform.OS === 'ios'}
       wrapper={(children): JSX.Element => (
         <FullWindowOverlay>{children}</FullWindowOverlay>
       )}
