@@ -30,7 +30,7 @@ import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { authConstants } from '/app/domain/authorization/constants'
 import { safePromise } from '/utils/safePromise'
 import { navigateToApp } from '/libs/functions/openApp'
-import { hideSplashScreen } from '/app/theme/SplashScreenService'
+import { hideSplashScreen, splashScreens } from '/app/theme/SplashScreenService'
 import { SecurityNavigationService } from '/app/domain/authorization/services/SecurityNavigationService'
 import { getData, StorageKeys } from '/libs/localStore'
 
@@ -89,7 +89,6 @@ export const determineSecurityFlow = async (
     href: string
     slug: string
   },
-  isCallerHandlingSplashscreen?: boolean
 ): Promise<void> => {
   const callbackNav = async (): Promise<void> => {
     try {
@@ -110,30 +109,12 @@ export const determineSecurityFlow = async (
     devlog('🔏', 'Device should be secured or autolock would not work')
 
     showSecurityScreen(lockScreens.LOCK_SCREEN)
-    void hideSplashScreen()
   } else if (await fns.isDeviceSecured()) {
     devlog('🔏', 'Application does not have autolock activated')
     devlog('🔏', 'Device is secured')
     devlog('🔏', 'No security action taken')
 
-    // This might be redundant but some cases require a hideSplashScreen() failsafe
-    // @TODO: should be refactored into a proper app-wide splashscreen handling service
-    if (isCallerHandlingSplashscreen) {
-      devlog(
-        '🔏',
-        'determineSecurityFlow received Splashscreen instruction from its caller, therefore will not hide it'
-      )
-    }
-
-    if (!isCallerHandlingSplashscreen) {
-      devlog(
-        '🔏',
-        "determineSecurityFlow didn't receive Splashscreen instruction from its caller, defaulting to hiding it"
-      )
-
-      SecurityNavigationService.stopListening()
-      void hideSplashScreen()
-    }
+    SecurityNavigationService.stopListening()
   } else {
     devlog('🔏', 'Application does not have autolock activated')
     devlog('🔏', 'Device is unsecured')
@@ -141,15 +122,13 @@ export const determineSecurityFlow = async (
     const params = await getSecFlowInitParams(client)
 
     if (params.createPassword) {
-      void hideSplashScreen() // This might be redundant but some cases require a hideSplashScreen() failsafe
-
       return showSecurityScreen(lockScreens.PASSWORD_PROMPT)
     } else {
-      void hideSplashScreen() // This might be redundant but some cases require a hideSplashScreen() failsafe
-
       return showSecurityScreen(lockScreens.PIN_PROMPT)
     }
   }
+
+  return hideSplashScreen(splashScreens.LOCK_SCREEN)
 }
 
 export const getSecFlowInitParams = async (
@@ -330,7 +309,7 @@ export const handleSecurityFlowWakeUp = async (
           'handleWakeUp: no need to check the security status, hiding splash screen'
         )
         if (parsedRoute.name !== routes.lock) setIsSecurityFlowPassed(true)
-        return hideSplashScreen()
+        return hideSplashScreen(splashScreens.LOCK_SCREEN)
       }
     })
     .catch(reason => devlog('Failed when waking up', reason))
