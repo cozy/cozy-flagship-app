@@ -22,6 +22,9 @@ import { routes } from '/constants/routes'
 import { AcceptFromFlagshipManifest } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import { backToHome } from '/libs/intents/localMethods'
 import { OsReceiveLogger } from '/app/domain/osReceive'
+import LoadingOverlay from '/ui/LoadingOverlay'
+import { fetchFilesByIds } from '/app/domain/osReceive/services/shareFilesService'
+import { safePromise } from '/utils/safePromise'
 
 export const OsReceiveProvider = ({
   children
@@ -120,10 +123,36 @@ export const OsReceiveProvider = ({
     }
   }, [state.filesToUpload])
 
+  // If the state gets populated with filesToShare, we fetch the files by ids and share them
+  // After that, we clear the state to avoid sharing the same files again if the user comes back to the flow
+  // We handle errors by clearing the state as well, it's paramount since the loading overlay will stay otherwise
+  useEffect(() => {
+    if (!client || state.filesToShare.length === 0) return
+
+    const fetchFilesByIdsAndShare = async (): Promise<void> => {
+      try {
+        await fetchFilesByIds(client, state.filesToShare, () => {
+          dispatch({ type: OsReceiveActionType.SetFilesToShare, payload: [] })
+        })
+      } catch (error) {
+        OsReceiveLogger.error(
+          'Global failure in files to share, clearing state',
+          error
+        )
+        dispatch({ type: OsReceiveActionType.SetFilesToShare, payload: [] })
+      }
+    }
+
+    safePromise(fetchFilesByIdsAndShare)()
+  }),
+    [client, state.filesToShare.length]
+
   return (
     <OsReceiveStateContext.Provider value={state}>
       <OsReceiveDispatchContext.Provider value={dispatch}>
         {children}
+
+        {state.filesToShare.length > 0 && <LoadingOverlay />}
       </OsReceiveDispatchContext.Provider>
     </OsReceiveStateContext.Provider>
   )
