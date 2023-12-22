@@ -25,6 +25,7 @@ import { OsReceiveLogger } from '/app/domain/osReceive'
 import LoadingOverlay from '/ui/LoadingOverlay'
 import { fetchFilesByIds } from '/app/domain/osReceive/services/shareFilesService'
 import { safePromise } from '/utils/safePromise'
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 export const OsReceiveProvider = ({
   children
@@ -135,11 +136,28 @@ export const OsReceiveProvider = ({
           dispatch({ type: OsReceiveActionType.SetFilesToShare, payload: [] })
         })
       } catch (error) {
-        OsReceiveLogger.error(
-          'Global failure in files to share, clearing state',
-          error
+        // Not really an error, the user just did not share the files
+        if (getErrorMessage(error) === 'User did not share') {
+          OsReceiveLogger.info('User did not share')
+
+          return dispatch({
+            type: OsReceiveActionType.SetFilesToShare,
+            payload: []
+          })
+        }
+
+        // Here we encountered a real error, so we clear the state and display an error message
+        return handleError(
+          t('errors.shareFiles', { count: state.filesToShare.length }),
+          () => {
+            OsReceiveLogger.error(
+              'Global failure in files to share, clearing state',
+              error
+            )
+
+            dispatch({ type: OsReceiveActionType.SetFilesToShare, payload: [] })
+          }
         )
-        dispatch({ type: OsReceiveActionType.SetFilesToShare, payload: [] })
       }
     }
 

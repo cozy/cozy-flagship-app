@@ -6,6 +6,8 @@ import type CozyClient from 'cozy-client'
 import { FileMetadata } from '/app/domain/osReceive/models/Files'
 import { OsReceiveLogger } from '/app/domain/osReceive'
 
+import { getErrorMessage } from 'cozy-intent'
+
 const downloadFilesInParallel = async (
   fileInfos: FileMetadata[],
   token: string
@@ -70,12 +72,17 @@ export const fetchFilesByIds = async (
 
     const fileURIs = await downloadFilesInParallel(fileInfos, authToken)
 
+    // We want to call the callback before opening the share dialog
+    // This is to handle the case where the Share library throws an error,
+    // which would cause the callback to never be called
+    callback?.()
+
     await Share.open({
       urls: fileURIs
     })
-
-    callback?.()
   } catch (error) {
+    if (getErrorMessage(error) === 'User did not share') throw error
+
     OsReceiveLogger.error('fetchFilesByIds: error', error)
     throw new Error('Failed to fetch file metadata or download files')
   }

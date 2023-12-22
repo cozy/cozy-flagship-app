@@ -18,7 +18,9 @@
     "platformNotSupported": "Platform not supported for this request",
     "serverError": "An error occurred while processing your request",
     "cacheCheckError": "An error occurred while processing your request",
-    "print": "Failed to print, please try again."
+    "print": "Failed to print, please try again.",
+    "shareFiles_one": "We couldn't share your file, please try again.",
+    "shareFiles_other": "We couldn't share your files, please try again."
   },
   "logout_dialog": {
     "cancel": "Cancel",
