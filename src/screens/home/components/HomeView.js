@@ -12,13 +12,13 @@ import { useNativeIntent } from 'cozy-intent'
 import Minilog from 'cozy-minilog'
 
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
+import { navigateToApp } from '/libs/functions/openApp'
 import {
   consumeRouteParameter,
   useInitialParam
 } from '/libs/functions/routeHelpers'
 import { useSession } from '/hooks/useSession'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
-import { determineSecurityFlow } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
 import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import { OsReceiveScreen } from '/app/view/OsReceive/OsReceiveScreen'
@@ -177,8 +177,6 @@ const HomeView = ({ route, navigation }) => {
     )
 
     async function handleSecurityFlowAndCozyAppFallback() {
-      let navigationObject = null
-
       if (uri) {
         const cozyAppFallbackURL = cozyAppFallbackURLInitialParam.consume()
 
@@ -191,12 +189,11 @@ const HomeView = ({ route, navigation }) => {
             cozyAppFallbackURL,
             subdomainType
           )
-
-          navigationObject = {
+          navigateToApp({
             navigation,
             href: cozyAppFallbackURL,
             slug
-          }
+          })
         } else {
           if (shouldWaitCozyApp === undefined) {
             setShouldWaitCozyApp(false)
@@ -213,12 +210,6 @@ const HomeView = ({ route, navigation }) => {
         )
 
         hasRenderedOnce.current = true
-
-        await determineSecurityFlow(
-          client,
-          hasFilesToUpload ? undefined : navigationObject, // If there are files to upload, we don't want to navigate to the cozy app
-          true
-        )
 
         // If there are files to upload, we don't want to wait for the cozy app to render at all
         // We want to hide the splash screen as soon as possible and display the HomeView with the files to upload screen
