@@ -23,7 +23,6 @@ import { devlog } from '/core/tools/env'
 import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import { OsReceiveScreen } from '/app/view/OsReceive/OsReceiveScreen'
 import { useFilesToUpload } from '/app/view/OsReceive/state/OsReceiveState'
-import { hideSplashScreen } from '/app/theme/SplashScreenService'
 
 const log = Minilog('🏠 HomeView')
 
@@ -69,7 +68,6 @@ const HomeView = ({ route, navigation }) => {
     route,
     navigation
   )
-  const hasRenderedOnce = useRef(false)
   const filesToUpload = useFilesToUpload()
 
   const { componentId } = useFlagshipUI('HomeView', ScreenIndexes.HOME_VIEW)
@@ -172,15 +170,14 @@ const HomeView = ({ route, navigation }) => {
   }, [uri, client, route, mainAppFallbackURLInitialParam, navigation, session])
 
   useEffect(() => {
-    devlog(
-      `HomeView: determineSecurityFlowHook, hasRenderedOnce.current: "${hasRenderedOnce.current}"`
-    )
+    devlog('HomeView: determine CozyApp Fallback')
 
-    async function handleSecurityFlowAndCozyAppFallback() {
+    async function handleCozyAppFallback() {
       if (uri) {
         const cozyAppFallbackURL = cozyAppFallbackURLInitialParam.consume()
+        const hasFilesToUpload = filesToUpload.length > 0
 
-        if (cozyAppFallbackURL) {
+        if (cozyAppFallbackURL && !hasFilesToUpload) {
           setShouldWaitCozyApp(true)
           const subdomainType = client.capabilities?.flat_subdomains
             ? 'flat'
@@ -200,27 +197,9 @@ const HomeView = ({ route, navigation }) => {
           }
         }
       }
-
-      // If client exists and this is the first render, determine the security flow.
-      if (uri && client && !hasRenderedOnce.current) {
-        const hasFilesToUpload = filesToUpload.length > 0
-
-        devlog(
-          `HomeView: setting hasRenderedOnce.current set to "true" and calling determineSecurityFlowHook()`
-        )
-
-        hasRenderedOnce.current = true
-
-        // If there are files to upload, we don't want to wait for the cozy app to render at all
-        // We want to hide the splash screen as soon as possible and display the HomeView with the files to upload screen
-        if (hasFilesToUpload) {
-          setShouldWaitCozyApp(false)
-          hideSplashScreen() // Is needeed since we told the SecurityService not to hide it
-        }
-      }
     }
 
-    void handleSecurityFlowAndCozyAppFallback()
+    void handleCozyAppFallback()
   }, [
     client,
     cozyAppFallbackURLInitialParam,
