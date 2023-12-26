@@ -3,7 +3,7 @@ import Share from 'react-native-share'
 
 import type CozyClient from 'cozy-client'
 
-import { FileMetadata } from '/app/domain/osReceive/models/Files'
+import { FileMetadata } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import { OsReceiveLogger } from '/app/domain/osReceive'
 
 import { getErrorMessage } from 'cozy-intent'

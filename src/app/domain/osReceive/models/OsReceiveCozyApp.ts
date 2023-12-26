@@ -61,3 +61,8 @@ export const fetchOsReceiveCozyApps = {
     as: 'io.cozy.apps/accept_from_flagship'
   }
 }
+
+export interface FileMetadata {
+  url: string
+  name: string
+}
