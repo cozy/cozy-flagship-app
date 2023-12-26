@@ -47,6 +47,7 @@ try {
 
 const getStories = () => {
   return {
+    "./src/ui/LoadingOverlay/LoadingOverlay.stories.tsx": require("../src/ui/LoadingOverlay/LoadingOverlay.stories.tsx"),
     "./src/ui/Typography/Typography.stories.tsx": require("../src/ui/Typography/Typography.stories.tsx"),
   };
 };

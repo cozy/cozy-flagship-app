@@ -1,16 +1,16 @@
 import { BlurView } from '@react-native-community/blur'
 import React from 'react'
-import { View, StyleProp, ViewStyle } from 'react-native'
+import { View, StyleProp, ViewStyle, ViewProps } from 'react-native'
 
 import { Typography } from '/ui/Typography'
 import ProgressBar from '/components/Bar'
-
-import { hPadding, styles } from '/ui/LoadingOverlay/LoadingOverlay.styles'
-
+import { CozyTheme } from '/ui/CozyTheme/CozyTheme'
 import { getDimensions } from '/libs/dimensions'
 import { useI18n } from '/locales/i18n'
 
-interface LoadingOverlayProps {
+import { hPadding, styles } from '/ui/LoadingOverlay/LoadingOverlay.styles'
+
+export interface LoadingOverlayProps extends ViewProps {
   style?: StyleProp<ViewStyle>
 }
 
@@ -22,25 +22,26 @@ const progressBarConfig = {
   height: 4
 }
 
-const LoadingOverlay = ({ style }: LoadingOverlayProps): JSX.Element => {
+export const LoadingOverlay = ({ style }: LoadingOverlayProps): JSX.Element => {
   const { t } = useI18n()
 
+  // Always want inverted here because the overlay is on top of a dark background
   return (
-    <View style={[styles.container, style]}>
-      <BlurView style={styles.absolute} blurType="light" blurAmount={10} />
+    <CozyTheme variant="inverted">
+      <View style={[styles.container, style]}>
+        <BlurView style={styles.absolute} blurType="dark" blurAmount={10} />
 
-      <View style={styles.containerContent}>
-        <Typography variant="body1" style={{ marginBottom: hPadding * 0.5 }}>
-          {t('services.osReceive.shareFiles.downloadingFiles')}
-        </Typography>
+        <View style={styles.containerContent}>
+          <Typography variant="body1" style={{ marginBottom: hPadding * 0.5 }}>
+            {t('services.osReceive.shareFiles.downloadingFiles')}
+          </Typography>
 
-        <ProgressBar
-          width={getDimensions().screenWidth - hPadding}
-          {...progressBarConfig}
-        />
+          <ProgressBar
+            width={getDimensions().screenWidth - hPadding}
+            {...progressBarConfig}
+          />
+        </View>
       </View>
-    </View>
+    </CozyTheme>
   )
 }
-
-export default LoadingOverlay
