@@ -132,6 +132,7 @@ const LockView = ({
                   secureTextEntry={!passwordVisibility}
                   value={input}
                   autoCapitalize="none"
+                  autoFocus={true}
                 />
               ) : null}
 
@@ -156,6 +157,7 @@ const LockView = ({
                   returnKeyType="go"
                   secureTextEntry={!passwordVisibility}
                   value={input}
+                  autoFocus={true}
                 />
               ) : null}
             </Tooltip>
