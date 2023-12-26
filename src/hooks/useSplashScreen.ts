@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react'
 import { AppState } from 'react-native'
 
-import { hideSplashScreen } from '/app/theme/SplashScreenService'
+import { hideSplashScreen, splashScreens } from '/app/theme/SplashScreenService'
 import { SplashScreenContext } from '/libs/contexts/SplashScreenContext'
 import { safePromise } from '/utils/safePromise'
 
@@ -17,11 +17,11 @@ export const useSecureBackgroundSplashScreen = (): void => {
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       if (nextAppState === 'active') {
-        safePromise(hideSplashScreen)('secure_background')
+        safePromise(hideSplashScreen)(splashScreens.SECURE_BACKGROUND)
       }
     })
 
-    safePromise(hideSplashScreen)('secure_background')
+    safePromise(hideSplashScreen)(splashScreens.SECURE_BACKGROUND)
 
     return () => {
       subscription.remove()
