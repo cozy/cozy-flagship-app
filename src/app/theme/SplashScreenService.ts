@@ -4,9 +4,11 @@ import { flagshipUIEventHandler, flagshipUIEvents } from '/app/view/FlagshipUI'
 import { devlog } from '/core/tools/env'
 
 export const splashScreens = {
-  LOCK_SCREEN: 'LOCK_SCREEN'
+  LOCK_SCREEN: 'LOCK_SCREEN',
+  SECURE_BACKGROUND: 'secure_background' // this mirrors native declaration
 } as const
-export type SplashScreenEnum = keyof typeof splashScreens
+type SplashScreenEnumKeys = keyof typeof splashScreens
+export type SplashScreenEnum = (typeof splashScreens)[SplashScreenEnumKeys]
 
 export class SplashScreenService {
   show = showSplashScreen
