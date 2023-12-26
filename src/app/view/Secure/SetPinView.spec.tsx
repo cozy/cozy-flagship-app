@@ -10,20 +10,12 @@ jest.mock('/app/domain/authorization/services/SecurityService', () => ({
 
 describe('SetPinView', () => {
   it('renders correctly', () => {
-    const { getByTestId } = render(
-      <SetPinView
-        route={{ key: '', name: 'pinView', params: { onSuccess: jest.fn() } }}
-      />
-    )
+    const { getByTestId } = render(<SetPinView />)
     expect(getByTestId('pin-input')).toBeTruthy()
   })
 
   it('advances to the next step when the Next button is pressed', () => {
-    const { getByTestId } = render(
-      <SetPinView
-        route={{ key: '', name: 'pinView', params: { onSuccess: jest.fn() } }}
-      />
-    )
+    const { getByTestId } = render(<SetPinView />)
 
     fireEvent.changeText(getByTestId('pin-input'), '1234')
     fireEvent.press(getByTestId('pin-next'))
