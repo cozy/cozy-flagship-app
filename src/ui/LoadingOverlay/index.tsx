@@ -6,11 +6,11 @@ import { Typography } from '/ui/Typography'
 import ProgressBar from '/components/Bar'
 import { CozyTheme } from '/ui/CozyTheme/CozyTheme'
 import { getDimensions } from '/libs/dimensions'
-import { useI18n } from '/locales/i18n'
 
 import { hPadding, styles } from '/ui/LoadingOverlay/LoadingOverlay.styles'
 
 export interface LoadingOverlayProps extends ViewProps {
+  loadingMessage: string
   style?: StyleProp<ViewStyle>
 }
 
@@ -22,26 +22,25 @@ const progressBarConfig = {
   height: 4
 }
 
-export const LoadingOverlay = ({ style }: LoadingOverlayProps): JSX.Element => {
-  const { t } = useI18n()
-
+export const LoadingOverlay = ({
+  loadingMessage,
+  style
+}: LoadingOverlayProps): JSX.Element => (
   // Always want inverted here because the overlay is on top of a dark background
-  return (
-    <CozyTheme variant="inverted">
-      <View style={[styles.container, style]}>
-        <BlurView style={styles.absolute} blurType="dark" blurAmount={10} />
+  <CozyTheme variant="inverted">
+    <View style={[styles.container, style]}>
+      <BlurView style={styles.absolute} blurType="dark" blurAmount={10} />
 
-        <View style={styles.containerContent}>
-          <Typography variant="body1" style={{ marginBottom: hPadding * 0.5 }}>
-            {t('services.osReceive.shareFiles.downloadingFiles')}
-          </Typography>
+      <View style={styles.containerContent}>
+        <Typography variant="body1" style={{ marginBottom: hPadding * 0.5 }}>
+          {loadingMessage}
+        </Typography>
 
-          <ProgressBar
-            width={getDimensions().screenWidth - hPadding}
-            {...progressBarConfig}
-          />
-        </View>
+        <ProgressBar
+          width={getDimensions().screenWidth - hPadding}
+          {...progressBarConfig}
+        />
       </View>
-    </CozyTheme>
-  )
-}
+    </View>
+  </CozyTheme>
+)
