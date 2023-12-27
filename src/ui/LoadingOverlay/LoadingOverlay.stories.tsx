@@ -11,4 +11,6 @@ const LoadingOverlayMeta = {
 
 export default LoadingOverlayMeta
 
-export const Default = (): JSX.Element => <LoadingOverlay />
+export const Default = (): JSX.Element => (
+  <LoadingOverlay loadingMessage="Loading Overlay" />
+)

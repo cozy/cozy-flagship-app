@@ -148,7 +148,10 @@ export const OsReceiveProvider = ({
 
         // Here we encountered a real error, so we clear the state and display an error message
         return handleError(
-          t('errors.shareFiles', { count: state.filesToShare.length }),
+          t('errors.shareFiles', {
+            postProcess: 'interval',
+            count: state.filesToShare.length
+          }),
           () => {
             OsReceiveLogger.error(
               'Global failure in files to share, clearing state',
@@ -170,7 +173,11 @@ export const OsReceiveProvider = ({
       <OsReceiveDispatchContext.Provider value={dispatch}>
         {children}
 
-        {state.filesToShare.length > 0 && <LoadingOverlay />}
+        {state.filesToShare.length > 0 && (
+          <LoadingOverlay
+            loadingMessage={t('services.osReceive.shareFiles.downloadingFiles')}
+          />
+        )}
       </OsReceiveDispatchContext.Provider>
     </OsReceiveStateContext.Provider>
   )

@@ -30,7 +30,7 @@ const mockCozyClient = {
   getStackClient: jest.fn(() => ({
     uri: 'http://mocked-uri',
     fetchJSON: mockFetchJSON,
-    token: { accessToken: 'mocked-access-token' }
+    getAuthorizationHeader: (): string => 'mocked-authorization-header'
   }))
 } as unknown as CozyClient
 

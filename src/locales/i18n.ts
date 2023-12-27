@@ -1,4 +1,5 @@
 import _i18n, { Resource } from 'i18next'
+import intervalPlural from 'i18next-intervalplural-postprocessor'
 import 'intl'
 import 'intl-pluralrules'
 import { initReactI18next, useTranslation } from 'react-i18next'
@@ -12,6 +13,13 @@ import es from './es.json'
 import fr from './fr.json'
 
 const i18nLogger = Minilog('i18n')
+
+intervalPlural.setOptions({
+  // these are the defaults
+  intervalSeparator: '||||',
+  intervalRegex: /\((\S*)\).*?\[((.|\n)*)\]/, // pre 3.0 /\((\S*)\).*{((.|\n)*)}/,
+  intervalSuffix: '_interval'
+})
 
 // Translation resources are loaded from the src/locales folder, and pulled in by the transifex-client
 const resources: Record<string, Resource> = {
@@ -43,6 +51,7 @@ const language = getSupportedLanguageCode(getLocales()[0].languageCode)
 // Initialize i18next with resources and settings
 _i18n
   .use(initReactI18next)
+  .use(intervalPlural)
   .init({
     resources: resources,
     lng: language,

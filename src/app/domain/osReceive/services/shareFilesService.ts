@@ -10,7 +10,7 @@ import { getErrorMessage } from 'cozy-intent'
 
 const downloadFilesInParallel = async (
   fileInfos: FileMetadata[],
-  token: string
+  headers: string
 ): Promise<string[]> => {
   const fileURIs = await Promise.all(
     fileInfos.map(async fileInfo => {
@@ -22,7 +22,7 @@ const downloadFilesInParallel = async (
         fromUrl: url,
         toFile: path,
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: headers
         }
       }
 
@@ -64,13 +64,13 @@ export const fetchFilesByIds = async (
       fileIds.map(fileId => fetchFileMetadata(client, fileId))
     )
 
-    const authToken = client.getStackClient().token.accessToken
+    const headers = client.getStackClient().getAuthorizationHeader()
 
-    if (!authToken) {
+    if (!headers) {
       throw new Error('uploadFileMultiple: token is undefined, aborting')
     }
 
-    const fileURIs = await downloadFilesInParallel(fileInfos, authToken)
+    const fileURIs = await downloadFilesInParallel(fileInfos, headers)
 
     // We want to call the callback before opening the share dialog
     // This is to handle the case where the Share library throws an error,
