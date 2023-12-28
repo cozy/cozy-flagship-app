@@ -3,6 +3,7 @@ import { differenceInDays } from 'date-fns'
 import { Q } from 'cozy-client'
 import CozyClient from 'cozy-client'
 import flag from 'cozy-flags'
+import Minilog from 'cozy-minilog'
 
 import { showLocalNotification } from '/libs/notifications/notifications'
 import { t } from '/locales/i18n'
@@ -10,6 +11,8 @@ import { getData, storeData, StorageKeys } from '/libs/localStore/storage'
 
 const MAX_DAYS_TO_CAPTURE_UNLIMITED = -1
 const ONE_DAY = 24 * 60 * 60 * 1000
+
+const log = Minilog('📍 Geolocation')
 
 export interface FirstTimeserie {
   id: string
@@ -60,6 +63,7 @@ export const isGeolocationQuotaExceeded = async (
       await storeData(StorageKeys.FirstTimeserie, firstTimeserie)
     }
   } catch (error) {
+    log.warn('Failed to get or fetch first timeserie', error)
     return false
   }
 
