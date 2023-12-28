@@ -2,6 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { BiometryType } from 'react-native-biometrics'
 
 import { logger } from '/libs/functions/logger'
+import type { FirstTimeserie } from '/app/domain/geolocation/helpers/quota'
+
 const log = logger('storage.ts')
 
 const { setItem, getItem, removeItem } = AsyncStorage
@@ -20,7 +22,8 @@ export enum StorageKeys {
   LastStopTransitionTsKey = 'CozyGPSMemory.LastStopTransitionTsKey',
   LastStartTransitionTsKey = 'CozyGPSMemory.LastStartTransitionTsKey',
   GeolocationTrackingConfig = 'CozyGPSMemory.TrackingConfig',
-  Activities = 'CozyGPSMemory.Activities'
+  Activities = 'CozyGPSMemory.Activities',
+  FirstTimeserie = 'CozyGPSMemory.FirstTimeserie'
 }
 
 export type IconsCache = Record<string, { version: string; xml: string }>
@@ -30,6 +33,7 @@ export interface StorageItems {
   biometryType?: BiometryType
   sessionCreatedFlag: string
   iconCache: IconsCache
+  firstTimeserie: FirstTimeserie
 }
 
 export const storeData = async (
