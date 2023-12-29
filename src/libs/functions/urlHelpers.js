@@ -32,7 +32,7 @@ export const checkIsRedirectOutside = ({ currentUrl, destinationUrl }) => {
   const rootBaseUrl = formatUrlToCompare(currentUrl)
 
   if (rootUrl !== rootBaseUrl) {
-    log.error(
+    log.debug(
       `ReloadInterceptorWebView blocks. Current URL was:${rootBaseUrl} and destination URL was: ${rootUrl}`
     )
     return true
