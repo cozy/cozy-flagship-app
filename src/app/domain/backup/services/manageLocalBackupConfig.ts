@@ -52,9 +52,17 @@ const INITIAL_BACKUP_CONFIG: LocalBackupConfig = {
 export const getLocalBackupConfig = async (
   client: CozyClient
 ): Promise<LocalBackupConfig> => {
+  const startTime = performance.now()
+
   const backupConfig = await getUserPersistedData<LocalBackupConfig>(
     client,
     UserPersistedStorageKeys.LocalBackupConfig
+  )
+
+  const endTime = performance.now()
+
+  console.log(
+    `🟢 getLocalBackupConfig took ${endTime - startTime} milliseconds.`
   )
 
   if (backupConfig === null) {
@@ -142,7 +150,7 @@ export const setMediaAsBackuped = async (
       uri: media.uri,
       creationDate: media.creationDate,
       modificationDate: media.modificationDate,
-      remoteId: documentCreated.id as string,
+      remoteId: documentCreated.id!,
       md5: documentCreated.attributes.md5sum
     }
 

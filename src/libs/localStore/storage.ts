@@ -37,7 +37,23 @@ export const storeData = async (
   value: StorageItems[keyof StorageItems]
 ): Promise<void> => {
   try {
-    await setItem(name, JSON.stringify(value))
+    const startTime = performance.now()
+
+    const res = JSON.stringify(value)
+
+    const endTime = performance.now()
+
+    console.log(`🔴 storeData parse took ${endTime - startTime} milliseconds.`)
+
+    const startTime2 = performance.now()
+
+    await setItem(name, res)
+
+    const endTime2 = performance.now()
+
+    console.log(
+      `🔴 storeData write took ${endTime2 - startTime2} milliseconds.`
+    )
   } catch (error) {
     log.error(`Failed to store key "${name}" to persistent storage`, error)
   }
@@ -45,9 +61,23 @@ export const storeData = async (
 
 export const getData = async <T>(name: StorageKeys): Promise<T | null> => {
   try {
+    const startTime = performance.now()
+
     const value = await getItem(name)
 
-    return value !== null ? (JSON.parse(value) as T) : null
+    const endTime = performance.now()
+
+    console.log(`🟢 getData read took ${endTime - startTime} milliseconds.`)
+
+    const startTime2 = performance.now()
+
+    const res = value !== null ? (JSON.parse(value) as T) : null
+
+    const endTime2 = performance.now()
+
+    console.log(`🟢 getData parse took ${endTime2 - startTime2} milliseconds.`)
+
+    return res
   } catch (error) {
     log.error(`Failed to get key "${name}" from persistent storage`, error)
     return null
