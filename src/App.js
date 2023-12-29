@@ -1,7 +1,15 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { decode, encode } from 'base-64'
 import React, { useEffect, useState } from 'react'
-import { StatusBar, StyleSheet, View } from 'react-native'
+import {
+  StatusBar,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  InteractionManager
+} from 'react-native'
+import { MMKV } from 'react-native-mmkv'
+import { initializeMMKVFlipper } from 'react-native-mmkv-flipper-plugin'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
@@ -54,6 +62,17 @@ import {
 } from './screens/home/hooks/useLauncherContext'
 
 import LauncherView from '/screens/konnectors/LauncherView'
+
+import {
+  hasMigratedFromAsyncStorage,
+  migrateFromAsyncStorage,
+  storage
+} from '/libs/localStore/storage'
+
+// add this line inside your App.tsx
+if (__DEV__) {
+  initializeMMKVFlipper({ default: storage })
+}
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -206,6 +225,30 @@ const WrappedApp = () => {
 
 const Wrapper = () => {
   const [hasCrypto, setHasCrypto] = useState(false)
+
+  const [hasMigrated, setHasMigrated] = useState(hasMigratedFromAsyncStorage)
+
+  useEffect(() => {
+    if (!hasMigratedFromAsyncStorage) {
+      InteractionManager.runAfterInteractions(async () => {
+        try {
+          await migrateFromAsyncStorage()
+          setHasMigrated(true)
+        } catch (e) {
+          // TODO: fall back to AsyncStorage? Wipe storage clean and use MMKV? Crash app?
+        }
+      })
+    }
+  }, [])
+
+  if (!hasMigrated) {
+    // show loading indicator while app is migrating storage...
+    return (
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator color="black" />
+      </View>
+    )
+  }
 
   return (
     <>

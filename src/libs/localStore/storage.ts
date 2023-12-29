@@ -3,7 +3,9 @@ import { BiometryType } from 'react-native-biometrics'
 
 import { logger } from '/libs/functions/logger'
 const log = logger('storage.ts')
+import { MMKV } from 'react-native-mmkv'
 
+export const storage = new MMKV()
 const { setItem, getItem, removeItem } = AsyncStorage
 export enum StorageKeys {
   AutoLockEnabled = '@cozy_AmiralApp_autoLockEnabled',
@@ -47,7 +49,11 @@ export const storeData = async (
 
     const startTime2 = performance.now()
 
-    await setItem(name, res)
+    if (name.includes('AmiralAppLocalBackupConfig')) {
+      storage.set(name, res)
+    } else {
+      await setItem(name, res)
+    }
 
     const endTime2 = performance.now()
 
@@ -63,7 +69,13 @@ export const getData = async <T>(name: StorageKeys): Promise<T | null> => {
   try {
     const startTime = performance.now()
 
-    const value = await getItem(name)
+    let value
+
+    if (name.includes('AmiralAppLocalBackupConfig')) {
+      value = storage.getString(name)
+    } else {
+      value = await getItem(name)
+    }
 
     const endTime = performance.now()
 
@@ -94,4 +106,42 @@ export const clearData = async (): Promise<void> => {
   } catch (error) {
     log.error(`Failed to clear data from persistent storage`, error)
   }
+}
+
+// TODO: Remove `hasMigratedFromAsyncStorage` after a while (when everyone has migrated)
+export const hasMigratedFromAsyncStorage = storage.getBoolean(
+  'hasMigratedFromAsyncStorage'
+)
+
+// TODO: Remove `hasMigratedFromAsyncStorage` after a while (when everyone has migrated)
+export async function migrateFromAsyncStorage(): Promise<void> {
+  console.log('Migrating from AsyncStorage -> MMKV...')
+  const start = global.performance.now()
+
+  const keys = await AsyncStorage.getAllKeys()
+
+  for (const key of keys) {
+    try {
+      const value = await AsyncStorage.getItem(key)
+
+      if (value != null) {
+        if (['true', 'false'].includes(value)) {
+          storage.set(key, value === 'true')
+        } else {
+          storage.set(key, value)
+        }
+      }
+    } catch (error) {
+      console.error(
+        `Failed to migrate key "${key}" from AsyncStorage to MMKV!`,
+        error
+      )
+      throw error
+    }
+  }
+
+  storage.set('hasMigratedFromAsyncStorage', true)
+
+  const end = global.performance.now()
+  console.log(`Migrated from AsyncStorage -> MMKV in ${end - start}ms!`)
 }

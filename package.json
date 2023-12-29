@@ -94,6 +94,8 @@
     "react-native-localize": "2.2.6",
     "react-native-mask-input": "1.2.1",
     "react-native-mlkit-ocr": "^0.3.0",
+    "react-native-mmkv": "2.5.1",
+    "react-native-mmkv-flipper-plugin": "^1.0.0",
     "react-native-permissions": "^3.9.3",
     "react-native-play-install-referrer": "^1.1.8",
     "react-native-print": "0.11.0",
