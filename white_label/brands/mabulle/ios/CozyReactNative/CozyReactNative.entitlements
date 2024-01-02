@@ -6,7 +6,7 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:links.mabullecozy.cloud</string>
+		<string>applinks:links.cozygrandlyon.cloud</string>
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>
