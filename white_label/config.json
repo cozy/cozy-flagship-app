@@ -12,7 +12,7 @@
     "bundleId": "io.cozy.flagship.mobile.mabulle",
     "provisionningProfile": "amiral-mabulle-ci-profile",
     "provisionningDevProfile": "amiral-mabulle-dev-profile",
-    "scheme": "mabulle",
+    "scheme": "cozygrandlyon",
     "userAgent": "io.cozy.mabulle.mobile"
   }
 }
