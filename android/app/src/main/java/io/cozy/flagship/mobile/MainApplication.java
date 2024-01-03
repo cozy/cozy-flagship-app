@@ -65,15 +65,15 @@ public class MainApplication extends Application implements ReactApplication {
     WebView.setWebContentsDebuggingEnabled(true);
     OkHttpClientProvider.setOkHttpClientFactory(new UserAgentClientFactory());
 
-    try {
-      Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
-      field.setAccessible(true);
-      field.set(null, 50 * 1024 * 1024); // 50MB
-    } catch (Exception e) {
-      if (BuildConfig.DEBUG) {
-        e.printStackTrace();
-      }
-    }
+    // try {
+    //   Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
+    //   field.setAccessible(true);
+    //   field.set(null, 50 * 1024 * 1024); // 50MB
+    // } catch (Exception e) {
+    //   if (BuildConfig.DEBUG) {
+    //     e.printStackTrace();
+    //   }
+    // }
   }
 
   /**
