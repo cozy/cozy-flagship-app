@@ -309,6 +309,16 @@ const removeUndefined = (
   backupedMedia: BackupedMedia | undefined
 ): backupedMedia is NonNullable<BackupedMedia> => !!backupedMedia
 
+export const filterMediasAlreadyBackuped = (
+  allMedias: Media[],
+  files: File[]
+): BackupedMedia[] => {
+  return files
+    .filter(file => !isInTrash(file.path))
+    .map(file => formatBackupedMedia(allMedias, file))
+    .filter(removeUndefined)
+}
+
 export const fetchBackupedMedias = async (
   client: CozyClient
 ): Promise<BackupedMedia[]> => {
@@ -328,10 +338,7 @@ export const fetchBackupedMedias = async (
     data = (await client.queryAll(filesQuery)) as FilesQueryAllResult
   }
 
-  const backupedMedias = data
-    .filter(file => !isInTrash(file.path))
-    .map(file => formatBackupedMedia(allMedias, file))
-    .filter(removeUndefined)
+  const backupedMedias = filterMediasAlreadyBackuped(allMedias, data)
 
   return backupedMedias
 }
