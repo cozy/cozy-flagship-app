@@ -287,35 +287,57 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async _start({ initKonnectorError } = {}) {
+    console.error('****_start')
     if (flag('clisk.html-on-error')) {
       Minilog.pipe(Minilog.backends.array)
     }
     activateKeepAwake('clisk')
+    console.error('*** activateKeepAwake')
     const { account: prevAccount, konnector } = this.getStartContext()
     try {
       if (initKonnectorError) {
         log.info('Got initKonnectorError ' + initKonnectorError.message)
         throw initKonnectorError
       }
-      await this.pilot.call('setContentScriptType', 'pilot')
-      await this.worker.call('setContentScriptType', 'worker')
-      const shouldLogout = await this.cleanCredentialsAccounts(konnector.slug)
-      if (shouldLogout) {
-        log(
-          'info',
-          `Detected removed account: first ensure webview is not authenticated`
-        )
-        const cliskVersion = await this.pilot.call('getCliskVersion')
-        if (semverCompare(cliskVersion, MIN_CLISK_SUPPORTED_VERSION) === -1) {
-          log(
-            'warn',
-            `The cozy-clisk version of this konnector is too low: ${cliskVersion}. ${MIN_CLISK_SUPPORTED_VERSION} version should be used to be able to call ensureNotAuthenticated`
-          )
-        } else {
-          await this.pilot.call('ensureNotAuthenticated')
-        }
+      try {
+        await this.pilot.call('setContentScriptType', 'pilot')
+      } catch (error) {
+        console.error('Error on setContentScriptType pilot', error)
       }
-      await this.pilot.call('ensureAuthenticated', { account: prevAccount })
+      try {
+        await this.worker.call('setContentScriptType', 'worker')
+      } catch (error) {
+        console.error('Error on setContentScript worker', error)
+      }
+      try {
+        const shouldLogout = await this.cleanCredentialsAccounts(konnector.slug)
+        if (shouldLogout) {
+          log(
+            'info',
+            `Detected removed account: first ensure webview is not authenticated`
+          )
+          const cliskVersion = await this.pilot.call('getCliskVersion')
+          if (semverCompare(cliskVersion, MIN_CLISK_SUPPORTED_VERSION) === -1) {
+            log(
+              'warn',
+              `The cozy-clisk version of this konnector is too low: ${cliskVersion}. ${MIN_CLISK_SUPPORTED_VERSION} version should be used to be able to call ensureNotAuthenticated`
+            )
+          } else {
+            try {
+              await this.pilot.call('ensureNotAuthenticated')
+            } catch (error) {
+              console.error('error ensureNotAuthenticated', error)
+            }
+          }
+        }
+      } catch (error) {
+        console.error('error cleanCredentialsAccounts', error)
+      }
+      try {
+        await this.pilot.call('ensureAuthenticated', { account: prevAccount })
+      } catch (error) {
+        console.error('error during ensureAuthenticated', error)
+      }
 
       const userDataResult = await this.pilot.call('getUserDataFromWebsite')
       if (!userDataResult?.sourceAccountIdentifier) {

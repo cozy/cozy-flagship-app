@@ -357,12 +357,17 @@ export async function removeCookie(accountId, cookieName) {
  * @returns {Object}
  */
 async function getDecodedGenericPasswords() {
-  const currentGenerics = await Keychain.getGenericPassword()
-  if (!currentGenerics) {
-    return {}
+  try {
+    const currentGenerics = await Keychain.getGenericPassword()
+    if (!currentGenerics) {
+      return {}
+    }
+    console.error('****currentGenerics', currentGenerics)
+    const password = currentGenerics.password
+      ? JSON.parse(currentGenerics.password)
+      : {}
+    return password
+  } catch (error) {
+    console.error('error getDecodedGenericPasswords', error)
   }
-  const password = currentGenerics.password
-    ? JSON.parse(currentGenerics.password)
-    : {}
-  return password
 }

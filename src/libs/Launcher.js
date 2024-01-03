@@ -188,12 +188,17 @@ export default class Launcher {
       (/** @type {{ _id: String; }} */ a) => a._id
     )
     let didRemoveAccountCredential = false
-    for (const accountId of accountIds) {
-      if (!existingAccountIds.includes(accountId)) {
-        await removeCredential(fqdn, { _id: accountId })
-        didRemoveAccountCredential = true
+    try {
+      for (const accountId of accountIds) {
+        if (!existingAccountIds.includes(accountId)) {
+          await removeCredential(fqdn, { _id: accountId })
+          didRemoveAccountCredential = true
+        }
       }
+    } catch (error) {
+      console.error('error cleanCreditials', error)
     }
+
     return didRemoveAccountCredential
   }
 
@@ -438,7 +443,8 @@ export default class Launcher {
           'size',
           'md5sum',
           'mime',
-          'trashed'
+          'trashed',
+          '_rev'
         ])
     )
     // @ts-ignore
