@@ -285,7 +285,7 @@ export const isFileCorrespondingToMedia = (
   }
 }
 
-const formatBackupedMedia = (
+const findFileCorrespondingMedia = (
   allMedias: Media[],
   file: File
 ): BackupedMedia | undefined => {
@@ -315,7 +315,7 @@ export const filterMediasAlreadyBackuped = (
 ): BackupedMedia[] => {
   return files
     .filter(file => !isInTrash(file.path))
-    .map(file => formatBackupedMedia(allMedias, file))
+    .map(file => findFileCorrespondingMedia(allMedias, file))
     .filter(removeUndefined)
 }
 
