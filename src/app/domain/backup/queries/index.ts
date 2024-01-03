@@ -55,8 +55,8 @@ export interface File {
   id: string
   name: string
   path: string
-  created_at: number
-  updated_at: number
+  created_at: string
+  updated_at: string
   md5sum: string
   metadata?: {
     idFromLibrary?: string
