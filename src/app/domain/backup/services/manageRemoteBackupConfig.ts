@@ -265,8 +265,6 @@ export const isFileCorrespondingToMedia = (
 
   if (flag('flagship.backup.dedup')) {
     const creationDate = new Date(file.created_at)
-    creationDate.setMilliseconds(0)
-
     const mediaCreationDate = new Date(media.creationDate)
 
     return (
