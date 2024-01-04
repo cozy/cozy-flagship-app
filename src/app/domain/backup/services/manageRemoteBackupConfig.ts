@@ -248,6 +248,10 @@ export const isFileCorrespondingToMedia = (
   file: File,
   media: Media
 ): boolean => {
+  if (file.name !== media.name) {
+    return false
+  }
+
   const creationDateFromLibrary = file.metadata?.creationDateFromLibrary
 
   /* File come from the new backup */
@@ -256,9 +260,7 @@ export const isFileCorrespondingToMedia = (
     const creationDate = new Date(creationDateFromLibrary)
     creationDate.setMilliseconds(0)
 
-    return (
-      file.name === media.name && creationDate.getTime() === media.creationDate
-    )
+    return creationDate.getTime() === media.creationDate
   }
 
   if (flag('flagship.backup.dedup')) {
@@ -268,7 +270,6 @@ export const isFileCorrespondingToMedia = (
     const mediaCreationDate = new Date(media.creationDate)
 
     return (
-      file.name === media.name &&
       creationDate.getFullYear() === mediaCreationDate.getFullYear() &&
       creationDate.getMonth() === mediaCreationDate.getMonth() &&
       creationDate.getDate() === mediaCreationDate.getDate() &&
@@ -279,9 +280,7 @@ export const isFileCorrespondingToMedia = (
     const creationDate = new Date(file.created_at)
     creationDate.setMilliseconds(0)
 
-    return (
-      file.name === media.name && creationDate.getTime() === media.creationDate
-    )
+    return creationDate.getTime() === media.creationDate
   }
 }
 
