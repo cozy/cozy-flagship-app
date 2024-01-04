@@ -45,7 +45,7 @@ const getFirstTimeserie = async (
     } else {
       const { data } = (await client.fetchQueryAndGetFromState({
         definition: Q('io.cozy.timeseries.geojson')
-          .where({ _id: { $gt: null } })
+          .where({ startDate: { $gt: null } })
           .select(['_id', 'startDate'])
           .indexFields(['startDate'])
           .sortBy([{ startDate: 'asc' }])
