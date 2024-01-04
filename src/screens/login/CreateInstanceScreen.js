@@ -27,7 +27,7 @@ const colors = getColors()
 export const CreateInstanceScreen = ({ route, navigation }) => {
   const [clouderyUrl, setClouderyUrl] = useState()
   const [clouderyTheme, setClouderyTheme] = useState({
-    backgroundColor: colors.primaryColor
+    backgroundColor: colors.onboardingBackgroundColor
   })
 
   const setClouderyThemeAndStatusBarColor = theme => {

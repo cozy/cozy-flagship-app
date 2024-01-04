@@ -134,7 +134,7 @@ const InnerNav = ({ client, setClient }) => {
         style={[
           styles.view,
           {
-            backgroundColor: colors.primaryColor
+            backgroundColor: colors.splashScreenBackgroundColor
           }
         ]}
       >
