@@ -13,6 +13,9 @@ import {
 import { isGeolocationQuotaExceeded } from '/app/domain/geolocation/helpers/quota'
 
 import CozyClient from 'cozy-client/types/CozyClient'
+import Minilog from 'cozy-minilog'
+
+const log = Minilog('📍 Geolocation')
 
 export { stopTrackingAndClearData, getShouldStartTracking }
 
@@ -65,5 +68,14 @@ export const getGeolocationTrackingStatus = async (
   return {
     enabled: await isGeolocationTrackingEnabled(),
     quotaExceeded: await isGeolocationQuotaExceeded(client)
+  }
+}
+
+export const checkShouldStartTracking = async (): Promise<void> => {
+  const shouldStartTracking = (await getShouldStartTracking()) as boolean
+
+  if (shouldStartTracking) {
+    log.debug('Restarting geolocation tracking')
+    await setGeolocationTracking(true)
   }
 }
