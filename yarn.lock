@@ -8154,10 +8154,10 @@ cozy-flags@^2.11.0:
   dependencies:
     microee "^0.0.6"
 
-cozy-intent@^2.18.0:
-  version "2.18.0"
-  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-2.18.0.tgz#9a1f0f3017f45d7b7c86710e01326f9b08ae69d8"
-  integrity sha512-iTt26OGLY9YwolJnu9Ylct8NCap6lE8rxF7ftK0RYEr/i2/hQHcoMZ2gEHXabyoPqLE6NynsJ9xYlKbdFUb+VA==
+cozy-intent@^2.19.0:
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-2.19.0.tgz#77c6a8c16f82a11c1c8e27467855fc96c0bcd205"
+  integrity sha512-ZEax+lY/zGmxQ3V0bKmpiccMXD+o/X3Y+PlnRwxfNngwHvD61zG/ENWvtb5BUzQPjT/yhJ74gzzBPLqU0Zp/lw==
   dependencies:
     post-me "0.4.5"
 
