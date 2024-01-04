@@ -6,7 +6,8 @@ import { EventEmitter } from 'events'
 
 import Minilog from 'cozy-minilog'
 
-import { HomeThemeType } from '/app/theme/models'
+import { HomeThemeType, HomeThemeParams } from '/app/theme/models'
+import { flagshipUIEventHandler, flagshipUIEvents } from '/app/view/FlagshipUI'
 import { StatusBarStyle, ThemeInput } from '/libs/intents/setFlagshipUI'
 
 const themeLog = Minilog('🎨 THEME_MANAGER')
@@ -32,10 +33,32 @@ export function getHomeTheme(): HomeThemeType {
  * the application to respond to theme changes without having to be directly aware of
  * where and how the theme is changed.
  */
-export function setHomeTheme(newTheme: HomeThemeType): void {
-  homeThemeRawValue = newTheme
-  themeLog.info(`setHomeTheme: ${newTheme}`)
-  eventEmitter.emit('themeChanged', newTheme)
+export function setHomeTheme(params: HomeThemeParams): void {
+  const { homeTheme, componentId } = params
+
+  if (homeTheme === 'inverted') {
+    flagshipUIEventHandler.emit(
+      flagshipUIEvents.SET_COMPONENT_COLORS,
+      componentId,
+      {
+        topTheme: 'light',
+        bottomTheme: 'light'
+      }
+    )
+  } else {
+    flagshipUIEventHandler.emit(
+      flagshipUIEvents.SET_COMPONENT_COLORS,
+      componentId,
+      {
+        topTheme: 'dark',
+        bottomTheme: 'dark'
+      }
+    )
+  }
+
+  homeThemeRawValue = homeTheme
+  themeLog.info(`setHomeTheme: ${homeTheme}`)
+  eventEmitter.emit('themeChanged', homeTheme)
 }
 
 /**
