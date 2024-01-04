@@ -31,27 +31,16 @@ const isMaxDaysToCaptureUnlimited = (maxDaysToCapture: number): boolean => {
   return maxDaysToCapture === MAX_DAYS_TO_CAPTURE_UNLIMITED
 }
 
-export const isGeolocationQuotaExceeded = async (
+const getFirstTimeserie = async (
   client: CozyClient
-): Promise<boolean> => {
-  const maxDaysToCapture = flag('coachco2.max-days-to-capture') as number | null
-
-  if (
-    isMaxDaysToCaptureInvalid(maxDaysToCapture) ||
-    isMaxDaysToCaptureUnlimited(maxDaysToCapture)
-  ) {
-    return false
-  }
-
-  let firstTimeserie
-
+): Promise<FirstTimeserie | undefined> => {
   try {
     const firstTimeserieCachedLocally = await getData<FirstTimeserie>(
       StorageKeys.FirstTimeserie
     )
 
     if (firstTimeserieCachedLocally) {
-      firstTimeserie = firstTimeserieCachedLocally
+      return firstTimeserieCachedLocally
     } else {
       const { data } = (await client.fetchQueryAndGetFromState({
         definition: Q('io.cozy.timeseries.geojson')
@@ -66,16 +55,35 @@ export const isGeolocationQuotaExceeded = async (
         }
       })) as unknown as { data: FirstTimeserie[] }
 
-      if (data.length === 0) return false
+      if (data.length === 0) return undefined
 
-      firstTimeserie = data[0]
+      const firstTimeserie = data[0]
 
       await storeData(StorageKeys.FirstTimeserie, firstTimeserie)
+
+      return firstTimeserie
     }
   } catch (error) {
     log.warn('Failed to get or fetch first timeserie', error)
+    return undefined
+  }
+}
+
+export const isGeolocationQuotaExceeded = async (
+  client: CozyClient
+): Promise<boolean> => {
+  const maxDaysToCapture = flag('coachco2.max-days-to-capture') as number | null
+
+  if (
+    isMaxDaysToCaptureInvalid(maxDaysToCapture) ||
+    isMaxDaysToCaptureUnlimited(maxDaysToCapture)
+  ) {
     return false
   }
+
+  const firstTimeserie = await getFirstTimeserie(client)
+
+  if (!firstTimeserie) return false
 
   const daysSinceFirstCapture = differenceInDays(
     new Date(),
