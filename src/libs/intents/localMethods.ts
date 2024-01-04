@@ -30,7 +30,7 @@ import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { showInAppBrowser, closeInAppBrowser } from '/libs/intents/InAppBrowser'
 import { isBiometryDenied } from '/app/domain/authentication/services/BiometryService'
 import { toggleSetting } from '/app/domain/settings/services/SettingsService'
-import { HomeThemeType } from '/app/theme/models'
+import { HomeThemeParams } from '/app/theme/models'
 import {
   prepareBackup,
   startBackup,
@@ -181,7 +181,7 @@ const getDeviceInfo = async (): Promise<DeviceInfo> => ({
 interface CustomMethods {
   fetchSessionCode: () => Promise<string | null>
   showInAppBrowser: (args: { url: string }) => Promise<BrowserResult>
-  setTheme: (theme: HomeThemeType) => Promise<boolean>
+  setTheme: (theme: HomeThemeParams) => Promise<boolean>
   prepareBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
   startBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
   stopBackup: () => Promise<BackupInfo>

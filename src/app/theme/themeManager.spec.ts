@@ -14,7 +14,11 @@ describe('themeManager', () => {
 
   // Test if the setHomeTheme function updates the theme
   test('should update the theme when setHomeTheme is called', () => {
-    setHomeTheme(HomeThemeType.Normal)
+    setHomeTheme({
+      homeTheme: HomeThemeType.Normal,
+      componentId: 'SOME_COMPONENT_ID'
+    })
+
     expect(getHomeTheme()).toBe(HomeThemeType.Normal)
   })
 
@@ -24,7 +28,10 @@ describe('themeManager', () => {
     addHomeThemeChangeListener(mockListener)
 
     // Change the theme
-    setHomeTheme(HomeThemeType.Inverted)
+    setHomeTheme({
+      homeTheme: HomeThemeType.Inverted,
+      componentId: 'SOME_COMPONENT_ID'
+    })
 
     // Expect the listener to have been called
     expect(mockListener).toHaveBeenCalledWith(HomeThemeType.Inverted)
@@ -39,7 +46,10 @@ describe('themeManager', () => {
     removeHomeThemeChangeListener(mockListener)
 
     // Change the theme
-    setHomeTheme(HomeThemeType.Normal)
+    setHomeTheme({
+      homeTheme: HomeThemeType.Normal,
+      componentId: 'SOME_COMPONENT_ID'
+    })
 
     // Expect the listener not to have been called
     expect(mockListener).not.toHaveBeenCalled()

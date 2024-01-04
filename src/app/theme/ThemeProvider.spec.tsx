@@ -20,7 +20,10 @@ describe('ThemeProvider and useTheme hook', () => {
   it('should provide the current theme to components using the useTheme hook', async () => {
     // First, set the theme explicitly:
     safeAct(() => {
-      setHomeTheme(HomeThemeType.Inverted)
+      setHomeTheme({
+        homeTheme: HomeThemeType.Inverted,
+        componentId: 'SOME_COMPONENT_ID'
+      })
     })
 
     const { findByText } = render(
@@ -34,7 +37,10 @@ describe('ThemeProvider and useTheme hook', () => {
 
     // Change the theme and verify that the component gets updated
     safeAct(() => {
-      setHomeTheme(HomeThemeType.Normal)
+      setHomeTheme({
+        homeTheme: HomeThemeType.Normal,
+        componentId: 'SOME_COMPONENT_ID'
+      })
     })
 
     // Wait for the theme to update
