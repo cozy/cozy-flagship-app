@@ -13,6 +13,7 @@ import {
   fixLocalBackupConfigIfNecessary,
   addRemoteDuplicatesToBackupedMedias
 } from '/app/domain/backup/services/manageLocalBackupConfig'
+import { prepareDeduplication } from '/app/domain/backup/services/manageRemoteBackupConfig'
 import { getMediasToBackup } from '/app/domain/backup/services/getMedias'
 import {
   uploadMedias,
@@ -59,6 +60,10 @@ export const prepareBackup = async (
     await setBackupAsInitializing(client)
 
     void onProgress(await getBackupInfo(client))
+
+    if (flag('flagship.backup.dedup')) {
+      await prepareDeduplication(client)
+    }
 
     const mediasToBackup = await getMediasToBackup(client, onProgress)
 

@@ -6,6 +6,7 @@ import CozyClient, {
   SplitFilenameResult,
   models
 } from 'cozy-client'
+import Minilog from 'cozy-minilog'
 import { IOCozyFile } from 'cozy-client/types/types'
 import flag from 'cozy-flags'
 
@@ -23,6 +24,8 @@ import {
 } from '/app/domain/backup/queries'
 import { getAllMedias } from '/app/domain/backup/services/getMedias'
 import { t } from '/locales/i18n'
+
+const log = Minilog('💿 Backup')
 
 const DOCTYPE_APPS = 'io.cozy.apps'
 const DOCTYPE_FILES = 'io.cozy.files'
@@ -314,6 +317,40 @@ export const filterMediasAlreadyBackuped = (
     .filter(file => !isInTrash(file.path))
     .map(file => findFileCorrespondingMedia(allMedias, file))
     .filter(removeUndefined)
+}
+
+let cachedRemoteFiles = [] as File[]
+
+export const setRemoteFiles = (remoteFiles: File[]): void => {
+  cachedRemoteFiles = remoteFiles
+}
+
+export const getRemoteFiles = (): File[] => {
+  return cachedRemoteFiles
+}
+
+const fetchAllRemoteFiles = async (client: CozyClient): Promise<File[]> => {
+  const filesQuery = buildAllMediasFilesQuery()
+
+  const remoteFiles = (await client.queryAll(filesQuery)) as FilesQueryAllResult
+
+  const remoteFilesNotInTrash = remoteFiles.filter(
+    file => !isInTrash(file.path)
+  )
+
+  return remoteFilesNotInTrash
+}
+
+export const prepareDeduplication = async (
+  client: CozyClient
+): Promise<void> => {
+  log.debug('Preparing deduplication')
+
+  const remoteFiles = await fetchAllRemoteFiles(client)
+
+  setRemoteFiles(remoteFiles)
+
+  log.debug(`${remoteFiles.length} found remotely`)
 }
 
 export const fetchBackupedMedias = async (
