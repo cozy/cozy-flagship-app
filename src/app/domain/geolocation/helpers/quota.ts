@@ -21,14 +21,24 @@ export interface FirstTimeserie {
   startDate: string
 }
 
+const isMaxDaysToCaptureInvalid = (
+  maxDaysToCapture: number | null
+): maxDaysToCapture is null => {
+  return typeof maxDaysToCapture !== 'number'
+}
+
+const isMaxDaysToCaptureUnlimited = (maxDaysToCapture: number): boolean => {
+  return maxDaysToCapture === MAX_DAYS_TO_CAPTURE_UNLIMITED
+}
+
 export const isGeolocationQuotaExceeded = async (
   client: CozyClient
 ): Promise<boolean> => {
   const maxDaysToCapture = flag('coachco2.max-days-to-capture') as number | null
 
   if (
-    typeof maxDaysToCapture !== 'number' ||
-    maxDaysToCapture === MAX_DAYS_TO_CAPTURE_UNLIMITED
+    isMaxDaysToCaptureInvalid(maxDaysToCapture) ||
+    isMaxDaysToCaptureUnlimited(maxDaysToCapture)
   ) {
     return false
   }
@@ -78,7 +88,10 @@ export const isGeolocationQuotaExceeded = async (
 export const showQuotaExceededNotification = async (): Promise<void> => {
   const maxDaysToCapture = flag('coachco2.max-days-to-capture') as number | null
 
-  if (typeof maxDaysToCapture !== 'number') {
+  if (
+    isMaxDaysToCaptureInvalid(maxDaysToCapture) ||
+    isMaxDaysToCaptureUnlimited(maxDaysToCapture)
+  ) {
     return
   }
 
