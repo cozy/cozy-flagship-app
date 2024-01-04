@@ -22,7 +22,7 @@ export const ManagerScreen = (props: ManagerScreenProps): React.ReactNode => {
           onError={managerProps.handleError}
           onHttpError={managerProps.handleHttpError}
           style={{
-            backgroundColor: colors.primaryColor
+            backgroundColor: colors.onboardingBackgroundColor
           }}
         />
       )}
@@ -30,7 +30,7 @@ export const ManagerScreen = (props: ManagerScreenProps): React.ReactNode => {
         style={[
           styles.loadingOverlay,
           {
-            backgroundColor: colors.primaryColor
+            backgroundColor: colors.onboardingBackgroundColor
           }
         ]}
       />

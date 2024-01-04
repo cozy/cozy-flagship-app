@@ -104,6 +104,11 @@ export const palette = {
     black: '#000000'
   },
 
+  FlagshipSpecific: {
+    splashScreenBackground: '#297ef2',
+    onboardingBackground: '#297ef2'
+  },
+
   light: {
     divider: {
       divider: 'rgba(29, 33, 42, 0.12)'

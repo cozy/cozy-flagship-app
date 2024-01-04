@@ -29,7 +29,11 @@ const colors = {
 
   // TEXT
   primaryTextColor: palette.Grey['900'] + ALPHA_0_90,
-  secondaryTextColor: palette.Grey['900'] + ALPHA_0_48
+  secondaryTextColor: palette.Grey['900'] + ALPHA_0_48,
+
+  // FLAGSHIP APP SPECIFIC
+  splashScreenBackgroundColor: palette.FlagshipSpecific.splashScreenBackground,
+  onboardingBackgroundColor: palette.FlagshipSpecific.onboardingBackground
 }
 
 const colorsInverted = {
@@ -52,7 +56,11 @@ const colorsInverted = {
 
   // TEXT
   primaryTextColor: palette.Common.white,
-  secondaryTextColor: palette.Common.white + ALPHA_0_64
+  secondaryTextColor: palette.Common.white + ALPHA_0_64,
+
+  // FLAGSHIP APP SPECIFIC
+  splashScreenBackgroundColor: palette.FlagshipSpecific.splashScreenBackground,
+  onboardingBackgroundColor: palette.FlagshipSpecific.onboardingBackground
 }
 
 export type CozyThemeColors = typeof colors

@@ -94,7 +94,7 @@ const PasswordForm = ({
           style={[
             styles.loadingOverlay,
             {
-              backgroundColor: colors.primaryColor
+              backgroundColor: colors.onboardingBackgroundColor
             }
           ]}
         />

@@ -220,7 +220,7 @@ const OnboardingSteps = ({
 
 export const OnboardingScreen = ({ setClient, route, navigation }) => {
   const [clouderyTheme, setClouderyTheme] = useState({
-    backgroundColor: colors.primaryColor
+    backgroundColor: colors.onboardingBackgroundColor
   })
 
   const setClouderyThemeAndStatusBarColor = theme => {
