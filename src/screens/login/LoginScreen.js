@@ -113,7 +113,7 @@ const LoginSteps = ({
       // when receiving fqdn from route parameter, we don't have access to partner context
       // so we enforce default Cozy color as background
       setClouderyTheme({
-        backgroundColor: colors.primaryColor
+        backgroundColor: colors.onboardingBackgroundColor
       })
 
       setState(oldState => ({
@@ -132,7 +132,7 @@ const LoginSteps = ({
       // when receiving fqdn from route parameter, we don't have access to partner context
       // so we enforce default Cozy color as background
       setClouderyTheme({
-        backgroundColor: colors.primaryColor
+        backgroundColor: colors.onboardingBackgroundColor
       })
 
       setState(oldState => ({
@@ -558,7 +558,7 @@ const LoginSteps = ({
 
   if (state.step === PASSWORD_STEP) {
     const enforcedCozyBlueBackground = {
-      backgroundColor: colors.primaryColor,
+      backgroundColor: colors.onboardingBackgroundColor,
       themeUrl: `${state.instance}/assets/styles/theme.css`
     }
     return (
@@ -676,7 +676,7 @@ export const LoginScreen = ({
   setClient
 }) => {
   const [clouderyTheme, setClouderyTheme] = useState({
-    backgroundColor: colors.primaryColor
+    backgroundColor: colors.onboardingBackgroundColor
   })
 
   const setClouderyThemeAndStatusBarColor = theme => {
