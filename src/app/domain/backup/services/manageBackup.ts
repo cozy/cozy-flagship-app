@@ -10,8 +10,7 @@ import {
   setBackupAsRunning,
   setBackupAsDone,
   setLastBackup,
-  fixLocalBackupConfigIfNecessary,
-  addRemoteDuplicatesToBackupedMedias
+  fixLocalBackupConfigIfNecessary
 } from '/app/domain/backup/services/manageLocalBackupConfig'
 import { prepareDeduplication } from '/app/domain/backup/services/manageRemoteBackupConfig'
 import { getMediasToBackup } from '/app/domain/backup/services/getMedias'
@@ -258,11 +257,6 @@ const initializeBackup = async (
     }
 
     throw e
-  }
-
-  if (flag('flagship.backup.dedup')) {
-    await addRemoteDuplicatesToBackupedMedias(client)
-    localBackupConfig = await getLocalBackupConfig(client)
   }
 
   return localBackupConfig
