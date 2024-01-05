@@ -28,7 +28,7 @@ target 'CozyReactNative' do
 
   pod 'RNIOS11DeviceCheck', :path => '../node_modules/react-native-ios11-devicecheck/ios'
 
-  pod 'GCDWebServer', '~> 3.0'
+  pod 'GCDWebServer', '3.5.4'
 
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
