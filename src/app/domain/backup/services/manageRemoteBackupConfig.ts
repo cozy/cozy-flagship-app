@@ -370,17 +370,9 @@ export const fetchBackupedMedias = async (
 
   const allMedias = await getAllMedias(client)
 
-  let data
+  const filesQuery = buildFilesQuery(deviceId)
 
-  if (flag('flagship.backup.dedup')) {
-    const filesQuery = buildAllMediasFilesQuery()
-
-    data = (await client.queryAll(filesQuery)) as FilesQueryAllResult
-  } else {
-    const filesQuery = buildFilesQuery(deviceId)
-
-    data = (await client.queryAll(filesQuery)) as FilesQueryAllResult
-  }
+  const data = (await client.queryAll(filesQuery)) as FilesQueryAllResult
 
   const backupedMedias = filterMediasAlreadyBackuped(allMedias, data)
 
