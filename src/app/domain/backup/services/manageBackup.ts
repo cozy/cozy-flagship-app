@@ -124,6 +124,8 @@ export const startBackup = async (
         postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
       totalMediasToBackupCount:
         postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount,
+      deduplicatedMediaCount:
+        postUploadLocalBackupConfig.currentBackup.deduplicatedMediaCount,
       message
     })
 
@@ -151,6 +153,8 @@ export const startBackup = async (
           postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
         totalMediasToBackupCount:
           postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount,
+        deduplicatedMediaCount:
+          postUploadLocalBackupConfig.currentBackup.deduplicatedMediaCount,
         message: e.textMessage
       })
     } else {
@@ -161,6 +165,8 @@ export const startBackup = async (
           postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
         totalMediasToBackupCount:
           postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount,
+        deduplicatedMediaCount:
+          postUploadLocalBackupConfig.currentBackup.deduplicatedMediaCount,
         message: t('services.backup.errors.unknownIssue')
       })
     }
