@@ -143,7 +143,7 @@
     "@typescript-eslint/parser": "5.54.0",
     "babel-jest": "29.7.0",
     "babel-loader": "8.2.2",
-    "babel-plugin-module-resolver": "4.1.0",
+    "babel-plugin-module-resolver": "5.0.0",
     "babel-plugin-optional-require": "0.3.1",
     "babel-plugin-react-native-web": "0.17.7",
     "commander": "^11.0.0",
