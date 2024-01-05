@@ -3,7 +3,7 @@
 import { AppState, Platform } from 'react-native'
 
 import { uploadMedia } from '/app/domain/backup/services/uploadMedia'
-import { setMediaAsBackuped } from '/app/domain/backup/services/manageLocalBackupConfig'
+import { setMediaAsBackupedBecauseUploaded } from '/app/domain/backup/services/manageLocalBackupConfig'
 import { getDeviceId } from '/app/domain/backup/services/manageRemoteBackupConfig'
 import {
   Media,
@@ -158,9 +158,11 @@ const prepareAndUploadMedia = async (
 
   await postUpload(client, mediaToUpload, documentCreated)
 
-  await setMediaAsBackuped(client, mediaToUpload, documentCreated)
-
-  log.debug(`✅ ${mediaToUpload.name} set as backuped`)
+  await setMediaAsBackupedBecauseUploaded(
+    client,
+    mediaToUpload,
+    documentCreated
+  )
 
   return documentCreated
 }

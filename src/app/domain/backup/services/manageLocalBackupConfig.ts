@@ -124,7 +124,7 @@ export const saveAlbums = async (
   await setLocalBackupConfig(client, localBackupConfig)
 }
 
-export const setMediaAsBackuped = async (
+export const setMediaAsBackupedBecauseUploaded = async (
   client: CozyClient,
   media: Media,
   documentCreated: IOCozyFile
@@ -142,7 +142,7 @@ export const setMediaAsBackuped = async (
       uri: media.uri,
       creationDate: media.creationDate,
       modificationDate: media.modificationDate,
-      remoteId: documentCreated.id as string,
+      remoteId: documentCreated.id!,
       md5: documentCreated.attributes.md5sum
     }
 
@@ -158,6 +158,8 @@ export const setMediaAsBackuped = async (
     )
 
   await setLocalBackupConfig(client, localBackupConfig)
+
+  log.debug(`✅ ${media.name} set as backuped because uploaded`)
 }
 
 export const fixLocalBackupConfigIfNecessary = async (
