@@ -353,6 +353,16 @@ export const prepareDeduplication = async (
   log.debug(`${remoteFiles.length} found remotely`)
 }
 
+export const getCorrespondingRemoteFile = (media: Media): File | undefined => {
+  const remoteFiles = getRemoteFiles()
+
+  const correspondingRemoteFile = remoteFiles.find(remoteFile =>
+    isFileCorrespondingToMedia(remoteFile, media)
+  )
+
+  return correspondingRemoteFile
+}
+
 export const fetchBackupedMedias = async (
   client: CozyClient
 ): Promise<BackupedMedia[]> => {

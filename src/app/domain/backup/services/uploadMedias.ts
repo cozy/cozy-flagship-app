@@ -3,8 +3,14 @@
 import { AppState, Platform } from 'react-native'
 
 import { uploadMedia } from '/app/domain/backup/services/uploadMedia'
-import { setMediaAsBackupedBecauseUploaded } from '/app/domain/backup/services/manageLocalBackupConfig'
-import { getDeviceId } from '/app/domain/backup/services/manageRemoteBackupConfig'
+import {
+  setMediaAsBackupedBecauseUploaded,
+  setMediaAsBackupedBecauseDeduplicated
+} from '/app/domain/backup/services/manageLocalBackupConfig'
+import {
+  getDeviceId,
+  getCorrespondingRemoteFile
+} from '/app/domain/backup/services/manageRemoteBackupConfig'
 import {
   Media,
   UploadMetadata,
@@ -28,6 +34,7 @@ import { t } from '/locales/i18n'
 
 import type CozyClient from 'cozy-client'
 import type { IOCozyFile } from 'cozy-client'
+import flag from 'cozy-flags'
 import Minilog from 'cozy-minilog'
 
 const log = Minilog('💿 Backup')
@@ -75,6 +82,22 @@ export const uploadMedias = async (
     if (shouldStopBecauseBackground()) {
       log.debug('Backup stopped because in background')
       return t('services.backup.errors.appKilled')
+    }
+
+    if (flag('flagship.backup.dedup')) {
+      const correspondingRemoteFile = getCorrespondingRemoteFile(mediaToUpload)
+
+      if (correspondingRemoteFile) {
+        await setMediaAsBackupedBecauseDeduplicated(
+          client,
+          mediaToUpload,
+          correspondingRemoteFile
+        )
+
+        void onProgress(await getBackupInfo(client))
+
+        continue
+      }
     }
 
     try {
