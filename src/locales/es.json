@@ -77,9 +77,11 @@
         "onProgressTitle": "Subiendo",
         "onProgressMessage": "{{filename}} se está subiendo",
         "backupSuccessTitle": "Copia de seguridad de fotos y vídeos",
-        "backupSuccessBody": "¡Tu copia de seguridad ha finalizado! {{backedUpMediaCount}}/{{totalMediasToBackupCount}} elemento(s) guardado(s)",
+        "backupSuccessBody_one": "¡Tu copia de seguridad ha finalizado! {{backedUpMediaCount}}/{{count}} elemento guardado",
+        "backupSuccessBody_other": "¡Tu copia de seguridad ha finalizado! {{backedUpMediaCount}}/{{count}} elementos guardados",
         "backupPartialSuccessTitle": "Copia de seguridad de fotos y vídeos",
-        "backupPartialSuccessBody": "La copia de seguridad se ha detenido. {{backedUpMediaCount}}/{{totalMediasToBackupCount}} elemento(s) guardado(s)",
+        "backupPartialSuccessBody_one": "La copia de seguridad se ha detenido. {{backedUpMediaCount}}/{{count}} elemento guardado",
+        "backupPartialSuccessBody_other": "La copia de seguridad se ha detenido. {{backedUpMediaCount}}/{{count}} elementos guardados",
         "backupErrorTitle": "Oops",
         "backupErrorBody": "Tu copia de seguridad ha encontrado un error. Abre la aplicación para ver más detalles"
       },
