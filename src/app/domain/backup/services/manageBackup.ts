@@ -129,7 +129,7 @@ export const startBackup = async (
         backedUpMediaCount:
           postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount -
           postUploadLocalBackupConfig.currentBackup.mediasToBackup.length,
-        totalMediasToBackupCount:
+        count:
           postUploadLocalBackupConfig.currentBackup.totalMediasToBackupCount
       }),
       data: {
