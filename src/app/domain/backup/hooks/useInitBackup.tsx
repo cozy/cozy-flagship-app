@@ -35,6 +35,8 @@ export const useInitBackup = (): void => {
               backupConfig.currentBackup.mediasToBackup.length,
             totalMediasToBackupCount:
               backupConfig.currentBackup.totalMediasToBackupCount,
+            deduplicatedMediaCount:
+              backupConfig.currentBackup.deduplicatedMediaCount,
             message: t('services.backup.errors.appKilled')
           })
         }

@@ -45,7 +45,8 @@ const INITIAL_BACKUP_CONFIG: LocalBackupConfig = {
   currentBackup: {
     status: 'to_do',
     mediasToBackup: [],
-    totalMediasToBackupCount: 0
+    totalMediasToBackupCount: 0,
+    deduplicatedMediaCount: 0
   }
 }
 
@@ -189,6 +190,8 @@ export const setMediaAsBackupedBecauseDeduplicated = async (
       mediaToBackup => !isSameMedia(mediaToBackup, media)
     )
 
+  localBackupConfig.currentBackup.deduplicatedMediaCount += 1
+
   await setLocalBackupConfig(client, localBackupConfig)
 
   log.debug(`✅ ${media.name} set as backuped because deduplicated`)
@@ -272,6 +275,7 @@ export const setBackupAsReady = async (
       localBackupConfig.currentBackup.mediasToBackup.length
   }
 
+  localBackupConfig.currentBackup.deduplicatedMediaCount = 0
   localBackupConfig.currentBackup.status = 'ready'
 
   await setLocalBackupConfig(client, localBackupConfig)

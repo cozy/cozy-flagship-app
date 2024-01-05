@@ -16,6 +16,7 @@ export interface LastBackup {
   message?: string
   backedUpMediaCount: number
   totalMediasToBackupCount: number
+  deduplicatedMediaCount: number
 }
 
 /**
@@ -34,6 +35,7 @@ export interface LocalBackupConfig {
     status: BackupStatus
     mediasToBackup: Media[]
     totalMediasToBackupCount: number
+    deduplicatedMediaCount: number
   }
   lastBackup?: LastBackup
 }
