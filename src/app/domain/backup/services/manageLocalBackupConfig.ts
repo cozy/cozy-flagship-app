@@ -12,7 +12,7 @@ import {
   BackupedAlbum,
   LastBackup
 } from '/app/domain/backup/models'
-import { buildFileQuery } from '/app/domain/backup/queries'
+import { File, buildFileQuery } from '/app/domain/backup/queries'
 import {
   fetchBackupedMedias,
   fetchDeviceRemoteBackupConfig,
@@ -160,6 +160,38 @@ export const setMediaAsBackupedBecauseUploaded = async (
   await setLocalBackupConfig(client, localBackupConfig)
 
   log.debug(`✅ ${media.name} set as backuped because uploaded`)
+}
+
+export const setMediaAsBackupedBecauseDeduplicated = async (
+  client: CozyClient,
+  media: Media,
+  remoteFile: File
+): Promise<void> => {
+  const localBackupConfig = await getLocalBackupConfig(client)
+
+  // add media to backuped medias
+  const newBackupedMedia: BackupedMedia = {
+    name: media.name,
+    uri: media.uri,
+    creationDate: media.creationDate,
+    modificationDate: media.modificationDate,
+    remoteId: remoteFile.id,
+    md5: remoteFile.md5sum
+  }
+
+  localBackupConfig.backupedMedias.push(newBackupedMedia)
+
+  localBackupConfig.lastBackupDate = Date.now()
+
+  // remove media from current backup
+  localBackupConfig.currentBackup.mediasToBackup =
+    localBackupConfig.currentBackup.mediasToBackup.filter(
+      mediaToBackup => !isSameMedia(mediaToBackup, media)
+    )
+
+  await setLocalBackupConfig(client, localBackupConfig)
+
+  log.debug(`✅ ${media.name} set as backuped because deduplicated`)
 }
 
 export const fixLocalBackupConfigIfNecessary = async (
