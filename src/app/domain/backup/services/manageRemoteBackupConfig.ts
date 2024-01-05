@@ -271,11 +271,11 @@ export const isFileCorrespondingToMedia = (
     const mediaCreationDate = new Date(media.creationDate)
 
     return (
-      creationDate.getFullYear() === mediaCreationDate.getFullYear() &&
-      creationDate.getMonth() === mediaCreationDate.getMonth() &&
-      creationDate.getDate() === mediaCreationDate.getDate() &&
-      creationDate.getMinutes() === mediaCreationDate.getMinutes() &&
-      creationDate.getSeconds() === mediaCreationDate.getSeconds()
+      creationDate.getUTCFullYear() === mediaCreationDate.getUTCFullYear() &&
+      creationDate.getUTCMonth() === mediaCreationDate.getUTCMonth() &&
+      creationDate.getUTCDate() === mediaCreationDate.getUTCDate() &&
+      creationDate.getUTCMinutes() === mediaCreationDate.getUTCMinutes() &&
+      creationDate.getUTCSeconds() === mediaCreationDate.getUTCSeconds()
     )
   } else {
     const creationDate = new Date(file.created_at)
