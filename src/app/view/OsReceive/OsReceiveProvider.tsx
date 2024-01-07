@@ -23,9 +23,6 @@ import { AcceptFromFlagshipManifest } from '/app/domain/osReceive/models/OsRecei
 import { backToHome } from '/libs/intents/localMethods'
 import { OsReceiveLogger } from '/app/domain/osReceive'
 import { LoadingOverlay } from '/ui/LoadingOverlay'
-import { fetchFilesByIds } from '/app/domain/osReceive/services/shareFilesService'
-import { safePromise } from '/utils/safePromise'
-import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 export const OsReceiveProvider = ({
   children
@@ -123,50 +120,6 @@ export const OsReceiveProvider = ({
       dispatch({ type: OsReceiveActionType.SetInitialState })
     }
   }, [state.filesToUpload])
-
-  // If the state gets populated with filesToShare, we fetch the files by ids and share them
-  // After that, we clear the state to avoid sharing the same files again if the user comes back to the flow
-  // We handle errors by clearing the state as well, it's paramount since the loading overlay will stay otherwise
-  useEffect(() => {
-    if (!client || state.filesToShare.length === 0) return
-
-    const fetchFilesByIdsAndShare = async (): Promise<void> => {
-      try {
-        await fetchFilesByIds(client, state.filesToShare, () => {
-          dispatch({ type: OsReceiveActionType.SetFilesToShare, payload: [] })
-        })
-      } catch (error) {
-        // Not really an error, the user just did not share the files
-        if (getErrorMessage(error) === 'User did not share') {
-          OsReceiveLogger.info('User did not share')
-
-          return dispatch({
-            type: OsReceiveActionType.SetFilesToShare,
-            payload: []
-          })
-        }
-
-        // Here we encountered a real error, so we clear the state and display an error message
-        return handleError(
-          t('errors.shareFiles', {
-            postProcess: 'interval',
-            count: state.filesToShare.length
-          }),
-          () => {
-            OsReceiveLogger.error(
-              'Global failure in files to share, clearing state',
-              error
-            )
-
-            dispatch({ type: OsReceiveActionType.SetFilesToShare, payload: [] })
-          }
-        )
-      }
-    }
-
-    safePromise(fetchFilesByIdsAndShare)()
-  }),
-    [client, state.filesToShare.length]
 
   return (
     <OsReceiveStateContext.Provider value={state}>
