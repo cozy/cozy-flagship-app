@@ -39,6 +39,7 @@ import { PermissionsChecker } from '/app/domain/nativePermissions/components/Per
 import { useGeolocationTracking } from '/app/domain/geolocation/hooks/tracking'
 import { OsReceiveProvider } from '/app/view/OsReceive/OsReceiveProvider'
 import { ErrorProvider } from '/app/view/Error/ErrorProvider'
+import { LoadingOverlayProvider } from '/app/view/Loading/LoadingOverlayProvider'
 import { OsReceiveApi } from '/app/domain/osReceive/services/OsReceiveApi'
 import {
   useOsReceiveDispatch,
@@ -48,15 +49,13 @@ import { useOsReceiveApi } from '/app/view/OsReceive/hooks/useOsReceiveApi'
 import { LockScreenWrapper } from '/app/view/Lock/LockScreenWrapper'
 import { useSecureBackgroundSplashScreen } from '/hooks/useSplashScreen'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
-
 import { initFlagshipUIService } from '/app/view/FlagshipUI'
-
 import {
   useLauncherContext,
   LauncherContextProvider
-} from './screens/home/hooks/useLauncherContext'
-
+} from '/screens/home/hooks/useLauncherContext'
 import LauncherView from '/screens/konnectors/LauncherView'
+import { useShareFiles } from '/app/domain/osReceive/services/shareFilesService'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -123,12 +122,14 @@ const InnerNav = ({ client, setClient }) => {
   const colors = getColors()
   const osReceiveState = useOsReceiveState()
   const osReceiveDispatch = useOsReceiveDispatch()
+  const shareFiles = useShareFiles()
 
   return (
     <NativeIntentProvider
       localMethods={localMethods(client, {
         ...OsReceiveApi(client, osReceiveState, osReceiveDispatch),
-        hideSplashScreen: () => hideSplashScreen()
+        hideSplashScreen: () => hideSplashScreen(),
+        shareFiles
       })}
     >
       <View
@@ -159,9 +160,11 @@ const InnerNav = ({ client, setClient }) => {
 const Nav = ({ client, setClient }) => (
   <NavigationContainer ref={RootNavigation.navigationRef}>
     <ErrorProvider>
-      <OsReceiveProvider>
-        <InnerNav client={client} setClient={setClient} />
-      </OsReceiveProvider>
+      <LoadingOverlayProvider>
+        <OsReceiveProvider>
+          <InnerNav client={client} setClient={setClient} />
+        </OsReceiveProvider>
+      </LoadingOverlayProvider>
     </ErrorProvider>
   </NavigationContainer>
 )
