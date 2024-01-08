@@ -122,7 +122,7 @@ const InnerNav = ({ client, setClient }) => {
   const colors = getColors()
   const osReceiveState = useOsReceiveState()
   const osReceiveDispatch = useOsReceiveDispatch()
-  const shareFiles = useShareFiles()
+  const { shareFiles } = useShareFiles()
 
   return (
     <NativeIntentProvider
