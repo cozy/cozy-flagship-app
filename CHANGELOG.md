@@ -1,4 +1,4 @@
-# 1.1.21
+# 1.1.22
 
 ## ✨ Features
 
@@ -8,15 +8,36 @@
 
 ## 🔧 Tech
 
+
+# 1.1.21
+
+## ✨ Features
+
+* Improve CoachCO2 trip tracking ([PR #1017](https://github.com/cozy/cozy-flagship-app/pull/1017))
+* Rename Ma Bulle to Cozy Métropole de Lyon ([PR #1084](https://github.com/cozy/cozy-flagship-app/pull/1084), [PR #1085](https://github.com/cozy/cozy-flagship-app/pull/1085) and [PR #1086](https://github.com/cozy/cozy-flagship-app/pull/1086))
+* Change UI for new Cozy Métropole de Lyon variant ([PR #1095](https://github.com/cozy/cozy-flagship-app/pull/1095), [PR #1098](https://github.com/cozy/cozy-flagship-app/pull/1098), [PR #1099](https://github.com/cozy/cozy-flagship-app/pull/1099), [PR #1101](https://github.com/cozy/cozy-flagship-app/pull/1101) and [PR #1103](https://github.com/cozy/cozy-flagship-app/pull/1103))
+
+## 🐛 Bug Fixes
+
+* Fix a but that would redirect the app to cozy-home when the app is focused ([PR #1083](https://github.com/cozy/cozy-flagship-app/pull/1083))
+* It is now possible to run both Cozy and MaBulle apps simultaneously ([PR #1117](https://github.com/cozy/cozy-flagship-app/pull/1117))
+
+## 🔧 Tech
+
+* Add Storybook.js into the project ([PR #1080](https://github.com/cozy/cozy-flagship-app/pull/1080))
+* Migrate HttpServer Javascript code to Typescript ([PR #1069](https://github.com/cozy/cozy-flagship-app/pull/1069))
+
 # 1.1.20
 
 ## ✨ Features
+
 * Add printing feature ([PR #1038](https://github.com/cozy/cozy-flagship-app/pull/1038))
 * Manage normal and inverted themes ([PR #1062](https://github.com/cozy/cozy-flagship-app/pull/1062))
 * Improve dedup backup algorithm to support old backup ([PR #1077](https://github.com/cozy/cozy-flagship-app/pull/1077))
 * Add new non native modal ([PR #1066](https://github.com/cozy/cozy-flagship-app/pull/1066))
 
 ## 🐛 Bug Fixes
+
 * Fix client side connectors bugs ([PR #1057](https://github.com/cozy/cozy-flagship-app/pull/1057), [PR #1073](https://github.com/cozy/cozy-flagship-app/pull/1073))
 * Fix send files bugs ([PR #1068](https://github.com/cozy/cozy-flagship-app/pull/1068), [PR #1074](https://github.com/cozy/cozy-flagship-app/pull/1074))
 * Fix UI bugs ([PR #1061](https://github.com/cozy/cozy-flagship-app/pull/1061), [PR #1065](https://github.com/cozy/cozy-flagship-app/pull/1065), [PR #1071](https://github.com/cozy/cozy-flagship-app/pull/1071), [PR #1075](https://github.com/cozy/cozy-flagship-app/pull/1075), [PR #1052](https://github.com/cozy/cozy-flagship-app/pull/1052))
@@ -32,15 +53,18 @@
 # 1.1.19
 
 ## ✨ Features
+
 * Allow mespapiers app to control clisk konnectors ([PR #1047](https://github.com/cozy/cozy-flagship-app/pull/1047))
 
 ## 🐛 Bug Fixes
+
 * Fix send files locales ([PR #1031](https://github.com/cozy/cozy-flagship-app/pull/1031))
 * Fix UI bugs ([PR #1036](https://github.com/cozy/cozy-flagship-app/pull/1036), [PR #1037](https://github.com/cozy/cozy-flagship-app/pull/1037), [PR #1041](https://github.com/cozy/cozy-flagship-app/pull/1041), [PR #1043](https://github.com/cozy/cozy-flagship-app/pull/1043), [PR #1045](https://github.com/cozy/cozy-flagship-app/pull/1045))
 * Fix backup bugs especially when backup folder has been deleted ([PR #1040](https://github.com/cozy/cozy-flagship-app/pull/1040), [PR #1044](https://github.com/cozy/cozy-flagship-app/pull/1044))
 * Manage when destination folder is removed during konnector execution ([PR #1030](https://github.com/cozy/cozy-flagship-app/pull/1030))
 
 ## 🔧 Tech
+
 * Improve logs ([PR #1035](https://github.com/cozy/cozy-flagship-app/pull/1035), [PR #1042](https://github.com/cozy/cozy-flagship-app/pull/1042), [PR #1039](https://github.com/cozy/cozy-flagship-app/pull/1039))
 * Remove react-native-cameraroll patches ([PR #1048](https://github.com/cozy/cozy-flagship-app/pull/1048))
 * Fix open handles in tests and update testing tools ([PR #1028](https://github.com/cozy/cozy-flagship-app/pull/1028))
