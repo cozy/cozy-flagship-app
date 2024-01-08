@@ -9,6 +9,11 @@ import { useLoadingOverlay } from '/app/view/Loading/LoadingOverlayProvider'
 import { useError } from '/app/view/Error/ErrorProvider'
 import { useI18n } from '/locales/i18n'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
+import {
+  ShareFilesDependencies,
+  ShareFilesPayload,
+  ShareFilesIntent
+} from '/app/domain/osReceive/models/ShareFiles'
 
 const downloadFilesInParallel = async (
   fileInfos: FileMetadata[],
@@ -75,38 +80,49 @@ export const fetchFilesByIds = async (
 
     await Share.open({ urls: fileURIs })
   } catch (error) {
-    if (getErrorMessage(error) === 'User did not share') throw error
+    // Not considered as an error
+    if (getErrorMessage(error) === 'User did not share') return
 
     OsReceiveLogger.error('fetchFilesByIds: error', error)
     throw new Error('Failed to fetch file metadata or download files')
   }
 }
 
-export const useShareFiles = (): (() => Promise<void>) => {
-  const { showOverlay, hideOverlay } = useLoadingOverlay()
-  const { handleError } = useError()
-  const { t } = useI18n()
-  const client = useClient()
+const intentShareFiles = async (
+  dependencies: ShareFilesDependencies,
+  filesIds: ShareFilesPayload
+): Promise<void> => {
+  const { showOverlay, hideOverlay, handleError, t, client } = dependencies
 
-  return async (filesIds?: string[]): Promise<void> => {
-    try {
-      if (!filesIds?.length) throw new Error('No files to share')
-      if (!client) throw new Error('Client is undefined')
+  try {
+    if (!filesIds.length) throw new Error('No files to share')
+    if (!client) throw new Error('Client is undefined')
 
-      showOverlay(t('services.osReceive.shareFiles.downloadingFiles'))
+    showOverlay(t('services.osReceive.shareFiles.downloadingFiles'))
 
-      await fetchFilesByIds(client, filesIds)
-    } catch (error) {
-      if (getErrorMessage(error) === 'User did not share') return
+    await fetchFilesByIds(client, filesIds)
+  } catch (error) {
+    handleError(
+      t('errors.shareFiles', {
+        postProcess: 'interval',
+        count: filesIds.length
+      })
+    )
+  } finally {
+    hideOverlay()
+  }
+}
 
-      handleError(
-        t('errors.shareFiles', {
-          postProcess: 'interval',
-          count: filesIds?.length
-        })
-      )
-    } finally {
-      hideOverlay()
-    }
+export const useShareFiles = (): { shareFiles: ShareFilesIntent } => {
+  const dependencies = {
+    showOverlay: useLoadingOverlay().showOverlay,
+    hideOverlay: useLoadingOverlay().hideOverlay,
+    handleError: useError().handleError,
+    t: useI18n().t,
+    client: useClient()
+  }
+
+  return {
+    shareFiles: filesIds => intentShareFiles(dependencies, filesIds)
   }
 }
