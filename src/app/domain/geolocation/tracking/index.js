@@ -70,10 +70,9 @@ export const startTracking = async () => {
         smallIcon: 'mipmap/ic_stat_ic_notification'
       }
     })
-    BackgroundGeolocation.start(() => {
-      Log('Tracking started')
-      storeData(StorageKeys.ShouldBeTrackingFlagStorageAdress, true)
-    })
+    await BackgroundGeolocation.start()
+    Log('Tracking started')
+    await storeData(StorageKeys.ShouldBeTrackingFlagStorageAdress, true)
     return true
   } catch (e) {
     log.error(e)
