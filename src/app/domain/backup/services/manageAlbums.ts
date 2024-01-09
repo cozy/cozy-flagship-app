@@ -10,7 +10,8 @@ import { getDeviceId } from '/app/domain/backup/services/manageRemoteBackupConfi
 import {
   buildAlbumsQuery,
   AlbumDocument,
-  AlbumsQueryAllResult
+  AlbumsQueryAllResult,
+  File
 } from '/app/domain/backup/queries'
 
 import type CozyClient from 'cozy-client'
@@ -96,7 +97,7 @@ export const fetchBackupedAlbums = async (
 export const addMediaToAlbums = async (
   client: CozyClient,
   mediaToUpload: Media,
-  documentCreated: IOCozyFile
+  documentCreated: IOCozyFile | File
 ): Promise<void> => {
   for (const album of mediaToUpload.albums) {
     const { remoteId: albumId } = await getOrCreateAlbum(client, album.name)

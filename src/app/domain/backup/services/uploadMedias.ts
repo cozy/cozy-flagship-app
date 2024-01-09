@@ -30,6 +30,7 @@ import {
   areAlbumsEnabled,
   addMediaToAlbums
 } from '/app/domain/backup/services/manageAlbums'
+import { File } from '/app/domain/backup/queries'
 import { t } from '/locales/i18n'
 
 import type CozyClient from 'cozy-client'
@@ -88,6 +89,12 @@ export const uploadMedias = async (
       const correspondingRemoteFile = getCorrespondingRemoteFile(mediaToUpload)
 
       if (correspondingRemoteFile) {
+        await executePostBackupTasks(
+          client,
+          mediaToUpload,
+          correspondingRemoteFile
+        )
+
         await setMediaAsBackupedBecauseDeduplicated(
           client,
           mediaToUpload,
@@ -179,7 +186,7 @@ const prepareAndUploadMedia = async (
 
   log.debug(`✅ ${mediaToUpload.name} uploaded`)
 
-  await postUpload(client, mediaToUpload, documentCreated)
+  await executePostBackupTasks(client, mediaToUpload, documentCreated)
 
   await setMediaAsBackupedBecauseUploaded(
     client,
@@ -190,10 +197,10 @@ const prepareAndUploadMedia = async (
   return documentCreated
 }
 
-const postUpload = async (
+const executePostBackupTasks = async (
   client: CozyClient,
   mediaToUpload: Media,
-  documentCreated: IOCozyFile
+  documentCreated: IOCozyFile | File
 ): Promise<void> => {
   if (mediaToUpload.albums.length > 0 && areAlbumsEnabled()) {
     await addMediaToAlbums(client, mediaToUpload, documentCreated)
