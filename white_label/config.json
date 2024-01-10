@@ -2,6 +2,7 @@
   "cozy" : {
     "appName": "Cozy",
     "bundleId": "io.cozy.flagship.mobile",
+    "httpServerDefaultPort": 5759,
     "provisionningProfile": "amiral-ci-profile",
     "provisionningDevProfile": "amiral-dev-profile",
     "scheme": "cozy",
@@ -10,6 +11,7 @@
   "mabulle": {
     "appName": "Cozy Métropole de Lyon",
     "bundleId": "io.cozy.flagship.mobile.mabulle",
+    "httpServerDefaultPort": 5758,
     "provisionningProfile": "amiral-mabulle-ci-profile",
     "provisionningDevProfile": "amiral-mabulle-dev-profile",
     "scheme": "cozygrandlyon",

@@ -5,6 +5,7 @@ import React, {
   useLayoutEffect,
   useState
 } from 'react'
+import Config from 'react-native-config'
 
 import type CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
@@ -30,7 +31,9 @@ import {
 
 const log = Minilog('HttpServerProvider')
 
-const DEFAULT_PORT = 5757
+const DEFAULT_PORT = Config.HTTP_SERVER_DEFAULT_PORT
+  ? Number(Config.HTTP_SERVER_DEFAULT_PORT)
+  : 5759
 
 interface HttpServerState {
   server: HttpServer | undefined

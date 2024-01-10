@@ -129,6 +129,12 @@ const configureEnv = async (brand: string): Promise<void> => {
     config.userAgent
   )
 
+  newEnvContent = setOrReplaceVariable(
+    newEnvContent,
+    'HTTP_SERVER_DEFAULT_PORT',
+    config.httpServerDefaultPort
+  )
+
   if (envContent !== newEnvContent) {
     logger.warn(
       '.env file has been modified, please run `pod install` to apply changes'
@@ -141,7 +147,7 @@ const configureEnv = async (brand: string): Promise<void> => {
 const setOrReplaceVariable = (
   envContent: string,
   variableName: string,
-  value: string
+  value: string | number
 ): string => {
   let newEnvContent = envContent
 
