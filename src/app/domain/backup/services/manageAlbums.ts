@@ -51,27 +51,6 @@ export const getAlbums = async (): Promise<Album[]> => {
   return albums
 }
 
-export const createRemoteAlbums = async (
-  client: CozyClient,
-  albums: Album[]
-): Promise<BackupedAlbum[]> => {
-  const { backupedAlbums } = await getLocalBackupConfig(client)
-
-  const albumsToCreate = albums.filter(
-    album =>
-      !backupedAlbums.find(backupedAlbum => backupedAlbum.name === album.name)
-  )
-
-  const createdAlbums = []
-
-  for (const albumToCreate of albumsToCreate) {
-    const createdAlbum = await createRemoteAlbum(client, albumToCreate.name)
-    createdAlbums.push(createdAlbum)
-  }
-
-  return createdAlbums
-}
-
 export const createRemoteAlbum = async (
   client: CozyClient,
   albumName: string
