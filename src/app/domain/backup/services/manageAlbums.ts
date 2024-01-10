@@ -100,7 +100,15 @@ export const addMediaToAlbums = async (
   for (const album of mediaToUpload.albums) {
     const { remoteId: albumId } = await getOrCreateAlbum(client, album.name)
 
-    await addMediaToAlbum(client, albumId, documentCreated.id!)
+    const isMediaAlreadyInAlbum =
+      documentCreated.relationships?.referenced_by?.data?.some(
+        reference =>
+          reference.type === 'io.cozy.photos.albums' && reference.id === albumId
+      )
+
+    if (!isMediaAlreadyInAlbum) {
+      await addMediaToAlbum(client, albumId, documentCreated.id!)
+    }
   }
 }
 
