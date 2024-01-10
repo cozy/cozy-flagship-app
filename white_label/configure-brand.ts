@@ -123,14 +123,11 @@ const configureEnv = async (brand: string): Promise<void> => {
   const envContent = await fs.readFile('.env', 'utf8')
   let newEnvContent = envContent
 
-  const userAgentRegex = /^USER_AGENT=".*"/m
-  const newUserAgent = `USER_AGENT="${config.userAgent}"`
-
-  if (userAgentRegex.test(newEnvContent)) {
-    newEnvContent = newEnvContent.replace(userAgentRegex, newUserAgent)
-  } else {
-    newEnvContent += `\n${newUserAgent}\n`
-  }
+  newEnvContent = setOrReplaceVariable(
+    newEnvContent,
+    'USER_AGENT',
+    config.userAgent
+  )
 
   if (envContent !== newEnvContent) {
     logger.warn(
@@ -139,6 +136,25 @@ const configureEnv = async (brand: string): Promise<void> => {
   }
 
   await fs.writeFile('.env', newEnvContent)
+}
+
+const setOrReplaceVariable = (
+  envContent: string,
+  variableName: string,
+  value: string
+): string => {
+  let newEnvContent = envContent
+
+  const variableRegex = new RegExp(`^${variableName}=".*"`, 'm')
+  const newVariable = `${variableName}="${value}"`
+
+  if (variableRegex.test(newEnvContent)) {
+    newEnvContent = newEnvContent.replace(variableRegex, newVariable)
+  } else {
+    newEnvContent += `\n${newVariable}\n`
+  }
+
+  return newEnvContent
 }
 
 const executeCommand = async (command: string): Promise<string> => {
