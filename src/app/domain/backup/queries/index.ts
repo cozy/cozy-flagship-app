@@ -19,7 +19,8 @@ export const buildAllMediasFilesQuery = (): QueryDefinition => {
       'path',
       'created_at',
       'updated_at',
-      'md5sum'
+      'md5sum',
+      'referenced_by'
     ])
     .limitBy(1000)
 }
@@ -42,7 +43,8 @@ export const buildFilesQuery = (deviceId: string): QueryDefinition => {
       'path',
       'created_at',
       'updated_at',
-      'md5sum'
+      'md5sum',
+      'referenced_by'
     ])
     .limitBy(1000)
 }
@@ -61,6 +63,14 @@ export interface File {
   metadata?: {
     idFromLibrary?: string
     creationDateFromLibrary?: string
+  }
+  relationships: {
+    referenced_by: {
+      data: {
+        id: string
+        type: string
+      }[]
+    }
   }
 }
 
