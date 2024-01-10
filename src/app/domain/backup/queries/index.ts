@@ -66,11 +66,11 @@ export interface File {
 
 export type FilesQueryAllResult = File[]
 
-export const buildAlbumsQuery = (deviceId: string): QueryDefinition => {
+export const buildAlbumsQuery = (): QueryDefinition => {
   return Q(DOCTYPE_ALBUMS)
     .where({
       backupDeviceIds: {
-        $elemMatch: { $eq: deviceId }
+        $exists: true
       }
     })
     .indexFields(['backupDeviceIds'])

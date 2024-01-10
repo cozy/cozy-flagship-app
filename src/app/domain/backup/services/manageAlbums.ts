@@ -83,9 +83,7 @@ const formatBackupedAlbum = (album: AlbumDocument): BackupedAlbum => {
 export const fetchBackupedAlbums = async (
   client: CozyClient
 ): Promise<BackupedAlbum[]> => {
-  const deviceId = await getDeviceId()
-
-  const albumsQuery = buildAlbumsQuery(deviceId)
+  const albumsQuery = buildAlbumsQuery()
 
   const data = (await client.queryAll(albumsQuery)) as AlbumsQueryAllResult
 
