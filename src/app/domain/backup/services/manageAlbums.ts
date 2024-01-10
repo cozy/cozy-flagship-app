@@ -142,3 +142,9 @@ export const getOrCreateAlbum = async (
 
   return newlyCreatedAlbum
 }
+
+export const prepareAlbums = async (client: CozyClient): Promise<void> => {
+  const backupedAlbums = await fetchBackupedAlbums(client)
+
+  await saveAlbums(client, backupedAlbums)
+}
