@@ -48,6 +48,32 @@ export const uploadUserCache = async (content, user) => {
   return { ok: true }
 }
 
+export const runOpenPathPipeline = async user => {
+  Log('Request to run pipeline')
+  const request = {
+    user: user
+  }
+  const body = JSON.stringify(request)
+  const response = await fetch(SERVER_URL + '/cozy/run/pipeline', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: body
+  })
+  if (!response.ok) {
+    throw new Error(
+      String(
+        'Error in pipeline run:',
+        response.status,
+        response.statusText,
+        await response.text()
+      )
+    )
+  }
+  return { ok: true }
+}
+
 /**
  * Make sure the content is correctly formatted, to prevent
  * upload failures

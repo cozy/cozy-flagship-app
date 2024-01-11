@@ -1,4 +1,7 @@
-import { uploadUserCache } from '/app/domain/geolocation/tracking/upload'
+import {
+  runOpenPathPipeline,
+  uploadUserCache
+} from '/app/domain/geolocation/tracking/upload'
 import { getOrCreateUser } from '/app/domain/geolocation/tracking/user'
 import { getTs, Log, parseISOString } from '/app/domain/geolocation/helpers'
 import {
@@ -74,6 +77,7 @@ export const smartSend = async (locations, user, { force = false } = {}) => {
       }
     }
     Log('Uploaded last batch')
+    await runOpenPathPipeline(user)
   }
 }
 
@@ -282,6 +286,7 @@ const uploadWithNoNewPoints = async ({ user, force = false }) => {
   } else {
     if (lastPoint == undefined) {
       Log('No previous location either, no upload')
+      return
     } else {
       let deltaT = Date.now() / 1000 - getTs(lastPoint)
       if (deltaT > LARGE_TEMPORAL_DELTA) {
