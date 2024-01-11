@@ -575,7 +575,6 @@ export const saveActivity = async event => {
     timestamp: new Date().toISOString()
   }
   const activity = translateEventToEMissionMotionActivity(activityEvent)
-  Log('Save activity : ' + JSON.stringify(activity))
   await storeActivity(activity)
   return activity
 }
