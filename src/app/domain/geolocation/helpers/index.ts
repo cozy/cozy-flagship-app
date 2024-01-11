@@ -1,4 +1,5 @@
 import BackgroundGeolocation from 'react-native-background-geolocation'
+import DeviceInfo from 'react-native-device-info'
 
 import CozyClient, { Q, fetchPolicies } from 'cozy-client'
 import Minilog from 'cozy-minilog'
@@ -31,6 +32,10 @@ export const getAllLogs = async (): Promise<string> => {
 
 export const sendLogFile = async (client?: CozyClient): Promise<boolean> => {
   const emailSupport = await fetchSupportMail(client)
+
+  const appVersion = DeviceInfo.getVersion()
+  const appBuild = DeviceInfo.getBuildNumber()
+  Log(`App info: ${appVersion} (${appBuild})`)
 
   return Logger.emailLog(emailSupport)
 }
