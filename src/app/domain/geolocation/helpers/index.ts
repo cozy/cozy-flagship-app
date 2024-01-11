@@ -1,6 +1,9 @@
 import BackgroundGeolocation from 'react-native-background-geolocation'
 
+import CozyClient, { Q, fetchPolicies } from 'cozy-client'
 import Minilog from 'cozy-minilog'
+
+import { t } from '/locales/i18n'
 
 const log = Minilog('📍 Geolocation')
 
@@ -26,6 +29,32 @@ export const getAllLogs = async (): Promise<string> => {
   return Logger.getLog()
 }
 
-export const sendLogFile = (): Promise<boolean> => {
-  return Logger.emailLog('')
+export const sendLogFile = async (client?: CozyClient): Promise<boolean> => {
+  const emailSupport = await fetchSupportMail(client)
+
+  return Logger.emailLog(emailSupport)
+}
+
+const fetchSupportMail = async (client?: CozyClient): Promise<string> => {
+  if (!client) {
+    return t('support.email')
+  }
+
+  const result = (await client.fetchQueryAndGetFromState({
+    definition: Q('io.cozy.settings').getById('io.cozy.settings.context'),
+    options: {
+      as: 'io.cozy.settings/io.cozy.settings.context',
+      fetchPolicy: fetchPolicies.olderThan(60 * 60 * 1000)
+    }
+  })) as InstanceInfo
+
+  return result.data?.[0]?.attributes?.support_address ?? t('support.email')
+}
+
+interface InstanceInfo {
+  data?: {
+    attributes?: {
+      support_address?: string
+    }
+  }[]
 }
