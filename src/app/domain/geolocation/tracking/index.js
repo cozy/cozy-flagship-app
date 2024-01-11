@@ -39,7 +39,7 @@ export const startTracking = async () => {
     const trackingConfig = await getTrackingConfig()
     Log('Config : ' + JSON.stringify(trackingConfig))
 
-    await BackgroundGeolocation.ready({
+    const state = await BackgroundGeolocation.ready({
       // Geolocation Config
       desiredAccuracy: trackingConfig.desiredAccuracy || ACCURACY,
       showsBackgroundLocationIndicator: false, // Displays a blue pill on the iOS status bar when the location services are in use in the background (if the app doesn't have 'always' permission, the blue pill will always appear when location services are in use while the app isn't focused)
@@ -70,9 +70,12 @@ export const startTracking = async () => {
         smallIcon: 'mipmap/ic_stat_ic_notification'
       }
     })
-    await BackgroundGeolocation.start()
-    Log('Tracking started')
+    if (!state.enabled) {
+      await BackgroundGeolocation.start()
+      Log('Tracking started')
+    }
     await storeData(StorageKeys.ShouldBeTrackingFlagStorageAdress, true)
+
     return true
   } catch (e) {
     log.error(e)
