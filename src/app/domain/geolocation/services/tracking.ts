@@ -39,8 +39,10 @@ export const setGeolocationTracking = async (
   }
 }
 
-export const sendGeolocationTrackingLogs = async (): Promise<void> => {
-  await sendLogFile()
+export const sendGeolocationTrackingLogs = async (
+  client?: CozyClient
+): Promise<void> => {
+  await sendLogFile(client)
 }
 
 export const forceUploadGeolocationTrackingData = async (): Promise<void> => {
