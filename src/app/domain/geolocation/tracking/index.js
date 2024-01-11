@@ -204,13 +204,11 @@ export const handleConnectivityChange = async event => {
 
 // Register on activity change
 BackgroundGeolocation.onActivityChange(async event => {
-  Log('Enter onActivity change event')
   return handleActivityChange(event)
 })
 
 // Register on motion change
 BackgroundGeolocation.onMotionChange(async event => {
-  Log('Enter onMotion change event')
   return handleMotionChange(event)
 })
 
