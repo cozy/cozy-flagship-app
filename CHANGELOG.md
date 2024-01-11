@@ -1,6 +1,18 @@
+# 1.1.23
+
+## ✨ Features
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+
 # 1.1.22
 
 ## ✨ Features
+
+* Autofill email's recipient with Cozy's support email when sending CoachCO2 logs to support ([PR #1121](https://github.com/cozy/cozy-flagship-app/pull/1121))
 
 
 ## 🐛 Bug Fixes
