@@ -18,7 +18,8 @@ import {
   ELASTICITY_MULTIPLIER,
   STILL_ACTIVITY,
   WAIT_BEFORE_STOP_MOTION_EVENT,
-  WALKING_ACTIVITY
+  WALKING_ACTIVITY,
+  LOW_CONFIDENCE_THRESHOLD
 } from '/app/domain/geolocation/tracking/consts'
 
 export { Log, getAllLogs, sendLogFile } from '/app/domain/geolocation/helpers'
@@ -166,6 +167,14 @@ export const handleActivityChange = async event => {
     enableElasticity()
   }
 
+  if (
+    event?.activity === STILL_ACTIVITY &&
+    event?.confidence <= LOW_CONFIDENCE_THRESHOLD
+  ) {
+    // Do not save event if it's a still activity with low confidence
+    // We noticed that iOS can produce a lot of those events, hurting battery
+    return
+  }
   await saveActivity(event)
 }
 

@@ -562,10 +562,6 @@ export const translateEventToEMissionMotionActivity = event => {
 }
 
 export const saveActivity = async event => {
-  if (event.confidence < LOW_CONFIDENCE_THRESHOLD) {
-    // Filter out low confidence activities
-    return null
-  }
   const activityEvent = {
     activity: {
       confidence: event.confidence,
