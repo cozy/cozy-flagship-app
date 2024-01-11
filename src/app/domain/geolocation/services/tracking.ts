@@ -1,5 +1,7 @@
 import BackgroundGeolocation from 'react-native-background-geolocation'
 
+import CozyClient from 'cozy-client/types/CozyClient'
+
 import {
   startTracking,
   stopTracking,
@@ -33,8 +35,10 @@ export const setGeolocationTracking = async (
   }
 }
 
-export const sendGeolocationTrackingLogs = async (): Promise<void> => {
-  await sendLogFile()
+export const sendGeolocationTrackingLogs = async (
+  client?: CozyClient
+): Promise<void> => {
+  await sendLogFile(client)
 }
 
 export const forceUploadGeolocationTrackingData = async (): Promise<void> => {

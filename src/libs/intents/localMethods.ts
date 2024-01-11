@@ -328,7 +328,7 @@ export const localMethods = (
     setGeolocationTracking,
     getGeolocationTrackingId,
     setGeolocationTrackingId,
-    sendGeolocationTrackingLogs,
+    sendGeolocationTrackingLogs: () => sendGeolocationTrackingLogs(client),
     forceUploadGeolocationTrackingData,
     getDeviceInfo,
     isAvailable,
