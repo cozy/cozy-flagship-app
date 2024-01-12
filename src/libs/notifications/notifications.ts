@@ -17,6 +17,14 @@ import { routes } from '/constants/routes'
 
 const log = Minilog('🔔 notifications')
 
+/*
+For notifee.getInitialNotification, we can see that it is "deprecated for iOS in favour of onForegroundEvent, you can still
+use this method on iOS but you will also receive a onForegroundEvent". Even if we never had the case because the onForegroundEvent
+handler is called too late to catch an initial notification in our app, we add a lastLocalNotificationId in case
+we receive two times the notification.
+*/
+let lastLocalNotificationId: string | undefined = undefined
+
 export const navigateFromNotification = async (
   client: CozyClient,
   redirectLink: string
@@ -98,6 +106,17 @@ export const handleInitialLocalNotification = async (
 ): Promise<void> => {
   const notification = await notifee.getInitialNotification()
 
+  const notificationId = notification?.notification.id
+
+  if (notificationId === lastLocalNotificationId) {
+    log.error(
+      'Received twice the same notification in handleInitialLocalNotification'
+    )
+    return
+  }
+
+  lastLocalNotificationId = notificationId
+
   void handleNotificationEvent(client, notification?.notification.data)
 }
 
@@ -143,6 +162,17 @@ export const handleLocalNotificationOpening = (
     // If no pressAction this mean the handler has been triggered
     // by `showLocalNotification` but the user did not clicked on it yet
     if (!event.detail.pressAction) return
+
+    const notificationId = event.detail.notification?.id
+
+    if (notificationId === lastLocalNotificationId) {
+      log.error(
+        'Received twice the same notification in handleLocalNotificationOpening'
+      )
+      return
+    }
+
+    lastLocalNotificationId = notificationId
 
     log.debug('Received notification from notifee.onForegroundEvent event')
 
