@@ -11,7 +11,6 @@ import { getData, storeData, StorageKeys } from '/libs/localStore/storage'
 import { setGeolocationTracking } from '/app/domain/geolocation/services/tracking'
 
 const MAX_DAYS_TO_CAPTURE_UNLIMITED = -1
-const ONE_DAY = 24 * 60 * 60 * 1000
 
 const log = Minilog('📍 Geolocation')
 
@@ -43,18 +42,14 @@ const getFirstTimeserie = async (
     if (firstTimeserieCachedLocally) {
       return firstTimeserieCachedLocally
     } else {
-      const { data } = (await client.fetchQueryAndGetFromState({
-        definition: Q('io.cozy.timeseries.geojson')
+      const { data } = (await client.query(
+        Q('io.cozy.timeseries.geojson')
           .where({ startDate: { $gt: null } })
           .select(['_id', 'startDate'])
           .indexFields(['startDate'])
           .sortBy([{ startDate: 'asc' }])
-          .limitBy(1),
-        options: {
-          as: 'io.cozy.timeseries.geojson/firstTimeserie',
-          fetchPolicy: CozyClient.fetchPolicies.olderThan(ONE_DAY)
-        }
-      })) as unknown as { data: FirstTimeserie[] }
+          .limitBy(1)
+      )) as unknown as { data: FirstTimeserie[] }
 
       if (data.length === 0) return undefined
 
