@@ -26,6 +26,10 @@ export { Log, getAllLogs, sendLogFile } from '/app/domain/geolocation/helpers'
 export { getOrCreateId, updateId } from '/app/domain/geolocation/tracking/user'
 export { uploadData } from '/app/domain/geolocation/tracking/upload'
 export { GeolocationTrackingHeadlessTask } from '/app/domain/geolocation/tracking/headless'
+import {
+  GeolocationTrackingEmitter,
+  TRIP_END
+} from '/app/domain/geolocation/tracking/events'
 
 export {
   clearAllCozyGPSMemoryData,
@@ -187,6 +191,7 @@ export const handleMotionChange = async event => {
     const stationaryTs = event.location?.timestamp
     Log('Auto uploading from stop')
     await uploadData({ untilTs: stationaryTs })
+    GeolocationTrackingEmitter.emit(TRIP_END)
     // Disable elasticity to improve next point accuracy
     disableElasticity()
   }
@@ -199,6 +204,7 @@ export const handleConnectivityChange = async event => {
   if (event.connected && (await getFlagFailUpload())) {
     Log('Auto uploading from reconnection and failed last attempt')
     await uploadData()
+    GeolocationTrackingEmitter.emit(TRIP_END)
   }
 }
 
