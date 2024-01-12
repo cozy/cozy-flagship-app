@@ -7,6 +7,7 @@ import {
   handleInitialToken,
   handleNotificationTokenReceiving,
   handleInitialServerNotification,
+  handleInitialLocalNotification,
   handleServerNotificationOpening,
   handleServerNotificationOnForeground,
   handleLocalNotificationOpening
@@ -40,6 +41,7 @@ export const useNotifications = (): void => {
 
     void handleInitialToken(client)
     void handleInitialServerNotification(client)
+    void handleInitialLocalNotification(client)
 
     const removeTokenReceivingHandler = handleNotificationTokenReceiving(client)
     const removeOpeningHandler = handleServerNotificationOpening(client)
