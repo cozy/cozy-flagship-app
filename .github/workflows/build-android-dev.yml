@@ -81,7 +81,6 @@ jobs:
       - name: 'Create env file'
         run: |
           touch .env
-          echo ANDROID_SAFETY_NET_API_KEY=${{ secrets.ANDROID_SAFETY_NET_API_KEY }} >> .env
 
       - name: Set white label brand
         run: yarn brand:configure:${{ inputs.brand }} --force
@@ -94,7 +93,6 @@ jobs:
           cd android && ./gradlew assembleRelease --no-daemon
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          ANDROID_SAFETY_NET_API_KEY: ${{ secrets.ANDROID_SAFETY_NET_API_KEY }}
 
       - name: Clean Dev APK names and add Commit SHA
         run: for f in android/app/build/outputs/apk/dev/release/*unsigned.apk; do mv "$f" "$(echo "$f" | sed s/unsigned/${{ inputs.brand }}-${{ steps.vars.outputs.sha_short }}/)"; done

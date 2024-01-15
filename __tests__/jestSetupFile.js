@@ -24,14 +24,6 @@ jest.mock('@sentry/react-native', () => ({
   setTag: jest.fn()
 }))
 
-jest.mock(
-  '../src/constants/api-keys',
-  () => ({
-    androidSafetyNetApiKey: 'foo'
-  }),
-  { virtual: true }
-)
-
 jest.mock('react-native-fs', () => mockRNFS)
 jest.mock('react-native-iap', () => mockRNIAP)
 

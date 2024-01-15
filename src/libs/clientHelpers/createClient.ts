@@ -1,7 +1,6 @@
 import CozyClient from 'cozy-client'
 import flag from 'cozy-flags'
 
-import { androidSafetyNetApiKey } from '/constants/api-keys'
 import strings from '/constants/strings.json'
 import {
   listenTokenRefresh,
@@ -29,7 +28,7 @@ export const createClient = async (instance: string): Promise<CozyClient> => {
       clientKind: 'mobile',
       clientName: await getClientName(),
       shouldRequireFlagshipPermissions: true,
-      certificationConfig: { androidSafetyNetApiKey }
+      certificationConfig: {}
     },
     appMetadata: {
       slug: 'flagship',
