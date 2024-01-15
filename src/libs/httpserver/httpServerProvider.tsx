@@ -78,7 +78,7 @@ export const HttpServerProvider = (
   useLayoutEffect(() => {
     const server = new HttpServer(port, path, {
       localOnly: true,
-      keepAlive: true
+      keepAlive: false
     })
 
     const startingHttpServer = (): Promise<unknown> => {
