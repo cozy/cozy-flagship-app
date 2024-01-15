@@ -47,9 +47,7 @@ describe('client', () => {
       // Then
       expect(CozyClient).toHaveBeenCalledWith({
         oauth: {
-          certificationConfig: {
-            androidSafetyNetApiKey: 'testEnvKey'
-          },
+          certificationConfig: {},
           clientKind: 'mobile',
           clientName: "software.name (Becca's iPhone 6)",
           redirectURI: 'cozy://',

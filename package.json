@@ -87,7 +87,6 @@
     "react-native-flipper": "^0.146.1",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "1.10.3",
-    "react-native-google-safetynet": "https://github.com/cozy/cozy-react-native-google-safetynet#feat/upgrade_target_sdk_31",
     "react-native-iap": "^12.11.0",
     "react-native-idle-timer": "^2.2.1",
     "react-native-immersive-bars": "^1.0.4",
