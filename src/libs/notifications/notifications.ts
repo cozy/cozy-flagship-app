@@ -108,7 +108,10 @@ export const handleInitialLocalNotification = async (
 
   const notificationId = notification?.notification.id
 
-  if (notificationId === lastLocalNotificationId) {
+  if (
+    notificationId !== undefined &&
+    notificationId === lastLocalNotificationId
+  ) {
     log.error(
       'Received twice the same notification in handleInitialLocalNotification'
     )
