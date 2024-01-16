@@ -71,6 +71,6 @@ export const useOAuthClientsLimitExceeded = (
       navigation,
       instancesInfo
     ),
-    interceptOpenWindow: interceptOpenWindow(client, navigation)
+    interceptOpenWindow: interceptOpenWindow(client, navigation, instancesInfo)
   }
 }

@@ -285,8 +285,13 @@ describe('interceptOpenWindow', () => {
 
     const client = null
     const openWindowRequest = mockOpenWindowRequest(targetUrl)
+    const instanceInfo = getFakeContext()
 
-    interceptOpenWindow(client, mockNavigationProp)(openWindowRequest)
+    interceptOpenWindow(
+      client,
+      mockNavigationProp,
+      instanceInfo
+    )(openWindowRequest)
 
     expect(navigateToApp).not.toHaveBeenCalled()
   })
@@ -296,8 +301,13 @@ describe('interceptOpenWindow', () => {
 
     const client = mockClient()
     const openWindowRequest = mockOpenWindowRequest(targetUrl)
+    const instanceInfo = getFakeContext()
 
-    interceptOpenWindow(client, mockNavigationProp)(openWindowRequest)
+    interceptOpenWindow(
+      client,
+      mockNavigationProp,
+      instanceInfo
+    )(openWindowRequest)
 
     expect(navigateToApp).toHaveBeenCalledWith({
       href: 'http://claude-settings.mycozy.cloud/#/connectedDevices',
@@ -311,13 +321,18 @@ describe('interceptOpenWindow', () => {
 
     const client = mockClient()
     const openWindowRequest = mockOpenWindowRequest(targetUrl)
+    const instanceInfo = getFakeContext()
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
     ;(navigateToApp as any).mockImplementation(() => {
       throw new Error('SOME_ERROR')
     })
 
-    interceptOpenWindow(client, mockNavigationProp)(openWindowRequest)
+    interceptOpenWindow(
+      client,
+      mockNavigationProp,
+      instanceInfo
+    )(openWindowRequest)
 
     expect(true).toBe(true)
   })
