@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Platform } from 'react-native'
 import { initConnection, useIAP } from 'react-native-iap'
+import { getLocales } from 'react-native-localize'
 import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
 
 import { useClient, useInstanceInfo } from 'cozy-client'
@@ -116,9 +117,12 @@ export const useClouderyOffer = (): ClouderyOfferState => {
       setPopupUrl(null)
     } else {
       const offersParam = formatOffers(subscriptions)
+      const lang = getLocales()[0].languageCode
 
       const url = new URL(partialPopupUrl)
       url.searchParams.append('iap_offers', offersParam)
+      url.searchParams.append('lang', lang)
+
       setPopupUrl(url.toString())
     }
   }, [partialPopupUrl, subscriptions])
