@@ -117,7 +117,11 @@ export const interceptNavigation =
   }
 
 export const interceptOpenWindow =
-  (client: CozyClient | null, navigation: NavigationProp<ParamListBase>) =>
+  (
+    client: CozyClient | null,
+    navigation: NavigationProp<ParamListBase>,
+    instanceInfo: InstanceInfo
+  ) =>
   (syntheticEvent: WebViewOpenWindowEvent): void => {
     try {
       if (client === null) {
@@ -126,7 +130,14 @@ export const interceptOpenWindow =
       }
 
       const { nativeEvent } = syntheticEvent
-      const destinationUrl = nativeEvent.targetUrl
+      const destinationUrl = cleanUrl(nativeEvent.targetUrl)
+
+      if (isClouderyOfferUrl(destinationUrl, instanceInfo)) {
+        const clouderyOfferUrlWithInAppPurchaseParams =
+          formatClouderyOfferUrlWithInAppPurchaseParams(destinationUrl)
+        showClouderyOffer(clouderyOfferUrlWithInAppPurchaseParams)
+        return
+      }
 
       const subdomainType = client.capabilities.flat_subdomains
         ? 'flat'
