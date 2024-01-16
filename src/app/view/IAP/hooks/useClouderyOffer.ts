@@ -3,7 +3,7 @@ import { Platform } from 'react-native'
 import { initConnection, useIAP } from 'react-native-iap'
 import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
 
-import { useClient } from 'cozy-client'
+import { useClient, useInstanceInfo } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import {
@@ -24,6 +24,7 @@ const SKUS = Platform.OS === 'ios' ? IOS_OFFERS : ANDROID_OFFERS
 interface ClouderyOfferState {
   hidePopup: () => void
   popupUrl: string | null
+  instanceInfoLoaded: boolean
   interceptNavigation: (request: WebViewNavigation) => boolean
   isBuying: boolean
   setIsBuying: (isBuying: boolean) => void
@@ -31,6 +32,7 @@ interface ClouderyOfferState {
 
 export const useClouderyOffer = (): ClouderyOfferState => {
   const client = useClient()
+  const instancesInfo = useInstanceInfo()
   const { subscriptions, getSubscriptions } = useIAP()
 
   const [popupUrl, setPopupUrl] = useState<string | null>(null)
@@ -77,6 +79,7 @@ export const useClouderyOffer = (): ClouderyOfferState => {
   return {
     hidePopup: () => setPopupUrl(null),
     popupUrl,
+    instanceInfoLoaded: instancesInfo.isLoaded,
     interceptNavigation: interceptNavigation(
       instancesInfo,
       subscriptions,

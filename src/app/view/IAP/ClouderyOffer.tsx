@@ -21,12 +21,13 @@ const TOUCHABLE_VERTICAL_PADDING = 8
 const ClouderyOfferWithIAPContext = (): JSX.Element | null => {
   const {
     popupUrl,
+    instanceInfoLoaded,
     interceptNavigation,
     isBuying,
     hidePopup
   } = useClouderyOffer()
 
-  return popupUrl ? (
+  return popupUrl && instanceInfoLoaded ? (
     <>
       <WebViewWithLoadingOverlay
         hidePopup={hidePopup}
