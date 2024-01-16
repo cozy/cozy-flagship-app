@@ -1,4 +1,6 @@
 rootProject.name = 'CozyReactNative'
+include ':react-native-google-play-integrity'
+project(':react-native-google-play-integrity').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-google-play-integrity/android')
 include ':react-native-device-info'
 project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
 include ':react-native-fs'
