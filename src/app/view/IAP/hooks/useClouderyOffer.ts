@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Platform } from 'react-native'
 import { initConnection, useIAP } from 'react-native-iap'
 import { getLocales } from 'react-native-localize'
+import Toast from 'react-native-toast-message'
 import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
 
 import { useClient, useInstanceInfo } from 'cozy-client'
@@ -14,6 +15,8 @@ import {
   buySubscription,
   formatOffers
 } from '/app/domain/iap/services/clouderyOffer'
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
+import { t } from '/locales/i18n'
 
 const log = Minilog('💳 Cloudery Offer')
 
@@ -94,9 +97,20 @@ export const useClouderyOffer = (): ClouderyOfferState => {
       }
 
       const doAsync = async (): Promise<void> => {
-        await initConnection()
-        await getSubscriptions({ skus: SKUS })
-        setPartialPopupUrl(current => current ?? href)
+        try {
+          await initConnection()
+          await getSubscriptions({ skus: SKUS })
+          setPartialPopupUrl(current => current ?? href)
+        } catch (error: unknown) {
+          const errorMessage = getErrorMessage(error)
+          log.error(
+            `Error while analysing WebView navigation. Intercept it anyway to prevent unexpected behavior: ${errorMessage}`
+          )
+          Toast.show({
+            text1: t('screens.clouderyOffer.error.title'),
+            type: 'error'
+          })
+        }
       }
 
       void doAsync()
