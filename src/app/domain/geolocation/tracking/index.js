@@ -26,10 +26,8 @@ export { Log, getAllLogs, sendLogFile } from '/app/domain/geolocation/helpers'
 export { getOrCreateId, updateId } from '/app/domain/geolocation/tracking/user'
 export { uploadData } from '/app/domain/geolocation/tracking/upload'
 export { GeolocationTrackingHeadlessTask } from '/app/domain/geolocation/tracking/headless'
-import {
-  GeolocationTrackingEmitter,
-  TRIP_END
-} from '/app/domain/geolocation/tracking/events'
+import { GeolocationTrackingEmitter } from '/app/domain/geolocation/tracking/events'
+import { TRIP_END } from '/app/domain/geolocation/tracking/consts'
 
 export {
   clearAllCozyGPSMemoryData,

@@ -8,11 +8,8 @@ import {
   checkShouldStartTracking
 } from '/app/domain/geolocation/services/tracking'
 import { checkGeolocationQuota } from '/app/domain/geolocation/helpers/quota'
-import {
-  GeolocationTrackingEmitter,
-  TRIP_END
-} from '/app/domain/geolocation/tracking/events'
-
+import { GeolocationTrackingEmitter } from '/app/domain/geolocation/tracking/events'
+import { TRIP_END } from '/app/domain/geolocation/tracking/consts'
 const log = Minilog('📍 Geolocation')
 
 export const useGeolocationTracking = (): void => {
