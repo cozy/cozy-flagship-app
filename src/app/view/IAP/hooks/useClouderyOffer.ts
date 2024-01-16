@@ -81,6 +81,7 @@ export const useClouderyOffer = (): ClouderyOfferState => {
     popupUrl,
     instanceInfoLoaded: instancesInfo.isLoaded,
     interceptNavigation: interceptNavigation(
+      client,
       instancesInfo,
       subscriptions,
       setIsBuying,

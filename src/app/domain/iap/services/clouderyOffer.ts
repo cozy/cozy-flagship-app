@@ -10,6 +10,7 @@ import {
 } from 'react-native-iap'
 import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
 
+import CozyClient from 'cozy-client'
 import type { InstanceInfo } from 'cozy-client/types/types'
 import Minilog from 'cozy-minilog'
 
@@ -51,6 +52,7 @@ export const isClouderyOfferUrl = (
 
 export const interceptNavigation =
   (
+    client: CozyClient | null,
     instanceInfo: InstanceInfo,
     subscriptions: Subscription[],
     setIsBuying: (isBuying: boolean) => void,
@@ -75,6 +77,7 @@ export const interceptNavigation =
 
         log.debug('Should start IAP on navigation with productId', productId)
         void buySubscription(
+          client,
           productId,
           instanceInfo,
           subscriptions,
@@ -107,6 +110,7 @@ const isOsStoreUrl = (url: string): boolean => {
 }
 
 const buySubscription = async (
+  client: CozyClient | null,
   itemId: string,
   instanceInfo: InstanceInfo,
   subscriptions: Subscription[],
@@ -114,6 +118,10 @@ const buySubscription = async (
   subscribed: () => void
 ): Promise<void> => {
   log.debug('Buy subscription', itemId)
+
+  if (!client) {
+    throw new Error('CozyClient should be defined')
+  }
 
   try {
     setIsBuying(true)
@@ -131,11 +139,15 @@ const buySubscription = async (
     } else {
       const { productId, offers } = getSubscriptionOffers(itemId, subscriptions)
 
+      // For Android, cozy-stack needs to know the cozy UUID + its base domain
+      const baseDomain = extractBaseCozyDomain(client)
+      const accountId = `${baseDomain}/${instanceInfo.instance.data.uuid ?? ''}`
+
       log.debug('Request Android subscription')
       await requestSubscription({
         sku: productId,
-        appAccountToken: instanceInfo.instance.data.uuid,
-        obfuscatedAccountIdAndroid: instanceInfo.instance.data.uuid,
+        appAccountToken: accountId,
+        obfuscatedAccountIdAndroid: accountId,
         subscriptionOffers: offers
       })
     }
@@ -205,4 +217,12 @@ const isUserCanceledError = (error: unknown): boolean => {
     'code' in error &&
     error.code === 'E_USER_CANCELLED'
   )
+}
+
+const extractBaseCozyDomain = (client: CozyClient): string => {
+  const cozyUrl = client.getStackClient().uri
+  const cozyDomain = new URL(cozyUrl).hostname
+  const baseDomain = cozyDomain.split('.').slice(1).join('.')
+
+  return baseDomain
 }
