@@ -7,6 +7,7 @@ import type {
 } from 'react-native-webview/lib/WebViewTypes'
 
 import type CozyClient from 'cozy-client'
+import type { InstanceInfo } from 'cozy-client/types/types'
 import { deconstructCozyWebLinkWithSlug } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
@@ -43,7 +44,8 @@ export const interceptNavigation =
     initialUrl: string,
     closePopup: () => void,
     client: CozyClient | null,
-    navigation: NavigationProp<ParamListBase>
+    navigation: NavigationProp<ParamListBase>,
+    instanceInfo: InstanceInfo
   ) =>
   (request: WebViewNavigation): boolean => {
     try {
@@ -54,7 +56,7 @@ export const interceptNavigation =
 
       const destinationUrl = cleanUrl(request.url)
 
-      if (isClouderyOfferUrl(destinationUrl)) {
+      if (isClouderyOfferUrl(destinationUrl, instanceInfo)) {
         const clouderyOfferUrlWithInAppPurchaseParams =
           formatClouderyOfferUrlWithInAppPurchaseParams(destinationUrl)
         showClouderyOffer(clouderyOfferUrlWithInAppPurchaseParams)

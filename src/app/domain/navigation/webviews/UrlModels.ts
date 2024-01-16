@@ -8,6 +8,7 @@ import type {
 } from 'react-native-webview/lib/WebViewTypes'
 
 import type CozyClient from 'cozy-client'
+import type { InstanceInfo } from 'cozy-client/types/types'
 
 export const webviewUrlLog = Minilog('WebViews/UrlService')
 
@@ -22,6 +23,7 @@ export interface InterceptNavigationProps {
   isFirstCall: boolean
   client: CozyClient
   setDownloadProgress: React.Dispatch<React.SetStateAction<number>>
+  instanceInfo: InstanceInfo
 }
 
 export interface InterceptOpenWindowProps {

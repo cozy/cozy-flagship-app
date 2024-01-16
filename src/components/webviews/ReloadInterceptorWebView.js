@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { useClient } from 'cozy-client'
+import { useClient, useInstanceInfo } from 'cozy-client'
 
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 import { APPLICATION_NAME_FOR_USER_AGENT } from '/constants/userAgent'
@@ -15,6 +15,7 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
   const [timestamp, setTimestamp] = useState(Date.now())
   const client = useClient()
   const subdomainType = client.capabilities?.flat_subdomains ? 'flat' : 'nested'
+  const instanceInfo = useInstanceInfo()
 
   const [progress, setDownloadProgress] = useState(0)
 
@@ -37,7 +38,8 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
               onShouldStartLoadWithRequest,
               interceptReload: false,
               client,
-              setDownloadProgress
+              setDownloadProgress,
+              instanceInfo
             })
           }}
           onOpenWindow={syntheticEvent => {
@@ -82,7 +84,8 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
             },
             isFirstCall,
             client,
-            setDownloadProgress
+            setDownloadProgress,
+            instanceInfo
           })
         }}
         onOpenWindow={syntheticEvent => {

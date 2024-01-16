@@ -5,7 +5,7 @@ import type {
   WebViewNavigation
 } from 'react-native-webview/lib/WebViewTypes'
 
-import { useClient } from 'cozy-client'
+import { useClient, useInstanceInfo } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import {
@@ -28,6 +28,7 @@ export const useOAuthClientsLimitExceeded = (
   navigation: NavigationProp<ParamListBase>
 ): OAuthClientsLimitExceededState => {
   const client = useClient()
+  const instancesInfo = useInstanceInfo()
 
   const [popupUrl, setPopupUrl] = useState<string | null>(null)
 
@@ -67,7 +68,8 @@ export const useOAuthClientsLimitExceeded = (
       popupUrl ?? '',
       closePopup,
       client,
-      navigation
+      navigation,
+      instancesInfo
     ),
     interceptOpenWindow: interceptOpenWindow(client, navigation)
   }

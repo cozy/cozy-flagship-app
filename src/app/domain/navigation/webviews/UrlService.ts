@@ -56,14 +56,15 @@ export const interceptNavigation = ({
   onReloadInterception,
   isFirstCall,
   client,
-  setDownloadProgress
+  setDownloadProgress,
+  instanceInfo
 }: InterceptNavigationProps): boolean => {
   if (isOauthClientLimitExceededUrl(initialRequest.url)) {
     showOauthClientsLimitExceeded(targetUri)
     return false
   }
 
-  if (isClouderyOfferUrl(initialRequest.url)) {
+  if (isClouderyOfferUrl(initialRequest.url, instanceInfo)) {
     const clouderyOfferUrlWithInAppPurchaseParams =
       formatClouderyOfferUrlWithInAppPurchaseParams(initialRequest.url)
     showClouderyOffer(clouderyOfferUrlWithInAppPurchaseParams)

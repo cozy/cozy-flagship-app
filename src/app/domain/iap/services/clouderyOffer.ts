@@ -10,6 +10,7 @@ import {
 } from 'react-native-iap'
 import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
 
+import type { InstanceInfo } from 'cozy-client/types/types'
 import Minilog from 'cozy-minilog'
 
 import { navigate } from '/libs/RootNavigation'
@@ -39,8 +40,13 @@ export const formatClouderyOfferUrlWithInAppPurchaseParams = (
   return clouderyOfferUrl.toString()
 }
 
-export const isClouderyOfferUrl = (url: string): boolean => {
-  return url.includes('premium')
+export const isClouderyOfferUrl = (
+  url: string,
+  instanceInfo: InstanceInfo | undefined
+): boolean => {
+  const manager_url = instanceInfo?.context?.data?.manager_url ?? ''
+  const uuid = instanceInfo?.instance?.data?.uuid ?? ''
+  return url.startsWith(`${manager_url}/cozy/instances/${uuid}/premium`)
 }
 
 export const interceptNavigation =
