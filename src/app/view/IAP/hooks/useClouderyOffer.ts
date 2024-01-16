@@ -28,13 +28,15 @@ interface BuyingStateIDLE {
 }
 interface BuyingStateBuying {
   state: 'BUYING'
-  itemId: string
+  productId: string
+  planId: string | null
   purchaseToken: string | null
   prorationMode: string | null
 }
 interface BuyingStateError {
   state: 'ERROR'
-  itemId: string
+  productId: string
+  planId: string | null
   purchaseToken: string | null
   prorationMode: string | null
 }
@@ -136,7 +138,8 @@ export const useClouderyOffer = (): ClouderyOfferState => {
 
     void buySubscription(
       client,
-      buyingState.itemId,
+      buyingState.productId,
+      buyingState.planId,
       buyingState.purchaseToken,
       buyingState.prorationMode,
       instancesInfo,

@@ -72,6 +72,7 @@ export const interceptNavigation =
       if (isStartIapUrl(request.url)) {
         const url = new URL(request.url)
         const productId = url.searchParams.get('productId')
+        const planId = url.searchParams.get('planId')
         const purchaseToken = url.searchParams.get('purchaseToken')
         const prorationMode = url.searchParams.get('prorationMode')
 
@@ -84,6 +85,7 @@ export const interceptNavigation =
         void buySubscription(
           client,
           productId,
+          planId,
           purchaseToken,
           prorationMode,
           instanceInfo,
@@ -118,7 +120,8 @@ const isOsStoreUrl = (url: string): boolean => {
 
 export const buySubscription = async (
   client: CozyClient | null,
-  itemId: string,
+  productId: string,
+  planId: string | null,
   purchaseToken: string | null,
   prorationMode: string | null,
   instanceInfo: InstanceInfo,
@@ -126,7 +129,7 @@ export const buySubscription = async (
   setBuyingState: Dispatch<SetStateAction<BuyingState>>,
   subscribed: () => void
 ): Promise<void> => {
-  log.debug('Buy subscription', itemId)
+  log.debug('Buy subscription', productId)
 
   if (!client) {
     throw new Error('CozyClient should be defined')
@@ -135,13 +138,12 @@ export const buySubscription = async (
   try {
     setBuyingState({
       state: 'BUYING',
-      itemId,
+      productId,
+      planId,
       purchaseToken,
       prorationMode
     })
     if (Platform.OS === 'ios') {
-      const productId = itemId
-
       log.debug('Clear iOS transactions')
       await clearTransactionIOS()
 
@@ -151,7 +153,10 @@ export const buySubscription = async (
         appAccountToken: instanceInfo.instance.data.uuid
       })
     } else {
-      const { productId, offers } = getSubscriptionOffers(itemId, subscriptions)
+      if (!planId) {
+        throw new Error('No planId set on Android, should not happen')
+      }
+      const offers = getSubscriptionOffers(productId, planId, subscriptions)
 
       // For Android, cozy-stack needs to know the cozy UUID + its base domain
       const baseDomain = extractBaseCozyDomain(client)
@@ -184,22 +189,19 @@ export const buySubscription = async (
     )
     setBuyingState({
       state: 'ERROR',
-      itemId,
+      productId,
+      planId,
       purchaseToken,
       prorationMode
     })
   }
 }
 
-interface Offers {
-  productId: string
-  offers: SubscriptionOffer[]
-}
-
 const getSubscriptionOffers = (
-  basePlanId: string,
+  productId: string,
+  planId: string,
   subscriptions: Subscription[]
-): Offers => {
+): SubscriptionOffer[] => {
   log.debug('Get Subscription offers')
 
   if (Platform.OS !== 'android') {
@@ -208,29 +210,28 @@ const getSubscriptionOffers = (
 
   const subscriptionsAndroid = subscriptions as SubscriptionAndroid[]
 
-  const offer = subscriptionsAndroid
-    .flatMap(subscription => {
-      return subscription.subscriptionOfferDetails.map(
-        subsriptionOfferDetails => {
-          return {
-            sku: subscription.productId,
-            offerToken: subsriptionOfferDetails.offerToken,
-            basePlanId: subsriptionOfferDetails.basePlanId
-          }
-        }
-      )
+  const subscription = subscriptionsAndroid.find(s => s.productId === productId)
+
+  if (!subscription) {
+    throw new Error(`No subscription found for ${productId}`)
+  }
+
+  const offers = subscription.subscriptionOfferDetails
+    .filter(offerDetails => offerDetails.basePlanId === planId)
+    .map(subsriptionOfferDetails => {
+      return {
+        sku: productId,
+        offerToken: subsriptionOfferDetails.offerToken,
+        basePlanId: subsriptionOfferDetails.basePlanId
+      }
     })
-    .find(offer => offer.basePlanId === basePlanId)
 
-  if (!offer) {
-    throw new Error(`No base plan found for ${basePlanId}`)
+  if (offers.length === 0) {
+    throw new Error(`No base plan found for ${planId}`)
   }
 
-  log.debug('Found subscription offer', offer)
-  return {
-    productId: offer.sku,
-    offers: [offer]
-  }
+  log.debug('Found subscription offer', offers)
+  return offers
 }
 
 const isUserCanceledError = (error: unknown): boolean => {
