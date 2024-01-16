@@ -39,6 +39,7 @@ interface HttpServerState {
   server: HttpServer | undefined
   securityKey: string
   isRunning: () => Promise<boolean>
+  stop: () => void
   getIndexHtmlForSlug: (
     slug: string,
     client: CozyClient
@@ -112,6 +113,8 @@ export const HttpServerProvider = (
   const isRunning = async (): Promise<boolean> =>
     (await serverInstance?.isRunning()) ?? false
 
+  const stop = (): void => serverInstance?.stop()
+
   const getIndexHtmlForSlug = async (
     slug: string,
     client: CozyClient
@@ -174,6 +177,7 @@ export const HttpServerProvider = (
         server: serverInstance,
         securityKey: serverSecurityKey,
         isRunning,
+        stop,
         getIndexHtmlForSlug
       }}
       {...props}

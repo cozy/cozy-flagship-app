@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useCallback, useState, useEffect } from 'react'
+import RNRestart from 'react-native-restart'
 
 import { useClient } from 'cozy-client'
 
+import { useSplashScreen } from '/hooks/useSplashScreen'
 import { removeNotificationDeviceToken } from '/libs/client'
+import { useHttpServerContext } from '/libs/httpserver/httpServerProvider'
 import {
   handleInitialToken,
   handleNotificationTokenReceiving,
@@ -18,6 +21,16 @@ export const useNotifications = (): void => {
   const client = useClient()
 
   const [areNotificationsEnabled, setAreNotificationsEnabled] = useState(false)
+
+  const httpServerContext = useHttpServerContext()
+
+  const { showSplashScreen } = useSplashScreen()
+
+  const restart = useCallback(async () => {
+    await showSplashScreen()
+    httpServerContext?.stop()
+    RNRestart.Restart()
+  }, [showSplashScreen, httpServerContext])
 
   useEffect(() => {
     const initializeNotifications = async (): Promise<void> => {
@@ -40,13 +53,18 @@ export const useNotifications = (): void => {
     if (!client) return
 
     void handleInitialToken(client)
-    void handleInitialServerNotification(client)
-    void handleInitialLocalNotification(client)
+    void handleInitialServerNotification(client, restart)
+    void handleInitialLocalNotification(client, restart)
 
     const removeTokenReceivingHandler = handleNotificationTokenReceiving(client)
-    const removeOpeningHandler = handleServerNotificationOpening(client)
-    const removeLocalNotificationHandler =
-      handleLocalNotificationOpening(client)
+    const removeOpeningHandler = handleServerNotificationOpening(
+      client,
+      restart
+    )
+    const removeLocalNotificationHandler = handleLocalNotificationOpening(
+      client,
+      restart
+    )
     const removeServerForegroundHandler = handleServerNotificationOnForeground()
 
     return () => {
@@ -55,5 +73,5 @@ export const useNotifications = (): void => {
       removeServerForegroundHandler()
       removeLocalNotificationHandler()
     }
-  }, [client, areNotificationsEnabled])
+  }, [client, areNotificationsEnabled, restart])
 }

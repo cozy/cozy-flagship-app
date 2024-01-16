@@ -68,6 +68,7 @@ export const navigateFromNotification = async (
 
 const handleNotificationEvent = async (
   client: CozyClient,
+  restart: () => Promise<void>,
   notification: Record<string, string | number | object> | undefined
 ): Promise<void> => {
   if (!notification) return
@@ -79,6 +80,11 @@ const handleNotificationEvent = async (
     log.debug('Handle navigation notification')
     await navigateFromNotification(client, notification.redirectLink)
   }
+
+  if (notification.refresh) {
+    log.debug('Handle restart notification')
+    await restart()
+  }
 }
 
 /**
@@ -86,13 +92,15 @@ const handleNotificationEvent = async (
  * and when the app is not running
  *
  * @param client - CozyClient instance
+ * @param restart - Method used to restart the App
  */
 export const handleInitialServerNotification = async (
-  client: CozyClient
+  client: CozyClient,
+  restart: () => Promise<void>
 ): Promise<void> => {
   const notification = await messaging().getInitialNotification()
 
-  await handleNotificationEvent(client, notification?.data)
+  await handleNotificationEvent(client, restart, notification?.data)
 }
 
 /**
@@ -102,7 +110,8 @@ export const handleInitialServerNotification = async (
  * @param client - CozyClient instance
  */
 export const handleInitialLocalNotification = async (
-  client: CozyClient
+  client: CozyClient,
+  restart: () => Promise<void>
 ): Promise<void> => {
   const notification = await notifee.getInitialNotification()
 
@@ -120,7 +129,7 @@ export const handleInitialLocalNotification = async (
 
   lastLocalNotificationId = notificationId
 
-  void handleNotificationEvent(client, notification?.notification.data)
+  void handleNotificationEvent(client, restart, notification?.notification.data)
 }
 
 /**
@@ -128,21 +137,27 @@ export const handleInitialLocalNotification = async (
  * and when the app is in Background
  *
  * @param client - CozyClient instance
+ * @param restart - Method used to restart the App
  * @returns Method to unregister the handler
  */
 export const handleServerNotificationOpening = (
-  client: CozyClient
+  client: CozyClient,
+  restart: () => Promise<void>
 ): (() => void) => {
   notifee.onBackgroundEvent(async (event: Event) => {
     log.debug('Received notification from onBackgroundEvent event')
 
-    await handleNotificationEvent(client, event.detail.notification?.data)
+    await handleNotificationEvent(
+      client,
+      restart,
+      event.detail.notification?.data
+    )
   })
 
   return messaging().onNotificationOpenedApp(async notification => {
     log.debug('Received notification from onNotificationOpenedApp event')
 
-    await handleNotificationEvent(client, notification.data)
+    await handleNotificationEvent(client, restart, notification.data)
   })
 }
 
@@ -156,10 +171,12 @@ export const handleServerNotificationOpening = (
  * Foreground or in Background
  *
  * @param client - CozyClient instance
+ * @param restart - Method used to restart the App
  * @returns Method to unregister the handler
  */
 export const handleLocalNotificationOpening = (
-  client: CozyClient
+  client: CozyClient,
+  restart: () => Promise<void>
 ): (() => void) => {
   return notifee.onForegroundEvent((event: Event) => {
     // If no pressAction this mean the handler has been triggered
@@ -179,7 +196,11 @@ export const handleLocalNotificationOpening = (
 
     log.debug('Received notification from notifee.onForegroundEvent event')
 
-    void handleNotificationEvent(client, event.detail.notification?.data)
+    void handleNotificationEvent(
+      client,
+      restart,
+      event.detail.notification?.data
+    )
   })
 }
 
