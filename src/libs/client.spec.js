@@ -5,6 +5,7 @@ import {
 } from '/libs/client'
 
 import packageJSON from '../../package.json'
+import googleServicesJson from '/../android/app/src/prod/google-services.json'
 
 import CozyClient from 'cozy-client'
 
@@ -47,7 +48,10 @@ describe('client', () => {
       // Then
       expect(CozyClient).toHaveBeenCalledWith({
         oauth: {
-          certificationConfig: {},
+          certificationConfig: {
+            cloudProjectNumber: googleServicesJson.project_info.project_number,
+            issuer: 'playintegrity'
+          },
           clientKind: 'mobile',
           clientName: "software.name (Becca's iPhone 6)",
           redirectURI: 'cozy://',
