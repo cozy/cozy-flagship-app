@@ -1,7 +1,7 @@
 import BackgroundGeolocation from 'react-native-background-geolocation'
 import DeviceInfo from 'react-native-device-info'
 
-import CozyClient, { Q, fetchPolicies } from 'cozy-client'
+import CozyClient, { Q, QueryDefinition, fetchPolicies } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import { t } from '/locales/i18n'
@@ -56,10 +56,29 @@ const fetchSupportMail = async (client?: CozyClient): Promise<string> => {
   return result.data?.[0]?.attributes?.support_address ?? t('support.email')
 }
 
+export const buildServiceWebhookQuery = (): Query => {
+  // See https://github.com/cozy/cozy-client/blob/c0c7fbf1307bb383debaa6bdb3c79c29c889dbc8/packages/cozy-stack-client/src/TriggerCollection.js#L132
+  return {
+    definition: Q('io.cozy.triggers').where({
+      worker: 'service',
+      type: '@webhook'
+    }),
+    options: {
+      as: 'io.cozy.triggers/webhook/fetchOpenPathTripsWebhook',
+      fetchPolicy: fetchPolicies.olderThan(60 * 60 * 1000)
+    }
+  }
+}
+
 interface InstanceInfo {
   data?: {
     attributes?: {
       support_address?: string
     }
   }[]
+}
+
+interface Query {
+  definition: QueryDefinition
+  options: object
 }

@@ -52,3 +52,8 @@ export const SERVER_URL = 'https://openpath.cozycloud.cc'
  * Available events in GeolocationTrackingEmitter
  */
 export const TRIP_END = 'TRIP_END'
+
+/**
+ * CoachCO2 service
+ */
+export const FETCH_OPENPATH_TRIPS_SERVICE_NAME = 'fetchOpenPathTripsWebhook'
