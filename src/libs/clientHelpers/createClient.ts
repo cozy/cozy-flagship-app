@@ -8,6 +8,7 @@ import {
 } from '/libs/clientHelpers/persistClient'
 import { SOFTWARE_ID } from '/libs/constants'
 import { getClientName } from '/app/domain/authentication/services/SynchronizeService'
+import googleServicesJson from '/../android/app/src/prod/google-services.json'
 
 import packageJSON from '../../../package.json'
 
@@ -28,7 +29,10 @@ export const createClient = async (instance: string): Promise<CozyClient> => {
       clientKind: 'mobile',
       clientName: await getClientName(),
       shouldRequireFlagshipPermissions: true,
-      certificationConfig: {}
+      certificationConfig: {
+        cloudProjectNumber: googleServicesJson.project_info.project_number,
+        issuer: 'playintegrity'
+      }
     },
     appMetadata: {
       slug: 'flagship',
