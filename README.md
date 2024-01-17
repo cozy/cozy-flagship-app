@@ -5,18 +5,35 @@ This notably includes the possiblity to run client-side konnectors, to get your 
 
 ## Setup / Requirements
 
-- [RN Environnement setup](https://reactnative.dev/docs/environment-setup)
-  - Please follow the React Native CLI part and make sure all the requirements are met with the correct versions.
-- install XCode and Android Studio (or Android SDK)
 - Node 16
-- Copy the Android's `debug.keystore` from Cozy's password-store into `android/app/debug.keystore`
+- [React-Native Environnement setup](https://reactnative.dev/docs/environment-setup)
+  - Please follow the React Native CLI part and make sure all the requirements are met with the correct versions.
+- [iOS only] Install XCode 
+- [Android only] Install Android Studio (or Android SDK)
+- [Android only] Java 11
+- [Android only] Copy the Android's `debug.keystore` from Cozy's password-store into `android/app/debug.keystore`
   - Run `pass show app-amirale/Certificates/debug.keystore > android/app/debug.keystore`
   - If you don't have access to Cozy's password-store, just generate a new `debug.keystore` file
     - Run `keytool -genkey -v -keystore android/app/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000`
+- [Android only] [Fix build tools issue](#fix-build-tools-error)
 
-## Sentry configuration
 
-If you are a Cozy developer, please get the actual Sentry configuration. For this, you need to decrypt the `cozy-react-native/sentry.properties` file in the `password-store-team` repository and add it in `.env` file as `SENTRY_AUTH_TOKEN`.
+### Create and configure the env file
+
+Create the env file: `cp .env.example .env`
+
+#### Brand configuration
+
+You need some configuration depending on your brand needs.
+As you probably just need the official Cozy brand, just run:
+
+`yarn brand:configure:cozy`.
+
+#### Sentry configuration
+
+If you are a Cozy developer, please get the actual Sentry configuration in the env file.
+For this, you need to decrypt the `cozy-react-native/sentry.properties` file in the `password-store-team` repository and add it in `.env` file as `SENTRY_AUTH_TOKEN`.
+
 
 ## Run the Cozy Flagship App
 
@@ -44,6 +61,15 @@ Do not forget to check our [Tips for a better developer experience](docs/tips-fo
 
 More information about Android variant [here](https://github.com/cozy/cozy-flagship-app/blob/master/docs/how-to-debug-notifications.md).
 
+### Working with local stack
+
+If you need to access a local instance, do not forget to enable the `--host` and `mailhog` options:
+`$ cozy-stack serve --host 0.0.0.0 --mailhog`
+
+You also need a running mailhog server. To have more details about how to send mails, [see here](https://docs.cozy.io/en/howTos/dev/sendmail/).
+
+
+
 ### Working with locally hosted webviews
 
 The easiest way to develop on locally hosted webviews (like any Cozy apps like Drive or Contacts) is to :
@@ -58,7 +84,7 @@ Alternatively, you can also see the following sections to work with hot reload. 
 
 #### On Android
 
-- Create a cozy instance with the following format : `foobar.10-0-2-2.nip.io:8080`, so the webview browser has access to cozy-stack instances thanks to the redirection done by https://nip.io (10.0.2.2 is the local IP address of your emulator)
+- Create a cozy instance with the following format : `foobar.10-0-2-2.nip.io:8080`, so the webview browser has access to cozy-stack instances thanks to the redirection done by https://nip.io. `10.0.2.2` being the local IP address of your emulator. If you are working with a physical device, use you computer local IP, e.g. `192.168.1.50`. Note your device must be on the same network.
 - Launch your cozy app with `DEV_HOST=(some accessible local IP)` preceding the actual start command, so the webview browser has access to webpack dev server assets. See some examples below:
   - `DEV_HOST="$(ip -4 address show eth0| grep -Po 'inet [^/]+' | cut -d' ' -f2)" yarn start`
   - `DEV_HOST="$(hostname -I | xargs)" yarn start`
@@ -190,27 +216,41 @@ a. Run Android app on emulator
 6. To connect, use `http://cozy.192-168-1-102.nip.io:8080` if `192.168.1.102` is your ifconfig and after creating a nip.io URL from it.
    a. When using a nip.io URL, you must create a `cozy-stack` instance with the same FQDN (ex: `cozy.192-168-1-102.nip.io:8080`)
 
+### Fix build tools error
+
+To avoid the error `Installed Build Tools revision 33.0.0 is corrupted. Remove and install again using the SDK Manager.`, run the commands below:
+
+```
+cd $ANDROID_HOME/build-tools/33.0.0
+mv d8 dx
+cd lib
+mv d8.jar dx.jar
+```
+
+[More information](https://github.com/cozy/cozy-flagship-app/commit/d76e130220a87947313f7a17da8f3d9b59f704e6).
+
+
 ### Common errors
 
-1. XCode: `error: An organization slug is required`
+* XCode: `error: An organization slug is required`
 
 Read the Sentry configuration paragraph above.
 
-2. Application blocked on the Splashscreen
+* Application blocked on the Splashscreen
 
 Verify that the Cozy you are login into is using the last version of `cozy-home`, and try again
 
-3. Error on app `Tried to register two views with the same name RCTIndexInjectionWebView`
+* Error on app `Tried to register two views with the same name RCTIndexInjectionWebView`
 
 This may happen after development's HotReload occurs. When encountered just restart the app. This should not happen on production.
 
-4. Cozy-app `cozy-notes` is not working when served locally
+* Cozy-app `cozy-notes` is not working when served locally
 
 `cozy-notes` bundle relies on a specific `tar_prefix`. When served from local `--appDir` then no `tar_prefix` is applied. However the Cozy's registry sends info from production app which has a defined `tar_prefix`.
 This would break the app as ReactNative will try to serve local assets using a non-existing directory.
 To prevent conflict on this, please increase your local `cozy-notes`'s version in the built `manifest.webapp` for a version that does not exist in production (i.e: `"version": "0.0.X.notexisting"`)
 
-5. Java-related errors.
+* Java-related errors.
 
 Please make sure that Java 11 is installed and used.
 
@@ -220,19 +260,32 @@ Run :
 source ./reset-android.sh
 ```
 
-6. Command PhaseScriptExecution failed with a nonzero exit code
+* Command PhaseScriptExecution failed with a nonzero exit code
 
 When compiling the app from XCode, if you encounter a `Command PhaseScriptExecution failed with a nonzero exit code` error, then your NodeJS configuration may be invalid
 If using NVM, then ensure that `/usr/local/bin/node` is correctly linked to your NVM default NodeJS location
 More info: https://github.com/facebook/react-native/issues/32984#issuecomment-1165385007
 
-7. `Installed Build Tools revision 33.0.0 is corrupted. Remove and install again using the SDK Manager.`
-
-Run commands below. [More information](https://github.com/cozy/cozy-flagship-app/commit/d76e130220a87947313f7a17da8f3d9b59f704e6).
-
+* Brand configuration error
 ```
-cd $ANDROID_HOME/build-tools/33.0.0
-mv d8 dx
-cd lib
-mv d8.jar dx.jar
-```
+error: cannot find symbol
+      .addHeader("User-Agent", BuildConfig.USER_AGENT + "-" + BuildConfig.VERSION_NAME)
+                                          ^
+  symbol:   variable USER_AGENT
+  location: class BuildConfig
+``` 
+Run `yarn brand:configure:cozy`
+
+* `INSTALL_FAILED_VERSION_DOWNGRADE` error
+
+Please desinstall any cozy-flagship app you might have on your device
+
+* `No online devices found.` error
+
+Check your device is visible and authorized by running `adb devices`.
+Restart adb if it does not appear.
+If it appears unauthorized, you might need an extra step: https://developer.android.com/studio/run/device?hl=fr#setting-up
+
+* `INSTALL_FAILED_USER_RESTRICTED` error
+
+When the app is being installed on your device for the first time, you need to manually accept it.
