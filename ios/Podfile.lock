@@ -554,16 +554,16 @@ PODS:
   - RNScreens (3.18.2):
     - React-Core
     - React-RCTImage
-  - RNSentry (3.4.3):
+  - RNSentry (5.16.0):
     - React-Core
-    - Sentry (= 7.11.0)
+    - Sentry/HybridSDK (= 8.17.1)
   - RNShare (10.0.2):
     - React-Core
   - RNSVG (13.14.0):
     - React-Core
-  - Sentry (7.11.0):
-    - Sentry/Core (= 7.11.0)
-  - Sentry/Core (7.11.0)
+  - Sentry/HybridSDK (8.17.1):
+    - SentryPrivate (= 8.17.1)
+  - SentryPrivate (8.17.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -707,6 +707,7 @@ SPEC REPOS:
     - PromisesObjC
     - Protobuf
     - Sentry
+    - SentryPrivate
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -960,10 +961,11 @@ SPEC CHECKSUMS:
   RNNotifee: f3c01b391dd8e98e67f539f9a35a9cbcd3bae744
   RNPermissions: 83168e00be08bd043f51fb738256bf761f38952d
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
-  RNSentry: 85f6525b5fe8d2ada065858026b338605b3c09da
+  RNSentry: c3e5cc92ba8db6811db48b82d1bba8c830b50981
   RNShare: 859ff710211285676b0bcedd156c12437ea1d564
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
-  Sentry: 0c5cd63d714187b4a39c331c1f0eb04ba7868341
+  Sentry: d9f99f9cc13777c5d938650c1e1c85047bb4f0d1
+  SentryPrivate: 839b1e58addf58624087a80b2628e543193fa8ef
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
