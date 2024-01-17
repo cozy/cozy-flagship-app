@@ -1,7 +1,4 @@
-import {
-  runOpenPathPipeline,
-  uploadUserCache
-} from '/app/domain/geolocation/tracking/upload'
+import { uploadUserCache } from '/app/domain/geolocation/tracking/upload'
 import { getOrCreateUser } from '/app/domain/geolocation/tracking/user'
 import { getTs, Log, parseISOString } from '/app/domain/geolocation/helpers'
 import {
@@ -47,14 +44,25 @@ export const createDataBatch = (locations, nRun, maxBatchSize) => {
   return batchLocations
 }
 
-// Future entry point of algorithm
-// prepareTrackingData / extractTrackingDate
-export const smartSend = async (locations, user, { force = false } = {}) => {
+/**
+ * Upload local tracking data to the server
+ *
+ * @param {Array<Location>} locations - The location points to upload
+ * @param {string} user - The openpath user id
+ * @param {{boolean}} - Additional params
+ * @returns {number} The number of uploaded tracking data
+ */
+export const uploadTrackingData = async (
+  locations,
+  user,
+  { force = false } = {}
+) => {
   await getOrCreateUser(user)
 
   if (!locations || locations.length === 0) {
     Log('No new locations')
     await uploadWithNoNewPoints({ user, force })
+    return 0
   } else {
     Log('Found pending locations, uploading: ' + locations.length)
     const lastUploadedPoint = await getLastPointUploaded()
@@ -77,7 +85,7 @@ export const smartSend = async (locations, user, { force = false } = {}) => {
       }
     }
     Log('Uploaded last batch')
-    await runOpenPathPipeline(user)
+    return locations.length
   }
 }
 

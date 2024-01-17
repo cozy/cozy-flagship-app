@@ -88,6 +88,14 @@ export const getFlagFailUpload = async () => {
   }
 }
 
+export const getFetchServiceWebHook = async () => {
+  return await getData(StorageKeys.ServiceWebhookURL)
+}
+
+export const storeFetchServiceWebHook = async webhookURL => {
+  return storeData(StorageKeys.ServiceWebhookURL, webhookURL)
+}
+
 export const getId = async () => {
   return await getData(StorageKeys.IdStorageAdress)
 }
