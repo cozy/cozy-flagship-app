@@ -3,8 +3,8 @@ import DeviceInfo from 'react-native-device-info'
 
 import CozyClient, { Q, QueryDefinition, fetchPolicies } from 'cozy-client'
 
+import { fetchSupportMail } from '/app/domain/logger/supportEmail'
 import { devlog } from '/core/tools/env'
-import { t } from '/locales/i18n'
 
 export const getTs = (location: { timestamp: string }): number => {
   return parseISOString(location.timestamp).getTime() / 1000
@@ -38,22 +38,6 @@ export const sendLogFile = async (client?: CozyClient): Promise<boolean> => {
   return Logger.emailLog(emailSupport)
 }
 
-const fetchSupportMail = async (client?: CozyClient): Promise<string> => {
-  if (!client) {
-    return t('support.email')
-  }
-
-  const result = (await client.fetchQueryAndGetFromState({
-    definition: Q('io.cozy.settings').getById('io.cozy.settings.context'),
-    options: {
-      as: 'io.cozy.settings/io.cozy.settings.context',
-      fetchPolicy: fetchPolicies.olderThan(60 * 60 * 1000)
-    }
-  })) as InstanceInfo
-
-  return result.data?.[0]?.attributes?.support_address ?? t('support.email')
-}
-
 export const buildServiceWebhookQuery = (): Query => {
   // See https://github.com/cozy/cozy-client/blob/c0c7fbf1307bb383debaa6bdb3c79c29c889dbc8/packages/cozy-stack-client/src/TriggerCollection.js#L132
   return {
@@ -66,14 +50,6 @@ export const buildServiceWebhookQuery = (): Query => {
       fetchPolicy: fetchPolicies.olderThan(60 * 60 * 1000)
     }
   }
-}
-
-interface InstanceInfo {
-  data?: {
-    attributes?: {
-      support_address?: string
-    }
-  }[]
 }
 
 interface Query {
