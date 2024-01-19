@@ -16369,6 +16369,11 @@ react-native-document-scanner-plugin@^0.7.3:
   resolved "https://registry.yarnpkg.com/react-native-document-scanner-plugin/-/react-native-document-scanner-plugin-0.7.3.tgz#a0212e687681e3b1ed9b4aebcb1e7fc20d52ab50"
   integrity sha512-cddhp1rDK3nwCyi3qhbDsuWzC2svBgoGhHNQRgxJvrgfM4uoQKAGSU3XYY3VXjAZCzlqVZz9PYziYDD6fdEIcw==
 
+react-native-file-logger@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-file-logger/-/react-native-file-logger-0.4.1.tgz#6d4cdfd333489a32b20242f898cff0b196444707"
+  integrity sha512-UpdMtpQvSgOB4ohid2QxwWFkI92gqKEl2woFbcPEWRbmfrwpTZuNPzNEooMTjmIhFBQPfaOcymCL9gK1naE01g==
+
 react-native-file-viewer@^2.1.5:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/react-native-file-viewer/-/react-native-file-viewer-2.1.5.tgz#cd4544f573108e79002b5c7e1ebfce4371885250"
