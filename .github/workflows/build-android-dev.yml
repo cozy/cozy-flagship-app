@@ -109,6 +109,8 @@ jobs:
           alias: ${{ secrets[format('{0}_ANDROID_ALIAS', inputs.brand)] }}
           keyStorePassword: ${{ secrets[format('{0}_ANDROID_KEY_STORE_PASSWORD', inputs.brand)] }}
           keyPassword: ${{ secrets[format('{0}_ANDROID_KEY_PASSWORD', inputs.brand)] }}
+        env:
+          BUILD_TOOLS_VERSION: "33.0.0"
 
       - name: Upload Dev artifact to GitHub
         uses: actions/upload-artifact@v3
@@ -126,6 +128,8 @@ jobs:
           alias: ${{ secrets[format('{0}_ANDROID_ALIAS', inputs.brand)] }}
           keyStorePassword: ${{ secrets[format('{0}_ANDROID_KEY_STORE_PASSWORD', inputs.brand)] }}
           keyPassword: ${{ secrets[format('{0}_ANDROID_KEY_PASSWORD', inputs.brand)] }}
+        env:
+          BUILD_TOOLS_VERSION: "33.0.0"
 
       - name: Upload Prod artifact to GitHub
         uses: actions/upload-artifact@v3
