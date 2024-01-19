@@ -530,6 +530,9 @@ PODS:
     - Firebase/Messaging (= 8.15.0)
     - React-Core
     - RNFBApp
+  - RNFileLogger (0.4.1):
+    - CocoaLumberjack
+    - React
   - RNFileViewer (2.1.5):
     - React-Core
   - RNFS (2.20.0):
@@ -655,6 +658,7 @@ DEPENDENCIES:
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
+  - RNFileLogger (from `../node_modules/react-native-file-logger`)
   - RNFileViewer (from `../node_modules/react-native-file-viewer`)
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
@@ -830,6 +834,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBMessaging:
     :path: "../node_modules/@react-native-firebase/messaging"
+  RNFileLogger:
+    :path: "../node_modules/react-native-file-logger"
   RNFileViewer:
     :path: "../node_modules/react-native-file-viewer"
   RNFS:
@@ -956,6 +962,7 @@ SPEC CHECKSUMS:
   RNDeviceInfo: 4701f0bf2a06b34654745053db0ce4cb0c53ada7
   RNFBApp: e4439717c23252458da2b41b81b4b475c86f90c4
   RNFBMessaging: 40dac204b4197a2661dec5be964780c6ec39bf65
+  RNFileLogger: 9eaf7a6ea709eaaffe646cc485b98ae1dbf1e9f0
   RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
