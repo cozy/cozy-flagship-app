@@ -61,6 +61,9 @@ import LauncherView from '/screens/konnectors/LauncherView'
 import { useShareFiles } from '/app/domain/osReceive/services/shareFilesService'
 import { ClouderyOffer } from '/app/view/IAP/ClouderyOffer'
 import { useDimensions } from '/libs/dimensions'
+import { configureFileLogger } from '/app/domain/logger/fileLogger'
+
+configureFileLogger()
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
