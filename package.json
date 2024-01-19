@@ -78,7 +78,7 @@
     "react-native-background-geolocation": "^4.13.3",
     "react-native-background-upload": "^6.6.0",
     "react-native-biometrics": "3.0.1",
-    "react-native-bootsplash": "github:cozy/react-native-bootsplash#0.0.1",
+    "react-native-bootsplash": "github:cozy/react-native-bootsplash#0.0.2",
     "react-native-change-icon": "^4.0.0",
     "react-native-config": "1.5.0",
     "react-native-device-info": "^10.3.0",
