@@ -75,7 +75,7 @@
     "react-i18next": "14.0.0",
     "react-native": "0.66.4",
     "react-native-background-fetch": "^4.2.1",
-    "react-native-background-geolocation": "^4.13.3",
+    "react-native-background-geolocation": "^4.14.5",
     "react-native-background-upload": "^6.6.0",
     "react-native-biometrics": "3.0.1",
     "react-native-bootsplash": "github:cozy/react-native-bootsplash#0.0.2",
