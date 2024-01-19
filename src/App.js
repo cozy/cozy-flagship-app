@@ -147,10 +147,7 @@ const InnerNav = ({ client, setClient }) => {
         />
         <IconChangedModal />
         <LauncherContextProvider>
-          <SafeAreaProvider>
-            <App setClient={setClient} />
-            <LockScreenWrapper />
-          </SafeAreaProvider>
+          <App setClient={setClient} />
         </LauncherContextProvider>
       </View>
     </NativeIntentProvider>
@@ -159,13 +156,16 @@ const InnerNav = ({ client, setClient }) => {
 
 const Nav = ({ client, setClient }) => (
   <NavigationContainer ref={RootNavigation.navigationRef}>
-    <ErrorProvider>
-      <LoadingOverlayProvider>
-        <OsReceiveProvider>
-          <InnerNav client={client} setClient={setClient} />
-        </OsReceiveProvider>
-      </LoadingOverlayProvider>
-    </ErrorProvider>
+    <SafeAreaProvider>
+      <ErrorProvider>
+        <LoadingOverlayProvider>
+          <OsReceiveProvider>
+            <InnerNav client={client} setClient={setClient} />
+          </OsReceiveProvider>
+        </LoadingOverlayProvider>
+      </ErrorProvider>
+      <LockScreenWrapper />
+    </SafeAreaProvider>
   </NavigationContainer>
 )
 
