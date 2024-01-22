@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { useClient, useQuery } from 'cozy-client'
+import { useClient } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import {
@@ -8,23 +8,11 @@ import {
   checkShouldStartTracking
 } from '/app/domain/geolocation/services/tracking'
 import { checkGeolocationQuota } from '/app/domain/geolocation/helpers/quota'
+import { fetchAndStoreWebhook } from '/app/domain/geolocation/helpers/webhook'
 import { GeolocationTrackingEmitter } from '/app/domain/geolocation/tracking/events'
-import {
-  FETCH_OPENPATH_TRIPS_SERVICE_NAME,
-  TRIP_END
-} from '/app/domain/geolocation/tracking/consts'
-import { buildServiceWebhookQuery } from '/app/domain/geolocation/helpers/index'
-import { storeFetchServiceWebHook } from '/app/domain/geolocation/tracking'
-const log = Minilog('📍 Geolocation')
+import { TRIP_END } from '/app/domain/geolocation/tracking/consts'
 
-interface WebhookTrigger {
-  message: {
-    name: string
-  }
-  links?: {
-    webhook?: string
-  }
-}
+const log = Minilog('📍 Geolocation')
 
 export const useGeolocationTracking = (): void => {
   const client = useClient()
@@ -60,18 +48,13 @@ export const useGeolocationTracking = (): void => {
     void initializeTracking()
   }, [client])
 
-  const webhookQuery = buildServiceWebhookQuery()
-  const webhookResp = useQuery(webhookQuery.definition, webhookQuery.options)
+  useEffect(() => {
+    const initializeWebhook = async (): Promise<void> => {
+      if (!client) return
 
-  if (Array.isArray(webhookResp.data) && webhookResp.data.length > 0) {
-    const data = webhookResp.data as WebhookTrigger[]
-
-    const openpathServiceWebHook = data.find(
-      trigger => trigger.message.name === FETCH_OPENPATH_TRIPS_SERVICE_NAME
-    )
-    const webhook = openpathServiceWebHook?.links?.webhook
-    if (webhook) {
-      void storeFetchServiceWebHook(webhook)
+      await fetchAndStoreWebhook(client)
     }
-  }
+
+    void initializeWebhook()
+  }, [client])
 }
