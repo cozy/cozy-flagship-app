@@ -95,10 +95,23 @@ export const CozyWebView = ({
       innerUri && webviewRef && nativeIntent?.unregisterWebview(innerUri)
   }, [innerUri, nativeIntent, webviewRef])
 
-  const onAnswer = useCallback(
+  const onCryptoAnswer = useCallback(
     (messageId, response) => {
       const payload = JSON.stringify({
         type: 'Crypto',
+        messageId,
+        param: response
+      })
+
+      webviewRef.postMessage(payload)
+    },
+    [webviewRef]
+  )
+
+  const onNavigatorShareAnswer = useCallback(
+    (messageId, response) => {
+      const payload = JSON.stringify({
+        type: 'NavigatorShare',
         messageId,
         param: response
       })
@@ -212,8 +225,8 @@ export const CozyWebView = ({
         rest.onLoad?.(event)
       }}
       onMessage={async m => {
-        tryCrypto(m, log, logId, onAnswer)
-        tryNavigatorShare(m, log, logId, onAnswer)
+        tryCrypto(m, log, logId, onCryptoAnswer)
+        tryNavigatorShare(m, log, logId, onNavigatorShareAnswer)
         tryConsole(m, log, logId)
         nativeIntent?.tryEmit(m, componentId)
         tryHandleLauncherMessage(m)
