@@ -513,7 +513,7 @@ PODS:
   - RNBackgroundGeolocation (4.13.3):
     - CocoaLumberjack (~> 3.7.2)
     - React-Core
-  - RNBootSplash (3.2.3):
+  - RNBootSplash (3.2.4):
     - React-Core
   - RNCAsyncStorage (1.21.0):
     - React-Core
@@ -944,7 +944,7 @@ SPEC CHECKSUMS:
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
   RNBackgroundFetch: 501c34ad6e880818ba17e7840b23f20a2d112923
   RNBackgroundGeolocation: f2a2052e63d3bf255de1e2f84a24029f89d91601
-  RNBootSplash: 8ef5ffa03dadd35f66510b42960ce40f397c98bf
+  RNBootSplash: 4844706cbb56a3270556c9b94e59dedadccd47e4
   RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNDateTimePicker: fc2e4f2795877d45e84d85659bebe627eba5c931
   RNDeviceInfo: 4701f0bf2a06b34654745053db0ce4cb0c53ada7
