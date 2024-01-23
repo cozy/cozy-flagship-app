@@ -3,6 +3,7 @@ import './openHandleFix'
 import mockNotifee from '@notifee/react-native/jest-mock'
 import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock'
 import mockRNCameraRoll from '@react-native-camera-roll/camera-roll/src/__mocks__/nativeInterface'
+import mockClipboard from '@react-native-clipboard/clipboard/jest/clipboard-mock.js'
 import mockRNCNetInfo from '@react-native-community/netinfo/jest/netinfo-mock.js'
 import mockBackHandler from 'react-native/Libraries/Utilities/__mocks__/BackHandler.js'
 import mockRNDeviceInfo from 'react-native-device-info/jest/react-native-device-info-mock'
@@ -109,3 +110,5 @@ jest.mock('react-native/Libraries/Components/Switch/Switch', () => {
     default: mockComponent('react-native/Libraries/Components/Switch/Switch')
   }
 })
+
+jest.mock('@react-native-clipboard/clipboard', () => mockClipboard)
