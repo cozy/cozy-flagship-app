@@ -44,16 +44,16 @@ export const jsSubscribers = `
 
     const dataPayload = JSON.parse(rawData)
 
-    if(dataPayload.type !== 'Crypto' && dataPayload.type !== 'NavigatorShare') {
+    if(dataPayload.type !== 'Crypto' && dataPayload.type !== 'NavigatorShare' && dataPayload.type !== 'NavigatorClipboard') {
       return
     }
 
     const { messageId, param: serializedParam } = dataPayload
 
     const param = await webviewParse(serializedParam)
-  
+
     const subscriber = answerSubscribers.find(({ id }) => id === messageId)
-  
+
     if (subscriber) {
       unsubscribeAnswer(messageId)
 
@@ -66,12 +66,12 @@ export const jsSubscribers = `
       id: messageId,
       callback: callback
     })
-  
+
     console.debug(
       \`Subscribers registered answer... \${answerSubscribers.length} answer(s) are now subscribed\`
     )
   }
-  
+
   function unsubscribeAnswer(messageId) {
     answerSubscribers = answerSubscribers.filter(({ id }) => id !== messageId)
     console.debug(

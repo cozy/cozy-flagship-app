@@ -16,6 +16,10 @@ import {
   tryNavigatorShare
 } from '/components/webviews/jsInteractions/jsEnsureNavigatorShare'
 import {
+  jsEnsureNavigatorClipboard,
+  tryNavigatorClipboard
+} from '/components/webviews/jsInteractions/jsEnsureNavigatorClipboard'
+import {
   jsLogInterception,
   tryConsole
 } from '/components/webviews/jsInteractions/jsLogInterception'
@@ -121,6 +125,19 @@ export const CozyWebView = ({
     [webviewRef]
   )
 
+  const onNavigatorClipboardAnswer = useCallback(
+    (messageId, response) => {
+      const payload = JSON.stringify({
+        type: 'NavigatorClipboard',
+        messageId,
+        param: response
+      })
+
+      webviewRef.postMessage(payload)
+    },
+    [webviewRef]
+  )
+
   useEffect(() => {
     const handleLoginSucess = accountId => {
       const payload = JSON.stringify({
@@ -165,6 +182,8 @@ export const CozyWebView = ({
       ${jsEnsureCrypto}
 
       ${jsEnsureNavigatorShare}
+
+      ${jsEnsureNavigatorClipboard}
 
       return true;
     })();
@@ -227,6 +246,7 @@ export const CozyWebView = ({
       onMessage={async m => {
         tryCrypto(m, log, logId, onCryptoAnswer)
         tryNavigatorShare(m, log, logId, onNavigatorShareAnswer)
+        tryNavigatorClipboard(m, log, logId, onNavigatorClipboardAnswer)
         tryConsole(m, log, logId)
         nativeIntent?.tryEmit(m, componentId)
         tryHandleLauncherMessage(m)
