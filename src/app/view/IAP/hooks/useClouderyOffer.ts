@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Platform } from 'react-native'
 import { initConnection, useIAP } from 'react-native-iap'
 import { getLocales } from 'react-native-localize'
 import Toast from 'react-native-toast-message'
@@ -8,6 +7,7 @@ import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
 import { useClient, useInstanceInfo } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
+import { SKUS } from '/app/domain/iap/services/availableOffers'
 import {
   CLOUDERY_OFFER,
   interceptNavigation,
@@ -19,13 +19,6 @@ import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { t } from '/locales/i18n'
 
 const log = Minilog('💳 Cloudery Offer')
-
-const IOS_OFFERS = [
-  'price_2024_standard_monthly_01',
-  'price_2024_premium_monthly_01'
-]
-const ANDROID_OFFERS = ['2024_standard_01', '2024_premium_01']
-const SKUS = Platform.OS === 'ios' ? IOS_OFFERS : ANDROID_OFFERS
 
 interface BuyingStateIDLE {
   state: 'IDLE'
