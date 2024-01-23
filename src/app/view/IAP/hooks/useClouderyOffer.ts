@@ -104,7 +104,7 @@ export const useClouderyOffer = (): ClouderyOfferState => {
         } catch (error: unknown) {
           const errorMessage = getErrorMessage(error)
           log.error(
-            `Error while analysing WebView navigation. Intercept it anyway to prevent unexpected behavior: ${errorMessage}`
+            `Error while initializing ClouderyOffer popup's url: ${errorMessage}`
           )
           Toast.show({
             text1: t('screens.clouderyOffer.error.title'),
