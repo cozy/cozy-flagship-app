@@ -29,6 +29,7 @@ const strSubmit = 'SE CONNECTER'
 
 const locale = 'fr'
 
+console.log('💜 getDimensions() from PasswordView')
 const dimensions = getDimensions()
 
 const getCustomThemeLink = (clouderyTheme: ClouderyTheme): string =>

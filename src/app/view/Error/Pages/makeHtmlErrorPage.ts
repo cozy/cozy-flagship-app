@@ -70,6 +70,7 @@ export const makeHtmlErrorPage = ({
   errorDetails,
   theme = Theme.inverted
 }: MakeErrorPageProps): string => {
+  console.log('💜 getDimensions() from makeHtmlErrorPage')
   const dimensions = getDimensions()
   const navbarHeight = dimensions.navbarHeight
   const statusBarHeight = dimensions.statusBarHeight

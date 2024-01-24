@@ -17,6 +17,7 @@ import { useI18n } from '/locales/i18n'
 import { getColors } from '/ui/colors'
 
 const colors = getColors()
+console.log('💜 getDimensions() from ClouderyOffer')
 const { statusBarHeight } = getDimensions()
 
 const HEADER_PADDING_TOP = statusBarHeight + 8

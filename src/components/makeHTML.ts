@@ -12,6 +12,7 @@ const makeDOM = ({
   body: string
   isInverted: boolean
 }): string => {
+  console.log('💜 getDimensions() from makeDOM')
   const { navbarHeight, statusBarHeight } = getDimensions()
 
   const theme = isInverted ? 'theme-inverted' : ''

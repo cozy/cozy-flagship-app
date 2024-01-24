@@ -12,6 +12,7 @@ import { version } from '../../../../package.json'
 const immersiveRoutes = ['home', 'default']
 
 const makeMetadata = (routeName?: string): string => {
+  console.log('💜 getDimensions() from makeMetadata')
   const { navbarHeight, statusBarHeight } = getDimensions()
 
   return JSON.stringify({
@@ -57,6 +58,7 @@ export const jsCozyGlobal = (
    */
   try {
     if (shouldDisableGetIndex()) {
+      console.log('💜 getDimensions() from shouldDisableGetIndex')
       const { navbarHeight, statusBarHeight } = getDimensions()
       const osClass = `flagship-os-${Platform.OS}`
       const routeClass = `flagship-route-${

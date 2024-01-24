@@ -12,7 +12,10 @@ import { getColors } from '/ui/colors'
 
 const log = Minilog('TransitionToPasswordView')
 
-const webViewTopToNativeTop = top => top + getDimensions().statusBarHeight
+const webViewTopToNativeTop = top => {
+  console.log('💜 getDimensions() from webViewTopToNativeTop')
+  return top + getDimensions().statusBarHeight
+}
 
 const colors = getColors()
 

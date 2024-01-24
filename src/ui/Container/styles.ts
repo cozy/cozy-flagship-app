@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native'
 import { getDimensions } from '/libs/dimensions'
 import { palette } from '/ui/palette'
 
+console.log('💜 getDimensions() from Container/styles.ts')
 const { statusBarHeight } = getDimensions()
 
 export const styles = StyleSheet.create({

@@ -14,6 +14,7 @@ export const handleError = ({ nativeEvent }: WebViewErrorEvent): void => {
     NetService.handleOffline(routes.home)
 }
 
+console.log('💜 getDimensions() from CozyAppScreen')
 const { screenHeight, screenWidth } = getDimensions()
 
 export const config = {

@@ -1,5 +1,6 @@
 import { getDimensions } from '/libs/dimensions'
 
+console.log('💜 getDimensions() from webviewPaddingINjection')
 const dimensions = getDimensions()
 
 export const jsPaddingInjection = `

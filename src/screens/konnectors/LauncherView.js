@@ -32,6 +32,7 @@ import { deactivateKeepAwake } from '/app/domain/sleep/services/sleep'
 const log = Minilog('LauncherView')
 
 const colors = getColors()
+console.log('💜 getDimensions() from LauncherView')
 const { statusBarHeight } = getDimensions()
 const HEADER_PADDING_TOP = statusBarHeight + 8
 const HEADER_PADDING_BOTTOM = 8

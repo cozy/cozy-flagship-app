@@ -23,6 +23,15 @@ const useDimensions = (): DeviceDimensions => {
   const insets = useSafeAreaInsets()
   const frame = useSafeAreaFrame()
 
+  console.log('🌈🌈🌈🌈🌈')
+  console.log('USE DIMENSION', {
+    navbarHeight: insets.bottom,
+    screenHeight: frame.height,
+    screenWidth: frame.width,
+    statusBarHeight: insets.top
+  })
+  console.log('🌈🌈🌈🌈🌈')
+
   useEffect(() => {
     setDimensions({
       navbarHeight: insets.bottom,
@@ -48,6 +57,10 @@ let dimensionsHook: DeviceDimensions | undefined = undefined
  */
 const getDimensions = (): DeviceDimensions => {
   if (dimensionsHook) {
+    console.log('🟣🟣🟣🟣🟣')
+    console.log('GET DIMENSION returns initial', dimensionsHook)
+    console.log('🟣🟣🟣🟣🟣')
+    
     return dimensionsHook
   }
 
@@ -58,10 +71,24 @@ const getDimensions = (): DeviceDimensions => {
     statusBarHeight: initialWindowMetrics?.insets.top ?? 0
   }
 
+  if (initialDimensions.navbarHeight === 0) {
+    console.log('🔴🔴🔴🔴🔴')
+    console.log('PROBLEM')
+    console.log('🔴🔴🔴🔴🔴')
+  }
+
+  console.log('🟢🟢🟢🟢🟢')
+  console.log('GET DIMENSION returns initial', initialDimensions)
+  console.log('🟢🟢🟢🟢🟢')
+
   return initialDimensions
 }
 
 export const setDimensions = (dimensions: DeviceDimensions): void => {
+  console.log('🟡🟡🟡🟡🟡')
+  console.log('setDimensions update dimensionsHook', dimensions)
+  console.log('🟡🟡🟡🟡🟡')
+
   dimensionsHook = dimensions
 }
 

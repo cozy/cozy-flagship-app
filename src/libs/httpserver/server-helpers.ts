@@ -4,6 +4,7 @@ import { getDimensions } from '/libs/dimensions'
 import { navigationRef } from '/libs/RootNavigation'
 
 export const addBarStyles = (HTMLstring: string): string => {
+  console.log('💜 getDimensions() from addBarStyles')
   const { navbarHeight, statusBarHeight } = getDimensions()
 
   const style = `<style>body {--flagship-top-height: ${statusBarHeight}px; --flagship-bottom-height: ${navbarHeight}px;}</style>`

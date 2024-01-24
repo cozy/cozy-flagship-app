@@ -25,22 +25,25 @@ const progressBarConfig = {
 export const LoadingOverlay = ({
   loadingMessage,
   style
-}: LoadingOverlayProps): JSX.Element => (
-  // Always want inverted here because the overlay is on top of a dark background
-  <CozyTheme variant="inverted">
-    <View style={[styles.container, style]}>
-      <BlurView style={styles.absolute} blurType="dark" blurAmount={10} />
+}: LoadingOverlayProps): JSX.Element => {
+  console.log('💜 getDimensions() from LoadingOverlay')
+  return (
+    // Always want inverted here because the overlay is on top of a dark background
+    <CozyTheme variant="inverted">
+      <View style={[styles.container, style]}>
+        <BlurView style={styles.absolute} blurType="dark" blurAmount={10} />
 
-      <View style={styles.containerContent}>
-        <Typography variant="body1" style={{ marginBottom: hPadding * 0.5 }}>
-          {loadingMessage}
-        </Typography>
+        <View style={styles.containerContent}>
+          <Typography variant="body1" style={{ marginBottom: hPadding * 0.5 }}>
+            {loadingMessage}
+          </Typography>
 
-        <ProgressBar
-          width={getDimensions().screenWidth - hPadding}
-          {...progressBarConfig}
-        />
+          <ProgressBar
+            width={getDimensions().screenWidth - hPadding}
+            {...progressBarConfig}
+          />
+        </View>
       </View>
-    </View>
-  </CozyTheme>
-)
+    </CozyTheme>
+  )
+}

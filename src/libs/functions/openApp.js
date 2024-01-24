@@ -189,6 +189,7 @@ export const openApp = (client, navigation, href, app, iconParams) => {
 }
 
 export const getDefaultIconParams = () => {
+  console.log('💜 getDimensions() from getDefaultIconParams')
   const { screenWidth, screenHeight } = getDimensions()
 
   return {
@@ -227,6 +228,7 @@ export const navigateToApp = ({ navigation, href, slug, iconParams }) => {
  * @returns {import('/constants/route-types').IconParams}
  */
 export const useDefaultIconParams = () => {
+  console.log('💜 getDimensions() from useDefaultIconParams')
   const { screenWidth, screenHeight } = getDimensions()
 
   return useMemo(() => {
