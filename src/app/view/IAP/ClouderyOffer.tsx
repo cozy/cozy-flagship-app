@@ -27,6 +27,7 @@ const TOUCHABLE_VERTICAL_PADDING = 8
 const ClouderyOfferWithIAPContext = (): JSX.Element | null => {
   const {
     popupUrl,
+    partialPopupUrl,
     instanceInfoLoaded,
     interceptNavigation,
     buyingState,
@@ -35,7 +36,7 @@ const ClouderyOfferWithIAPContext = (): JSX.Element | null => {
     backToOffers
   } = useClouderyOffer()
 
-  return popupUrl && instanceInfoLoaded ? (
+  return partialPopupUrl && instanceInfoLoaded ? (
     <>
       <WebViewWithLoadingOverlay
         hidePopup={hidePopup}
@@ -60,7 +61,7 @@ const defaultFlagshipUI: FlagshipUI = {
 
 interface WebViewWithLoadingOverlayProps {
   hidePopup: () => void
-  popupUrl: string
+  popupUrl: string | null
   interceptNavigation: (request: WebViewNavigation) => boolean
 }
 
@@ -80,11 +81,13 @@ const WebViewWithLoadingOverlay = ({
   return (
     <View style={styles.dialog}>
       <BackButton onPress={hidePopup} />
-      <WebView
-        source={{ uri: popupUrl }}
-        onShouldStartLoadWithRequest={interceptNavigation}
-        onLoadEnd={(): void => setLoading(false)}
-      />
+      {popupUrl && (
+        <WebView
+          source={{ uri: popupUrl }}
+          onShouldStartLoadWithRequest={interceptNavigation}
+          onLoadEnd={(): void => setLoading(false)}
+        />
+      )}
       {loading && <LoadingOverlay />}
     </View>
   )
