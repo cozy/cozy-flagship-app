@@ -7,6 +7,7 @@ import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
 import Minilog from 'cozy-minilog'
 
 import * as RootNavigation from '/libs/RootNavigation'
+import { isIapAvailable } from '/app/domain/iap/services/availableOffers'
 import {
   scanDocument,
   isScannerAvailable
@@ -99,7 +100,7 @@ const isAvailable = (featureName: string): Promise<boolean> => {
   } else if (featureName === 'shareFiles') {
     return Promise.resolve(true)
   } else if (featureName === 'iap') {
-    return Promise.resolve(true)
+    return isIapAvailable()
   }
 
   return Promise.resolve(false)

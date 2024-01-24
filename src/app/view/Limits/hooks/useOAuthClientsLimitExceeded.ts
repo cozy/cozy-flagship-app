@@ -8,6 +8,7 @@ import type {
 import { useClient, useInstanceInfo } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
+import { isIapAvailable } from '/app/domain/iap/services/availableOffers'
 import {
   OAUTH_CLIENTS_LIMIT_EXCEEDED,
   OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH,
@@ -38,18 +39,28 @@ export const useOAuthClientsLimitExceeded = (
 
   useEffect(() => {
     const eventCallback = (href: string): void => {
-      if (client === null) {
-        log.error('Client is null, should not happen')
-        return
+      const doAsync = async (): Promise<void> => {
+        if (client === null) {
+          log.error('Client is null, should not happen')
+          return
+        }
+
+        const rootURL = client.getStackClient().uri
+        const encodedRedirect = encodeURIComponent(href)
+
+        const iapAvailable = await isIapAvailable()
+        const isIapAvailableParam = iapAvailable
+          ? 'isIapAvailable=true'
+          : 'isIapAvailable=false'
+
+        setPopupUrl(
+          current =>
+            current ??
+            `${rootURL}${OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH}?isFlagship=true&${isIapAvailableParam}&redirect=${encodedRedirect}`
+        )
       }
 
-      const rootURL = client.getStackClient().uri
-      const encodedRedirect = encodeURIComponent(href)
-      setPopupUrl(
-        current =>
-          current ??
-          `${rootURL}${OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH}?isFlagship=true&isIapAvailable=true&redirect=${encodedRedirect}`
-      )
+      void doAsync()
     }
 
     const subscription = oauthClientLimitEventHandler.addListener(
