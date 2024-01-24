@@ -56,6 +56,7 @@ import {
 } from '/screens/home/hooks/useLauncherContext'
 import LauncherView from '/screens/konnectors/LauncherView'
 import { useShareFiles } from '/app/domain/osReceive/services/shareFilesService'
+import { useDimensions } from '/libs/dimensions'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -119,6 +120,7 @@ const App = ({ setClient }) => {
 }
 
 const InnerNav = ({ client, setClient }) => {
+  useDimensions()
   const colors = getColors()
   const osReceiveState = useOsReceiveState()
   const osReceiveDispatch = useOsReceiveDispatch()
