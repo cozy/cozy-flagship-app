@@ -50,6 +50,7 @@ export type BuyingState =
 interface ClouderyOfferState {
   hidePopup: () => void
   popupUrl: string | null
+  partialPopupUrl: string | null
   instanceInfoLoaded: boolean
   interceptNavigation: (request: WebViewNavigation) => boolean
   retryBuySubscription: () => void
@@ -68,6 +69,7 @@ export const useClouderyOffer = (): ClouderyOfferState => {
   const [buyingState, setBuyingState] = useState<BuyingState>({
     state: 'IDLE'
   })
+  const [isInitializingIap, setIsInitializingIap] = useState<boolean>(false)
 
   const subscribed = (): void => {
     setBuyingState({
@@ -76,6 +78,7 @@ export const useClouderyOffer = (): ClouderyOfferState => {
   }
 
   const hidePopup = (): void => {
+    setPartialPopupUrl(null)
     setPopupUrl(null)
     setBuyingState({
       state: 'IDLE'
@@ -91,9 +94,10 @@ export const useClouderyOffer = (): ClouderyOfferState => {
 
       const doAsync = async (): Promise<void> => {
         try {
+          setIsInitializingIap(true)
+          setPartialPopupUrl(current => current ?? href)
           await initConnection()
           await getSubscriptions({ skus: SKUS })
-          setPartialPopupUrl(current => current ?? href)
         } catch (error: unknown) {
           const errorMessage = getErrorMessage(error)
           log.error(
@@ -103,6 +107,8 @@ export const useClouderyOffer = (): ClouderyOfferState => {
             text1: t('screens.clouderyOffer.error.title'),
             type: 'error'
           })
+        } finally {
+          setIsInitializingIap(false)
         }
       }
 
@@ -122,7 +128,7 @@ export const useClouderyOffer = (): ClouderyOfferState => {
   useEffect(() => {
     if (!partialPopupUrl) {
       setPopupUrl(null)
-    } else {
+    } else if (!isInitializingIap) {
       const offersParam = formatOffers(subscriptions)
       const lang = getLocales()[0].languageCode
 
@@ -132,7 +138,7 @@ export const useClouderyOffer = (): ClouderyOfferState => {
 
       setPopupUrl(url.toString())
     }
-  }, [partialPopupUrl, subscriptions])
+  }, [isInitializingIap, partialPopupUrl, subscriptions])
 
   useEffect(
     function logSubscriptions() {
@@ -174,6 +180,7 @@ export const useClouderyOffer = (): ClouderyOfferState => {
   return {
     hidePopup,
     popupUrl,
+    partialPopupUrl,
     instanceInfoLoaded: instancesInfo.isLoaded,
     interceptNavigation: interceptNavigation(
       client,
