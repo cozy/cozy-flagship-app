@@ -73,7 +73,6 @@ jobs:
       - name: 'Create env file'
         run: |
           touch .env
-          echo ANDROID_SAFETY_NET_API_KEY=${{ secrets.ANDROID_SAFETY_NET_API_KEY }} >> .env
 
       - name: Set white label brand
         run: yarn brand:configure:${{ inputs.brand }} --force
@@ -86,7 +85,6 @@ jobs:
           cd android && ./gradlew bundleRelease --no-daemon
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          ANDROID_SAFETY_NET_API_KEY: ${{ secrets.ANDROID_SAFETY_NET_API_KEY }}
 
       - name: Sign App Bundle
         id: sign_app

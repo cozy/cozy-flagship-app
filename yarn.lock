@@ -6783,7 +6783,7 @@ base-64@^1.0.0:
   resolved "https://registry.yarnpkg.com/base-64/-/base-64-1.0.0.tgz#09d0f2084e32a3fd08c2475b973788eee6ae8f4a"
   integrity sha512-kwDPIFCGx0NZHog36dj+tHiwP4QMzsZ3AgMViUBKI0+V5n4U0ufTCUMhnQ04diaRI8EX/QcPfql7zlhZ7j4zgg==
 
-base64-js@*, base64-js@^1.0.2, base64-js@^1.1.2, base64-js@^1.2.3, base64-js@^1.3.0, base64-js@^1.3.1, base64-js@^1.5.1:
+base64-js@^1.0.2, base64-js@^1.1.2, base64-js@^1.2.3, base64-js@^1.3.1, base64-js@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
@@ -13073,11 +13073,6 @@ jsonify@^0.0.1, jsonify@~0.0.0:
     array-includes "^3.1.2"
     object.assign "^4.1.2"
 
-jwt-decode@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-2.2.0.tgz#7d86bd56679f58ce6a84704a657dd392bba81a79"
-  integrity sha1-fYa9VmefWM5qhHBKZX3TkruoGnk=
-
 killable@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/killable/-/killable-1.0.1.tgz#4c8ce441187a061c7474fb87ca08e2a638194892"
@@ -16499,14 +16494,6 @@ react-native-gesture-handler@1.10.3:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-"react-native-google-safetynet@https://github.com/cozy/cozy-react-native-google-safetynet#feat/upgrade_target_sdk_31":
-  version "1.0.2"
-  resolved "https://github.com/cozy/cozy-react-native-google-safetynet#fd3957a84cf4dbace77186325b0e124ea3c98659"
-  dependencies:
-    base64-js "^1.3.0"
-    jwt-decode "^2.2.0"
-    react-native-securerandom "^0.1.1"
-
 react-native-idle-timer@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-native-idle-timer/-/react-native-idle-timer-2.2.1.tgz#27d9297587850ddd37a0e6b296ff89bf0e15eef3"
@@ -16590,13 +16577,6 @@ react-native-screens@3.18.2:
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
-
-react-native-securerandom@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/react-native-securerandom/-/react-native-securerandom-0.1.1.tgz#f130623a412c338b0afadedbc204c5cbb8bf2070"
-  integrity sha1-8TBiOkEsM4sK+t7bwgTFy7i/IHA=
-  dependencies:
-    base64-js "*"
 
 react-native-share@10.0.2:
   version "10.0.2"
