@@ -16494,6 +16494,10 @@ react-native-gesture-handler@1.10.3:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+"react-native-google-play-integrity@github:cozy/react-native-google-play-integrity#1.0.1":
+  version "1.0.1"
+  resolved "https://codeload.github.com/cozy/react-native-google-play-integrity/tar.gz/ad182ed9e5c83a38e7cd5ee55f1fc06b5ca93e11"
+
 react-native-idle-timer@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-native-idle-timer/-/react-native-idle-timer-2.2.1.tgz#27d9297587850ddd37a0e6b296ff89bf0e15eef3"
