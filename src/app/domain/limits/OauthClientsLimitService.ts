@@ -11,6 +11,7 @@ import type { InstanceInfo } from 'cozy-client/types/types'
 import { deconstructCozyWebLinkWithSlug } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
+import { isIapAvailable } from '/app/domain/iap/services/availableOffers'
 import { routes } from '/constants/routes'
 import { navigateToApp } from '/libs/functions/openApp'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
@@ -37,6 +38,21 @@ export const showOauthClientsLimitExceeded = (href: string): void => {
 
 export const isOauthClientLimitExceededUrl = (url: string): boolean => {
   return url.includes(OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH)
+}
+
+export const buildOauthClientLimitExceededUrl = async (
+  redirectUrl: string,
+  client: CozyClient
+): Promise<string> => {
+  const rootURL = client.getStackClient().uri
+  const encodedRedirect = encodeURIComponent(redirectUrl)
+
+  const iapAvailable = await isIapAvailable()
+  const isIapAvailableParam = iapAvailable
+    ? 'isIapAvailable=true'
+    : 'isIapAvailable=false'
+
+  return `${rootURL}${OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH}?isFlagship=true&${isIapAvailableParam}&redirect=${encodedRedirect}`
 }
 
 export const interceptNavigation =

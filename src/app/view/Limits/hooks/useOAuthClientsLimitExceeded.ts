@@ -8,10 +8,9 @@ import type {
 import { useClient, useInstanceInfo } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
-import { isIapAvailable } from '/app/domain/iap/services/availableOffers'
 import {
   OAUTH_CLIENTS_LIMIT_EXCEEDED,
-  OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH,
+  buildOauthClientLimitExceededUrl,
   interceptNavigation,
   interceptOpenWindow,
   oauthClientLimitEventHandler
@@ -45,19 +44,9 @@ export const useOAuthClientsLimitExceeded = (
           return
         }
 
-        const rootURL = client.getStackClient().uri
-        const encodedRedirect = encodeURIComponent(href)
+        const popupUrl = await buildOauthClientLimitExceededUrl(href, client)
 
-        const iapAvailable = await isIapAvailable()
-        const isIapAvailableParam = iapAvailable
-          ? 'isIapAvailable=true'
-          : 'isIapAvailable=false'
-
-        setPopupUrl(
-          current =>
-            current ??
-            `${rootURL}${OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH}?isFlagship=true&${isIapAvailableParam}&redirect=${encodedRedirect}`
-        )
+        setPopupUrl(current => current ?? popupUrl)
       }
 
       void doAsync()

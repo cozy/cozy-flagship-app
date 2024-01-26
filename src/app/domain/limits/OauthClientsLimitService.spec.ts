@@ -7,11 +7,13 @@ import type {
 import CozyClient from 'cozy-client'
 import { InstanceInfo } from 'cozy-client/types/types'
 
+import { isIapAvailable } from '/app/domain/iap/services/availableOffers'
 import {
   clouderyOfferEventHandler,
   CLOUDERY_OFFER
 } from '/app/domain/iap/services/clouderyOffer'
 import {
+  buildOauthClientLimitExceededUrl,
   interceptNavigation,
   interceptOpenWindow
 } from '/app/domain/limits/OauthClientsLimitService'
@@ -20,6 +22,9 @@ import { navigateToApp } from '/libs/functions/openApp'
 import { navigationRef } from '/libs/RootNavigation'
 
 jest.mock('/libs/functions/openApp')
+jest.mock('/app/domain/iap/services/availableOffers')
+
+const mockIsIapAvailable = isIapAvailable as jest.Mock
 
 const mockNavigationProp = {} as NavigationProp<ParamListBase>
 
@@ -335,6 +340,44 @@ describe('interceptOpenWindow', () => {
     )(openWindowRequest)
 
     expect(true).toBe(true)
+  })
+})
+
+describe('buildOauthClientLimitExceededUrl', () => {
+  it('should set isIapAvailable=true when IAP is available', async () => {
+    const redirectUrl = 'SOME_DESTINATION_URL'
+
+    const client = mockClient()
+    mockIsIapAvailable.mockResolvedValue(true)
+    const result = await buildOauthClientLimitExceededUrl(redirectUrl, client)
+
+    expect(result).toBe(
+      'http://claude.mycozy.cloud/settings/clients/limit-exceeded?isFlagship=true&isIapAvailable=true&redirect=SOME_DESTINATION_URL'
+    )
+  })
+
+  it('should set isIapAvailable=false when IAP is not available', async () => {
+    const redirectUrl = 'SOME_DESTINATION_URL'
+
+    const client = mockClient()
+    mockIsIapAvailable.mockResolvedValue(false)
+    const result = await buildOauthClientLimitExceededUrl(redirectUrl, client)
+
+    expect(result).toBe(
+      'http://claude.mycozy.cloud/settings/clients/limit-exceeded?isFlagship=true&isIapAvailable=false&redirect=SOME_DESTINATION_URL'
+    )
+  })
+
+  it('should correctly encode redirect parameter', async () => {
+    const redirectUrl = 'https://SOME_DESTINATION_URL?someParam=someValue'
+
+    const client = mockClient()
+    mockIsIapAvailable.mockResolvedValue(false)
+    const result = await buildOauthClientLimitExceededUrl(redirectUrl, client)
+
+    expect(result).toBe(
+      'http://claude.mycozy.cloud/settings/clients/limit-exceeded?isFlagship=true&isIapAvailable=false&redirect=https%3A%2F%2FSOME_DESTINATION_URL%3FsomeParam%3DsomeValue'
+    )
   })
 })
 
