@@ -56,6 +56,7 @@ import {
 } from '/screens/home/hooks/useLauncherContext'
 import LauncherView from '/screens/konnectors/LauncherView'
 import { useShareFiles } from '/app/domain/osReceive/services/shareFilesService'
+import { ClouderyOffer } from '/app/view/IAP/ClouderyOffer'
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -164,6 +165,7 @@ const Nav = ({ client, setClient }) => (
           </OsReceiveProvider>
         </LoadingOverlayProvider>
       </ErrorProvider>
+      {client && <ClouderyOffer />}
       <LockScreenWrapper />
     </SafeAreaProvider>
   </NavigationContainer>
