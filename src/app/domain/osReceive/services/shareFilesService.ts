@@ -6,7 +6,6 @@ import CozyClient, { useClient } from 'cozy-client'
 import { FileMetadata } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import { OsReceiveLogger } from '/app/domain/osReceive'
 import { useLoadingOverlay } from '/app/view/Loading/LoadingOverlayProvider'
-import { useError } from '/app/view/Error/ErrorProvider'
 import { useI18n } from '/locales/i18n'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import {
@@ -80,8 +79,10 @@ export const fetchFilesByIds = async (
 
     await Share.open({ urls: fileURIs })
   } catch (error) {
-    // Not considered as an error
-    if (getErrorMessage(error) === 'User did not share') return
+    // We do not want to log when the user did not share but we want to send it to front end
+    if (getErrorMessage(error) === 'User did not share') {
+      throw error
+    }
 
     OsReceiveLogger.error('fetchFilesByIds: error', error)
     throw new Error('Failed to fetch file metadata or download files')
@@ -92,7 +93,7 @@ const intentShareFiles = async (
   dependencies: ShareFilesDependencies,
   filesIds: ShareFilesPayload
 ): Promise<void> => {
-  const { showOverlay, hideOverlay, handleError, t, client } = dependencies
+  const { showOverlay, hideOverlay, t, client } = dependencies
 
   try {
     if (!filesIds.length) throw new Error('No files to share')
@@ -101,13 +102,6 @@ const intentShareFiles = async (
     showOverlay(t('services.osReceive.shareFiles.downloadingFiles'))
 
     await fetchFilesByIds(client, filesIds)
-  } catch (error) {
-    handleError(
-      t('errors.shareFiles', {
-        postProcess: 'interval',
-        count: filesIds.length
-      })
-    )
   } finally {
     hideOverlay()
   }
@@ -117,7 +111,6 @@ export const useShareFiles = (): { shareFiles: ShareFilesIntent } => {
   const dependencies = {
     showOverlay: useLoadingOverlay().showOverlay,
     hideOverlay: useLoadingOverlay().hideOverlay,
-    handleError: useError().handleError,
     t: useI18n().t,
     client: useClient()
   }
