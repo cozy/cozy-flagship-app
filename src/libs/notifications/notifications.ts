@@ -100,6 +100,11 @@ export const handleInitialServerNotification = async (
 ): Promise<void> => {
   const notification = await messaging().getInitialNotification()
 
+  if (notification?.data?.refresh) {
+    log.info('Ignored refresh on app start to avoid infinite loop')
+    delete notification.data.refresh
+  }
+
   await handleNotificationEvent(client, restart, notification?.data)
 }
 
@@ -128,6 +133,11 @@ export const handleInitialLocalNotification = async (
   }
 
   lastLocalNotificationId = notificationId
+
+  if (notification?.notification.data?.refresh) {
+    log.info('Ignored refresh on app start to avoid infinite loop')
+    delete notification.notification.data.refresh
+  }
 
   void handleNotificationEvent(client, restart, notification?.notification.data)
 }
