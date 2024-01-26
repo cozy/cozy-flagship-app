@@ -17,7 +17,6 @@ import type { InstanceInfo } from 'cozy-client/types/types'
 import Minilog from 'cozy-minilog'
 
 import { BuyingState } from '/app/view/IAP/hooks/useClouderyOffer'
-import { navigate } from '/libs/RootNavigation'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 const log = Minilog('💳 Cloudery Offer')
@@ -29,7 +28,6 @@ const START_IAP_URL = 'https://iapflagship'
 export const clouderyOfferEventHandler = new EventEmitter()
 
 export const showClouderyOffer = (href: string): void => {
-  navigate('home')
   clouderyOfferEventHandler.emit(CLOUDERY_OFFER, href)
 }
 

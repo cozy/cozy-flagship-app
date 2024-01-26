@@ -9,7 +9,6 @@ import React from 'react'
 import { View } from 'react-native'
 
 import { OauthClientsLimitExceeded } from '/app/view/Limits/OauthClientsLimitExceeded'
-import { ClouderyOffer } from '/app/view/IAP/ClouderyOffer'
 import HomeView from '/screens/home/components/HomeView'
 import { getColors } from '/ui/colors'
 import { shouldShowCliskDevMode } from '/core/tools/env'
@@ -48,7 +47,6 @@ export const HomeScreen = ({
       )}
 
       <OauthClientsLimitExceeded navigation={navigation} />
-      <ClouderyOffer />
     </View>
   )
 }
