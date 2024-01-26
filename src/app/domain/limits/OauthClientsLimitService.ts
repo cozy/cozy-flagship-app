@@ -45,14 +45,16 @@ export const buildOauthClientLimitExceededUrl = async (
   client: CozyClient
 ): Promise<string> => {
   const rootURL = client.getStackClient().uri
-  const encodedRedirect = encodeURIComponent(redirectUrl)
 
   const iapAvailable = await isIapAvailable()
-  const isIapAvailableParam = iapAvailable
-    ? 'isIapAvailable=true'
-    : 'isIapAvailable=false'
 
-  return `${rootURL}${OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH}?isFlagship=true&${isIapAvailableParam}&redirect=${encodedRedirect}`
+  const resultUrl = new URL(rootURL)
+  resultUrl.pathname = OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH
+  resultUrl.searchParams.append('isFlagship', 'true')
+  resultUrl.searchParams.append('isIapAvailable', iapAvailable.toString())
+  resultUrl.searchParams.append('redirect', redirectUrl)
+
+  return resultUrl.toString()
 }
 
 export const interceptNavigation =
