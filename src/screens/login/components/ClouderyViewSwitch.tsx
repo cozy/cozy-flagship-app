@@ -1,4 +1,5 @@
 import Minilog from 'cozy-minilog'
+
 import React, {
   forwardRef,
   useEffect,
@@ -37,6 +38,7 @@ import {
 import { LOGIN_FLAGSHIP_URL } from '/screens/login/components/functions/oidc'
 import { jsPaddingInjection } from '/screens/login/components/functions/webViewPaddingInjection'
 import { APPLICATION_NAME_FOR_USER_AGENT } from '/constants/userAgent'
+import { navigationRef } from '/libs/RootNavigation'
 
 const log = Minilog('ClouderyViewSwitchProps')
 
@@ -210,6 +212,21 @@ const ClouderyWebView = forwardRef(
       onMessage?.(event)
     }
 
+    const handleError = async (webviewErrorEvent: unknown): Promise<void> => {
+      try {
+        const isOffline = await NetService.isOffline()
+        isOffline &&
+          NetService.handleOfflineWithCallback(() => {
+            webviewRef.current?.reload() // Have to reload the webview when the user is back online or it will stay errored
+            navigationRef.navigate(routes.welcome) // Go back to the welcome screen to leave the offline screen (offline screen should be refactored to be a modal)
+          })
+      } catch (error) {
+        log.error(error)
+      } finally {
+        log.error(webviewErrorEvent)
+      }
+    }
+
     return (
       <SupervisedWebView
         applicationNameForUserAgent={APPLICATION_NAME_FOR_USER_AGENT}
@@ -253,17 +270,6 @@ const run = `
     return true;
   })();
 `
-
-const handleError = async (webviewErrorEvent: unknown): Promise<void> => {
-  try {
-    const isOffline = await NetService.isOffline()
-    isOffline && NetService.handleOffline(routes.onboarding)
-  } catch (error) {
-    log.error(error)
-  } finally {
-    log.error(webviewErrorEvent)
-  }
-}
 
 const styles = StyleSheet.create({
   clouderyLoginView: {

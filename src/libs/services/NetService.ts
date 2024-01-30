@@ -48,7 +48,10 @@ const waitForOnline = (
     const isCallbackFunction = typeof callbackArg === 'function'
 
     if (state.isConnected) {
-      netLogger.debug('Online, using callback parameters')
+      netLogger.debug('Online, using callback parameters:', {
+        callbackArg,
+        params
+      })
 
       try {
         if (callbackArg === routes.stack)
@@ -85,8 +88,17 @@ const handleOffline = (
   waitForOnline(callbackRoute, params)
 }
 
+const handleOfflineWithCallback = (
+  callback: (state: NetInfoState) => void
+): void => {
+  navigate(routes.error, { type: strings.errorScreens.offline })
+
+  waitForOnline(callback)
+}
+
 export const NetService = {
   handleOffline,
+  handleOfflineWithCallback,
   isConnected,
   isOffline,
   waitForOnline
