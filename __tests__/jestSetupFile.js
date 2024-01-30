@@ -112,3 +112,13 @@ jest.mock('react-native/Libraries/Components/Switch/Switch', () => {
 })
 
 jest.mock('@react-native-clipboard/clipboard', () => mockClipboard)
+
+jest.mock('../src/core/tools/env', () => ({
+  ...jest.requireActual('../src/core/tools/env'),
+  isSentryDebugMode: () => true,
+  EnvService: {
+    hasSentryEnabled: true
+  },
+  devlog: jest.fn(),
+  shouldDisableAutolock: jest.fn().mockReturnValue(false)
+}))

@@ -17,10 +17,6 @@ jest.mock('/app/domain/authorization/utils/devMode.ts', () => {
     getDevModeFunctions: jest.fn().mockReturnValue(false)
   }
 })
-jest.mock('/core/tools/env', () => ({
-  devlog: jest.fn(),
-  shouldDisableAutolock: jest.fn().mockReturnValue(false)
-}))
 jest.mock('/app/view/Lock/useLockScreenWrapper', () => ({
   ...jest.requireActual('/app/view/Lock/useLockScreenWrapper'),
   hideSecurityScreen: jest.fn(),
