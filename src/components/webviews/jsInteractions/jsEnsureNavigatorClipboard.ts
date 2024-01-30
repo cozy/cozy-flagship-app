@@ -47,7 +47,13 @@ const jsNavigatorClipboardObservable = `
 `
 
 const jsNavigatorClipboardBridge = `
-  navigator.clipboard = {
+  // On Android, navigator.clipboard is available but does not work.
+  // So we overwrite with our implementation even if navigator.clipboard is present.
+  // https://github.com/react-native-webview/react-native-webview/issues/2869
+
+  makePropertyWritable(window, "navigator", "clipboard");
+
+  window.navigator.clipboard = {
     readText: () => {
       const payload = {
         method: 'readText'
