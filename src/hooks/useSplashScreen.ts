@@ -8,11 +8,20 @@ import { safePromise } from '/utils/safePromise'
 export const useSplashScreen = (): {
   hideSplashScreen: () => Promise<void>
   showSplashScreen: () => Promise<void>
-} => ({
-  hideSplashScreen: useContext(SplashScreenContext).hide,
-  showSplashScreen: useContext(SplashScreenContext).show
-})
+} => {
+  const context = useContext(SplashScreenContext)
 
+  if (!context) {
+    throw new Error(
+      'useSplashScreen must be used within a SplashScreenProvider'
+    )
+  }
+
+  return {
+    hideSplashScreen: context.hide,
+    showSplashScreen: context.show
+  }
+}
 export const useSecureBackgroundSplashScreen = (): void => {
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
