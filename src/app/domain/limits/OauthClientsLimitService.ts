@@ -7,13 +7,20 @@ import type {
 } from 'react-native-webview/lib/WebViewTypes'
 
 import type CozyClient from 'cozy-client'
+import type { InstanceInfo } from 'cozy-client/types/types'
 import { deconstructCozyWebLinkWithSlug } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
+import { isIapAvailable } from '/app/domain/iap/services/availableOffers'
 import { routes } from '/constants/routes'
 import { navigateToApp } from '/libs/functions/openApp'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { navigate, navigationRef } from '/libs/RootNavigation'
+import {
+  showClouderyOffer,
+  formatClouderyOfferUrlWithInAppPurchaseParams,
+  isClouderyOfferUrl
+} from '/app/domain/iap/services/clouderyOffer'
 
 const log = Minilog('⛔ OAuth Clients Limit Service')
 
@@ -33,12 +40,30 @@ export const isOauthClientLimitExceededUrl = (url: string): boolean => {
   return url.includes(OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH)
 }
 
+export const buildOauthClientLimitExceededUrl = async (
+  redirectUrl: string,
+  client: CozyClient
+): Promise<string> => {
+  const rootURL = client.getStackClient().uri
+
+  const iapAvailable = await isIapAvailable()
+
+  const resultUrl = new URL(rootURL)
+  resultUrl.pathname = OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH
+  resultUrl.searchParams.append('isFlagship', 'true')
+  resultUrl.searchParams.append('isIapAvailable', iapAvailable.toString())
+  resultUrl.searchParams.append('redirect', redirectUrl)
+
+  return resultUrl.toString()
+}
+
 export const interceptNavigation =
   (
     initialUrl: string,
     closePopup: () => void,
     client: CozyClient | null,
-    navigation: NavigationProp<ParamListBase>
+    navigation: NavigationProp<ParamListBase>,
+    instanceInfo: InstanceInfo
   ) =>
   (request: WebViewNavigation): boolean => {
     try {
@@ -48,6 +73,14 @@ export const interceptNavigation =
       }
 
       const destinationUrl = cleanUrl(request.url)
+
+      if (isClouderyOfferUrl(destinationUrl, instanceInfo)) {
+        const clouderyOfferUrlWithInAppPurchaseParams =
+          formatClouderyOfferUrlWithInAppPurchaseParams(destinationUrl)
+        showClouderyOffer(clouderyOfferUrlWithInAppPurchaseParams)
+        return false
+      }
+
       const subdomainType = client.capabilities.flat_subdomains
         ? 'flat'
         : 'nested'
@@ -102,7 +135,11 @@ export const interceptNavigation =
   }
 
 export const interceptOpenWindow =
-  (client: CozyClient | null, navigation: NavigationProp<ParamListBase>) =>
+  (
+    client: CozyClient | null,
+    navigation: NavigationProp<ParamListBase>,
+    instanceInfo: InstanceInfo
+  ) =>
   (syntheticEvent: WebViewOpenWindowEvent): void => {
     try {
       if (client === null) {
@@ -111,7 +148,14 @@ export const interceptOpenWindow =
       }
 
       const { nativeEvent } = syntheticEvent
-      const destinationUrl = nativeEvent.targetUrl
+      const destinationUrl = cleanUrl(nativeEvent.targetUrl)
+
+      if (isClouderyOfferUrl(destinationUrl, instanceInfo)) {
+        const clouderyOfferUrlWithInAppPurchaseParams =
+          formatClouderyOfferUrlWithInAppPurchaseParams(destinationUrl)
+        showClouderyOffer(clouderyOfferUrlWithInAppPurchaseParams)
+        return
+      }
 
       const subdomainType = client.capabilities.flat_subdomains
         ? 'flat'

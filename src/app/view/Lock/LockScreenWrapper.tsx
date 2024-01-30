@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
+import { StyleSheet, View } from 'react-native'
 
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
+import { ScreenIndexes } from '/app/view/FlagshipUI'
 import { LockScreen } from '/app/view/Lock/LockScreen'
 import {
   lockScreens,
@@ -20,24 +22,52 @@ export const LockScreenWrapper = (): JSX.Element | null => {
     }
   }, [currentSecurityScreen])
 
+  let LockComponent: (() => JSX.Element) | null = null
   switch (currentSecurityScreen) {
     case lockScreens.LOCK_SCREEN: {
-      return <LockScreen />
+      LockComponent = LockScreen
+      break
     }
     case lockScreens.PASSWORD_PROMPT: {
-      return <PasswordPrompt />
+      LockComponent = PasswordPrompt
+      break
     }
     case lockScreens.PIN_PROMPT: {
-      return <PinPrompt />
+      LockComponent = PinPrompt
+      break
     }
     case lockScreens.SET_PASSWORD: {
-      return <SetPasswordView />
+      LockComponent = SetPasswordView
+      break
     }
     case lockScreens.SET_PIN: {
-      return <SetPinView />
+      LockComponent = SetPinView
+      break
     }
     default: {
-      return null
+      LockComponent = null
+      break
     }
   }
+
+  if (!LockComponent) {
+    return null
+  }
+
+  return (
+    <View style={styles.fullScreen}>
+      <LockComponent />
+    </View>
+  )
 }
+
+const styles = StyleSheet.create({
+  fullScreen: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: ScreenIndexes.LOCK_SCREEN
+  }
+})

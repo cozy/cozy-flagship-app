@@ -1,7 +1,6 @@
 import BackgroundGeolocation from 'react-native-background-geolocation'
 
-import { smartSend } from '/app/domain/geolocation/tracking/tracking'
-import { getOrCreateId } from '/app/domain/geolocation/tracking/user'
+import { uploadTrackingData } from '/app/domain/geolocation/tracking/tracking'
 import { Log } from '/app/domain/geolocation/helpers'
 import { storeFlagFailUpload } from '/app/domain/geolocation/tracking/storage'
 import { utf8ByteSize } from '/app/domain/geolocation/tracking/utils'
@@ -48,10 +47,13 @@ export const uploadUserCache = async (content, user) => {
   return { ok: true }
 }
 
-export const runOpenPathPipeline = async user => {
-  Log('Request to run pipeline')
+export const runOpenPathPipeline = async (user, webhook = '') => {
+  Log(`Request to run pipeline with webhook : ${webhook}`)
   const request = {
     user: user
+  }
+  if (webhook) {
+    request.webhook = webhook
   }
   const body = JSON.stringify(request)
   const response = await fetch(SERVER_URL + '/cozy/run/pipeline', {
@@ -86,10 +88,8 @@ const filterBadContent = contentToUpload => {
   })
 }
 
-export const uploadData = async ({ untilTs = 0, force = false } = {}) => {
-  // WARNING: la valeur de retour (booleen) indique le succès, mais mal géré dans le retryOnFail (actuellement uniquement utilisé pour le bouton "Forcer l'upload" avecec force et pas de retry)
-
-  Log('Starting upload process' + (force ? ', forced' : ''))
+export const uploadData = async (user, { untilTs = 0, force = false } = {}) => {
+  Log(`Starting upload process for user ${user} ${force ? 'forced' : ''}`)
 
   try {
     const locations = await BackgroundGeolocation.getLocations()
@@ -103,18 +103,16 @@ export const uploadData = async ({ untilTs = 0, force = false } = {}) => {
     if (filteredLocations.length < locations.length) {
       Log('Locations filtered: ' + filteredLocations.length - locations.length)
     }
-
-    let user = await getOrCreateId()
-    Log('Using Id: ' + user)
-
     try {
-      await smartSend(filteredLocations, user, { force })
+      const uploadedCount = await uploadTrackingData(filteredLocations, user, {
+        force
+      })
       await storeFlagFailUpload(false)
-      return true
+      return uploadedCount
     } catch (message) {
       Log('Error trying to send data: ' + message)
       await storeFlagFailUpload(true)
-      return false
+      return -1
     }
   } catch (error) {
     throw new Error(error)

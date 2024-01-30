@@ -23,6 +23,20 @@
     "title": "Desconexión"
   },
   "screens": {
+    "clouderyOffer": {
+      "backButton": "VOLVER A MI COZY",
+      "iapProgress": "Compra en curso",
+      "error": {
+        "title": "Se ha producido un error",
+        "tryAgain": "Inténtalo de nuevo",
+        "backToOffers": "Volver a las ofertas"
+      },
+      "success": {
+        "title": "Pago efectuado",
+        "body": "Tu Cozy está siendo actualizado.\nRecibirás una notificación en cuanto finalice tu compra.",
+        "close": "Cerrar"
+      }
+    },
     "cozyNotFound": {
       "body": "No hemos encontrado ningún Cozy en esta dirección. Puede que sea un error de tipeo. Para saberlo, verifica la dirección de tu Cozy en el correo electrónico que te enviamos cuando se creó.",
       "title": "La dirección de este Cozy no existe."
@@ -77,11 +91,15 @@
         "onProgressTitle": "Subiendo",
         "onProgressMessage": "{{filename}} se está subiendo",
         "backupSuccessTitle": "Copia de seguridad de fotos y vídeos",
+        "backupSuccessBody": "¡Tu copia de seguridad ha finalizado! {{backedUpMediaCount}}/{{count}} elemento guardado",
         "backupSuccessBody_one": "¡Tu copia de seguridad ha finalizado! {{backedUpMediaCount}}/{{count}} elemento guardado",
         "backupSuccessBody_other": "¡Tu copia de seguridad ha finalizado! {{backedUpMediaCount}}/{{count}} elementos guardados",
+        "backupSuccessBody_plural": "¡Tu copia de seguridad ha finalizado! {{backedUpMediaCount}}/{{count}} elementos guardados",
         "backupPartialSuccessTitle": "Copia de seguridad de fotos y vídeos",
+        "backupPartialSuccessBody": "La copia de seguridad se ha detenido. {{backedUpMediaCount}}/{{count}} elemento guardado",
         "backupPartialSuccessBody_one": "La copia de seguridad se ha detenido. {{backedUpMediaCount}}/{{count}} elemento guardado",
         "backupPartialSuccessBody_other": "La copia de seguridad se ha detenido. {{backedUpMediaCount}}/{{count}} elementos guardados",
+        "backupPartialSuccessBody_plural": "La copia de seguridad se ha detenido. {{backedUpMediaCount}}/{{count}} elementos guardados",
         "backupErrorTitle": "Oops",
         "backupErrorBody": "Tu copia de seguridad ha encontrado un error. Abre la aplicación para ver más detalles"
       },

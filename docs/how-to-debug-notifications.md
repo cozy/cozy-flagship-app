@@ -118,3 +118,52 @@ Be careful to **not** have any overrides concerning cozy-banks in CouchDB `secre
 
 Log in to your regular Android simulator instance, and send a notification from the devtool (you need to have the `debug` flag) ! Do not forget that notifications are only displayed when the app is in background or quit.
 
+## Request samples
+
+You can run the example requests by filling following variables and then use [VSCode RestClient](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) to execute requests (if not using VSCode you can adapt the samples for the tool of your choice)
+
+```http
+@firebaseProjectId = <Firebase project id>
+@firebaseOauthToken = <OAuth token>
+@fmcToken = <FCM token>
+```
+
+Notification that redirects to the cozy-contacts app in the "new contact" page
+```http
+POST https://fcm.googleapis.com/v1/projects/{{firebaseProjectId}}/messages:send
+Authorization: Bearer {{firebaseOauthToken}}
+Content-Type: application/json
+
+{
+  "message": {
+    "token": "{{fmcToken}}",
+    "notification": {
+      "title": "Titre",
+      "body": "Description"
+    },
+    "data": {
+      "redirectLink": "contacts/#/new"
+    }
+  }
+}
+```
+
+Notification that triggers the App restart
+```http
+POST https://fcm.googleapis.com/v1/projects/{{firebaseProjectId}}/messages:send
+Authorization: Bearer {{firebaseOauthToken}}
+Content-Type: application/json
+
+{
+  "message": {
+    "token": "{{fmcToken}}",
+    "notification": {
+      "title": "Titre",
+      "body": "Description"
+    },
+    "data": {
+      "refresh": "true"
+    }
+  }
+}
+```

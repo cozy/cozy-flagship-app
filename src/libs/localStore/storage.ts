@@ -23,7 +23,8 @@ export enum StorageKeys {
   LastStartTransitionTsKey = 'CozyGPSMemory.LastStartTransitionTsKey',
   GeolocationTrackingConfig = 'CozyGPSMemory.TrackingConfig',
   Activities = 'CozyGPSMemory.Activities',
-  FirstTimeserie = 'CozyGPSMemory.FirstTimeserie'
+  FirstTimeserie = 'CozyGPSMemory.FirstTimeserie',
+  ServiceWebhookURL = 'CozyGPSMemory.ServiceWebhookURL'
 }
 
 export type IconsCache = Record<string, { version: string; xml: string }>

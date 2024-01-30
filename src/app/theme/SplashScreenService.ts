@@ -18,7 +18,7 @@ export class SplashScreenService {
 export const showSplashScreen = (
   bootsplashName?: SplashScreenEnum
 ): Promise<void> => {
-  devlog('☁️ showSplashScreen called')
+  devlog(`☁️ showSplashScreen called with ${bootsplashName ?? 'undefined'}`)
 
   flagshipUIEventHandler.emit(
     flagshipUIEvents.SET_COMPONENT_COLORS,

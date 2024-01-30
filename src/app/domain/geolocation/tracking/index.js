@@ -2,12 +2,16 @@ import BackgroundGeolocation from 'react-native-background-geolocation'
 
 import Minilog from 'cozy-minilog'
 
-import { uploadData } from '/app/domain/geolocation/tracking/upload'
+import {
+  runOpenPathPipeline,
+  uploadData
+} from '/app/domain/geolocation/tracking/upload'
 import { StorageKeys, storeData, getData } from '/libs/localStore/storage'
 import { Log } from '/app/domain/geolocation/helpers'
 import { saveActivity } from '/app/domain/geolocation/tracking/tracking'
 import {
   clearAllData,
+  getFetchServiceWebHook,
   getFlagFailUpload
 } from '/app/domain/geolocation/tracking/storage'
 import { t } from '/locales/i18n'
@@ -21,11 +25,14 @@ import {
   WALKING_ACTIVITY,
   LOW_CONFIDENCE_THRESHOLD
 } from '/app/domain/geolocation/tracking/consts'
-
 export { Log, getAllLogs, sendLogFile } from '/app/domain/geolocation/helpers'
 export { getOrCreateId, updateId } from '/app/domain/geolocation/tracking/user'
 export { uploadData } from '/app/domain/geolocation/tracking/upload'
 export { GeolocationTrackingHeadlessTask } from '/app/domain/geolocation/tracking/headless'
+export { storeFetchServiceWebHook } from '/app/domain/geolocation/tracking/storage'
+import { GeolocationTrackingEmitter } from '/app/domain/geolocation/tracking/events'
+import { TRIP_END } from '/app/domain/geolocation/tracking/consts'
+import { getOrCreateId } from '/app/domain/geolocation/tracking/user'
 
 export {
   clearAllCozyGPSMemoryData,
@@ -100,7 +107,7 @@ export const stopTracking = async () => {
       await BackgroundGeolocation.stop()
       await storeData(StorageKeys.ShouldBeTrackingFlagStorageAdress, false)
       Log('Turned off tracking, uploading...')
-      await uploadData({ force: true }) // Forced end, but if fails no current solution (won't retry until turned back on)
+      await startOpenPathUploadAndPipeline({ force: true }) // Forced end, but no retry if it fails
     } else {
       Log('Tracking already off')
     }
@@ -186,7 +193,9 @@ export const handleMotionChange = async event => {
     // Get the event timestamp to filter out locations tracked after this
     const stationaryTs = event.location?.timestamp
     Log('Auto uploading from stop')
-    await uploadData({ untilTs: stationaryTs })
+    await startOpenPathUploadAndPipeline({ untilTs: stationaryTs })
+    GeolocationTrackingEmitter.emit(TRIP_END)
+
     // Disable elasticity to improve next point accuracy
     disableElasticity()
   }
@@ -198,8 +207,45 @@ export const handleConnectivityChange = async event => {
   // Does not work with iOS emulator, event.connected is always false
   if (event.connected && (await getFlagFailUpload())) {
     Log('Auto uploading from reconnection and failed last attempt')
-    await uploadData()
+    await startOpenPathUploadAndPipeline()
+    GeolocationTrackingEmitter.emit(TRIP_END)
   }
+}
+
+/**
+ * Upload data and run openpath pipeline
+ * This is the complete openpath process that should eventually
+ * produce new trips that will be retrieved by the coachco2 service
+ * after completion of the pipeline.
+ * A webhook is passed to the openpath server so the service it started
+ * as soon as the trips are ready to be fetched.
+ *
+ * @typedef {object} Params
+ * @property {number} untilTS - Until when the locations points should be fetched. Default is 0
+ * @property {boolean} force - Whether or not the upload should be forced
+ *
+ * @param {Params} - The method parmas
+ */
+export const startOpenPathUploadAndPipeline = async ({
+  untilTs = 0,
+  force = false
+}) => {
+  try {
+    const user = await getOrCreateId()
+    // Upload data to openpath server
+    const uploadedCount = await uploadData(user, { untilTs, force })
+    if (uploadedCount >= 0) {
+      // Start openpath pipeline
+      const webhook = (await getFetchServiceWebHook()) || ''
+      const resp = await runOpenPathPipeline(user, webhook)
+      if (resp?.ok) {
+        Log('Pipeline successfully run')
+      }
+    }
+  } catch (err) {
+    Log('Failed openpath processing: ' + JSON.stringify(err))
+  }
+  return
 }
 
 // Register on activity change

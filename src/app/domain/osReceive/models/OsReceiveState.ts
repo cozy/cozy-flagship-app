@@ -73,7 +73,6 @@ export interface OsReceiveApiMethods {
   uploadFiles: (arg: string) => boolean
   resetFilesToHandle: () => Promise<boolean>
   cancelUploadByCozyApp: () => boolean
-  shareFiles: (arg: string) => void
 }
 
 export interface UploadStatus {

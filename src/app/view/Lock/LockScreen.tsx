@@ -3,9 +3,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View
+  TouchableWithoutFeedback
 } from 'react-native'
 import RnMaskInput from 'react-native-mask-input'
 import { FullWindowOverlay } from 'react-native-screens'
@@ -194,37 +192,24 @@ const LockView = ({
 
 export const LockScreen = (): JSX.Element => {
   return (
-    <View style={styles.fullScreen}>
-      <ConditionalWrapper
-        condition={Platform.OS === 'ios'}
-        wrapper={(children): JSX.Element => (
-          <FullWindowOverlay>{children}</FullWindowOverlay>
-        )}
+    <ConditionalWrapper
+      condition={Platform.OS === 'ios'}
+      wrapper={(children): JSX.Element => (
+        <FullWindowOverlay>{children}</FullWindowOverlay>
+      )}
+    >
+      <TouchableWithoutFeedback
+        onPress={Keyboard.dismiss}
+        style={{ backgroundColor: palette.Primary[600], height: '100%' }}
       >
-        <TouchableWithoutFeedback
-          onPress={Keyboard.dismiss}
-          style={{ backgroundColor: palette.Primary[600], height: '100%' }}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          >
-            <CozyTheme variant="inverted">
-              <LockView {...useLockScreenProps()} />
-            </CozyTheme>
-          </KeyboardAvoidingView>
-        </TouchableWithoutFeedback>
-      </ConditionalWrapper>
-    </View>
+          <CozyTheme variant="inverted">
+            <LockView {...useLockScreenProps()} />
+          </CozyTheme>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
+    </ConditionalWrapper>
   )
 }
-
-const styles = StyleSheet.create({
-  fullScreen: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 10
-  }
-})

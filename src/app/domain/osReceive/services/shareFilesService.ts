@@ -1,12 +1,18 @@
 import RNFS from 'react-native-fs'
 import Share from 'react-native-share'
 
-import type CozyClient from 'cozy-client'
+import CozyClient, { useClient } from 'cozy-client'
 
 import { FileMetadata } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import { OsReceiveLogger } from '/app/domain/osReceive'
-
-import { getErrorMessage } from 'cozy-intent'
+import { useLoadingOverlay } from '/app/view/Loading/LoadingOverlayProvider'
+import { useI18n } from '/locales/i18n'
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
+import {
+  ShareFilesDependencies,
+  ShareFilesPayload,
+  ShareFilesIntent
+} from '/app/domain/osReceive/models/ShareFiles'
 
 const downloadFilesInParallel = async (
   fileInfos: FileMetadata[],
@@ -56,12 +62,11 @@ const fetchFileMetadata = async (
 
 export const fetchFilesByIds = async (
   client: CozyClient,
-  fileIds: string[],
-  callback?: () => void
+  filesIds: string[]
 ): Promise<void> => {
   try {
     const fileInfos = await Promise.all(
-      fileIds.map(fileId => fetchFileMetadata(client, fileId))
+      filesIds.map(fileId => fetchFileMetadata(client, fileId))
     )
 
     const headers = client.getStackClient().getAuthorizationHeader()
@@ -72,18 +77,45 @@ export const fetchFilesByIds = async (
 
     const fileURIs = await downloadFilesInParallel(fileInfos, headers)
 
-    // We want to call the callback before opening the share dialog
-    // This is to handle the case where the Share library throws an error,
-    // which would cause the callback to never be called
-    callback?.()
-
-    await Share.open({
-      urls: fileURIs
-    })
+    await Share.open({ urls: fileURIs })
   } catch (error) {
-    if (getErrorMessage(error) === 'User did not share') throw error
+    // We do not want to log when the user did not share but we want to send it to front end
+    if (getErrorMessage(error) === 'User did not share') {
+      throw error
+    }
 
     OsReceiveLogger.error('fetchFilesByIds: error', error)
     throw new Error('Failed to fetch file metadata or download files')
+  }
+}
+
+const intentShareFiles = async (
+  dependencies: ShareFilesDependencies,
+  filesIds: ShareFilesPayload
+): Promise<void> => {
+  const { showOverlay, hideOverlay, t, client } = dependencies
+
+  try {
+    if (!filesIds.length) throw new Error('No files to share')
+    if (!client) throw new Error('Client is undefined')
+
+    showOverlay(t('services.osReceive.shareFiles.downloadingFiles'))
+
+    await fetchFilesByIds(client, filesIds)
+  } finally {
+    hideOverlay()
+  }
+}
+
+export const useShareFiles = (): { shareFiles: ShareFilesIntent } => {
+  const dependencies = {
+    showOverlay: useLoadingOverlay().showOverlay,
+    hideOverlay: useLoadingOverlay().hideOverlay,
+    t: useI18n().t,
+    client: useClient()
+  }
+
+  return {
+    shareFiles: filesIds => intentShareFiles(dependencies, filesIds)
   }
 }

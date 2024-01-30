@@ -6,6 +6,7 @@ import Minilog from 'cozy-minilog'
 import { useNativeIntent } from 'cozy-intent'
 
 import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
+import { jsUtils } from '/components/webviews/jsInteractions/jsUtils'
 import { useLauncherContext } from '/screens/home/hooks/useLauncherContext'
 import {
   jsEnsureCrypto,
@@ -15,6 +16,10 @@ import {
   jsEnsureNavigatorShare,
   tryNavigatorShare
 } from '/components/webviews/jsInteractions/jsEnsureNavigatorShare'
+import {
+  jsEnsureNavigatorClipboard,
+  tryNavigatorClipboard
+} from '/components/webviews/jsInteractions/jsEnsureNavigatorClipboard'
 import {
   jsLogInterception,
   tryConsole
@@ -95,10 +100,36 @@ export const CozyWebView = ({
       innerUri && webviewRef && nativeIntent?.unregisterWebview(innerUri)
   }, [innerUri, nativeIntent, webviewRef])
 
-  const onAnswer = useCallback(
+  const onCryptoAnswer = useCallback(
     (messageId, response) => {
       const payload = JSON.stringify({
         type: 'Crypto',
+        messageId,
+        param: response
+      })
+
+      webviewRef.postMessage(payload)
+    },
+    [webviewRef]
+  )
+
+  const onNavigatorShareAnswer = useCallback(
+    (messageId, response) => {
+      const payload = JSON.stringify({
+        type: 'NavigatorShare',
+        messageId,
+        param: response
+      })
+
+      webviewRef.postMessage(payload)
+    },
+    [webviewRef]
+  )
+
+  const onNavigatorClipboardAnswer = useCallback(
+    (messageId, response) => {
+      const payload = JSON.stringify({
+        type: 'NavigatorClipboard',
         messageId,
         param: response
       })
@@ -141,6 +172,8 @@ export const CozyWebView = ({
     (function() {
       ${jsCozyGlobal(route.name, isSecureProtocol)}
 
+      ${jsUtils}
+
       ${jsLogInterception}
 
       ${injectedJavaScriptBeforeContentLoaded}
@@ -152,6 +185,8 @@ export const CozyWebView = ({
       ${jsEnsureCrypto}
 
       ${jsEnsureNavigatorShare}
+
+      ${jsEnsureNavigatorClipboard}
 
       return true;
     })();
@@ -212,8 +247,9 @@ export const CozyWebView = ({
         rest.onLoad?.(event)
       }}
       onMessage={async m => {
-        tryCrypto(m, log, logId, onAnswer)
-        tryNavigatorShare(m, log, logId, onAnswer)
+        tryCrypto(m, log, logId, onCryptoAnswer)
+        tryNavigatorShare(m, log, logId, onNavigatorShareAnswer)
+        tryNavigatorClipboard(m, log, logId, onNavigatorClipboardAnswer)
         tryConsole(m, log, logId)
         nativeIntent?.tryEmit(m, componentId)
         tryHandleLauncherMessage(m)

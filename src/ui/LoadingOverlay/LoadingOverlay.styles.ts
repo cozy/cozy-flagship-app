@@ -1,5 +1,7 @@
 import { StyleSheet } from 'react-native'
 
+import { ScreenIndexes } from '/app/view/FlagshipUI'
+
 export const hPadding = 32
 
 export const styles = StyleSheet.create({
@@ -8,7 +10,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     ...StyleSheet.absoluteFillObject,
-    zIndex: 1000
+    zIndex: ScreenIndexes.LOADING_OVERLAY
   },
   absolute: {
     position: 'absolute',

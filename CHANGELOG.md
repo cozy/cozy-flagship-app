@@ -21,6 +21,7 @@
 
 * Migrate Flagship certification from Google SafetyNet to Google Play Integrity ([PR #1126](https://github.com/cozy/cozy-flagship-app/pull/1126) and [PR #1142](https://github.com/cozy/cozy-flagship-app/pull/1142))
 
+
 # 1.1.22
 
 ## ✨ Features

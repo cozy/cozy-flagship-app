@@ -27,6 +27,20 @@
     "title": "Déconnexion"
   },
   "screens": {
+    "clouderyOffer": {
+      "backButton": "RETOUR À MON COZY",
+      "iapProgress": "Achat en cours",
+      "error": {
+        "title": "Une erreur est survenue",
+        "tryAgain": "Essayer à nouveau",
+        "backToOffers": "Retour aux offres"
+      },
+      "success": {
+        "title": "Paiement effectué",
+        "body": "Votre Cozy est en cours de mise à jour.\nVous recevrez une notification dès que votre achat sera finalisé.",
+        "close": "Fermer"
+      }
+    },
     "cozyBlocked": {
       "body": "Contactez-nous, si vous souhaitez en savoir plus, à l'adresse <a id=\"mailto\" href=\"#\">contact@cozycloud.cc</a>.",
       "title": "Le fonctionnement de votre Cozy a été momentanément interrompu"
@@ -93,11 +107,15 @@
         "onProgressTitle": "Envoi en cours",
         "onProgressMessage": "{{filename}} est en cours de sauvegarde",
         "backupSuccessTitle": "Sauvegarde photo & vidéo",
+        "backupSuccessBody": "Votre sauvegarde est terminée ! {{backedUpMediaCount}}/{{count}} élément sauvegardé",
         "backupSuccessBody_one": "Votre sauvegarde est terminée ! {{backedUpMediaCount}}/{{count}} élément sauvegardé",
+        "backupSuccessBody_plural": "Votre sauvegarde est terminée ! {{backedUpMediaCount}}/{{count}} éléments sauvegardés",
         "backupSuccessBody_other": "Votre sauvegarde est terminée ! {{backedUpMediaCount}}/{{count}} éléments sauvegardés",
         "backupPartialSuccessTitle": "Sauvegarde photo & vidéo",
+        "backupPartialSuccessBody": "Votre sauvegarde est arrêtée ! {{backedUpMediaCount}}/{{count}} élément sauvegardé",
         "backupPartialSuccessBody_one": "Votre sauvegarde est arrêtée ! {{backedUpMediaCount}}/{{count}} élément sauvegardé",
         "backupPartialSuccessBody_other": "Votre sauvegarde est arrêtée ! {{backedUpMediaCount}}/{{count}} éléments sauvegardés",
+        "backupPartialSuccessBody_plural": "Votre sauvegarde est arrêtée ! {{backedUpMediaCount}}/{{count}} éléments sauvegardés",
         "backupErrorTitle": "Oops",
         "backupErrorBody": "Votre sauvegarde a rencontré une erreur. Ouvrez l'app pour obtenir plus de détails"
       },

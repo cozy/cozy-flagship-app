@@ -5,12 +5,12 @@ import type {
   WebViewNavigation
 } from 'react-native-webview/lib/WebViewTypes'
 
-import { useClient } from 'cozy-client'
+import { useClient, useInstanceInfo } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import {
   OAUTH_CLIENTS_LIMIT_EXCEEDED,
-  OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH,
+  buildOauthClientLimitExceededUrl,
   interceptNavigation,
   interceptOpenWindow,
   oauthClientLimitEventHandler
@@ -28,6 +28,7 @@ export const useOAuthClientsLimitExceeded = (
   navigation: NavigationProp<ParamListBase>
 ): OAuthClientsLimitExceededState => {
   const client = useClient()
+  const instancesInfo = useInstanceInfo()
 
   const [popupUrl, setPopupUrl] = useState<string | null>(null)
 
@@ -37,18 +38,18 @@ export const useOAuthClientsLimitExceeded = (
 
   useEffect(() => {
     const eventCallback = (href: string): void => {
-      if (client === null) {
-        log.error('Client is null, should not happen')
-        return
+      const doAsync = async (): Promise<void> => {
+        if (client === null) {
+          log.error('Client is null, should not happen')
+          return
+        }
+
+        const popupUrl = await buildOauthClientLimitExceededUrl(href, client)
+
+        setPopupUrl(current => current ?? popupUrl)
       }
 
-      const rootURL = client.getStackClient().uri
-      const encodedRedirect = encodeURIComponent(href)
-      setPopupUrl(
-        current =>
-          current ??
-          `${rootURL}${OAUTH_CLIENTS_LIMIT_EXCEEDED_URL_PATH}?isFlagship=true&redirect=${encodedRedirect}`
-      )
+      void doAsync()
     }
 
     const subscription = oauthClientLimitEventHandler.addListener(
@@ -67,8 +68,9 @@ export const useOAuthClientsLimitExceeded = (
       popupUrl ?? '',
       closePopup,
       client,
-      navigation
+      navigation,
+      instancesInfo
     ),
-    interceptOpenWindow: interceptOpenWindow(client, navigation)
+    interceptOpenWindow: interceptOpenWindow(client, navigation, instancesInfo)
   }
 }

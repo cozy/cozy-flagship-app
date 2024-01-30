@@ -75,8 +75,6 @@ export const determineSecurityFlow = async (
       return showSecurityScreen(lockScreens.PIN_PROMPT)
     }
   }
-
-  return hideSplashScreen(splashScreens.LOCK_SCREEN)
 }
 
 export const getSecFlowInitParams = async (

@@ -29,6 +29,20 @@
     "title": "Logout"
   },
   "screens": {
+    "clouderyOffer": {
+      "backButton": "BACK TO MY COZY",
+      "iapProgress": "Purchase in progress",
+      "error": {
+        "title": "An error occured",
+        "tryAgain": "Try again",
+        "backToOffers": "Back to offers"
+      },
+      "success": {
+        "title": "Payment completed",
+        "body": "Your Cozy is being updated.\nYou will receive a notification as soon as your purchase is finalized.",
+        "close": "Close"
+      }
+    },
     "cozyBlocked": {
       "body": "Contact us, if you want to know more, at <a id=\"mailto\" href=\"#\">contact@cozycloud.cc</a>.",
       "title": "Your Cozy has been blocked"
@@ -91,11 +105,15 @@
         "onProgressTitle": "Uploading",
         "onProgressMessage": "{{filename}} is being uploaded",
         "backupSuccessTitle": "Photo & video backup",
+        "backupSuccessBody": "Your backup is complete! {{backedUpMediaCount}}/{{count}} saved item",
         "backupSuccessBody_one": "Your backup is complete! {{backedUpMediaCount}}/{{count}} saved item",
         "backupSuccessBody_other": "Your backup is complete! {{backedUpMediaCount}}/{{count}} saved items",
+        "backupSuccessBody_plural": "Your backup is complete! {{backedUpMediaCount}}/{{count}} saved items",
         "backupPartialSuccessTitle": "Photo & video backup",
+        "backupPartialSuccessBody": "Your backup is stopped! {{backedUpMediaCount}}/{{count}} saved item",
         "backupPartialSuccessBody_one": "Your backup is stopped! {{backedUpMediaCount}}/{{count}} saved item",
         "backupPartialSuccessBody_other": "Your backup is stopped! {{backedUpMediaCount}}/{{count}} saved items",
+        "backupPartialSuccessBody_plural": "Your backup is stopped! {{backedUpMediaCount}}/{{count}} saved items",
         "backupErrorTitle": "Oops",
         "backupErrorBody": "Your backup encountered an error. Open the app to see more details"
       },
