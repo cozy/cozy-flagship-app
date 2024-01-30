@@ -6,6 +6,7 @@ import Minilog from 'cozy-minilog'
 import { useNativeIntent } from 'cozy-intent'
 
 import { jsCozyGlobal } from '/components/webviews/jsInteractions/jsCozyInjection'
+import { jsUtils } from '/components/webviews/jsInteractions/jsUtils'
 import { useLauncherContext } from '/screens/home/hooks/useLauncherContext'
 import {
   jsEnsureCrypto,
@@ -170,6 +171,8 @@ export const CozyWebView = ({
   const run = `
     (function() {
       ${jsCozyGlobal(route.name, isSecureProtocol)}
+
+      ${jsUtils}
 
       ${jsLogInterception}
 
