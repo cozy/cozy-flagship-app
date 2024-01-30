@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Dimensions } from 'react-native'
+import { Dimensions, Platform } from 'react-native'
 import {
   initialWindowMetrics,
   useSafeAreaFrame,
@@ -55,7 +55,8 @@ const getDimensions = (): DeviceDimensions => {
     navbarHeight: initialWindowMetrics?.insets.bottom ?? 0,
     screenHeight: screenHeight,
     screenWidth: screenWidth,
-    statusBarHeight: initialWindowMetrics?.insets.top ?? 0
+    statusBarHeight:
+      initialWindowMetrics?.insets.top ?? (Platform.OS === 'android' ? 24 : 0) // Official height is 24dp , as is stated officially by Google on Android Design webpage
   }
 
   return initialDimensions
