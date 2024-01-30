@@ -1,7 +1,14 @@
 import React from 'react'
 
-import { SplashScreenService } from '/app/theme/SplashScreenService'
+import type {
+  showSplashScreen,
+  hideSplashScreen
+} from '/app/theme/SplashScreenService'
 
-export const SplashScreenContext = React.createContext<SplashScreenService>(
-  {} as SplashScreenService
-)
+export const SplashScreenContext = React.createContext<
+  | {
+      show: typeof showSplashScreen
+      hide: typeof hideSplashScreen
+    }
+  | undefined
+>(undefined)
