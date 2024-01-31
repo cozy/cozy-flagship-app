@@ -45,19 +45,23 @@ export const showSplashScreen = (
     clearTimeout(autoHideTimer)
   }
 
-  autoHideTimer = setTimeout(() => {
-    hideSplashScreen(bootsplashName).catch(error => {
-      devlog(`☁️ hideSplashScreen error:`, error)
-    })
+  // Auto-hide the splash screen after a certain duration
+  // This mitigates the issue of the splash screen not being hidden for unforeseen reasons
+  if (bootsplashName !== splashScreens.SECURE_BACKGROUND) {
+    autoHideTimer = setTimeout(() => {
+      hideSplashScreen(bootsplashName).catch(error => {
+        devlog(`☁️ hideSplashScreen error:`, error)
+      })
 
-    logToSentry(
-      new Error(
-        `Splashscreen reached autoHideDuration with bootsplahName: ${
-          bootsplashName ?? 'undefined'
-        } and autoHideDuration: ${autoHideDuration}`
+      logToSentry(
+        new Error(
+          `Splashscreen reached autoHideDuration with bootsplahName: ${
+            bootsplashName ?? 'undefined'
+          } and autoHideDuration: ${autoHideDuration}`
+        )
       )
-    )
-  }, autoHideDuration)
+    }, autoHideDuration)
+  }
 
   return RNBootSplash.show({ fade: true, bootsplashName })
 }
@@ -71,6 +75,7 @@ export const showSplashScreen = (
 export const hideSplashScreen = (
   bootsplashName?: SplashScreenEnum
 ): Promise<void> => {
+  // Clear the auto-hide timer as we don't want to hide the splash screen twice
   if (autoHideTimer) {
     clearTimeout(autoHideTimer)
     autoHideTimer = null
