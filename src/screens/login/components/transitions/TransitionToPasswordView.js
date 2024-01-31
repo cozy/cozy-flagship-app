@@ -1,14 +1,13 @@
-import Minilog from 'cozy-minilog'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Animated, Dimensions, Easing, StyleSheet, View } from 'react-native'
 
+import Minilog from 'cozy-minilog'
+
 import { getDimensions } from '/libs/dimensions'
-
-import { CozyIcon } from './transitions-icons/CozyIcon'
-
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { isLightBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { getColors } from '/ui/colors'
+import { CozyIcon } from '/screens/login/components/transitions/transitions-icons/CozyIcon'
 
 const log = Minilog('TransitionToPasswordView')
 

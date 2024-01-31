@@ -17,12 +17,6 @@ import { useI18n } from '/locales/i18n'
 import { getColors } from '/ui/colors'
 
 const colors = getColors()
-const { statusBarHeight } = getDimensions()
-
-const HEADER_PADDING_TOP = statusBarHeight + 8
-const HEADER_PADDING_BOTTOM = 8
-const HEADER_LINE_HEIGHT = 16
-const TOUCHABLE_VERTICAL_PADDING = 8
 
 const ClouderyOfferWithIAPContext = (): JSX.Element | null => {
   const {
@@ -79,7 +73,7 @@ const WebViewWithLoadingOverlay = ({
   )
 
   return (
-    <View style={styles.dialog}>
+    <View style={makeStyles().dialog}>
       <BackButton onPress={hidePopup} />
       {popupUrl && (
         <WebView
@@ -108,7 +102,7 @@ const LoadingOverlay = (): JSX.Element => {
   return (
     <View
       style={[
-        styles.loadingOverlay,
+        makeStyles().loadingOverlay,
         {
           backgroundColor: colors.primaryColor
         }
@@ -125,14 +119,14 @@ const BackButton = ({ onPress }: BackButtonProps): JSX.Element => {
   const { t } = useI18n()
 
   return (
-    <View style={styles.headerStyle}>
+    <View style={makeStyles().headerStyle}>
       <TouchableOpacity
         activeOpacity={0.5}
         onPress={onPress}
-        style={styles.headerTouchableStyle}
+        style={makeStyles().headerTouchableStyle}
       >
         <BackTo color={colors.primaryColor} width={16} height={16} />
-        <Text style={styles.headerTextStyle}>
+        <Text style={makeStyles().headerTextStyle}>
           {t('screens.clouderyOffer.backButton')}
         </Text>
       </TouchableOpacity>
@@ -140,39 +134,50 @@ const BackButton = ({ onPress }: BackButtonProps): JSX.Element => {
   )
 }
 
-const styles = StyleSheet.create({
-  dialog: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0
-  },
-  loadingOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0
-  },
-  headerStyle: {
-    alignContent: 'center',
-    backgroundColor: colors.paperBackgroundColor,
-    flexDirection: 'row',
-    paddingBottom: HEADER_PADDING_BOTTOM,
-    paddingHorizontal: 8,
-    paddingTop: HEADER_PADDING_TOP
-  },
-  headerTouchableStyle: {
-    flexDirection: 'row',
-    paddingVertical: TOUCHABLE_VERTICAL_PADDING,
-    paddingHorizontal: 6
-  },
-  headerTextStyle: {
-    marginLeft: 10,
-    fontSize: 13,
-    fontFamily: 'Lato-Bold',
-    lineHeight: HEADER_LINE_HEIGHT,
-    color: colors.primaryColor
-  }
-})
+// We just want inference here
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const makeStyles = () => {
+  const { statusBarHeight } = getDimensions()
+
+  const HEADER_PADDING_TOP = statusBarHeight + 8
+  const HEADER_PADDING_BOTTOM = 8
+  const HEADER_LINE_HEIGHT = 16
+  const TOUCHABLE_VERTICAL_PADDING = 8
+
+  return StyleSheet.create({
+    dialog: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0
+    },
+    loadingOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0
+    },
+    headerStyle: {
+      alignContent: 'center',
+      backgroundColor: colors.paperBackgroundColor,
+      flexDirection: 'row',
+      paddingBottom: HEADER_PADDING_BOTTOM,
+      paddingHorizontal: 8,
+      paddingTop: HEADER_PADDING_TOP
+    },
+    headerTouchableStyle: {
+      flexDirection: 'row',
+      paddingVertical: TOUCHABLE_VERTICAL_PADDING,
+      paddingHorizontal: 6
+    },
+    headerTextStyle: {
+      marginLeft: 10,
+      fontSize: 13,
+      fontFamily: 'Lato-Bold',
+      lineHeight: HEADER_LINE_HEIGHT,
+      color: colors.primaryColor
+    }
+  })
+}

@@ -14,8 +14,6 @@ export const handleError = ({ nativeEvent }: WebViewErrorEvent): void => {
     NetService.handleOffline(routes.home)
 }
 
-const { screenHeight, screenWidth } = getDimensions()
-
 export const config = {
   duration: 300,
   width: '44%',
@@ -62,17 +60,26 @@ export const getTranslateInput = (params: {
   y: number
   height: number
   width: number
-}): { x: number; y: number } => ({
-  x:
-    params.x - styles.fadingContainer.left - (screenWidth - params.width) * 0.5,
-  y:
-    params.y - styles.fadingContainer.top - (screenHeight - params.height) * 0.5
-})
+}): { x: number; y: number } => {
+  const { screenHeight, screenWidth } = getDimensions()
+
+  return {
+    x:
+      params.x -
+      styles.fadingContainer.left -
+      (screenWidth - params.width) * 0.5,
+    y:
+      params.y -
+      styles.fadingContainer.top -
+      (screenHeight - params.height) * 0.5
+  }
+}
 
 export const getScaleInput = (params: {
   width: number
   height: number
-}): { x: number; y: number } => ({
-  x: params.width / screenWidth,
-  y: params.height / screenHeight
-})
+}): { x: number; y: number } => {
+  const { screenHeight, screenWidth } = getDimensions()
+
+  return { x: params.width / screenWidth, y: params.height / screenHeight }
+}
