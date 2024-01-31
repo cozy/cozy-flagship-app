@@ -29,8 +29,6 @@ const strSubmit = 'SE CONNECTER'
 
 const locale = 'fr'
 
-const dimensions = getDimensions()
-
 const getCustomThemeLink = (clouderyTheme: ClouderyTheme): string =>
   clouderyTheme.themeUrl
     ? `<link rel="stylesheet" media="screen" href="${clouderyTheme.themeUrl}">`
@@ -53,7 +51,7 @@ export const getHtml = (
 ): string => {
   const avatarUrl = new URL(instance)
   avatarUrl.pathname = 'public/avatar'
-
+  const dimensions = getDimensions()
   const avatarSvgUrl = getAvatarDataUri()
 
   return `
