@@ -51,12 +51,26 @@ const getDimensions = (): DeviceDimensions => {
     return dimensionsHook
   }
 
+  const navbarHeight = initialWindowMetrics?.insets.bottom ?? 0
+  const statusBarHeight = initialWindowMetrics?.insets.top ?? 0
+
+  // Case when the initial call has no dimensions available on Android
+  // We use statusBarHeight as hint because navbar can be legitimately 0
+  if (statusBarHeight === 0 && Platform.OS === 'android') {
+    // In that case, we return the official dimensions, so the user never has a 0 height navbar/statusbar
+    return {
+      navbarHeight: 24, // Official height is 24dp, as is stated on Android Design webpage,
+      screenHeight: screenHeight,
+      screenWidth: screenWidth,
+      statusBarHeight: 48 // Official height is 48dp, as is stated on Android Design webpage
+    }
+  }
+
   const initialDimensions = {
-    navbarHeight: initialWindowMetrics?.insets.bottom ?? 0,
+    navbarHeight,
     screenHeight: screenHeight,
     screenWidth: screenWidth,
-    statusBarHeight:
-      initialWindowMetrics?.insets.top ?? (Platform.OS === 'android' ? 24 : 0) // Official height is 24dp , as is stated officially by Google on Android Design webpage
+    statusBarHeight
   }
 
   return initialDimensions
