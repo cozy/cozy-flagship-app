@@ -6,6 +6,8 @@ import {
   useSafeAreaInsets
 } from 'react-native-safe-area-context'
 
+import { logToSentry } from '/libs/monitoring/Sentry'
+
 interface DeviceDimensions {
   navbarHeight: number
   screenHeight: number
@@ -57,6 +59,14 @@ const getDimensions = (): DeviceDimensions => {
   // Case when the initial call has no dimensions available on Android
   // We use statusBarHeight as hint because navbar can be legitimately 0
   if (statusBarHeight === 0 && Platform.OS === 'android') {
+    logToSentry(
+      new Error(
+        `getDimensions: no dimensions available at initial call, initialWindowMetrics: ${JSON.stringify(
+          initialWindowMetrics
+        )}`
+      )
+    )
+
     // In that case, we return the official dimensions, so the user never has a 0 height navbar/statusbar
     return {
       navbarHeight: 24, // Official height is 24dp, as is stated on Android Design webpage,
