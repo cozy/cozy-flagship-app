@@ -2,11 +2,9 @@ import BackgroundGeolocation from 'react-native-background-geolocation'
 import DeviceInfo from 'react-native-device-info'
 
 import CozyClient, { Q, QueryDefinition, fetchPolicies } from 'cozy-client'
-import Minilog from 'cozy-minilog'
 
+import { devlog } from '/core/tools/env'
 import { t } from '/locales/i18n'
-
-const log = Minilog('📍 Geolocation')
 
 export const getTs = (location: { timestamp: string }): number => {
   return parseISOString(location.timestamp).getTime() / 1000
@@ -22,7 +20,7 @@ export const parseISOString = (ISOString: string): Date => {
 const Logger = BackgroundGeolocation.logger
 
 export const Log = (message: string): void => {
-  log.debug(message)
+  devlog(`📍 Geolocation Plugin ${message}`)
   Logger.debug(message)
 }
 
