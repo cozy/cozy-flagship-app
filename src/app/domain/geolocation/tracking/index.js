@@ -30,8 +30,6 @@ export { getOrCreateId, updateId } from '/app/domain/geolocation/tracking/user'
 export { uploadData } from '/app/domain/geolocation/tracking/upload'
 export { GeolocationTrackingHeadlessTask } from '/app/domain/geolocation/tracking/headless'
 export { storeFetchServiceWebHook } from '/app/domain/geolocation/tracking/storage'
-import { GeolocationTrackingEmitter } from '/app/domain/geolocation/tracking/events'
-import { TRIP_END } from '/app/domain/geolocation/tracking/consts'
 import { getOrCreateId } from '/app/domain/geolocation/tracking/user'
 
 export {
@@ -194,7 +192,6 @@ export const handleMotionChange = async event => {
     const stationaryTs = event.location?.timestamp
     Log('Auto uploading from stop')
     await startOpenPathUploadAndPipeline({ untilTs: stationaryTs })
-    GeolocationTrackingEmitter.emit(TRIP_END)
 
     // Disable elasticity to improve next point accuracy
     disableElasticity()
@@ -208,7 +205,6 @@ export const handleConnectivityChange = async event => {
   if (event.connected && (await getFlagFailUpload())) {
     Log('Auto uploading from reconnection and failed last attempt')
     await startOpenPathUploadAndPipeline()
-    GeolocationTrackingEmitter.emit(TRIP_END)
   }
 }
 
