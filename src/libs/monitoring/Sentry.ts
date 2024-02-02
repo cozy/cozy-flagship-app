@@ -30,7 +30,7 @@ Sentry.init({
     flow(scrubPhoneNumbers, groupBackupErrors)(event, hint) as Sentry.Event,
   debug: isSentryDebugMode(),
   dsn: strings.SENTRY_DSN_URL,
-  enabled: EnvService.hasSentryEnabled,
+  enabled: EnvService.hasSentryEnabled(),
   environment: EnvService.name,
   integrations: [new CaptureConsole({ levels: ['error', 'warn'] })],
   onReady: ({ didCallNativeInit }) =>
