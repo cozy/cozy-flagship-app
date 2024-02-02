@@ -29,9 +29,8 @@ const name =
 
 const nameIs = (envName: string): boolean => envName === name
 
-const hasSentryEnabled = enableSentryOn.some(
-  environment => environment === name
-)
+const hasSentryEnabled = (): boolean =>
+  enableSentryOn.some(environment => environment === name)
 
 export const isDev = (): boolean => nameIs(strings.environments.test)
 

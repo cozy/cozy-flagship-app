@@ -117,7 +117,7 @@ jest.mock('../src/core/tools/env', () => ({
   ...jest.requireActual('../src/core/tools/env'),
   isSentryDebugMode: () => true,
   EnvService: {
-    hasSentryEnabled: true
+    hasSentryEnabled: () => true
   },
   devlog: jest.fn(),
   shouldDisableAutolock: jest.fn().mockReturnValue(false)
