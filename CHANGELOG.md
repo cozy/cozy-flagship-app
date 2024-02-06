@@ -1,4 +1,4 @@
-# 1.1.24
+# 1.1.25
 
 ## ✨ Features
 
@@ -9,7 +9,52 @@
 ## 🔧 Tech
 
 
+# 1.1.24
+
+## ✨ Features
+
+* Improve backup performances ([PR #1100](https://github.com/cozy/cozy-flagship-app/pull/1100), [PR #1114](https://github.com/cozy/cozy-flagship-app/pull/1114), [PR #1118](https://github.com/cozy/cozy-flagship-app/pull/1118), [PR #1124](https://github.com/cozy/cozy-flagship-app/pull/1124))
+* Implement mechanism to try CoachCO2 trip tracking on a free plan ([PR #1090](https://github.com/cozy/cozy-flagship-app/pull/1090) and [PR #1125](https://github.com/cozy/cozy-flagship-app/pull/1125))
+* CoachCO2 trips should now appear faster after the end of a trip ([PR #1120](https://github.com/cozy/cozy-flagship-app/pull/1120), [PR #1133](https://github.com/cozy/cozy-flagship-app/pull/1133), [PR #1140](https://github.com/cozy/cozy-flagship-app/pull/1140))
+* It is now possible to subscribe to a Cozy plan from the App ([PR #991](https://github.com/cozy/cozy-flagship-app/pull/991), [PR #1070](https://github.com/cozy/cozy-flagship-app/pull/1070), [PR #1131](https://github.com/cozy/cozy-flagship-app/pull/1131), [PR #1143](https://github.com/cozy/cozy-flagship-app/pull/1143), [PR #1145](https://github.com/cozy/cozy-flagship-app/pull/1145) and [PR #1181](https://github.com/cozy/cozy-flagship-app/pull/1181))
+* TwoFactor authentication is not requested anymore when the user logs using their email ([PR #1174](https://github.com/cozy/cozy-flagship-app/pull/1174) and [PR #1177](https://github.com/cozy/cozy-flagship-app/pull/1177))
+
+## 🐛 Bug Fixes
+
+* Improve backup's UI ([PR #1104](https://github.com/cozy/cozy-flagship-app/pull/1104))
+* Improve backup stability ([PR #1166](https://github.com/cozy/cozy-flagship-app/pull/1166), [PR #1173](https://github.com/cozy/cozy-flagship-app/pull/1173))
+* CoachCO2 trip tracking toggle should now update correctly when activating tracking ([PR #1116](https://github.com/cozy/cozy-flagship-app/pull/1116))
+* CoachCO2 trip tracking should now have less impact on battery level ([PR #1119](https://github.com/cozy/cozy-flagship-app/pull/1119))
+* Fix a bug that prevented notifications to open the correct cozy-app in some scenario ([PR #1123](https://github.com/cozy/cozy-flagship-app/pull/1123) and [PR #1130](https://github.com/cozy/cozy-flagship-app/pull/1130))
+* Fix a bug that would show incorrect texts on iOS when a plural form is used ([PR #1129](https://github.com/cozy/cozy-flagship-app/pull/1129))
+* Improve Client Side Connectors stability ([PR #1089](https://github.com/cozy/cozy-flagship-app/pull/1089), [PR #1159](https://github.com/cozy/cozy-flagship-app/pull/1159), [PR #1171](https://github.com/cozy/cozy-flagship-app/pull/1171) and [PR #1180](https://github.com/cozy/cozy-flagship-app/pull/1180))
+* Fix bugs where splashscreen was not hidden or hidden to soon ([PR #1135](https://github.com/cozy/cozy-flagship-app/pull/1135), [PR #1139](https://github.com/cozy/cozy-flagship-app/pull/1139), [PR #1153](https://github.com/cozy/cozy-flagship-app/pull/1153) and [PR #1162](https://github.com/cozy/cozy-flagship-app/pull/1162))
+* Ensure autofocus on Lock screens ([PR #1095](https://github.com/cozy/cozy-flagship-app/pull/1095))
+* Fix a bug where the App's UI could be displayed behind the phone's navigation bar ([PR #1151](https://github.com/cozy/cozy-flagship-app/pull/1151) and [PR #1156](https://github.com/cozy/cozy-flagship-app/pull/1156))
+* Improve offline mitigation on Onboarding screens ([PR #1149](https://github.com/cozy/cozy-flagship-app/pull/1149))
+* Improve CoachCO2 trip tracking feature ([PR #1163](https://github.com/cozy/cozy-flagship-app/pull/1163), [PR #1157](https://github.com/cozy/cozy-flagship-app/pull/1157), [PR #1165](https://github.com/cozy/cozy-flagship-app/pull/1165), [PR #1167](https://github.com/cozy/cozy-flagship-app/pull/1167), [PR #1168](https://github.com/cozy/cozy-flagship-app/pull/1168), [PR #1178](https://github.com/cozy/cozy-flagship-app/pull/1178), [PR #1179](https://github.com/cozy/cozy-flagship-app/pull/1179), [PR #1176](https://github.com/cozy/cozy-flagship-app/pull/1176), [PR #1182](https://github.com/cozy/cozy-flagship-app/pull/1182))
+* Improve app stability on old Android versions (< android 7) ([PR #1170](https://github.com/cozy/cozy-flagship-app/pull/1170))
+
+## 🔧 Tech
+
+* ReloadInterceptorWebView interceptions do not produce an error log anymore ([PR #1096](https://github.com/cozy/cozy-flagship-app/pull/1096))
+* Add foundations for sharing cozy files to other phone's apps ([PR #1105](https://github.com/cozy/cozy-flagship-app/pull/1105), [PR #1088](https://github.com/cozy/cozy-flagship-app/pull/1088), [PR #1144](https://github.com/cozy/cozy-flagship-app/pull/1144))
+* Rework Flagship API to handle status bar and navigation bar colors ([PR #1082](https://github.com/cozy/cozy-flagship-app/pull/1082))
+* Rework Lock related screens ([PR #1092](https://github.com/cozy/cozy-flagship-app/pull/1092), [PR #1146](https://github.com/cozy/cozy-flagship-app/pull/1146))
+* Add support of navigator clipboard API ([PR #1141](https://github.com/cozy/cozy-flagship-app/pull/1141))
+* Fix Android build by forcing Android tools version ([PR #1136](https://github.com/cozy/cozy-flagship-app/pull/1136))
+* Improve documentation ([PR #1115](https://github.com/cozy/cozy-flagship-app/pull/1115), [PR #1132](https://github.com/cozy/cozy-flagship-app/pull/1132))
+* Update Sentry ([PR #1134](https://github.com/cozy/cozy-flagship-app/pull/1134))
+* Remove Dependabot configuration ([PR #1150](https://github.com/cozy/cozy-flagship-app/pull/1150))
+* Prevent CoachCO2 tracking logs to be logged in Sentry when the app crashes ([PR #1158](https://github.com/cozy/cozy-flagship-app/pull/1158))
+* Homogenize user-agent through all application's webviews ([PR #1164](https://github.com/cozy/cozy-flagship-app/pull/1164))
+* Improve CI publish workflow on white label apps ([PR #1172](https://github.com/cozy/cozy-flagship-app/pull/1172))
+* Refactor all AsyncStorage calls to prepare future migration to MMKV ([PR #1169](https://github.com/cozy/cozy-flagship-app/pull/1169))
+* Not active yet: Add foundation to allow sending app's log by email ([PR #1137](https://github.com/cozy/cozy-flagship-app/pull/1137), [PR #1183](https://github.com/cozy/cozy-flagship-app/pull/1183))
+
 # 1.1.23
+
+Android only release.
 
 ## ✨ Features
 
@@ -26,7 +71,6 @@
 ## ✨ Features
 
 * Autofill email's recipient with Cozy's support email when sending CoachCO2 logs to support ([PR #1121](https://github.com/cozy/cozy-flagship-app/pull/1121))
-
 
 ## 🐛 Bug Fixes
 
