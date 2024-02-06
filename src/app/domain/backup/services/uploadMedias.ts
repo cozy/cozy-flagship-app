@@ -145,7 +145,8 @@ export const uploadMedias = async (
             t('services.backup.errors.unknownIssue')
         }
       } else {
-        throw new BackupError(t('services.backup.errors.unknownIssue'))
+        firstPartialSuccessMessage =
+          firstPartialSuccessMessage ?? t('services.backup.errors.unknownIssue')
       }
     }
 
