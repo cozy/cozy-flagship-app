@@ -143,9 +143,7 @@
     "geolocationTracking": {
       "androidBackgroundPermissionMessage": "Mémoriser vos déplacements nécessite de ≪ {backgroundPermissionOptionLabel} ≫",
       "androidNotificationTitle": "Service de localisation actif",
-      "androidNotificationDescription": "Votre déplacement sera enregistré dans votre Cozy",
-      "quotaExceededNotificationTitle": "Enregistrement des déplacements désactivés",
-      "quotaExceededNotificationDescription": "Vous avez atteint la limite des {{days}} jours de trajets inclus dans votre offre."
+      "androidNotificationDescription": "Votre déplacement sera enregistré dans votre Cozy"
     },
     "osReceive": {
       "documentType": "Ajouter dans votre Cozy en tant que :",

@@ -127,9 +127,7 @@
     "geolocationTracking": {
       "androidBackgroundPermissionMessage": "Registrar sus movimientos requiere ≪ {backgroundPermissionOptionLabel} ≫",
       "androidNotificationTitle": "Servicio de localización en",
-      "androidNotificationDescription": "Tu viaje quedará registrado en tu Cozy",
-      "quotaExceededNotificationTitle": "Grabación de viaje desactivada",
-      "quotaExceededNotificationDescription": "Ha alcanzado el límite de {{days}} días de viaje incluidos en su oferta."
+      "androidNotificationDescription": "Tu viaje quedará registrado en tu Cozy"
     },
     "osReceive": {
       "documentType": "Tipo de documento :",

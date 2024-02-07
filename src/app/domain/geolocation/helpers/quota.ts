@@ -5,8 +5,6 @@ import CozyClient from 'cozy-client'
 import flag from 'cozy-flags'
 import Minilog from 'cozy-minilog'
 
-import { showLocalNotification } from '/libs/notifications/notifications'
-import { t } from '/locales/i18n'
 import { getData, storeData, StorageKeys } from '/libs/localStore/storage'
 import { setGeolocationTracking } from '/app/domain/geolocation/services/tracking'
 
@@ -89,30 +87,6 @@ export const isGeolocationQuotaExceeded = async (
   return daysSinceFirstCapture > maxDaysToCapture
 }
 
-export const showQuotaExceededNotification = async (): Promise<void> => {
-  const maxDaysToCapture = flag('coachco2.max-days-to-capture') as number | null
-
-  if (
-    isMaxDaysToCaptureInvalid(maxDaysToCapture) ||
-    isMaxDaysToCaptureUnlimited(maxDaysToCapture)
-  ) {
-    return
-  }
-
-  await showLocalNotification({
-    title: t('services.geolocationTracking.quotaExceededNotificationTitle'),
-    body: t(
-      'services.geolocationTracking.quotaExceededNotificationDescription',
-      {
-        days: maxDaysToCapture.toString()
-      }
-    ),
-    data: {
-      redirectLink: 'coachco2/'
-    }
-  })
-}
-
 export const checkGeolocationQuota = async (
   client: CozyClient
 ): Promise<void> => {
@@ -121,6 +95,5 @@ export const checkGeolocationQuota = async (
   if (quotaExceeded) {
     log.debug('Geolocation quota exceeded')
     await setGeolocationTracking(false)
-    await showQuotaExceededNotification()
   }
 }
