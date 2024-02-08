@@ -73,7 +73,7 @@ describe('SplashScreenService', () => {
     jest.advanceTimersByTime(newDuration)
 
     expect(RNBootSplash.hide).toHaveBeenLastCalledWith({
-      bootsplashName: undefined,
+      bootsplashName: 'global', // Default bootsplash name when none is provided
       fade: true
     })
   })

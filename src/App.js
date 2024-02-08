@@ -48,7 +48,10 @@ import {
 import { useOsReceiveApi } from '/app/view/OsReceive/hooks/useOsReceiveApi'
 import { LockScreenWrapper } from '/app/view/Lock/LockScreenWrapper'
 import { useSecureBackgroundSplashScreen } from '/hooks/useSplashScreen'
-import { hideSplashScreen } from '/app/theme/SplashScreenService'
+import {
+  hideSplashScreen,
+  setTimeoutForSplashScreen
+} from '/app/theme/SplashScreenService'
 import { initFlagshipUIService } from '/app/view/FlagshipUI'
 import {
   useLauncherContext,
@@ -220,6 +223,7 @@ const Wrapper = () => {
 
   useEffect(() => {
     initFlagshipUIService()
+    setTimeoutForSplashScreen()
   }, [])
 
   return (
