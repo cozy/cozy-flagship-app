@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { WebView } from 'react-native-webview'
-import Minilog from 'cozy-minilog'
 
+import Minilog from 'cozy-minilog'
 import { useClient } from 'cozy-client'
 
 import { RemountProgress } from '/app/view/Loading/RemountProgress'
 import { resyncCookies } from '/libs/httpserver/httpCookieManager'
+import { APPLICATION_NAME_FOR_USER_AGENT } from '/constants/userAgent'
 
 const log = Minilog('SupervisedWebView')
 
@@ -108,6 +109,7 @@ export const SupervisedWebView = React.forwardRef((props, ref) => {
   return (
     <>
       <WebView
+        applicationNameForUserAgent={APPLICATION_NAME_FOR_USER_AGENT}
         {...otherProps}
         ref={ref}
         key={key}

@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { useClient, useInstanceInfo } from 'cozy-client'
 
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
-import { APPLICATION_NAME_FOR_USER_AGENT } from '/constants/userAgent'
 import { ProgressContainer } from '/components/ProgressContainer'
 import {
   interceptNavigation,
@@ -27,7 +26,6 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
       <ProgressContainer progress={progress}>
         <SupervisedWebView
           {...props}
-          applicationNameForUserAgent={APPLICATION_NAME_FOR_USER_AGENT}
           ref={ref}
           onShouldStartLoadWithRequest={initialRequest => {
             return interceptNavigation({
@@ -61,7 +59,6 @@ const ReloadInterceptorWebView = React.forwardRef((props, ref) => {
     <ProgressContainer progress={progress}>
       <SupervisedWebView
         {...props}
-        applicationNameForUserAgent={APPLICATION_NAME_FOR_USER_AGENT}
         ref={ref}
         key={timestamp}
         onShouldStartLoadWithRequest={initialRequest => {
