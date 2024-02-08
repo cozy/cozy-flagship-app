@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
+
 import Minilog from 'cozy-minilog'
 
 import {
@@ -19,7 +20,6 @@ import {
 import { getOnboardingDataFromRequest } from '/screens/login/components/functions/getOnboardingDataFromRequest'
 import { openWindowWithInAppBrowser } from '/screens/login/components/functions/interceptExternalLinks'
 import { jsPaddingInjection } from '/screens/login/components/functions/webViewPaddingInjection'
-import { APPLICATION_NAME_FOR_USER_AGENT } from '/constants/userAgent'
 
 const log = Minilog('ClouderyCreateInstanceView')
 
@@ -106,7 +106,6 @@ export const ClouderyCreateInstanceView = ({
       behavior="height"
     >
       <SupervisedWebView
-        applicationNameForUserAgent={APPLICATION_NAME_FOR_USER_AGENT}
         source={{ uri: clouderyUrl }}
         ref={webviewRef}
         onShouldStartLoadWithRequest={handleNavigation}
