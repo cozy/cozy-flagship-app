@@ -19,7 +19,10 @@ type SplashScreenEnumKeys = keyof typeof splashScreens
 export type SplashScreenEnum = (typeof splashScreens)[SplashScreenEnumKeys]
 
 // Using a map to handle multiple timers
-const autoHideTimers: Record<string, NodeJS.Timeout | undefined> = {}
+const autoHideTimers = {} as Record<
+  SplashScreenEnum | string,
+  NodeJS.Timeout | undefined
+>
 
 let autoHideDuration = config.autoHideDuration // Default timeout duration in milliseconds
 
@@ -180,30 +183,26 @@ const destroyTimer = (
   }
 }
 
-let activeTimersAtBackground: Record<string, boolean> = {}
+let activeTimersAtBackground: SplashScreenEnum[] = []
 
 const resetTimersOnActive = (): void => {
   splashScreenLogger.debug(
     `App is becoming active. Evaluating timers to reset...`
   )
 
-  const timersToReset = Object.keys(activeTimersAtBackground)
-
-  if (timersToReset.length === 0) {
+  if (activeTimersAtBackground.length === 0) {
     splashScreenLogger.info(`No splash screen timers to reset.`)
   } else {
-    timersToReset.forEach(splashScreen => {
-      if (activeTimersAtBackground[splashScreen]) {
-        splashScreenLogger.info(
-          `Resetting timer for splash screen "${splashScreen}"`
-        )
-        setTimeoutForSplashScreen(splashScreen as SplashScreenEnum)
-      }
+    activeTimersAtBackground.forEach(splashScreen => {
+      splashScreenLogger.info(
+        `Resetting timer for splash screen "${splashScreen}"`
+      )
+      setTimeoutForSplashScreen(splashScreen)
     })
   }
 
   // Clear the record once timers are reset
-  activeTimersAtBackground = {}
+  activeTimersAtBackground = []
 }
 
 const clearTimersOnBackground = (): void => {
@@ -211,15 +210,16 @@ const clearTimersOnBackground = (): void => {
     `App is going to background. Clearing active timers...`
   )
 
-  Object.keys(autoHideTimers).forEach(splashScreen => {
-    if (autoHideTimers[splashScreen]) {
-      splashScreenLogger.info(
-        `Clearing timer for splash screen "${splashScreen}". Will reset on active.`
-      )
-      activeTimersAtBackground[splashScreen] = true // Mark as active
-      clearTimeout(autoHideTimers[splashScreen])
-      Reflect.deleteProperty(autoHideTimers, splashScreen)
-    }
+  const activeTimers = Object.keys(autoHideTimers) as SplashScreenEnum[]
+
+  activeTimers.forEach(splashScreen => {
+    splashScreenLogger.info(
+      `Clearing timer for splash screen "${splashScreen}". Will reset on active.`
+    )
+
+    activeTimersAtBackground.push(splashScreen)
+
+    destroyTimer(splashScreen)
   })
 }
 
