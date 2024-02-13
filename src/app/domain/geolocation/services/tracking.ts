@@ -4,7 +4,7 @@ import {
   startTracking,
   stopTracking,
   sendLogFile,
-  uploadData,
+  startOpenPathUploadAndPipeline,
   getId,
   updateId,
   stopTrackingAndClearData,
@@ -46,7 +46,7 @@ export const sendGeolocationTrackingLogs = async (
 }
 
 export const forceUploadGeolocationTrackingData = async (): Promise<void> => {
-  await uploadData({ force: true })
+  await startOpenPathUploadAndPipeline({ force: true })
 }
 
 interface GeolocationTrackingStatus {
