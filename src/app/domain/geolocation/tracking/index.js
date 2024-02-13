@@ -217,8 +217,8 @@ export const handleConnectivityChange = async event => {
  * as soon as the trips are ready to be fetched.
  *
  * @typedef {object} Params
- * @property {number} untilTS - Until when the locations points should be fetched. Default is 0
- * @property {boolean} force - Whether or not the upload should be forced
+ * @property {number} [untilTs] - Until when the locations points should be fetched. Default is 0
+ * @property {boolean} [force] - Whether or not the upload should be forced
  *
  * @param {Params} - The method parmas
  */
