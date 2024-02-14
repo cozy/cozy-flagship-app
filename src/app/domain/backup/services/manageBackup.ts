@@ -90,13 +90,13 @@ export const startBackup = async (
 ): Promise<BackupInfo> => {
   log.debug('Backup started')
 
+  activateKeepAwake('backup')
+
   const localBackupConfig = await getLocalBackupConfig(client)
 
   await setBackupAsRunning(client)
 
   void onProgress(await getBackupInfo(client))
-
-  activateKeepAwake('backup')
 
   try {
     const partialSuccessMessage = await uploadMedias(
@@ -182,8 +182,6 @@ export const startBackup = async (
     })
   }
 
-  deactivateKeepAwake('backup')
-
   const localBackupConfigAfterUpload = await getLocalBackupConfig(client)
 
   if (localBackupConfigAfterUpload.currentBackup.status === 'running') {
@@ -195,6 +193,8 @@ export const startBackup = async (
   }
 
   void onProgress(await getBackupInfo(client))
+
+  deactivateKeepAwake('backup')
 
   return await getBackupInfo(client)
 }
