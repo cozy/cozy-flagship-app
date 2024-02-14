@@ -1,7 +1,9 @@
-import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
-
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
+import {
+  StorageKeys,
+  getData,
+  storeData,
+  clearData
+} from '/libs/localStore/storage'
 import {
   makeFlagshipMetadataInjection,
   isBiometryDenied,
@@ -123,7 +125,7 @@ describe('updateBiometrySetting', () => {
   const eventName = 'change'
   const fsNullValue = null
 
-  beforeEach(async () => await AsyncStorage.clear())
+  beforeEach(async () => await clearData())
 
   it('should create the biometry and autolock setting with activated argument to true', async () => {
     const expectedValue = true
@@ -141,10 +143,8 @@ describe('updateBiometrySetting', () => {
 
     BiometryEmitter.once(eventName, value => expect(value).toBe(expectedValue))
 
-    await AsyncStorage.multiSet([
-      [StorageKeys.BiometryActivated, (!expectedValue).toString()],
-      [StorageKeys.AutoLockEnabled, (!expectedValue).toString()]
-    ])
+    await storeData(StorageKeys.BiometryActivated, !expectedValue)
+    await storeData(StorageKeys.AutoLockEnabled, !expectedValue)
 
     const result = await updateBiometrySetting(expectedValue)
 
@@ -158,19 +158,12 @@ describe('updateBiometrySetting', () => {
 
     BiometryEmitter.once(eventName, value => expect(value).toBe(expectedValue))
 
-    await AsyncStorage.setItem(
-      StorageKeys.AutoLockEnabled,
-      (!expectedValue).toString()
-    )
+    await storeData(StorageKeys.AutoLockEnabled, !expectedValue)
 
     const result = await updateBiometrySetting(expectedValue)
 
-    expect(await AsyncStorage.getItem(StorageKeys.BiometryActivated)).toBe(
-      expectedValue.toString()
-    )
-    expect(await AsyncStorage.getItem(StorageKeys.AutoLockEnabled)).toBe(
-      (!expectedValue).toString()
-    )
+    expect(await getData(StorageKeys.BiometryActivated)).toBe(expectedValue)
+    expect(await getData(StorageKeys.AutoLockEnabled)).toBe(!expectedValue)
     expect(result).toBe(expectedValue)
   })
 
@@ -181,12 +174,8 @@ describe('updateBiometrySetting', () => {
 
     const result = await updateBiometrySetting(expectedValue)
 
-    expect(await AsyncStorage.getItem(StorageKeys.BiometryActivated)).toBe(
-      expectedValue.toString()
-    )
-    expect(await AsyncStorage.getItem(StorageKeys.AutoLockEnabled)).toBe(
-      fsNullValue
-    )
+    expect(await getData(StorageKeys.BiometryActivated)).toBe(expectedValue)
+    expect(await getData(StorageKeys.AutoLockEnabled)).toBe(fsNullValue)
     expect(result).toBe(expectedValue)
   })
 })
