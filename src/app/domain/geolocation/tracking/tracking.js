@@ -1,5 +1,5 @@
 import { uploadUserCache } from '/app/domain/geolocation/tracking/upload'
-import { getOrCreateUser } from '/app/domain/geolocation/tracking/user'
+import { createOpenPathUserIfMissing } from '/app/domain/geolocation/tracking/user'
 import { getTs, Log, parseISOString } from '/app/domain/geolocation/helpers'
 import {
   getActivities,
@@ -57,7 +57,7 @@ export const uploadTrackingData = async (
   user,
   { force = false } = {}
 ) => {
-  await getOrCreateUser(user)
+  await createOpenPathUserIfMissing(user)
 
   if (!locations || locations.length === 0) {
     Log('No new locations')
