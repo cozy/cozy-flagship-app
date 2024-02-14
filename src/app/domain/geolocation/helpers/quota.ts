@@ -1,4 +1,4 @@
-import { differenceInDays } from 'date-fns'
+import { differenceInCalendarDays } from 'date-fns'
 
 import { Q } from 'cozy-client'
 import CozyClient from 'cozy-client'
@@ -79,12 +79,14 @@ export const isGeolocationQuotaExceeded = async (
 
   if (!firstTimeserie) return false
 
-  const daysSinceFirstCapture = differenceInDays(
+  const daysSinceFirstCapture = differenceInCalendarDays(
     new Date(),
     new Date(firstTimeserie.startDate)
   )
 
-  return daysSinceFirstCapture > maxDaysToCapture
+  const remainingDays = maxDaysToCapture - daysSinceFirstCapture
+
+  return remainingDays <= 0
 }
 
 export const checkGeolocationQuota = async (
