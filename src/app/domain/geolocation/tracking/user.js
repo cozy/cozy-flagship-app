@@ -50,7 +50,7 @@ export const createUser = async user => {
   }
 }
 
-export const getOrCreateUser = async user => {
+export const createOpenPathUserIfMissing = async user => {
   let response
   try {
     const respFetch = await fetch(SERVER_URL + '/profile/get', {
