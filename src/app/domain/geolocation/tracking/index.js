@@ -25,12 +25,12 @@ import {
   WALKING_ACTIVITY,
   LOW_CONFIDENCE_THRESHOLD
 } from '/app/domain/geolocation/tracking/consts'
+import { getOrCreateId } from '/app/domain/geolocation/tracking/user'
 export { Log, getAllLogs, sendLogFile } from '/app/domain/geolocation/helpers'
 export { getOrCreateId, updateId } from '/app/domain/geolocation/tracking/user'
 export { uploadData } from '/app/domain/geolocation/tracking/upload'
 export { GeolocationTrackingHeadlessTask } from '/app/domain/geolocation/tracking/headless'
 export { storeFetchServiceWebHook } from '/app/domain/geolocation/tracking/storage'
-import { getOrCreateId } from '/app/domain/geolocation/tracking/user'
 
 export {
   clearAllCozyGPSMemoryData,
@@ -228,6 +228,8 @@ export const startOpenPathUploadAndPipeline = async ({
 }) => {
   try {
     const user = await getOrCreateId()
+    Log(`User: ${JSON.stringify(user)}`)
+
     // Upload data to openpath server
     const uploadedCount = await uploadData(user, { untilTs, force })
     if (uploadedCount >= 0) {

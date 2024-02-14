@@ -483,7 +483,9 @@ export const getFilteredActivities = async ({ beforeTs, locations }) => {
       if (isMovingStillActivity(loc) || isUnknownActivity(loc)) {
         // Avoid unknown or "moving" still activities
         location.activity.type = inferMotionActivity(loc)
-        Log('Changed ' + loc.activity.type + ' to: ' + location.activity.type)
+        if (loc.activity.type !== location.activity.type) {
+          Log('Changed ' + loc.activity.type + ' to: ' + location.activity.type)
+        }
       }
       return translateEventToEMissionMotionActivity(location)
     })

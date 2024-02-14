@@ -26,6 +26,9 @@ export const getOrCreateId = async () => {
 }
 
 export const createUser = async user => {
+  Log(
+    `Request openpath server to create new user with id ${JSON.stringify(user)}`
+  )
   let response = await fetch(SERVER_URL + '/profile/create', {
     method: 'POST',
     headers: {
@@ -38,7 +41,12 @@ export const createUser = async user => {
     throw new Error('FAILED_EMISSION_USER_CREATION') // Could be no Internet, offline server or unknown issue. Won't trigger if user already exists.
   } else {
     const jsonTokenResponse = await response.json()
-    Log('Success creating user ' + user + ', UUID: ' + jsonTokenResponse.uuid)
+    Log(
+      'Success creating user ' +
+        JSON.stringify(user) +
+        ', UUID: ' +
+        jsonTokenResponse.uuid
+    )
   }
 }
 
@@ -53,15 +61,19 @@ export const getOrCreateUser = async user => {
       body: JSON.stringify({ user: user })
     })
     if (respFetch.status === 403) {
+      Log("No openpath user found, let's create one.")
       return createUser(user)
     }
     response = await respFetch.json()
     const uuid = response?.user_id?.['$uuid']
     if (!uuid) {
+      Log("No openpath uuid found, let's create the user.")
       await createUser(user)
     }
     return uuid
   } catch (err) {
+    // If the user actually exist, the creation will return the existing user
+    Log(`Error when trying to get openpath user, let's create one`)
     return createUser(user)
   }
 }
