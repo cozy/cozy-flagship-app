@@ -50,6 +50,8 @@ export const prepareBackup = async (
 ): Promise<BackupInfo> => {
   log.debug('Backup preparation started')
 
+  activateKeepAwake('backup')
+
   try {
     const backupConfig = await initializeBackup(client)
 
@@ -78,8 +80,12 @@ export const prepareBackup = async (
 
     log.warn(e)
 
+    deactivateKeepAwake('backup')
+
     throw e
   }
+
+  deactivateKeepAwake('backup')
 
   return await getBackupInfo(client)
 }
