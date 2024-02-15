@@ -74,6 +74,20 @@ export const getData = async <T>(
 
     return value !== null ? (JSON.parse(value) as T) : null
   } catch (error) {
+    /*
+      If we tried to parse the default redirection url and it failed, we return it as is
+      because previously it was stored as a string where as now it is stored as a stringified string.
+
+      Default redirection url is written often, so active users
+      will automatically remove the old format from their local storage.
+
+      In some weeks we will be able to remove this compatibility code.
+    */
+    if (name === StorageKeys.DefaultRedirectionUrl) {
+      const value = await getItem(name)
+      return value as T
+    }
+
     log.error(`Failed to get key "${name}" from persistent storage`, error)
     return null
   }
