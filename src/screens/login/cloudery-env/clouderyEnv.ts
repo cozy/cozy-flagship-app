@@ -1,6 +1,11 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
 
+import {
+  DevicePersistedStorageKeys,
+  getData,
+  storeData,
+  StorageItems
+} from '/libs/localStore/storage'
 import { getOnboardingPartner } from '/screens/welcome/install-referrer/onboardingPartner'
 import strings from '/constants/strings.json'
 
@@ -28,13 +33,13 @@ export const isClouderyEnv = (value: string): value is ClouderyEnv => {
 export const saveClouderyEnvOnAsyncStorage = (
   environment: ClouderyEnv
 ): Promise<void> => {
-  return AsyncStorage.setItem(strings.CLOUDERY_ENV_STORAGE_KEY, environment)
+  return storeData(DevicePersistedStorageKeys.ClouderyEnv, environment)
 }
 
 export const getClouderyEnvFromAsyncStorage =
   async (): Promise<ClouderyEnv> => {
-    const clouderyEnv = await AsyncStorage.getItem(
-      strings.CLOUDERY_ENV_STORAGE_KEY
+    const clouderyEnv = await getData<StorageItems['clouderyEnv']>(
+      DevicePersistedStorageKeys.ClouderyEnv
     )
 
     if (!clouderyEnv || !isClouderyEnv(clouderyEnv)) {

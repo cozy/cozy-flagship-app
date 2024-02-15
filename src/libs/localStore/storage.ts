@@ -3,10 +3,16 @@ import { BiometryType } from 'react-native-biometrics'
 
 import { logger } from '/libs/functions/logger'
 import type { FirstTimeserie } from '/app/domain/geolocation/helpers/quota'
+import type { OnboardingPartner } from '/screens/welcome/install-referrer/onboardingPartner'
 
 const log = logger('storage.ts')
 
 const { setItem, getItem, removeItem, clear } = AsyncStorage
+
+/*
+  Linked to connected account.
+  Removed at logout.
+*/
 export enum StorageKeys {
   AutoLockEnabled = '@cozy_AmiralApp_autoLockEnabled',
   BiometryActivated = '@cozy_AmiralApp_biometryActivated',
@@ -27,6 +33,15 @@ export enum StorageKeys {
   ServiceWebhookURL = 'CozyGPSMemory.ServiceWebhookURL'
 }
 
+/*
+  Linked to device.
+  Not removed at logout.
+*/
+export enum DevicePersistedStorageKeys {
+  OnboardingPartner = '@cozy_AmiralAppOnboardingPartnerConfig',
+  ClouderyEnv = '@cozy_AmiralAppClouderyEnvConfig'
+}
+
 export type IconsCache = Record<string, { version: string; xml: string }>
 
 export interface StorageItems {
@@ -35,10 +50,12 @@ export interface StorageItems {
   sessionCreatedFlag: string
   iconCache: IconsCache
   firstTimeserie: FirstTimeserie
+  onboardingPartner: OnboardingPartner
+  clouderyEnv: string
 }
 
 export const storeData = async (
-  name: StorageKeys,
+  name: StorageKeys | DevicePersistedStorageKeys,
   value: StorageItems[keyof StorageItems]
 ): Promise<void> => {
   try {
@@ -48,7 +65,9 @@ export const storeData = async (
   }
 }
 
-export const getData = async <T>(name: StorageKeys): Promise<T | null> => {
+export const getData = async <T>(
+  name: StorageKeys | DevicePersistedStorageKeys
+): Promise<T | null> => {
   try {
     const value = await getItem(name)
 
@@ -79,7 +98,9 @@ export const clearAllData = async (): Promise<void> => {
   }
 }
 
-export const removeData = async (name: StorageKeys): Promise<void> => {
+export const removeData = async (
+  name: StorageKeys | DevicePersistedStorageKeys
+): Promise<void> => {
   try {
     await removeItem(name)
   } catch (error) {

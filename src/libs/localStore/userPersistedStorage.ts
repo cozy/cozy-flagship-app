@@ -4,6 +4,11 @@ import { normalizeFqdn } from '/libs/functions/stringHelpers'
 
 import { storeData, getData } from './storage'
 
+/*
+  Linked to an account.
+  Keys are prefixed with @user_<FQDN>_.
+  Not removed at logout.
+*/
 export enum UserPersistedStorageKeys {
   LocalBackupConfig = 'AmiralAppLocalBackupConfig'
 }

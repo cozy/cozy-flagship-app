@@ -1,6 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
 
+import {
+  DevicePersistedStorageKeys,
+  storeData,
+  removeData
+} from '/libs/localStore/storage'
 import { getClouderyUrls } from '/screens/login/cloudery-env/clouderyEnv'
 import strings from '/constants/strings.json'
 
@@ -13,13 +17,13 @@ jest.mock(
 
 describe('extractEnvFromUrl', () => {
   beforeEach(async () => {
-    await AsyncStorage.removeItem(strings.ONBOARDING_PARTNER_STORAGE_KEY)
-    await AsyncStorage.removeItem(strings.CLOUDERY_ENV_STORAGE_KEY)
+    await removeData(DevicePersistedStorageKeys.OnboardingPartner)
+    await removeData(DevicePersistedStorageKeys.ClouderyEnv)
     Platform.OS = 'android'
   })
 
   it(`should return Android's PROD url`, async () => {
-    await AsyncStorage.setItem(strings.CLOUDERY_ENV_STORAGE_KEY, 'PROD')
+    await storeData(DevicePersistedStorageKeys.ClouderyEnv, 'PROD')
 
     const result = await getClouderyUrls()
 
@@ -39,7 +43,7 @@ describe('extractEnvFromUrl', () => {
   })
 
   it(`should return Android's DEV url`, async () => {
-    await AsyncStorage.setItem(strings.CLOUDERY_ENV_STORAGE_KEY, 'DEV')
+    await storeData(DevicePersistedStorageKeys.ClouderyEnv, 'DEV')
 
     const result = await getClouderyUrls()
 
@@ -59,7 +63,7 @@ describe('extractEnvFromUrl', () => {
   })
 
   it(`should return Android's INT url`, async () => {
-    await AsyncStorage.setItem(strings.CLOUDERY_ENV_STORAGE_KEY, 'INT')
+    await storeData(DevicePersistedStorageKeys.ClouderyEnv, 'INT')
 
     const result = await getClouderyUrls()
 
@@ -80,7 +84,7 @@ describe('extractEnvFromUrl', () => {
 
   it(`should return iOS's INT url`, async () => {
     Platform.OS = 'ios'
-    await AsyncStorage.setItem(strings.CLOUDERY_ENV_STORAGE_KEY, 'INT')
+    await storeData(DevicePersistedStorageKeys.ClouderyEnv, 'INT')
 
     const result = await getClouderyUrls()
 
@@ -118,7 +122,7 @@ describe('extractEnvFromUrl', () => {
   })
 
   it(`should return PROD url if BAD_FORMAT in AsyncStorage`, async () => {
-    await AsyncStorage.setItem(strings.CLOUDERY_ENV_STORAGE_KEY, 'BAD_FORMAT')
+    await storeData(DevicePersistedStorageKeys.ClouderyEnv, 'BAD_FORMAT')
 
     const result = await getClouderyUrls()
 
@@ -138,11 +142,12 @@ describe('extractEnvFromUrl', () => {
   })
 
   it(`should return OnboardingPartner url if detected`, async () => {
-    await AsyncStorage.setItem(strings.CLOUDERY_ENV_STORAGE_KEY, 'PROD')
-    await AsyncStorage.setItem(
-      strings.ONBOARDING_PARTNER_STORAGE_KEY,
-      '{"source":"SOME_SOURCE","context":"SOME_CONTEXT","hasReferral":true}'
-    )
+    await storeData(DevicePersistedStorageKeys.ClouderyEnv, 'PROD')
+    await storeData(DevicePersistedStorageKeys.OnboardingPartner, {
+      source: 'SOME_SOURCE',
+      context: 'SOME_CONTEXT',
+      hasReferral: true
+    })
 
     const result = await getClouderyUrls()
 
@@ -156,11 +161,10 @@ describe('extractEnvFromUrl', () => {
   })
 
   it(`should return Cozy url if no OnboardingPartner is detected`, async () => {
-    await AsyncStorage.setItem(strings.CLOUDERY_ENV_STORAGE_KEY, 'PROD')
-    await AsyncStorage.setItem(
-      strings.ONBOARDING_PARTNER_STORAGE_KEY,
-      '{"hasReferral":false}'
-    )
+    await storeData(DevicePersistedStorageKeys.ClouderyEnv, 'PROD')
+    await storeData(DevicePersistedStorageKeys.OnboardingPartner, {
+      hasReferral: false
+    })
 
     const result = await getClouderyUrls()
 

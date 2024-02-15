@@ -1,10 +1,14 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
+
 import Minilog from 'cozy-minilog'
 
+import {
+  DevicePersistedStorageKeys,
+  getData,
+  storeData
+} from '/libs/localStore/storage'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { getInstallReferrer } from '/screens/welcome/install-referrer/androidPlayInstallReferrer'
-import strings from '/constants/strings.json'
 
 const log = Minilog('Referral')
 
@@ -55,13 +59,14 @@ const extractOnboardingPartner = (
 export const saveOnboardingPartnerOnAsyncStorage = async (
   onboardingPartner: OnboardingPartner
 ): Promise<void> => {
-  const serializedOnboardingPartner = JSON.stringify(onboardingPartner)
   log.debug(
-    `saving onboardingPartner=${serializedOnboardingPartner} into AsyncStorage`
+    `saving onboardingPartner=${JSON.stringify(
+      onboardingPartner
+    )} into AsyncStorage`
   )
-  await AsyncStorage.setItem(
-    strings.ONBOARDING_PARTNER_STORAGE_KEY,
-    serializedOnboardingPartner
+  await storeData(
+    DevicePersistedStorageKeys.OnboardingPartner,
+    onboardingPartner
   )
 }
 
@@ -70,18 +75,15 @@ const getOnboardingPartnerFromAsyncStorage =
     log.debug('get onboardingPartner from AsyncStorage')
 
     try {
-      const onboardingPartnerString = await AsyncStorage.getItem(
-        strings.ONBOARDING_PARTNER_STORAGE_KEY
-      )
-      log.debug(
-        `got onboardingPartner=${
-          onboardingPartnerString ?? ''
-        } from AsyncStorage`
+      const onboardingPartner = await getData<OnboardingPartner>(
+        DevicePersistedStorageKeys.OnboardingPartner
       )
 
-      const onboardingPartner = onboardingPartnerString
-        ? (JSON.parse(onboardingPartnerString) as OnboardingPartner)
-        : null
+      log.debug(
+        `got onboardingPartner=${JSON.stringify(
+          onboardingPartner
+        )} from AsyncStorage`
+      )
 
       return onboardingPartner
     } catch (error) {
