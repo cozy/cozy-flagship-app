@@ -1,5 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import CozyClient from 'cozy-client'
 
 import { expectedTable } from '/tests/fixtures/expected-table'
@@ -9,7 +7,12 @@ import {
   iconTable,
   manageIconCache
 } from '/libs/functions/iconTable'
-import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
+import {
+  getData,
+  StorageKeys,
+  storeData,
+  removeData
+} from '/libs/localStore/storage'
 import type { IconsCache } from '/libs/localStore/storage'
 
 const client = {
@@ -22,7 +25,7 @@ const client = {
 afterEach(async () => {
   jest.clearAllMocks()
   TESTING_ONLY_clearIconTable()
-  await AsyncStorage.removeItem(StorageKeys.IconsTable)
+  await removeData(StorageKeys.IconsTable)
 })
 
 it('works with an empty cache', async () => {
@@ -32,7 +35,7 @@ it('works with an empty cache', async () => {
 
   const item = await getData<IconsCache>(StorageKeys.IconsTable)
 
-  if (!item) throw new Error('No item found in AsyncStorage.')
+  if (!item) throw new Error('No item found in storage.')
 
   expect(item).toStrictEqual(expectedTable)
 })
@@ -47,13 +50,13 @@ it('works with an incomplete cache', async () => {
   expect(iconTable).toStrictEqual(expectedTable)
 
   const item = await getData<IconsCache>(StorageKeys.IconsTable)
-  if (!item) throw new Error('No item found in AsyncStorage.')
+  if (!item) throw new Error('No item found in storage.')
 
   expect(item).toStrictEqual(expectedTable)
 })
 
 it('works with a broken cache', async () => {
-  // @ts-expect-error Since we want to break stuff
+  // @ts-expect-error We try explicitly with an invalid type here
   await storeData(StorageKeys.IconsTable, { drive: 'bar' })
 
   await manageIconCache(client)
@@ -62,7 +65,7 @@ it('works with a broken cache', async () => {
 
   const item = await getData<IconsCache>(StorageKeys.IconsTable)
 
-  if (!item) throw new Error('No item found in AsyncStorage.')
+  if (!item) throw new Error('No item found in storage.')
 
   expect(item).toStrictEqual(expectedTable)
 })
@@ -76,7 +79,7 @@ it('works with a complete cache', async () => {
 
   const item = await getData<IconsCache>(StorageKeys.IconsTable)
 
-  if (!item) throw new Error('No item found in AsyncStorage.')
+  if (!item) throw new Error('No item found in storage.')
 
   expect(item).toStrictEqual(expectedTable)
 })
@@ -102,7 +105,7 @@ it('works with an obsolete cache', async () => {
 
   const item = await getData<IconsCache>(StorageKeys.IconsTable)
 
-  if (!item) throw new Error('No item found in AsyncStorage.')
+  if (!item) throw new Error('No item found in storage.')
 
   expect(item).toStrictEqual(expectedTable)
 })
@@ -129,7 +132,7 @@ it('works with unusual semver', async () => {
 
   const item = await getData<IconsCache>(StorageKeys.IconsTable)
 
-  if (!item) throw new Error('No item found in AsyncStorage.')
+  if (!item) throw new Error('No item found in storage.')
 
   expect(item).toStrictEqual({
     store: { version: '1.0.0-beta.1', xml: '<svg></svg>' }
@@ -151,7 +154,7 @@ it('works with an incomplete and obsolete cache', async () => {
 
   const item = await getData<IconsCache>(StorageKeys.IconsTable)
 
-  if (!item) throw new Error('No item found in AsyncStorage.')
+  if (!item) throw new Error('No item found in storage.')
 
   expect(item).toStrictEqual(expectedTable)
 })
