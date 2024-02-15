@@ -1,21 +1,22 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import { getTs, Log } from '/app/domain/geolocation/helpers'
-import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
+import {
+  getData,
+  StorageKeys,
+  storeData,
+  removeData
+} from '/libs/localStore/storage'
 
 import BackgroundGeolocation from 'react-native-background-geolocation'
 
 export const clearAllCozyGPSMemoryData = async () => {
   await BackgroundGeolocation.destroyLocations()
-  await AsyncStorage.multiRemove([
-    StorageKeys.IdStorageAdress,
-    StorageKeys.FlagFailUploadStorageAdress,
-    StorageKeys.LastPointUploadedAdress,
-    StorageKeys.LastStopTransitionTsKey,
-    StorageKeys.LastStartTransitionTsKey,
-    StorageKeys.GeolocationTrackingConfig,
-    StorageKeys.Activities
-  ])
+  await removeData(StorageKeys.IdStorageAdress)
+  await removeData(StorageKeys.FlagFailUploadStorageAdress)
+  await removeData(StorageKeys.LastPointUploadedAdress)
+  await removeData(StorageKeys.LastStopTransitionTsKey)
+  await removeData(StorageKeys.LastStartTransitionTsKey)
+  await removeData(StorageKeys.GeolocationTrackingConfig)
+  await removeData(StorageKeys.Activities)
   // Only exception : ShouldBeTrackingFlagStorageAdress, don't know the effects on the switch and would not feel natural anyway
   // await clearOldCozyGPSMemoryStorage()
   await BackgroundGeolocation.logger.destroyLog()
@@ -24,7 +25,7 @@ export const clearAllCozyGPSMemoryData = async () => {
 
 export const clearAllData = async () => {
   await clearAllCozyGPSMemoryData()
-  await AsyncStorage.removeItem(StorageKeys.ShouldBeTrackingFlagStorageAdress)
+  await removeData(StorageKeys.ShouldBeTrackingFlagStorageAdress)
 }
 
 export const getShouldStartTracking = async () => {
@@ -32,7 +33,7 @@ export const getShouldStartTracking = async () => {
 }
 
 export const clearAllActivities = async () => {
-  return AsyncStorage.removeItem(StorageKeys.Activities)
+  return removeData(StorageKeys.Activities)
 }
 
 export const getLastPointUploaded = async () => {
