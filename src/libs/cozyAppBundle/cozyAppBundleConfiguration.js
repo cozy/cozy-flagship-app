@@ -1,7 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import { normalizeFqdn } from '/libs/functions/stringHelpers'
-import strings from '/constants/strings.json'
+import {
+  DevicePersistedStorageKeys,
+  getData,
+  storeData
+} from '/libs/localStore/storage'
 
 /**
  * Get the cozy-app configuration for specified FQFN and slug
@@ -53,18 +55,15 @@ export const setCurrentAppVersionForFqdnAndSlug = async ({
 }
 
 const loadAppConfiguration = async () => {
-  const state = await AsyncStorage.getItem(strings.BUNDLE_STORAGE_KEY)
+  const appConfiguration = await getData(DevicePersistedStorageKeys.Bundle)
 
-  if (!state) {
+  if (!appConfiguration) {
     return {}
   }
-
-  const appConfiguration = JSON.parse(state)
 
   return appConfiguration
 }
 
 const saveAppConfiguration = appConfiguration => {
-  const state = JSON.stringify(appConfiguration)
-  return AsyncStorage.setItem(strings.BUNDLE_STORAGE_KEY, state)
+  return storeData(DevicePersistedStorageKeys.Bundle, appConfiguration)
 }

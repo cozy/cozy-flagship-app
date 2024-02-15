@@ -1,15 +1,20 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import {
+  DevicePersistedStorageKeys,
+  clearAllData,
+  getData,
+  storeData
+} from '/libs/localStore/storage'
 
 import {
   getCurrentAppConfigurationForFqdnAndSlug,
   setCurrentAppVersionForFqdnAndSlug
 } from './cozyAppBundleConfiguration'
 
-import strings from '/constants/strings.json'
+jest.mock('/libs/localStore/storage')
 
 describe('cozyAppBundleConfiguration', () => {
   beforeEach(() => {
-    AsyncStorage.clear()
+    clearAllData()
     jest.clearAllMocks()
   })
 
@@ -18,7 +23,7 @@ describe('cozyAppBundleConfiguration', () => {
       const fqdn = 'cozy.tools'
       const slug = 'home'
 
-      AsyncStorage.getItem.mockResolvedValue(MOCK_LOCAl_STORAGE)
+      getData.mockResolvedValue(MOCK_LOCAl_STORAGE)
 
       const result = await getCurrentAppConfigurationForFqdnAndSlug(fqdn, slug)
 
@@ -29,7 +34,7 @@ describe('cozyAppBundleConfiguration', () => {
       const fqdn = 'cozy.tools'
       const slug = 'drive'
 
-      AsyncStorage.getItem.mockResolvedValue(MOCK_LOCAl_STORAGE)
+      getData.mockResolvedValue(MOCK_LOCAl_STORAGE)
 
       const result = await getCurrentAppConfigurationForFqdnAndSlug(fqdn, slug)
 
@@ -40,7 +45,7 @@ describe('cozyAppBundleConfiguration', () => {
       const fqdn = 'cozy.tools'
       const slug = 'NOT_EXISTING_SLUG'
 
-      AsyncStorage.getItem.mockResolvedValue(MOCK_LOCAl_STORAGE)
+      getData.mockResolvedValue(MOCK_LOCAl_STORAGE)
 
       const result = await getCurrentAppConfigurationForFqdnAndSlug(fqdn, slug)
 
@@ -51,7 +56,7 @@ describe('cozyAppBundleConfiguration', () => {
       const fqdn = 'NOT_EXISTING_FQDN'
       const slug = 'home'
 
-      AsyncStorage.getItem.mockResolvedValue(MOCK_LOCAl_STORAGE)
+      getData.mockResolvedValue(MOCK_LOCAl_STORAGE)
 
       const result = await getCurrentAppConfigurationForFqdnAndSlug(fqdn, slug)
 
@@ -62,7 +67,7 @@ describe('cozyAppBundleConfiguration', () => {
       const fqdn = 'NOT_EXISTING_FQDN'
       const slug = 'home'
 
-      AsyncStorage.getItem.mockResolvedValue(undefined)
+      getData.mockResolvedValue(undefined)
 
       const result = await getCurrentAppConfigurationForFqdnAndSlug(fqdn, slug)
 
@@ -77,13 +82,13 @@ describe('cozyAppBundleConfiguration', () => {
       const version = '7.8.9'
       const folder = 'f7.8.9'
 
-      AsyncStorage.getItem.mockResolvedValue(MOCK_LOCAl_STORAGE)
+      getData.mockResolvedValue(MOCK_LOCAl_STORAGE)
 
       await setCurrentAppVersionForFqdnAndSlug({ fqdn, slug, version, folder })
 
-      expect(AsyncStorage.setItem).toHaveBeenCalledWith(
-        strings.BUNDLE_STORAGE_KEY,
-        JSON.stringify({
+      expect(storeData).toHaveBeenCalledWith(
+        DevicePersistedStorageKeys.Bundle,
+        {
           'cozy.tools': {
             home: {
               version: '7.8.9',
@@ -104,7 +109,7 @@ describe('cozyAppBundleConfiguration', () => {
               folderName: 'f4.5.6'
             }
           }
-        })
+        }
       )
     })
 
@@ -114,26 +119,26 @@ describe('cozyAppBundleConfiguration', () => {
       const version = '7.8.9'
       const folder = 'f7.8.9'
 
-      AsyncStorage.getItem.mockResolvedValue(undefined)
+      getData.mockResolvedValue(undefined)
 
       await setCurrentAppVersionForFqdnAndSlug({ fqdn, slug, version, folder })
 
-      expect(AsyncStorage.setItem).toHaveBeenCalledWith(
-        strings.BUNDLE_STORAGE_KEY,
-        JSON.stringify({
+      expect(storeData).toHaveBeenCalledWith(
+        DevicePersistedStorageKeys.Bundle,
+        {
           'cozy.tools': {
             home: {
               version: '7.8.9',
               folderName: 'f7.8.9'
             }
           }
-        })
+        }
       )
     })
   })
 })
 
-const MOCK_LOCAl_STORAGE = JSON.stringify({
+const MOCK_LOCAl_STORAGE = {
   'cozy.tools': {
     home: {
       version: '1.2.3',
@@ -154,4 +159,4 @@ const MOCK_LOCAl_STORAGE = JSON.stringify({
       folderName: 'f4.5.6'
     }
   }
-})
+}

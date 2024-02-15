@@ -40,7 +40,8 @@ export enum StorageKeys {
 */
 export enum DevicePersistedStorageKeys {
   OnboardingPartner = '@cozy_AmiralAppOnboardingPartnerConfig',
-  ClouderyEnv = '@cozy_AmiralAppClouderyEnvConfig'
+  ClouderyEnv = '@cozy_AmiralAppClouderyEnvConfig',
+  Bundle = '@cozy_AmiralAppBundleConfig'
 }
 
 export type IconsCache = Record<string, { version: string; xml: string }>
