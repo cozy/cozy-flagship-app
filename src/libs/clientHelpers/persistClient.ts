@@ -1,9 +1,7 @@
 import Minilog from 'cozy-minilog'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import CozyClient from 'cozy-client'
 
-import strings from '/constants/strings.json'
+import { StorageKeys, storeData, removeData } from '/libs/localStore/storage'
 
 const log = Minilog('LoginScreen')
 
@@ -11,7 +9,7 @@ const log = Minilog('LoginScreen')
  * Clears the storage key related to client authentication
  */
 export const clearClient = (): Promise<void> => {
-  return AsyncStorage.removeItem(strings.OAUTH_STORAGE_KEY)
+  return removeData(StorageKeys.Oauth)
 }
 
 /**
@@ -21,13 +19,14 @@ export const clearClient = (): Promise<void> => {
  */
 export const saveClient = async (client: CozyClient): Promise<void> => {
   const { uri, oauthOptions, token } = client.getStackClient()
-  const state = JSON.stringify({
+
+  const state = {
     oauthOptions,
     token,
     uri
-  })
+  }
 
-  return AsyncStorage.setItem(strings.OAUTH_STORAGE_KEY, state)
+  return storeData(StorageKeys.Oauth, state)
 }
 
 export const listenTokenRefresh = (client: CozyClient): void => {

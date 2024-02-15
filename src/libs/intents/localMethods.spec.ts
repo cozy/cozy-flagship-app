@@ -3,6 +3,7 @@ import * as Keychain from 'react-native-keychain'
 
 import CozyClient from 'cozy-client/types/CozyClient'
 
+import { StorageKeys, getData, storeData } from '/libs/localStore/storage'
 import * as RootNavigation from '/libs/RootNavigation'
 import strings from '/constants/strings.json'
 import { localMethods, asyncLogout } from '/libs/intents/localMethods'
@@ -21,14 +22,14 @@ describe('asyncLogout', () => {
   } as unknown as CozyClient
 
   beforeEach(async () => {
-    await AsyncStorage.setItem(strings.OAUTH_STORAGE_KEY, '1')
+    await storeData(StorageKeys.Oauth, '1')
     await AsyncStorage.setItem(strings.SESSION_CREATED_FLAG, '1')
   })
 
   it('should remove session and oauth storage from AsyncStorage', async () => {
     await asyncLogout(client)
 
-    expect(await AsyncStorage.getItem(strings.OAUTH_STORAGE_KEY)).toBeNull()
+    expect(await getData(StorageKeys.Oauth)).toBeNull()
     expect(await AsyncStorage.getItem(strings.SESSION_CREATED_FLAG)).toBeNull()
   })
 

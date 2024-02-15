@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
 
 import CozyClient from 'cozy-client'
@@ -8,7 +7,6 @@ import Minilog from 'cozy-minilog'
 
 import { normalizeFqdn } from './functions/stringHelpers'
 
-import strings from '/constants/strings.json'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import {
   listenTokenRefresh,
@@ -31,6 +29,7 @@ export {
   callOnboardingInitClient
 } from '/libs/clientHelpers/initClient'
 export { call2FAInitClient } from '/libs/clientHelpers/twoFactorAuthentication'
+import { StorageKeys, getData } from '/libs/localStore/storage'
 
 const log = Minilog('LoginScreen')
 
@@ -40,12 +39,11 @@ const log = Minilog('LoginScreen')
  * @returns {CozyClient}
  */
 export const getClient = async () => {
-  const val = await AsyncStorage.getItem(strings.OAUTH_STORAGE_KEY)
-  if (!val) {
+  const oauthData = await getData(StorageKeys.Oauth)
+  if (!oauthData) {
     return false
   }
-  const state = JSON.parse(val)
-  const { uri, oauthOptions, token } = state
+  const { uri, oauthOptions, token } = oauthData
   const client = new CozyClient({
     uri,
     oauth: { token },
@@ -141,7 +139,7 @@ export const fetchCozyDataForSlug = async (slug, client, cookie) => {
 
 /**
  * @param {CozyClient} client - CozyClient instance
- * 
+ *
  * @description  Get The uri, fqdn and normalizedFqdn of a cozy instance
  *
  * @returns {getInstanceAndFqdnFromClient}
