@@ -6,7 +6,7 @@ import type { FirstTimeserie } from '/app/domain/geolocation/helpers/quota'
 
 const log = logger('storage.ts')
 
-const { setItem, getItem, removeItem } = AsyncStorage
+const { setItem, getItem, removeItem, clear } = AsyncStorage
 export enum StorageKeys {
   AutoLockEnabled = '@cozy_AmiralApp_autoLockEnabled',
   BiometryActivated = '@cozy_AmiralApp_biometryActivated',
@@ -68,6 +68,14 @@ export const clearData = async (): Promise<void> => {
     }
   } catch (error) {
     log.error(`Failed to clear data from persistent storage`, error)
+  }
+}
+
+export const clearAllData = async (): Promise<void> => {
+  try {
+    await clear()
+  } catch (error) {
+    log.error(`Failed to clear all data from persistent storage`, error)
   }
 }
 
