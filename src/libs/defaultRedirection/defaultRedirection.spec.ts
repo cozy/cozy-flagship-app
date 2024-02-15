@@ -1,8 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import CozyClient, { createMockClient } from 'cozy-client'
 
-import strings from '/constants/strings.json'
 import * as DefaultRedirection from '/libs/defaultRedirection/defaultRedirection'
 import {
   NAVIGATION_APP_SLUG,
@@ -20,8 +17,9 @@ import {
 } from '/libs/defaultRedirection/defaultRedirection'
 import { changeIcon } from '/libs/icon/icon'
 import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
+import { StorageKeys, getData, storeData } from '/libs/localStore/storage'
 
-jest.mock('@react-native-async-storage/async-storage')
+jest.mock('/libs/localStore/storage')
 jest.mock('/libs/icon/icon')
 jest.mock('/libs/functions/formatRedirectLink')
 
@@ -84,8 +82,8 @@ describe('setDefaultRedirectionUrl', () => {
 
   it('should set default redirection url in async storage', async () => {
     await setDefaultRedirectionUrl(DRIVE_URL)
-    expect(AsyncStorage.setItem).toHaveBeenCalledWith(
-      strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY,
+    expect(storeData).toHaveBeenCalledWith(
+      StorageKeys.DefaultRedirectionUrl,
       DRIVE_URL
     )
   })
@@ -98,9 +96,7 @@ describe('getDefaultRedirectionUrl', () => {
 
   it('should get default redirection url in async storage', async () => {
     await getDefaultRedirectionUrl()
-    expect(AsyncStorage.getItem).toHaveBeenCalledWith(
-      strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY
-    )
+    expect(getData).toHaveBeenCalledWith(StorageKeys.DefaultRedirectionUrl)
   })
 })
 
@@ -117,8 +113,8 @@ describe('setDefaultRedirectionUrlAndAppIcon', () => {
 
   it('should set default redirection url in async storage and app icon', async () => {
     await setDefaultRedirectionUrlAndAppIcon(DRIVE_URL, client)
-    expect(AsyncStorage.setItem).toHaveBeenCalledWith(
-      strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY,
+    expect(storeData).toHaveBeenCalledWith(
+      StorageKeys.DefaultRedirectionUrl,
       DRIVE_URL
     )
     expect(changeIcon).toHaveBeenCalledWith('drive')
@@ -139,8 +135,8 @@ describe('setDefaultRedirection', () => {
   it('should set default redirection in async storage', async () => {
     mockedFormatRedirectLink.mockReturnValue(DRIVE_URL)
     await setDefaultRedirection('drive/', client)
-    expect(AsyncStorage.setItem).toHaveBeenCalledWith(
-      strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY,
+    expect(storeData).toHaveBeenCalledWith(
+      StorageKeys.DefaultRedirectionUrl,
       DRIVE_URL
     )
   })

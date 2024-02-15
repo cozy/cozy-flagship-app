@@ -1,5 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import type CozyClient from 'cozy-client'
 import { Q, deconstructCozyWebLinkWithSlug } from 'cozy-client'
 
@@ -7,7 +5,7 @@ import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
 import { logger } from '/libs/functions/logger'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { changeIcon } from '/libs/icon/icon'
-import strings from '/constants/strings.json'
+import { StorageKeys, getData, storeData } from '/libs/localStore/storage'
 
 export const log = logger('AppBundle')
 
@@ -51,17 +49,12 @@ export const fetchDefaultRedirectionUrl = async (
 export const setDefaultRedirectionUrl = async (
   defaultRedirectionUrl: string
 ): Promise<void> => {
-  await AsyncStorage.setItem(
-    strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY,
-    defaultRedirectionUrl
-  )
+  await storeData(StorageKeys.DefaultRedirectionUrl, defaultRedirectionUrl)
 }
 
 export const getDefaultRedirectionUrl =
   async (): Promise<DefaultRedirectionUrl> => {
-    return await AsyncStorage.getItem(
-      strings.DEFAULT_REDIRECTION_URL_STORAGE_KEY
-    )
+    return await getData(StorageKeys.DefaultRedirectionUrl)
   }
 
 export const setDefaultRedirectionUrlAndAppIcon = async (
