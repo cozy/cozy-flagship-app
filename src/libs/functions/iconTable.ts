@@ -1,15 +1,17 @@
 /* eslint-disable no-bitwise */
 import CozyClient, { Q } from 'cozy-client'
-
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import Minilog from 'cozy-minilog'
 
 import strings from '/constants/strings.json'
 import iconFallbackJson from '/assets/iconFallback.json'
 import { clearClient } from '/libs/client'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
-import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
+import {
+  getData,
+  StorageKeys,
+  storeData,
+  removeData
+} from '/libs/localStore/storage'
 import type { IconsCache } from '/libs/localStore/storage'
 const log = Minilog('Icon Table')
 
@@ -165,7 +167,7 @@ const setPersistentIconTable = async (table: IconsCache): Promise<void> => {
 
 const clearPersistentIconTable = async (): Promise<void> => {
   try {
-    await AsyncStorage.removeItem(StorageKeys.IconsTable)
+    await removeData(StorageKeys.IconsTable)
   } catch (error) {
     log.error(strings.errors.clearPersistentIconTable, error)
   }
