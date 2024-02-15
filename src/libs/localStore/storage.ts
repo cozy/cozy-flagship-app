@@ -33,7 +33,8 @@ export enum StorageKeys {
   FirstTimeserie = 'CozyGPSMemory.FirstTimeserie',
   ServiceWebhookURL = 'CozyGPSMemory.ServiceWebhookURL',
   Oauth = '@cozy_AmiralAppOAuthConfig',
-  Cookie = '@cozy_AmiralAppCookieConfig'
+  Cookie = '@cozy_AmiralAppCookieConfig',
+  SessionCreated = '@cozy_AmiralAppSessionCreated'
 }
 
 /*

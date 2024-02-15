@@ -3,7 +3,6 @@
   "UNIVERSAL_LINK_BASE": "https://links.mycozy.cloud/flagship",
   "REDIRECT": "redirect",
   "SESSION_CODE": "session_code",
-  "SESSION_CREATED_FLAG": "@cozy_AmiralAppSessionCreated",
   "ORIGIN_WHITELIST": [
     "http://*",
     "https://*",

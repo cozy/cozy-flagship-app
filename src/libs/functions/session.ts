@@ -1,11 +1,15 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import type CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import strings from '/constants/strings.json'
 import { isSameCozy } from '/libs/functions/urlHelpers'
+import {
+  StorageKeys,
+  getData,
+  storeData,
+  removeData
+} from '/libs/localStore/storage'
 
 const log = Minilog('SessionScript')
 
@@ -59,9 +63,7 @@ const wrapUrl = async (
 
 const shouldCreateSession = async (): Promise<boolean> => {
   try {
-    const sessionCreatedFlag = await AsyncStorage.getItem(
-      strings.SESSION_CREATED_FLAG
-    )
+    const sessionCreatedFlag = await getData(StorageKeys.SessionCreated)
 
     return !sessionCreatedFlag
   } catch (error) {
@@ -72,10 +74,10 @@ const shouldCreateSession = async (): Promise<boolean> => {
 }
 
 const consumeSessionToken = (): Promise<void> =>
-  AsyncStorage.setItem(strings.SESSION_CREATED_FLAG, '1')
+  storeData(StorageKeys.SessionCreated, '1')
 
 const resetSessionToken = (): Promise<void> =>
-  AsyncStorage.removeItem(strings.SESSION_CREATED_FLAG)
+  removeData(StorageKeys.SessionCreated)
 
 // Higher-order functions
 const handleInterceptAuth =

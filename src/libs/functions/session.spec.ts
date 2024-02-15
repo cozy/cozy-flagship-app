@@ -1,12 +1,15 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import type CozyClient from 'cozy-client'
 // @ts-expect-error : cozy-client has to be updated
 import type { StackClient } from 'cozy-stack-client'
 
 import { makeSessionAPI } from './session'
 
-import strings from '/constants/strings.json'
+import {
+  StorageKeys,
+  getData,
+  storeData,
+  clearAllData
+} from '/libs/localStore/storage'
 
 const session_code = '123'
 const uri = 'http://cozy.10-0-2-2.nip.io:8080'
@@ -33,12 +36,12 @@ const {
 
 describe('shouldCreateSession', () => {
   it('returns true when no token is found', async () => {
-    void AsyncStorage.clear()
+    await clearAllData()
     expect(await shouldCreateSession()).toBe(true)
   })
 
   it('returns false when a token is found', async () => {
-    void AsyncStorage.setItem(strings.SESSION_CREATED_FLAG, '1')
+    await storeData(StorageKeys.SessionCreated, '1')
     expect(await shouldCreateSession()).toBe(false)
   })
 })
@@ -130,15 +133,13 @@ describe('handleInterceptAuth', () => {
 describe('consumeSessionToken', () => {
   it('stores a value in the asyncStorage', async () => {
     await consumeSessionToken()
-    expect(
-      await AsyncStorage.getItem(strings.SESSION_CREATED_FLAG)
-    ).toBeTruthy()
+    expect(await getData(StorageKeys.SessionCreated)).toBeTruthy()
   })
 })
 
 describe('resetSessionToken', () => {
   it('stores a value in the asyncStorage', async () => {
     await resetSessionToken()
-    expect(await AsyncStorage.getItem(strings.SESSION_CREATED_FLAG)).toBeFalsy()
+    expect(await getData(StorageKeys.SessionCreated)).toBeFalsy()
   })
 })
