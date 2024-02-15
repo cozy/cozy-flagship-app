@@ -1,11 +1,10 @@
 import CozyClient from 'cozy-client'
 
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import {
   getUserPersistedData as initialGetUserPersistedData,
   storeUserPersistedData as initialStoreUserPersistedData
 } from '/libs/localStore/userPersistedStorage'
+import { clearAllData } from '/libs/localStore/storage'
 
 const getUserPersistedData = initialGetUserPersistedData as (
   client: CozyClient,
@@ -31,7 +30,7 @@ describe('userPersistedStorage', () => {
   } as CozyClient
 
   beforeEach(async () => {
-    await AsyncStorage.clear()
+    await clearAllData()
   })
 
   it('should store as alice and retrieve as alice', async () => {
