@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Cookies } from '@react-native-cookies/cookies'
 import { BiometryType } from 'react-native-biometrics'
 
 import { logger } from '/libs/functions/logger'
@@ -31,7 +32,8 @@ export enum StorageKeys {
   Activities = 'CozyGPSMemory.Activities',
   FirstTimeserie = 'CozyGPSMemory.FirstTimeserie',
   ServiceWebhookURL = 'CozyGPSMemory.ServiceWebhookURL',
-  Oauth = '@cozy_AmiralAppOAuthConfig'
+  Oauth = '@cozy_AmiralAppOAuthConfig',
+  Cookie = '@cozy_AmiralAppCookieConfig'
 }
 
 /*
@@ -53,6 +55,7 @@ export interface StorageItems {
   iconCache: IconsCache
   firstTimeserie: FirstTimeserie
   onboardingPartner: OnboardingPartner
+  cookie: Cookies
   clouderyEnv: string
 }
 

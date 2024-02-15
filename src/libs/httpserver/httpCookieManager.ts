@@ -1,11 +1,15 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import CookieManager, { Cookie, Cookies } from '@react-native-cookies/cookies'
 
 import CozyClient from 'cozy-client'
 
 import { isSecureProtocol } from '../functions/isSecureProtocol'
 
-import strings from '/constants/strings.json'
+import {
+  StorageKeys,
+  getData,
+  storeData,
+  removeData
+} from '/libs/localStore/storage'
 
 type CookieRecord = Record<string, string>
 
@@ -147,7 +151,7 @@ export const resyncCookies = async (client: CozyClient): Promise<void> => {
 }
 
 export const clearCookies = async (): Promise<void> => {
-  await AsyncStorage.removeItem(strings.COOKIE_STORAGE_KEY)
+  await removeData(StorageKeys.Cookie)
 
   await CookieManager.clearAll()
 }
@@ -166,18 +170,15 @@ const setCookieIntoAsyncStorage = async (
 }
 
 const loadCookiesFromAsyncStorage = async (): Promise<Cookies> => {
-  const state = await AsyncStorage.getItem(strings.COOKIE_STORAGE_KEY)
+  const cookies = await getData<Cookies>(StorageKeys.Cookie)
 
-  if (!state) {
+  if (!cookies) {
     return {}
   }
-
-  const cookies = JSON.parse(state) as Cookies
 
   return cookies
 }
 
 const saveCookies = (cookies: Cookies): Promise<void> => {
-  const state = JSON.stringify(cookies)
-  return AsyncStorage.setItem(strings.COOKIE_STORAGE_KEY, state)
+  return storeData(StorageKeys.Cookie, cookies)
 }

@@ -1,11 +1,17 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import CookieManager from '@react-native-cookies/cookies'
 
 import { createMockClient } from 'cozy-client/dist/mock'
 
 import { getCookie, resyncCookies, setCookie } from './httpCookieManager'
 
-import strings from '/constants/strings.json'
+import {
+  StorageKeys,
+  getData,
+  storeData,
+  clearAllData
+} from '/libs/localStore/storage'
+
+jest.mock('/libs/localStore/storage')
 
 jest.mock('@react-native-cookies/cookies', () => ({
   set: jest.fn()
@@ -27,8 +33,8 @@ export class MockDate extends Date {
 describe('httpCookieManager', () => {
   const client = createMockClient({})
 
-  beforeEach(() => {
-    AsyncStorage.clear()
+  beforeEach(async () => {
+    await clearAllData()
     jest.clearAllMocks()
     global.Date = MockDate
   })
@@ -289,23 +295,20 @@ describe('httpCookieManager', () => {
 
       await setCookie(cookieString, client)
 
-      expect(AsyncStorage.setItem).toHaveBeenCalledWith(
-        strings.COOKIE_STORAGE_KEY,
-        JSON.stringify({
-          'http://cozy.10-0-2-2.nip.io': {
-            name: 'cozysessid',
-            expires: tenYearsAfterMockedDate,
-            value:
-              'AAAAAGJ3Ojku0Nzk4YzhlNWQ1ODkTc2tq3IuDMgJZTZhME3MTQ3OT3ODA3YU0MTYwgeWmEE3IsoDkhQcjx0zh-2lpoItEDU8',
-            domain: '.cozy.10-0-2-2.nip.io',
-            path: '/',
-            version: '1',
-            secure: false,
-            httpOnly: true,
-            sameSite: 'None'
-          }
-        })
-      )
+      expect(storeData).toHaveBeenCalledWith(StorageKeys.Cookie, {
+        'http://cozy.10-0-2-2.nip.io': {
+          name: 'cozysessid',
+          expires: tenYearsAfterMockedDate,
+          value:
+            'AAAAAGJ3Ojku0Nzk4YzhlNWQ1ODkTc2tq3IuDMgJZTZhME3MTQ3OT3ODA3YU0MTYwgeWmEE3IsoDkhQcjx0zh-2lpoItEDU8',
+          domain: '.cozy.10-0-2-2.nip.io',
+          path: '/',
+          version: '1',
+          secure: false,
+          httpOnly: true,
+          sameSite: 'None'
+        }
+      })
     })
 
     it(`should set cookie expiration to 10 years from now`, async () => {
@@ -341,7 +344,7 @@ describe('httpCookieManager', () => {
         uri: 'http://claude.mycozy.cloud'
       }))
 
-      AsyncStorage.getItem.mockResolvedValue(MOCK_LOCAl_STORAGE)
+      getData.mockResolvedValue(MOCK_LOCAl_STORAGE)
 
       const result = await getCookie(client)
 
@@ -362,7 +365,7 @@ describe('httpCookieManager', () => {
         uri: 'http://not_exsting_domain.mycozy.cloud'
       }))
 
-      AsyncStorage.getItem.mockResolvedValue(MOCK_LOCAl_STORAGE)
+      getData.mockResolvedValue(MOCK_LOCAl_STORAGE)
 
       const result = await getCookie(client)
 
@@ -374,7 +377,7 @@ describe('httpCookieManager', () => {
         uri: 'http://not_exsting_domain.mycozy.cloud'
       }))
 
-      AsyncStorage.getItem.mockResolvedValue(undefined)
+      getData.mockResolvedValue(undefined)
 
       const result = await getCookie(client)
 
@@ -388,7 +391,7 @@ describe('httpCookieManager', () => {
         uri: 'http://claude.mycozy.cloud'
       }))
 
-      AsyncStorage.getItem.mockResolvedValue(MOCK_LOCAl_STORAGE)
+      getData.mockResolvedValue(MOCK_LOCAl_STORAGE)
 
       await resyncCookies(client)
 
@@ -410,7 +413,7 @@ describe('httpCookieManager', () => {
   })
 })
 
-const MOCK_LOCAl_STORAGE = JSON.stringify({
+const MOCK_LOCAl_STORAGE = {
   'http://claude.mycozy.cloud': {
     name: 'SOME_COOKIE_NAME',
     value: 'SOME_COOKIE_VALUE',
@@ -421,4 +424,4 @@ const MOCK_LOCAl_STORAGE = JSON.stringify({
     httpOnly: true,
     sameSite: 'None'
   }
-})
+}

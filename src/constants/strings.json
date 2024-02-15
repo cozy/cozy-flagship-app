@@ -1,5 +1,4 @@
 {
-  "COOKIE_STORAGE_KEY": "@cozy_AmiralAppCookieConfig",
   "COZY_SCHEME": "cozy://",
   "UNIVERSAL_LINK_BASE": "https://links.mycozy.cloud/flagship",
   "REDIRECT": "redirect",
