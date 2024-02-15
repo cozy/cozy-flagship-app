@@ -30,7 +30,8 @@ export enum StorageKeys {
   GeolocationTrackingConfig = 'CozyGPSMemory.TrackingConfig',
   Activities = 'CozyGPSMemory.Activities',
   FirstTimeserie = 'CozyGPSMemory.FirstTimeserie',
-  ServiceWebhookURL = 'CozyGPSMemory.ServiceWebhookURL'
+  ServiceWebhookURL = 'CozyGPSMemory.ServiceWebhookURL',
+  Oauth = '@cozy_AmiralAppOAuthConfig'
 }
 
 /*
