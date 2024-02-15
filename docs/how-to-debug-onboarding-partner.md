@@ -37,8 +37,8 @@ As the Install Referrer API depends on the Play Store app, if your device does n
 However it is still possible to test the app's behavior when it detects an Install Referrer
 
 To do this, do the following:
-- Using flipper, edit the App's AsyncStorage and delete the `ONBOARDING_PARTNER_STORAGE_KEY` entry
-  - Key corresponding to `ONBOARDING_PARTNER_STORAGE_KEY` can be found in `strings.json`
+- Using flipper, edit the App's AsyncStorage and delete the `DevicePersistedStorageKeys.OnboardingPartner` entry
+  - Key corresponding to `DevicePersistedStorageKeys.OnboardingPartner` can be found in `src/libs/localStore/storage.ts`
 - Edit `dev-config.ts` and set `forceInstallReferrer` to `true`
   - If needed, edit the `enforcedInstallReferrer` entry with expected values
 - Restart the App

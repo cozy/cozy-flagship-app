@@ -1,9 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Alert, Platform } from 'react-native'
 
 import { extractEnvFromUrl } from './useCozyEnvironmentOverride.functions'
 
-import strings from '/constants/strings.json'
+import {
+  DevicePersistedStorageKeys,
+  getData,
+  storeData,
+  removeData
+} from '/libs/localStore/storage'
 
 jest.spyOn(Alert, 'alert')
 jest.mock(
@@ -15,8 +19,8 @@ jest.mock(
 
 describe('extractEnvFromUrl', () => {
   beforeEach(async () => {
-    await AsyncStorage.removeItem(strings.ONBOARDING_PARTNER_STORAGE_KEY)
-    await AsyncStorage.removeItem(strings.CLOUDERY_ENV_STORAGE_KEY)
+    await removeData(DevicePersistedStorageKeys.OnboardingPartner)
+    await removeData(DevicePersistedStorageKeys.ClouderyEnv)
     Platform.OS = 'android'
   })
 
@@ -25,9 +29,7 @@ describe('extractEnvFromUrl', () => {
       'https://links.mycozy.cloud/flagship/cozy_env_override?cloudery_environment=PROD'
     )
 
-    expect(await AsyncStorage.getItem(strings.CLOUDERY_ENV_STORAGE_KEY)).toBe(
-      'PROD'
-    )
+    expect(await getData(DevicePersistedStorageKeys.ClouderyEnv)).toBe('PROD')
   })
 
   it('should intercept cloudery_environment=DEV', async () => {
@@ -35,9 +37,7 @@ describe('extractEnvFromUrl', () => {
       'https://links.mycozy.cloud/flagship/cozy_env_override?cloudery_environment=DEV'
     )
 
-    expect(await AsyncStorage.getItem(strings.CLOUDERY_ENV_STORAGE_KEY)).toBe(
-      'DEV'
-    )
+    expect(await getData(DevicePersistedStorageKeys.ClouderyEnv)).toBe('DEV')
   })
 
   it('should intercept cloudery_environment=INT', async () => {
@@ -45,36 +45,35 @@ describe('extractEnvFromUrl', () => {
       'https://links.mycozy.cloud/flagship/cozy_env_override?cloudery_environment=INT'
     )
 
-    expect(await AsyncStorage.getItem(strings.CLOUDERY_ENV_STORAGE_KEY)).toBe(
-      'INT'
-    )
+    expect(await getData(DevicePersistedStorageKeys.ClouderyEnv)).toBe('INT')
   })
 
   it('should ignore unexpected cloudery_environment values', async () => {
-    await AsyncStorage.setItem(strings.CLOUDERY_ENV_STORAGE_KEY, 'DEV')
+    await storeData(DevicePersistedStorageKeys.ClouderyEnv, 'DEV')
 
     await extractEnvFromUrl(
       'https://links.mycozy.cloud/flagship/cozy_env_override?cloudery_environment=SOME_BAD_ENV'
     )
 
-    expect(await AsyncStorage.getItem(strings.CLOUDERY_ENV_STORAGE_KEY)).toBe(
-      'DEV'
-    )
+    expect(await getData(DevicePersistedStorageKeys.ClouderyEnv)).toBe('DEV')
   })
 
   it('should intercept clear_partner instruction', async () => {
-    await AsyncStorage.setItem(
-      strings.ONBOARDING_PARTNER_STORAGE_KEY,
-      '{"source":"SOME_SOURCE","context":"SOME_CONTEXT","hasReferral":true}'
-    )
+    await storeData(DevicePersistedStorageKeys.OnboardingPartner, {
+      source: 'SOME_SOURCE',
+      context: 'SOME_CONTEXT',
+      hasReferral: true
+    })
 
     await extractEnvFromUrl(
       'https://links.mycozy.cloud/flagship/cozy_env_override?clear_partner=true'
     )
 
-    expect(
-      await AsyncStorage.getItem(strings.ONBOARDING_PARTNER_STORAGE_KEY)
-    ).toBe('{"hasReferral":false}')
+    expect(await getData(DevicePersistedStorageKeys.OnboardingPartner)).toEqual(
+      {
+        hasReferral: false
+      }
+    )
   })
 
   it('should intercept partner_source and partner_context', async () => {
@@ -82,10 +81,12 @@ describe('extractEnvFromUrl', () => {
       'https://links.mycozy.cloud/flagship/cozy_env_override?partner_source=SOME_PARTNER&partner_context=SOME_CONTEXT'
     )
 
-    expect(
-      await AsyncStorage.getItem(strings.ONBOARDING_PARTNER_STORAGE_KEY)
-    ).toBe(
-      '{"source":"SOME_PARTNER","context":"SOME_CONTEXT","hasReferral":true}'
+    expect(await getData(DevicePersistedStorageKeys.OnboardingPartner)).toEqual(
+      {
+        source: 'SOME_PARTNER',
+        context: 'SOME_CONTEXT',
+        hasReferral: true
+      }
     )
   })
 
@@ -95,7 +96,7 @@ describe('extractEnvFromUrl', () => {
     )
 
     expect(
-      await AsyncStorage.getItem(strings.ONBOARDING_PARTNER_STORAGE_KEY)
+      await getData(DevicePersistedStorageKeys.OnboardingPartner)
     ).toBeNull()
   })
 
@@ -105,7 +106,7 @@ describe('extractEnvFromUrl', () => {
     )
 
     expect(
-      await AsyncStorage.getItem(strings.ONBOARDING_PARTNER_STORAGE_KEY)
+      await getData(DevicePersistedStorageKeys.OnboardingPartner)
     ).toBeNull()
   })
 
@@ -116,7 +117,7 @@ describe('extractEnvFromUrl', () => {
     )
 
     expect(
-      await AsyncStorage.getItem(strings.ONBOARDING_PARTNER_STORAGE_KEY)
+      await getData(DevicePersistedStorageKeys.OnboardingPartner)
     ).toBeNull()
   })
 
@@ -125,14 +126,14 @@ describe('extractEnvFromUrl', () => {
       'https://links.mycozy.cloud/flagship/cozy_env_override?partner_source=SOME_PARTNER&partner_context=SOME_CONTEXT&cloudery_environment=DEV'
     )
 
-    expect(
-      await AsyncStorage.getItem(strings.ONBOARDING_PARTNER_STORAGE_KEY)
-    ).toBe(
-      '{"source":"SOME_PARTNER","context":"SOME_CONTEXT","hasReferral":true}'
+    expect(await getData(DevicePersistedStorageKeys.OnboardingPartner)).toEqual(
+      {
+        source: 'SOME_PARTNER',
+        context: 'SOME_CONTEXT',
+        hasReferral: true
+      }
     )
-    expect(await AsyncStorage.getItem(strings.CLOUDERY_ENV_STORAGE_KEY)).toBe(
-      'DEV'
-    )
+    expect(await getData(DevicePersistedStorageKeys.ClouderyEnv)).toBe('DEV')
   })
 
   it('should alert the user about changes', async () => {

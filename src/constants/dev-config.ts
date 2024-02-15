@@ -12,7 +12,7 @@ export const devConfig = {
   forceOffline: false, // Force offline mode by overwriting the NetInfo module and returning a fake offline state,
   ignoreLogBox: false, // Hide react-native LogBox renders but still display logs to the console,
   cliskKonnectorDevMode: false, // Do not show HomeView but just a special screen to run clisk konnectors
-  forceInstallReferrer: false, // Enforce InstallReferrer with the 'enforcedInstallReferrer' string (strings.ONBOARDING_PARTNER_STORAGE_KEY must be clear to apply this value)
+  forceInstallReferrer: false, // Enforce InstallReferrer with the 'enforcedInstallReferrer' string (DevicePersistedStorageKeys.OnboardingPartner must be clear to apply this value)
   enforcedInstallReferrer:
     'utm_source=SOME_PARTNER&utm_content=SOME_CONTEXT&utm_campaign=onboarding_partner&anid=admob',
   disableAutoLock: false // Disregard the device and app settings and disable the auto lock in all cases
