@@ -1,0 +1,86 @@
+diff --git a/node_modules/react-native-file-logger/ios/FileLogger.m b/node_modules/react-native-file-logger/ios/FileLogger.m
+index 7ee491d..978ce4e 100644
+--- a/node_modules/react-native-file-logger/ios/FileLogger.m
++++ b/node_modules/react-native-file-logger/ios/FileLogger.m
+@@ -4,6 +4,7 @@
+ #import <CocoaLumberjack/CocoaLumberjack.h>
+ #import <MessageUI/MessageUI.h>
+ #import "FileLoggerFormatter.h"
++#import "RCTLog.h"
+ 
+ enum LogLevel {
+     LOG_LEVEL_DEBUG,
+@@ -19,6 +20,17 @@ @interface FileLogger () <MFMailComposeViewControllerDelegate>
+ @end
+ 
+ @implementation FileLogger
++{
++    NSMutableDictionary *_promisesList;
++}
++
++- (instancetype)init
++{
++  if ((self = [super init])) {
++      _promisesList = [[NSMutableDictionary alloc] init];
++  }
++  return self;
++}
+ 
+ RCT_EXPORT_MODULE()
+ 
+@@ -101,6 +113,8 @@ - (dispatch_queue_t)methodQueue {
+         [composeViewController setMessageBody:body isHTML:NO];
+     }
+     
++    _promisesList[RCTKeyForInstance(composeViewController)] = @[resolve, reject];
++
+     NSArray<NSString*>* logFiles = self.fileLogger.logFileManager.sortedLogFilePaths;
+     for (NSString* logFile in logFiles) {
+         NSData* data = [NSData dataWithContentsOfFile:logFile];
+@@ -112,13 +126,44 @@ - (dispatch_queue_t)methodQueue {
+         presentingViewController = presentingViewController.presentedViewController;
+     }
+     [presentingViewController presentViewController:composeViewController animated:YES completion:nil];
+-    
+-    resolve(nil);
+ }
+ 
+ - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
++    NSString *key = RCTKeyForInstance(controller);
++    
++    NSMutableArray *promise = _promisesList[key];
++    if (promise) {
++        RCTPromiseResolveBlock resolve = promise[0];
++        RCTPromiseRejectBlock reject = promise[1];
++        switch (result) {
++            case MFMailComposeResultSent:
++            resolve(@"sent");
++            break;
++            case MFMailComposeResultSaved:
++            resolve(@"saved");
++            break;
++            case MFMailComposeResultCancelled:
++            resolve(@"cancelled");
++            break;
++            case MFMailComposeResultFailed:
++            reject(@"failed", error.localizedDescription, nil);
++            break;
++            default:
++            reject(@"error", @"Unknown error", nil);
++            break;
++        }
++        [_promisesList removeObjectForKey:key];
++    } else {
++        RCTLogWarn(@"No promise registered for mail: %@", controller.title);
++    }
++    
+     [controller dismissViewControllerAnimated:YES completion:nil];
+ }
+ 
++static NSString *RCTKeyForInstance(id instance)
++{
++  return [NSString stringWithFormat:@"%p", instance];
++}
++
+ @end
+ 
