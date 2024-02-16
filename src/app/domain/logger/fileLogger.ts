@@ -6,6 +6,11 @@ import Minilog from 'cozy-minilog'
 
 import { fetchSupportMail } from '/app/domain/logger/supportEmail'
 import {
+  hideSplashScreen,
+  showSplashScreen,
+  splashScreens
+} from '/app/theme/SplashScreenService'
+import {
   DevicePersistedStorageKeys,
   getData,
   storeData
@@ -43,10 +48,14 @@ export const sendLogs = async (client?: CozyClient): Promise<void> => {
 
   const subject = `Log file for ${instance}`
 
-  await FileLogger.sendLogFilesByEmail({
+  await showSplashScreen(splashScreens.SEND_LOG_EMAIL)
+  log.info('Start email intent')
+  const emailResult = await FileLogger.sendLogFilesByEmail({
     to: supportEmail,
     subject: subject
   })
+  log.info('Did finish email intent:', emailResult)
+  await hideSplashScreen(splashScreens.SEND_LOG_EMAIL)
 }
 
 const showDisabledLogsError = (): void => {
