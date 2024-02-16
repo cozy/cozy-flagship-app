@@ -20,7 +20,6 @@ export enum StorageKeys {
   Capabilities = '@cozy_AmiralApp_Capabilities',
   LastActivity = '@cozy_AmiralApp_lastActivity',
   DefaultRedirectionUrl = '@cozy_AmiralAppDefaultRedirectionUrl',
-  SessionCreatedFlag = 'SESSION_CREATED_FLAG',
   IconsTable = '@cozy_AmiralAppIcons',
   IdStorageAdress = 'CozyGPSMemory.Id',
   FlagFailUploadStorageAdress = 'CozyGPSMemory.FlagFailUpload',
@@ -52,7 +51,6 @@ export type IconsCache = Record<string, { version: string; xml: string }>
 export interface StorageItems {
   biometryActivated: boolean
   biometryType?: BiometryType
-  sessionCreatedFlag: string
   iconCache: IconsCache
   firstTimeserie: FirstTimeserie
   onboardingPartner: OnboardingPartner
