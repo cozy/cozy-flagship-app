@@ -8,6 +8,17 @@ However there are still some solution to retrieve some logs from the device
 
 This document explains how to retrieve them
 
+# Send logs by email
+
+It is possible to send logs by email using the 3 following links:
+
+- https://links.mycozy.cloud/flagship/enablelogs or [cozy://enablelogs](cozy://enablelogs)
+  - tell the app to start recording logs into a local file
+- https://links.mycozy.cloud/flagship/sendlogs or [cozy://sendlogs](cozy://sendlogs)
+  - trigger the OS send email intent pre-filled with log files and Cozy's support email
+- https://links.mycozy.cloud/flagship/disablelogs or [cozy://disablelogs](cozy://disablelogs)
+  - tell the app to stop recording logs
+
 # Android
 
 To retrieve Android logs, you need to use ADB
