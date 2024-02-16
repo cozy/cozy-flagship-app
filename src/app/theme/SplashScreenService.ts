@@ -12,6 +12,7 @@ const splashScreenLogger = Minilog('☁️ SplashScreen')
 export const splashScreens = {
   LOCK_SCREEN: 'LOCK_SCREEN',
   SECURE_BACKGROUND: 'secure_background', // this mirrors native declaration
+  SEND_LOG_EMAIL: 'SEND_LOG_EMAIL',
   GLOBAL: 'global'
 } as const
 
