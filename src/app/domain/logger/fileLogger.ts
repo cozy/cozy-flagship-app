@@ -1,4 +1,5 @@
 import { Alert } from 'react-native'
+import DeviceInfo from 'react-native-device-info'
 import { FileLogger, LogLevel } from 'react-native-file-logger'
 
 import type CozyClient from 'cozy-client'
@@ -52,7 +53,8 @@ export const sendLogs = async (client?: CozyClient): Promise<void> => {
   log.info('Start email intent')
   const emailResult = await FileLogger.sendLogFilesByEmail({
     to: supportEmail,
-    subject: subject
+    subject: subject,
+    body: buildMessageBody()
   })
   log.info('Did finish email intent:', emailResult)
   await hideSplashScreen(splashScreens.SEND_LOG_EMAIL)
@@ -94,4 +96,20 @@ const areLogsEnabledInAsyncStorage = async (): Promise<boolean> => {
   const logsEnabled = await getData(DevicePersistedStorageKeys.LogsEnabled)
 
   return logsEnabled === true
+}
+
+const buildMessageBody = (): string => {
+  const appVersion = DeviceInfo.getVersion()
+  const appBuild = DeviceInfo.getBuildNumber()
+  const bundle = DeviceInfo.getBundleId()
+  const deviceBrand = DeviceInfo.getBrand()
+  const deviceModel = DeviceInfo.getModel()
+  const os = DeviceInfo.getSystemName()
+  const version = DeviceInfo.getSystemVersion()
+
+  const appInfo = `App info: ${appVersion} (${appBuild})`
+  const bundleInfo = `App bundle: ${bundle}`
+  const deviceInfo = `Device info: ${deviceBrand} ${deviceModel} ${os} ${version}`
+
+  return `${appInfo}\n${bundleInfo}\n${deviceInfo}`
 }
