@@ -17,13 +17,11 @@ import { printBase64Doc as print } from '/libs/intents/printBase64Doc'
 import { setHomeThemeIntent } from '/libs/intents/setHomeThemeIntent'
 import strings from '/constants/strings.json'
 import { EnvService } from '/core/tools/env'
-import { clearClient } from '/libs/client'
 import { clearCookies } from '/libs/httpserver/httpCookieManager'
 import { clearData } from '/libs/localStore/storage'
 import { deleteKeychain } from '/libs/keychain'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { openApp } from '/libs/functions/openApp'
-import { resetSessionToken } from '/libs/functions/session'
 import { routes } from '/constants/routes'
 import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 import { setDefaultRedirection } from '/libs/defaultRedirection/defaultRedirection'
@@ -66,8 +64,6 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
 
   await sendKonnectorsLogs(client)
   await client.logout()
-  await clearClient()
-  await resetSessionToken()
   await deleteKeychain()
   await clearCookies()
   await clearData()

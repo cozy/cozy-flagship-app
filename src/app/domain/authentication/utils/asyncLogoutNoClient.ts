@@ -1,5 +1,3 @@
-import { clearClient } from '/libs/clientHelpers/persistClient'
-import { resetSessionToken } from '/libs/functions/session'
 import { deleteKeychain } from '/libs/keychain'
 import { clearCookies } from '/libs/httpserver/httpCookieManager'
 import { clearData } from '/libs/localStore/storage'
@@ -8,8 +6,6 @@ import { navigationRef } from '/libs/RootNavigation'
 import { stopTrackingAndClearData } from '/app/domain/geolocation/services/tracking'
 
 export const asyncLogoutNoClient = async (): Promise<void> => {
-  await clearClient()
-  await resetSessionToken()
   await deleteKeychain()
   await clearCookies()
   await clearData()
