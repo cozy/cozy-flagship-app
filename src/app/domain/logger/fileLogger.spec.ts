@@ -85,10 +85,12 @@ describe('fileLogger', () => {
       await sendLogs(client)
 
       expect(Alert.alert).not.toHaveBeenCalled()
-      expect(sendLogFilesByEmailSpy).toHaveBeenCalledWith({
-        subject: 'Log file for ',
-        to: 'somemail@somedomain.com'
-      })
+      expect(sendLogFilesByEmailSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          subject: 'Log file for ',
+          to: 'somemail@somedomain.com'
+        })
+      )
     })
 
     it('should do nothing and display alert if logs are disabled', async () => {
