@@ -1,4 +1,8 @@
-import { NetworkError, UploadError } from '/app/domain/upload/models'
+import {
+  NetworkError,
+  CancellationError,
+  UploadError
+} from '/app/domain/upload/models'
 
 export class BackupError extends Error {
   textMessage: string
@@ -22,6 +26,10 @@ export const isNetworkError = (error: unknown): boolean => {
     error instanceof NetworkError ||
     (error instanceof Error && error.message === 'Network request failed')
   )
+}
+
+export const isCancellationError = (error: unknown): boolean => {
+  return error instanceof CancellationError
 }
 
 export const isUploadError = (error: unknown): error is UploadError => {
@@ -49,19 +57,11 @@ export const isFileTooBigError = (error: UploadError): boolean => {
   )
 }
 
-export const isCancellationError = (error: UploadError): boolean => {
-  return (
-    error.statusCode === -1 &&
-    error.errors[0]?.detail === 'User cancelled upload'
-  )
-}
-
 export const shouldRetryCallbackBackup = (error: Error): boolean => {
   const notRetryableError =
-    isUploadError(error) &&
-    (isQuotaExceededError(error) ||
-      isFileTooBigError(error) ||
-      isCancellationError(error))
+    (isUploadError(error) &&
+      (isQuotaExceededError(error) || isFileTooBigError(error))) ||
+    isCancellationError(error)
 
   return !notRetryableError
 }

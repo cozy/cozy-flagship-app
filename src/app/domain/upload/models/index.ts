@@ -40,3 +40,10 @@ export class NetworkError extends Error {
     this.name = 'NetworkError'
   }
 }
+
+export class CancellationError extends Error {
+  constructor() {
+    super()
+    this.name = 'CancellationError'
+  }
+}

@@ -9,7 +9,8 @@ import { t } from '/locales/i18n'
 import {
   UploadParams,
   UploadResult,
-  NetworkError
+  NetworkError,
+  CancellationError
 } from '/app/domain/upload/models'
 
 let currentUploadId: string | undefined
@@ -82,16 +83,7 @@ export const uploadFile = async ({
         })
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         RNBackgroundUpload.addListener('cancelled', uploadId, data => {
-          return reject({
-            statusCode: -1,
-            errors: [
-              {
-                status: -1,
-                title: 'Upload cancelled',
-                detail: 'Upload cancelled'
-              }
-            ]
-          })
+          return reject(new CancellationError())
         })
         RNBackgroundUpload.addListener('completed', uploadId, response => {
           const { data } = JSON.parse(response.responseBody) as {

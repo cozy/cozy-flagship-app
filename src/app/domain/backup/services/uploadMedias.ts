@@ -112,6 +112,11 @@ export const uploadMedias = async (
         throw new BackupError(t('services.backup.errors.networkIssue'))
       }
 
+      if (isCancellationError(error)) {
+        setShouldStopBackup(false)
+        return t('services.backup.errors.backupStopped')
+      }
+
       if (isUploadError(error)) {
         if (isQuotaExceededError(error)) {
           throw new BackupError(
@@ -121,9 +126,6 @@ export const uploadMedias = async (
         } else if (isFileTooBigError(error)) {
           firstPartialSuccessMessage =
             firstPartialSuccessMessage ?? t('services.backup.errors.fileTooBig')
-        } else if (isCancellationError(error)) {
-          setShouldStopBackup(false)
-          return t('services.backup.errors.backupStopped')
         } else {
           firstPartialSuccessMessage =
             firstPartialSuccessMessage ??
