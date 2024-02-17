@@ -27,7 +27,7 @@ export const uploadFile = async ({
   mimetype
 }: UploadParams): Promise<UploadResult> => {
   return new Promise((resolve, reject) => {
-    RNFileSystem.uploadFiles({
+    const { jobId, promise } = RNFileSystem.uploadFiles({
       toUrl: url,
       files: [
         {
@@ -47,12 +47,14 @@ export const uploadFile = async ({
         Accept: 'application/json',
         'Content-Type': mimetype,
         Authorization: `Bearer ${token}`
-      },
-      begin: ({ jobId }) => {
-        setCurrentUploadId(jobId.toString())
       }
     })
-      .promise.then(response => {
+
+    setCurrentUploadId(jobId.toString())
+
+    // Start the upload
+    promise
+      .then(response => {
         if (response.body === '' && !response.statusCode) {
           return reject(new NetworkError())
         }
