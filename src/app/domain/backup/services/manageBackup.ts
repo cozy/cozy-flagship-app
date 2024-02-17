@@ -15,10 +15,8 @@ import {
 import { prepareDeduplication } from '/app/domain/backup/services/manageRemoteBackupConfig'
 import { prepareAlbums } from '/app/domain/backup/services/manageAlbums'
 import { getMediasToBackup } from '/app/domain/backup/services/getMedias'
-import {
-  uploadMedias,
-  setShouldStopBackup
-} from '/app/domain/backup/services/uploadMedias'
+import { uploadMedias } from '/app/domain/backup/services/uploadMedias'
+import { setShouldStopBackup } from '/app/domain/backup/services/stopBackup'
 import {
   cancelUpload,
   getCurrentUploadId
