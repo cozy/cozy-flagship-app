@@ -1,7 +1,5 @@
 /* eslint-disable promise/always-return */
 
-import { AppState, Platform } from 'react-native'
-
 import { uploadMedia } from '/app/domain/backup/services/uploadMedia'
 import {
   setMediaAsBackupedBecauseUploaded,
@@ -30,6 +28,11 @@ import {
   areAlbumsEnabled,
   addMediaToAlbums
 } from '/app/domain/backup/services/manageAlbums'
+import {
+  getShouldStopBackup,
+  setShouldStopBackup,
+  shouldStopBecauseBackground
+} from '/app/domain/backup/services/stopBackup'
 import { File } from '/app/domain/backup/queries'
 import { t } from '/locales/i18n'
 
@@ -41,24 +44,6 @@ import Minilog from 'cozy-minilog'
 const log = Minilog('💿 Backup')
 
 const DOCTYPE_FILES = 'io.cozy.files'
-
-let shouldStopBackup = false
-
-export const getShouldStopBackup = (): boolean => {
-  return shouldStopBackup
-}
-
-export const setShouldStopBackup = (value: boolean): void => {
-  shouldStopBackup = value
-}
-
-const shouldStopBecauseBackground = (): boolean => {
-  if (Platform.OS === 'android' && Platform.Version < 31) {
-    return false
-  }
-
-  return AppState.currentState === 'background'
-}
 
 export const uploadMedias = async (
   client: CozyClient,
@@ -74,8 +59,8 @@ export const uploadMedias = async (
   let firstPartialSuccessMessage: string | undefined
 
   for (const mediaToUpload of mediasToUpload) {
-    if (shouldStopBackup) {
-      shouldStopBackup = false
+    if (getShouldStopBackup()) {
+      setShouldStopBackup(false)
       log.debug('Backup stopped because asked by the user')
       return t('services.backup.errors.backupStopped')
     }
@@ -137,7 +122,7 @@ export const uploadMedias = async (
           firstPartialSuccessMessage =
             firstPartialSuccessMessage ?? t('services.backup.errors.fileTooBig')
         } else if (isCancellationError(error)) {
-          shouldStopBackup = false
+          setShouldStopBackup(false)
           return t('services.backup.errors.backupStopped')
         } else {
           firstPartialSuccessMessage =
