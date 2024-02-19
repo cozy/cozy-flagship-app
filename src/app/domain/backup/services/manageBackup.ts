@@ -16,7 +16,11 @@ import { prepareDeduplication } from '/app/domain/backup/services/manageRemoteBa
 import { prepareAlbums } from '/app/domain/backup/services/manageAlbums'
 import { getMediasToBackup } from '/app/domain/backup/services/getMedias'
 import { uploadMedias } from '/app/domain/backup/services/uploadMedias'
-import { setShouldStopBackup } from '/app/domain/backup/services/stopBackup'
+import {
+  StopBackupReason,
+  setStopBackupData,
+  addBackgroundSubscriptionListener
+} from '/app/domain/backup/services/stopBackup'
 import {
   cancelUpload,
   getCurrentUploadId
@@ -102,6 +106,10 @@ export const startBackup = async (
 
   void onProgress(await getBackupInfo(client))
 
+  const backgroundSubscription = addBackgroundSubscriptionListener(
+    () => void stopBackup(client, 'STOPPED_BECAUSE_BACKGROUND')
+  )
+
   try {
     const partialSuccessMessage = await uploadMedias(
       client,
@@ -184,6 +192,8 @@ export const startBackup = async (
         redirectLink: 'photos/#/backup'
       }
     })
+  } finally {
+    backgroundSubscription.remove()
   }
 
   const localBackupConfigAfterUpload = await getLocalBackupConfig(client)
@@ -203,8 +213,16 @@ export const startBackup = async (
   return await getBackupInfo(client)
 }
 
-export const stopBackup = async (client: CozyClient): Promise<BackupInfo> => {
-  setShouldStopBackup(true)
+export const stopBackup = async (
+  client: CozyClient,
+  reason: StopBackupReason = 'STOPPED_BY_USER'
+): Promise<BackupInfo> => {
+  log.debug('Stopping backup because', reason)
+
+  setStopBackupData({
+    shouldStop: true,
+    reason
+  })
 
   const uploadId = getCurrentUploadId()
 
