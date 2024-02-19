@@ -41,6 +41,7 @@ import type { IOCozyFile } from 'cozy-client'
 import flag from 'cozy-flags'
 import Minilog from 'cozy-minilog'
 
+import { CancellationError } from '/app/domain/upload/models'
 const log = Minilog('💿 Backup')
 
 const DOCTYPE_FILES = 'io.cozy.files'
@@ -166,6 +167,11 @@ const prepareAndUploadMedia = async (
     uploadMetadata,
     mediaToUpload
   )
+
+  if (getShouldStopBackup()) {
+    throw new CancellationError()
+  }
+
   const { data: documentCreated } = await uploadMedia(
     client,
     uploadUrl,
