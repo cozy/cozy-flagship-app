@@ -34,7 +34,7 @@
     "storybook:update": "sb-rn-get-stories"
   },
   "dependencies": {
-    "@fengweichong/react-native-gzip": "^2.0.0",
+    "@fengweichong/react-native-gzip": "github:cozy/react-native-gzip#1.0.0",
     "@mythologi/react-native-receive-sharing-intent": "2.2.1",
     "@notifee/react-native": "^7.8.0",
     "@react-native-async-storage/async-storage": "1.21.0",
