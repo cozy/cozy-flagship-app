@@ -29,9 +29,8 @@ import {
   addMediaToAlbums
 } from '/app/domain/backup/services/manageAlbums'
 import {
-  getShouldStopBackup,
-  setShouldStopBackup,
-  shouldStopBecauseBackground
+  getStopBackupData,
+  resetStopBackupData
 } from '/app/domain/backup/services/stopBackup'
 import { File } from '/app/domain/backup/queries'
 import { t } from '/locales/i18n'
@@ -60,15 +59,11 @@ export const uploadMedias = async (
   let firstPartialSuccessMessage: string | undefined
 
   for (const mediaToUpload of mediasToUpload) {
-    if (getShouldStopBackup()) {
-      setShouldStopBackup(false)
-      log.debug('Backup stopped because asked by the user')
-      return t('services.backup.errors.backupStopped')
-    }
-
-    if (shouldStopBecauseBackground()) {
-      log.debug('Backup stopped because in background')
-      return t('services.backup.errors.appKilled')
+    const { shouldStop, reason, translatedReason } = getStopBackupData()
+    if (shouldStop) {
+      log.debug('Backup stopped at beginning of upload loop', reason)
+      resetStopBackupData()
+      return translatedReason
     }
 
     if (flag('flagship.backup.dedup')) {
@@ -114,8 +109,10 @@ export const uploadMedias = async (
       }
 
       if (isCancellationError(error)) {
-        setShouldStopBackup(false)
-        return t('services.backup.errors.backupStopped')
+        const { reason, translatedReason } = getStopBackupData()
+        log.debug('Backup stopped because cancellation error', reason)
+        resetStopBackupData()
+        return translatedReason
       }
 
       if (isUploadError(error)) {
@@ -168,7 +165,9 @@ const prepareAndUploadMedia = async (
     mediaToUpload
   )
 
-  if (getShouldStopBackup()) {
+  const { shouldStop } = getStopBackupData()
+  if (shouldStop) {
+    log.debug('Backup stopped before uploading media')
     throw new CancellationError()
   }
 
