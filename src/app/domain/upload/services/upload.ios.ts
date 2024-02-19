@@ -6,7 +6,8 @@ import { StackErrors, IOCozyFile } from 'cozy-client'
 import {
   UploadParams,
   UploadResult,
-  NetworkError
+  NetworkError,
+  CancellationError
 } from '/app/domain/upload/models'
 
 let currentUploadId: string | undefined
@@ -77,6 +78,9 @@ export const uploadFile = async ({
         }
       })
       .catch(e => {
+        if ((e as Error).message === 'Task was cancelled') {
+          return reject(new CancellationError())
+        }
         return reject(e)
       })
   })
