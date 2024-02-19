@@ -112,4 +112,3 @@ jobs:
           packageName: ${{ inputs.brand != 'cozy' && format('io.cozy.flagship.mobile.{0}', inputs.brand) || 'io.cozy.flagship.mobile' }}
           releaseFiles: android/app/build/outputs/bundle/prodRelease/*.aab
           track: internal
-          status:  ${{ inputs.brand != 'cozy' && 'draft' || 'completed' }}
