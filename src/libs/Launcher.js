@@ -249,6 +249,7 @@ export default class Launcher {
       launcherClient,
       ...restOfContext
     } = startContext
+    const { sourceAccountIdentifier } = this.getUserData() || {}
 
     if (!account) {
       log.debug(
@@ -270,6 +271,11 @@ export default class Launcher {
     launcherClient.setAppMetadata({
       sourceAccount: account._id
     })
+    if (sourceAccountIdentifier) {
+      launcherClient.setAppMetadata({
+        sourceAccountIdentifier
+      })
+    }
     const folder = await models.konnectorFolder.ensureKonnectorFolder(client, {
       konnector: { ...konnector, _id: konnector.id }, // _id attribute is missing in konnector object, which causes the reference to the konnector in the destination folder to be null
       account,

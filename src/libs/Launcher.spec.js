@@ -43,6 +43,10 @@ describe('Launcher', () => {
             _id: 'createdfolderid'
           }
         }),
+        query: jest.fn().mockResolvedValue({ included: [] }),
+        get: jest.fn().mockResolvedValue({ data: {} }),
+        statById: jest.fn().mockResolvedValue({ data: {} }),
+        ensureDirectoryExists: jest.fn(),
         getInstanceOptions: jest.fn().mockReturnValueOnce({ locale: 'fr' }),
         save: jest.fn().mockResolvedValueOnce({
           data: { message: { folder_to_save: 'newfolderid' } }
@@ -326,7 +330,10 @@ describe('Launcher', () => {
         findReferencedBy: jest
           .fn()
           .mockResolvedValue({ included: existingMagicFolder }),
-        getInstanceOptions: jest.fn().mockReturnValue(() => ({ locale: 'fr' })),
+        getInstanceOptions: jest.fn().mockReturnValue({ locale: 'fr' }),
+        ensureDirectoryExists: jest.fn(),
+        get: jest.fn().mockResolvedValue({ data: {} }),
+        statById: jest.fn().mockResolvedValue({ data: {} }),
         queryAll: jest.fn().mockResolvedValue([
           {
             _id: 'tokeep',
@@ -338,7 +345,9 @@ describe('Launcher', () => {
             _id: 'toignore'
           }
         ]),
-        query: jest.fn().mockResolvedValue({ data: { path: 'folderPath' } }),
+        query: jest
+          .fn()
+          .mockResolvedValue({ data: { path: 'folderPath' }, included: [] }),
         save: jest.fn().mockImplementation(() => ({ _id: 'triggerid' }))
       }
       launcher.setStartContext({
@@ -390,7 +399,7 @@ describe('Launcher', () => {
         _type: 'io.cozy.triggers',
         message: {
           account: 'testaccountid',
-          folder_to_save: '/Administratif/Test Konnector/testaccountid'
+          folder_to_save: '/Administrative/Test Konnector/testaccountid'
         }
       })
       expect(client.queryAll).toHaveBeenCalledTimes(2)

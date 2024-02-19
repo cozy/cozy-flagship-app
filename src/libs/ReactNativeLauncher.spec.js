@@ -68,6 +68,9 @@ describe('ReactNativeLauncher', () => {
     const statByPath = jest
       .fn()
       .mockResolvedValue({ data: { _id: 'testfolderid' } })
+    const statById = jest
+      .fn()
+      .mockResolvedValue({ data: { _id: 'testfolderid' } })
     const add = jest.fn()
     const client = {
       save: jest.fn(),
@@ -85,6 +88,7 @@ describe('ReactNativeLauncher', () => {
         addReferencesTo,
         get,
         statByPath,
+        statById,
         add
       }),
       getInstanceOptions: jest.fn().mockReturnValueOnce({ locale: 'fr' })
@@ -109,15 +113,22 @@ describe('ReactNativeLauncher', () => {
   describe('start', () => {
     it('should ensure account and trigger', async () => {
       const { launcher, client, launch } = setup()
+      const konnector = {
+        slug: 'konnectorslug',
+        clientSide: true,
+        permissions: { files: { type: 'io.cozy.files' } }
+      }
       launcher.setStartContext({
         client,
-        konnector: { slug: 'konnectorslug', clientSide: true },
+        konnector,
+        manifest: konnector,
         launcherClient: {
           setAppMetadata: () => null
         }
       })
       launch.mockResolvedValue({ data: fixtures.job })
-      client.query.mockResolvedValue({ data: fixtures.account })
+      client.query.mockResolvedValue({ data: fixtures.account, included: [] })
+      client.queryAll.mockResolvedValue([])
       client.save.mockImplementation(async doc => ({
         data: { ...doc, _id: doc._id ? doc._id : 'newid' }
       }))
@@ -168,17 +179,24 @@ describe('ReactNativeLauncher', () => {
     })
     it('should launch the given trigger if any', async () => {
       const { launcher, client, launch } = setup()
+      const konnector = {
+        slug: 'konnectorslug',
+        clientSide: true,
+        permissions: { files: { type: 'io.cozy.files' } }
+      }
       launcher.setStartContext({
         client,
         account: fixtures.account,
         trigger: fixtures.trigger,
-        konnector: { slug: 'konnectorslug', clientSide: true },
+        konnector,
+        manifest: konnector,
         launcherClient: {
           setAppMetadata: () => null
         }
       })
       launch.mockResolvedValue({ data: fixtures.job })
-      client.query.mockResolvedValue({ data: fixtures.account })
+      client.query.mockResolvedValue({ data: fixtures.account, included: [] })
+      client.queryAll.mockResolvedValue([])
       client.save.mockImplementation(async doc => ({ data: doc }))
       launcher.pilot.call
         .mockResolvedValueOnce(true)
@@ -191,7 +209,11 @@ describe('ReactNativeLauncher', () => {
     })
     it('should work normaly in nominal case', async () => {
       const { launcher, client, launch } = setup()
-      const konnector = { slug: 'konnectorslug', clientSide: true }
+      const konnector = {
+        slug: 'konnectorslug',
+        clientSide: true,
+        permissions: { files: { type: 'io.cozy.files' } }
+      }
       launcher.setStartContext({
         client,
         account: fixtures.account,
@@ -202,7 +224,8 @@ describe('ReactNativeLauncher', () => {
           setAppMetadata: () => null
         }
       })
-      client.query.mockResolvedValue({ data: fixtures.account })
+      client.query.mockResolvedValue({ data: fixtures.account, included: [] })
+      client.queryAll.mockResolvedValue([])
       client.save.mockImplementation(async doc => ({ data: doc }))
       launch.mockResolvedValue({ data: fixtures.job })
       launcher.pilot.call
@@ -273,6 +296,7 @@ describe('ReactNativeLauncher', () => {
           auth: { accountName: 'testsourceaccountidentifier' }
         },
         trigger: fixtures.trigger,
+        existingFilesIndex: {},
         job: {
           _id: 'normal_job_id'
         },
@@ -326,7 +350,7 @@ describe('ReactNativeLauncher', () => {
           setAppMetadata: () => null
         }
       })
-      client.query.mockResolvedValue({ data: fixtures.account })
+      client.query.mockResolvedValue({ data: fixtures.account, included: [] })
       client.queryAll.mockResolvedValueOnce([
         {
           name: 'file1.txt',
@@ -370,7 +394,7 @@ describe('ReactNativeLauncher', () => {
           setAppMetadata: () => null
         }
       })
-      client.query.mockResolvedValue({ data: fixtures.account })
+      client.query.mockResolvedValue({ data: fixtures.account, included: [] })
       client.save.mockImplementation(async doc => ({ data: doc }))
       launch.mockResolvedValue({ data: fixtures.job })
       launcher.pilot.call
