@@ -1,0 +1,22 @@
+diff --git a/node_modules/react-native-fs/Uploader.m b/node_modules/react-native-fs/Uploader.m
+index 9463c81..04c15cf 100644
+--- a/node_modules/react-native-fs/Uploader.m
++++ b/node_modules/react-native-fs/Uploader.m
+@@ -105,8 +105,15 @@ - (void)uploadFiles:(RNFSUploadParams*)params
+   NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+   NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:(id)self delegateQueue:[NSOperationQueue mainQueue]];
+   _task = [session dataTaskWithRequest:req completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+-      NSString * str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+-      return self->_params.completeCallback(str, response);
++    // The task was cancelled
++    if (error && [error.domain isEqual:NSURLErrorDomain] && error.code == NSURLErrorCancelled) {
++      NSError* cancelError = [NSError errorWithDomain:@"Uploader" code:NSURLErrorCancelled userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat: @"Task was cancelled"]}];
++      return self->_params.errorCallback(cancelError);
++    }
++
++    // The task completed successfully or with an unknown error
++    NSString * str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
++    return self->_params.completeCallback(str, response);
+   }];
+   [_task resume];
+   [session finishTasksAndInvalidate];
