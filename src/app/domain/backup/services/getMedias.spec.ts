@@ -77,146 +77,158 @@ describe('formatMediasFromPhotoIdentifier', () => {
   test('format Android image', () => {
     // Given
     Platform.OS = 'android'
-    const photoIdentifier = {
-      node: {
-        id: '1234',
-        group_name: ['Pictures'],
-        image: {
-          extension: 'jpg',
-          fileSize: 1234,
-          filename: 'IMG_20230519_204453.jpg',
-          height: null,
-          orientation: null,
-          playableDuration: null,
-          uri: 'file:///storage/emulated/0/Pictures/IMG_20230519_204453.jpg',
-          width: null
-        },
-        location: null,
-        modificationTimestamp: 1684521894,
-        subTypes: [],
-        timestamp: 1684521894.234,
-        type: 'image/jpeg'
-      }
-    } as unknown as PhotoIdentifier
+    const photoIdentifier = ANDROID_PHOTO_IDENTIFIER
 
     // When
     const media = getMedias.formatMediasFromPhotoIdentifier(photoIdentifier)
 
     // Then
-    expect(media).toEqual([
-      {
-        id: '1234',
-        name: 'IMG_20230519_204453.jpg',
-        uri: 'file:///storage/emulated/0/Pictures/IMG_20230519_204453.jpg',
-        path: 'file:///storage/emulated/0/Pictures/IMG_20230519_204453.jpg',
-        remotePath: '/Pictures',
-        type: 'image',
-        mimeType: 'image/jpeg',
-        fileSize: 1234,
-        creationDate: 1684521894000,
-        modificationDate: 1684521894000,
-        albums: [{ name: 'Pictures' }]
-      }
-    ])
+    expect(media).toEqual(ANDROID_MEDIAS)
   })
 
   test('format iOS image', () => {
     // Given
     Platform.OS = 'ios'
-    const photoIdentifier = {
-      node: {
-        group_name: ['Pictures'],
-        image: {
-          extension: 'heic',
-          fileSize: 1234,
-          filename: 'IMG_0744.HEIC',
-          height: null,
-          playableDuration: null,
-          uri: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
-          width: null
-        },
-        location: null,
-        modificationTimestamp: 1688756699.463186,
-        subTypes: [],
-        timestamp: 1682604478.599,
-        type: 'image'
-      }
-    } as unknown as PhotoIdentifier
+    const photoIdentifier = IOS_PHOTO_IDENTIFIER
 
     // When
     const media = getMedias.formatMediasFromPhotoIdentifier(photoIdentifier)
 
     // Then
-    expect(media).toEqual([
-      {
-        name: 'IMG_0744.HEIC',
-        uri: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
-        path: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
-        remotePath: '/',
-        type: 'image',
-        fileSize: 1234,
-        mimeType: undefined,
-        creationDate: 1682604478000,
-        modificationDate: 1688756699000,
-        albums: [{ name: 'Pictures' }]
-      }
-    ])
+    expect(media).toEqual(IOS_MEDIAS)
   })
 
   test('format iOS Live Photo', () => {
     // Given
     Platform.OS = 'ios'
-    const photoIdentifier = {
-      node: {
-        group_name: ['Pictures'],
-        image: {
-          extension: 'heic',
-          fileSize: 1234,
-          filename: 'IMG_0744.HEIC',
-          height: null,
-          playableDuration: null,
-          uri: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
-          width: null
-        },
-        location: null,
-        modificationTimestamp: 1688756699.463186,
-        subTypes: ['PhotoLive'],
-        timestamp: 1682604478.599,
-        type: 'image'
-      }
-    } as unknown as PhotoIdentifier
+    const photoIdentifier = IOS_LIVE_PHOTO_IDENTIFIER
 
     // When
     const media = getMedias.formatMediasFromPhotoIdentifier(photoIdentifier)
 
     // Then
-    expect(media).toEqual([
-      {
-        name: 'IMG_0744.MOV',
-        uri: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
-        path: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
-        remotePath: '/',
-        type: 'video',
-        subType: 'PhotoLive',
-        mimeType: undefined,
-        creationDate: 1682604478000,
-        modificationDate: 1688756699000,
-        albums: [{ name: 'Pictures' }],
-        fileSize: null
-      },
-      {
-        name: 'IMG_0744.HEIC',
-        uri: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
-        path: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
-        remotePath: '/',
-        type: 'image',
-        subType: 'PhotoLive',
-        mimeType: undefined,
-        fileSize: 1234,
-        creationDate: 1682604478000,
-        modificationDate: 1688756699000,
-        albums: [{ name: 'Pictures' }]
-      }
-    ])
+    expect(media).toEqual(IOS_LIVE_PHOTO_MEDIAS)
   })
 })
+
+const ANDROID_PHOTO_IDENTIFIER = {
+  node: {
+    id: '1234',
+    group_name: ['Pictures'],
+    image: {
+      extension: 'jpg',
+      fileSize: 1234,
+      filename: 'IMG_20230519_204453.jpg',
+      height: null,
+      orientation: null,
+      playableDuration: null,
+      uri: 'file:///storage/emulated/0/Pictures/IMG_20230519_204453.jpg',
+      width: null
+    },
+    location: null,
+    modificationTimestamp: 1684521894,
+    subTypes: [],
+    timestamp: 1684521894.234,
+    type: 'image/jpeg'
+  }
+} as unknown as PhotoIdentifier
+
+const ANDROID_MEDIAS = [
+  {
+    id: '1234',
+    name: 'IMG_20230519_204453.jpg',
+    uri: 'file:///storage/emulated/0/Pictures/IMG_20230519_204453.jpg',
+    path: 'file:///storage/emulated/0/Pictures/IMG_20230519_204453.jpg',
+    remotePath: '/Pictures',
+    type: 'image',
+    mimeType: 'image/jpeg',
+    fileSize: 1234,
+    creationDate: 1684521894000,
+    modificationDate: 1684521894000,
+    albums: [{ name: 'Pictures' }]
+  }
+]
+
+const IOS_PHOTO_IDENTIFIER = {
+  node: {
+    group_name: ['Pictures'],
+    image: {
+      extension: 'heic',
+      fileSize: 1234,
+      filename: 'IMG_0744.HEIC',
+      height: null,
+      playableDuration: null,
+      uri: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
+      width: null
+    },
+    location: null,
+    modificationTimestamp: 1688756699.463186,
+    subTypes: [],
+    timestamp: 1682604478.599,
+    type: 'image'
+  }
+} as unknown as PhotoIdentifier
+
+const IOS_MEDIAS = [
+  {
+    name: 'IMG_0744.HEIC',
+    uri: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
+    path: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
+    remotePath: '/',
+    type: 'image',
+    fileSize: 1234,
+    mimeType: undefined,
+    creationDate: 1682604478000,
+    modificationDate: 1688756699000,
+    albums: [{ name: 'Pictures' }]
+  }
+]
+
+const IOS_LIVE_PHOTO_IDENTIFIER = {
+  node: {
+    group_name: ['Pictures'],
+    image: {
+      extension: 'heic',
+      fileSize: 1234,
+      filename: 'IMG_0744.HEIC',
+      height: null,
+      playableDuration: null,
+      uri: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
+      width: null
+    },
+    location: null,
+    modificationTimestamp: 1688756699.463186,
+    subTypes: ['PhotoLive'],
+    timestamp: 1682604478.599,
+    type: 'image'
+  }
+} as unknown as PhotoIdentifier
+
+const IOS_LIVE_PHOTO_MEDIAS = [
+  {
+    name: 'IMG_0744.MOV',
+    uri: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
+    path: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
+    remotePath: '/',
+    type: 'video',
+    subType: 'PhotoLive',
+    mimeType: undefined,
+    creationDate: 1682604478000,
+    modificationDate: 1688756699000,
+    albums: [{ name: 'Pictures' }],
+    fileSize: null
+  },
+  {
+    name: 'IMG_0744.HEIC',
+    uri: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
+    path: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
+    remotePath: '/',
+    type: 'image',
+    subType: 'PhotoLive',
+    mimeType: undefined,
+    fileSize: 1234,
+    creationDate: 1682604478000,
+    modificationDate: 1688756699000,
+    albums: [{ name: 'Pictures' }]
+  }
+]
