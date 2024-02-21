@@ -165,12 +165,38 @@ export const getAlbums = (photoIdentifier: PhotoIdentifier): Album[] => {
   }
 }
 
+/*
+  On iOS, when the user takes a picture and add it to a shared albums, the picture will be duplicated :
+  - it will be one time in the user library (with all the local albums where the picture is inside the albums field)
+  - it will be one time in the shared album (with the shared album where the picture is inside the albums field)
+
+  So here we merge these pictures to have only one picture and we merge the albums field.
+*/
+export const mergeUserLibraryAndCloudSharedMedias = (
+  userLibraryMedias: Media[],
+  cloudSharedMedias: Media[]
+): Media[] => {
+  const allMedias = [...userLibraryMedias]
+
+  cloudSharedMedias.forEach(cloudSharedMedia => {
+    const mediaIndex = allMedias.findIndex(media =>
+      isSameMedia(media, cloudSharedMedia)
+    )
+
+    if (mediaIndex >= 0) {
+      allMedias[mediaIndex].albums.push(...cloudSharedMedia.albums)
+    } else {
+      allMedias.push(cloudSharedMedia)
+    }
+  })
+
+  return allMedias
+}
+
 export const getAllMedias = async (
   client: CozyClient,
   onProgress?: ProgressCallback
 ): Promise<Media[]> => {
-  const allMedias = []
-
   let backupInfo
 
   if (onProgress) {
@@ -180,16 +206,25 @@ export const getAllMedias = async (
   let hasNextPage = true
   let endCursor: CameraRollCursor
 
+  const userLibraryMedias: Media[] = []
+  const cloudSharedMedias: Media[] = []
+
   while (hasNextPage) {
     const photoIdentifiersPage = await getPhotoIdentifiersPage(endCursor)
 
-    const newMedias = photoIdentifiersPage.edges
-      .map(photoIdentifier => formatMediasFromPhotoIdentifier(photoIdentifier))
-      .flat()
-    allMedias.push(...newMedias)
+    photoIdentifiersPage.edges.forEach(photoIdentifier => {
+      const formattedMedias = formatMediasFromPhotoIdentifier(photoIdentifier)
+
+      if (photoIdentifier.node.sourceType === 'CloudShared') {
+        cloudSharedMedias.push(...formattedMedias)
+      } else {
+        userLibraryMedias.push(...formattedMedias)
+      }
+    })
 
     if (onProgress && backupInfo) {
-      backupInfo.currentBackup.mediasLoadedCount = allMedias.length
+      backupInfo.currentBackup.mediasLoadedCount =
+        photoIdentifiersPage.edges.length
 
       void onProgress(backupInfo)
     }
@@ -197,6 +232,11 @@ export const getAllMedias = async (
     hasNextPage = photoIdentifiersPage.page_info.has_next_page
     endCursor = photoIdentifiersPage.page_info.end_cursor
   }
+
+  const allMedias = mergeUserLibraryAndCloudSharedMedias(
+    userLibraryMedias,
+    cloudSharedMedias
+  )
 
   return allMedias
 }

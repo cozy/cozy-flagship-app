@@ -97,6 +97,40 @@ describe('getAllMedias', () => {
     // Then
     expect(allMedias).toEqual([...IOS_MEDIAS, ...IOS_LIVE_PHOTO_MEDIAS])
   })
+
+  test('return correct medias if cloud shared alone', async () => {
+    // Given
+    Platform.OS = 'ios'
+    jest.spyOn(getMedias, 'getPhotoIdentifiersPage').mockResolvedValue({
+      edges: [IOS_CLOUD_SHARED_PHOTO_IDENTIFIER],
+      page_info: {
+        has_next_page: false
+      }
+    })
+
+    // When
+    const allMedias = await getMedias.getAllMedias(client)
+
+    // Then
+    expect(allMedias).toEqual(IOS_CLOUD_SHARED_MEDIAS)
+  })
+
+  test('return correct medias if cloud shared duplicate', async () => {
+    // Given
+    Platform.OS = 'ios'
+    jest.spyOn(getMedias, 'getPhotoIdentifiersPage').mockResolvedValue({
+      edges: [IOS_PHOTO_IDENTIFIER, IOS_CLOUD_SHARED_PHOTO_IDENTIFIER],
+      page_info: {
+        has_next_page: false
+      }
+    })
+
+    // When
+    const allMedias = await getMedias.getAllMedias(client)
+
+    // Then
+    expect(allMedias).toEqual(IOS_MERGED_MEDIAS)
+  })
 })
 
 describe('getAlbums', () => {
@@ -135,6 +169,41 @@ describe('getAlbums', () => {
 
     // Then
     expect(albums).toEqual([])
+  })
+})
+
+describe('mergeUserLibraryAndCloudSharedMedias', () => {
+  test('return empty medias if nothing on cameraroll', () => {
+    // Given
+    const userLibraryMedias: Media[] = [...ANDROID_MEDIAS]
+    const cloudSharedMedias: Media[] = [...IOS_CLOUD_SHARED_MEDIAS]
+
+    // When
+    const allMedias = getMedias.mergeUserLibraryAndCloudSharedMedias(
+      userLibraryMedias,
+      cloudSharedMedias
+    )
+
+    // Then
+    expect(allMedias).toEqual([...ANDROID_MEDIAS, ...IOS_CLOUD_SHARED_MEDIAS])
+  })
+
+  test('return empty medias if nothing on cameraroll', () => {
+    // Given
+    const userLibraryMedias: Media[] = [
+      ...ANDROID_MEDIAS,
+      ...(JSON.parse(JSON.stringify(IOS_MEDIAS)) as Media[])
+    ]
+    const cloudSharedMedias: Media[] = [...IOS_CLOUD_SHARED_MEDIAS]
+
+    // When
+    const allMedias = getMedias.mergeUserLibraryAndCloudSharedMedias(
+      userLibraryMedias,
+      cloudSharedMedias
+    )
+
+    // Then
+    expect(allMedias).toEqual([...ANDROID_MEDIAS, ...IOS_MERGED_MEDIAS])
   })
 })
 
@@ -302,5 +371,58 @@ const IOS_LIVE_PHOTO_MEDIAS = [
     creationDate: 1682604478000,
     modificationDate: 1688756699000,
     albums: [{ name: 'Pictures' }]
+  }
+] as Media[]
+
+const IOS_CLOUD_SHARED_PHOTO_IDENTIFIER = {
+  node: {
+    group_name: ['My shared album'],
+    image: {
+      extension: 'heic',
+      fileSize: 1234,
+      filename: 'IMG_0744.HEIC',
+      height: null,
+      playableDuration: null,
+      uri: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
+      width: null
+    },
+    location: null,
+    modificationTimestamp: 1688756699.463186,
+    subTypes: [],
+    sourceType: 'CloudShared',
+    timestamp: 1682604478.599,
+    type: 'image'
+  }
+} as unknown as PhotoIdentifier
+
+const IOS_CLOUD_SHARED_MEDIAS = [
+  {
+    name: 'IMG_0744.HEIC',
+    uri: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
+    path: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
+    remotePath: '/',
+    type: 'image',
+    sourceType: 'CloudShared',
+    fileSize: 1234,
+    mimeType: undefined,
+    creationDate: 1682604478000,
+    modificationDate: 1688756699000,
+    albums: [{ name: 'My shared album' }]
+  }
+] as Media[]
+
+const IOS_MERGED_MEDIAS = [
+  {
+    name: 'IMG_0744.HEIC',
+    uri: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
+    path: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
+    remotePath: '/',
+    type: 'image',
+    sourceType: 'UserLibrary',
+    fileSize: 1234,
+    mimeType: undefined,
+    creationDate: 1682604478000,
+    modificationDate: 1688756699000,
+    albums: [{ name: 'Pictures' }, { name: 'My shared album' }]
   }
 ] as Media[]
