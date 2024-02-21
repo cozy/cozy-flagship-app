@@ -5,10 +5,10 @@ This notably includes the possiblity to run client-side konnectors, to get your 
 
 ## Setup / Requirements
 
-- Node 16
+- Node 20
 - [React-Native Environnement setup](https://reactnative.dev/docs/environment-setup)
   - Please follow the React Native CLI part and make sure all the requirements are met with the correct versions.
-- [iOS only] Install XCode 
+- [iOS only] Install XCode
 - [Android only] Install Android Studio (or Android SDK)
 - [Android only] Java 11
 - [Android only] Copy the Android's `debug.keystore` from Cozy's password-store into `android/app/debug.keystore`
@@ -273,7 +273,7 @@ error: cannot find symbol
                                           ^
   symbol:   variable USER_AGENT
   location: class BuildConfig
-``` 
+```
 Run `yarn brand:configure:cozy`
 
 * `INSTALL_FAILED_VERSION_DOWNGRADE` error
