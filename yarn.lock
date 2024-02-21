@@ -3717,10 +3717,10 @@
   dependencies:
     merge-options "^3.0.4"
 
-"@react-native-camera-roll/camera-roll@^7.2.0":
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/@react-native-camera-roll/camera-roll/-/camera-roll-7.2.0.tgz#e1de34175619048019f766858d3563608c2b3ef8"
-  integrity sha512-7y1lW+b9lpXsqUDCi4Ow0XozVe8OLqN/Pfq6lJpAxbgZ0TEVpVKniQj2ZeLMWsA28eae7JMqGqqj4e9uVp8eOw==
+"@react-native-camera-roll/camera-roll@7.4.1":
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/@react-native-camera-roll/camera-roll/-/camera-roll-7.4.1.tgz#fd37c905e3331b63dff6d79acea21946013a78a8"
+  integrity sha512-IoJ4QuyPpKX+EnBTjwdXGuq0GHhBjrhI22fNQtrjGnQEp3D+IsHPGTHEYkc93PxuXKKt+13TtVzL/n67juUi5A==
 
 "@react-native-clipboard/clipboard@^1.13.2":
   version "1.13.2"
