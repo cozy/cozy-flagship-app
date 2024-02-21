@@ -1,11 +1,14 @@
 import { Album } from '/app/domain/backup/models'
 
+import { SourceType } from '@react-native-camera-roll/camera-roll'
+
 /**
  * A media on the device
  * @member {string} name
  * @member {number} path
  * @member {string} remotePath e.g. /Sauvegardé depuis mon mobile/My Android/Download
  * @member {string} type
+ * @member {SourceType} sourceType
  * @member {number} creationDate timestamp with ms set to 0
  * @member {number} modificationDate  timestamp with ms set to 0
  */
@@ -17,6 +20,7 @@ export interface Media {
   remotePath: string
   type: 'image' | 'video'
   subType?: 'PhotoLive'
+  sourceType: SourceType
   mimeType?: string
   creationDate: number
   modificationDate: number

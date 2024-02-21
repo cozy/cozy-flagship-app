@@ -39,7 +39,7 @@ export const getPhotoIdentifiersPage = async (
   const photoIdentifiersPage = await CameraRoll.getPhotos({
     first: MEDIAS_BY_PAGE,
     after: after,
-    include: ['filename', 'fileExtension', 'fileSize', 'albums'],
+    include: ['filename', 'fileExtension', 'fileSize', 'albums', 'sourceType'],
     includeSharedAlbums: shouldIncludeSharedAlbums
   })
 
@@ -89,6 +89,7 @@ export const formatMediasFromPhotoIdentifier = (
       image: { filename, uri, fileSize },
       type,
       subTypes,
+      sourceType,
       timestamp,
       modificationTimestamp
     }
@@ -109,6 +110,7 @@ export const formatMediasFromPhotoIdentifier = (
         remotePath: getRemotePath(uri),
         type: 'video',
         subType: 'PhotoLive',
+        sourceType: sourceType,
         creationDate: Math.trunc(timestamp) * 1000,
         modificationDate: Math.trunc(modificationTimestamp) * 1000,
         albums,
@@ -123,6 +125,7 @@ export const formatMediasFromPhotoIdentifier = (
         remotePath: getRemotePath(uri),
         type: 'image',
         subType: 'PhotoLive',
+        sourceType: sourceType,
         creationDate: Math.trunc(timestamp) * 1000,
         modificationDate: Math.trunc(modificationTimestamp) * 1000,
         albums,
@@ -140,6 +143,7 @@ export const formatMediasFromPhotoIdentifier = (
       path: uri,
       remotePath: getRemotePath(uri),
       type: type.includes('image') ? 'image' : 'video',
+      sourceType: sourceType,
       mimeType: Platform.OS == 'android' ? type : undefined,
       creationDate: Math.trunc(timestamp) * 1000,
       modificationDate: Math.trunc(modificationTimestamp) * 1000,

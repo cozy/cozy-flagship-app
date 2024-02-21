@@ -4,6 +4,7 @@ import RNFS from 'react-native-fs'
 
 import CozyClient, { createMockClient } from 'cozy-client'
 
+import { Media } from '/app/domain/backup/models'
 import * as getMedias from '/app/domain/backup/services/getMedias'
 
 const client = createMockClient() as CozyClient
@@ -192,6 +193,7 @@ const ANDROID_PHOTO_IDENTIFIER = {
     location: null,
     modificationTimestamp: 1684521894,
     subTypes: [],
+    sourceType: 'UserLibrary',
     timestamp: 1684521894.234,
     type: 'image/jpeg'
   }
@@ -205,13 +207,14 @@ const ANDROID_MEDIAS = [
     path: 'file:///storage/emulated/0/Pictures/IMG_20230519_204453.jpg',
     remotePath: '/Pictures',
     type: 'image',
+    sourceType: 'UserLibrary',
     mimeType: 'image/jpeg',
     fileSize: 1234,
     creationDate: 1684521894000,
     modificationDate: 1684521894000,
     albums: [{ name: 'Pictures' }]
   }
-]
+] as Media[]
 
 const IOS_PHOTO_IDENTIFIER = {
   node: {
@@ -228,6 +231,7 @@ const IOS_PHOTO_IDENTIFIER = {
     location: null,
     modificationTimestamp: 1688756699.463186,
     subTypes: [],
+    sourceType: 'UserLibrary',
     timestamp: 1682604478.599,
     type: 'image'
   }
@@ -240,13 +244,14 @@ const IOS_MEDIAS = [
     path: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
     remotePath: '/',
     type: 'image',
+    sourceType: 'UserLibrary',
     fileSize: 1234,
     mimeType: undefined,
     creationDate: 1682604478000,
     modificationDate: 1688756699000,
     albums: [{ name: 'Pictures' }]
   }
-]
+] as Media[]
 
 const IOS_LIVE_PHOTO_IDENTIFIER = {
   node: {
@@ -263,6 +268,7 @@ const IOS_LIVE_PHOTO_IDENTIFIER = {
     location: null,
     modificationTimestamp: 1688756699.463186,
     subTypes: ['PhotoLive'],
+    sourceType: 'UserLibrary',
     timestamp: 1682604478.599,
     type: 'image'
   }
@@ -275,6 +281,7 @@ const IOS_LIVE_PHOTO_MEDIAS = [
     path: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
     remotePath: '/',
     type: 'video',
+    sourceType: 'UserLibrary',
     subType: 'PhotoLive',
     mimeType: undefined,
     creationDate: 1682604478000,
@@ -288,6 +295,7 @@ const IOS_LIVE_PHOTO_MEDIAS = [
     path: 'ph://5FD84686-207F-40F1-BCE8-3A837275B0E3/L0/001',
     remotePath: '/',
     type: 'image',
+    sourceType: 'UserLibrary',
     subType: 'PhotoLive',
     mimeType: undefined,
     fileSize: 1234,
@@ -295,4 +303,4 @@ const IOS_LIVE_PHOTO_MEDIAS = [
     modificationDate: 1688756699000,
     albums: [{ name: 'Pictures' }]
   }
-]
+] as Media[]
