@@ -1,0 +1,233 @@
+diff --git a/node_modules/@react-native-camera-roll/camera-roll/android/src/main/java/com/reactnativecommunity/cameraroll/CameraRollModule.java b/node_modules/@react-native-camera-roll/camera-roll/android/src/main/java/com/reactnativecommunity/cameraroll/CameraRollModule.java
+index 5399bde..b12c58e 100644
+--- a/node_modules/@react-native-camera-roll/camera-roll/android/src/main/java/com/reactnativecommunity/cameraroll/CameraRollModule.java
++++ b/node_modules/@react-native-camera-roll/camera-roll/android/src/main/java/com/reactnativecommunity/cameraroll/CameraRollModule.java
+@@ -86,6 +86,7 @@ public class CameraRollModule extends NativeCameraRollModuleSpec {
+   private static final String INCLUDE_PLAYABLE_DURATION = "playableDuration";
+   private static final String INCLUDE_ORIENTATION = "orientation";
+   private static final String INCLUDE_ALBUMS = "albums";
++  private static final String INCLUDE_SOURCE_TYPE = "sourceType";
+ 
+   private static final String[] PROJECTION = {
+           Images.Media._ID,
+@@ -289,7 +290,8 @@ public class CameraRollModule extends NativeCameraRollModuleSpec {
+                       INCLUDE_IMAGE_SIZE,
+                       INCLUDE_PLAYABLE_DURATION,
+                       INCLUDE_ORIENTATION,
+-                      INCLUDE_ALBUMS));
++                      INCLUDE_ALBUMS,
++                      INCLUDE_SOURCE_TYPE));
+       cursor.close();
+       return asset;
+     }
+@@ -617,6 +619,7 @@ public class CameraRollModule extends NativeCameraRollModuleSpec {
+     boolean includePlayableDuration = include.contains(INCLUDE_PLAYABLE_DURATION);
+     boolean includeOrientation = include.contains(INCLUDE_ORIENTATION);
+     boolean includeAlbums = include.contains(INCLUDE_ALBUMS);
++    boolean includeSourceType = include.contains(INCLUDE_SOURCE_TYPE);
+ 
+     WritableMap map = new WritableNativeMap();
+     WritableMap node = new WritableNativeMap();
+@@ -625,7 +628,7 @@ public class CameraRollModule extends NativeCameraRollModuleSpec {
+                     mimeTypeIndex, includeFilename, includeFileSize, includeFileExtension, includeImageSize,
+                     includePlayableDuration, includeOrientation);
+     if (imageInfoSuccess) {
+-      putBasicNodeInfo(media, node, idIndex, mimeTypeIndex, groupNameIndex, dateTakenIndex, dateAddedIndex, dateModifiedIndex, includeAlbums);
++      putBasicNodeInfo(media, node, idIndex, mimeTypeIndex, groupNameIndex, dateTakenIndex, dateAddedIndex, dateModifiedIndex, includeAlbums, includeSourceType);
+       putLocationInfo(media, node, dataIndex, includeLocation, mimeTypeIndex, resolver);
+ 
+       map.putMap("node", node);
+@@ -667,12 +670,22 @@ public class CameraRollModule extends NativeCameraRollModuleSpec {
+           int dateTakenIndex,
+           int dateAddedIndex,
+           int dateModifiedIndex,
+-          boolean includeAlbums) {
++          boolean includeAlbums,
++          boolean includeSourceType) {
+     node.putString("id", Long.toString(media.getLong(idIndex)));
+     node.putString("type", media.getString(mimeTypeIndex));
++
+     WritableArray subTypes = Arguments.createArray();
+     node.putArray("subTypes", subTypes);
++
++    if (includeSourceType) {
++      node.putString("sourceType", "UserLibrary");
++    } else {
++      node.putNull("sourceType");
++    }
++
+     WritableArray group_name = Arguments.createArray();
++
+     if (includeAlbums) {
+       group_name.pushString(media.getString(groupNameIndex));
+     }
+diff --git a/node_modules/@react-native-camera-roll/camera-roll/ios/RNCCameraRoll.mm b/node_modules/@react-native-camera-roll/camera-roll/ios/RNCCameraRoll.mm
+index 4769d28..ac180a2 100644
+--- a/node_modules/@react-native-camera-roll/camera-roll/ios/RNCCameraRoll.mm
++++ b/node_modules/@react-native-camera-roll/camera-roll/ios/RNCCameraRoll.mm
+@@ -218,7 +218,8 @@ static void requestPhotoLibraryAccess(RCTPromiseRejectBlock reject, PhotosAuthor
+                                                  includeImageSize:YES
+                                                   includeFileSize:YES
+                                           includePlayableDuration:YES
+-                                                  includeLocation:YES];
++                                                  includeLocation:YES
++                                                  includeSourceType:YES];
+         resolve(dictionary);
+       } else {
+         reject(kErrorUnableToSave, nil, error);
+@@ -336,6 +337,7 @@ - (NSDictionary*) convertAssetToDictionary:(PHAsset*)asset
+                            includeFileSize:(BOOL)includeFileSize
+                    includePlayableDuration:(BOOL)includePlayableDuration
+                            includeLocation:(BOOL)includeLocation
++                           includeSourceType:(BOOL)includeSourceType
+ {
+   NSString *const uri = [NSString stringWithFormat:@"ph://%@", [asset localIdentifier]];
+ 
+@@ -344,6 +346,13 @@ - (NSDictionary*) convertAssetToDictionary:(PHAsset*)asset
+   PHAssetResource *_Nullable resource = NULL;
+   NSNumber* fileSize = [NSNumber numberWithInt:0];
+ 
++  if (includeFilename || includeFileSize) {
++    NSArray<PHAssetResource *> *const assetResources = [PHAssetResource assetResourcesForAsset:asset];
++    resource = [assetResources firstObject];
++    originalFilename = resource.originalFilename;
++    fileSize = [resource valueForKey:@"fileSize"];
++  }
++
+   NSString *const assetMediaTypeLabel = (asset.mediaType == PHAssetMediaTypeVideo
+                                         ? @"video"
+                                         : (asset.mediaType == PHAssetMediaTypeImage
+@@ -360,6 +369,12 @@ - (NSDictionary*) convertAssetToDictionary:(PHAsset*)asset
+     albums = [self getAlbumsForAsset:asset];
+   }
+ 
++  NSString *_Nullable sourceType = NULL;
++
++  if (includeSourceType) {
++    sourceType = [self sourceTypeForAsset:asset];
++  }
++
+   if (includeFileExtension) {
+     NSString *name = [asset valueForKey:@"filename"];
+     NSString *extension = [name pathExtension];
+@@ -374,6 +389,7 @@ - (NSDictionary*) convertAssetToDictionary:(PHAsset*)asset
+       @"id": localIdentifier,
+       @"type": assetMediaTypeLabel, // TODO: switch to mimeType?
+       @"subTypes": assetMediaSubtypesLabel,
++      @"sourceType": (includeSourceType ? sourceType : [NSNull null]),
+       @"group_name": albums,
+       @"image": @{
+           @"uri": uri,
+@@ -420,6 +436,7 @@ - (NSDictionary*) convertAssetToDictionary:(PHAsset*)asset
+   BOOL __block includeFilename = [include indexOfObject:@"filename"] != NSNotFound;
+   BOOL __block includeFileSize = [include indexOfObject:@"fileSize"] != NSNotFound;
+   BOOL __block includeFileExtension = [include indexOfObject:@"fileExtension"] != NSNotFound;
++  BOOL __block includeSourceType = [include indexOfObject:@"sourceType"] != NSNotFound;
+   BOOL __block includeLocation = [include indexOfObject:@"location"] != NSNotFound;
+   BOOL __block includeImageSize = [include indexOfObject:@"imageSize"] != NSNotFound;
+   BOOL __block includePlayableDuration = [include indexOfObject:@"playableDuration"] != NSNotFound;
+@@ -462,18 +479,13 @@ - (NSDictionary*) convertAssetToDictionary:(PHAsset*)asset
+         }
+         return;
+       }
+-      NSString *_Nullable originalFilename = NULL;
+-      NSString *_Nullable fileExtension = NULL;
+       PHAssetResource *_Nullable resource = NULL;
+-      NSNumber* fileSize = [NSNumber numberWithInt:0];
+ 
+-      if (includeFilename || includeFileSize || [mimeTypes count] > 0) {
++      if ([mimeTypes count] > 0) {
+         // Get underlying resources of an asset - this includes files as well as details about edited PHAssets
+-        // This is required for the filename and mimeType filtering
++        // This is required for mimeType filtering
+         NSArray<PHAssetResource *> *const assetResources = [PHAssetResource assetResourcesForAsset:asset];
+         resource = [assetResources firstObject];
+-        originalFilename = resource.originalFilename;
+-        fileSize = [resource valueForKey:@"fileSize"];
+       }
+ 
+       // WARNING: If you add any code to `collectAsset` that may skip adding an
+@@ -510,12 +522,6 @@ - (NSDictionary*) convertAssetToDictionary:(PHAsset*)asset
+         return;
+       }
+ 
+-      if (includeFileExtension) {
+-        NSString *name = [asset valueForKey:@"filename"];
+-        NSString *extension = [name pathExtension];
+-        fileExtension = [extension lowercaseString];
+-      }
+-
+       NSDictionary* dict = [self convertAssetToDictionary:asset
+                                             includeAlbums:includeAlbums
+                                           includeFilename:includeFilename
+@@ -523,7 +529,8 @@ - (NSDictionary*) convertAssetToDictionary:(PHAsset*)asset
+                                          includeImageSize:includeImageSize
+                                           includeFileSize:includeFileSize
+                                   includePlayableDuration:includePlayableDuration
+-                                          includeLocation:includeLocation];
++                                          includeLocation:includeLocation
++                                          includeSourceType:includeSourceType];
+       [assets addObject:dict];
+     };
+ 
+@@ -887,6 +894,20 @@ - (NSDictionary*) convertAssetToDictionary:(PHAsset*)asset
+     return mediaSubTypeLabels;
+ }
+ 
++
++- (nullable NSString *) sourceTypeForAsset:(PHAsset *)asset {
++    PHAssetSourceType sourceType = asset.sourceType;
++
++    switch (sourceType) {
++      case PHAssetSourceTypeUserLibrary:
++          return @"UserLibrary";
++      case PHAssetSourceTypeCloudShared:
++          return @"CloudShared";
++      default:
++          return NULL;
++    }
++}
++
+ - (NSArray<NSString *> *) getAlbumsForAsset:(PHAsset *)asset {
+     NSMutableArray<NSString *> *albumTitles = [NSMutableArray array];
+ 
+diff --git a/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/CameraRoll.d.ts b/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/CameraRoll.d.ts
+index 55791df..1a0bb60 100644
+--- a/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/CameraRoll.d.ts
++++ b/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/CameraRoll.d.ts
+@@ -1,6 +1,7 @@
+ export declare type GroupTypes = 'Album' | 'All' | 'Event' | 'Faces' | 'Library' | 'SmartAlbum' | 'PhotoStream' | 'SavedPhotos';
+ export declare type SubTypes = 'PhotoPanorama' | 'PhotoHDR' | 'PhotoScreenshot' | 'PhotoLive' | 'PhotoDepthEffect' | 'VideoStreamed' | 'VideoHighFrameRate' | 'VideoTimelapse';
+-export declare type Include = 'filename' | 'fileSize' | 'fileExtension' | 'location' | 'imageSize' | 'playableDuration' | 'orientation' | 'albums';
++export declare type SourceType = 'UserLibrary' | 'CloudShared';
++export declare type Include = 'filename' | 'fileSize' | 'fileExtension' | 'location' | 'imageSize' | 'playableDuration' | 'orientation' | 'albums' | 'sourceType';
+ export declare type AssetType = 'All' | 'Videos' | 'Photos';
+ export declare type AlbumType = 'All' | 'Album' | 'SmartAlbum';
+ /**
+@@ -57,6 +58,7 @@ export declare type PhotoIdentifier = {
+         id: string;
+         type: string;
+         subTypes: SubTypes;
++        sourceType: SourceType;
+         group_name: string[];
+         image: {
+             filename: string | null;
+diff --git a/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/NativeCameraRollModule.d.ts b/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/NativeCameraRollModule.d.ts
+index b41fdf8..48f18e6 100644
+--- a/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/NativeCameraRollModule.d.ts
++++ b/node_modules/@react-native-camera-roll/camera-roll/lib/typescript/NativeCameraRollModule.d.ts
+@@ -8,12 +8,14 @@ declare type Album = {
+     type: AlbumType;
+     subtype?: AlbumSubType;
+ };
++declare type SourceType = 'UserLibrary' | 'CloudShared';
+ declare type SubTypes = 'PhotoPanorama' | 'PhotoHDR' | 'PhotoScreenshot' | 'PhotoLive' | 'PhotoDepthEffect' | 'VideoStreamed' | 'VideoHighFrameRate' | 'VideoTimelapse';
+ declare type PhotoIdentifier = {
+     node: {
+         id: string;
+         type: string;
+         subTypes: SubTypes;
++        sourceType: SourceType;
+         group_name: string[];
+         image: {
+             filename: string | null;
