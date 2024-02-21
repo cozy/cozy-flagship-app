@@ -29,7 +29,7 @@ const MEDIAS_BY_PAGE = 500
 
 type CameraRollCursor = string | undefined
 
-const getPhotoIdentifiersPage = async (
+export const getPhotoIdentifiersPage = async (
   after: CameraRollCursor
 ): Promise<PhotoIdentifiersPage> => {
   const shouldIncludeSharedAlbums = !!flag(

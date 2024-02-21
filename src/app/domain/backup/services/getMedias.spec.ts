@@ -2,7 +2,11 @@ import { PhotoIdentifier } from '@react-native-camera-roll/camera-roll'
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 
+import CozyClient, { createMockClient } from 'cozy-client'
+
 import * as getMedias from '/app/domain/backup/services/getMedias'
+
+const client = createMockClient() as CozyClient
 
 describe('getRemotePath', () => {
   test('return / on iOS', () => {
@@ -31,6 +35,66 @@ describe('getRemotePath', () => {
 
     // Then
     expect(remotePath).toBe('/Pictures')
+  })
+})
+
+describe('getAllMedias', () => {
+  test('return empty medias if nothing on cameraroll', async () => {
+    // Given
+    jest.spyOn(getMedias, 'getPhotoIdentifiersPage').mockResolvedValue({
+      edges: [],
+      page_info: {
+        has_next_page: false
+      }
+    })
+
+    // When
+    const allMedias = await getMedias.getAllMedias(client)
+
+    // Then
+    expect(allMedias).toEqual([])
+  })
+
+  test('return correct medias if one page of assets on cameraroll', async () => {
+    // Given
+    Platform.OS = 'ios'
+    jest.spyOn(getMedias, 'getPhotoIdentifiersPage').mockResolvedValue({
+      edges: [IOS_PHOTO_IDENTIFIER],
+      page_info: {
+        has_next_page: false
+      }
+    })
+
+    // When
+    const allMedias = await getMedias.getAllMedias(client)
+
+    // Then
+    expect(allMedias).toEqual(IOS_MEDIAS)
+  })
+
+  test('return correct medias if two page assets on cameraroll', async () => {
+    // Given
+    Platform.OS = 'ios'
+    jest
+      .spyOn(getMedias, 'getPhotoIdentifiersPage')
+      .mockResolvedValueOnce({
+        edges: [IOS_PHOTO_IDENTIFIER],
+        page_info: {
+          has_next_page: true
+        }
+      })
+      .mockResolvedValueOnce({
+        edges: [IOS_LIVE_PHOTO_IDENTIFIER],
+        page_info: {
+          has_next_page: false
+        }
+      })
+
+    // When
+    const allMedias = await getMedias.getAllMedias(client)
+
+    // Then
+    expect(allMedias).toEqual([...IOS_MEDIAS, ...IOS_LIVE_PHOTO_MEDIAS])
   })
 })
 
