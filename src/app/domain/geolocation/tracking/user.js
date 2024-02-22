@@ -1,19 +1,13 @@
-import { getUniqueId } from 'react-native-device-info'
-
 import { SERVER_URL } from '/app/domain/geolocation/tracking/consts'
 import { Log } from '/app/domain/geolocation/helpers'
 import { storeId, getId } from '/app/domain/geolocation/tracking/storage'
-
-const useUniqueDeviceId = false
 
 export const getOrCreateId = async () => {
   try {
     let value = await getId()
     if (value == undefined) {
       Log('No current Id, generating a new one...')
-      value = useUniqueDeviceId
-        ? await getUniqueId()
-        : Math.random().toString(36).replace('0.', '')
+      value = Math.random().toString(36).replace('0.', '')
       await storeId(value) // random Id or device Id depending on config
       Log('Set Id to: ' + value)
     }
