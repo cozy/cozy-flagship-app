@@ -64,11 +64,10 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
 
   await sendKonnectorsLogs(client)
   await client.logout()
+  await stopTrackingAndClearData()
   await deleteKeychain()
   await clearCookies()
   await clearCozyData()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  await stopTrackingAndClearData()
   RootNavigation.reset(routes.welcome, { screen: 'welcome' })
   return Promise.resolve(null)
 }
