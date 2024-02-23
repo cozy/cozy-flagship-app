@@ -5,7 +5,7 @@ import CozyClient from 'cozy-client'
 import { isSecureProtocol } from '../functions/isSecureProtocol'
 
 import {
-  StorageKeys,
+  CozyPersistedStorageKeys,
   getData,
   storeData,
   removeData
@@ -151,7 +151,7 @@ export const resyncCookies = async (client: CozyClient): Promise<void> => {
 }
 
 export const clearCookies = async (): Promise<void> => {
-  await removeData(StorageKeys.Cookie)
+  await removeData(CozyPersistedStorageKeys.Cookie)
 
   await CookieManager.clearAll()
 }
@@ -170,7 +170,7 @@ const setCookieIntoAsyncStorage = async (
 }
 
 const loadCookiesFromAsyncStorage = async (): Promise<Cookies> => {
-  const cookies = await getData<Cookies>(StorageKeys.Cookie)
+  const cookies = await getData<Cookies>(CozyPersistedStorageKeys.Cookie)
 
   if (!cookies) {
     return {}
@@ -180,5 +180,5 @@ const loadCookiesFromAsyncStorage = async (): Promise<Cookies> => {
 }
 
 const saveCookies = (cookies: Cookies): Promise<void> => {
-  return storeData(StorageKeys.Cookie, cookies)
+  return storeData(CozyPersistedStorageKeys.Cookie, cookies)
 }

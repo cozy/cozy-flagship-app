@@ -6,7 +6,7 @@ import { BiometryType } from 'react-native-biometrics'
 import { useClient } from 'cozy-client'
 
 import { LockViewProps } from '/app/view/Lock/LockScreenTypes'
-import { getData, StorageKeys } from '/libs/localStore/storage'
+import { getData, CozyPersistedStorageKeys } from '/libs/localStore/storage'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { getVaultInformation } from '/libs/keychain'
 import { openForgotPasswordLink } from '/libs/functions/openForgotPasswordLink'
@@ -55,7 +55,9 @@ export const useLockScreenProps = (): LockViewProps => {
 
   const tryBiometry = useCallback((): Promise<void> => {
     const handleBiometryParam = async (): Promise<void> => {
-      const activated = await getData(StorageKeys.BiometryActivated)
+      const activated = await getData(
+        CozyPersistedStorageKeys.BiometryActivated
+      )
 
       if (!activated) return
 
@@ -119,7 +121,7 @@ export const useLockScreenProps = (): LockViewProps => {
     () =>
       void (async (): Promise<void> =>
         setBiometryEnabled(
-          Boolean(await getData(StorageKeys.BiometryActivated))
+          Boolean(await getData(CozyPersistedStorageKeys.BiometryActivated))
         ))(),
     [biometryEnabled]
   )

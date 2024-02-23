@@ -11,11 +11,13 @@ const log = logger('storage.ts')
 
 const { setItem, getItem, removeItem, clear } = AsyncStorage
 
+export type StorageKey = CozyPersistedStorageKeys | DevicePersistedStorageKeys
+
 /*
   Linked to connected account.
   Removed at logout.
 */
-export enum StorageKeys {
+export enum CozyPersistedStorageKeys {
   AutoLockEnabled = '@cozy_AmiralApp_autoLockEnabled',
   BiometryActivated = '@cozy_AmiralApp_biometryActivated',
   Capabilities = '@cozy_AmiralApp_Capabilities',
@@ -61,7 +63,7 @@ export interface StorageItems {
 }
 
 export const storeData = async (
-  name: StorageKeys | DevicePersistedStorageKeys,
+  name: StorageKey,
   value: StorageItems[keyof StorageItems]
 ): Promise<void> => {
   try {
@@ -71,9 +73,7 @@ export const storeData = async (
   }
 }
 
-export const getData = async <T>(
-  name: StorageKeys | DevicePersistedStorageKeys
-): Promise<T | null> => {
+export const getData = async <T>(name: StorageKey): Promise<T | null> => {
   try {
     const value = await getItem(name)
 
@@ -88,7 +88,7 @@ export const getData = async <T>(
 
       In some weeks we will be able to remove this compatibility code.
     */
-    if (name === StorageKeys.DefaultRedirectionUrl) {
+    if (name === CozyPersistedStorageKeys.DefaultRedirectionUrl) {
       const value = await getItem(name)
       return value as T
     }
@@ -100,7 +100,7 @@ export const getData = async <T>(
 
 export const clearData = async (): Promise<void> => {
   try {
-    const keys = Object.values(StorageKeys)
+    const keys = Object.values(CozyPersistedStorageKeys)
 
     for (const key of keys) {
       await removeItem(key)
@@ -118,9 +118,7 @@ export const clearAllData = async (): Promise<void> => {
   }
 }
 
-export const removeData = async (
-  name: StorageKeys | DevicePersistedStorageKeys
-): Promise<void> => {
+export const removeData = async (name: StorageKey): Promise<void> => {
   try {
     await removeItem(name)
   } catch (error) {

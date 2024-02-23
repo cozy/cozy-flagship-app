@@ -5,7 +5,11 @@ import {
   BiometryEmitter
 } from '/app/domain/authentication/services/BiometryService'
 import { removeVaultInformation, saveVaultInformation } from '/libs/keychain'
-import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
+import {
+  getData,
+  CozyPersistedStorageKeys,
+  storeData
+} from '/libs/localStore/storage'
 
 const log = Minilog('toggleSetting.ts')
 
@@ -14,10 +18,10 @@ const toggleStorageSetting = async (
 ): Promise<boolean | null> => {
   try {
     if (settingName === 'autoLock') {
-      const enabled = await getData(StorageKeys.AutoLockEnabled)
+      const enabled = await getData(CozyPersistedStorageKeys.AutoLockEnabled)
       const dataToStore = !enabled
-      await storeData(StorageKeys.AutoLockEnabled, dataToStore)
-      return Boolean(await getData(StorageKeys.AutoLockEnabled))
+      await storeData(CozyPersistedStorageKeys.AutoLockEnabled, dataToStore)
+      return Boolean(await getData(CozyPersistedStorageKeys.AutoLockEnabled))
     }
   } catch (error) {
     log.error(error)
@@ -27,13 +31,17 @@ const toggleStorageSetting = async (
 }
 
 export const ensureAutoLockIsEnabled = async (): Promise<boolean> => {
-  const autoLockEnabled = await getData(StorageKeys.AutoLockEnabled)
+  const autoLockEnabled = await getData(
+    CozyPersistedStorageKeys.AutoLockEnabled
+  )
 
   if (!autoLockEnabled) {
-    await storeData(StorageKeys.AutoLockEnabled, true)
+    await storeData(CozyPersistedStorageKeys.AutoLockEnabled, true)
   }
 
-  const autoLockValue = Boolean(await getData(StorageKeys.AutoLockEnabled))
+  const autoLockValue = Boolean(
+    await getData(CozyPersistedStorageKeys.AutoLockEnabled)
+  )
 
   return autoLockValue
 }

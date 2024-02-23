@@ -9,7 +9,7 @@ import {
 } from '/libs/functions/iconTable'
 import {
   getData,
-  StorageKeys,
+  CozyPersistedStorageKeys,
   storeData,
   removeData
 } from '/libs/localStore/storage'
@@ -25,7 +25,7 @@ const client = {
 afterEach(async () => {
   jest.clearAllMocks()
   TESTING_ONLY_clearIconTable()
-  await removeData(StorageKeys.IconsTable)
+  await removeData(CozyPersistedStorageKeys.IconsTable)
 })
 
 it('works with an empty cache', async () => {
@@ -33,7 +33,7 @@ it('works with an empty cache', async () => {
 
   expect(iconTable).toStrictEqual(expectedTable)
 
-  const item = await getData<IconsCache>(StorageKeys.IconsTable)
+  const item = await getData<IconsCache>(CozyPersistedStorageKeys.IconsTable)
 
   if (!item) throw new Error('No item found in storage.')
 
@@ -41,7 +41,7 @@ it('works with an empty cache', async () => {
 })
 
 it('works with an incomplete cache', async () => {
-  await storeData(StorageKeys.IconsTable, {
+  await storeData(CozyPersistedStorageKeys.IconsTable, {
     store: { version: '1.9.11', xml: '<svg></svg>' }
   })
 
@@ -49,7 +49,7 @@ it('works with an incomplete cache', async () => {
 
   expect(iconTable).toStrictEqual(expectedTable)
 
-  const item = await getData<IconsCache>(StorageKeys.IconsTable)
+  const item = await getData<IconsCache>(CozyPersistedStorageKeys.IconsTable)
   if (!item) throw new Error('No item found in storage.')
 
   expect(item).toStrictEqual(expectedTable)
@@ -57,13 +57,13 @@ it('works with an incomplete cache', async () => {
 
 it('works with a broken cache', async () => {
   // @ts-expect-error We try explicitly with an invalid type here
-  await storeData(StorageKeys.IconsTable, { drive: 'bar' })
+  await storeData(CozyPersistedStorageKeys.IconsTable, { drive: 'bar' })
 
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual(expectedTable)
 
-  const item = await getData<IconsCache>(StorageKeys.IconsTable)
+  const item = await getData<IconsCache>(CozyPersistedStorageKeys.IconsTable)
 
   if (!item) throw new Error('No item found in storage.')
 
@@ -71,13 +71,13 @@ it('works with a broken cache', async () => {
 })
 
 it('works with a complete cache', async () => {
-  await storeData(StorageKeys.IconsTable, expectedTable)
+  await storeData(CozyPersistedStorageKeys.IconsTable, expectedTable)
 
   await manageIconCache(client)
 
   expect(iconTable).toStrictEqual(expectedTable)
 
-  const item = await getData<IconsCache>(StorageKeys.IconsTable)
+  const item = await getData<IconsCache>(CozyPersistedStorageKeys.IconsTable)
 
   if (!item) throw new Error('No item found in storage.')
 
@@ -85,7 +85,7 @@ it('works with a complete cache', async () => {
 })
 
 it('works with an obsolete cache', async () => {
-  await storeData(StorageKeys.IconsTable, {
+  await storeData(CozyPersistedStorageKeys.IconsTable, {
     banks: { version: '0.0.0', xml: '<svg></svg>' },
     coachco2: { version: '0.0.0', xml: '<svg></svg>' },
     contacts: { version: '0.0.0', xml: '<svg></svg>' },
@@ -103,7 +103,7 @@ it('works with an obsolete cache', async () => {
 
   expect(iconTable).toStrictEqual(expectedTable)
 
-  const item = await getData<IconsCache>(StorageKeys.IconsTable)
+  const item = await getData<IconsCache>(CozyPersistedStorageKeys.IconsTable)
 
   if (!item) throw new Error('No item found in storage.')
 
@@ -111,7 +111,7 @@ it('works with an obsolete cache', async () => {
 })
 
 it('works with unusual semver', async () => {
-  await storeData(StorageKeys.IconsTable, {
+  await storeData(CozyPersistedStorageKeys.IconsTable, {
     store: { version: '1.0.0', xml: '<svg></svg>' }
   })
 
@@ -130,7 +130,7 @@ it('works with unusual semver', async () => {
     store: { version: '1.0.0-beta.1', xml: '<svg></svg>' }
   })
 
-  const item = await getData<IconsCache>(StorageKeys.IconsTable)
+  const item = await getData<IconsCache>(CozyPersistedStorageKeys.IconsTable)
 
   if (!item) throw new Error('No item found in storage.')
 
@@ -140,7 +140,7 @@ it('works with unusual semver', async () => {
 })
 
 it('works with an incomplete and obsolete cache', async () => {
-  await storeData(StorageKeys.IconsTable, {
+  await storeData(CozyPersistedStorageKeys.IconsTable, {
     banks: { version: '0.0.0', xml: '<svg></svg>' },
     coachco2: { version: '0.0.0', xml: '<svg></svg>' },
     contacts: { version: '0.0.0', xml: '<svg></svg>' },
@@ -152,7 +152,7 @@ it('works with an incomplete and obsolete cache', async () => {
 
   expect(iconTable).toStrictEqual(expectedTable)
 
-  const item = await getData<IconsCache>(StorageKeys.IconsTable)
+  const item = await getData<IconsCache>(CozyPersistedStorageKeys.IconsTable)
 
   if (!item) throw new Error('No item found in storage.')
 
@@ -170,7 +170,9 @@ it('works offline or with network issues without cache', async () => {
 
   expect(iconTable).toStrictEqual({})
 
-  expect(await getData<IconsCache>(StorageKeys.IconsTable)).toStrictEqual(null)
+  expect(
+    await getData<IconsCache>(CozyPersistedStorageKeys.IconsTable)
+  ).toStrictEqual(null)
 })
 
 it('works offline or with network issues with cache', async () => {
@@ -180,7 +182,7 @@ it('works offline or with network issues with cache', async () => {
     })
   } as unknown as CozyClient
 
-  await storeData(StorageKeys.IconsTable, {
+  await storeData(CozyPersistedStorageKeys.IconsTable, {
     store: { version: '1.9.11', xml: '<svg></svg>' }
   })
 
@@ -190,7 +192,9 @@ it('works offline or with network issues with cache', async () => {
     store: { version: '1.9.11', xml: '<svg></svg>' }
   })
 
-  expect(await getData<IconsCache>(StorageKeys.IconsTable)).toStrictEqual(
+  expect(
+    await getData<IconsCache>(CozyPersistedStorageKeys.IconsTable)
+  ).toStrictEqual(
     JSON.parse('{"store":{"version":"1.9.11","xml":"<svg></svg>"}}')
   )
 })

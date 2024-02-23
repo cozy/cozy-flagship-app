@@ -5,7 +5,7 @@ import { createMockClient } from 'cozy-client/dist/mock'
 import { getCookie, resyncCookies, setCookie } from './httpCookieManager'
 
 import {
-  StorageKeys,
+  CozyPersistedStorageKeys,
   getData,
   storeData,
   clearAllData
@@ -295,7 +295,7 @@ describe('httpCookieManager', () => {
 
       await setCookie(cookieString, client)
 
-      expect(storeData).toHaveBeenCalledWith(StorageKeys.Cookie, {
+      expect(storeData).toHaveBeenCalledWith(CozyPersistedStorageKeys.Cookie, {
         'http://cozy.10-0-2-2.nip.io': {
           name: 'cozysessid',
           expires: tenYearsAfterMockedDate,

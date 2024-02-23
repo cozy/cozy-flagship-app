@@ -1,7 +1,7 @@
 import { getTs, Log } from '/app/domain/geolocation/helpers'
 import {
   getData,
-  StorageKeys,
+  CozyPersistedStorageKeys,
   storeData,
   removeData
 } from '/libs/localStore/storage'
@@ -10,13 +10,13 @@ import BackgroundGeolocation from 'react-native-background-geolocation'
 
 export const clearAllCozyGPSMemoryData = async () => {
   await BackgroundGeolocation.destroyLocations()
-  await removeData(StorageKeys.IdStorageAdress)
-  await removeData(StorageKeys.FlagFailUploadStorageAdress)
-  await removeData(StorageKeys.LastPointUploadedAdress)
-  await removeData(StorageKeys.LastStopTransitionTsKey)
-  await removeData(StorageKeys.LastStartTransitionTsKey)
-  await removeData(StorageKeys.GeolocationTrackingConfig)
-  await removeData(StorageKeys.Activities)
+  await removeData(CozyPersistedStorageKeys.IdStorageAdress)
+  await removeData(CozyPersistedStorageKeys.FlagFailUploadStorageAdress)
+  await removeData(CozyPersistedStorageKeys.LastPointUploadedAdress)
+  await removeData(CozyPersistedStorageKeys.LastStopTransitionTsKey)
+  await removeData(CozyPersistedStorageKeys.LastStartTransitionTsKey)
+  await removeData(CozyPersistedStorageKeys.GeolocationTrackingConfig)
+  await removeData(CozyPersistedStorageKeys.Activities)
   // Only exception : ShouldBeTrackingFlagStorageAdress, don't know the effects on the switch and would not feel natural anyway
   // await clearOldCozyGPSMemoryStorage()
   await BackgroundGeolocation.logger.destroyLog()
@@ -25,47 +25,55 @@ export const clearAllCozyGPSMemoryData = async () => {
 
 export const clearAllData = async () => {
   await clearAllCozyGPSMemoryData()
-  await removeData(StorageKeys.ShouldBeTrackingFlagStorageAdress)
+  await removeData(CozyPersistedStorageKeys.ShouldBeTrackingFlagStorageAdress)
 }
 
 export const getShouldStartTracking = async () => {
-  return await getData(StorageKeys.ShouldBeTrackingFlagStorageAdress)
+  return await getData(
+    CozyPersistedStorageKeys.ShouldBeTrackingFlagStorageAdress
+  )
 }
 
 export const clearAllActivities = async () => {
-  return removeData(StorageKeys.Activities)
+  return removeData(CozyPersistedStorageKeys.Activities)
 }
 
 export const getLastPointUploaded = async () => {
-  return await getData(StorageKeys.LastPointUploadedAdress)
+  return await getData(CozyPersistedStorageKeys.LastPointUploadedAdress)
 }
 
 export const setLastPointUploaded = async value => {
-  await storeData(StorageKeys.LastPointUploadedAdress, value)
+  await storeData(CozyPersistedStorageKeys.LastPointUploadedAdress, value)
 }
 
 export const setLastStopTransitionTs = async timestamp => {
-  await storeData(StorageKeys.LastStopTransitionTsKey, timestamp.toString())
+  await storeData(
+    CozyPersistedStorageKeys.LastStopTransitionTsKey,
+    timestamp.toString()
+  )
 }
 
 export const setLastStartTransitionTs = async timestamp => {
-  await storeData(StorageKeys.LastStartTransitionTsKey, timestamp.toString())
+  await storeData(
+    CozyPersistedStorageKeys.LastStartTransitionTsKey,
+    timestamp.toString()
+  )
 }
 
 export const getLastStopTransitionTs = async () => {
-  const ts = await getData(StorageKeys.LastStopTransitionTsKey)
+  const ts = await getData(CozyPersistedStorageKeys.LastStopTransitionTsKey)
   return ts ? parseInt(ts, 10) : 0
 }
 
 export const getLastStartTransitionTs = async () => {
-  const ts = await getData(StorageKeys.LastStartTransitionTsKey)
+  const ts = await getData(CozyPersistedStorageKeys.LastStartTransitionTsKey)
   return ts ? parseInt(ts, 10) : 0
 }
 
 export const storeFlagFailUpload = async Flag => {
   try {
     await storeData(
-      StorageKeys.FlagFailUploadStorageAdress,
+      CozyPersistedStorageKeys.FlagFailUploadStorageAdress,
       Flag ? 'true' : 'false'
     )
   } catch (error) {
@@ -76,7 +84,9 @@ export const storeFlagFailUpload = async Flag => {
 
 export const getFlagFailUpload = async () => {
   try {
-    let value = await getData(StorageKeys.FlagFailUploadStorageAdress)
+    let value = await getData(
+      CozyPersistedStorageKeys.FlagFailUploadStorageAdress
+    )
     if (value == undefined) {
       await storeFlagFailUpload(false)
       return false
@@ -90,23 +100,23 @@ export const getFlagFailUpload = async () => {
 }
 
 export const getFetchServiceWebHook = async () => {
-  return await getData(StorageKeys.ServiceWebhookURL)
+  return await getData(CozyPersistedStorageKeys.ServiceWebhookURL)
 }
 
 export const storeFetchServiceWebHook = async webhookURL => {
-  return storeData(StorageKeys.ServiceWebhookURL, webhookURL)
+  return storeData(CozyPersistedStorageKeys.ServiceWebhookURL, webhookURL)
 }
 
 export const getId = async () => {
-  return await getData(StorageKeys.IdStorageAdress)
+  return await getData(CozyPersistedStorageKeys.IdStorageAdress)
 }
 
 export const storeId = async Id => {
-  await storeData(StorageKeys.IdStorageAdress, Id)
+  await storeData(CozyPersistedStorageKeys.IdStorageAdress, Id)
 }
 
 const setActivities = async activities => {
-  return storeData(StorageKeys.Activities, activities)
+  return storeData(CozyPersistedStorageKeys.Activities, activities)
 }
 
 export const storeActivity = async activity => {
@@ -124,7 +134,7 @@ export const storeActivity = async activity => {
 }
 
 export const getActivities = async ({ beforeTs } = {}) => {
-  const activities = await getData(StorageKeys.Activities)
+  const activities = await getData(CozyPersistedStorageKeys.Activities)
   if (!activities) {
     return []
   }

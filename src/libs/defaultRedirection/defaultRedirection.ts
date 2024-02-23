@@ -5,7 +5,11 @@ import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
 import { logger } from '/libs/functions/logger'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { changeIcon } from '/libs/icon/icon'
-import { StorageKeys, getData, storeData } from '/libs/localStore/storage'
+import {
+  CozyPersistedStorageKeys,
+  getData,
+  storeData
+} from '/libs/localStore/storage'
 
 export const log = logger('AppBundle')
 
@@ -49,12 +53,15 @@ export const fetchDefaultRedirectionUrl = async (
 export const setDefaultRedirectionUrl = async (
   defaultRedirectionUrl: string
 ): Promise<void> => {
-  await storeData(StorageKeys.DefaultRedirectionUrl, defaultRedirectionUrl)
+  await storeData(
+    CozyPersistedStorageKeys.DefaultRedirectionUrl,
+    defaultRedirectionUrl
+  )
 }
 
 export const getDefaultRedirectionUrl =
   async (): Promise<DefaultRedirectionUrl> => {
-    return await getData(StorageKeys.DefaultRedirectionUrl)
+    return await getData(CozyPersistedStorageKeys.DefaultRedirectionUrl)
   }
 
 export const setDefaultRedirectionUrlAndAppIcon = async (

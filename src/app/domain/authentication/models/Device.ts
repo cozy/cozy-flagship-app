@@ -1,7 +1,7 @@
 import ReactNativeBiometrics, { BiometryType } from 'react-native-biometrics'
 import { isPinOrFingerprintSet } from 'react-native-device-info'
 
-import { getData, StorageKeys } from '/libs/localStore/storage'
+import { getData, CozyPersistedStorageKeys } from '/libs/localStore/storage'
 
 export interface IsSensorAvailableResult {
   available: boolean
@@ -20,5 +20,5 @@ export const getBiometricType = async (): Promise<IsSensorAvailableResult> => {
 }
 
 export const isAutoLockEnabled = async (): Promise<boolean> => {
-  return Boolean(await getData(StorageKeys.AutoLockEnabled))
+  return Boolean(await getData(CozyPersistedStorageKeys.AutoLockEnabled))
 }

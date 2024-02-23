@@ -6,7 +6,11 @@ import {
   runOpenPathPipeline,
   uploadData
 } from '/app/domain/geolocation/tracking/upload'
-import { StorageKeys, storeData, getData } from '/libs/localStore/storage'
+import {
+  CozyPersistedStorageKeys,
+  storeData,
+  getData
+} from '/libs/localStore/storage'
 import { Log } from '/app/domain/geolocation/helpers'
 import { saveActivity } from '/app/domain/geolocation/tracking/tracking'
 import {
@@ -80,7 +84,10 @@ export const startTracking = async () => {
       await BackgroundGeolocation.start()
       Log('Tracking started')
     }
-    await storeData(StorageKeys.ShouldBeTrackingFlagStorageAdress, true)
+    await storeData(
+      CozyPersistedStorageKeys.ShouldBeTrackingFlagStorageAdress,
+      true
+    )
 
     return true
   } catch (e) {
@@ -103,7 +110,10 @@ export const stopTracking = async () => {
     const isTrackingStarted = await isTrackingEnabled()
     if (isTrackingStarted) {
       await BackgroundGeolocation.stop()
-      await storeData(StorageKeys.ShouldBeTrackingFlagStorageAdress, false)
+      await storeData(
+        CozyPersistedStorageKeys.ShouldBeTrackingFlagStorageAdress,
+        false
+      )
       Log('Turned off tracking, uploading...')
       await startOpenPathUploadAndPipeline({ force: true }) // Forced end, but no retry if it fails
     } else {
@@ -125,7 +135,7 @@ export const stopTrackingAndClearData = async () => {
 
 export const getTrackingConfig = async () => {
   const localTrackingConfig = await getData(
-    StorageKeys.GeolocationTrackingConfig
+    CozyPersistedStorageKeys.GeolocationTrackingConfig
   )
 
   return localTrackingConfig ?? DEFAULT_TRACKING_CONFIG
@@ -140,7 +150,10 @@ export const saveTrackingConfig = async newTrackingConfig => {
     )}`
   )
 
-  await storeData(StorageKeys.GeolocationTrackingConfig, newTrackingConfig)
+  await storeData(
+    CozyPersistedStorageKeys.GeolocationTrackingConfig,
+    newTrackingConfig
+  )
 }
 
 const enableElasticity = async () => {

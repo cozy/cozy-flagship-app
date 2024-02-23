@@ -1,5 +1,5 @@
 import {
-  StorageKeys,
+  CozyPersistedStorageKeys,
   getData,
   storeData,
   clearData
@@ -16,11 +16,11 @@ describe('ensureAutoLockIsEnabled', () => {
   it('should not tamper with autoLock value when already enabled', async () => {
     const expected = true
 
-    await storeData(StorageKeys.AutoLockEnabled, expected)
+    await storeData(CozyPersistedStorageKeys.AutoLockEnabled, expected)
 
     await ensureAutoLockIsEnabled()
 
-    const result = await getData(StorageKeys.AutoLockEnabled)
+    const result = await getData(CozyPersistedStorageKeys.AutoLockEnabled)
 
     expect(result).toBe(expected)
   })
@@ -30,7 +30,7 @@ describe('ensureAutoLockIsEnabled', () => {
 
     await ensureAutoLockIsEnabled()
 
-    const result = await getData(StorageKeys.AutoLockEnabled)
+    const result = await getData(CozyPersistedStorageKeys.AutoLockEnabled)
 
     expect(result).toBe(expected)
   })
@@ -38,11 +38,11 @@ describe('ensureAutoLockIsEnabled', () => {
   it('should set autoLock value to true when the key exists with a false string', async () => {
     const expected = true
 
-    await storeData(StorageKeys.AutoLockEnabled, false)
+    await storeData(CozyPersistedStorageKeys.AutoLockEnabled, false)
 
     await ensureAutoLockIsEnabled()
 
-    const result = await getData(StorageKeys.AutoLockEnabled)
+    const result = await getData(CozyPersistedStorageKeys.AutoLockEnabled)
 
     expect(result).toBe(expected)
   })
@@ -50,11 +50,11 @@ describe('ensureAutoLockIsEnabled', () => {
   it('should set autoLock value to true when the key exists with a falsy value', async () => {
     const expected = true
 
-    await storeData(StorageKeys.AutoLockEnabled, '')
+    await storeData(CozyPersistedStorageKeys.AutoLockEnabled, '')
 
     await ensureAutoLockIsEnabled()
 
-    const result = await getData(StorageKeys.AutoLockEnabled)
+    const result = await getData(CozyPersistedStorageKeys.AutoLockEnabled)
 
     expect(result).toBe(expected)
   })
@@ -63,11 +63,11 @@ describe('ensureAutoLockIsEnabled', () => {
   it('should not tamper with autoLock value when the key exists with a truthy value', async () => {
     const expected = 'foobar'
 
-    await storeData(StorageKeys.AutoLockEnabled, expected)
+    await storeData(CozyPersistedStorageKeys.AutoLockEnabled, expected)
 
     await ensureAutoLockIsEnabled()
 
-    const result = await getData(StorageKeys.AutoLockEnabled)
+    const result = await getData(CozyPersistedStorageKeys.AutoLockEnabled)
 
     expect(result).toBe(expected)
   })

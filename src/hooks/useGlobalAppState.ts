@@ -4,7 +4,11 @@ import { AppState, AppStateStatus, NativeEventSubscription } from 'react-native'
 import CozyClient, { useClient } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
-import { StorageKeys, removeData, storeData } from '/libs/localStore/storage'
+import {
+  CozyPersistedStorageKeys,
+  removeData,
+  storeData
+} from '/libs/localStore/storage'
 import {
   hideSplashScreen,
   showSplashScreen
@@ -22,7 +26,10 @@ let appState: AppStateStatus = AppState.currentState
 const handleSleep = (): void => {
   showSplashScreen('LOCK_SCREEN')
     .then(async () => {
-      return await storeData(StorageKeys.LastActivity, Date.now().toString())
+      return await storeData(
+        CozyPersistedStorageKeys.LastActivity,
+        Date.now().toString()
+      )
     })
     .catch(reason => log.error('Failed when going to sleep', reason))
 }
@@ -32,7 +39,7 @@ const handleWakeUp = async (
   isAppStart?: boolean
 ): Promise<void> => {
   if (isAppStart) {
-    await removeData(StorageKeys.LastActivity)
+    await removeData(CozyPersistedStorageKeys.LastActivity)
   }
 
   await handleSecurityFlowWakeUp(client)
