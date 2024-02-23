@@ -17,7 +17,11 @@ import {
 } from '/libs/defaultRedirection/defaultRedirection'
 import { changeIcon } from '/libs/icon/icon'
 import { formatRedirectLink } from '/libs/functions/formatRedirectLink'
-import { StorageKeys, getData, storeData } from '/libs/localStore/storage'
+import {
+  CozyPersistedStorageKeys,
+  getData,
+  storeData
+} from '/libs/localStore/storage'
 
 jest.mock('/libs/localStore/storage')
 jest.mock('/libs/icon/icon')
@@ -83,7 +87,7 @@ describe('setDefaultRedirectionUrl', () => {
   it('should set default redirection url in async storage', async () => {
     await setDefaultRedirectionUrl(DRIVE_URL)
     expect(storeData).toHaveBeenCalledWith(
-      StorageKeys.DefaultRedirectionUrl,
+      CozyPersistedStorageKeys.DefaultRedirectionUrl,
       DRIVE_URL
     )
   })
@@ -96,7 +100,9 @@ describe('getDefaultRedirectionUrl', () => {
 
   it('should get default redirection url in async storage', async () => {
     await getDefaultRedirectionUrl()
-    expect(getData).toHaveBeenCalledWith(StorageKeys.DefaultRedirectionUrl)
+    expect(getData).toHaveBeenCalledWith(
+      CozyPersistedStorageKeys.DefaultRedirectionUrl
+    )
   })
 })
 
@@ -114,7 +120,7 @@ describe('setDefaultRedirectionUrlAndAppIcon', () => {
   it('should set default redirection url in async storage and app icon', async () => {
     await setDefaultRedirectionUrlAndAppIcon(DRIVE_URL, client)
     expect(storeData).toHaveBeenCalledWith(
-      StorageKeys.DefaultRedirectionUrl,
+      CozyPersistedStorageKeys.DefaultRedirectionUrl,
       DRIVE_URL
     )
     expect(changeIcon).toHaveBeenCalledWith('drive')
@@ -136,7 +142,7 @@ describe('setDefaultRedirection', () => {
     mockedFormatRedirectLink.mockReturnValue(DRIVE_URL)
     await setDefaultRedirection('drive/', client)
     expect(storeData).toHaveBeenCalledWith(
-      StorageKeys.DefaultRedirectionUrl,
+      CozyPersistedStorageKeys.DefaultRedirectionUrl,
       DRIVE_URL
     )
   })

@@ -5,7 +5,7 @@ import type { StackClient } from 'cozy-stack-client'
 import { makeSessionAPI } from './session'
 
 import {
-  StorageKeys,
+  CozyPersistedStorageKeys,
   getData,
   storeData,
   clearAllData
@@ -40,7 +40,7 @@ describe('shouldCreateSession', () => {
   })
 
   it('returns false when a token is found', async () => {
-    await storeData(StorageKeys.SessionCreated, '1')
+    await storeData(CozyPersistedStorageKeys.SessionCreated, '1')
     expect(await shouldCreateSession()).toBe(false)
   })
 })
@@ -132,6 +132,6 @@ describe('handleInterceptAuth', () => {
 describe('consumeSessionToken', () => {
   it('stores a value in the asyncStorage', async () => {
     await consumeSessionToken()
-    expect(await getData(StorageKeys.SessionCreated)).toBeTruthy()
+    expect(await getData(CozyPersistedStorageKeys.SessionCreated)).toBeTruthy()
   })
 })

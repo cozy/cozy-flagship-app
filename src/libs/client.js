@@ -29,7 +29,7 @@ export {
   callOnboardingInitClient
 } from '/libs/clientHelpers/initClient'
 export { call2FAInitClient } from '/libs/clientHelpers/twoFactorAuthentication'
-import { StorageKeys, getData } from '/libs/localStore/storage'
+import { CozyPersistedStorageKeys, getData } from '/libs/localStore/storage'
 
 const log = Minilog('LoginScreen')
 
@@ -39,7 +39,7 @@ const log = Minilog('LoginScreen')
  * @returns {CozyClient}
  */
 export const getClient = async () => {
-  const oauthData = await getData(StorageKeys.Oauth)
+  const oauthData = await getData(CozyPersistedStorageKeys.Oauth)
   if (!oauthData) {
     return false
   }

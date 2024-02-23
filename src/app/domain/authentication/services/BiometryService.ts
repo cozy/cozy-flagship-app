@@ -4,7 +4,11 @@ import ReactNativeBiometrics from 'react-native-biometrics'
 
 import { FlagshipMetadata } from 'cozy-device-helper/dist/flagship'
 
-import { getData, StorageKeys, storeData } from '/libs/localStore/storage'
+import {
+  getData,
+  CozyPersistedStorageKeys,
+  storeData
+} from '/libs/localStore/storage'
 import { getVaultInformation } from '/libs/keychain'
 import { promptBiometry } from '/app/domain/authorization/services/LockScreenService'
 
@@ -15,11 +19,13 @@ const BIOMETRY_DENIED_BY_USER_IOS_ERROR = /.*User.*denied.*/
 export const updateBiometrySetting = async (
   activated: boolean
 ): Promise<boolean> => {
-  await storeData(StorageKeys.BiometryActivated, activated)
+  await storeData(CozyPersistedStorageKeys.BiometryActivated, activated)
 
-  if (activated) await storeData(StorageKeys.AutoLockEnabled, true)
+  if (activated) await storeData(CozyPersistedStorageKeys.AutoLockEnabled, true)
 
-  const newData = Boolean(await getData(StorageKeys.BiometryActivated))
+  const newData = Boolean(
+    await getData(CozyPersistedStorageKeys.BiometryActivated)
+  )
 
   BiometryEmitter.emit('change', newData)
 
@@ -39,7 +45,7 @@ const handleBiometryActivation = async (
 export const openSettingBiometry = async (): Promise<boolean> => {
   const biometryEnabled = await getData<
     FlagshipMetadata['settings_biometryEnabled']
-  >(StorageKeys.BiometryActivated)
+  >(CozyPersistedStorageKeys.BiometryActivated)
 
   return handleBiometryActivation(Boolean(biometryEnabled))
 }
@@ -66,10 +72,10 @@ export const makeFlagshipMetadataInjection = async (): Promise<string> => {
   const flagshipMetadata: FlagshipMetadata = {
     settings_PINEnabled: Boolean(await getVaultInformation('pinCode')),
     settings_biometryEnabled: Boolean(
-      await getData(StorageKeys.BiometryActivated)
+      await getData(CozyPersistedStorageKeys.BiometryActivated)
     ),
     settings_autoLockEnabled: Boolean(
-      await getData(StorageKeys.AutoLockEnabled)
+      await getData(CozyPersistedStorageKeys.AutoLockEnabled)
     ),
     biometry_type: sensorData.biometryType,
     biometry_available: sensorData.available,

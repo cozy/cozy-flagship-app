@@ -4,7 +4,11 @@ import Minilog from 'cozy-minilog'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import strings from '/constants/strings.json'
 import { isSameCozy } from '/libs/functions/urlHelpers'
-import { StorageKeys, getData, storeData } from '/libs/localStore/storage'
+import {
+  CozyPersistedStorageKeys,
+  getData,
+  storeData
+} from '/libs/localStore/storage'
 
 const log = Minilog('SessionScript')
 
@@ -58,7 +62,9 @@ const wrapUrl = async (
 
 const shouldCreateSession = async (): Promise<boolean> => {
   try {
-    const sessionCreatedFlag = await getData(StorageKeys.SessionCreated)
+    const sessionCreatedFlag = await getData(
+      CozyPersistedStorageKeys.SessionCreated
+    )
 
     return !sessionCreatedFlag
   } catch (error) {
@@ -69,7 +75,7 @@ const shouldCreateSession = async (): Promise<boolean> => {
 }
 
 const consumeSessionToken = (): Promise<void> =>
-  storeData(StorageKeys.SessionCreated, '1')
+  storeData(CozyPersistedStorageKeys.SessionCreated, '1')
 
 // Higher-order functions
 const handleInterceptAuth =

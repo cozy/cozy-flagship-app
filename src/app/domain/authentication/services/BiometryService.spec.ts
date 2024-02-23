@@ -1,5 +1,5 @@
 import {
-  StorageKeys,
+  CozyPersistedStorageKeys,
   getData,
   storeData,
   clearData
@@ -40,7 +40,7 @@ it('should not throw with a null hasBiometry', async () => {
 })
 
 it('should handle true value', async () => {
-  await storeData(StorageKeys.BiometryActivated, true)
+  await storeData(CozyPersistedStorageKeys.BiometryActivated, true)
   const result = await makeFlagshipMetadataInjection()
   expect(result).toStrictEqual(
     `
@@ -52,7 +52,7 @@ it('should handle true value', async () => {
 })
 
 it('should handle truthy value', async () => {
-  await storeData(StorageKeys.BiometryActivated, 'true')
+  await storeData(CozyPersistedStorageKeys.BiometryActivated, 'true')
   const result = await makeFlagshipMetadataInjection()
   expect(result).toStrictEqual(
     `
@@ -64,7 +64,7 @@ it('should handle truthy value', async () => {
 })
 
 it('should handle false value', async () => {
-  await storeData(StorageKeys.BiometryActivated, false)
+  await storeData(CozyPersistedStorageKeys.BiometryActivated, false)
   const result = await makeFlagshipMetadataInjection()
   expect(result).toStrictEqual(
     `
@@ -76,7 +76,7 @@ it('should handle false value', async () => {
 })
 
 it('should handle falsy value', async () => {
-  await storeData(StorageKeys.BiometryActivated, '')
+  await storeData(CozyPersistedStorageKeys.BiometryActivated, '')
   const result = await makeFlagshipMetadataInjection()
   expect(result).toStrictEqual(
     `
@@ -133,8 +133,12 @@ describe('updateBiometrySetting', () => {
     BiometryEmitter.once(eventName, value => expect(value).toBe(expectedValue))
 
     const result = await updateBiometrySetting(expectedValue)
-    expect(await getData(StorageKeys.BiometryActivated)).toBe(expectedValue)
-    expect(await getData(StorageKeys.AutoLockEnabled)).toBe(expectedValue)
+    expect(await getData(CozyPersistedStorageKeys.BiometryActivated)).toBe(
+      expectedValue
+    )
+    expect(await getData(CozyPersistedStorageKeys.AutoLockEnabled)).toBe(
+      expectedValue
+    )
     expect(result).toBe(expectedValue)
   })
 
@@ -143,13 +147,17 @@ describe('updateBiometrySetting', () => {
 
     BiometryEmitter.once(eventName, value => expect(value).toBe(expectedValue))
 
-    await storeData(StorageKeys.BiometryActivated, !expectedValue)
-    await storeData(StorageKeys.AutoLockEnabled, !expectedValue)
+    await storeData(CozyPersistedStorageKeys.BiometryActivated, !expectedValue)
+    await storeData(CozyPersistedStorageKeys.AutoLockEnabled, !expectedValue)
 
     const result = await updateBiometrySetting(expectedValue)
 
-    expect(await getData(StorageKeys.BiometryActivated)).toBe(expectedValue)
-    expect(await getData(StorageKeys.AutoLockEnabled)).toBe(expectedValue)
+    expect(await getData(CozyPersistedStorageKeys.BiometryActivated)).toBe(
+      expectedValue
+    )
+    expect(await getData(CozyPersistedStorageKeys.AutoLockEnabled)).toBe(
+      expectedValue
+    )
     expect(result).toBe(expectedValue)
   })
 
@@ -158,12 +166,16 @@ describe('updateBiometrySetting', () => {
 
     BiometryEmitter.once(eventName, value => expect(value).toBe(expectedValue))
 
-    await storeData(StorageKeys.AutoLockEnabled, !expectedValue)
+    await storeData(CozyPersistedStorageKeys.AutoLockEnabled, !expectedValue)
 
     const result = await updateBiometrySetting(expectedValue)
 
-    expect(await getData(StorageKeys.BiometryActivated)).toBe(expectedValue)
-    expect(await getData(StorageKeys.AutoLockEnabled)).toBe(!expectedValue)
+    expect(await getData(CozyPersistedStorageKeys.BiometryActivated)).toBe(
+      expectedValue
+    )
+    expect(await getData(CozyPersistedStorageKeys.AutoLockEnabled)).toBe(
+      !expectedValue
+    )
     expect(result).toBe(expectedValue)
   })
 
@@ -174,8 +186,12 @@ describe('updateBiometrySetting', () => {
 
     const result = await updateBiometrySetting(expectedValue)
 
-    expect(await getData(StorageKeys.BiometryActivated)).toBe(expectedValue)
-    expect(await getData(StorageKeys.AutoLockEnabled)).toBe(fsNullValue)
+    expect(await getData(CozyPersistedStorageKeys.BiometryActivated)).toBe(
+      expectedValue
+    )
+    expect(await getData(CozyPersistedStorageKeys.AutoLockEnabled)).toBe(
+      fsNullValue
+    )
     expect(result).toBe(expectedValue)
   })
 })

@@ -8,7 +8,7 @@ import { clearClient } from '/libs/client'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import {
   getData,
-  StorageKeys,
+  CozyPersistedStorageKeys,
   storeData,
   removeData
 } from '/libs/localStore/storage'
@@ -147,7 +147,7 @@ const attemptFetchIcons = async (
 
 const getPersistentIconTable = async (): Promise<IconsCache | null> => {
   try {
-    const table = await getData<IconsCache>(StorageKeys.IconsTable)
+    const table = await getData<IconsCache>(CozyPersistedStorageKeys.IconsTable)
     return table
   } catch (error) {
     log.error(strings.errors.getPersistentIconTable, error)
@@ -159,7 +159,7 @@ const setPersistentIconTable = async (table: IconsCache): Promise<void> => {
   try {
     setIconTable(table)
     Object.entries(table).length > 0 &&
-      (await storeData(StorageKeys.IconsTable, table))
+      (await storeData(CozyPersistedStorageKeys.IconsTable, table))
   } catch (error) {
     log.error(strings.errors.setPersistentIconTable, error)
   }
@@ -167,7 +167,7 @@ const setPersistentIconTable = async (table: IconsCache): Promise<void> => {
 
 const clearPersistentIconTable = async (): Promise<void> => {
   try {
-    await removeData(StorageKeys.IconsTable)
+    await removeData(CozyPersistedStorageKeys.IconsTable)
   } catch (error) {
     log.error(strings.errors.clearPersistentIconTable, error)
   }

@@ -5,7 +5,11 @@ import CozyClient from 'cozy-client'
 import flag from 'cozy-flags'
 import Minilog from 'cozy-minilog'
 
-import { getData, storeData, StorageKeys } from '/libs/localStore/storage'
+import {
+  getData,
+  storeData,
+  CozyPersistedStorageKeys
+} from '/libs/localStore/storage'
 import { setGeolocationTracking } from '/app/domain/geolocation/services/tracking'
 
 const MAX_DAYS_TO_CAPTURE_UNLIMITED = -1
@@ -34,7 +38,7 @@ const getFirstTimeserie = async (
 ): Promise<FirstTimeserie | undefined> => {
   try {
     const firstTimeserieCachedLocally = await getData<FirstTimeserie>(
-      StorageKeys.FirstTimeserie
+      CozyPersistedStorageKeys.FirstTimeserie
     )
 
     if (firstTimeserieCachedLocally) {
@@ -53,7 +57,7 @@ const getFirstTimeserie = async (
 
       const firstTimeserie = data[0]
 
-      await storeData(StorageKeys.FirstTimeserie, firstTimeserie)
+      await storeData(CozyPersistedStorageKeys.FirstTimeserie, firstTimeserie)
 
       return firstTimeserie
     }

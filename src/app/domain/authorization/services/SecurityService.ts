@@ -29,7 +29,7 @@ import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { authConstants } from '/app/domain/authorization/constants'
 import { safePromise } from '/utils/safePromise'
 import { hideSplashScreen, splashScreens } from '/app/theme/SplashScreenService'
-import { getData, StorageKeys } from '/libs/localStore'
+import { getData, CozyPersistedStorageKeys } from '/libs/localStore'
 
 // Can use mock functions in dev environment
 const fns = getDevModeFunctions(
@@ -191,7 +191,7 @@ const tryLockingApp = async (client?: CozyClient): Promise<void> => {
 export const handleSecurityFlowWakeUp = async (
   client: CozyClient
 ): Promise<void> => {
-  return getData<string>(StorageKeys.LastActivity)
+  return getData<string>(CozyPersistedStorageKeys.LastActivity)
     .then((lastActivity): number => {
       const now = Date.now()
       const lastActivityDate = new Date(parseInt(lastActivity ?? '0', 10))
