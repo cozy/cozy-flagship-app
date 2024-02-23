@@ -5,6 +5,7 @@ import { BiometryType } from 'react-native-biometrics'
 import { logger } from '/libs/functions/logger'
 import type { FirstTimeserie } from '/app/domain/geolocation/helpers/quota'
 import type { OnboardingPartner } from '/screens/welcome/install-referrer/onboardingPartner'
+import { OauthData } from '/libs/clientHelpers/persistClient'
 
 const log = logger('storage.ts')
 
@@ -54,6 +55,7 @@ export interface StorageItems {
   iconCache: IconsCache
   firstTimeserie: FirstTimeserie
   onboardingPartner: OnboardingPartner
+  oauth: OauthData
   cookie: Cookies
   clouderyEnv: string
 }

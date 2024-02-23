@@ -1,9 +1,15 @@
 import Minilog from 'cozy-minilog'
-import CozyClient from 'cozy-client'
+import CozyClient, { OAuthOptions, AccessToken } from 'cozy-client'
 
 import { StorageKeys, storeData, removeData } from '/libs/localStore/storage'
 
 const log = Minilog('LoginScreen')
+
+export interface OauthData {
+  oauthOptions: OAuthOptions
+  token: AccessToken
+  uri: string
+}
 
 /**
  * Clears the storage key related to client authentication
@@ -24,7 +30,7 @@ export const saveClient = async (client: CozyClient): Promise<void> => {
     oauthOptions,
     token,
     uri
-  }
+  } as OauthData
 
   return storeData(StorageKeys.Oauth, state)
 }
