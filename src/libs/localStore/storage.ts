@@ -98,7 +98,7 @@ export const getData = async <T>(name: StorageKey): Promise<T | null> => {
   }
 }
 
-export const clearData = async (): Promise<void> => {
+export const clearCozyData = async (): Promise<void> => {
   try {
     const keys = Object.values(CozyPersistedStorageKeys)
 

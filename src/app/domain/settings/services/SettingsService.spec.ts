@@ -2,7 +2,7 @@ import {
   CozyPersistedStorageKeys,
   getData,
   storeData,
-  clearData
+  clearCozyData
 } from '/libs/localStore/storage'
 import { ensureAutoLockIsEnabled } from '/app/domain/settings/services/SettingsService'
 
@@ -11,7 +11,7 @@ jest.mock('@react-native-cookies/cookies', () => ({
 }))
 
 describe('ensureAutoLockIsEnabled', () => {
-  beforeEach(async () => await clearData())
+  beforeEach(async () => await clearCozyData())
 
   it('should not tamper with autoLock value when already enabled', async () => {
     const expected = true
