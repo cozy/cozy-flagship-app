@@ -2,7 +2,7 @@ import {
   CozyPersistedStorageKeys,
   getData,
   storeData,
-  clearData
+  clearCozyData
 } from '/libs/localStore/storage'
 import {
   makeFlagshipMetadataInjection,
@@ -125,7 +125,7 @@ describe('updateBiometrySetting', () => {
   const eventName = 'change'
   const fsNullValue = null
 
-  beforeEach(async () => await clearData())
+  beforeEach(async () => await clearCozyData())
 
   it('should create the biometry and autolock setting with activated argument to true', async () => {
     const expectedValue = true

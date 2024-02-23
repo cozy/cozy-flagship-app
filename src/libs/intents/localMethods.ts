@@ -18,7 +18,7 @@ import { setHomeThemeIntent } from '/libs/intents/setHomeThemeIntent'
 import strings from '/constants/strings.json'
 import { EnvService } from '/core/tools/env'
 import { clearCookies } from '/libs/httpserver/httpCookieManager'
-import { clearData } from '/libs/localStore/storage'
+import { clearCozyData } from '/libs/localStore/storage'
 import { deleteKeychain } from '/libs/keychain'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { openApp } from '/libs/functions/openApp'
@@ -66,7 +66,7 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   await client.logout()
   await deleteKeychain()
   await clearCookies()
-  await clearData()
+  await clearCozyData()
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   await stopTrackingAndClearData()
   RootNavigation.reset(routes.welcome, { screen: 'welcome' })
