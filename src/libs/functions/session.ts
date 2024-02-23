@@ -4,12 +4,7 @@ import Minilog from 'cozy-minilog'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import strings from '/constants/strings.json'
 import { isSameCozy } from '/libs/functions/urlHelpers'
-import {
-  StorageKeys,
-  getData,
-  storeData,
-  removeData
-} from '/libs/localStore/storage'
+import { StorageKeys, getData, storeData } from '/libs/localStore/storage'
 
 const log = Minilog('SessionScript')
 
@@ -76,9 +71,6 @@ const shouldCreateSession = async (): Promise<boolean> => {
 const consumeSessionToken = (): Promise<void> =>
   storeData(StorageKeys.SessionCreated, '1')
 
-const resetSessionToken = (): Promise<void> =>
-  removeData(StorageKeys.SessionCreated)
-
 // Higher-order functions
 const handleInterceptAuth =
   (client: CozyClient, subdomain: string) =>
@@ -102,7 +94,6 @@ export interface SessionApi {
   consumeSessionToken: () => Promise<void>
   handleCreateSession: (uri: URL) => Promise<string>
   handleInterceptAuth: (url: string) => Promise<string | undefined>
-  resetSessionToken: () => Promise<void>
   shouldCreateSession: () => Promise<boolean>
   shouldInterceptAuth: (url: string) => boolean
   subDomainType: string
@@ -116,10 +107,9 @@ const makeSessionAPI = (
   consumeSessionToken,
   handleCreateSession: handleCreateSession(client),
   handleInterceptAuth: handleInterceptAuth(client, subDomainType),
-  resetSessionToken,
   shouldCreateSession,
   shouldInterceptAuth: shouldInterceptAuth(client),
   subDomainType
 })
 // Exposed API
-export { makeSessionAPI, resetSessionToken }
+export { makeSessionAPI }

@@ -30,8 +30,7 @@ const {
   handleCreateSession,
   shouldInterceptAuth,
   handleInterceptAuth,
-  consumeSessionToken,
-  resetSessionToken
+  consumeSessionToken
 } = makeSessionAPI(client, subdomain)
 
 describe('shouldCreateSession', () => {
@@ -134,12 +133,5 @@ describe('consumeSessionToken', () => {
   it('stores a value in the asyncStorage', async () => {
     await consumeSessionToken()
     expect(await getData(StorageKeys.SessionCreated)).toBeTruthy()
-  })
-})
-
-describe('resetSessionToken', () => {
-  it('stores a value in the asyncStorage', async () => {
-    await resetSessionToken()
-    expect(await getData(StorageKeys.SessionCreated)).toBeFalsy()
   })
 })
