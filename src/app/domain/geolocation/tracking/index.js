@@ -44,13 +44,25 @@ export {
 
 const log = Minilog('📍 Geolocation')
 
-export const startTracking = async () => {
+export const initTracking = async () => {
   try {
     const trackingConfig = await getTrackingConfig()
     Log('Config : ' + JSON.stringify(trackingConfig))
 
+    // Register on events
+    BackgroundGeolocation.onActivityChange(async event => {
+      return handleActivityChange(event)
+    })
+    BackgroundGeolocation.onMotionChange(async event => {
+      return handleMotionChange(event)
+    })
+    BackgroundGeolocation.onConnectivityChange(async event => {
+      return handleConnectivityChange(event)
+    })
+
+    // Init the geolocation plugin
     const state = await BackgroundGeolocation.ready({
-      // Geolocation Config
+      // Tracking Config
       desiredAccuracy: trackingConfig.desiredAccuracy || ACCURACY,
       showsBackgroundLocationIndicator: false, // Displays a blue pill on the iOS status bar when the location services are in use in the background (if the app doesn't have 'always' permission, the blue pill will always appear when location services are in use while the app isn't focused)
       distanceFilter: trackingConfig.distanceFilter || DISTANCE_FILTER,
@@ -80,20 +92,42 @@ export const startTracking = async () => {
         smallIcon: 'mipmap/ic_stat_ic_notification'
       }
     })
-    if (!state.enabled) {
-      await BackgroundGeolocation.start()
-      Log('Tracking started')
-    }
+
+    Log('State after init: ' + JSON.stringify(state))
+
+    return state
+  } catch (e) {
+    Log('Error on tracking init: ' + JSON.stringify(e))
+    log.error(e)
+
+    return null
+  }
+}
+
+export const startTracking = async () => {
+  try {
+    // Save tracking enabled
     await storeData(
       CozyPersistedStorageKeys.ShouldBeTrackingFlagStorageAdress,
       true
     )
-
+    const state = await BackgroundGeolocation.getState()
+    if (!state) {
+      // This case should not happen
+      log.error('Tracking started without init')
+      await initTracking()
+      await BackgroundGeolocation.start()
+      Log('Tracking init and started')
+    } else if (!state.enabled) {
+      await BackgroundGeolocation.start()
+      Log('Tracking started')
+    } else {
+      Log('Tracking already started')
+    }
     return true
   } catch (e) {
-    Log('Error on tracking start : ', JSON.stringify(e))
+    Log('Error on tracking start: ' + JSON.stringify(e))
     log.error(e)
-
     return false
   }
 }
@@ -256,20 +290,7 @@ export const startOpenPathUploadAndPipeline = async ({
     }
   } catch (err) {
     Log('Failed openpath processing: ' + JSON.stringify(err))
+    log.error(err)
   }
   return
 }
-
-// Register on activity change
-BackgroundGeolocation.onActivityChange(async event => {
-  return handleActivityChange(event)
-})
-
-// Register on motion change
-BackgroundGeolocation.onMotionChange(async event => {
-  return handleMotionChange(event)
-})
-
-BackgroundGeolocation.onConnectivityChange(async event => {
-  return handleConnectivityChange(event)
-})
