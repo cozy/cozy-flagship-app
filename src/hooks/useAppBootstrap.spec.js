@@ -152,6 +152,7 @@ it('should set routes.stack and authenticate - when onboard_url not provided', a
     initialRoute: {
       route: routes.authenticate,
       params: {
+        emailVerifiedCode: null,
         fqdn: paramFqdn
       }
     },

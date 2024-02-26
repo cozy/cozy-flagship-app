@@ -61,15 +61,19 @@ export const parseOnboardingURL = (
       'onboarded_redirection'
     )
     const fqdn = onboardingUrl.searchParams.get('fqdn')
+    const emailVerifiedCode = onboardingUrl.searchParams.get(
+      'email_verified_code'
+    )
 
     if (!onboardUrl && !fqdn) {
       return undefined
     }
 
     return {
+      emailVerifiedCode,
+      fqdn,
       onboardUrl,
-      onboardedRedirection,
-      fqdn
+      onboardedRedirection
     }
   } catch (error) {
     const errorMessage = getErrorMessage(error)
@@ -183,7 +187,8 @@ export const parseOnboardLink = (
     const {
       onboardUrl,
       onboardedRedirection: onboardedRedirectionParam,
-      fqdn
+      fqdn,
+      emailVerifiedCode
     } = onboardingParams
 
     if (onboardUrl) {
@@ -200,7 +205,8 @@ export const parseOnboardLink = (
       return {
         route: routes.authenticate,
         params: {
-          fqdn
+          fqdn,
+          emailVerifiedCode
         },
         onboardedRedirection: onboardedRedirectionParam
       }
