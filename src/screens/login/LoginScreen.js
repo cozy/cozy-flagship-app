@@ -170,7 +170,7 @@ const LoginSteps = ({
      * @param {{ emailVerifiedCode?: string }} [options] - The optional second parameter object with an optional `emailVerifiedCode` property.
      * @returns {Promise<void>} A promise that resolves to void.
      */
-    async ({ instance, fqdn }, { emailVerifiedCode }) => {
+    async ({ instance, fqdn }, { emailVerifiedCode } = {}) => {
       if (await NetService.isOffline())
         NetService.handleOffline(routes.authenticate)
 
