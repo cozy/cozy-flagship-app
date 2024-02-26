@@ -1,4 +1,6 @@
-import BackgroundGeolocation from 'react-native-background-geolocation'
+import BackgroundGeolocation, {
+  State
+} from 'react-native-background-geolocation'
 
 import {
   startTracking,
@@ -8,7 +10,8 @@ import {
   getId,
   updateId,
   stopTrackingAndClearData,
-  getShouldStartTracking
+  getShouldStartTracking,
+  initTracking
 } from '/app/domain/geolocation/tracking'
 import { isGeolocationQuotaExceeded } from '/app/domain/geolocation/helpers/quota'
 
@@ -39,6 +42,10 @@ export const setGeolocationTracking = async (
   }
 }
 
+export const initGeolocationTracking = async (): Promise<State | null> => {
+  return await initTracking()
+}
+
 export const sendGeolocationTrackingLogs = async (
   client?: CozyClient
 ): Promise<void> => {
@@ -56,7 +63,6 @@ interface GeolocationTrackingStatus {
 
 export const isGeolocationTrackingEnabled = async (): Promise<boolean> => {
   const status = await BackgroundGeolocation.getState()
-
   return status.enabled
 }
 
