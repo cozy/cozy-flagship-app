@@ -91,6 +91,7 @@ export const startTracking = async () => {
 
     return true
   } catch (e) {
+    Log('Error on tracking start : ', JSON.stringify(e))
     log.error(e)
 
     return false
@@ -238,7 +239,7 @@ export const handleConnectivityChange = async event => {
 export const startOpenPathUploadAndPipeline = async ({
   untilTs = 0,
   force = false
-}) => {
+} = {}) => {
   try {
     const user = await getOrCreateId()
     Log(`User: ${JSON.stringify(user)}`)
