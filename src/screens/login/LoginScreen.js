@@ -1,3 +1,4 @@
+import { changeLanguage } from 'i18next'
 import React, { useCallback, useEffect, useState } from 'react'
 import { BackHandler, StyleSheet, View } from 'react-native'
 
@@ -36,7 +37,6 @@ import { routes } from '/constants/routes'
 import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { getInstanceFromFqdn } from '/screens/login/components/functions/getInstanceFromFqdn'
 import { getInstanceDataFromFqdn } from '/screens/login/components/functions/getInstanceDataFromRequest'
-import { changeLanguage } from 'i18next'
 
 const log = Minilog('LoginScreen')
 
@@ -107,6 +107,12 @@ const LoginSteps = ({
     const magicCode = consumeRouteParameter('magicCode', route, navigation)
     const oauthCode = consumeRouteParameter('code', route, navigation)
     const onboardUrl = consumeRouteParameter('onboardUrl', route, navigation)
+    const emailVerifiedCode = consumeRouteParameter(
+      'emailVerifiedCode',
+      route,
+      navigation
+    )
+
     if (fqdn) {
       const instanceData = getInstanceDataFromFqdn(fqdn)
 
@@ -126,7 +132,7 @@ const LoginSteps = ({
       } else if (oauthCode) {
         startOidcOAuth(instanceData.fqdn, oauthCode)
       } else {
-        setInstanceData(instanceData)
+        setInstanceData(instanceData, { emailVerifiedCode })
       }
     } else if (onboardUrl && oauthCode) {
       // when receiving fqdn from route parameter, we don't have access to partner context
@@ -158,7 +164,13 @@ const LoginSteps = ({
   }
 
   const setInstanceData = useCallback(
-    async ({ instance, fqdn }) => {
+    /**
+     * Sets the instance data.
+     * @param {{ instance: string, fqdn: string }} instanceData - The first parameter object with `instance` as a record of string keys to unknown values, and `fqdn` as a string.
+     * @param {{ emailVerifiedCode?: string }} [options] - The optional second parameter object with an optional `emailVerifiedCode` property.
+     * @returns {Promise<void>} A promise that resolves to void.
+     */
+    async ({ instance, fqdn }, { emailVerifiedCode }) => {
       if (await NetService.isOffline())
         NetService.handleOffline(routes.authenticate)
 
@@ -183,7 +195,8 @@ const LoginSteps = ({
           instance: instance,
           name: name,
           kdfIterations: kdfIterations,
-          client: client
+          client: client,
+          emailVerifiedCode
         })
       } catch (error) {
         setError(error.message, error)
@@ -332,12 +345,13 @@ const LoginSteps = ({
       NetService.handleOffline(routes.authenticate)
 
     try {
-      const { loginData, instance, client } = state
+      const { loginData, instance, client, emailVerifiedCode } = state
 
       const result = await callInitClient({
         loginData,
         instance,
-        client
+        client,
+        emailVerifiedCode
       })
 
       if (result.state === STATE_INVALID_PASSWORD) {

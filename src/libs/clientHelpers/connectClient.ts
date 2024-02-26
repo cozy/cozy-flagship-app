@@ -22,6 +22,7 @@ interface ConnectClientParams {
   loginData: LoginData
   client: CozyClient
   twoFactorAuthenticationData?: TwoFactorAuthenticationData
+  emailVerifiedCode?: string
 }
 
 /**
@@ -31,17 +32,20 @@ interface ConnectClientParams {
  * @param {LoginData} param.loginData - login data containing hashed password and encryption keys
  * @param {CozyClient} param.client - the CozyClient instance that will be authenticated through OAuth
  * @param {TwoFactorAuthenticationData} param.twoFactorAuthenticationData - the 2FA data containing a token and a passcode
+ * @param {string} param.emailVerifiedCode - the emailVerifiedCode that should be used to log in the stack
  * @returns {CozyClientCreationContext} The CozyClient with its corresponding state (i.e: connected, waiting for 2FA, invalid password etc)
  */
 export const connectClient = async ({
   loginData,
   client,
-  twoFactorAuthenticationData = undefined
+  twoFactorAuthenticationData = undefined,
+  emailVerifiedCode = undefined
 }: ConnectClientParams): Promise<CozyClientCreationContext> => {
   const result = await loginFlagship({
     client,
     loginData,
-    twoFactorAuthenticationData
+    twoFactorAuthenticationData,
+    emailVerifiedCode
   })
 
   if (isInvalidPasswordResult(result)) {

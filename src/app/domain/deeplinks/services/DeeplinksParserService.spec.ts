@@ -29,6 +29,7 @@ describe('DeeplinksParserService', () => {
       expect(result).toStrictEqual({
         route: routes.authenticate,
         params: {
+          emailVerifiedCode: null,
           fqdn: 'SOME_FQDN'
         },
         onboardedRedirection: null

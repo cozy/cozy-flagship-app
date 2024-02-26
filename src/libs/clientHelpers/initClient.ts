@@ -17,6 +17,7 @@ interface CallInitClientParams {
   client?: CozyClient
   instance: string
   loginData: LoginData
+  emailVerifiedCode?: string
 }
 
 /**
@@ -26,18 +27,21 @@ interface CallInitClientParams {
  * @param {LoginData} param.loginData - login data containing hashed password and encryption keys
  * @param {string} param.instance - the Cozy instance used to create the client
  * @param {CozyClient} [param.client] - an optional CozyClient instance that can be used for the authentication. If not provided a new CozyClient will be created
+ * @param {string} [param.emailVerifiedCode] - the emailVerifiedCode that should be used to log in the stack
  * @returns {CozyClientCreationContext} The CozyClient for the Cozy instance with its corresponding state (i.e: connected, waiting for 2FA, invalid password etc)
  */
 export const callInitClient = async ({
   loginData,
   instance,
-  client: clientParam
+  client: clientParam,
+  emailVerifiedCode
 }: CallInitClientParams): Promise<CozyClientCreationContext> => {
   const client = clientParam ?? (await createClient(instance))
 
   return await connectClient({
     loginData,
-    client
+    client,
+    emailVerifiedCode
   })
 }
 

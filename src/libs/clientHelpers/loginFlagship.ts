@@ -14,6 +14,7 @@ interface LoginFlagshipParams {
   client: CozyClient
   loginData: LoginData
   twoFactorAuthenticationData?: TwoFactorAuthenticationData
+  emailVerifiedCode?: string
 }
 
 /**
@@ -25,16 +26,17 @@ interface LoginFlagshipParams {
  * @param {object} param.client - the CozyClient instance that will be authenticated through OAuth
  * @param {object} param.loginData - login data containing hashed password
  * @param {object} [param.twoFactorAuthenticationData] - the 2FA data containing a token and a passcode
+ * @param {string} [param.emailVerifiedCode] - the emailVerifiedCode that should be used to log in the stack
  * @returns {LoginFlagshipResult} The query result with session_code, or 2FA token, or invalid password error
  * @throws
  */
 export const loginFlagship = async ({
   client,
   loginData,
-  twoFactorAuthenticationData = undefined
+  twoFactorAuthenticationData = undefined,
+  emailVerifiedCode
 }: LoginFlagshipParams): Promise<LoginFlagshipResult> => {
   const stackClient = client.getStackClient()
-
   try {
     const loginResult = await stackClient.loginFlagship({
       passwordHash: loginData.passwordHash,
@@ -43,7 +45,8 @@ export const loginFlagship = async ({
         : undefined,
       twoFactorPasscode: twoFactorAuthenticationData
         ? twoFactorAuthenticationData.passcode
-        : undefined
+        : undefined,
+      ...(emailVerifiedCode ? { emailVerifiedCode } : {})
     })
 
     return loginResult
