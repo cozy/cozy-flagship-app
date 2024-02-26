@@ -26,6 +26,10 @@ const APP_ANDROID_SCHEME = `cozy://drive/folder/SOME_FOLDER_ID?fallback=${APP_FA
 const INVALID_LINK = 'https://foo.com'
 const REDIRECTION_URL = 'http://drive.mycozy.test/#/folder'
 
+jest.mock('/app/domain/logger/deeplinkHandler', () => ({
+  handleLogsDeepLink: jest.fn()
+}))
+
 jest.mock('../libs/client', () => ({
   clearClient: jest.fn()
 }))

@@ -177,6 +177,10 @@
       "title": "Accès révoqué",
       "body": "Vous semblez avoir révoqué cet appareil depuis votre Cozy. Pour accéder à nouveau à vos données, veuillez vous reconnecter. Si cette action ne vient pas de vous, n'hésitez pas à nous contacter à <linkTag>email</linkTag>.",
       "button": "Se reconnecter"
+    },
+    "LogDisabledError": {
+      "title": "Envoi impossible",
+      "body": "Les logs sont désactivés, veuillez d'abord activer les logs avant de les envoyer"
     }
   },
   "software": {
