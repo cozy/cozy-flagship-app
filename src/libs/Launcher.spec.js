@@ -1,3 +1,4 @@
+import { models } from 'cozy-client'
 import { saveFiles } from 'cozy-clisk'
 
 import Launcher from './Launcher'
@@ -5,13 +6,14 @@ import { saveCredential, getSlugAccountIds } from './keychain'
 
 jest.mock('./keychain')
 jest.mock('cozy-clisk')
-
-const existingMagicFolder = [
-  {
-    path: '/Administratif',
-    created_at: '2023-03-02T14:57:07.661588+01:00'
+jest.mock('cozy-client', () => ({
+  ...jest.requireActual('cozy-client'),
+  models: {
+    konnectorFolder: {
+      ensureKonnectorFolder: jest.fn()
+    }
   }
-]
+}))
 
 describe('Launcher', () => {
   describe('ensureAccountTriggerAndLaunch', () => {
@@ -29,24 +31,12 @@ describe('Launcher', () => {
           folder_to_save: 'oldfolderid'
         }
       }
+      models.konnectorFolder.ensureKonnectorFolder.mockResolvedValue({
+        _id: 'createdfolderid'
+      })
       const job = { _id: 'testjob' }
       const mockClient = {
         collection: () => mockClient,
-        findReferencedBy: jest
-          .fn()
-          .mockResolvedValue({ included: existingMagicFolder }),
-        statByPath: jest.fn().mockRejectedValueOnce({ status: 404 }),
-        add: jest.fn(),
-        addReferencesTo: jest.fn(),
-        createDirectoryByPath: jest.fn().mockResolvedValueOnce({
-          data: {
-            _id: 'createdfolderid'
-          }
-        }),
-        query: jest.fn().mockResolvedValue({ included: [] }),
-        get: jest.fn().mockResolvedValue({ data: {} }),
-        statById: jest.fn().mockResolvedValue({ data: {} }),
-        ensureDirectoryExists: jest.fn(),
         getInstanceOptions: jest.fn().mockReturnValueOnce({ locale: 'fr' }),
         save: jest.fn().mockResolvedValueOnce({
           data: { message: { folder_to_save: 'newfolderid' } }
@@ -304,6 +294,7 @@ describe('Launcher', () => {
       const konnector = {
         slug: 'testkonnectorslug',
         id: 'testkonnectorid',
+        _id: 'testkonnectorid',
         name: 'Test Konnector'
       }
       const trigger = {
@@ -317,23 +308,7 @@ describe('Launcher', () => {
         message: { account: 'testaccountid', folder_to_save: 'testfolderid' }
       }
       const client = {
-        collection: doctype => {
-          if (doctype === 'io.cozy.permissions') {
-            return { add: jest.fn() }
-          }
-          return client
-        },
-        addReferencesTo: jest.fn(),
-        statByPath: jest
-          .fn()
-          .mockImplementation(path => ({ data: { _id: path } })),
-        findReferencedBy: jest
-          .fn()
-          .mockResolvedValue({ included: existingMagicFolder }),
         getInstanceOptions: jest.fn().mockReturnValue({ locale: 'fr' }),
-        ensureDirectoryExists: jest.fn(),
-        get: jest.fn().mockResolvedValue({ data: {} }),
-        statById: jest.fn().mockResolvedValue({ data: {} }),
         queryAll: jest.fn().mockResolvedValue([
           {
             _id: 'tokeep',
@@ -357,6 +332,9 @@ describe('Launcher', () => {
         launcherClient: client,
         trigger,
         job
+      })
+      models.konnectorFolder.ensureKonnectorFolder.mockResolvedValue({
+        _id: '/Administratif/Test Konnector/testaccountid'
       })
       saveFiles.mockRejectedValueOnce(new Error('MAIN_FOLDER_REMOVED'))
 
@@ -394,41 +372,17 @@ describe('Launcher', () => {
         sourceAccount: 'testaccountid',
         sourceAccountIdentifier: 'testsourceaccountidentifier'
       })
-      expect(client.save).toHaveBeenCalledTimes(1)
-      expect(client.save).toHaveBeenNthCalledWith(1, {
-        _type: 'io.cozy.triggers',
-        message: {
-          account: 'testaccountid',
-          folder_to_save: '/Administrative/Test Konnector/testaccountid'
-        }
+
+      expect(
+        models.konnectorFolder.ensureKonnectorFolder
+      ).toHaveBeenCalledTimes(1)
+      expect(
+        models.konnectorFolder.ensureKonnectorFolder
+      ).toHaveBeenNthCalledWith(1, client, {
+        konnector,
+        account: { _id: 'testaccountid' },
+        lang: 'fr'
       })
-      expect(client.queryAll).toHaveBeenCalledTimes(2)
-      expect(client.queryAll).toHaveBeenNthCalledWith(
-        1,
-        expect.objectContaining({
-          doctype: 'io.cozy.files',
-          selector: {
-            cozyMetadata: {
-              createdByApp: 'testkonnectorslug',
-              sourceAccountIdentifier: 'testsourceaccountidentifier'
-            },
-            trashed: false
-          }
-        })
-      )
-      expect(client.queryAll).toHaveBeenNthCalledWith(
-        2,
-        expect.objectContaining({
-          doctype: 'io.cozy.files',
-          selector: {
-            cozyMetadata: {
-              createdByApp: 'testkonnectorslug',
-              sourceAccountIdentifier: 'testsourceaccountidentifier'
-            },
-            trashed: false
-          }
-        })
-      )
     })
   })
 })
