@@ -44,6 +44,7 @@ export enum CozyPersistedStorageKeys {
   Not removed at logout.
 */
 export enum DevicePersistedStorageKeys {
+  LogsEnabled = '@cozy_AmiralAppLogsEnabled',
   OnboardingPartner = '@cozy_AmiralAppOnboardingPartnerConfig',
   ClouderyEnv = '@cozy_AmiralAppClouderyEnvConfig',
   Bundle = '@cozy_AmiralAppBundleConfig'
@@ -60,6 +61,7 @@ export interface StorageItems {
   oauth: OauthData
   cookie: Cookies
   clouderyEnv: string
+  logsEnabled: number
 }
 
 export const storeData = async (

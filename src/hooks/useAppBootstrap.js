@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { deconstructCozyWebLinkWithSlug } from 'cozy-client'
 
-import { isSendLogsDeepLink, sendLogs } from '/app/domain/logger/fileLogger'
+import { handleLogsDeepLink } from '/app/domain/logger/deeplinkHandler'
 import { SentryCustomTags, setSentryTag } from '/libs/monitoring/Sentry'
 import { manageIconCache } from '/libs/functions/iconTable'
 import { getDefaultIconParams } from '/libs/functions/openApp'
@@ -156,8 +156,8 @@ export const useAppBootstrap = client => {
     const subscription = Linking.addEventListener('url', ({ url }) => {
       log.debug(`🔗 Linking URL is ${url}`)
 
-      if (isSendLogsDeepLink(url)) {
-        return sendLogs(client)
+      if (handleLogsDeepLink(url, client)) {
+        return
       }
 
       if (!client) {

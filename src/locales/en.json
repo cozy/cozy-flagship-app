@@ -175,6 +175,10 @@
     },
     "IconChangedModal": {
       "description": "The icon of the 'Cozy' application has been modified."
+    },
+    "LogDisabledError": {
+      "title": "Cannot send logs",
+      "body": "Logs are disabled, please enable them first and then send them again"
     }
   },
   "software": {

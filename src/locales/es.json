@@ -156,6 +156,10 @@
   "modals": {
     "IconChangedModal": {
       "description": "El ícono de la aplicación 'Cozy' ha sido modificado."
+    },
+    "LogDisabledError": {
+      "title": "No se pueden enviar registros",
+      "body": "Los registros están deshabilitados, por favor habilítelos primero y luego envíelos de nuevo"
     }
   },
   "software": {
