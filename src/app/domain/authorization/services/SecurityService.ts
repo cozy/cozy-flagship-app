@@ -63,6 +63,7 @@ export const determineSecurityFlow = async (
     devlog('🔏', 'Application does not have autolock activated')
     devlog('🔏', 'Device is secured')
     devlog('🔏', 'No security action taken')
+    await hideSplashScreen(splashScreens.LOCK_SCREEN)
   } else {
     devlog('🔏', 'Application does not have autolock activated')
     devlog('🔏', 'Device is unsecured')

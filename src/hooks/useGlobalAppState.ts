@@ -9,14 +9,10 @@ import {
   removeData,
   storeData
 } from '/libs/localStore/storage'
-import {
-  hideSplashScreen,
-  showSplashScreen
-} from '/app/theme/SplashScreenService'
+import { showSplashScreen, splashScreens } from '/app/theme/SplashScreenService'
 import { handleSecurityFlowWakeUp } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
 import { synchronizeDevice } from '/app/domain/authentication/services/SynchronizeService'
-import { lockScreens } from '/app/view/Lock/useLockScreenWrapper'
 
 const log = Minilog('useGlobalAppState')
 
@@ -24,7 +20,7 @@ const log = Minilog('useGlobalAppState')
 let appState: AppStateStatus = AppState.currentState
 
 const handleSleep = (): void => {
-  showSplashScreen('LOCK_SCREEN')
+  showSplashScreen(splashScreens.LOCK_SCREEN)
     .then(async () => {
       return await storeData(
         CozyPersistedStorageKeys.LastActivity,
@@ -43,10 +39,6 @@ const handleWakeUp = async (
   }
 
   await handleSecurityFlowWakeUp(client)
-
-  // On appStart the homeview will hide the splashscreen
-  // On wakeup, it is more ambiguous so we force it
-  if (!isAppStart) await hideSplashScreen(lockScreens.LOCK_SCREEN)
 }
 
 const isGoingToSleep = (nextAppState: AppStateStatus): boolean =>
