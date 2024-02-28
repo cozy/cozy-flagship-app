@@ -3,6 +3,7 @@ import RNRestart from 'react-native-restart'
 
 import { useClient } from 'cozy-client'
 
+import { useRestartContext } from '/components/providers/RestartProvider'
 import { useSplashScreen } from '/hooks/useSplashScreen'
 import { removeNotificationDeviceToken } from '/libs/client'
 import { useHttpServerContext } from '/libs/httpserver/httpServerProvider'
@@ -23,14 +24,16 @@ export const useNotifications = (): void => {
   const [areNotificationsEnabled, setAreNotificationsEnabled] = useState(false)
 
   const httpServerContext = useHttpServerContext()
+  const { unmountAppForRestart } = useRestartContext()
 
   const { showSplashScreen } = useSplashScreen()
 
   const restart = useCallback(async () => {
     await showSplashScreen()
     httpServerContext?.stop()
+    unmountAppForRestart()
     RNRestart.Restart()
-  }, [showSplashScreen, httpServerContext])
+  }, [showSplashScreen, httpServerContext, unmountAppForRestart])
 
   useEffect(() => {
     const initializeNotifications = async (): Promise<void> => {

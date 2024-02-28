@@ -17,6 +17,7 @@ import { IconChangedModal } from '/libs/icon/IconChangedModal'
 import { CryptoWebView } from '/components/webviews/CryptoWebView/CryptoWebView'
 import { HomeStateProvider } from '/screens/home/HomeStateProvider'
 import { HttpServerProvider } from '/libs/httpserver/httpServerProvider'
+import { RestartProvider } from '/components/providers/RestartProvider'
 import { SplashScreenProvider } from '/components/providers/SplashScreenProvider'
 import { cleanKonnectorsOnBootInBackground } from '/libs/konnectors/cleanKonnectorsOnBoot'
 import { getClient } from '/libs/client'
@@ -231,29 +232,31 @@ const Wrapper = () => {
 
   return (
     <>
-      {__DEV__ && <FlipperAsyncStorage />}
-      <CryptoWebView setHasCrypto={setHasCrypto} />
-      {hasCrypto && (
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <HttpServerProvider>
-              <HomeStateProvider>
-                <SplashScreenProvider>
-                  <SecureBackgroundSplashScreenWrapper>
-                    <NetStatusBoundary>
-                      <ThemeProvider>
-                        <PermissionsChecker>
-                          <WrappedApp />
-                        </PermissionsChecker>
-                      </ThemeProvider>
-                    </NetStatusBoundary>
-                  </SecureBackgroundSplashScreenWrapper>
-                </SplashScreenProvider>
-              </HomeStateProvider>
-            </HttpServerProvider>
-          </PersistGate>
-        </Provider>
-      )}
+      <RestartProvider>
+        {__DEV__ && <FlipperAsyncStorage />}
+        <CryptoWebView setHasCrypto={setHasCrypto} />
+        {hasCrypto && (
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              <HttpServerProvider>
+                <HomeStateProvider>
+                  <SplashScreenProvider>
+                    <SecureBackgroundSplashScreenWrapper>
+                      <NetStatusBoundary>
+                        <ThemeProvider>
+                          <PermissionsChecker>
+                            <WrappedApp />
+                          </PermissionsChecker>
+                        </ThemeProvider>
+                      </NetStatusBoundary>
+                    </SecureBackgroundSplashScreenWrapper>
+                  </SplashScreenProvider>
+                </HomeStateProvider>
+              </HttpServerProvider>
+            </PersistGate>
+          </Provider>
+        )}
+      </RestartProvider>
     </>
   )
 }
