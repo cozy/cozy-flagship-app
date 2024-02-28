@@ -1,10 +1,8 @@
-import { useCallback, useState, useEffect } from 'react'
-import RNRestart from 'react-native-restart'
+import { useState, useEffect } from 'react'
 
 import { useClient } from 'cozy-client'
 
 import { useRestartContext } from '/components/providers/RestartProvider'
-import { useSplashScreen } from '/hooks/useSplashScreen'
 import { removeNotificationDeviceToken } from '/libs/client'
 import {
   handleInitialToken,
@@ -22,15 +20,7 @@ export const useNotifications = (): void => {
 
   const [areNotificationsEnabled, setAreNotificationsEnabled] = useState(false)
 
-  const { unmountAppForRestart } = useRestartContext()
-
-  const { showSplashScreen } = useSplashScreen()
-
-  const restart = useCallback(async () => {
-    await showSplashScreen()
-    unmountAppForRestart()
-    RNRestart.Restart()
-  }, [showSplashScreen, unmountAppForRestart])
+  const { restartApp } = useRestartContext()
 
   useEffect(() => {
     const initializeNotifications = async (): Promise<void> => {
@@ -53,17 +43,17 @@ export const useNotifications = (): void => {
     if (!client) return
 
     void handleInitialToken(client)
-    void handleInitialServerNotification(client, restart)
-    void handleInitialLocalNotification(client, restart)
+    void handleInitialServerNotification(client, restartApp)
+    void handleInitialLocalNotification(client, restartApp)
 
     const removeTokenReceivingHandler = handleNotificationTokenReceiving(client)
     const removeOpeningHandler = handleServerNotificationOpening(
       client,
-      restart
+      restartApp
     )
     const removeLocalNotificationHandler = handleLocalNotificationOpening(
       client,
-      restart
+      restartApp
     )
     const removeServerForegroundHandler = handleServerNotificationOnForeground()
 
@@ -73,5 +63,5 @@ export const useNotifications = (): void => {
       removeServerForegroundHandler()
       removeLocalNotificationHandler()
     }
-  }, [client, areNotificationsEnabled, restart])
+  }, [client, areNotificationsEnabled, restartApp])
 }

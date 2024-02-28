@@ -1,11 +1,14 @@
 import React, { ReactNode, useContext, useState } from 'react'
+import RNRestart from 'react-native-restart'
 
 import Minilog from 'cozy-minilog'
+
+import { showSplashScreen } from '/app/theme/SplashScreenService'
 
 export const log = Minilog('🔃 RestartProvider')
 
 interface RestartContextInterface {
-  unmountAppForRestart: () => void
+  restartApp: () => Promise<void>
 }
 
 const RestartContext = React.createContext<RestartContextInterface | undefined>(
@@ -33,15 +36,17 @@ export const RestartProvider: React.FC<Props> = (props: {
 }): JSX.Element => {
   const [shouldUnmount, setShouldUnmount] = useState<boolean>(false)
 
-  const unmount = (): void => {
+  const unmountAndRestart = async (): Promise<void> => {
     log.debug('Unmount app for restart')
+    await showSplashScreen()
     setShouldUnmount(true)
+    RNRestart.Restart()
   }
 
   return (
     <RestartContext.Provider
       value={{
-        unmountAppForRestart: unmount
+        restartApp: unmountAndRestart
       }}
     >
       {!shouldUnmount ? props.children : null}
