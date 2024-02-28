@@ -79,7 +79,7 @@ export const getGeolocationTrackingStatus = async (
   }
 }
 
-export const checkShouldStartTracking = async (): Promise<void> => {
+export const startTrackingIfShouldBe = async (): Promise<void> => {
   const shouldStartTracking = (await getShouldStartTracking()) as boolean
 
   if (shouldStartTracking) {

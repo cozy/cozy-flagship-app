@@ -4,7 +4,7 @@ import { useClient } from 'cozy-client'
 
 import {
   isGeolocationTrackingEnabled,
-  checkShouldStartTracking,
+  startTrackingIfShouldBe,
   initGeolocationTracking
 } from '/app/domain/geolocation/services/tracking'
 import { checkGeolocationQuota } from '/app/domain/geolocation/helpers/quota'
@@ -27,7 +27,7 @@ export const useGeolocationTracking = (): void => {
       if (trackingEnabled) {
         await checkGeolocationQuota(client)
       } else {
-        await checkShouldStartTracking()
+        await startTrackingIfShouldBe()
       }
     }
 
