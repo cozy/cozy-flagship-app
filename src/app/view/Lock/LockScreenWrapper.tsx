@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { StyleSheet, View } from 'react-native'
 
-import { hideSplashScreen } from '/app/theme/SplashScreenService'
+import { hideSplashScreen, splashScreens } from '/app/theme/SplashScreenService'
 import { ScreenIndexes } from '/app/view/FlagshipUI'
 import { LockScreen } from '/app/view/Lock/LockScreen'
 import {
@@ -18,7 +18,8 @@ export const LockScreenWrapper = (): JSX.Element | null => {
 
   useEffect(() => {
     if (currentSecurityScreen) {
-      void hideSplashScreen()
+      void hideSplashScreen(splashScreens.GLOBAL)
+      void hideSplashScreen(splashScreens.LOCK_SCREEN)
     }
   }, [currentSecurityScreen])
 
