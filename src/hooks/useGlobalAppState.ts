@@ -107,6 +107,7 @@ export const useGlobalAppState = (): void => {
 
     return () => {
       appState = AppState.currentState
+      subscription?.remove()
     }
   }, [client])
 }
