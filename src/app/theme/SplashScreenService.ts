@@ -1,5 +1,8 @@
 import { AppState } from 'react-native'
-import RNBootSplash, { VisibilityStatus } from 'react-native-bootsplash'
+import RNBootSplash, {
+  ResultStatus,
+  VisibilityStatus
+} from 'react-native-bootsplash'
 
 import Minilog from 'cozy-minilog'
 
@@ -65,8 +68,10 @@ export const showSplashScreen = async (
   setTimeoutForSplashScreen(bootsplashName)
 
   try {
-    await RNBootSplash.show({ fade: true, bootsplashName })
-    return splashScreenLogger.info(`Splash screen shown "${bootsplashName}"`)
+    const result = await RNBootSplash.show({ fade: true, bootsplashName })
+    splashScreenLogger.info(
+      `Splash screen shown "${bootsplashName}" (${result.toString()})`
+    )
   } catch (error) {
     splashScreenLogger.error(
       `Error showing splash screen: ${bootsplashName}`,
@@ -96,8 +101,10 @@ export const hideSplashScreen = async (
   )
 
   try {
-    await manageTimersAndHideSplashScreen(bootsplashName)
-    return splashScreenLogger.info(`Splash screen hidden "${bootsplashName}"`)
+    const result = await manageTimersAndHideSplashScreen(bootsplashName)
+    splashScreenLogger.info(
+      `Splash screen hidden "${bootsplashName}" (${result.toString()})`
+    )
   } catch (error) {
     splashScreenLogger.error(
       `Error hiding splash screen: ${bootsplashName}`,
@@ -143,18 +150,19 @@ export const setTimeoutForSplashScreen = (
 const manageTimersAndHideSplashScreen = async (
   bootsplashName: SplashScreenEnum | undefined = splashScreens.GLOBAL,
   fromTimeout = false
-): Promise<void> => {
+): Promise<ResultStatus> => {
   if (bootsplashName !== splashScreens.SECURE_BACKGROUND)
     destroyTimer(bootsplashName, fromTimeout)
 
   try {
-    await RNBootSplash.hide({ fade: true, bootsplashName })
+    return await RNBootSplash.hide({ fade: true, bootsplashName })
   } catch (error) {
     splashScreenLogger.error(
       `Error managing timers and hiding splash screen "${bootsplashName}"`,
       error
     )
     logToSentry(error)
+    return false
   }
 }
 
