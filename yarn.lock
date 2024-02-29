@@ -16332,9 +16332,9 @@ react-native-biometrics@3.0.1:
   resolved "https://registry.yarnpkg.com/react-native-biometrics/-/react-native-biometrics-3.0.1.tgz#23c5a0bdbae1fcb1e08b22936223fe0fc4af846e"
   integrity sha512-Ru80gXRa9KG04sl5AB9HyjLjVbduhqZVjA+AiOSGqr+fNqCDmCu9y5WEksnjbnniNLmq1yGcw+qcLXmR1ddLDQ==
 
-"react-native-bootsplash@github:cozy/react-native-bootsplash#0.0.2":
+"react-native-bootsplash@github:cozy/react-native-bootsplash#0.0.3":
   version "3.2.4"
-  resolved "https://codeload.github.com/cozy/react-native-bootsplash/tar.gz/f5eb7d6fd628d27f61cc6df2e69d20b0b6960ebe"
+  resolved "https://codeload.github.com/cozy/react-native-bootsplash/tar.gz/bb60ff4b00d665324d24b8d15c2ed4aceefb99ea"
   dependencies:
     chalk "^4.1.0"
     fs-extra "^9.1.0"
