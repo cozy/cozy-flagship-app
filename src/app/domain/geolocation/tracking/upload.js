@@ -34,13 +34,9 @@ export const uploadUserCache = async (content, user) => {
   }
 
   if (!response.ok) {
+    const respText = await response.text()
     throw new Error(
-      String(
-        'Error in request response:',
-        response.status,
-        response.statusText,
-        await response.text()
-      )
+      `Error in usercache upload : ${response.status} - ${respText}`
     )
   }
   Log('Success uploading')
@@ -64,14 +60,8 @@ export const runOpenPathPipeline = async (user, webhook = '') => {
     body: body
   })
   if (!response.ok) {
-    throw new Error(
-      String(
-        'Error in pipeline run:',
-        response.status,
-        response.statusText,
-        await response.text()
-      )
-    )
+    const respText = await response.text()
+    throw new Error(`Error in pipeline run: ${response.status} - ${respText}`)
   }
   return { ok: true }
 }
