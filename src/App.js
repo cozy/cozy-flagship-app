@@ -61,9 +61,12 @@ import LauncherView from '/screens/konnectors/LauncherView'
 import { useShareFiles } from '/app/domain/osReceive/services/shareFilesService'
 import { ClouderyOffer } from '/app/view/IAP/ClouderyOffer'
 import { useDimensions } from '/libs/dimensions'
+// Temporarily disable FileLogger until we fix issue https://github.com/BeTomorrow/react-native-file-logger/issues/64
+/*
 import { configureFileLogger } from '/app/domain/logger/fileLogger'
 
 configureFileLogger()
+//*/
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
