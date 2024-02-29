@@ -289,7 +289,7 @@ export const startOpenPathUploadAndPipeline = async ({
       }
     }
   } catch (err) {
-    Log('Failed openpath processing: ' + JSON.stringify(err))
+    Log('Failed openpath processing: ' + err)
     log.error(err)
   }
   return
