@@ -12,10 +12,63 @@ index 7aaacbc..80b7c5b 100644
              android:grantUriPermissions="true">
              <meta-data
 diff --git a/node_modules/react-native-file-logger/android/src/main/java/com/betomorrow/rnfilelogger/FileLoggerModule.java b/node_modules/react-native-file-logger/android/src/main/java/com/betomorrow/rnfilelogger/FileLoggerModule.java
-index 1f3903d..b414954 100644
+index 1f3903d..9200e11 100644
 --- a/node_modules/react-native-file-logger/android/src/main/java/com/betomorrow/rnfilelogger/FileLoggerModule.java
 +++ b/node_modules/react-native-file-logger/android/src/main/java/com/betomorrow/rnfilelogger/FileLoggerModule.java
-@@ -188,7 +188,7 @@ public class FileLoggerModule extends ReactContextBaseJavaModule {
+@@ -26,6 +26,7 @@ import ch.qos.logback.classic.Level;
+ import ch.qos.logback.classic.LoggerContext;
+ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+ import ch.qos.logback.classic.spi.ILoggingEvent;
++import ch.qos.logback.core.Appender;
+ import ch.qos.logback.core.rolling.FixedWindowRollingPolicy;
+ import ch.qos.logback.core.rolling.RollingFileAppender;
+ import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
+@@ -37,6 +38,7 @@ public class FileLoggerModule extends ReactContextBaseJavaModule {
+     private static final int LOG_LEVEL_INFO = 1;
+     private static final int LOG_LEVEL_WARNING = 2;
+     private static final int LOG_LEVEL_ERROR = 3;
++    public static final String APPENDER_NAME = "FileLoggerAppender";
+ 
+     private static Logger logger = LoggerFactory.getLogger(FileLoggerModule.class);
+ 
+@@ -69,6 +71,7 @@ public class FileLoggerModule extends ReactContextBaseJavaModule {
+ 
+         RollingFileAppender<ILoggingEvent> rollingFileAppender = new RollingFileAppender<>();
+         rollingFileAppender.setContext(loggerContext);
++        rollingFileAppender.setName(APPENDER_NAME);
+         rollingFileAppender.setFile(logsDirectory + "/" + logPrefix + "-latest.log");
+ 
+         if (dailyRolling) {
+@@ -108,15 +111,24 @@ public class FileLoggerModule extends ReactContextBaseJavaModule {
+         rollingFileAppender.setEncoder(encoder);
+         rollingFileAppender.start();
+ 
+-        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+-        root.setLevel(Level.DEBUG);
+-        root.detachAndStopAllAppenders();
+-        root.addAppender(rollingFileAppender);
++        this.renewAppender(rollingFileAppender);
+ 
+         configureOptions = options;
+         promise.resolve(null);
+     }
+ 
++    private void renewAppender(Appender appender) {
++        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
++        root.setLevel(Level.DEBUG);
++        // Stopping the previous appender to release any resources it might be holding (file handles) and to ensure a clean shutdown.
++        Appender previousFileLoggerAppender = root.getAppender(APPENDER_NAME);
++        if (previousFileLoggerAppender != null) {
++            previousFileLoggerAppender.stop();
++            root.detachAppender(APPENDER_NAME);
++        }
++        root.addAppender(appender);
++    }
++
+     @ReactMethod
+     public void write(int level, String str) {
+         switch (level) {
+@@ -188,7 +200,7 @@ public class FileLoggerModule extends ReactContextBaseJavaModule {
              for (File file : getLogFiles()) {
                  Uri fileUri = FileProvider.getUriForFile(
                          reactContext,
