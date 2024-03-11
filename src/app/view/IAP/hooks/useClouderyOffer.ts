@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { initConnection, useIAP } from 'react-native-iap'
 import { getLocales } from 'react-native-localize'
 import Toast from 'react-native-toast-message'
 import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
@@ -15,6 +14,7 @@ import {
   buySubscription,
   formatOffers
 } from '/app/domain/iap/services/clouderyOffer'
+import { initConnection, useIAP } from '/app/domain/iap/services/iapModule'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { t } from '/locales/i18n'
 

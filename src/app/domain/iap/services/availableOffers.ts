@@ -1,8 +1,8 @@
 import { Platform } from 'react-native'
-import { getSubscriptions as iapGetSubscriptions } from 'react-native-iap'
 
 import Minilog from 'cozy-minilog'
 
+import { getSubscriptions as iapGetSubscriptions } from '/app/domain/iap/services/iapModule'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 const log = Minilog('💳 Available IAP Offers')

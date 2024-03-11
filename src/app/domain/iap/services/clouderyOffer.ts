@@ -2,6 +2,12 @@ import { EventEmitter } from 'events'
 
 import { Dispatch, SetStateAction } from 'react'
 import { Linking, Platform } from 'react-native'
+import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
+
+import CozyClient from 'cozy-client'
+import type { InstanceInfo } from 'cozy-client/types/types'
+import Minilog from 'cozy-minilog'
+
 import {
   clearTransactionIOS,
   ProrationModesAndroid,
@@ -9,13 +15,7 @@ import {
   Subscription,
   SubscriptionAndroid,
   SubscriptionOffer
-} from 'react-native-iap'
-import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
-
-import CozyClient from 'cozy-client'
-import type { InstanceInfo } from 'cozy-client/types/types'
-import Minilog from 'cozy-minilog'
-
+} from '/app/domain/iap/services/iapModule'
 import { BuyingState } from '/app/view/IAP/hooks/useClouderyOffer'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
