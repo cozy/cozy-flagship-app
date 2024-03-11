@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { withIAPContext } from 'react-native-iap'
 import WebView from 'react-native-webview'
 import type { WebViewNavigation } from 'react-native-webview/lib/WebViewTypes'
 
 import { FlagshipUI } from 'cozy-intent'
 
+import { withIAPContext } from '/app/domain/iap/services/iapModule'
 import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import { useClouderyOffer } from '/app/view/IAP/hooks/useClouderyOffer'
 import { IapProgress } from '/app/view/IAP/IapProgress'
