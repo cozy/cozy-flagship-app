@@ -112,6 +112,8 @@ const LoginSteps = ({
       route,
       navigation
     )
+    
+    console.log('🔴 loginScreenEffect.emailVerifiedCode', emailVerifiedCode)
 
     if (fqdn) {
       const instanceData = getInstanceDataFromFqdn(fqdn)
@@ -174,6 +176,8 @@ const LoginSteps = ({
       if (await NetService.isOffline())
         NetService.handleOffline(routes.authenticate)
 
+
+    console.log('🔴 setInstanceData.emailVerifiedCode', emailVerifiedCode)
       try {
         const client = await createClient(instance)
 

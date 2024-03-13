@@ -64,6 +64,7 @@ export const parseOnboardingURL = (
     const emailVerifiedCode = onboardingUrl.searchParams.get(
       'email_verified_code'
     )
+    console.log('🔴 deepLink.emailVerifiedCode', emailVerifiedCode)
 
     if (!onboardUrl && !fqdn) {
       return undefined

@@ -41,6 +41,7 @@ export const connectClient = async ({
   twoFactorAuthenticationData = undefined,
   emailVerifiedCode = undefined
 }: ConnectClientParams): Promise<CozyClientCreationContext> => {
+  console.log('🌈 connectClient.emailVerifiedCode', emailVerifiedCode)
   const result = await loginFlagship({
     client,
     loginData,

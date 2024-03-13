@@ -37,6 +37,8 @@ export const loginFlagship = async ({
   emailVerifiedCode
 }: LoginFlagshipParams): Promise<LoginFlagshipResult> => {
   const stackClient = client.getStackClient()
+
+  console.log('🔴 loginFlagship.emailVerifiedCode', emailVerifiedCode)
   try {
     const loginResult = await stackClient.loginFlagship({
       passwordHash: loginData.passwordHash,
