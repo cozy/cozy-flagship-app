@@ -1,5 +1,5 @@
 import { useNavigation, useNavigationState } from '@react-navigation/native'
-import React, { useReducer, useEffect, useRef } from 'react'
+import React, { useReducer, useEffect } from 'react'
 
 import { useClient } from 'cozy-client'
 
@@ -33,7 +33,6 @@ export const OsReceiveProvider = ({
   const { handleError } = useError()
   const navigationState = useNavigationState(state => state)
   const navigation = useNavigation()
-  const didCall = useRef(false)
 
   useEffect(() => {
     const onFilesReceived = (files: OsReceiveFile[]): void => {
@@ -63,7 +62,9 @@ export const OsReceiveProvider = ({
   }, [client?.isLogged])
 
   useEffect(() => {
-    if (!client || didCall.current || state.filesToUpload.length === 0) return
+    // If the candidate apps are already set, we don't need to fetch them again as it would trigger re-rendering
+    if (state.candidateApps !== undefined) return
+    if (!client || state.filesToUpload.length === 0) return
 
     const fetchAppsAndSetCandidates = async (): Promise<void> => {
       const res = (await client.fetchQueryAndGetFromState({
@@ -72,7 +73,6 @@ export const OsReceiveProvider = ({
       })) as { data: AcceptFromFlagshipManifest[] }
 
       if (res.data.length > 0) {
-        didCall.current = true
         dispatch({
           type: OsReceiveActionType.SetCandidateApps,
           payload: res.data

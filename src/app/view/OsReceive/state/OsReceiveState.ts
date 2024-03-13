@@ -43,11 +43,13 @@ export const osReceiveReducer = (
       nextState = { ...state, errored: action.payload }
       break
     }
+    // When resetting the state, we keep the candidateApps (e.g. when the user successfully uploads a file or cancels the upload)
+    // This is useful to avoid re-fetching the candidate apps when the user starts a new upload after a successful one
+    // This is only persisted in the runtime state and not in the persistent storage to avoid keeping the candidate apps when the user closes the app
+    // The candidate apps are fetched again when the user opens the app after closing it
     case OsReceiveActionType.SetRecoveryState:
-      nextState = initialState
-      break
     case OsReceiveActionType.SetInitialState:
-      nextState = initialState
+      nextState = { ...initialState, candidateApps: state.candidateApps }
       break
     case OsReceiveActionType.UpdateFileStatus: {
       const updateFile = (file: OsReceiveFile): OsReceiveFile => ({
