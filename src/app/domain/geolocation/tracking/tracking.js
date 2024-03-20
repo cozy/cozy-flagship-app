@@ -30,7 +30,8 @@ import {
   UNKNOWN_ACTIVITY,
   VEHICLE_ACTIVITY,
   WALKING_ACTIVITY,
-  AVG_WALKING_SPEED
+  AVG_WALKING_SPEED,
+  TRANSITION_TIME_SHIFT
 } from '/app/domain/geolocation/tracking/consts'
 
 /**
@@ -50,7 +51,7 @@ export const createDataBatch = (locations, nRun, maxBatchSize) => {
  * @param {Array<Location>} locations - The location points to upload
  * @param {string} user - The openpath user id
  * @param {{boolean}} - Additional params
- * @returns {number} The number of uploaded tracking data
+ * @returns {Promise<number>} The number of uploaded tracking data
  */
 export const uploadTrackingData = async (
   locations,
@@ -143,7 +144,10 @@ const prepareMotionData = async ({ locations, lastUploadedPoint }) => {
           new Date(1000 * (getTs(point) - 1)) +
           's'
       )
-      await addStartTransitions(contentToUpload, getTs(point) - 1)
+      await addStartTransitions(
+        contentToUpload,
+        getTs(point) - TRANSITION_TIME_SHIFT
+      )
     } else {
       const deltaT = getTs(point) - getTs(previousPoint)
       if (deltaT > MAX_TEMPORAL_DELTA) {
@@ -160,10 +164,17 @@ const prepareMotionData = async ({ locations, lastUploadedPoint }) => {
         // Force a stop/start transition when the temporal delta is too high
         // Note forcing the transition won't automatically create a new trip, typically a long-distance
         // flight of 12h+ should behave as one trip, even with this transition.
-        await addStopTransitions(contentToUpload, getTs(previousPoint) + 1, {
-          withForceStop: true
-        })
-        await addStartTransitions(contentToUpload, getTs(point) - 1)
+        await addStopTransitions(
+          contentToUpload,
+          getTs(previousPoint) + TRANSITION_TIME_SHIFT,
+          {
+            withForceStop: true
+          }
+        )
+        await addStartTransitions(
+          contentToUpload,
+          getTs(point) - TRANSITION_TIME_SHIFT
+        )
       } else if (deltaT > LARGE_TEMPORAL_DELTA) {
         const distanceM = getDistanceFromLatLonInM(previousPoint, point)
         Log('Spatial distance between points : ' + distanceM)
@@ -172,10 +183,17 @@ const prepareMotionData = async ({ locations, lastUploadedPoint }) => {
 
         if (speed < MIN_SPEED_BETWEEN_DISTANT_POINTS) {
           Log('Very slow speed: force transition')
-          await addStopTransitions(contentToUpload, getTs(previousPoint) + 1, {
-            withForceStop: true
-          })
-          await addStartTransitions(contentToUpload, getTs(point) - 1)
+          await addStopTransitions(
+            contentToUpload,
+            getTs(previousPoint) + TRANSITION_TIME_SHIFT,
+            {
+              withForceStop: true
+            }
+          )
+          await addStartTransitions(
+            contentToUpload,
+            getTs(point) - TRANSITION_TIME_SHIFT
+          )
           // Here we forced a hard stop transition. This typically happens when the tracking was lost for
           // a significant time, for a significant distance, but with a speed not significant enough to be
           // considered as a continuing trip.
@@ -200,7 +218,10 @@ const prepareMotionData = async ({ locations, lastUploadedPoint }) => {
       const lastStopTransitionTs = await getLastStopTransitionTs()
       if (lastStopTransitionTs >= lastStartTransitionTs) {
         Log('Based on timestamps, this is a new trip')
-        await addStartTransitions(contentToUpload, getTs(point) - 1)
+        await addStartTransitions(
+          contentToUpload,
+          getTs(point) - TRANSITION_TIME_SHIFT
+        )
       }
     }
 
@@ -223,9 +244,13 @@ const prepareMotionData = async ({ locations, lastUploadedPoint }) => {
   // The stop transition might be missed?
   const deltaLastPoint = Date.now() / 1000 - lastPointTs
   Log('Delta last point : ' + deltaLastPoint)
-  await addStopTransitions(contentToUpload, lastPointTs + 1, {
-    withForceStop: false
-  })
+  await addStopTransitions(
+    contentToUpload,
+    lastPointTs + TRANSITION_TIME_SHIFT,
+    {
+      withForceStop: false
+    }
+  )
 
   return contentToUpload
 }
@@ -252,10 +277,16 @@ export const createNewStartPoint = (previousPoint, nextPoint) => {
     nextPoint.coords.speed > 0 ? nextPoint.coords.speed : AVG_WALKING_SPEED
   // Calculate the time to subtract based on speed and distance
   const timeToSubtract = (distance / speed) * 1000
-  const newTime = date.getTime() - timeToSubtract
-  if (newTime > new Date(previousPoint.timestamp).getTime()) {
+  let newTime = date.getTime() - timeToSubtract
+
+  // Check the new time is greater than the previous location point, plus 1s for safety.
+  // Here, we want to prevent overlaping points, that might results in overlapping transitions.
+  if (newTime > new Date(previousPoint.timestamp).getTime() + 1000) {
     // Subtract the time from the date
-    date.setTime(date.getTime() - timeToSubtract)
+    date.setTime(newTime)
+  } else {
+    newTime = date.getTime() - 1000
+    date.setTime(newTime)
   }
   const newTimestamp = date.toISOString()
   const newPoint = { ...previousPoint, timestamp: newTimestamp }

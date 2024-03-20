@@ -67,7 +67,8 @@ export const createOpenPathUserIfMissing = async user => {
     return uuid
   } catch (err) {
     // If the user actually exist, the creation will return the existing user
-    Log(`Error when trying to get openpath user, let's create one`)
+    Log(`Error when trying to get openpath user ${user}, let's create one`)
+    Log(err)
     return createUser(user)
   }
 }
