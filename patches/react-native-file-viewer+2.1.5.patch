@@ -1,3 +1,29 @@
+diff --git a/node_modules/react-native-file-viewer/android/src/main/AndroidManifest.xml b/node_modules/react-native-file-viewer/android/src/main/AndroidManifest.xml
+index 8166e4c..4be50e7 100644
+--- a/node_modules/react-native-file-viewer/android/src/main/AndroidManifest.xml
++++ b/node_modules/react-native-file-viewer/android/src/main/AndroidManifest.xml
+@@ -4,7 +4,7 @@
+   package="com.vinzscam.reactnativefileviewer"
+   >
+       <application>
+-        <provider android:name="com.vinzscam.reactnativefileviewer.FileProvider" android:authorities="${applicationId}.provider" android:exported="false" android:grantUriPermissions="true">
++        <provider android:name="com.vinzscam.reactnativefileviewer.FileProvider" android:authorities="${applicationId}.reactnativefileviewer.provider" android:exported="false" android:grantUriPermissions="true">
+               <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_viewer_provider_paths" />
+         </provider>
+       </application>
+diff --git a/node_modules/react-native-file-viewer/android/src/main/java/com/vinzscam/reactnativefileviewer/RNFileViewerModule.java b/node_modules/react-native-file-viewer/android/src/main/java/com/vinzscam/reactnativefileviewer/RNFileViewerModule.java
+index 93f7881..9293eab 100644
+--- a/node_modules/react-native-file-viewer/android/src/main/java/com/vinzscam/reactnativefileviewer/RNFileViewerModule.java
++++ b/node_modules/react-native-file-viewer/android/src/main/java/com/vinzscam/reactnativefileviewer/RNFileViewerModule.java
+@@ -59,7 +59,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
+       }
+       try {
+         final String packageName = currentActivity.getPackageName();
+-        final String authority = new StringBuilder(packageName).append(".provider").toString();
++        final String authority = new StringBuilder(packageName).append(".reactnativefileviewer.provider").toString();
+         contentUri = FileProvider.getUriForFile(currentActivity, authority, newFile);
+       }
+       catch(IllegalArgumentException e) {
 diff --git a/node_modules/react-native-file-viewer/ios/RNFileViewerManager.m b/node_modules/react-native-file-viewer/ios/RNFileViewerManager.m
 index 8149cac..6ea97af 100644
 --- a/node_modules/react-native-file-viewer/ios/RNFileViewerManager.m
