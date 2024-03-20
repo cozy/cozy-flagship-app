@@ -274,12 +274,13 @@ export const startOpenPathUploadAndPipeline = async ({
   untilTs = 0,
   force = false
 } = {}) => {
+  let uploadedCount = -1
   try {
     const user = await getOrCreateId()
     Log(`User: ${JSON.stringify(user)}`)
 
     // Upload data to openpath server
-    const uploadedCount = await uploadData(user, { untilTs, force })
+    uploadedCount = await uploadData(user, { untilTs, force })
     if (uploadedCount >= 0) {
       // Start openpath pipeline
       const webhook = (await getFetchServiceWebHook()) || ''
@@ -292,5 +293,5 @@ export const startOpenPathUploadAndPipeline = async ({
     Log('Failed openpath processing: ' + err)
     log.error(err)
   }
-  return
+  return uploadedCount
 }
