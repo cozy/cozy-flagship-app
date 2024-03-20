@@ -268,7 +268,8 @@ export const handleConnectivityChange = async event => {
  * @property {number} [untilTs] - Until when the locations points should be fetched. Default is 0
  * @property {boolean} [force] - Whether or not the upload should be forced
  *
- * @param {Params} - The method parmas
+ * @param {Params} - The method params
+ * @returns {Promise<number>} The number of uploaded tracking data points
  */
 export const startOpenPathUploadAndPipeline = async ({
   untilTs = 0,

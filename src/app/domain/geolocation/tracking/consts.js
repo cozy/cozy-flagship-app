@@ -35,6 +35,7 @@ export const MIN_SPEED_BETWEEN_DISTANT_POINTS = 0.5 // In m/s. Note the average 
 export const MAX_DOCS_PER_BATCH = 30000 // Should be less than 10 MB. Should never reach 15 MB.
 export const MIN_DISTANCE_TO_USE_LAST_POINT = 50 // In meters.
 export const MAX_DISTANCE_TO_USE_LAST_POINT = 6000 // In meters. This value is quite high, but we noticed on iOS + Android that it can take this far to wake up when network data is disabled
+export const TRANSITION_TIME_SHIFT = 0.01 // In seconds. This is useful to ensure that start transitions are set just before the trip start and just after the trip end
 
 // All speed values in m/s
 export const AVG_WALKING_SPEED = 1.34

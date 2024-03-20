@@ -78,6 +78,17 @@ const filterBadContent = contentToUpload => {
   })
 }
 
+/**
+ * Get local location points and upload them
+ *
+ * @typedef {object} Params
+ * @property {number} [untilTs] - Until when the locations points should be fetched. Default is 0
+ * @property {boolean} [force] - Whether or not the upload should be forced
+ *
+ * @param {string} user - The openpath user
+ * @param {Params} - The method params
+ * @returns {number} The number of uploaded tracking data points
+ */
 export const uploadData = async (user, { untilTs = 0, force = false } = {}) => {
   Log(`Starting upload process for user ${user} ${force ? 'forced' : ''}`)
 

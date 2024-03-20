@@ -255,6 +255,28 @@ describe('createNewStartPoint', () => {
       new Date(nextPoint.timestamp).getTime()
     )
   })
+  it('should create starting point just before next point if too close from the previous point', () => {
+    const prevPoint = {
+      coords: {
+        latitude: 45.766501482079,
+        longitude: 4.828593684206228,
+        speed: 4.66
+      },
+      timestamp: '2024-03-15T08:24:59'
+    }
+    const nextPoint = {
+      coords: {
+        latitude: 45.766841923882495,
+        longitude: 4.82800307468357,
+        speed: 1
+      },
+      timestamp: '2024-03-15T08:25:10'
+    }
+    const newPoint = createNewStartPoint(prevPoint, nextPoint)
+    expect(new Date(newPoint.timestamp).getTime()).toEqual(
+      new Date(nextPoint.timestamp).getTime() - 1000
+    )
+  })
 })
 
 describe('inferMotionActivity', () => {
