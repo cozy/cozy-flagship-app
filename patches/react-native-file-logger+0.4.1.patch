@@ -1,3 +1,29 @@
+diff --git a/node_modules/react-native-file-logger/android/src/main/AndroidManifest.xml b/node_modules/react-native-file-logger/android/src/main/AndroidManifest.xml
+index 7aaacbc..80b7c5b 100644
+--- a/node_modules/react-native-file-logger/android/src/main/AndroidManifest.xml
++++ b/node_modules/react-native-file-logger/android/src/main/AndroidManifest.xml
+@@ -4,7 +4,7 @@
+     <application>
+         <provider
+             android:name="androidx.core.content.FileProvider"
+-            android:authorities="${applicationId}.provider"
++            android:authorities="${applicationId}.rnfilelogger.provider"
+             android:exported="false"
+             android:grantUriPermissions="true">
+             <meta-data
+diff --git a/node_modules/react-native-file-logger/android/src/main/java/com/betomorrow/rnfilelogger/FileLoggerModule.java b/node_modules/react-native-file-logger/android/src/main/java/com/betomorrow/rnfilelogger/FileLoggerModule.java
+index 1f3903d..b414954 100644
+--- a/node_modules/react-native-file-logger/android/src/main/java/com/betomorrow/rnfilelogger/FileLoggerModule.java
++++ b/node_modules/react-native-file-logger/android/src/main/java/com/betomorrow/rnfilelogger/FileLoggerModule.java
+@@ -188,7 +188,7 @@ public class FileLoggerModule extends ReactContextBaseJavaModule {
+             for (File file : getLogFiles()) {
+                 Uri fileUri = FileProvider.getUriForFile(
+                         reactContext,
+-                        reactContext.getApplicationContext().getPackageName() + ".provider",
++                        reactContext.getApplicationContext().getPackageName() + ".rnfilelogger.provider",
+                         file);
+                 uris.add(fileUri);
+             }
 diff --git a/node_modules/react-native-file-logger/ios/FileLogger.m b/node_modules/react-native-file-logger/ios/FileLogger.m
 index 7ee491d..978ce4e 100644
 --- a/node_modules/react-native-file-logger/ios/FileLogger.m
