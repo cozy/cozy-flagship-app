@@ -1,10 +1,25 @@
-# 1.1.25
+# 1.1.26
 
 ## ✨ Features
 
 
 ## 🐛 Bug Fixes
 
+
+## 🔧 Tech
+
+
+# 1.1.25
+
+## ✨ Features
+
+* Add the ability to send app's logs by email ([PR #1187](https://github.com/cozy/cozy-flagship-app/pull/1187))
+
+## 🐛 Bug Fixes
+
+* Fix a bug that prevented to preview and download files ([PR #1193](https://github.com/cozy/cozy-flagship-app/pull/1193))
+* Fix some wordings and translations ([PR #1186](https://github.com/cozy/cozy-flagship-app/pull/1186))
+* Improve Client Side Connectors stability ([PR #1191](https://github.com/cozy/cozy-flagship-app/pull/1191))
 
 ## 🔧 Tech
 
