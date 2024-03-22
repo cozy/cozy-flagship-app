@@ -34,6 +34,13 @@ it('should return a stringified HTML with added body classes', () => {
   expect(addBodyClasses(html)).toEqual(expected)
 })
 
+it('should return a stringified HTML with added body classes if body has no class attribute but child div has class attribute', () => {
+  const html = `<html><head></head><body><div role="application" class="application"></div></body></html>`
+  const expected = `<html><head></head><body class="flagship-app flagship-os-ios flagship-route-home"><div role="application" class="application"></div></body></html>`
+
+  expect(addBodyClasses(html)).toEqual(expected)
+})
+
 it('should return a stringified HTML with appended body classes', () => {
   const html = `<html class="it"><head class="works"></head><body id="baz" class="foo bar" data-class="test"></body></html>`
   const expected = `<html class="it"><head class="works"></head><body id="baz" class="foo bar flagship-app flagship-os-ios flagship-route-home" data-class="test"></body></html>`
