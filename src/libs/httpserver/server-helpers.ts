@@ -16,7 +16,7 @@ export const addBodyClasses = (HTMLstring: string): string => {
     navigationRef.getCurrentRoute()?.name ?? 'unknown'
   }`
 
-  const hasClasses = /<body.*?class=("|')(.*?)("|')/i.exec(HTMLstring)
+  const hasClasses = /<body[^>]*?class=("|')(.*?)("|')/i.exec(HTMLstring)
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- not sure why a RegExpExecArray value can be undefined
   if (!hasClasses || hasClasses[2] === undefined)
