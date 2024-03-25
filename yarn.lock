@@ -7996,11 +7996,12 @@ cozy-flags@^3.2.0:
   dependencies:
     microee "^0.0.6"
 
-cozy-intent@^2.19.0:
-  version "2.19.0"
-  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-2.19.0.tgz#77c6a8c16f82a11c1c8e27467855fc96c0bcd205"
-  integrity sha512-ZEax+lY/zGmxQ3V0bKmpiccMXD+o/X3Y+PlnRwxfNngwHvD61zG/ENWvtb5BUzQPjT/yhJ74gzzBPLqU0Zp/lw==
+cozy-intent@^2.20.0:
+  version "2.20.0"
+  resolved "https://registry.yarnpkg.com/cozy-intent/-/cozy-intent-2.20.0.tgz#a58f1e7236469b4986ae0ff259289fc0577afa1b"
+  integrity sha512-x4Fp3jrceXgmVHLEXBId6DQIokQVNVPic02tQn0KEvlzsfsNM4V2R/kd99nN0h1qZ3YGZwvBtX7/N4GAA+vD8g==
   dependencies:
+    cozy-minilog "^3.3.1"
     post-me "0.4.5"
 
 cozy-logger@^1.10.0:
@@ -8011,7 +8012,7 @@ cozy-logger@^1.10.0:
     chalk "^2.4.2"
     json-stringify-safe "5.0.1"
 
-cozy-minilog@3.3.1:
+cozy-minilog@3.3.1, cozy-minilog@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/cozy-minilog/-/cozy-minilog-3.3.1.tgz#472dccf4a9391c479120a83d26b435cf9d609c72"
   integrity sha512-NLQNQ1Q/bvJrqNv9w5bLjfAxYKv+pESobJgUKXondxP616kx7k0mpiRrCZBaJRbEbpKryT/eJ0JJwLdVaIP5NA==

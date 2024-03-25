@@ -56,7 +56,7 @@
     "cozy-clisk": "^0.36.1",
     "cozy-device-helper": "^2.7.0",
     "cozy-flags": "^3.2.0",
-    "cozy-intent": "^2.19.0",
+    "cozy-intent": "^2.20.0",
     "cozy-logger": "^1.10.0",
     "cozy-minilog": "3.3.1",
     "date-fns": "2.29.3",
