@@ -137,7 +137,7 @@
     "@svgr/webpack": "5.5.0",
     "@testing-library/jest-native": "5.4.3",
     "@testing-library/react-hooks": "8.0.1",
-    "@testing-library/react-native": "12.4.0",
+    "@testing-library/react-native": "12.4.5",
     "@types/fs-extra": "9.0.13",
     "@types/mime": "^3.0.1",
     "@types/react-native": "0.66.4",
