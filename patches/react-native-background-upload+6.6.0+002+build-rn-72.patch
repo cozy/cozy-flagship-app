@@ -1,0 +1,44 @@
+diff --git a/node_modules/react-native-background-upload/android/build.gradle b/node_modules/react-native-background-upload/android/build.gradle
+index fa6963f..6534084 100755
+--- a/node_modules/react-native-background-upload/android/build.gradle
++++ b/node_modules/react-native-background-upload/android/build.gradle
+@@ -1,6 +1,11 @@
+ buildscript {
++    // Simple helper that allows the root project to override versions declared by this library.
++    ext.safeExtGet = { prop, fallback ->
++        rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
++    }
++
+     ext {
+-        kotlinVersion = '1.6.0'
++        kotlinVersion = safeExtGet('kotlinVersion', '1.7.20')
+         buildToolsVersion = '29.0.2'
+         compileSdkVersion = 29
+         targetSdkVersion = 29
+@@ -20,16 +25,11 @@ buildscript {
+ 
+ apply plugin: 'com.android.library'
+ apply plugin: 'kotlin-android'
+-apply plugin: 'kotlin-android-extensions'
+ 
+ def DEFAULT_COMPILE_SDK_VERSION = 28
+ def DEFAULT_BUILD_TOOLS_VERSION = "28.0.3"
+ def DEFAULT_TARGET_SDK_VERSION = 28
+ 
+-def safeExtGet(prop, fallback) {
+-    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+-}
+-
+ android {
+     compileSdkVersion safeExtGet('compileSdkVersion', DEFAULT_COMPILE_SDK_VERSION)
+     buildToolsVersion safeExtGet('buildToolsVersion', DEFAULT_BUILD_TOOLS_VERSION)
+@@ -46,6 +46,9 @@ android {
+     lintOptions {
+         abortOnError false
+     }
++    buildFeatures {
++        viewBinding true
++    }
+ }
+ 
+ repositories {
