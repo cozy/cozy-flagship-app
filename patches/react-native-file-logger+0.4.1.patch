@@ -78,7 +78,7 @@ index 1f3903d..9200e11 100644
                  uris.add(fileUri);
              }
 diff --git a/node_modules/react-native-file-logger/ios/FileLogger.m b/node_modules/react-native-file-logger/ios/FileLogger.m
-index 7ee491d..978ce4e 100644
+index 7ee491d..329c09a 100644
 --- a/node_modules/react-native-file-logger/ios/FileLogger.m
 +++ b/node_modules/react-native-file-logger/ios/FileLogger.m
 @@ -4,6 +4,7 @@
@@ -107,7 +107,27 @@ index 7ee491d..978ce4e 100644
  
  RCT_EXPORT_MODULE()
  
-@@ -101,6 +113,8 @@ - (dispatch_queue_t)methodQueue {
+@@ -32,6 +44,10 @@ - (dispatch_queue_t)methodQueue {
+     NSNumber* maximumNumberOfFiles = options[@"maximumNumberOfFiles"];
+     NSString* logsDirectory = options[@"logsDirectory"];
+     
++    if (self.fileLogger) {
++        [DDLog removeLogger:self.fileLogger];
++    }
++
+     id<DDLogFileManager> fileManager = [[DDLogFileManagerDefault alloc] initWithLogsDirectory:logsDirectory];
+     fileManager.maximumNumberOfLogFiles = [maximumNumberOfFiles unsignedIntegerValue];
+     fileManager.logFilesDiskQuota = 0;
+@@ -40,7 +56,7 @@ - (dispatch_queue_t)methodQueue {
+     fileLogger.logFormatter = [[FileLoggerFormatter alloc] init];
+     fileLogger.rollingFrequency = [dailyRolling boolValue] ? 24 * 60 * 60 : 0;
+     fileLogger.maximumFileSize = [maximumFileSize unsignedIntegerValue];
+-    [DDLog removeAllLoggers];
++
+     [DDLog addLogger:fileLogger];
+     self.fileLogger = fileLogger;
+     
+@@ -101,6 +117,8 @@ - (dispatch_queue_t)methodQueue {
          [composeViewController setMessageBody:body isHTML:NO];
      }
      
@@ -116,7 +136,7 @@ index 7ee491d..978ce4e 100644
      NSArray<NSString*>* logFiles = self.fileLogger.logFileManager.sortedLogFilePaths;
      for (NSString* logFile in logFiles) {
          NSData* data = [NSData dataWithContentsOfFile:logFile];
-@@ -112,13 +126,44 @@ - (dispatch_queue_t)methodQueue {
+@@ -112,13 +130,44 @@ - (dispatch_queue_t)methodQueue {
          presentingViewController = presentingViewController.presentedViewController;
      }
      [presentingViewController presentViewController:composeViewController animated:YES completion:nil];
