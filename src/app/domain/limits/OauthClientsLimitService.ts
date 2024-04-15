@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events'
 
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
+import { Linking } from 'react-native'
 import type {
   WebViewOpenWindowEvent,
   WebViewNavigation
@@ -19,7 +20,8 @@ import { navigate, navigationRef } from '/libs/RootNavigation'
 import {
   showClouderyOffer,
   formatClouderyOfferUrlWithInAppPurchaseParams,
-  isClouderyOfferUrl
+  isClouderyOfferUrl,
+  isSupportUrl
 } from '/app/domain/iap/services/clouderyOffer'
 
 const log = Minilog('⛔ OAuth Clients Limit Service')
@@ -149,6 +151,10 @@ export const interceptOpenWindow =
 
       const { nativeEvent } = syntheticEvent
       const destinationUrl = cleanUrl(nativeEvent.targetUrl)
+
+      if (isSupportUrl(destinationUrl)) {
+        return void Linking.openURL(destinationUrl)
+      }
 
       if (isClouderyOfferUrl(destinationUrl, instanceInfo)) {
         const clouderyOfferUrlWithInAppPurchaseParams =

@@ -51,6 +51,13 @@ export const isClouderyOfferUrl = (
   return url.startsWith(`${manager_url}/cozy/instances/${uuid}/premium`)
 }
 
+export const isSupportUrl = (url: string): boolean => {
+  return (
+    url.startsWith('https://support.cozy.io') || // French support
+    url.startsWith('https://help.cozy.io') // English support
+  )
+}
+
 export const interceptNavigation =
   (
     client: CozyClient | null,
