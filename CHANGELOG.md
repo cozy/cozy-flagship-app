@@ -1,4 +1,4 @@
-# 1.1.26
+# 1.1.27
 
 ## ✨ Features
 
@@ -8,6 +8,25 @@
 
 ## 🔧 Tech
 
+
+# 1.1.26
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+* Prevent missing trips in CoahCO2 because of overlapping transitions ([PR #1192](https://github.com/cozy/cozy-flagship-app/pull/1192))
+* Fix a bug that prevented Ecolyo to work on Android ([PR #1194](https://github.com/cozy/cozy-flagship-app/pull/1194))
+* Fix a bug that prevented CoahCO2 logs to be sent by email ([PR #1201](https://github.com/cozy/cozy-flagship-app/pull/1201))
+* The App should now display the correct action when sharing files to the App multiple times in a row ([PR #1190](https://github.com/cozy/cozy-flagship-app/pull/1190))
+* Offers page now correctly handle links to the Cozy's support website ([PR #1202](https://github.com/cozy/cozy-flagship-app/pull/1202))
+
+## 🔧 Tech
+
+* Cozy-intent should now logs exceptions as warning ([PR #1196](https://github.com/cozy/cozy-flagship-app/pull/1196))
+* Prepare plugins for future ReactNative 0.72 upgrade ([PR #1200](https://github.com/cozy/cozy-flagship-app/pull/1200))
+* Improve Release CI by generating signed Universal APK andproviding it as artifact ([PR #1189](https://github.com/cozy/cozy-flagship-app/pull/1189))
 
 # 1.1.25
 
