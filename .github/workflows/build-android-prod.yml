@@ -98,13 +98,6 @@ jobs:
         env:
           BUILD_TOOLS_VERSION: "33.0.0"
 
-      - name: Upload AAB artifact to GitHub
-        uses: actions/upload-artifact@v3
-        with:
-          name: Signed Android AAB ${{ inputs.brand }}
-          path: |
-            android/app/build/outputs/bundle/prodRelease/*.aab
-
       - name: Upload App to Google Play
         uses: r0adkll/upload-google-play@v1
         with:
@@ -112,3 +105,50 @@ jobs:
           packageName: ${{ inputs.brand != 'cozy' && format('io.cozy.flagship.mobile.{0}', inputs.brand) || 'io.cozy.flagship.mobile' }}
           releaseFiles: android/app/build/outputs/bundle/prodRelease/*.aab
           track: internal
+
+      - name: Download BundleTool
+        run: |
+          curl -L https://github.com/google/bundletool/releases/download/1.8.0/bundletool-all-1.8.0.jar -o bundletool.jar
+
+      - name: Decode signing key
+        run: echo "${{ secrets[format('{0}_ANDROID_SIGNING_KEY', inputs.brand)] }}" | base64 --decode > signingKey.jks
+        env:
+          BUILD_TOOLS_VERSION: "33.0.0"
+
+      - name: Generate APK Set from AAB
+        run: |
+          java -jar bundletool.jar build-apks \
+            --bundle=android/app/build/outputs/bundle/prodRelease/app-prod-release.aab \
+            --output=app-prod-release.apks \
+            --mode=universal \
+            --ks=signingKey.jks \
+            --ks-pass=pass:${{ secrets[format('{0}_ANDROID_KEY_STORE_PASSWORD', inputs.brand)] }} \
+            --ks-key-alias=${{ secrets[format('{0}_ANDROID_ALIAS', inputs.brand)] }} \
+            --key-pass=pass:${{ secrets[format('{0}_ANDROID_KEY_PASSWORD', inputs.brand)] }}
+  
+      - name: Rename .apks file to .zip
+        run: mv app-prod-release.apks app-prod-release.zip
+        
+      - name: Unzip the universal APK from the .zip file
+        run: unzip app-prod-release.zip -d ./extracted-apks
+      
+      - name: Rename and move Universal APK
+        run: |
+          APK_PATH=$(find ./extracted-apks -name '*.apk')
+          mv "$APK_PATH" "./extracted-apks/cozy_flagship_universal.apk"
+
+      - name: Extract Version Info and Define Artifact Name
+        run: |
+          GRADLE_PATH="./android/app/build.gradle"
+          VERSION_CODE=$(awk '/versionCode/ {print}' $GRADLE_PATH | sed 's/[^0-9*]//g' | bc)
+          VERSION_NAME=$(grep versionName $GRADLE_PATH | awk -F '"' '{print $2}')
+          ARTIFACT_NAME="App-$VERSION_NAME-$VERSION_CODE-${{ github.event.inputs.brand }}"
+          echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
+          echo "::set-output name=artifact_name::$ARTIFACT_NAME"
+        id: artifact_info
+        
+      - name: Upload APK artifact to GitHub
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.artifact_info.outputs.artifact_name }}
+          path: ./extracted-apks/cozy_flagship_universal.apk
