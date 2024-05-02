@@ -18,6 +18,7 @@
     "install:scripts": "yarn tsc --project scripts && yarn install:home:registry",
     "ios": "react-native run-ios",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+    "log:android": "adb logcat *:S ReactNative:V ReactNativeJS:V",
     "postinstall": "patch-package && yarn install:scripts && react-native setup-ios-permissions && pod-install",
     "pre-commit": "yarn lint",
     "start": "react-native start",
