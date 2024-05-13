@@ -61,5 +61,6 @@
     "cloud": "https://manager.cozycloud.cc/connection_check",
     "stack": "connection_check"
   },
-  "SENTRY_DSN_URL": "https://73d1bdec0dad488bb8781dfcfe083380@errors.cozycloud.cc/17"
+  "SENTRY_DSN_URL": "https://73d1bdec0dad488bb8781dfcfe083380@errors.cozycloud.cc/17",
+  "DEFAULT_LOCALE": "en"
 }
