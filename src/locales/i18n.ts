@@ -11,12 +11,12 @@ import { getLocales } from 'react-native-localize'
 import CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
-import en from './en.json'
-import es from './es.json'
-import fr from './fr.json'
+import strings from '/constants/strings.json'
+import en from '/locales/en.json'
+import es from '/locales/es.json'
+import fr from '/locales/fr.json'
 
-const i18nLogger = Minilog('i18n')
-
+// Configuration
 intervalPlural.setOptions({
   // these are the defaults
   intervalSeparator: '||||',
@@ -26,30 +26,21 @@ intervalPlural.setOptions({
 
 // Translation resources are loaded from the src/locales folder, and pulled in by the transifex-client
 const resources: Record<string, Resource> = {
-  en: {
-    translation: en
-  },
-  fr: {
-    translation: fr
-  },
-  es: {
-    translation: es
-  }
+  en: { translation: en },
+  fr: { translation: fr },
+  es: { translation: es }
 }
 
-export const supportedLanguages = Object.keys(resources)
-export const defaultLanguage = 'en'
+const defaultLocale = strings.DEFAULT_LOCALE
 
-// This function returns the supported language code of the device, or the default language code ('en')
-const getSupportedLanguageCode = (
-  languageCode: string
-): keyof typeof resources => {
-  return Object.prototype.hasOwnProperty.call(resources, languageCode)
-    ? languageCode
-    : defaultLanguage
-}
+const getDeviceLanguage = (): string => getLocales()[0]?.languageCode
 
-const language = getSupportedLanguageCode(getLocales()[0].languageCode)
+const deviceLanguage = getDeviceLanguage()
+
+// Gets the supported language code of the device (en, fr or es), or the default language code if the device language is not supported
+const language = Object.prototype.hasOwnProperty.call(resources, deviceLanguage)
+  ? deviceLanguage
+  : defaultLocale
 
 // Initialize i18next with resources and settings
 _i18n
@@ -64,24 +55,34 @@ _i18n
     }
   })
   .catch(error => {
-    // eslint-disable-next-line no-console
-    console.log(error)
+    i18nLogger.error('Error during i18n module init', error)
   })
 
+// Types
 export type I18nInstance = typeof _i18n
+
 export type TranslationFunction = (
   ...args: Parameters<I18nInstance['t']>
 ) => ReturnType<I18nInstance['t']>
+
 export type UseTranslationResult = ReturnType<typeof useTranslation>
+
 export type ChangeLanguageFunction = (
   ...args: Parameters<I18nInstance['changeLanguage']>
 ) => ReturnType<I18nInstance['changeLanguage']>
 
-export const i18n = (): I18nInstance => _i18n
-export const t: TranslationFunction = (...args) => _i18n.t(...args)
-export const useI18n = (): UseTranslationResult => useTranslation()
+// API
+export const supportedLanguages = Object.keys(resources)
 
-const getDeviceLanguage = (): string => getLocales()[0]?.languageCode
+export const defaultLanguage = defaultLocale
+
+export const i18nLogger = Minilog('i18n')
+
+export const i18n = (): I18nInstance => _i18n
+
+export const t: TranslationFunction = (...args) => _i18n.t(...args)
+
+export const useI18n = (): UseTranslationResult => useTranslation()
 
 export const changeLanguage = async (languageCode: string): Promise<void> => {
   // If the language is supported, use it.
@@ -90,7 +91,6 @@ export const changeLanguage = async (languageCode: string): Promise<void> => {
     return
   }
 
-  // Otherwise, fallback to the device's language (if supported)
   const deviceLanguage = getDeviceLanguage()
 
   if (supportedLanguages.includes(deviceLanguage)) {
