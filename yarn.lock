@@ -7943,10 +7943,10 @@ cosmiconfig@^7.0.1:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-cozy-client@^46.6.1:
-  version "46.6.1"
-  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-46.6.1.tgz#019b0b1eb2c339f9b33cc175f31a8b6af459b459"
-  integrity sha512-LpLHK/82+pddeZbCRYlvQQllRVdKD10ik3Ny+xu59QdVc8vpn5ipxqGwzPjQcxX7fcfbpGBjMtP/3MH5IdnUjg==
+cozy-client@^46.11.0:
+  version "46.11.0"
+  resolved "https://registry.yarnpkg.com/cozy-client/-/cozy-client-46.11.0.tgz#1baea83e7594b57daec35e02220365783dfe4945"
+  integrity sha512-H9sEyLSC9SrjZfPQi+fgQCMmFuMyUWxi/Y77YPEuDZOZaGUdJLsVimzjdZTewEc//85qo+GzQBbKB7TnzZ6doA==
   dependencies:
     "@cozy/minilog" "1.0.0"
     "@types/jest" "^26.0.20"
