@@ -8,6 +8,7 @@ module.exports = {
         root: ['./'],
         alias: {
           '^/(.+)': './src/\\1',
+          'pouchdb-collate': '@craftzdog/pouchdb-collate-react-native',
           '@cozy/minilog': 'cozy-minilog'
         },
         extensions: [
