@@ -10,6 +10,8 @@ buildscript {
         googlePlayServicesLocationVersion = "20.0.0"
         DocumentScanner_compileSdkVersion = 34
         DocumentScanner_targetSdkVersion = 34
+        QuickBase64_compileSdkVersion = 34
+        QuickBase64_targetSdkVersion = 34
         ndkVersion = "25.1.8937393"
         kotlinVersion = "1.8.0"
         // To solve a conflict between flipper and react-native-background-geolocation

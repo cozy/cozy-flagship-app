@@ -11,6 +11,7 @@ This notably includes the possiblity to run client-side konnectors, to get your 
 - [iOS only] Install XCode 
 - [Android only] Install Android Studio (or Android SDK)
 - [Android only] Java 11
+- [Android only] Install NDK (21.4.7075529) and CMake (3.10.2) from Android Studio's SDK Manager
 - [Android only] Copy the Android's `debug.keystore` from Cozy's password-store into `android/app/debug.keystore`
   - Run `pass show app-amirale/Certificates/debug.keystore > android/app/debug.keystore`
   - If you don't have access to Cozy's password-store, just generate a new `debug.keystore` file
