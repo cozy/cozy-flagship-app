@@ -3,20 +3,29 @@ import DocumentScanner, {
   ResponseType
 } from 'react-native-document-scanner-plugin'
 
+import {
+  storeSharedMemory,
+  removeSharedMemory
+} from '/libs/localStore/sharedMemory'
+
 type Base64 = string
 
 export const scanDocument = async (): Promise<Base64 | undefined> => {
   try {
+    removeSharedMemory('mespapiers', 'scanDocument')
+
     const { scannedImages } = await DocumentScanner.scanDocument({
       responseType: ResponseType.Base64,
       maxNumDocuments: 1
     })
 
-    if (scannedImages) {
-      return scannedImages[scannedImages.length - 1]
-    } else {
-      return undefined
-    }
+    const scanResult = scannedImages
+      ? scannedImages[scannedImages.length - 1]
+      : undefined
+
+    storeSharedMemory('mespapiers', 'scanDocument', scanResult)
+
+    return scanResult
   } catch {
     return undefined
   }
