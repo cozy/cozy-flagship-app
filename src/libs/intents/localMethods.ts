@@ -19,6 +19,7 @@ import strings from '/constants/strings.json'
 import { EnvService } from '/core/tools/env'
 import { clearCookies } from '/libs/httpserver/httpCookieManager'
 import { clearCozyData } from '/libs/localStore/storage'
+import { sharedMemoryLocalMethods } from '/libs/localStore/sharedMemory'
 import { deleteKeychain } from '/libs/keychain'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { openApp } from '/libs/functions/openApp'
@@ -96,6 +97,8 @@ const isAvailable = (featureName: string): Promise<boolean> => {
     return Promise.resolve(true)
   } else if (featureName === 'iap') {
     return isIapAvailable()
+  } else if (featureName === 'sharedMemory') {
+    return Promise.resolve(true)
   }
 
   return Promise.resolve(false)
@@ -197,6 +200,9 @@ interface CustomMethods {
   getDeviceInfo: typeof getDeviceInfo
   isAvailable: typeof isAvailable
   print: typeof print
+  getSharedMemory: typeof sharedMemoryLocalMethods.getSharedMemory
+  storeSharedMemory: typeof sharedMemoryLocalMethods.storeSharedMemory
+  removeSharedMemory: typeof sharedMemoryLocalMethods.removeSharedMemory
 }
 
 let prepareBackupLock = false
@@ -333,6 +339,7 @@ export const localMethods = (
     getDeviceInfo,
     isAvailable,
     print,
+    ...sharedMemoryLocalMethods,
     ...mergedMethods
   }
 }
