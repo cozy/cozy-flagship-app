@@ -128,4 +128,5 @@ jest.mock('../src/core/tools/env', () => ({
   shouldDisableAutolock: jest.fn().mockReturnValue(false)
 }))
 
+jest.mock('../src/pouchdb/pouchdb', () => ({}))
 jest.mock('react-native-quick-websql', () => ({}))
