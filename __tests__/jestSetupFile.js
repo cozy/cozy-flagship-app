@@ -130,3 +130,13 @@ jest.mock('../src/core/tools/env', () => ({
 
 jest.mock('../src/pouchdb/pouchdb', () => ({}))
 jest.mock('react-native-quick-websql', () => ({}))
+
+class mockPouchLink {
+  constructor() {}
+}
+
+jest.mock('cozy-pouch-link', () => {
+  return jest.fn().mockImplementation(() => {
+    return new mockPouchLink()
+  })
+})
