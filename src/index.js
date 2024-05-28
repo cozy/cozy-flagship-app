@@ -1,3 +1,5 @@
+import '/pouchdb/shim'
+
 import { AppRegistry } from 'react-native'
 
 import App from './App'
