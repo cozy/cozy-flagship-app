@@ -1,4 +1,5 @@
 import './openHandleFix'
+global.Promise = jest.requireActual('promise')
 
 import mockNotifee from '@notifee/react-native/jest-mock'
 import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock'
