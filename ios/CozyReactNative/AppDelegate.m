@@ -40,11 +40,13 @@ static void SetCustomNSURLSessionConfiguration() {
 
   SetCustomNSURLSessionConfiguration();
 
-  [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView]; // danger
-
   [[TSBackgroundFetch sharedInstance] didFinishLaunching]; // danger
 
-  return [super application:application didFinishLaunchingWithOptions:launchOptions];
+  [super application:application didFinishLaunchingWithOptions:launchOptions];
+
+  [RNBootSplash initWithStoryboard:@"BootSplash" rootView:self.window.rootViewController.view]; // danger
+
+  return YES;
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
