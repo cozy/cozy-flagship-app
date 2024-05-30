@@ -393,8 +393,10 @@ class ReactNativeLauncher extends Launcher {
         )
         return
       }
-
       const { url, html } = await this.worker.call('getDebugData')
+      const existingLogsFolderId = await client
+        .collection('io.cozy.files')
+        .ensureDirectoryExists('/Settings/Logs')
 
       await client.save({
         _type: 'io.cozy.files',
@@ -412,14 +414,14 @@ class ReactNativeLauncher extends Launcher {
                 )} : ${JSON.stringify(line[2].slice(1))}`
             )
             .join('\n')} -->`,
-        dirId: 'io.cozy.files.root-dir',
+        dirId: existingLogsFolderId,
         name
       })
       this.log({
         namespace: 'ReactNativeLauncher',
         label: 'fetchAndSaveDebugData',
         level: 'debug',
-        msg: `Saved debug data in /${name}}`
+        msg: `Saved debug data in /Settings/Logs/${name}`
       })
     } catch (err) {
       const message = err instanceof Error ? err.message : err
