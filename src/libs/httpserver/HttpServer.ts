@@ -1,4 +1,9 @@
-import { NativeModules, AppState, Platform } from 'react-native'
+import {
+  NativeModules,
+  AppState,
+  Platform,
+  NativeEventSubscription
+} from 'react-native'
 
 interface NativeHttpServer {
   start: (
@@ -36,6 +41,7 @@ class HttpServer {
   keepAlive = false
   localOnly = false
 
+  appStateListener: NativeEventSubscription | null
   _handleAppStateChangeFn: (appState: string) => void
 
   constructor(port: number, root?: string, opts?: ServerOptions) {
@@ -47,6 +53,8 @@ class HttpServer {
     this.started = false
     this._origin = undefined
     this.securityKey = ''
+
+    this.appStateListener = null
     this._handleAppStateChangeFn = this._handleAppStateChange.bind(this)
   }
 
@@ -65,7 +73,10 @@ class HttpServer {
     this.running = true
 
     if (!this.keepAlive && Platform.OS === 'android') {
-      AppState.addEventListener('change', this._handleAppStateChangeFn)
+      this.appStateListener = AppState.addEventListener(
+        'change',
+        this._handleAppStateChangeFn
+      )
     }
 
     return NativeHttpServer.start(
@@ -94,7 +105,7 @@ class HttpServer {
     this.stop()
     this.started = false
     this._origin = undefined
-    AppState.removeEventListener('change', this._handleAppStateChangeFn)
+    this.appStateListener?.remove()
   }
 
   _handleAppStateChange(appState: string): void {
