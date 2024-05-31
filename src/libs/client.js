@@ -29,7 +29,7 @@ export {
   callOnboardingInitClient
 } from '/libs/clientHelpers/initClient'
 export { call2FAInitClient } from '/libs/clientHelpers/twoFactorAuthentication'
-import { CozyPersistedStorageKeys, getData } from '/libs/localStore/storage'
+import { CozyPersistedStorageKeys, getData, storeData } from '/libs/localStore/storage'
 import { getLinks } from '/pouchdb/getPouchLinks'
 
 const log = Minilog('LoginScreen')
@@ -110,6 +110,7 @@ export const fetchPublicData = async client => {
  */
 
 export const fetchCozyDataForSlug = async (slug, client, cookie) => {
+  const cacheKey = `CozyData_${client.getStackClient().uri}_${slug}`
   const stackClient = client.getStackClient()
 
   const options = cookie
@@ -123,12 +124,26 @@ export const fetchCozyDataForSlug = async (slug, client, cookie) => {
       }
     : undefined
 
-  const result = await stackClient.fetchJSON(
-    'GET',
-    `/apps/${slug}/open`,
-    undefined,
-    options
-  )
+    try {
+      const result = await stackClient.fetchJSON(
+        'GET',
+        `/apps/${slug}/open`,
+        undefined,
+        options
+      )
+
+      cacheSet(cacheKey, result)
+
+      return result
+    } catch (err) {
+      const cachedResult = await cacheGet(cacheKey)
+
+      if (cachedResult) {
+        return cachedResult
+      }
+
+      throw err
+    }
 
   return result
 }
