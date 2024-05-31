@@ -220,6 +220,7 @@ describe('ReactNativeLauncher', () => {
         trigger: fixtures.trigger,
         konnector,
         manifest: konnector,
+        flags: [],
         launcherClient: {
           setAppMetadata: () => null
         }
@@ -301,7 +302,8 @@ describe('ReactNativeLauncher', () => {
           _id: 'normal_job_id'
         },
         sourceAccountIdentifier: 'testsourceaccountidentifier',
-        manifest: konnector
+        manifest: konnector,
+        flags: []
       })
       expect(launcher.pilot.call).not.toHaveBeenCalledWith(
         'ensureNotAuthenticated'
@@ -319,6 +321,7 @@ describe('ReactNativeLauncher', () => {
         trigger: fixtures.trigger,
         konnector,
         manifest: konnector,
+        flags: [],
         launcherClient: {
           setAppMetadata: () => null
         }
@@ -346,6 +349,7 @@ describe('ReactNativeLauncher', () => {
           slug: 'testkonnector',
           name: 'Test Konnector'
         },
+        flags: [],
         launcherClient: {
           setAppMetadata: () => null
         }
@@ -390,6 +394,7 @@ describe('ReactNativeLauncher', () => {
           slug: 'testkonnector',
           name: 'Test Konnector'
         },
+        flags: [],
         launcherClient: {
           setAppMetadata: () => null
         }
@@ -484,6 +489,7 @@ describe('ReactNativeLauncher', () => {
         account: fixtures.account,
         trigger: fixtures.trigger,
         konnector: { slug: 'konnectorslug', clientSide: true },
+        flags: [],
         launcherClient: {
           setAppMetadata: () => null
         }
@@ -526,6 +532,7 @@ describe('ReactNativeLauncher', () => {
         account: fixtures.account,
         trigger: fixtures.trigger,
         konnector: { slug: 'konnectorslug', clientSide: true },
+        flags: [],
         launcherClient: {
           setAppMetadata: () => null
         }
