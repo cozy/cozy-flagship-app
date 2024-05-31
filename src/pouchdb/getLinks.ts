@@ -1,5 +1,6 @@
 import { platformReactNative } from '/pouchdb/platformReactNative'
 
+import { CozyLink, StackLink } from 'cozy-client'
 import { default as PouchLink } from 'cozy-pouch-link'
 
 export const offlineDoctypes = [
@@ -24,16 +25,20 @@ export const offlineDoctypes = [
   'io.cozy.permissions'
 ]
 
-export const getLinks = () => {
+export const getLinks = (): CozyLink[] => {
   const pouchLinkOptions = {
     doctypes: offlineDoctypes,
     initialSync: true,
     platform: platformReactNative
   }
 
+  const stackLink = new StackLink({
+    platform: platformReactNative
+  })
+
   const pouchLink = new PouchLink({
     ...pouchLinkOptions
   })
 
-  return [pouchLink]
+  return [stackLink, pouchLink]
 }
