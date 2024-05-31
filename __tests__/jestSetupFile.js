@@ -1,4 +1,3 @@
-import './openHandleFix'
 global.Promise = jest.requireActual('promise')
 
 import mockNotifee from '@notifee/react-native/jest-mock'
