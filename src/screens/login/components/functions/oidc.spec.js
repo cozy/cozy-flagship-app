@@ -1,4 +1,4 @@
-import { act } from '@testing-library/react-hooks'
+import { act } from '@testing-library/react-native'
 import { Linking } from 'react-native'
 
 import { showInAppBrowser } from '/libs/intents/InAppBrowser'
