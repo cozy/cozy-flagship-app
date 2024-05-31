@@ -17,6 +17,7 @@ import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 
 import { wrapTimerFactory } from 'cozy-clisk'
 import flag from 'cozy-flags'
+import { listFlags } from 'cozy-flags/dist/flag'
 
 import {
   activateKeepAwake,
@@ -339,13 +340,14 @@ class ReactNativeLauncher extends Launcher {
 
       const { account, trigger, job, manifest } = this.getStartContext()
       const { sourceAccountIdentifier } = this.getUserData()
-
+      const cozyFlags = listFlags()
       const pilotContext = {
         manifest,
         account,
         trigger,
         job,
-        sourceAccountIdentifier
+        sourceAccountIdentifier,
+        flags: cozyFlags
       }
 
       if (hasPermission(manifest, 'io.cozy.files')) {
