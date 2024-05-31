@@ -30,6 +30,7 @@ export {
 } from '/libs/clientHelpers/initClient'
 export { call2FAInitClient } from '/libs/clientHelpers/twoFactorAuthentication'
 import { CozyPersistedStorageKeys, getData } from '/libs/localStore/storage'
+import { getLinks } from '/pouchdb/getLinks'
 
 const log = Minilog('LoginScreen')
 
@@ -44,6 +45,7 @@ export const getClient = async () => {
     return false
   }
   const { uri, oauthOptions, token } = oauthData
+  const links = getLinks()
   const client = new CozyClient({
     uri,
     oauth: { token },
@@ -51,7 +53,8 @@ export const getClient = async () => {
     appMetadata: {
       slug: 'flagship',
       version: packageJSON.version
-    }
+    },
+    links
   })
   listenTokenRefresh(client)
   client.getStackClient().setOAuthOptions(oauthOptions)
