@@ -413,7 +413,7 @@ PODS:
     - React-Core
   - react-native-cookies (6.2.1):
     - React-Core
-  - react-native-document-scanner-plugin (0.7.3):
+  - react-native-document-scanner-plugin (1.0.0):
     - React-Core
   - react-native-flipper (0.146.1):
     - React-Core
@@ -929,7 +929,7 @@ SPEC CHECKSUMS:
   react-native-change-icon: ea9bb7255b09e89f41cbf282df16eade91ab1833
   react-native-config: 5330c8258265c1e5fdb8c009d2cabd6badd96727
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
-  react-native-document-scanner-plugin: df5b82df67ff612262c40c26ef2c8239c5af5c55
+  react-native-document-scanner-plugin: 0687a1d8eaff9dac01dd2799993590831f8f8bcb
   react-native-flipper: 4bfe0a324e663f1ae2f76ad0da75673de6895efe
   react-native-gzip: 5ffb84bf191c7cd135338eca748317bc466d41a1
   react-native-idle-timer: f1920a59fe776340d004ff9de13c4a6eedcc8807

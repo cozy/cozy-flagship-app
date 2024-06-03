@@ -16366,10 +16366,10 @@ react-native-device-info@^10.3.0:
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-10.3.0.tgz#6bab64d84d3415dd00cc446c73ec5e2e61fddbe7"
   integrity sha512-/ziZN1sA1REbJTv5mQZ4tXggcTvSbct+u5kCaze8BmN//lbxcTvWsU6NQd4IihLt89VkbX+14IGc9sVApSxd/w==
 
-react-native-document-scanner-plugin@^0.7.3:
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/react-native-document-scanner-plugin/-/react-native-document-scanner-plugin-0.7.3.tgz#a0212e687681e3b1ed9b4aebcb1e7fc20d52ab50"
-  integrity sha512-cddhp1rDK3nwCyi3qhbDsuWzC2svBgoGhHNQRgxJvrgfM4uoQKAGSU3XYY3VXjAZCzlqVZz9PYziYDD6fdEIcw==
+react-native-document-scanner-plugin@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-document-scanner-plugin/-/react-native-document-scanner-plugin-1.0.0.tgz#e82b66b1835bfd49444df73a1e1533dbfb1f0b57"
+  integrity sha512-dDsSclFpxl4U0Bnz/oEE0OEEqEjA6zNCu/2lmls4lslq3JqgHacI8xEl5DygMHd4AlDj3X4g1yKUacllfaC+UA==
 
 react-native-file-logger@^0.4.1:
   version "0.4.1"
