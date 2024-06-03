@@ -1,9 +1,12 @@
 import { Linking } from 'react-native'
 import { getDeviceName } from 'react-native-device-info'
-import { BrowserResult } from 'react-native-inappbrowser-reborn'
 
 import CozyClient from 'cozy-client'
-import { FlagshipUI, NativeMethodsRegister } from 'cozy-intent'
+import {
+  FlagshipUI,
+  NativeMethodsRegisterWithOptions,
+  PostMeMessageOptions
+} from 'cozy-intent'
 import Minilog from 'cozy-minilog'
 
 import * as RootNavigation from '/libs/RootNavigation'
@@ -30,7 +33,6 @@ import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { showInAppBrowser, closeInAppBrowser } from '/libs/intents/InAppBrowser'
 import { isBiometryDenied } from '/app/domain/authentication/services/BiometryService'
 import { toggleSetting } from '/app/domain/settings/services/SettingsService'
-import { HomeThemeParams } from '/app/theme/models'
 import {
   prepareBackup,
   startBackup,
@@ -108,25 +110,23 @@ const isAvailable = (featureName: string): Promise<boolean> => {
  * Get the fetchSessionCode function to be called with current CozyClient instance
  * fetchSessionCode gets a session code from the current cozy-client instance
  */
-const fetchSessionCodeWithClient = (
+const fetchSessionCodeWithClient = async (
   client?: CozyClient
-): (() => Promise<string | null>) => {
-  return async function fetchSessionCode() {
-    if (!client) {
-      return null
-    }
-
-    const sessionCodeResult = await client.getStackClient().fetchSessionCode()
-
-    if (sessionCodeResult.session_code) {
-      return sessionCodeResult.session_code
-    }
-
-    throw new Error(
-      'session code result should contain a session_code ' +
-        JSON.stringify(sessionCodeResult)
-    )
+): Promise<string | null> => {
+  if (!client) {
+    return null
   }
+
+  const sessionCodeResult = await client.getStackClient().fetchSessionCode()
+
+  if (sessionCodeResult.session_code) {
+    return sessionCodeResult.session_code
+  }
+
+  throw new Error(
+    'session code result should contain a session_code ' +
+      JSON.stringify(sessionCodeResult)
+  )
 }
 
 const openAppOSSettings = async (): Promise<null> => {
@@ -181,8 +181,8 @@ const getDeviceInfo = async (): Promise<DeviceInfo> => ({
 
 interface CustomMethods {
   fetchSessionCode: () => Promise<string | null>
-  showInAppBrowser: (args: { url: string }) => Promise<BrowserResult>
-  setTheme: (theme: HomeThemeParams) => Promise<boolean>
+  showInAppBrowser: typeof showInAppBrowser
+  setTheme: typeof setHomeThemeIntent
   prepareBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
   startBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
   stopBackup: () => Promise<BackupInfo>
@@ -204,6 +204,14 @@ interface CustomMethods {
   storeSharedMemory: typeof sharedMemoryLocalMethods.storeSharedMemory
   removeSharedMemory: typeof sharedMemoryLocalMethods.removeSharedMemory
 }
+
+type WithOptions<T> = {
+  [K in keyof T]: T[K] extends (...args: infer A) => infer R
+    ? (options: PostMeMessageOptions, ...args: A) => R
+    : never
+}
+
+export type CustomMethodsWithOptions = WithOptions<CustomMethods>
 
 let prepareBackupLock = false
 
@@ -290,7 +298,7 @@ const nativeMethodWrapper =
 export const localMethods = (
   client: CozyClient | undefined,
   ...rest: Record<string, Promise<unknown>>[]
-): NativeMethodsRegister | CustomMethods => {
+): NativeMethodsRegisterWithOptions | CustomMethodsWithOptions => {
   const mergedMethods = Object.assign({}, ...rest) as Record<
     string,
     Promise<unknown>
@@ -299,16 +307,21 @@ export const localMethods = (
   return {
     backToHome,
     closeInAppBrowser,
-    fetchSessionCode: fetchSessionCodeWithClient(client),
+    fetchSessionCode: () => fetchSessionCodeWithClient(client),
     hideSplashScreen: nativeMethodWrapper(hideSplashScreen),
     logout: () => asyncLogout(client),
-    openApp: (href, app, iconParams) =>
+    openApp: (_options, href, app, iconParams) =>
       openApp(client, RootNavigation, href, app, iconParams),
-    toggleSetting,
-    setDefaultRedirection: defaultRedirection =>
+    toggleSetting: (_options, settingName, params) =>
+      toggleSetting(settingName, params),
+    setDefaultRedirection: (_options, defaultRedirection) =>
       setDefaultRedirectionWithClient(defaultRedirection, client),
-    setFlagshipUI,
-    showInAppBrowser,
+    setFlagshipUI: (_options, flagshipUI, caller) =>
+      setFlagshipUI(flagshipUI, caller),
+    showInAppBrowser: (
+      _options: PostMeMessageOptions,
+      ...args: Parameters<typeof showInAppBrowser>
+    ) => showInAppBrowser(...args),
     isBiometryDenied,
     openAppOSSettings,
     isNativePassInstalledOnDevice,
@@ -319,27 +332,60 @@ export const localMethods = (
       )
       return Promise.resolve(isScannerAvailable())
     },
-    ocr: processOcr,
+    ocr: (_options, base64) => processOcr(base64),
     // For now setTheme is only used for the home theme
-    setTheme: setHomeThemeIntent,
+    setTheme: (
+      _options: PostMeMessageOptions,
+      ...args: Parameters<typeof setHomeThemeIntent>
+    ) => setHomeThemeIntent(...args),
     prepareBackup: () => prepareBackupWithClient(client),
     startBackup: () => startBackupWithClient(client),
     stopBackup: () => stopBackupWithClient(client),
-    checkPermissions,
-    requestPermissions,
+    checkPermissions: (
+      _options: PostMeMessageOptions,
+      ...args: Parameters<typeof checkPermissions>
+    ) => checkPermissions(...args),
+    requestPermissions: (
+      _options: PostMeMessageOptions,
+      ...args: Parameters<typeof requestPermissions>
+    ) => requestPermissions(...args),
     checkBackupPermissions,
     requestBackupPermissions,
-    setLang,
+    setLang: (
+      _options: PostMeMessageOptions,
+      ...args: Parameters<typeof setLang>
+    ) => setLang(...args),
     getGeolocationTrackingStatus: () => getGeolocationTrackingStatus(client),
-    setGeolocationTracking,
+    setGeolocationTracking: (
+      _options: PostMeMessageOptions,
+      ...args: Parameters<typeof setGeolocationTracking>
+    ) => setGeolocationTracking(...args),
     getGeolocationTrackingId,
-    setGeolocationTrackingId,
+    setGeolocationTrackingId: (
+      _options: PostMeMessageOptions,
+      ...args: Parameters<typeof setGeolocationTrackingId>
+    ) => setGeolocationTrackingId(...args),
     sendGeolocationTrackingLogs: () => sendGeolocationTrackingLogs(client),
     forceUploadGeolocationTrackingData,
     getDeviceInfo,
-    isAvailable,
-    print,
-    ...sharedMemoryLocalMethods,
+    isAvailable: (_options, ...args: Parameters<typeof isAvailable>) =>
+      isAvailable(...args),
+    print: (
+      _options: PostMeMessageOptions,
+      ...args: Parameters<typeof print>
+    ) => print(...args),
+    getSharedMemory: (
+      _options: PostMeMessageOptions,
+      ...args: Parameters<typeof sharedMemoryLocalMethods.getSharedMemory>
+    ) => sharedMemoryLocalMethods.getSharedMemory(...args),
+    storeSharedMemory: (
+      _options: PostMeMessageOptions,
+      ...args: Parameters<typeof sharedMemoryLocalMethods.storeSharedMemory>
+    ) => sharedMemoryLocalMethods.storeSharedMemory(...args),
+    removeSharedMemory: (
+      _options: PostMeMessageOptions,
+      ...args: Parameters<typeof sharedMemoryLocalMethods.removeSharedMemory>
+    ) => sharedMemoryLocalMethods.removeSharedMemory(...args),
     ...mergedMethods
   }
 }
