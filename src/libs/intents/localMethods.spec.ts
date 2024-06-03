@@ -10,7 +10,7 @@ import {
 import * as RootNavigation from '/libs/RootNavigation'
 import { localMethods, asyncLogout } from '/libs/intents/localMethods'
 
-import { NativeMethodsRegister } from 'cozy-intent'
+import { NativeMethodsRegisterWithOptions } from 'cozy-intent'
 
 jest.mock('react-native-keychain')
 jest.mock('../RootNavigation')
@@ -54,7 +54,9 @@ describe('backToHome', () => {
   it('should handle Navigation', async () => {
     const client = {} as unknown as CozyClient
 
-    await (localMethods(client) as NativeMethodsRegister).backToHome()
+    await (localMethods(client) as NativeMethodsRegisterWithOptions).backToHome(
+      { webviewUri: '' }
+    )
 
     expect(RootNavigation.navigate).toHaveBeenCalledWith('default')
   })
@@ -72,7 +74,7 @@ test('fetchSessionCode should return only a session code', async () => {
     })
   } as CozyClient
 
-  const result = await localMethods(client).fetchSessionCode()
+  const result = await localMethods(client).fetchSessionCode({ webviewUri: '' })
 
   expect(fetchSessionCode).toHaveBeenCalledTimes(1)
   expect(result).toEqual('test_session_code')
@@ -90,7 +92,9 @@ test('fetchSessionCode should throw if no session code is returned', async () =>
     twoFactorToken: 'token'
   })
 
-  await expect(localMethods(client).fetchSessionCode()).rejects.toThrowError(
+  await expect(
+    localMethods(client).fetchSessionCode({ webviewUri: '' })
+  ).rejects.toThrowError(
     'session code result should contain a session_code ' +
       JSON.stringify({ twoFactorToken: 'token' })
   )
