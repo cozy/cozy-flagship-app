@@ -1,7 +1,18 @@
+# 1.1.28
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
 # 1.1.27
 
 ## ✨ Features
 
+* Use FR as default locale backup in GL version ([PR #1206](https://github.com/cozy/cozy-flagship-app/pull/1206))
 
 ## 🐛 Bug Fixes
 
