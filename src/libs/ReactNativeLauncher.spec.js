@@ -18,6 +18,7 @@ jest.mock('./keychain', () => {
     removeCredential: jest.fn()
   }
 })
+jest.mock('cozy-flags/dist/flag')
 import CookieManager from '@react-native-cookies/cookies'
 import { waitFor } from '@testing-library/react-native'
 
@@ -220,7 +221,7 @@ describe('ReactNativeLauncher', () => {
         trigger: fixtures.trigger,
         konnector,
         manifest: konnector,
-        flags: [],
+        flags: {},
         launcherClient: {
           setAppMetadata: () => null
         }
@@ -303,7 +304,7 @@ describe('ReactNativeLauncher', () => {
         },
         sourceAccountIdentifier: 'testsourceaccountidentifier',
         manifest: konnector,
-        flags: []
+        flags: {}
       })
       expect(launcher.pilot.call).not.toHaveBeenCalledWith(
         'ensureNotAuthenticated'
@@ -321,7 +322,7 @@ describe('ReactNativeLauncher', () => {
         trigger: fixtures.trigger,
         konnector,
         manifest: konnector,
-        flags: [],
+        flags: {},
         launcherClient: {
           setAppMetadata: () => null
         }
@@ -349,7 +350,7 @@ describe('ReactNativeLauncher', () => {
           slug: 'testkonnector',
           name: 'Test Konnector'
         },
-        flags: [],
+        flags: {},
         launcherClient: {
           setAppMetadata: () => null
         }
@@ -394,7 +395,7 @@ describe('ReactNativeLauncher', () => {
           slug: 'testkonnector',
           name: 'Test Konnector'
         },
-        flags: [],
+        flags: {},
         launcherClient: {
           setAppMetadata: () => null
         }
@@ -489,7 +490,7 @@ describe('ReactNativeLauncher', () => {
         account: fixtures.account,
         trigger: fixtures.trigger,
         konnector: { slug: 'konnectorslug', clientSide: true },
-        flags: [],
+        flags: {},
         launcherClient: {
           setAppMetadata: () => null
         }
@@ -532,7 +533,7 @@ describe('ReactNativeLauncher', () => {
         account: fixtures.account,
         trigger: fixtures.trigger,
         konnector: { slug: 'konnectorslug', clientSide: true },
-        flags: [],
+        flags: {},
         launcherClient: {
           setAppMetadata: () => null
         }

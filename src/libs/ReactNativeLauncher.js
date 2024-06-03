@@ -17,7 +17,7 @@ import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 
 import { wrapTimerFactory } from 'cozy-clisk'
 import flag from 'cozy-flags'
-import { listFlags } from 'cozy-flags/dist/flag'
+import { listFlags, initialize } from 'cozy-flags/dist/flag'
 
 import {
   activateKeepAwake,
@@ -289,11 +289,12 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async _start({ initKonnectorError } = {}) {
+    const { account: prevAccount, konnector, client } = this.getStartContext()
+    await initialize(client)
     if (flag('clisk.html-on-error')) {
       Minilog.pipe(Minilog.backends.array)
     }
     activateKeepAwake('clisk')
-    const { account: prevAccount, konnector } = this.getStartContext()
     try {
       if (initKonnectorError) {
         log.info('Got initKonnectorError ' + initKonnectorError.message)
@@ -341,13 +342,21 @@ class ReactNativeLauncher extends Launcher {
       const { account, trigger, job, manifest } = this.getStartContext()
       const { sourceAccountIdentifier } = this.getUserData()
       const cozyFlags = listFlags()
+      const flagsWithValues = {}
+      if (cozyFlags) {
+        for (const cozyFlag of cozyFlags) {
+          if (cozyFlag.startsWith('clisk')) {
+            flagsWithValues[cozyFlag] = flag(cozyFlag)
+          }
+        }
+      }
       const pilotContext = {
         manifest,
         account,
         trigger,
         job,
         sourceAccountIdentifier,
-        flags: cozyFlags
+        flags: flagsWithValues
       }
 
       if (hasPermission(manifest, 'io.cozy.files')) {
