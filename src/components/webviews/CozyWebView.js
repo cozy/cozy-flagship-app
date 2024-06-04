@@ -42,6 +42,7 @@ const log = Minilog('CozyWebView')
 Minilog.enable()
 
 export const CozyWebView = ({
+  slug,
   onMessage: parentOnMessage,
   logId = '',
   source,
@@ -94,11 +95,11 @@ export const CozyWebView = ({
   useEffect(() => {
     innerUri &&
       webviewRef &&
-      nativeIntent?.registerWebview(innerUri, webviewRef)
+      nativeIntent?.registerWebview(innerUri, slug, webviewRef)
 
     return () =>
       innerUri && webviewRef && nativeIntent?.unregisterWebview(innerUri)
-  }, [innerUri, nativeIntent, webviewRef])
+  }, [innerUri, slug, nativeIntent, webviewRef])
 
   const onCryptoAnswer = useCallback(
     (messageId, response) => {

@@ -22,7 +22,12 @@ import strings from '/constants/strings.json'
 import { EnvService } from '/core/tools/env'
 import { clearCookies } from '/libs/httpserver/httpCookieManager'
 import { clearCozyData } from '/libs/localStore/storage'
-import { sharedMemoryLocalMethods } from '/libs/localStore/sharedMemory'
+import {
+  getSharedMemoryIntent,
+  storeSharedMemoryIntent,
+  removeSharedMemoryIntent,
+  SharedMemoryData
+} from '/libs/localStore/sharedMemory'
 import { deleteKeychain } from '/libs/keychain'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { openApp } from '/libs/functions/openApp'
@@ -200,9 +205,9 @@ interface CustomMethods {
   getDeviceInfo: typeof getDeviceInfo
   isAvailable: typeof isAvailable
   print: typeof print
-  getSharedMemory: typeof sharedMemoryLocalMethods.getSharedMemory
-  storeSharedMemory: typeof sharedMemoryLocalMethods.storeSharedMemory
-  removeSharedMemory: typeof sharedMemoryLocalMethods.removeSharedMemory
+  getSharedMemory: (key: string) => Promise<SharedMemoryData>
+  storeSharedMemory: (key: string, value: SharedMemoryData) => Promise<void>
+  removeSharedMemory: (key: string) => Promise<void>
 }
 
 type WithOptions<T> = {
@@ -374,18 +379,15 @@ export const localMethods = (
       _options: PostMeMessageOptions,
       ...args: Parameters<typeof print>
     ) => print(...args),
-    getSharedMemory: (
-      _options: PostMeMessageOptions,
-      ...args: Parameters<typeof sharedMemoryLocalMethods.getSharedMemory>
-    ) => sharedMemoryLocalMethods.getSharedMemory(...args),
+    getSharedMemory: (options: PostMeMessageOptions, key: string) =>
+      getSharedMemoryIntent(options, key),
     storeSharedMemory: (
-      _options: PostMeMessageOptions,
-      ...args: Parameters<typeof sharedMemoryLocalMethods.storeSharedMemory>
-    ) => sharedMemoryLocalMethods.storeSharedMemory(...args),
-    removeSharedMemory: (
-      _options: PostMeMessageOptions,
-      ...args: Parameters<typeof sharedMemoryLocalMethods.removeSharedMemory>
-    ) => sharedMemoryLocalMethods.removeSharedMemory(...args),
+      options: PostMeMessageOptions,
+      key: string,
+      value: SharedMemoryData
+    ) => storeSharedMemoryIntent(options, key, value),
+    removeSharedMemory: (options: PostMeMessageOptions, key: string) =>
+      removeSharedMemoryIntent(options, key),
     ...mergedMethods
   }
 }
