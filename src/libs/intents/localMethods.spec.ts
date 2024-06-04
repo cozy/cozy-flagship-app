@@ -55,7 +55,7 @@ describe('backToHome', () => {
     const client = {} as unknown as CozyClient
 
     await (localMethods(client) as NativeMethodsRegisterWithOptions).backToHome(
-      { webviewUri: '' }
+      { slug: 'some_slug' }
     )
 
     expect(RootNavigation.navigate).toHaveBeenCalledWith('default')
@@ -74,7 +74,9 @@ test('fetchSessionCode should return only a session code', async () => {
     })
   } as CozyClient
 
-  const result = await localMethods(client).fetchSessionCode({ webviewUri: '' })
+  const result = await localMethods(client).fetchSessionCode({
+    slug: 'some_slug'
+  })
 
   expect(fetchSessionCode).toHaveBeenCalledTimes(1)
   expect(result).toEqual('test_session_code')
@@ -93,7 +95,7 @@ test('fetchSessionCode should throw if no session code is returned', async () =>
   })
 
   await expect(
-    localMethods(client).fetchSessionCode({ webviewUri: '' })
+    localMethods(client).fetchSessionCode({ slug: 'some_slug' })
   ).rejects.toThrowError(
     'session code result should contain a session_code ' +
       JSON.stringify({ twoFactorToken: 'token' })

@@ -115,6 +115,7 @@ export const CozyProxyWebView = ({
     >
       {state.source ? (
         <CozyWebView
+          slug={slug}
           source={state.source}
           nativeConfig={state.nativeConfig}
           injectedIndex={state.html}
