@@ -9,7 +9,7 @@
     "shareScheme": "cozyShare",
     "userAgent": "io.cozy.flagship.mobile",
     "packages": {
-      "react-native-iap": "^12.10.8"
+      "react-native-iap": "^12.11.0"
     }
   },
   "mabulle": {
