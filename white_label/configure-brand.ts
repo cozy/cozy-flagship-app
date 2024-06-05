@@ -95,6 +95,11 @@ const configureIOS = async (brand: string): Promise<void> => {
     `/usr/libexec/PlistBuddy -c "Set :CFBundleURLTypes:0:CFBundleURLSchemes:0 ${config.scheme}" ios/CozyReactNative/Info.plist`
   )
 
+  logger.info('Set iOS App Share Scheme')
+  await executeCommand(
+    `/usr/libexec/PlistBuddy -c "Set :CFBundleURLTypes:2:CFBundleURLSchemes:0 ${config.shareScheme}" ios/CozyReactNative/Info.plist`
+  )
+
   logger.info('Edit iOS project file')
   const pbxprojPath = './ios/CozyReactNative.xcodeproj/project.pbxproj'
   await replaceStringsInFile(pbxprojPath, [

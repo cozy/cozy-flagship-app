@@ -80,7 +80,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>ShareMedia</string>
+				<string>cozyShare</string>
 			</array>
 		</dict>
 	</array>

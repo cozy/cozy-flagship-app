@@ -94,5 +94,3 @@ export interface IncomingFile {
     dirId: string
   }
 }
-
-export const OS_RECEIVE_PROTOCOL_NAME = 'ShareMedia'
