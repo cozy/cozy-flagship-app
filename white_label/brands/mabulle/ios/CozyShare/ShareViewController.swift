@@ -6,7 +6,7 @@ import Photos
 
 class ShareViewController: UIViewController {
  let hostAppBundleIdentifier = "io.cozy.flagship.mobile.mabulle"
- let shareProtocol = "ShareMedia"
+ let shareProtocol = "cozygrandlyonShare"
  let sharedKey = "ShareKey"
  var sharedMedia: [SharedMediaFile] = []
  var sharedText: [String] = []

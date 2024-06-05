@@ -6,6 +6,7 @@
     "provisionningProfile": "amiral-ci-profile",
     "provisionningDevProfile": "amiral-dev-profile",
     "scheme": "cozy",
+    "shareScheme": "cozyShare",
     "userAgent": "io.cozy.flagship.mobile",
     "packages": {
       "react-native-iap": "^12.10.8"
@@ -18,6 +19,7 @@
     "provisionningProfile": "amiral-mabulle-ci-profile",
     "provisionningDevProfile": "amiral-mabulle-dev-profile",
     "scheme": "cozygrandlyon",
+    "shareScheme": "cozygrandlyonShare",
     "userAgent": "io.cozy.mabulle.mobile",
     "packages": {
       "react-native-iap": "remove"

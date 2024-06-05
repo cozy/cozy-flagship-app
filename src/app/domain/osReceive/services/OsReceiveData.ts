@@ -8,10 +8,8 @@ import {
   OsReceiveFileStatus
 } from '/app/domain/osReceive/models/OsReceiveState'
 import { OsReceiveLogger } from '/app/domain/osReceive'
-import {
-  ReceivedFile,
-  OS_RECEIVE_PROTOCOL_NAME
-} from '/app/domain/osReceive/models/ReceivedFile'
+import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
+import { OS_RECEIVE_PROTOCOL_NAME } from '/constants/strings.json'
 import { Media } from '/app/domain/backup/models'
 import { getMimeType } from '/app/domain/backup/services/getMedias'
 
