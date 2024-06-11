@@ -1,7 +1,7 @@
 <resources>
     <!-- Base application theme. -->
-    <!-- Set the base theme to light for the entire app -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <!-- Support light and dark mode in the entire app -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Additional customizations can be added here -->
         <item name="android:enforceNavigationBarContrast">false</item> <!-- Optional: Disabling enforced contrast for navigation bar -->
         <item name="android:forceDarkAllowed">false</item> <!-- Prevent the system from applying automatic dark mode transformations -->
