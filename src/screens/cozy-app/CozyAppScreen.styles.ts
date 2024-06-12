@@ -1,5 +1,9 @@
 import { StyleSheet } from 'react-native'
 
+import { getColors } from '/ui/colors'
+
+const colors = getColors()
+
 export const styles = StyleSheet.create({
   ready: {
     backgroundColor: 'white',
@@ -24,7 +28,7 @@ export const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     height: '100%',
-    backgroundColor: 'white',
+    backgroundColor: colors.paperBackgroundColor,
     zIndex: 1, // Will show up above CozyWebView,
     borderRadius: 8,
     boxShadow:
