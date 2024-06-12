@@ -19,6 +19,8 @@ import { handleError } from './CozyAppScreen.functions'
 import { styles } from './CozyAppScreen.styles'
 import { CozyAppScreenProps } from './CozyAppScreen.types'
 
+import { getColors } from '/ui/colors'
+
 const defaultFlagshipUI: FlagshipUI = {
   bottomBackground: 'white',
   bottomTheme: 'dark',
@@ -38,6 +40,7 @@ export const CozyAppScreen = ({
   const [isFirstHalf, setFirstHalf] = useState(false)
   const [shouldExitAnimation, setShouldExitAnimation] = useState(false)
   const { setShouldWaitCozyApp } = useHomeStateContext()
+  const colors = getColors()
 
   const { componentId } = useFlagshipUI(
     'CozyAppScreen',
@@ -92,7 +95,7 @@ export const CozyAppScreen = ({
         style={{
           height: dimensions.statusBarHeight,
           backgroundColor: isFirstHalf
-            ? topBackground ?? 'white'
+            ? topBackground ?? colors.paperBackgroundColor
             : 'transparent'
         }}
       >
@@ -123,7 +126,7 @@ export const CozyAppScreen = ({
         style={{
           height: dimensions.navbarHeight,
           backgroundColor: isFirstHalf
-            ? bottomBackground ?? 'white'
+            ? bottomBackground ?? colors.paperBackgroundColor
             : 'transparent'
         }}
       >
