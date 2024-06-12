@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { View } from 'react-native'
+import { View, Appearance } from 'react-native'
 
 import { FlagshipUI } from 'cozy-intent'
 
@@ -25,10 +25,10 @@ const colors = getColors()
 
 const defaultFlagshipUI: FlagshipUI = {
   bottomBackground: colors.paperBackgroundColor,
-  bottomTheme: 'dark',
+  bottomTheme: Appearance.getColorScheme() === 'dark' ? 'light' : 'dark',
   bottomOverlay: 'transparent',
   topBackground: colors.paperBackgroundColor,
-  topTheme: 'dark',
+  topTheme: Appearance.getColorScheme() === 'dark' ? 'light' : 'dark',
   topOverlay: 'transparent'
 }
 
