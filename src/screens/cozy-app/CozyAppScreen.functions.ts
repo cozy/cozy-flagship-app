@@ -5,7 +5,9 @@ import { styles } from './CozyAppScreen.styles'
 import { routes } from '/constants/routes'
 import { getDimensions } from '/libs/dimensions'
 import { NetService } from '/libs/services/NetService'
-import { palette } from '/ui/palette'
+import { getColors } from '/ui/colors'
+
+const colors = getColors()
 
 export const handleError = ({ nativeEvent }: WebViewErrorEvent): void => {
   const { code, description } = nativeEvent
@@ -26,8 +28,8 @@ export const config = {
 export const progressBarConfig = {
   width: null as unknown as number | undefined,
   indeterminate: true,
-  unfilledColor: palette.Grey[200],
-  color: palette.Primary[600],
+  unfilledColor: colors.defaultBackgroundColor,
+  color: colors.primaryColor,
   borderWidth: 0,
   height: 8,
   borderRadius: 100,

@@ -23,6 +23,7 @@ const lightNormalColors = {
 
   // BACKGROUND
   paperBackgroundColor: palette.Common.white,
+  defaultBackgroundColor: palette.Grey['100'],
 
   // PRIMARY
   primaryColor: palette.Primary['600'],
@@ -50,6 +51,7 @@ const lightInvertedColors = {
 
   // BACKGROUND
   paperBackgroundColor: palette.Primary['600'],
+  defaultBackgroundColor: palette.Primary['600'],
 
   // PRIMARY
   primaryColor: palette.Common.white,
@@ -79,6 +81,7 @@ const darkNormalColors = {
 
   // BACKGROUND
   paperBackgroundColor: palette.Grey['800'],
+  defaultBackgroundColor: palette.Grey.A400,
 
   // PRIMARY
   primaryColor: palette.Primary['400'],
@@ -106,6 +109,7 @@ const darkInvertedColors = {
 
   // BACKGROUND
   paperBackgroundColor: palette.Primary['400'],
+  defaultBackgroundColor: palette.Primary['400'],
 
   // PRIMARY
   primaryColor: palette.Grey['800'],
