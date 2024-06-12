@@ -4,6 +4,8 @@
 // can both respond to theme changes without tight coupling between them.
 import { EventEmitter } from 'events'
 
+import { Appearance } from 'react-native'
+
 import Minilog from 'cozy-minilog'
 
 import { HomeThemeType, HomeThemeParams } from '/app/theme/models'
@@ -41,8 +43,8 @@ export function setHomeTheme(params: HomeThemeParams): void {
       flagshipUIEvents.SET_COMPONENT_COLORS,
       componentId,
       {
-        topTheme: 'light',
-        bottomTheme: 'light'
+        topTheme: Appearance.getColorScheme() === 'dark' ? 'dark' : 'light',
+        bottomTheme: Appearance.getColorScheme() === 'dark' ? 'dark' : 'light'
       }
     )
   } else {
@@ -50,8 +52,8 @@ export function setHomeTheme(params: HomeThemeParams): void {
       flagshipUIEvents.SET_COMPONENT_COLORS,
       componentId,
       {
-        topTheme: 'dark',
-        bottomTheme: 'dark'
+        topTheme: Appearance.getColorScheme() === 'dark' ? 'light' : 'dark',
+        bottomTheme: Appearance.getColorScheme() === 'dark' ? 'light' : 'dark'
       }
     )
   }
