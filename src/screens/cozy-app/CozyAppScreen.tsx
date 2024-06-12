@@ -85,7 +85,7 @@ export const CozyAppScreen = ({
     setShouldWaitCozyApp(false)
   }, [setShouldWaitCozyApp])
 
-  const webViewStyle = useMemo(
+  const wrapperStyle = useMemo(
     () => ({ ...styles[isFirstHalf ? 'ready' : 'notReady'] }),
     [isFirstHalf]
   )
@@ -110,7 +110,7 @@ export const CozyAppScreen = ({
 
       <View style={styles.mainView}>
         <CozyProxyWebView
-          style={webViewStyle}
+          wrapperStyle={wrapperStyle}
           slug={route.params.slug}
           href={route.params.href}
           navigation={navigation}
