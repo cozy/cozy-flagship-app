@@ -110,6 +110,7 @@ export const CozyAppScreen = ({
 
       <View style={styles.mainView}>
         <CozyProxyWebView
+          style={{ backgroundColor: colors.paperBackgroundColor }}
           wrapperStyle={wrapperStyle}
           slug={route.params.slug}
           href={route.params.href}
