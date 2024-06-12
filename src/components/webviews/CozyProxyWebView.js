@@ -20,7 +20,7 @@ export const CozyProxyWebView = ({
   slug,
   href,
   onLoad = undefined,
-  style,
+  wrapperStyle,
   ...props
 }) => {
   const client = useClient()
@@ -109,7 +109,7 @@ export const CozyProxyWebView = ({
 
   return (
     <Wrapper
-      style={{ ...styles.view, ...style }}
+      style={{ ...styles.view, ...wrapperStyle }}
       behavior="height"
       keyboardVerticalOffset={props.keyboardVerticalOffset || 0}
     >
