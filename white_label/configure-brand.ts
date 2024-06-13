@@ -117,6 +117,19 @@ const configureIOS = async (brand: string): Promise<void> => {
     }
   ])
 
+  logger.info('Edit iOS CozyShare')
+  const shareViewControllerPath = './ios/CozyShare/ShareViewController.swift'
+  await replaceStringsInFile(shareViewControllerPath, [
+    {
+      from: /hostAppBundleIdentifier = ".*"\n/g,
+      to: `hostAppBundleIdentifier = "${config.bundleId}"\n`
+    },
+    {
+      from: /shareProtocol = ".*"\n/g,
+      to: `shareProtocol = "${config.shareScheme}"\n`
+    }
+  ])
+
   logger.info('Copy iOS files')
   await fs.copy(`./white_label/brands/${brand}/ios`, './ios', {
     overwrite: true
