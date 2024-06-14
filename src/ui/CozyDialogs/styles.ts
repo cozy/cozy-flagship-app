@@ -1,6 +1,8 @@
 import { StyleSheet } from 'react-native'
 
-import { palette } from '/ui/palette'
+import { getColors } from '/ui/colors'
+
+const colors = getColors()
 
 export const styles = StyleSheet.create({
   actions: {
@@ -16,7 +18,7 @@ export const styles = StyleSheet.create({
   },
   dialog: {
     alignSelf: 'center',
-    backgroundColor: palette.Common.white,
+    backgroundColor: colors.paperBackgroundColor,
     borderRadius: 8,
     boxShadow:
       '0px 0px 0px 0.5px rgba(29, 33, 42, 0.12), 0px 8px 12px -5px rgba(29, 33, 42, 0.18), 0px 9px 36px 5px rgba(29, 33, 42, 0.17)',
