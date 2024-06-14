@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react'
 import { Modal, Pressable, StyleProp, View, ViewStyle } from 'react-native'
 
+import { getColors } from '/ui/colors'
 import { Cross } from '/ui/Icons/Cross'
 import { Icon } from '/ui/Icon'
 import { IconButton } from '/ui/IconButton'
@@ -76,27 +77,31 @@ const ModalContent = ({
   headerStyle,
   content,
   actions
-}: Partial<ConfirmDialogProps>): JSX.Element => (
-  <Pressable style={styles.dialog}>
-    <View style={[styles.header, headerStyle]}>
-      <Typography variant="h3">{title}</Typography>
+}: Partial<ConfirmDialogProps>): JSX.Element => {
+  const colors = getColors()
 
-      <IconButton onPress={onClose}>
-        <Icon icon={Cross} />
-      </IconButton>
-    </View>
+  return (
+    <Pressable style={styles.dialog}>
+      <View style={[styles.header, headerStyle]}>
+        <Typography variant="h3">{title}</Typography>
 
-    <View style={styles.content}>
-      {typeof content === 'string' ? (
-        <Typography>{content}</Typography>
-      ) : (
-        content
-      )}
-    </View>
+        <IconButton onPress={onClose}>
+          <Icon icon={Cross} color={colors.primaryTextColor} />
+        </IconButton>
+      </View>
 
-    <View style={styles.footer}>{actions && renderActions(actions)}</View>
-  </Pressable>
-)
+      <View style={styles.content}>
+        {typeof content === 'string' ? (
+          <Typography>{content}</Typography>
+        ) : (
+          content
+        )}
+      </View>
+
+      <View style={styles.footer}>{actions && renderActions(actions)}</View>
+    </Pressable>
+  )
+}
 
 export const ConfirmDialog = ({
   actions,
