@@ -128,9 +128,13 @@ const darkInvertedColors = {
 
 export type CozyThemeColors = typeof lightNormalColors
 
-export const getColors = (
-  variant: CozyThemeVariant = 'normal'
-): CozyThemeColors => {
+export interface GetColorsOptions {
+  variant?: CozyThemeVariant
+}
+
+export const getColors = ({
+  variant = 'normal'
+}: GetColorsOptions = {}): CozyThemeColors => {
   const colorScheme = getColorScheme()
 
   if (colorScheme === 'light') {
