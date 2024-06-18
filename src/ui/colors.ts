@@ -1,5 +1,4 @@
-import { Appearance } from 'react-native'
-
+import { getColorScheme } from '/app/theme/colorScheme'
 import { CozyThemeVariant } from '/ui/CozyTheme/CozyTheme'
 import { palette } from '/ui/palette'
 
@@ -132,7 +131,7 @@ export type CozyThemeColors = typeof lightNormalColors
 export const getColors = (
   variant: CozyThemeVariant = 'normal'
 ): CozyThemeColors => {
-  const colorScheme = Appearance.getColorScheme()
+  const colorScheme = getColorScheme()
 
   if (colorScheme === 'light') {
     return variant === 'normal' ? lightNormalColors : lightInvertedColors
