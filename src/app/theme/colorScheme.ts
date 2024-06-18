@@ -2,7 +2,17 @@ import { Appearance, ColorSchemeName } from 'react-native'
 
 import flag from 'cozy-flags'
 
-export const getColorScheme = (): ColorSchemeName => {
+interface GetColorSchemeOptions {
+  useUserColorScheme?: boolean
+}
+
+export const getColorScheme = ({
+  useUserColorScheme = false
+}: GetColorSchemeOptions = {}): ColorSchemeName => {
+  if (!useUserColorScheme) {
+    return Appearance.getColorScheme()
+  }
+
   if (flag('ui.darkmode.enabled')) {
     return Appearance.getColorScheme()
   }

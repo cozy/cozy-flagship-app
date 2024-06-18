@@ -7,7 +7,7 @@ import { getDimensions } from '/libs/dimensions'
 import { NetService } from '/libs/services/NetService'
 import { getColors } from '/ui/colors'
 
-const colors = getColors()
+const colors = getColors({ useUserColorScheme: true })
 
 export const handleError = ({ nativeEvent }: WebViewErrorEvent): void => {
   const { code, description } = nativeEvent
