@@ -34,7 +34,7 @@ export const Animation = ({
   ).current
   const animateFadeOut = useRef(new Animated.Value(1)).current
   const animateBarOpacity = useRef(new Animated.Value(0)).current
-  const colors = getColors()
+  const colors = getColors({ useUserColorScheme: true })
 
   const { setFlagshipColors } = useFlagshipUI(
     'CozyAppScreenAnimation',
@@ -70,8 +70,14 @@ export const Animation = ({
     ]).start(() => {
       onFirstHalf(true)
       setFlagshipColors({
-        topTheme: getColorScheme() === 'dark' ? 'light' : 'dark',
-        bottomTheme: getColorScheme() === 'dark' ? 'light' : 'dark'
+        topTheme:
+          getColorScheme({ useUserColorScheme: true }) === 'dark'
+            ? 'light'
+            : 'dark',
+        bottomTheme:
+          getColorScheme({ useUserColorScheme: true }) === 'dark'
+            ? 'light'
+            : 'dark'
       })
 
       Animated.timing(animateBarOpacity, progressBarAnimConfig.fadeIn).start()
