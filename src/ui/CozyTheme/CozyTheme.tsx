@@ -42,7 +42,8 @@ export const useCozyTheme = (
 
   // Using optional chaining here to avoid a runtime error
   const colors = useMemo<CozyThemeColors>(
-    () => getColors(forcedVariant ? forcedVariant : context?.variant),
+    () =>
+      getColors({ variant: forcedVariant ? forcedVariant : context?.variant }),
     [forcedVariant, context?.variant]
   )
 
