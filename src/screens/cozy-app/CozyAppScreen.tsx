@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { View, Appearance } from 'react-native'
+import { View } from 'react-native'
 
 import { FlagshipUI } from 'cozy-intent'
 
@@ -13,6 +13,7 @@ import {
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { useDimensions } from '/libs/dimensions'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
+import { getColorScheme } from '/app/theme/colorScheme'
 
 import { Animation } from './CozyAppScreen.Animation'
 import { handleError } from './CozyAppScreen.functions'
@@ -25,10 +26,10 @@ const colors = getColors()
 
 const defaultFlagshipUI: FlagshipUI = {
   bottomBackground: colors.paperBackgroundColor,
-  bottomTheme: Appearance.getColorScheme() === 'dark' ? 'light' : 'dark',
+  bottomTheme: getColorScheme() === 'dark' ? 'light' : 'dark',
   bottomOverlay: 'transparent',
   topBackground: colors.paperBackgroundColor,
-  topTheme: Appearance.getColorScheme() === 'dark' ? 'light' : 'dark',
+  topTheme: getColorScheme() === 'dark' ? 'light' : 'dark',
   topOverlay: 'transparent'
 }
 

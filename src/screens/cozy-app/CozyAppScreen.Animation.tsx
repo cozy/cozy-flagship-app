@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react'
-import { Animated, Appearance } from 'react-native'
+import { Animated } from 'react-native'
 import { SvgXml } from 'react-native-svg'
 
 import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import ProgressBar from '/components/Bar'
 import { iconTable, iconFallback } from '/libs/functions/iconTable'
+import { getColorScheme } from '/app/theme/colorScheme'
 
 import {
   config,
@@ -67,8 +68,8 @@ export const Animation = ({
     ]).start(() => {
       onFirstHalf(true)
       setFlagshipColors({
-        topTheme: Appearance.getColorScheme() === 'dark' ? 'light' : 'dark',
-        bottomTheme: Appearance.getColorScheme() === 'dark' ? 'light' : 'dark'
+        topTheme: getColorScheme() === 'dark' ? 'light' : 'dark',
+        bottomTheme: getColorScheme() === 'dark' ? 'light' : 'dark'
       })
 
       Animated.timing(animateBarOpacity, progressBarAnimConfig.fadeIn).start()
