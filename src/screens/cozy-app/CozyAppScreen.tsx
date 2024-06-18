@@ -22,15 +22,17 @@ import { CozyAppScreenProps } from './CozyAppScreen.types'
 
 import { getColors } from '/ui/colors'
 
-const colors = getColors()
+const getDefaultFlagshipUI = (): FlagshipUI => {
+  const colors = getColors()
 
-const defaultFlagshipUI: FlagshipUI = {
-  bottomBackground: colors.paperBackgroundColor,
-  bottomTheme: getColorScheme() === 'dark' ? 'light' : 'dark',
-  bottomOverlay: 'transparent',
-  topBackground: colors.paperBackgroundColor,
-  topTheme: getColorScheme() === 'dark' ? 'light' : 'dark',
-  topOverlay: 'transparent'
+  return {
+    bottomBackground: colors.paperBackgroundColor,
+    bottomTheme: getColorScheme() === 'dark' ? 'light' : 'dark',
+    bottomOverlay: 'transparent',
+    topBackground: colors.paperBackgroundColor,
+    topTheme: getColorScheme() === 'dark' ? 'light' : 'dark',
+    topOverlay: 'transparent'
+  }
 }
 
 export const CozyAppScreen = ({
@@ -43,11 +45,12 @@ export const CozyAppScreen = ({
   const [isFirstHalf, setFirstHalf] = useState(false)
   const [shouldExitAnimation, setShouldExitAnimation] = useState(false)
   const { setShouldWaitCozyApp } = useHomeStateContext()
+  const colors = getColors()
 
   const { componentId } = useFlagshipUI(
     'CozyAppScreen',
     ScreenIndexes.COZY_APP_VIEW,
-    defaultFlagshipUI
+    getDefaultFlagshipUI()
   )
 
   useEffect(() => {

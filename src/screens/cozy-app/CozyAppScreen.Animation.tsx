@@ -6,6 +6,7 @@ import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import ProgressBar from '/components/Bar'
 import { iconTable, iconFallback } from '/libs/functions/iconTable'
 import { getColorScheme } from '/app/theme/colorScheme'
+import { getColors } from '/ui/colors'
 
 import {
   config,
@@ -33,6 +34,7 @@ export const Animation = ({
   ).current
   const animateFadeOut = useRef(new Animated.Value(1)).current
   const animateBarOpacity = useRef(new Animated.Value(0)).current
+  const colors = getColors()
 
   const { setFlagshipColors } = useFlagshipUI(
     'CozyAppScreenAnimation',
@@ -97,6 +99,9 @@ export const Animation = ({
       pointerEvents="box-none"
       style={[
         styles.fadingContainer,
+        {
+          backgroundColor: colors.paperBackgroundColor
+        },
         { opacity: animateFadeOut },
         {
           transform: [
