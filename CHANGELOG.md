@@ -1,4 +1,4 @@
-# 1.1.28
+# 1.1.29
 
 ## ✨ Features
 
@@ -7,6 +7,21 @@
 
 
 ## 🔧 Tech
+
+
+# 1.1.28
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+* Mes Papiers could crash during a document scan due to low memory ([PR #1208](https://github.com/cozy/cozy-flagship-app/pull/1208))
+* Sharing files to the app was not working properly on Ma Bulle app on iOS ([PR #1213](https://github.com/cozy/cozy-flagship-app/pull/1213))
+
+## 🔧 Tech
+* Partial dark mode support. Not enabled generally for the moment. ([PR #1214](https://github.com/cozy/cozy-flagship-app/pull/1214), [PR #1215](https://github.com/cozy/cozy-flagship-app/pull/1215), [PR #1217](https://github.com/cozy/cozy-flagship-app/pull/1217))
+* Give the list of instance's flags to the context sent to konnectors ([PR #1211](https://github.com/cozy/cozy-flagship-app/pull/1211))
+* Move saved traceFiles into `Settings/Logs` directory to avoid user confusion about the file presence ([PR #1210](https://github.com/cozy/cozy-flagship-app/pull/1210))
 
 # 1.1.27
 
