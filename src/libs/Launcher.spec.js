@@ -228,6 +228,51 @@ describe('Launcher', () => {
         })
       )
     })
+    it('should not reset files index on first call but should on second call to saveFiles', async () => {
+      const launcher = new Launcher()
+      jest
+        .spyOn(launcher, 'getExistingFilesIndex')
+        .mockImplementation(
+          () =>
+            new Map([
+              [
+                'fileidattribute',
+                { metadata: { fileIdAttributes: 'fileidattribute' } }
+              ]
+            ])
+        )
+      launcher.setUserData({
+        sourceAccountIdentifier: 'testsourceaccountidentifier'
+      })
+
+      const konnector = { slug: 'testkonnectorslug' }
+      const trigger = {
+        message: {
+          folder_to_save: 'testfolderid',
+          account: 'testaccountid'
+        }
+      }
+      const job = {
+        message: { account: 'testaccountid', folder_to_save: 'testfolderid' }
+      }
+      const client = {
+        query: jest.fn().mockResolvedValue({ data: { path: 'folderPath' } })
+      }
+      launcher.setStartContext({
+        konnector,
+        client,
+        launcherClient: client,
+        trigger,
+        job
+      })
+
+      await launcher.saveFiles([{}], {})
+      expect(launcher.getExistingFilesIndex).toHaveBeenLastCalledWith(false)
+      await launcher.saveFiles([{}], {})
+      expect(launcher.getExistingFilesIndex).toHaveBeenLastCalledWith(true)
+      await launcher.saveBills([{}], {})
+      expect(launcher.getExistingFilesIndex).toHaveBeenLastCalledWith(true)
+    })
     it('should ignore files without metadata or fileIdAttributes in the index', async () => {
       const launcher = new Launcher()
       launcher.setUserData({

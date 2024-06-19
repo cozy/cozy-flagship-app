@@ -34,6 +34,7 @@ export default class Launcher {
     this.setUserData({
       sourceAccountIdentifier: null
     })
+    this._firstFileSave = true
   }
   /**
    * Inject the content script and initialize the bridge to communicate it
@@ -367,7 +368,9 @@ export default class Launcher {
     } = this.getStartContext() || {}
     const { sourceAccountIdentifier } = this.getUserData() || {}
 
-    const existingFilesIndex = await this.getExistingFilesIndex()
+    const existingFilesIndex = await this.getExistingFilesIndex(
+      this.shouldResetFileIndex()
+    )
 
     const result = await saveBills(entries, {
       ...options,
@@ -378,6 +381,7 @@ export default class Launcher {
       sourceAccountIdentifier,
       existingFilesIndex
     })
+
     return result
   }
 
@@ -458,6 +462,15 @@ export default class Launcher {
     return (this.existingFilesIndex = existingFilesIndex)
   }
 
+  shouldResetFileIndex() {
+    if (this._firstFileSave) {
+      this._firstFileSave = false
+      return false
+    } else {
+      return true
+    }
+  }
+
   /**
    * Calls cozy-konnector-libs' saveFiles function
    *
@@ -476,7 +489,9 @@ export default class Launcher {
 
     const folderPath = await this.getFolderPath(trigger.message?.folder_to_save)
 
-    const existingFilesIndex = await this.getExistingFilesIndex()
+    const existingFilesIndex = await this.getExistingFilesIndex(
+      this.shouldResetFileIndex()
+    )
 
     const saveFilesOptions = {
       ...options,
