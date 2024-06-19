@@ -31,6 +31,7 @@ export {
 export { call2FAInitClient } from '/libs/clientHelpers/twoFactorAuthentication'
 import { CozyPersistedStorageKeys, getData, storeData } from '/libs/localStore/storage'
 import { getLinks } from '/pouchdb/getPouchLinks'
+import schema from '/pouchdb/schema'
 
 const log = Minilog('LoginScreen')
 
@@ -54,7 +55,8 @@ export const getClient = async () => {
       slug: 'flagship',
       version: packageJSON.version
     },
-    links
+    links,
+    schema
   })
   listenTokenRefresh(client)
   client.getStackClient().setOAuthOptions(oauthOptions)

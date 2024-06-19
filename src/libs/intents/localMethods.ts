@@ -201,6 +201,19 @@ interface CustomMethods {
 
 let prepareBackupLock = false
 
+const flagshipLinkRequest = async (
+  operation,
+  client: CozyClient | undefined
+): Promise<unknown> => {
+  try {
+    console.log('🌈 received operation,', operation)
+    return await client?.query(operation)
+  } catch (err) {
+    console.error(err.message, operation)
+    throw err
+  }
+}
+
 const prepareBackupWithClient = async (
   client: CozyClient | undefined
 ): Promise<BackupInfo> => {
@@ -333,6 +346,7 @@ export const localMethods = (
     getDeviceInfo,
     isAvailable,
     print,
+    flagshipLinkRequest: (operation) => flagshipLinkRequest(operation, client),
     ...mergedMethods
   }
 }
