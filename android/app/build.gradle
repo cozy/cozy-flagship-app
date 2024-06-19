@@ -138,7 +138,7 @@ android {
         namespace = "io.cozy.flagship.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 101280 * 10000 // Legacy version number patch, needed for Play Store version increment
+        versionCode 101282 * 10000 // Legacy version number patch, needed for Play Store version increment
         versionName "1.1.28"
         multiDexEnabled true
         resValue "string", "build_config_package", "io.cozy.flagship.mobile"
