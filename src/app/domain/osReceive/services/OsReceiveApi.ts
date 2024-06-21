@@ -247,8 +247,9 @@ export const OsReceiveApi = (
   dispatch: Dispatch<OsReceiveAction>
 ): OsReceiveApiMethods => ({
   hasFilesToHandle: () => hasFilesToHandle(state),
-  getFilesToHandle: (base64 = false) => getFilesToHandle(base64, state),
-  uploadFiles: arg => uploadFiles(arg, state, client, dispatch),
+  getFilesToHandle: (_options, base64 = false) =>
+    getFilesToHandle(base64, state),
+  uploadFiles: (_options, arg) => uploadFiles(arg, state, client, dispatch),
   resetFilesToHandle: () => resetFilesToHandle(dispatch),
   cancelUploadByCozyApp: () => cancelUploadByCozyApp(dispatch)
 })
