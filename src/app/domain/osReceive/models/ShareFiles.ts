@@ -1,4 +1,5 @@
 import type CozyClient from 'cozy-client'
+import { PostMeMessageOptions } from 'cozy-intent'
 
 export interface ShareFilesDependencies {
   showOverlay: (message?: string) => void
@@ -9,4 +10,7 @@ export interface ShareFilesDependencies {
 
 export type ShareFilesPayload = string[]
 
-export type ShareFilesIntent = (filesIds: ShareFilesPayload) => Promise<void>
+export type ShareFilesIntent = (
+  options: PostMeMessageOptions,
+  filesIds: ShareFilesPayload
+) => Promise<void>

@@ -14,6 +14,8 @@ import {
   ShareFilesIntent
 } from '/app/domain/osReceive/models/ShareFiles'
 
+import { PostMeMessageOptions } from 'cozy-intent'
+
 const downloadFilesInParallel = async (
   fileInfos: FileMetadata[],
   headers: string
@@ -116,6 +118,7 @@ export const useShareFiles = (): { shareFiles: ShareFilesIntent } => {
   }
 
   return {
-    shareFiles: filesIds => intentShareFiles(dependencies, filesIds)
+    shareFiles: (_options: PostMeMessageOptions, filesIds) =>
+      intentShareFiles(dependencies, filesIds)
   }
 }

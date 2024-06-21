@@ -1,3 +1,5 @@
+import { PostMeMessageOptions } from 'cozy-intent'
+
 import { AcceptFromFlagshipManifest } from './OsReceiveCozyApp'
 
 import { ReceivedFile } from '/app/domain/osReceive/models/ReceivedFile'
@@ -66,11 +68,12 @@ export interface ServiceResponse<T> {
 
 export interface OsReceiveApiMethods {
   getFilesToHandle: (
+    options: PostMeMessageOptions,
     base64: boolean,
     state: OsReceiveState
   ) => Promise<OsReceiveFile[]>
   hasFilesToHandle: () => Promise<UploadStatus>
-  uploadFiles: (arg: string) => boolean
+  uploadFiles: (options: PostMeMessageOptions, arg: string) => boolean
   resetFilesToHandle: () => Promise<boolean>
   cancelUploadByCozyApp: () => boolean
 }
