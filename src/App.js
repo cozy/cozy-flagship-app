@@ -7,7 +7,9 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
 
-import { CozyProvider, useClient } from 'cozy-client'
+import { useRestartContext } from '/components/providers/RestartProvider'
+
+import { CozyProvider, useClient, Q } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
 
 import { RootNavigator } from '/AppRouter'
@@ -36,6 +38,7 @@ import { withSentry } from '/libs/monitoring/Sentry'
 import { ThemeProvider } from '/app/theme/ThemeProvider'
 import { useInitI18n } from '/locales/useInitI18n'
 import { SecureBackgroundSplashScreenWrapper } from '/app/theme/SecureBackgroundSplashScreenWrapper'
+import { setStoredColorScheme } from '/app/theme/colorScheme'
 import { PermissionsChecker } from '/app/domain/nativePermissions/components/PermissionsChecker'
 import { useGeolocationTracking } from '/app/domain/geolocation/hooks/useGeolocationTracking'
 import { OsReceiveProvider } from '/app/view/OsReceive/OsReceiveProvider'
@@ -84,6 +87,44 @@ const App = ({ setClient }) => {
   useInitI18n(client)
   useInitBackup(client)
   useOsReceiveApi()
+  const { restartApp } = useRestartContext()
+
+  useEffect(() => {
+    const doAsync = async () => {
+      if (!client) return
+
+      const {
+        data: {
+          attributes: { colorScheme }
+        }
+      } = await client.fetchQueryAndGetFromState({
+        definition: Q('io.cozy.settings').getById('io.cozy.settings.instance'),
+        options: {
+          as: 'io.cozy.settings/io.cozy.settings.instance',
+          singleDocData: true
+        }
+      })
+
+      setStoredColorScheme(colorScheme)
+
+      await client.plugins.realtime.subscribe(
+        'updated',
+        'io.cozy.settings',
+        updatedSettings => {
+          // We can updated the stored color scheme but in this case
+          // - webview will be updated because of its internal cozy-realtime usage
+          // - statusbar and navbar won't be okay because setFlagshipUI is not called again
+          // - next transtion from a cozy app to another will be okay
+          setStoredColorScheme(updatedSettings.colorScheme)
+
+          // Or we can also restart totally the app if it is different
+          // restartApp()
+        }
+      )
+    }
+
+    doAsync()
+  }, [client])
 
   const { initialRoute, isLoading } = useAppBootstrap(client)
 
