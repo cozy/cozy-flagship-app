@@ -35,10 +35,11 @@ import { osReceiveScreenStyles } from '/app/view/OsReceive/OsReceiveScreen.style
 import { useCozyTheme } from '/ui/CozyTheme/CozyTheme'
 import { FileDuotone } from '/ui/Icons/FileDuotone'
 import { FileThumbnail } from '/ui/ImageThumbnail'
+import { getColorScheme } from '/app/theme/colorScheme'
 
 const defaultFlagshipUI: FlagshipUI = {
-  bottomTheme: 'dark',
-  topTheme: 'dark'
+  bottomTheme: getColorScheme() === 'dark' ? 'light' : 'dark',
+  topTheme: getColorScheme() === 'dark' ? 'light' : 'dark'
 }
 
 export const OsReceiveScreen = (): JSX.Element | null => {
@@ -90,7 +91,7 @@ export const OsReceiveScreenView = ({
   const isMultipleFiles = filesToUpload.length > 1
 
   return (
-    <Container style={osReceiveScreenStyles.page}>
+    <Container style={{ backgroundColor: colors.paperBackgroundColor }}>
       <Grid container direction="column" justifyContent="space-between">
         <Grid alignItems="center">
           {isMultipleFiles ? (

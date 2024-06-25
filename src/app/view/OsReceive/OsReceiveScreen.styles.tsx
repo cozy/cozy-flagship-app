@@ -1,11 +1,6 @@
 import { FlexAlignType } from 'react-native'
 
-import { palette } from '/ui/palette'
-
 export const osReceiveScreenStyles = {
-  page: {
-    backgroundColor: palette.Common.white
-  },
   disabled: {
     opacity: 0.5
   },
