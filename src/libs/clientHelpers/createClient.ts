@@ -1,5 +1,6 @@
 import CozyClient from 'cozy-client'
 import flag from 'cozy-flags'
+import { RealtimePlugin } from 'cozy-realtime'
 
 import strings from '/constants/strings.json'
 import {
@@ -61,6 +62,7 @@ export const finalizeClientCreation = async (
 
 const registerPlugins = async (client: CozyClient): Promise<void> => {
   await client.registerPlugin(flag.plugin, null)
+  await client.registerPlugin(RealtimePlugin, {})
 }
 
 const initializePlugins = async (client: CozyClient): Promise<void> => {

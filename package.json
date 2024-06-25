@@ -60,6 +60,7 @@
     "cozy-intent": "^2.22.0",
     "cozy-logger": "^1.10.0",
     "cozy-minilog": "3.3.1",
+    "cozy-realtime": "^5.0.1",
     "date-fns": "2.29.3",
     "html-entities": "^2.3.3",
     "i18next": "23.7.16",
