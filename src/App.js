@@ -63,6 +63,7 @@ import { useShareFiles } from '/app/domain/osReceive/services/shareFilesService'
 import { ClouderyOffer } from '/app/view/IAP/ClouderyOffer'
 import { useDimensions } from '/libs/dimensions'
 import { configureFileLogger } from '/app/domain/logger/fileLogger'
+import { useColorScheme } from '/app/theme/colorScheme'
 
 configureFileLogger()
 
@@ -73,6 +74,12 @@ if (!global.btoa) {
 
 if (!global.atob) {
   global.atob = decode
+}
+
+const LoggedInWrapper = ({ children }) => {
+  useColorScheme()
+
+  return children
 }
 
 // eslint-disable-next-line react/display-name
@@ -215,7 +222,9 @@ const WrappedApp = () => {
   if (client)
     return (
       <CozyProvider client={client}>
-        <Nav client={client} setClient={setClient} />
+        <LoggedInWrapper>
+          <Nav client={client} setClient={setClient} />
+        </LoggedInWrapper>
       </CozyProvider>
     )
 
