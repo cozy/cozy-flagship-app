@@ -16,6 +16,7 @@ import {
   isScannerAvailable
 } from '/app/domain/scanner/services/scanner'
 import { processOcr, isOcrAvailable } from '/app/domain/ocr/services/ocr'
+import { setColorScheme } from '/app/theme/colorScheme'
 import { printBase64Doc as print } from '/libs/intents/printBase64Doc'
 import { setHomeThemeIntent } from '/libs/intents/setHomeThemeIntent'
 import strings from '/constants/strings.json'
@@ -105,6 +106,8 @@ const isAvailable = (featureName: string): Promise<boolean> => {
   } else if (featureName === 'iap') {
     return isIapAvailable()
   } else if (featureName === 'sharedMemory') {
+    return Promise.resolve(true)
+  } else if (featureName === 'colorScheme') {
     return Promise.resolve(true)
   }
 
@@ -208,6 +211,7 @@ interface CustomMethods {
   getSharedMemory: (key: string) => Promise<SharedMemoryData>
   storeSharedMemory: (key: string, value: SharedMemoryData) => Promise<void>
   removeSharedMemory: (key: string) => Promise<void>
+  setColorScheme: (colorScheme: string | undefined) => Promise<void>
 }
 
 type WithOptions<T> = {
@@ -388,6 +392,10 @@ export const localMethods = (
     ) => storeSharedMemoryIntent(options, key, value),
     removeSharedMemory: (options: PostMeMessageOptions, key: string) =>
       removeSharedMemoryIntent(options, key),
+    setColorScheme: (
+      _options: PostMeMessageOptions,
+      colorScheme: string | undefined
+    ) => Promise.resolve(setColorScheme(colorScheme)),
     ...mergedMethods
   }
 }
