@@ -97,7 +97,6 @@ android {
     defaultConfig {
         // applicationId is set in ./brand.gradle
         // if absent use `yarn brand:configure:cozy` to create it
-        namespace = "io.cozy.flagship.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 101280 * 10000 // Legacy version number patch, needed for Play Store version increment
