@@ -8,6 +8,7 @@ import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { isLightBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { getColors } from '/ui/colors'
 import { CozyIcon } from '/screens/login/components/transitions/transitions-icons/CozyIcon'
+import { palette } from '/ui/palette'
 
 const log = Minilog('TransitionToPasswordView')
 
@@ -48,9 +49,7 @@ export const TransitionToPasswordView = ({
   const animatedScale = useRef(new Animated.Value(1)).current
   const animatedOpacity = useRef(new Animated.Value(1)).current
 
-  const [foregroundColor, setForegroundColor] = useState(
-    colors.paperBackgroundColor
-  )
+  const [foregroundColor, setForegroundColor] = useState(palette.Common.white)
 
   useEffect(() => {
     if (requestTransitionStart) {
@@ -71,7 +70,7 @@ export const TransitionToPasswordView = ({
 
       const color = shouldUsePrimaryColor
         ? colors.primaryColor
-        : colors.paperBackgroundColor
+        : palette.Common.white
 
       setForegroundColor(color)
     } catch (error) {
