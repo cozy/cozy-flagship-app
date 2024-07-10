@@ -124,7 +124,7 @@ export const Animation = ({
       <Animated.View
         style={[styles.progressBarContainer, { opacity: animateBarOpacity }]}
       >
-        <ProgressBar {...progressBarConfig} />
+        <ProgressBar {...progressBarConfig()} />
       </Animated.View>
     </Animated.View>
   )
