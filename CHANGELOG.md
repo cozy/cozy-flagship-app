@@ -1,4 +1,4 @@
-# 1.1.29
+# 1.1.30
 
 ## ✨ Features
 
@@ -8,6 +8,23 @@
 
 ## 🔧 Tech
 
+
+# 1.1.29
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+* Full dark mode support. Not enabled generally for the moment. ([PR #1222](https://github.com/cozy/cozy-flagship-app/pull/1222), [PR #1223](https://github.com/cozy/cozy-flagship-app/pull/1223), [PR #1228](https://github.com/cozy/cozy-flagship-app/pull/1228), [PR #1231](https://github.com/cozy/cozy-flagship-app/pull/1231))
+* Update to React Native 0.72.12 ([PR #1161](https://github.com/cozy/cozy-flagship-app/pull/1161))
+* Target Android API 34 ([PR #1225](https://github.com/cozy/cozy-flagship-app/pull/1225), [PR #1232](https://github.com/cozy/cozy-flagship-app/pull/1232))
+* Add check on language files and add missing translations for en and es files ([PR #999](https://github.com/cozy/cozy-flagship-app/pull/999))
+* Update react-native-background-geolocation ([PR #1227](https://github.com/cozy/cozy-flagship-app/pull/1227))
+* Fix build related to react-native-gzip ([PR #1229](https://github.com/cozy/cozy-flagship-app/pull/1229))
+* Fix build related to AndroidManifest ([PR #1230](https://github.com/cozy/cozy-flagship-app/pull/1230))
 
 # 1.1.28
 
