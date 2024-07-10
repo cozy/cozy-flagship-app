@@ -6,8 +6,7 @@ import { routes } from '/constants/routes'
 import { getDimensions } from '/libs/dimensions'
 import { NetService } from '/libs/services/NetService'
 import { getColors } from '/ui/colors'
-
-const colors = getColors({ useUserColorScheme: true })
+import { ProgressBarProps } from '/components/Bar'
 
 export const handleError = ({ nativeEvent }: WebViewErrorEvent): void => {
   const { code, description } = nativeEvent
@@ -25,15 +24,19 @@ export const config = {
 
 // Width has to be null at start even if it's not a valid value (was set to undefined and it broke the progress bar)
 // At the time of this fix we want to go back the previously working value but we have to investigate why it has to be null
-export const progressBarConfig = {
-  width: null as unknown as number | undefined,
-  indeterminate: true,
-  unfilledColor: colors.defaultBackgroundColor,
-  color: colors.primaryColor,
-  borderWidth: 0,
-  height: 8,
-  borderRadius: 100,
-  indeterminateAnimationDuration: 1500
+export const progressBarConfig = (): ProgressBarProps => {
+  const colors = getColors({ useUserColorScheme: true })
+
+  return {
+    width: null as unknown as number | undefined,
+    indeterminate: true,
+    unfilledColor: colors.defaultBackgroundColor,
+    color: colors.primaryColor,
+    borderWidth: 0,
+    height: 8,
+    borderRadius: 100,
+    indeterminateAnimationDuration: 1500
+  }
 }
 
 export const progressBarAnimConfig = {

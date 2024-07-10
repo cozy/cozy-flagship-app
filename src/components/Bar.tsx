@@ -15,7 +15,7 @@ const INDETERMINATE_WIDTH_FACTOR = 0.6 // 0.3 to 0.6
 const BAR_WIDTH_ZERO_POSITION =
   INDETERMINATE_WIDTH_FACTOR / (1 + INDETERMINATE_WIDTH_FACTOR)
 
-interface ProgressBarProps {
+export interface ProgressBarProps {
   animated?: boolean
   borderRadius?: number
   borderWidth?: number
