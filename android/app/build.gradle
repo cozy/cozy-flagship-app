@@ -99,8 +99,8 @@ android {
         // if absent use `yarn brand:configure:cozy` to create it
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 101282 * 10000 // Legacy version number patch, needed for Play Store version increment
-        versionName "1.1.28"
+        versionCode 101295 * 10000 // Legacy version number patch, needed for Play Store version increment
+        versionName "1.1.29"
         multiDexEnabled true
         resValue "string", "build_config_package", "io.cozy.flagship.mobile"
         missingDimensionStrategy "store", "play"
