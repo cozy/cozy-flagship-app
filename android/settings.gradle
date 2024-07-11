@@ -5,8 +5,6 @@ include ':react-native-device-info'
 project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
 include ':react-native-fs'
 project(':react-native-fs').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fs/android')
-include ':@fengweichong_react-native-gzip'
-project(':@fengweichong_react-native-gzip').projectDir = new File(rootProject.projectDir, '../node_modules/@fengweichong/react-native-gzip/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')
