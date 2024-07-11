@@ -104,13 +104,20 @@ export const fetchPublicData = async client => {
 }
 
 /**
+ * @template T
+ * @typedef {object} CozyDataStackOrCache
+ * @property {'stack'|'cache'} source - Source of the retrieved data
+ * @property {T} data - The appliation data
+ */
+
+/**
  * Fetches the data that is used to display a cozy application.
  *
  * @template T - The type of the application data
  * @param {string} slug - The application slug
  * @param {object} client - A CozyClient instance
  * @param {object} [cookie] - An object containing a name and value property
- * @returns {Promise<T>} - The application data
+ * @returns {Promise<CozyDataStackOrCache<T>>} - The application data
  */
 
 export const fetchCozyDataForSlug = async (slug, client, cookie) => {
@@ -138,13 +145,19 @@ export const fetchCozyDataForSlug = async (slug, client, cookie) => {
 
     storeClientCachedData(client, cacheKey, result)
 
-    return result
+    return {
+      source: 'stack',
+      data: result.data
+    }
   } catch (err) {
     if (err.message === 'Network request failed') {
       const cachedResult = await getClientCachedData(client, cacheKey)
 
       if (cachedResult) {
-        return cachedResult
+        return {
+          source: 'cache',
+          data: cachedResult.data
+        }
       }
     }
 
