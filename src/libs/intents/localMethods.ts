@@ -22,6 +22,7 @@ import { setHomeThemeIntent } from '/libs/intents/setHomeThemeIntent'
 import strings from '/constants/strings.json'
 import { EnvService } from '/core/tools/env'
 import { clearCookies } from '/libs/httpserver/httpCookieManager'
+import { clearClientCachedData } from '/libs/localStore/clientCachedStorage'
 import { clearCozyData } from '/libs/localStore/storage'
 import {
   getSharedMemoryIntent,
@@ -72,6 +73,7 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   }
 
   await sendKonnectorsLogs(client)
+  await clearClientCachedData(client)
   await client.logout()
   await stopTrackingAndClearData()
   await deleteKeychain()
