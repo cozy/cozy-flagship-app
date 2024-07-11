@@ -31,7 +31,8 @@ export const initHtmlContent = async ({
     return
   }
 
-  const htmlContent = await httpServerContext.getIndexHtmlForSlug(slug, client)
+  const { html: htmlContent, source: htmlSource } =
+    await httpServerContext.getIndexHtmlForSlug(slug, client)
 
   if (
     !cookieAlreadyExists &&
@@ -47,6 +48,7 @@ export const initHtmlContent = async ({
   setHtmlContentCreationDate(Date.now())
   dispatch(oldState => ({
     ...oldState,
+    activateCache: htmlSource === 'cache' && Platform.OS === 'android',
     html: htmlContent,
     nativeConfig: nativeConfigActual,
     source: sourceActual
