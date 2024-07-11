@@ -29,6 +29,10 @@ export {
   callOnboardingInitClient
 } from '/libs/clientHelpers/initClient'
 export { call2FAInitClient } from '/libs/clientHelpers/twoFactorAuthentication'
+import {
+  getClientCachedData,
+  storeClientCachedData
+} from '/libs/localStore/clientCachedStorage'
 import { CozyPersistedStorageKeys, getData } from '/libs/localStore/storage'
 import { getLinks } from '/pouchdb/getLinks'
 
@@ -110,6 +114,7 @@ export const fetchPublicData = async client => {
  */
 
 export const fetchCozyDataForSlug = async (slug, client, cookie) => {
+  const cacheKey = `CozyData_${slug}`
   const stackClient = client.getStackClient()
 
   const options = cookie
@@ -123,14 +128,28 @@ export const fetchCozyDataForSlug = async (slug, client, cookie) => {
       }
     : undefined
 
-  const result = await stackClient.fetchJSON(
-    'GET',
-    `/apps/${slug}/open`,
-    undefined,
-    options
-  )
+  try {
+    const result = await stackClient.fetchJSON(
+      'GET',
+      `/apps/${slug}/open`,
+      undefined,
+      options
+    )
 
-  return result
+    storeClientCachedData(client, cacheKey, result)
+
+    return result
+  } catch (err) {
+    if (err.message === 'Network request failed') {
+      const cachedResult = await getClientCachedData(client, cacheKey)
+
+      if (cachedResult) {
+        return cachedResult
+      }
+    }
+
+    throw err
+  }
 }
 
 /**
