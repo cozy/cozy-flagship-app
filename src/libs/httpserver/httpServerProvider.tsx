@@ -35,6 +35,11 @@ const DEFAULT_PORT = Config.HTTP_SERVER_DEFAULT_PORT
   ? Number(Config.HTTP_SERVER_DEFAULT_PORT)
   : 5759
 
+interface IndexHtmlForSlug {
+  source: 'stack' | 'cache'
+  html: string
+}
+
 interface HttpServerState {
   server: HttpServer | undefined
   securityKey: string
@@ -43,7 +48,7 @@ interface HttpServerState {
   getIndexHtmlForSlug: (
     slug: string,
     client: CozyClient
-  ) => Promise<string | false>
+  ) => Promise<IndexHtmlForSlug | false>
 }
 
 interface SecurityKeyResult {
@@ -118,7 +123,7 @@ export const HttpServerProvider = (
   const getIndexHtmlForSlug = async (
     slug: string,
     client: CozyClient
-  ): Promise<string | false> => {
+  ): Promise<IndexHtmlForSlug | false> => {
     try {
       if (!serverInstance) {
         throw new Error('ServerInstance is null, should not happen')
@@ -128,7 +133,10 @@ export const HttpServerProvider = (
 
       const { host: fqdn } = new URL(rootURL)
 
-      const { cookie, templateValues } = await fetchAppDataForSlug(slug, client)
+      const { cookie, source, templateValues } = await fetchAppDataForSlug(
+        slug,
+        client
+      )
 
       await setCookie(cookie, client)
       const rawHtml = await getIndexForFqdnAndSlug(fqdn, slug)
@@ -146,20 +154,30 @@ export const HttpServerProvider = (
         indexData: templateValues
       })
       if (slug === 'home') {
-        return flow(
+        const html = flow(
           addColorSchemeMetaIfNecessary,
           addBarStyles,
           addBodyClasses,
           addMetaAttributes
         )(computedHtml)
+
+        return {
+          source,
+          html
+        }
       } else {
         // We do not need the bar styles for other app. We only need it for
         // the Home application since this is the only "immersive app"
-        return flow(
+        const html = flow(
           addColorSchemeMetaIfNecessary,
           addBodyClasses,
           addMetaAttributes
         )(computedHtml)
+
+        return {
+          source,
+          html
+        }
       }
     } catch (err) {
       const errorMessage = getErrorMessage(err)
