@@ -98,6 +98,12 @@ jobs:
         env:
           BUILD_TOOLS_VERSION: "33.0.0"
 
+      - name: Upload AAB artifact to GitHub
+        uses: actions/upload-artifact@v3
+        with:
+          name: AAB
+          path: android/app/build/outputs/bundle/prodRelease/*.aab
+
       - name: Upload App to Google Play
         uses: r0adkll/upload-google-play@v1
         with:
@@ -125,13 +131,13 @@ jobs:
             --ks-pass=pass:${{ secrets[format('{0}_ANDROID_KEY_STORE_PASSWORD', inputs.brand)] }} \
             --ks-key-alias=${{ secrets[format('{0}_ANDROID_ALIAS', inputs.brand)] }} \
             --key-pass=pass:${{ secrets[format('{0}_ANDROID_KEY_PASSWORD', inputs.brand)] }}
-  
+
       - name: Rename .apks file to .zip
         run: mv app-prod-release.apks app-prod-release.zip
-        
+
       - name: Unzip the universal APK from the .zip file
         run: unzip app-prod-release.zip -d ./extracted-apks
-      
+
       - name: Rename and move Universal APK
         run: |
           APK_PATH=$(find ./extracted-apks -name '*.apk')
@@ -146,7 +152,7 @@ jobs:
           echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
           echo "::set-output name=artifact_name::$ARTIFACT_NAME"
         id: artifact_info
-        
+
       - name: Upload APK artifact to GitHub
         uses: actions/upload-artifact@v3
         with:
