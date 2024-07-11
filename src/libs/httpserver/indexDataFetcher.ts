@@ -11,6 +11,7 @@ export type TemplateValues = Omit<AppAttributes, 'Cookie'> & {
 }
 
 interface FetchAppDataForSlugResult {
+  source: 'stack' | 'cache'
   cookie: AppAttributes['Cookie']
   templateValues: TemplateValues
 }
@@ -23,7 +24,7 @@ export const fetchAppDataForSlug = async (
 ): Promise<FetchAppDataForSlugResult> => {
   try {
     const storedCookie = await getCookie(client)
-    const cozyDataResult = await fetchCozyDataForSlug<{ data: AppData }>(
+    const cozyDataResult = await fetchCozyDataForSlug<AppData>(
       slug,
       client,
       storedCookie
@@ -57,6 +58,7 @@ export const fetchAppDataForSlug = async (
 
     return {
       cookie,
+      source: cozyDataResult.source,
       templateValues: {
         ...cozyDataAttributes,
         // The following attributes have to be sanitized to avoid semantic quotes.
