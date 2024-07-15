@@ -44,11 +44,11 @@ const formatColorSchemeName = (
 }
 
 export const useColorScheme = (): void => {
-  const {
-    values: { colorScheme: instanceColorScheme }
-  } = useSettings('instance', ['colorScheme']) as {
-    values: Record<'colorScheme', string | undefined>
+  const { values } = useSettings('instance', ['colorScheme']) as {
+    values: Record<'colorScheme', string | undefined> | undefined
   }
+
+  const instanceColorScheme = values?.colorScheme
 
   useEffect(() => {
     setColorScheme(instanceColorScheme)
