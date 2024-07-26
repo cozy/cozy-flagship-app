@@ -140,3 +140,11 @@ jest.mock('cozy-pouch-link', () => {
     return new mockPouchLink()
   })
 })
+
+jest.mock('react-native-mail', () => ({
+  mail: jest.fn()
+}))
+
+jest.mock('rn-fetch-blob', () => ({
+  mail: jest.fn()
+}))
