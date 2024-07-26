@@ -50,6 +50,7 @@ jest.mock('/libs/RootNavigation', () => ({
 jest.mock('./useSplashScreen', () => ({
   useSplashScreen: () => ({ hideSplashScreen: mockHideSplashScreen })
 }))
+jest.mock('/app/theme/SplashScreenService', () => ({}))
 
 jest.mock('/libs/functions/openApp', () => ({
   getDefaultIconParams: jest.fn().mockReturnValue({})
