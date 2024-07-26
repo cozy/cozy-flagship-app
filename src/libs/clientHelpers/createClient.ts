@@ -14,6 +14,7 @@ import packageJSON from '../../../package.json'
 
 import { startListening } from '/app/domain/authentication/services/AuthService'
 import { getLinks } from '/pouchdb/getLinks'
+import schema from '/pouchdb/schema'
 
 /**
  * Create a CozyClient for the given Cozy instance and register it
@@ -41,7 +42,8 @@ export const createClient = async (instance: string): Promise<CozyClient> => {
       slug: 'flagship',
       version: packageJSON.version
     },
-    links
+    links,
+    schema
   }
 
   const client = new CozyClient(options)
