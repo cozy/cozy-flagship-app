@@ -108,6 +108,7 @@
     "react-native-ios11-devicecheck": "https://github.com/cozy/react-native-devicecheck#app-attest-v0.1",
     "react-native-keychain": "^8.0.0",
     "react-native-localize": "2.2.6",
+    "react-native-mail": "^6.1.1",
     "react-native-mask-input": "1.2.1",
     "react-native-mlkit-ocr": "^0.3.0",
     "react-native-permissions": "^3.9.3",
@@ -128,6 +129,7 @@
     "react-scripts": "4.0.3",
     "redux-logger": "3.0.6",
     "redux-persist": "^6.0.0",
+    "rn-fetch-blob": "^0.12.0",
     "rn-flipper-async-storage-advanced": "^1.0.4",
     "semver": "^7.3.2"
   },
