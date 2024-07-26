@@ -35,6 +35,7 @@ import {
 } from '/libs/localStore/clientCachedStorage'
 import { CozyPersistedStorageKeys, getData } from '/libs/localStore/storage'
 import { getLinks } from '/pouchdb/getLinks'
+import schema from '/pouchdb/schema'
 
 const log = Minilog('LoginScreen')
 
@@ -58,7 +59,8 @@ export const getClient = async () => {
       slug: 'flagship',
       version: packageJSON.version
     },
-    links
+    links,
+    schema
   })
   listenTokenRefresh(client)
   client.getStackClient().setOAuthOptions(oauthOptions)
