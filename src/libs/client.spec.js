@@ -62,7 +62,9 @@ describe('client', () => {
         appMetadata: {
           slug: 'flagship',
           version: packageJSON.version
-        }
+        },
+        links: expect.anything(),
+        schema: expect.anything()
       })
     })
 

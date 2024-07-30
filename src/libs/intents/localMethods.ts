@@ -1,7 +1,7 @@
 import { Linking } from 'react-native'
 import { getDeviceName } from 'react-native-device-info'
 
-import CozyClient from 'cozy-client'
+import CozyClient, { QueryDefinition } from 'cozy-client'
 import {
   FlagshipUI,
   NativeMethodsRegisterWithOptions,
@@ -22,6 +22,7 @@ import { setHomeThemeIntent } from '/libs/intents/setHomeThemeIntent'
 import strings from '/constants/strings.json'
 import { EnvService } from '/core/tools/env'
 import { clearCookies } from '/libs/httpserver/httpCookieManager'
+import { clearClientCachedData } from '/libs/localStore/clientCachedStorage'
 import { clearCozyData } from '/libs/localStore/storage'
 import {
   getSharedMemoryIntent,
@@ -35,6 +36,7 @@ import { openApp } from '/libs/functions/openApp'
 import { routes } from '/constants/routes'
 import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 import { setDefaultRedirection } from '/libs/defaultRedirection/defaultRedirection'
+import { flagshipLinkRequest } from '/libs/intents/flagshipLink'
 import { setFlagshipUI } from '/libs/intents/setFlagshipUI'
 import { showInAppBrowser, closeInAppBrowser } from '/libs/intents/InAppBrowser'
 import { isBiometryDenied } from '/app/domain/authentication/services/BiometryService'
@@ -72,6 +74,7 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
   }
 
   await sendKonnectorsLogs(client)
+  await clearClientCachedData(client)
   await client.logout()
   await stopTrackingAndClearData()
   await deleteKeychain()
@@ -396,6 +399,7 @@ export const localMethods = (
       _options: PostMeMessageOptions,
       colorScheme: string | undefined
     ) => Promise.resolve(setColorScheme(colorScheme)),
+    flagshipLinkRequest: (_options, operation) => flagshipLinkRequest(operation as QueryDefinition, client),
     ...mergedMethods
   }
 }

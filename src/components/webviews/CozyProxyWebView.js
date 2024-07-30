@@ -124,6 +124,7 @@ export const CozyProxyWebView = ({
             dispatch(oldState => ({ ...oldState, isLoading: false }))
             onLoad?.(syntheticEvent)
           }}
+          cacheMode={state.activateCache ? 'LOAD_CACHE_ELSE_NETWORK' : 'LOAD_DEFAULT'}
           {...props}
         />
       ) : null}

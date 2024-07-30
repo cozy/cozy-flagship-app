@@ -29,7 +29,13 @@ export {
   callOnboardingInitClient
 } from '/libs/clientHelpers/initClient'
 export { call2FAInitClient } from '/libs/clientHelpers/twoFactorAuthentication'
+import {
+  getClientCachedData,
+  storeClientCachedData
+} from '/libs/localStore/clientCachedStorage'
 import { CozyPersistedStorageKeys, getData } from '/libs/localStore/storage'
+import { getLinks } from '/pouchdb/getLinks'
+import schema from '/pouchdb/schema'
 
 const log = Minilog('LoginScreen')
 
@@ -44,6 +50,7 @@ export const getClient = async () => {
     return false
   }
   const { uri, oauthOptions, token } = oauthData
+  const links = getLinks()
   const client = new CozyClient({
     uri,
     oauth: { token },
@@ -51,7 +58,9 @@ export const getClient = async () => {
     appMetadata: {
       slug: 'flagship',
       version: packageJSON.version
-    }
+    },
+    links,
+    schema
   })
   listenTokenRefresh(client)
   client.getStackClient().setOAuthOptions(oauthOptions)
@@ -97,16 +106,24 @@ export const fetchPublicData = async client => {
 }
 
 /**
+ * @template T
+ * @typedef {object} CozyDataStackOrCache
+ * @property {'stack'|'cache'} source - Source of the retrieved data
+ * @property {T} data - The appliation data
+ */
+
+/**
  * Fetches the data that is used to display a cozy application.
  *
  * @template T - The type of the application data
  * @param {string} slug - The application slug
  * @param {object} client - A CozyClient instance
  * @param {object} [cookie] - An object containing a name and value property
- * @returns {Promise<T>} - The application data
+ * @returns {Promise<CozyDataStackOrCache<T>>} - The application data
  */
 
 export const fetchCozyDataForSlug = async (slug, client, cookie) => {
+  const cacheKey = `CozyData_${slug}`
   const stackClient = client.getStackClient()
 
   const options = cookie
@@ -120,14 +137,34 @@ export const fetchCozyDataForSlug = async (slug, client, cookie) => {
       }
     : undefined
 
-  const result = await stackClient.fetchJSON(
-    'GET',
-    `/apps/${slug}/open`,
-    undefined,
-    options
-  )
+  try {
+    const result = await stackClient.fetchJSON(
+      'GET',
+      `/apps/${slug}/open`,
+      undefined,
+      options
+    )
 
-  return result
+    storeClientCachedData(client, cacheKey, result)
+
+    return {
+      source: 'stack',
+      data: result.data
+    }
+  } catch (err) {
+    if (err.message === 'Network request failed') {
+      const cachedResult = await getClientCachedData(client, cacheKey)
+
+      if (cachedResult) {
+        return {
+          source: 'cache',
+          data: cachedResult.data
+        }
+      }
+    }
+
+    throw err
+  }
 }
 
 /**
