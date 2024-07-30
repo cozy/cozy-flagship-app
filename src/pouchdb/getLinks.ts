@@ -29,7 +29,8 @@ export const getLinks = (): CozyLink[] => {
   const pouchLinkOptions = {
     doctypes: offlineDoctypes,
     initialSync: true,
-    platform: platformReactNative
+    platform: platformReactNative,
+    ignoreWarmup: true
   }
 
   const stackLink = new StackLink({
