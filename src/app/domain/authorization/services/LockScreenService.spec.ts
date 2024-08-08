@@ -40,6 +40,10 @@ jest.mock('cozy-client', () => ({
   }))
 }))
 
+jest.mock('react-native-file-viewer', () => ({
+  open: jest.fn()
+}))
+
 describe('validatePassword', () => {
   // Mocks and common setup
   let client: CozyClient

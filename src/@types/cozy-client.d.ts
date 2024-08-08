@@ -111,6 +111,7 @@ declare module 'cozy-client' {
   export interface FileCollectionGetResult {
     data: {
       _id: string
+      _rev: string
       name: string
       path: string
       metadata?: {

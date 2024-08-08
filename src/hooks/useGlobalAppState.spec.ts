@@ -2,6 +2,10 @@ import { Platform } from 'react-native'
 
 import { _shouldLockApp } from '/app/domain/authorization/services/SecurityService'
 
+jest.mock('react-native-file-viewer', () => ({
+  open: jest.fn()
+}))
+
 afterAll(jest.resetModules)
 
 it('should always lock the application on iOS devices when running through the autolock check, ignoring timer', () => {
