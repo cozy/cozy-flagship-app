@@ -10,7 +10,8 @@ import {
 import {
   addOfflineFileToConfiguration,
   getOfflineFileFromConfiguration,
-  OfflineFile
+  OfflineFile,
+  updateLastOpened
 } from '/app/domain/io.cozy.files/offlineFilesConfiguration'
 import {
   getDownloadUrlById,
@@ -22,7 +23,8 @@ jest.mock('react-native-file-viewer', () => ({
 }))
 jest.mock('/app/domain/io.cozy.files/offlineFilesConfiguration', () => ({
   addOfflineFileToConfiguration: jest.fn(),
-  getOfflineFileFromConfiguration: jest.fn()
+  getOfflineFileFromConfiguration: jest.fn(),
+  updateLastOpened: jest.fn()
 }))
 jest.mock('/app/domain/io.cozy.files/remoteFiles', () => ({
   getFileById: jest.fn(),
@@ -137,6 +139,27 @@ describe('offlineFiles', () => {
       expect(RNFS.downloadFile).not.toHaveBeenCalled()
       expect(result).toBe('SOME_EXISTING_PATH_FROM_CACHE')
       expect(addOfflineFileToConfiguration).not.toHaveBeenCalled()
+    })
+
+    it('should update lastOpened attribute if file exists', async () => {
+      mockRemoteFile({
+        _id: 'SOME_FILE_ID',
+        _rev: 'SOME_REV',
+        name: 'SOME_FILE_NAME'
+      })
+      mockFileFromConfiguration({
+        id: 'SOME_FILE_ID',
+        rev: 'SOME_REV',
+        path: 'SOME_EXISTING_PATH_FROM_CACHE',
+        lastOpened: new Date()
+      })
+      const file = {
+        _id: 'SOME_FILE_ID',
+        name: 'SOME_FILE_NAME'
+      } as unknown as FileDocument
+      await downloadFile(file, mockClient)
+
+      expect(updateLastOpened).toHaveBeenCalledWith('SOME_FILE_ID')
     })
 
     it('should download file if existing but with different rev', async () => {
