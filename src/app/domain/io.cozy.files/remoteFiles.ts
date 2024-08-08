@@ -3,6 +3,18 @@ import { FileDocument } from 'cozy-client/types/types'
 
 export const DOCTYPE_FILES = 'io.cozy.files'
 
+const IMPORTANT_PAPERS = [
+  'bank_details',
+  'driver_license',
+  'identity_photo',
+  'national_health_insurance_card',
+  'national_id_card',
+  'passport',
+  'residence_permit',
+  'resume',
+  'vehicle_registration'
+]
+
 export const getFileById = async (
   client: CozyClient,
   id: string
@@ -24,6 +36,33 @@ export const getDownloadUrlById = async (
   const downloadURL = await fileCollection.getDownloadLinkById(id, filename)
 
   return downloadURL
+}
+
+export const getImportantFiles = async (
+  client: CozyClient
+): Promise<FileDocument[]> => {
+  const query = Q(DOCTYPE_FILES)
+    .where({
+      created_at: {
+        $gt: null
+      },
+      'metadata.qualification.label': {
+        $in: IMPORTANT_PAPERS
+      }
+    })
+    .partialIndex({
+      type: 'file',
+      trashed: false,
+      'cozyMetadata.createdByApp': { $exists: true }
+    })
+    .indexFields(['created_at', 'metadata.qualification.label'])
+    .sortBy([
+      { created_at: 'desc' }
+    ])
+
+  const { data } = (await client.query(query)) as FileCollectionGetResult
+
+  return data as unknown as FileDocument[]
 }
 
 interface FileCollection {
