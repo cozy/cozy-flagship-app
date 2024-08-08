@@ -2,6 +2,7 @@ import { Linking } from 'react-native'
 import { getDeviceName } from 'react-native-device-info'
 
 import CozyClient, { QueryDefinition } from 'cozy-client'
+import type { FileDocument } from 'cozy-client/types/types'
 import {
   FlagshipUI,
   NativeMethodsRegisterWithOptions,
@@ -60,6 +61,7 @@ import {
   sendGeolocationTrackingLogs,
   forceUploadGeolocationTrackingData
 } from '/app/domain/geolocation/services/tracking'
+import { downloadFileAndPreview } from '/app/domain/io.cozy.files/offlineFiles'
 import {
   checkPermissions,
   requestPermissions
@@ -401,6 +403,8 @@ export const localMethods = (
     ) => Promise.resolve(setColorScheme(colorScheme)),
     flagshipLinkRequest: (_options, operation) =>
       flagshipLinkRequest(operation as QueryDefinition, client),
+    downloadFile: (_options, file) =>
+      downloadFileAndPreview(file as FileDocument, client),
     ...mergedMethods
   }
 }

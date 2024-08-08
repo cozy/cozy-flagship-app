@@ -17,6 +17,9 @@ jest.mock('../RootNavigation')
 jest.mock('@react-native-cookies/cookies', () => ({
   clearAll: jest.fn()
 }))
+jest.mock('react-native-file-viewer', () => ({
+  open: jest.fn()
+}))
 
 describe('asyncLogout', () => {
   const client = {
