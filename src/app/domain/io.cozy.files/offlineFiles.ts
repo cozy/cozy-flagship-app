@@ -7,7 +7,8 @@ import Minilog from 'cozy-minilog'
 
 import {
   addOfflineFileToConfiguration,
-  getOfflineFileFromConfiguration
+  getOfflineFileFromConfiguration,
+  updateLastOpened
 } from '/app/domain/io.cozy.files/offlineFilesConfiguration'
 import {
   getDownloadUrlById,
@@ -50,6 +51,7 @@ export const downloadFile = async (
 
     if (existingFile && existingFile.rev === remoteFile._rev) {
       log.debug(`File ${file._id} already exist, returning existing one`)
+      await updateLastOpened(file._id)
       return existingFile.path
     }
 

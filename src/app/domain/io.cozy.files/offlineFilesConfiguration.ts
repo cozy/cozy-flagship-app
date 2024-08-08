@@ -4,6 +4,7 @@ export interface OfflineFile {
   id: string
   rev: string
   path: string
+  lastOpened: Date
 }
 
 export type OfflineFilesConfiguration = Map<string, OfflineFile>
@@ -17,14 +18,17 @@ export const getOfflineFilesConfiguration = async () => {
   return files
 }
 
-export const addOfflineFileToConfiguration = async (file: OfflineFile) => {
+export const addOfflineFileToConfiguration = async (file: Omit<OfflineFile, 'lastOpened'>) => {
   let files = await getOfflineFilesConfiguration()
 
   if (files === null) {
     files = new Map<string, OfflineFile>()
   }
 
-  files.set(file.id, file)
+  files.set(file.id, {
+    ...file,
+    lastOpened: new Date()
+  })
   
   const filesArray = Array.from(files.entries())
   
@@ -53,4 +57,16 @@ export const getOfflineFileFromConfiguration = async (fileId: string) => {
   }
 
   return null
+}
+
+export const updateLastOpened = async (fileId: string) => {
+  const file = await getOfflineFileFromConfiguration(fileId)
+
+  if (!file) {
+    throw new Error(`Cannot update 'lastOpened' attribute for not existing file ${fileId}`)
+  }
+
+  file.lastOpened = new Date()
+
+  addOfflineFileToConfiguration(file)
 }
