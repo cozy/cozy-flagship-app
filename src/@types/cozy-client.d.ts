@@ -105,6 +105,7 @@ declare module 'cozy-client' {
   export interface FileCollectionGetResult {
     data: {
       _id: string
+      _rev: string
       name: string
       path: string
       metadata?: {
@@ -157,6 +158,7 @@ declare module 'cozy-client' {
     on: (event: string, callback: () => void) => void
     removeListener: (event: string, callback: () => void) => void
     logout: () => Promise<void>
+    query: (queryDefinition: QueryDefinition) => QueryResult
   }
 
   export const createMockClient = (options?: ClientOptions): CozyClient =>
