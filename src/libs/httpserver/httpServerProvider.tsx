@@ -16,6 +16,7 @@ import { fetchAppDataForSlug } from '/libs/httpserver/indexDataFetcher'
 import { getServerBaseFolder } from '/libs/httpserver/httpPaths'
 import { queryResultToCrypto } from '/components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
 import { setCookie } from '/libs/httpserver/httpCookieManager'
+import { HtmlSource } from '/libs/httpserver/models'
 
 import {
   addBodyClasses,
@@ -36,8 +37,8 @@ const DEFAULT_PORT = Config.HTTP_SERVER_DEFAULT_PORT
   : 5759
 
 interface IndexHtmlForSlug {
-  source: 'stack' | 'cache'
-  html: string
+  source: HtmlSource
+  html: string | false
 }
 
 interface HttpServerState {
@@ -123,7 +124,7 @@ export const HttpServerProvider = (
   const getIndexHtmlForSlug = async (
     slug: string,
     client: CozyClient
-  ): Promise<IndexHtmlForSlug | false> => {
+  ): Promise<IndexHtmlForSlug> => {
     try {
       if (!serverInstance) {
         throw new Error('ServerInstance is null, should not happen')
@@ -142,7 +143,10 @@ export const HttpServerProvider = (
       const rawHtml = await getIndexForFqdnAndSlug(fqdn, slug)
 
       if (!rawHtml) {
-        return false
+        return {
+          html: false,
+          source: 'none'
+        }
       }
 
       const computedHtml = await fillIndexWithData({
@@ -185,7 +189,10 @@ export const HttpServerProvider = (
         `Error while generating Index.html for ${slug}. Cozy-stack version will be used instead. Error was: ${errorMessage}`
       )
 
-      return false
+      return {
+        html: false,
+        source: 'offline'
+      }
     }
   }
 
