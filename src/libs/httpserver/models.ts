@@ -45,3 +45,5 @@ export interface CozyData {
   token?: string
   tracking?: string
 }
+
+export type HtmlSource = 'stack' | 'cache' | 'offline' | 'none'
