@@ -225,7 +225,11 @@ const WrappedApp = () => {
     [client]
   )
 
-  if (client === null) return <Nav client={client} setClient={setClient} />
+  if (client === null) return (
+    <NetStatusBoundary>
+      <Nav client={client} setClient={setClient} />
+    </NetStatusBoundary>
+  )
 
   if (client)
     return (
@@ -259,13 +263,11 @@ const Wrapper = () => {
                 <HomeStateProvider>
                   <SplashScreenProvider>
                     <SecureBackgroundSplashScreenWrapper>
-                      <NetStatusBoundary>
                         <ThemeProvider>
                           <PermissionsChecker>
                             <WrappedApp />
                           </PermissionsChecker>
                         </ThemeProvider>
-                      </NetStatusBoundary>
                     </SecureBackgroundSplashScreenWrapper>
                   </SplashScreenProvider>
                 </HomeStateProvider>
