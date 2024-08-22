@@ -149,7 +149,7 @@ export const HttpServerProvider = (
       }
 
       await setCookie(cookie, client)
-      const rawHtml = await getIndexForFqdnAndSlug(fqdn, slug)
+      const rawHtml = await getIndexForFqdnAndSlug(fqdn, slug, source)
 
       if (!rawHtml) {
         return {
