@@ -139,6 +139,15 @@ export const HttpServerProvider = (
         client
       )
 
+      if (source === 'cache') {
+        if (slug !== 'home' && slug !== 'mespapiers') {
+          return {
+            html: false,
+            source: 'offline'
+          }
+        }
+      }
+
       await setCookie(cookie, client)
       const rawHtml = await getIndexForFqdnAndSlug(fqdn, slug)
 
