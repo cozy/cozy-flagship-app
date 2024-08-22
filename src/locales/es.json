@@ -13,6 +13,8 @@
     "badUnlockPassword": "Las credenciales que has introducido son incorrectas, por favor inténtalo de nuevo.",
     "badUnlockPin": "El PIN que has introducido es incorrecto, por favor inténtalo de nuevo",
     "contactUs": "¿Un problema, una sugerencia? Contáctanos en",
+    "offline_unsupported_title": "No se puede cargar",
+    "offline_unsupported_message": "Esta aplicación no está disponible sin conexión",
     "unknown_error": "Ha ocurrido un error inesperado, por favor inténtalo de nuevo.",
     "reset": "Volver al inicio",
     "showDetails": "Ver detalles del error",
