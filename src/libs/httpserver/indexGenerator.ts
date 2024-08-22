@@ -13,6 +13,7 @@ import {
   prepareAssets
 } from '/libs/httpserver/copyAllFilesFromBundleAssets'
 import { TemplateValues } from '/libs/httpserver/indexDataFetcher'
+import { HtmlSource } from '/libs/httpserver/models'
 import {
   getCurrentAppConfigurationForFqdnAndSlug,
   setCurrentAppVersionForFqdnAndSlug
@@ -87,11 +88,17 @@ const isSlugInBlocklist = (currentSlug: string): boolean =>
 
 export const getIndexForFqdnAndSlug = async (
   fqdn: string,
-  slug: string
+  slug: string,
+  source: HtmlSource
 ): Promise<string | false> => {
   if (shouldDisableGetIndex()) return false // Make cozy-app hosted by webpack-dev-server work with HTTPServer
 
-  if (!isSlugInAllowlist(slug) || isSlugInBlocklist(slug)) return false
+  if (
+    (!isSlugInAllowlist(slug) || isSlugInBlocklist(slug)) &&
+    source !== 'cache'
+  ) {
+    return false
+  }
 
   await initLocalBundleIfNotExist(fqdn, slug)
 
