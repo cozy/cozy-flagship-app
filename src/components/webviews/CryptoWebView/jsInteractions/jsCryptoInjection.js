@@ -9,13 +9,13 @@ import { windowPasswordObjectDeclaration } from './jsFunctions/jsPasswordHelpers
 import { subtleFunctionDeclaration } from './jsFunctions/jsSubtle'
 
 const jsCode = `
+  ${postMessageFunctionDeclaration}
+  ${listenMessageFunctionDeclaration}
   ${windowPasswordObjectDeclaration}
   ${computePassFunctionDeclaration}
   ${computePKCEFunctionDeclaration}
   ${generateHttpServerSecurityKeyFunctionDeclaration}
   ${subtleFunctionDeclaration}
-  ${postMessageFunctionDeclaration}
-  ${listenMessageFunctionDeclaration}
 
   const messagingFunctions = {
     computePass,
@@ -28,6 +28,7 @@ const jsCode = `
 export const html = `
   <html>
     <head>
+       <title>Crypto WebView</title>
     </head>
     <body>
       <div id="main"></div>
