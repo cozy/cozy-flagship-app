@@ -23,6 +23,8 @@ const jsCode = `
     generateHttpServerSecurityKey,
     sublteProxy
   }
+
+  postMessage(JSON.stringify({ isReady: true }))
 `
 
 export const html = `
