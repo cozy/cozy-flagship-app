@@ -33,6 +33,12 @@ export const CryptoWebView = ({ setHasCrypto }) => {
   const processAnswer = event => {
     const webviewAnswer = JSON.parse(event.nativeEvent.data)
 
+    if (webviewAnswer.isReady) {
+      log.debug('Ready')
+      setIsLoading(false)
+      return
+    }
+
     if (webviewAnswer.isError) {
       log.error(`Error : ${event.nativeEvent.data}`)
       return
@@ -61,7 +67,6 @@ export const CryptoWebView = ({ setHasCrypto }) => {
         ref={webviewRef}
         javaScriptEnabled={true}
         onMessage={processAnswer}
-        onLoadEnd={() => setIsLoading(false)}
         originWhitelist={['*']}
         source={{ html, baseUrl: 'https://localhost' }}
         supervisionShowProgress={false}

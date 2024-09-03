@@ -35,7 +35,13 @@ jest.mock('react-native-webview', () => {
       })
     }
     componentDidMount() {
-      this.props.onLoadEnd()
+      this.props.onMessage({
+        nativeEvent: {
+          data: JSON.stringify({
+            isReady: true
+          })
+        }
+      })
     }
     render() {
       return <div>WebView</div>
