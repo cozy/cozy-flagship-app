@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { View } from 'react-native'
 
+import Minilog from 'cozy-minilog'
+
 import {
   subscribeToCrypto,
   unsubscribeFromCrypto,
@@ -10,6 +12,8 @@ import { html } from './jsInteractions/jsCryptoInjection'
 import { styles } from './CryptoWebView.styles'
 
 import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
+
+const log = Minilog('🥷 CryptoWebView')
 
 export const CryptoWebView = ({ setHasCrypto }) => {
   const [isLoading, setIsLoading] = useState(true)
@@ -28,6 +32,12 @@ export const CryptoWebView = ({ setHasCrypto }) => {
 
   const processAnswer = event => {
     const webviewAnswer = JSON.parse(event.nativeEvent.data)
+
+    if (webviewAnswer.isError) {
+      log.error(`Error : ${event.nativeEvent.data}`)
+      return
+    }
+
     sendAnswer(webviewAnswer)
   }
 
