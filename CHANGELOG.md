@@ -1,10 +1,20 @@
-# 1.1.30
+# 1.1.31
 
 ## ✨ Features
 
 
 ## 🐛 Bug Fixes
 
+
+## 🔧 Tech
+
+# 1.1.30
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+* Fixes a race condition leading to a blue screen ([PR #1241](https://github.com/cozy/cozy-flagship-app/pull/1241))
 
 ## 🔧 Tech
 
