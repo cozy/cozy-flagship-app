@@ -30,7 +30,17 @@ export const getLinks = (): CozyLink[] => {
     doctypes: offlineDoctypes,
     initialSync: true,
     platform: platformReactNative,
-    ignoreWarmup: true
+    ignoreWarmup: true,
+    doctypesReplicationOptions: Object.fromEntries(
+      offlineDoctypes.map(doctype => {
+        return [
+          doctype,
+          {
+            strategy: 'fromRemote'
+          }
+        ]
+      })
+    )
   }
 
   const stackLink = new StackLink({
