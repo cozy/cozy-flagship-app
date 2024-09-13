@@ -10,6 +10,7 @@ import Config from 'react-native-config'
 import type CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
+import { isOfflineCompatible } from '/app/domain/offline/isOfflineCompatible'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import HttpServer from '/libs/httpserver/HttpServer'
 import { fetchAppDataForSlug } from '/libs/httpserver/indexDataFetcher'
@@ -140,12 +141,23 @@ export const HttpServerProvider = (
       )
 
       if (source === 'cache') {
-        if (slug !== 'home' && slug !== 'mespapiers') {
+        log.debug(
+          'App from cache detected, cheking if the app is compatible with offline mode'
+        )
+        const isOffflineCompatitble = await isOfflineCompatible(fqdn, slug)
+
+        if (!isOffflineCompatitble) {
+          log.debug(
+            `App ${slug}' is NOT compatible with offline, abort index generation`
+          )
           return {
             html: false,
             source: 'offline'
           }
         }
+        log.debug(
+          `App ${slug}' is compatible with offline, continue index generation`
+        )
       }
 
       await setCookie(cookie, client)
