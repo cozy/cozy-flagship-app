@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import 'cozy-client'
-import { QueryDefinition } from 'cozy-client'
+import { QueryDefinition, CozyLink } from 'cozy-client'
 import {
   FileDocument,
   CozyClientDocument,
@@ -182,6 +182,7 @@ declare module 'cozy-client' {
       queryDefinition: QueryDefinition,
       options?: QueryOptions
     ) => Promise<QueryResult>
+    links: CozyLink[]
   }
 
   export const createMockClient = (options?: ClientOptions): CozyClient =>
