@@ -42,14 +42,8 @@ export function setHomeTheme(params: HomeThemeParams): void {
       flagshipUIEvents.SET_COMPONENT_COLORS,
       componentId,
       {
-        topTheme:
-          getColorScheme({ useUserColorScheme: true }) === 'dark'
-            ? 'dark'
-            : 'light',
-        bottomTheme:
-          getColorScheme({ useUserColorScheme: true }) === 'dark'
-            ? 'dark'
-            : 'light'
+        topTheme: getColorScheme() === 'dark' ? 'dark' : 'light',
+        bottomTheme: getColorScheme() === 'dark' ? 'dark' : 'light'
       }
     )
   } else {
@@ -57,14 +51,8 @@ export function setHomeTheme(params: HomeThemeParams): void {
       flagshipUIEvents.SET_COMPONENT_COLORS,
       componentId,
       {
-        topTheme:
-          getColorScheme({ useUserColorScheme: true }) === 'dark'
-            ? 'light'
-            : 'dark',
-        bottomTheme:
-          getColorScheme({ useUserColorScheme: true }) === 'dark'
-            ? 'light'
-            : 'dark'
+        topTheme: getColorScheme() === 'dark' ? 'light' : 'dark',
+        bottomTheme: getColorScheme() === 'dark' ? 'light' : 'dark'
       }
     )
   }
