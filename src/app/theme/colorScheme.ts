@@ -2,11 +2,6 @@ import { useEffect } from 'react'
 import { Appearance, ColorSchemeName } from 'react-native'
 
 import { useSettings } from 'cozy-client'
-import flag from 'cozy-flags'
-
-interface GetColorSchemeOptions {
-  useUserColorScheme?: boolean
-}
 
 export const setColorScheme = (
   colorScheme: ColorSchemeName | string | undefined
@@ -15,19 +10,8 @@ export const setColorScheme = (
   Appearance.setColorScheme(formattedColorScheme)
 }
 
-export const getColorScheme = ({
-  useUserColorScheme = false
-}: GetColorSchemeOptions = {}): ColorSchemeName => {
-  if (!useUserColorScheme) {
-    return Appearance.getColorScheme()
-  }
-
-  if (flag('ui.darkmode.enabled')) {
-    return Appearance.getColorScheme()
-  }
-
-  // Force light if flag disabled
-  return 'light'
+export const getColorScheme = (): ColorSchemeName => {
+  return Appearance.getColorScheme()
 }
 
 const formatColorSchemeName = (

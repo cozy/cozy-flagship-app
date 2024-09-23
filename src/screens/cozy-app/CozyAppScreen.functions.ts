@@ -25,7 +25,7 @@ export const config = {
 // Width has to be null at start even if it's not a valid value (was set to undefined and it broke the progress bar)
 // At the time of this fix we want to go back the previously working value but we have to investigate why it has to be null
 export const progressBarConfig = (): ProgressBarProps => {
-  const colors = getColors({ useUserColorScheme: true })
+  const colors = getColors()
 
   return {
     width: null as unknown as number | undefined,
