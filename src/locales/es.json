@@ -182,6 +182,10 @@
     "LogDisabledError": {
       "title": "No se pueden enviar registros",
       "body": "Los registros están deshabilitados, por favor habilítelos primero y luego envíelos de nuevo"
+    },
+    "OfflineFileError": {
+      "title": "No se puede descargar",
+      "body": "Este archivo no está disponible sin conexión"
     }
   },
   "software": {
