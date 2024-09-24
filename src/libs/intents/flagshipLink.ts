@@ -17,6 +17,21 @@ export const flagshipLinkRequest = async (
       )
     }
 
+    // Temporary skip `io.cozy.jobs` queries as they are not mandatory
+    // to display cozy-home but are very long to be executed (>20s) and
+    // delay cozy-home first draw
+    // Should be removed when we find an optimisation for `io.cozy.jobs`
+    if (operation.doctype === 'io.cozy.jobs') {
+      return {
+        data: [],
+        meta: {
+          count: 0
+        },
+        next: false,
+        skip: 0
+      }
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = await client.query(operation)
 
