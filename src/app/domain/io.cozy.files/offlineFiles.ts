@@ -1,3 +1,4 @@
+import { Alert } from 'react-native'
 import FileViewer from 'react-native-file-viewer'
 import RNFS from 'react-native-fs'
 
@@ -16,6 +17,7 @@ import {
 } from '/app/domain/io.cozy.files/remoteFiles'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { normalizeFqdn } from '/libs/functions/stringHelpers'
+import { t } from '/locales/i18n'
 
 const log = Minilog('📁 Offline Files')
 
@@ -95,8 +97,25 @@ export const downloadFile = async (
 
     return destinationPath
     // return destinationPath
-  } catch (error) {
+  } catch (error: unknown) {
     log.error('Something went wrong while downloading file', error)
+
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'message' in error &&
+      error.message === 'Network request failed'
+    ) {
+      Alert.alert(
+        t('modals.OfflineFileError.title'),
+        t('modals.OfflineFileError.body'),
+        undefined,
+        {
+          cancelable: true
+        }
+      )
+    }
+
     throw error
   }
 }
