@@ -1,7 +1,19 @@
+# 1.1.32
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+
 # 1.1.31
 
 ## ✨ Features
 
+* Added Offline support for cozy-home and mespapiers ([PR #1239](https://github.com/cozy/cozy-flagship-app/pull/1239))
 
 ## 🐛 Bug Fixes
 
