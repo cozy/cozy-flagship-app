@@ -182,6 +182,10 @@
     "LogDisabledError": {
       "title": "Cannot send logs",
       "body": "Logs are disabled, please enable them first and then send them again"
+    },
+    "OfflineFileError": {
+      "title": "Cannot download",
+      "body": "This file is not available offline"
     }
   },
   "software": {

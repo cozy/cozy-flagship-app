@@ -182,6 +182,10 @@
     "LogDisabledError": {
       "title": "Envoi impossible",
       "body": "Les logs sont désactivés, veuillez d'abord activer les logs avant de les envoyer"
+    },
+    "OfflineFileError": {
+      "title": "Téléchargement impossible",
+      "body": "Ce fichier n'est pas disponible hors ligne"
     }
   },
   "software": {
