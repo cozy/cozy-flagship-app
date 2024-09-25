@@ -1,4 +1,4 @@
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import React, { useCallback, useState, useEffect } from 'react'
 import { AppState, KeyboardAvoidingView, Platform, View } from 'react-native'
 
@@ -9,6 +9,7 @@ import { RemountProgress } from '/app/view/Loading/RemountProgress'
 import { initHtmlContent } from '/components/webviews/CozyProxyWebView.functions'
 import { CozyWebView } from '/components/webviews/CozyWebView'
 import { useHttpServerContext } from '/libs/httpserver/httpServerProvider'
+import { useI18n } from '/locales/i18n'
 
 import { styles } from '/components/webviews/CozyProxyWebView.styles'
 
@@ -23,6 +24,7 @@ export const CozyProxyWebView = ({
   wrapperStyle,
   ...props
 }) => {
+  const { t } = useI18n()
   const client = useClient()
   const httpServerContext = useHttpServerContext()
   const [state, dispatch] = useState({
@@ -34,6 +36,7 @@ export const CozyProxyWebView = ({
   const [htmlContentCreationDate, setHtmlContentCreationDate] = useState(
     Date.now()
   )
+  const navigation = useNavigation()
 
   const reload = useCallback(() => {
     log.debug('Reloading CozyProxyWebView')
@@ -73,7 +76,9 @@ export const CozyProxyWebView = ({
             href,
             client,
             dispatch,
-            setHtmlContentCreationDate
+            setHtmlContentCreationDate,
+            navigation,
+            t
           })
         } else {
           dispatch({
@@ -86,7 +91,7 @@ export const CozyProxyWebView = ({
     }
 
     void init()
-  }, [client, httpServerContext, slug, href])
+  }, [client, httpServerContext, navigation, slug, href])
 
   useFocusEffect(
     useCallback(() => {

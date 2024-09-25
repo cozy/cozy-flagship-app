@@ -13,6 +13,8 @@
     "badUnlockPassword": "Les identifiants que vous avez saisis sont incorrects, veuillez ré-essayer.",
     "badUnlockPin": "Le code PIN que vous avez saisi est incorrect, veuillez ré-essayer",
     "contactUs": "Un problème, une suggestion ? Contactez-nous à",
+    "offline_unsupported_title": "Chargement impossible",
+    "offline_unsupported_message": "Cette application n'est pas disponible hors connexion",
     "unknown_error": "Une erreur inattendue s'est produite, veuillez ré-essayer.",
     "reset": "Revenir à l'accueil",
     "showDetails": "Voir les détails de l'erreur",

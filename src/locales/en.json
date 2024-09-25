@@ -13,6 +13,8 @@
     "badUnlockPassword": "The credentials you entered are incorrect, please try again.",
     "badUnlockPin": "The PIN you entered is incorrect, please try again",
     "contactUs": "A problem, a suggestion? Contact us at",
+    "offline_unsupported_title": "Unable to load",
+    "offline_unsupported_message": "This application is not available offline",
     "unknown_error": "An unexpected error occurred, please try again.",
     "reset": "Return to home",
     "showDetails": "Show error details",
