@@ -24,7 +24,10 @@ describe('CozyWebview', () => {
 
   describe('OAuth Client Limit', () => {
     const httpServerContext = {
-      getIndexHtmlForSlug: jest.fn()
+      getIndexHtmlForSlug: jest.fn().mockResolvedValue({
+        source: 'stack',
+        html: 'SOME_HTML'
+      })
     }
     const href = 'https://claude-home.mycozy.cloud'
     const client = {}

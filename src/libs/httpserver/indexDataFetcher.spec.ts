@@ -12,7 +12,7 @@ jest.mock('@react-native-cookies/cookies', () => ({
 }))
 
 const mockedFetchCozyDataForSlug = fetchCozyDataForSlug as jest.MockedFunction<
-  typeof fetchCozyDataForSlug
+  typeof fetchCozyDataForSlug<StackResultData>
 >
 
 describe('indexDataFetcher', () => {
@@ -37,7 +37,23 @@ describe('indexDataFetcher', () => {
   })
 })
 
-const mockStackResult = {
+interface StackResultData {
+  type: string
+  id: string
+  attributes: Record<string, string>
+  meta: unknown
+  links: {
+    self: string
+  }
+}
+
+interface StackResult {
+  source: 'stack'
+  data: StackResultData
+}
+
+const mockStackResult: StackResult = {
+  source: 'stack',
   data: {
     type: 'io.cozy.apps.open',
     id: 'home',
@@ -72,6 +88,7 @@ const mockStackResult = {
 
 const expectedResult = {
   cookie: 'SOME_COOKIE',
+  source: 'stack',
   templateValues: {
     AppEditor: 'Cozy',
     AppName: 'Home',

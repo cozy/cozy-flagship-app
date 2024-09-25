@@ -502,10 +502,14 @@ PODS:
     - React-Core
   - react-native-flipper (0.146.1):
     - React-Core
+  - react-native-get-random-values (1.11.0):
+    - React-Core
   - react-native-gzip (2.0.0):
     - NVHTarGzip
     - React
   - react-native-idle-timer (2.2.1):
+    - React-Core
+  - react-native-mail (6.1.1):
     - React-Core
   - react-native-mlkit-ocr (0.3.0):
     - GoogleMLKit/TextRecognition (= 2.6.0)
@@ -513,6 +517,13 @@ PODS:
   - react-native-netinfo (9.5.0):
     - React-Core
   - react-native-print (0.11.0):
+    - React-Core
+  - react-native-quick-base64 (2.1.2):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+  - react-native-quick-sqlite (8.0.6):
+    - React
+    - React-callinvoker
     - React-Core
   - react-native-receive-sharing-intent (2.2.1):
     - React-Core
@@ -639,6 +650,8 @@ PODS:
     - React-jsi (= 0.72.12)
     - React-logger (= 0.72.12)
     - React-perflogger (= 0.72.12)
+  - rn-fetch-blob (0.12.0):
+    - React-Core
   - RNBackgroundFetch (4.2.5):
     - React-Core
   - RNBackgroundGeolocation (4.16.4):
@@ -764,11 +777,15 @@ DEPENDENCIES:
   - "react-native-cookies (from `../node_modules/@react-native-cookies/cookies`)"
   - react-native-document-scanner-plugin (from `../node_modules/react-native-document-scanner-plugin`)
   - react-native-flipper (from `../node_modules/react-native-flipper`)
+  - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - "react-native-gzip (from `../node_modules/@fengweichong/react-native-gzip`)"
   - react-native-idle-timer (from `../node_modules/react-native-idle-timer`)
+  - react-native-mail (from `../node_modules/react-native-mail`)
   - react-native-mlkit-ocr (from `../node_modules/react-native-mlkit-ocr`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-print (from `../node_modules/react-native-print`)
+  - react-native-quick-base64 (from `../node_modules/react-native-quick-base64`)
+  - react-native-quick-sqlite (from `../node_modules/react-native-quick-sqlite`)
   - "react-native-receive-sharing-intent (from `../node_modules/@mythologi/react-native-receive-sharing-intent`)"
   - react-native-restart (from `../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -791,6 +808,7 @@ DEPENDENCIES:
   - React-runtimescheduler (from `../node_modules/react-native/ReactCommon/react/renderer/runtimescheduler`)
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
   - RNBackgroundFetch (from `../node_modules/react-native-background-fetch`)
   - RNBackgroundGeolocation (from `../node_modules/react-native-background-geolocation`)
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
@@ -919,16 +937,24 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-document-scanner-plugin"
   react-native-flipper:
     :path: "../node_modules/react-native-flipper"
+  react-native-get-random-values:
+    :path: "../node_modules/react-native-get-random-values"
   react-native-gzip:
     :path: "../node_modules/@fengweichong/react-native-gzip"
   react-native-idle-timer:
     :path: "../node_modules/react-native-idle-timer"
+  react-native-mail:
+    :path: "../node_modules/react-native-mail"
   react-native-mlkit-ocr:
     :path: "../node_modules/react-native-mlkit-ocr"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-print:
     :path: "../node_modules/react-native-print"
+  react-native-quick-base64:
+    :path: "../node_modules/react-native-quick-base64"
+  react-native-quick-sqlite:
+    :path: "../node_modules/react-native-quick-sqlite"
   react-native-receive-sharing-intent:
     :path: "../node_modules/@mythologi/react-native-receive-sharing-intent"
   react-native-restart:
@@ -973,6 +999,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/utils"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  rn-fetch-blob:
+    :path: "../node_modules/rn-fetch-blob"
   RNBackgroundFetch:
     :path: "../node_modules/react-native-background-fetch"
   RNBackgroundGeolocation:
@@ -1089,11 +1117,15 @@ SPEC CHECKSUMS:
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
   react-native-document-scanner-plugin: df5b82df67ff612262c40c26ef2c8239c5af5c55
   react-native-flipper: 4bfe0a324e663f1ae2f76ad0da75673de6895efe
+  react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
   react-native-gzip: 5ffb84bf191c7cd135338eca748317bc466d41a1
   react-native-idle-timer: f1920a59fe776340d004ff9de13c4a6eedcc8807
+  react-native-mail: 8fdcd3aef007c33a6877a18eb4cf7447a1d4ce4a
   react-native-mlkit-ocr: 72cdbde86f8d29cba26cf9fa0a1865fe45c8f8d6
   react-native-netinfo: 48c5f79a84fbc3ba1d28a8b0d04adeda72885fa8
   react-native-print: f704aef52d931bfce6d1d84351dbb5232d7ecb89
+  react-native-quick-base64: 42a805dcf2ae4f38c4d2c7e7a3c7dd936e5d248a
+  react-native-quick-sqlite: e0e23b749382a85e4b57146f753de737a6c3a9e1
   react-native-receive-sharing-intent: 0c21b8e80f629a73341f2566ce9b99df8124bb10
   react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
   react-native-safe-area-context: 39c2d8be3328df5d437ac1700f4f3a4f75716acc
@@ -1116,6 +1148,7 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 8aea338c561b2175f47018124c076d89d3808d30
   React-utils: 9a24cb88f950d1020ee55bddacbc8c16a611e2dc
   ReactCommon: 76843a9bb140596351ac2786257ac9fe60cafabb
+  rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNBackgroundFetch: 2f800a04434620db15ede2e8f21886608a2d1743
   RNBackgroundGeolocation: 7df16548756b443aac809663cba8a4e03f0b8732
   RNBootSplash: 4844706cbb56a3270556c9b94e59dedadccd47e4
