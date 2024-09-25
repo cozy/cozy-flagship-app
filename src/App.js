@@ -41,6 +41,7 @@ import { useGeolocationTracking } from '/app/domain/geolocation/hooks/useGeoloca
 import { OsReceiveProvider } from '/app/view/OsReceive/OsReceiveProvider'
 import { ErrorProvider } from '/app/view/Error/ErrorProvider'
 import { LoadingOverlayProvider } from '/app/view/Loading/LoadingOverlayProvider'
+import { useOfflineDebugUniversalLinks } from '/app/domain/offline/hooks/useOfflineDebugUniversalLinks'
 import { OsReceiveApi } from '/app/domain/osReceive/services/OsReceiveApi'
 import {
   useOsReceiveDispatch,
@@ -101,6 +102,7 @@ const App = ({ setClient }) => {
   useNotifications()
   useGeolocationTracking()
   useCozyEnvironmentOverride()
+  useOfflineDebugUniversalLinks(client)
 
   const {
     LauncherDialog,

@@ -1,7 +1,12 @@
+import RNRestart from 'react-native-restart'
+
 import { platformReactNative } from '/pouchdb/platformReactNative'
 
-import { CozyLink, StackLink } from 'cozy-client'
+import CozyClient, { CozyLink, StackLink } from 'cozy-client'
+import Minilog from 'cozy-minilog'
 import { default as PouchLink } from 'cozy-pouch-link'
+
+const log = Minilog('🔗 GetLinks')
 
 export const offlineDoctypes = [
   // cozy-home
@@ -52,4 +57,20 @@ export const getLinks = (): CozyLink[] => {
   })
 
   return [stackLink, pouchLink]
+}
+
+export const resetLinksAndRestart = async (
+  client?: CozyClient
+): Promise<void> => {
+  if (!client) {
+    log.info('ResetLinksAndRestart called with no client, return')
+    return
+  }
+
+  for (const link of client.links) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    await link.reset()
+  }
+
+  RNRestart.Restart()
 }
