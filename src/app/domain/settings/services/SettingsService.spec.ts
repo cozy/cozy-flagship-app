@@ -9,6 +9,9 @@ import { ensureAutoLockIsEnabled } from '/app/domain/settings/services/SettingsS
 jest.mock('@react-native-cookies/cookies', () => ({
   clearAll: jest.fn()
 }))
+jest.mock('react-native-file-viewer', () => ({
+  open: jest.fn()
+}))
 
 describe('ensureAutoLockIsEnabled', () => {
   beforeEach(async () => await clearCozyData())

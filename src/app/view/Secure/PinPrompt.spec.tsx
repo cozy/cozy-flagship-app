@@ -22,6 +22,9 @@ jest.mock('/app/view/Lock/useLockScreenWrapper', () => ({
   hideSecurityScreen: jest.fn(),
   showSecurityScreen: jest.fn()
 }))
+jest.mock('react-native-file-viewer', () => ({
+  open: jest.fn()
+}))
 
 // This is our main test suite for the PinPrompt component
 describe('PinPrompt', () => {

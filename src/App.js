@@ -59,6 +59,7 @@ import {
   LauncherContextProvider
 } from '/screens/home/hooks/useLauncherContext'
 import LauncherView from '/screens/konnectors/LauncherView'
+import { makeImportantFilesAvailableOfflineInBackground } from '/app/domain/io.cozy.files/importantFiles'
 import { useShareFiles } from '/app/domain/osReceive/services/shareFilesService'
 import { ClouderyOffer } from '/app/view/IAP/ClouderyOffer'
 import { useDimensions } from '/libs/dimensions'
@@ -111,6 +112,13 @@ const App = ({ setClient }) => {
     resetLauncherContext,
     setLauncherContext
   } = useLauncherContext()
+
+  useEffect(() => {
+    if (!client) {
+      return
+    }
+    makeImportantFilesAvailableOfflineInBackground(client)
+  }, [client])
 
   if (isLoading) {
     return null
