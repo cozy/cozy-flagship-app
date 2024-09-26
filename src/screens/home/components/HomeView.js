@@ -11,6 +11,7 @@ import {
 import { useNativeIntent } from 'cozy-intent'
 import Minilog from 'cozy-minilog'
 
+import rnperformance from '/app/domain/performances/measure'
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { navigateToApp } from '/libs/functions/openApp'
 import {
@@ -69,8 +70,25 @@ const HomeView = ({ route, navigation }) => {
     navigation
   )
   const filesToUpload = useFilesToUpload()
+  const [markNameHome] = useState(() => rnperformance.mark('HomeView'))
 
   const { componentId } = useFlagshipUI('HomeView', ScreenIndexes.HOME_VIEW)
+
+  useEffect(() => {
+    if (uri && shouldWaitCozyApp !== undefined && !shouldWaitCozyApp) {
+      rnperformance.measure({
+        markName: markNameHome,
+        measureName: 'HomeStartRenderChild'
+      })
+    }
+  }, [markNameHome, uri, shouldWaitCozyApp])
+
+  useEffect(() => {
+    rnperformance.measure({
+      markName: markNameHome,
+      measureName: 'HomeStart'
+    })
+  }, [markNameHome])
 
   useEffect(() => {
     const subscription = AppState.addEventListener(
@@ -146,6 +164,7 @@ const HomeView = ({ route, navigation }) => {
       session
 
     const getHomeUri = async () => {
+      const markName = rnperformance.mark('getHomeUri')
       const webLink = generateWebLink({
         cozyUrl: client.getStackClient().uri,
         hash: 'connected',
@@ -153,13 +172,25 @@ const HomeView = ({ route, navigation }) => {
         slug: 'home',
         subDomainType: session.subDomainType
       })
+      rnperformance.measure({
+        markName: markName,
+        measureName: `${markName} generateWebLink`
+      })
 
       if (await shouldCreateSession(webLink)) {
         const sessionLink = await handleCreateSession(webLink)
         await consumeSessionToken()
 
+        rnperformance.measure({
+          markName: markName,
+          measureName: `${markName} setUri sessionLink`
+        })
         setUri(sessionLink)
       } else {
+        rnperformance.measure({
+          markName: markName,
+          measureName: `${markName} setUri webLink`
+        })
         setUri(webLink)
       }
     }
