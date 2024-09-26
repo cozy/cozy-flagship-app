@@ -3,6 +3,7 @@ import RNFS from 'react-native-fs'
 
 import Minilog from 'cozy-minilog'
 
+import rnperformance from '/app/domain/performances/measure'
 import {
   getBaseFolderForFqdnAndSlug,
   getBaseFolderForFqdnAndSlugAndCurrentVersion,
@@ -91,6 +92,7 @@ export const getIndexForFqdnAndSlug = async (
   slug: string,
   source: HtmlSource
 ): Promise<string | false> => {
+  const markName = rnperformance.mark(`getIndexForFqdnAndSlug ${slug}`)
   if (shouldDisableGetIndex()) return false // Make cozy-app hosted by webpack-dev-server work with HTTPServer
 
   if (
@@ -120,6 +122,7 @@ export const getIndexForFqdnAndSlug = async (
 
   const fileContent = await RNFS.readFile(indexPath)
 
+  rnperformance.measure({ markName: markName })
   return fileContent
 }
 
