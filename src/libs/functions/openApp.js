@@ -2,11 +2,15 @@ import { Alert, Linking, Platform } from 'react-native'
 import { useMemo } from 'react'
 
 import { Q } from 'cozy-client'
+import Minilog from 'cozy-minilog'
 
 import { getDimensions } from '/libs/dimensions'
 import { isSameCozy, openUrlInAppBrowser } from '/libs/functions/urlHelpers'
 import { navigate } from '/libs/RootNavigation'
 import { routes } from '/constants/routes'
+
+const log = Minilog('OpenApp')
+
 /**
  * App's mobile information. Used to describe the app scheme and its store urls
  * @typedef {object} AppManifestMobileInfo
@@ -185,6 +189,7 @@ export const openApp = (client, navigation, href, app, iconParams) => {
     }
   }
 
+  log.debug(`NAVIGATE TO APP: ${app?.slug}`)
   return navigateToApp({ navigation, href, slug: app?.slug, iconParams })
 }
 
