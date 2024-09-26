@@ -32,8 +32,13 @@ export const flagshipLinkRequest = async (
       }
     }
 
+    const start = new Date()
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = await client.query(operation)
+
+    const end = new Date()
+    const duration = end.getTime() - start.getTime()
+    log.debug(`⏰ operation took ${duration}ms -- ${JSON.stringify(operation)}`)
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return result
