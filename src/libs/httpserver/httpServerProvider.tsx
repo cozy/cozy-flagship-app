@@ -11,6 +11,7 @@ import type CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import { isOfflineCompatible } from '/app/domain/offline/isOfflineCompatible'
+import rnperformance from '/app/domain/performances/measure'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import HttpServer from '/libs/httpserver/HttpServer'
 import { fetchAppDataForSlug } from '/libs/httpserver/indexDataFetcher'
@@ -126,6 +127,7 @@ export const HttpServerProvider = (
     slug: string,
     client: CozyClient
   ): Promise<IndexHtmlForSlug> => {
+    const markName = rnperformance.mark(`getIndexHtmlForSlug ${slug}`)
     try {
       if (!serverInstance) {
         throw new Error('ServerInstance is null, should not happen')
@@ -150,6 +152,10 @@ export const HttpServerProvider = (
           log.debug(
             `App ${slug}' is NOT compatible with offline, abort index generation`
           )
+          rnperformance.measure({
+            markName: markName,
+            measureName: `${markName} Success Offline`
+          })
           return {
             html: false,
             source: 'offline'
@@ -164,6 +170,10 @@ export const HttpServerProvider = (
       const rawHtml = await getIndexForFqdnAndSlug(fqdn, slug, source)
 
       if (!rawHtml) {
+        rnperformance.measure({
+          markName: markName,
+          measureName: `${markName} Success NoHtml`
+        })
         return {
           html: false,
           source: 'none'
@@ -186,6 +196,10 @@ export const HttpServerProvider = (
           addMetaAttributes
         )(computedHtml)
 
+        rnperformance.measure({
+          markName: markName,
+          measureName: `${markName} Success Home`
+        })
         return {
           source,
           html
@@ -199,6 +213,10 @@ export const HttpServerProvider = (
           addMetaAttributes
         )(computedHtml)
 
+        rnperformance.measure({
+          markName: markName,
+          measureName: `${markName} Success`
+        })
         return {
           source,
           html
@@ -210,6 +228,11 @@ export const HttpServerProvider = (
         `Error while generating Index.html for ${slug}. Cozy-stack version will be used instead. Error was: ${errorMessage}`
       )
 
+      rnperformance.measure({
+        markName: markName,
+        measureName: `${markName} Fail`,
+        color: 'error'
+      })
       return {
         html: false,
         source: 'offline'
