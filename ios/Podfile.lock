@@ -650,8 +650,6 @@ PODS:
     - React-jsi (= 0.72.12)
     - React-logger (= 0.72.12)
     - React-perflogger (= 0.72.12)
-  - rn-fetch-blob (0.12.0):
-    - React-Core
   - RNBackgroundFetch (4.2.5):
     - React-Core
   - RNBackgroundGeolocation (4.16.4):
@@ -808,7 +806,6 @@ DEPENDENCIES:
   - React-runtimescheduler (from `../node_modules/react-native/ReactCommon/react/renderer/runtimescheduler`)
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
   - RNBackgroundFetch (from `../node_modules/react-native-background-fetch`)
   - RNBackgroundGeolocation (from `../node_modules/react-native-background-geolocation`)
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
@@ -999,8 +996,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/utils"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
-  rn-fetch-blob:
-    :path: "../node_modules/rn-fetch-blob"
   RNBackgroundFetch:
     :path: "../node_modules/react-native-background-fetch"
   RNBackgroundGeolocation:
@@ -1148,7 +1143,6 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 8aea338c561b2175f47018124c076d89d3808d30
   React-utils: 9a24cb88f950d1020ee55bddacbc8c16a611e2dc
   ReactCommon: 76843a9bb140596351ac2786257ac9fe60cafabb
-  rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNBackgroundFetch: 2f800a04434620db15ede2e8f21886608a2d1743
   RNBackgroundGeolocation: 7df16548756b443aac809663cba8a4e03f0b8732
   RNBootSplash: 4844706cbb56a3270556c9b94e59dedadccd47e4

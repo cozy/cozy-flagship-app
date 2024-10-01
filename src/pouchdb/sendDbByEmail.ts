@@ -1,13 +1,16 @@
-import { Alert, PermissionsAndroid, Platform } from 'react-native'
+import { format } from 'date-fns'
+import { Alert, PermissionsAndroid } from 'react-native'
 import Mailer from 'react-native-mail'
 import RNFS from 'react-native-fs'
-import RNFetchBlob from 'rn-fetch-blob'
 import DeviceInfo from 'react-native-device-info'
 
 import type CozyClient from 'cozy-client'
+// @ts-expect-error Not typed
+import { getSharingLink } from 'cozy-client/dist/models/sharing'
 import Minilog from 'cozy-minilog'
 
 import { fetchSupportMail } from '/app/domain/logger/supportEmail'
+import { uploadFileWithConflictStrategy } from '/app/domain/upload/services'
 import {
   hideSplashScreen,
   showSplashScreen,
@@ -42,32 +45,36 @@ export const sendDbByEmail = async (client?: CozyClient): Promise<void> => {
 
     const dbFiles = files.filter(f => f.name.startsWith(`${fqdn}_`))
 
-    const externalFiles = []
-    for (const dbFile of dbFiles) {
-      const dirs = RNFetchBlob.fs.dirs
+    const token = client.getStackClient().token.accessToken
 
-      const internalPath = dbFile.path
-
-      if (Platform.OS === 'android') {
-        const date = Number(new Date())
-        const externalPath = `${dirs.DCIMDir}/DbFile_${dbFile.name}${date}.sqlite`
-
-        await RNFS.copyFile(internalPath, externalPath)
-
-        externalFiles.push({
-          path: externalPath
-        })
-      } else {
-        externalFiles.push({
-          path: dbFile.path,
-          type: 'pdf' // there is no compatible MIME type, so we use PDF one as replacement, this should change nothing expect the email aspect
-        })
-      }
+    if (!token) {
+      throw new Error('No token found')
     }
 
+    const date = format(new Date(), 'yyyyMMddHHmmssSSS')
+    const existingLogsFolderId = await client
+      .collection('io.cozy.files')
+      .ensureDirectoryExists(`/Settings/AALogs/${date}`)
+
+    for (const dbFile of dbFiles) {
+      const url = getUrl(client, existingLogsFolderId, dbFile.name)
+
+      log.info('Send file', dbFile.name)
+      await uploadFileWithConflictStrategy({
+        url,
+        token,
+        filename: dbFile.name,
+        filepath: dbFile.path,
+        mimetype: '.sqlite'
+      })
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const link: string = await getSharingLink(client, [existingLogsFolderId])
+
     await showSplashScreen(splashScreens.SEND_LOG_EMAIL)
-    log.info('Start email intent', externalFiles)
-    await sendMailPromise(subject, supportEmail, externalFiles).catch(
+    log.info('Start email intent')
+    await sendMailPromise(subject, supportEmail, link).catch(
       (errorData: sendMailError) => {
         const { error, event } = errorData
         Alert.alert(
@@ -98,16 +105,15 @@ export const sendDbByEmail = async (client?: CozyClient): Promise<void> => {
 const sendMailPromise = (
   subject: string,
   email: string,
-  attachments: Attachment[]
+  link: string
 ): Promise<void> => {
   return new Promise((resolve, reject) => {
     Mailer.mail(
       {
         subject: subject,
         recipients: [email],
-        body: buildMessageBody(),
-        isHTML: true,
-        attachments: attachments
+        body: buildMessageBody(link),
+        isHTML: true
       },
       (error, event) => {
         if (error) {
@@ -120,7 +126,7 @@ const sendMailPromise = (
   })
 }
 
-const buildMessageBody = (): string => {
+const buildMessageBody = (link: string): string => {
   const appVersion = DeviceInfo.getVersion()
   const appBuild = DeviceInfo.getBuildNumber()
   const bundle = DeviceInfo.getBundleId()
@@ -129,18 +135,31 @@ const buildMessageBody = (): string => {
   const os = DeviceInfo.getSystemName()
   const version = DeviceInfo.getSystemVersion()
 
+  const linkText = `Link: ${link}`
   const appInfo = `App info: ${appVersion} (${appBuild})`
   const bundleInfo = `App bundle: ${bundle}`
   const deviceInfo = `Device info: ${deviceBrand} ${deviceModel} ${os} ${version}`
 
-  return `${appInfo}\n${bundleInfo}\n${deviceInfo}`
+  return `${linkText}${appInfo}\n${bundleInfo}\n${deviceInfo}`
+}
+
+const getUrl = (client: CozyClient, dirId: string, name: string): string => {
+  const createdAt = new Date().toISOString()
+  const modifiedAt = new Date().toISOString()
+
+  const toURL = new URL(client.getStackClient().uri)
+  toURL.pathname = `/files/${dirId}`
+  toURL.searchParams.append('Name', name)
+  toURL.searchParams.append('Type', 'file')
+  toURL.searchParams.append('Tags', 'library')
+  toURL.searchParams.append('Executable', 'false')
+  toURL.searchParams.append('CreatedAt', createdAt)
+  toURL.searchParams.append('UpdatedAt', modifiedAt)
+
+  return toURL.toString()
 }
 
 interface sendMailError {
   error: string
   event?: string
-}
-
-interface Attachment {
-  path: string
 }
