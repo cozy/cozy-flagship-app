@@ -691,18 +691,17 @@ PODS:
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - React-RCTImage
-  - RNSentry (5.16.0):
+  - RNSentry (5.33.1):
     - hermes-engine
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - React-hermes
-    - Sentry/HybridSDK (= 8.17.1)
+    - Sentry/HybridSDK (= 8.36.0)
   - RNShare (10.0.2):
     - React-Core
   - RNSVG (13.14.0):
     - React-Core
-  - Sentry/HybridSDK (8.17.1):
-    - SentryPrivate (= 8.17.1)
-  - SentryPrivate (8.17.1)
+  - Sentry/HybridSDK (8.36.0)
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -854,7 +853,6 @@ SPEC REPOS:
     - PromisesObjC
     - Protobuf
     - Sentry
-    - SentryPrivate
     - SocketRocket
     - YogaKit
 
@@ -1025,7 +1023,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  boost: 57d2868c099736d80fcd648bf211b4431e51a558
+  boost: 7dcd2de282d72e344012f7d6564d024930a6a440
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   CocoaLumberjack: 6a459bc897d6d80bd1b8c78482ec7ad05dffc3f0
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
@@ -1137,11 +1135,10 @@ SPEC CHECKSUMS:
   RNNotifee: f3c01b391dd8e98e67f539f9a35a9cbcd3bae744
   RNPermissions: 83168e00be08bd043f51fb738256bf761f38952d
   RNScreens: ad1c105ac9107cf1a613bf80889485458eb20bd7
-  RNSentry: 9a8aebd354d3b47c428c72ec7264b7822cf4f3c2
+  RNSentry: d059115a1ee0a77087030e141a1b0aa4983ef9bc
   RNShare: 859ff710211285676b0bcedd156c12437ea1d564
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
-  Sentry: d9f99f9cc13777c5d938650c1e1c85047bb4f0d1
-  SentryPrivate: 839b1e58addf58624087a80b2628e543193fa8ef
+  Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: 87e59f6d458e5061d2421086c5de994b3f7cd151
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
