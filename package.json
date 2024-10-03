@@ -63,7 +63,7 @@
     "cozy-intent": "^2.23.0",
     "cozy-logger": "^1.10.0",
     "cozy-minilog": "3.3.1",
-    "cozy-pouch-link": "^49.0.0",
+    "cozy-pouch-link": "^49.1.0",
     "date-fns": "2.29.3",
     "events": "^3.3.0",
     "html-entities": "^2.3.3",
