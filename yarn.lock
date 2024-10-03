@@ -8379,10 +8379,10 @@ cozy-minilog@3.3.1, cozy-minilog@^3.3.1:
   dependencies:
     microee "0.0.6"
 
-cozy-pouch-link@^49.0.0:
-  version "49.0.0"
-  resolved "https://registry.yarnpkg.com/cozy-pouch-link/-/cozy-pouch-link-49.0.0.tgz#05644fbf7bbb7bf1af0869bca2b959e0ef2bd284"
-  integrity sha512-objXCSNvyGGNhzqb4PXwKNSqv54+E6p1eNhkEBlzrO6miXAeIYX5T0db3OQUuhiQdB69aYiExAVj5sCfUst3kw==
+cozy-pouch-link@^49.1.0:
+  version "49.1.0"
+  resolved "https://registry.yarnpkg.com/cozy-pouch-link/-/cozy-pouch-link-49.1.0.tgz#bed56dd195e778d010abb6d0bf9cd9463562a2fa"
+  integrity sha512-d0Pro98BRcIZ0SAlS1XW0W5TGn9Y1JtqcogEfhfg+c+RQNrC+VM5mUbdSxi3lBilx1fS5wVHyoageidennNF+A==
   dependencies:
     cozy-client "^49.0.0"
     pouchdb-browser "^7.2.2"
