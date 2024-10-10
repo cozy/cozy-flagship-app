@@ -10,9 +10,8 @@ buildscript {
         googlePlayServicesLocationVersion = "20.0.0"
         DocumentScanner_compileSdkVersion = 34
         DocumentScanner_targetSdkVersion = 34
-        kotlinVersion = '1.8.0' // react-native-receive-sharing-intent requires a global kotlin version else the build fails
-        // We use NDK 23 which has both M1 support and is the side-by-side NDK version from AGP.
-        ndkVersion = "23.1.7779620"
+        ndkVersion = "25.1.8937393"
+        kotlinVersion = "1.8.0"
     }
     repositories {
         google()
@@ -21,9 +20,12 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
         classpath("com.google.gms:google-services:4.3.15")
     }
 }
+
+apply plugin: "com.facebook.react.rootproject"
 
 allprojects {
     repositories {
