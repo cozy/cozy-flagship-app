@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
   spinner: {
     width: 70,
     height: 70,
+    // @ts-expect-error We use svg under the hood that understand this fill option
     fill: colors.paperBackgroundColor
   }
 })
