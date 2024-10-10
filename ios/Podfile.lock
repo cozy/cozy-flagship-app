@@ -1077,7 +1077,7 @@ PODS:
     - React-Core
   - react-native-document-scanner-plugin (0.7.3):
     - React-Core
-  - react-native-flipper (0.163.0):
+  - react-native-flipper (0.269.0):
     - React-Core
   - react-native-gzip (2.0.0):
     - NVHTarGzip
@@ -1296,9 +1296,11 @@ PODS:
     - Firebase/Messaging (= 8.15.0)
     - React-Core
     - RNFBApp
-  - RNFileLogger (0.4.1):
+  - RNFileLogger (0.5.6):
     - CocoaLumberjack
-    - React
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
   - RNFileViewer (2.1.5):
     - React-Core
   - RNFS (2.20.0):
@@ -1755,7 +1757,7 @@ SPEC CHECKSUMS:
   react-native-config: 5330c8258265c1e5fdb8c009d2cabd6badd96727
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
   react-native-document-scanner-plugin: df5b82df67ff612262c40c26ef2c8239c5af5c55
-  react-native-flipper: 2d552a8178d839ef378220101fb7f0cd5b2a8003
+  react-native-flipper: 2a568e19c9d7051f01bf9725f886474fc818ba05
   react-native-gzip: 5ffb84bf191c7cd135338eca748317bc466d41a1
   react-native-idle-timer: f1920a59fe776340d004ff9de13c4a6eedcc8807
   react-native-mlkit-ocr: 72cdbde86f8d29cba26cf9fa0a1865fe45c8f8d6
@@ -1795,7 +1797,7 @@ SPEC CHECKSUMS:
   RNDeviceInfo: 4701f0bf2a06b34654745053db0ce4cb0c53ada7
   RNFBApp: e4439717c23252458da2b41b81b4b475c86f90c4
   RNFBMessaging: 40dac204b4197a2661dec5be964780c6ec39bf65
-  RNFileLogger: 9eaf7a6ea709eaaffe646cc485b98ae1dbf1e9f0
+  RNFileLogger: 2abb4af567fc2876a9b4b8b4959d0f3ad25abd29
   RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211

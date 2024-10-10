@@ -12,6 +12,10 @@ buildscript {
         DocumentScanner_targetSdkVersion = 34
         ndkVersion = "25.1.8937393"
         kotlinVersion = "1.8.0"
+        // To solve a conflict between flipper and react-native-background-geolocation
+        // https://github.com/transistorsoft/react-native-background-geolocation/issues/1983
+        slf4jVersion = "2.0.7"
+        logbackVersion = "3.0.0"
     }
     repositories {
         google()
