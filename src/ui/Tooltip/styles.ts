@@ -21,6 +21,7 @@ export const styles = StyleSheet.create({
     marginRight: 8,
     width: 16,
     height: 16,
+    // @ts-expect-error We use svg under the hood that understand this fill option
     fill: palette.Primary.ContrastText
   },
   text: {
