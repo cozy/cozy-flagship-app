@@ -20,9 +20,6 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: colors.paperBackgroundColor,
     borderRadius: 8,
-    boxShadow:
-      '0px 0px 0px 0.5px rgba(29, 33, 42, 0.12), 0px 8px 12px -5px rgba(29, 33, 42, 0.18), 0px 9px 36px 5px rgba(29, 33, 42, 0.17)',
-    justifyself: 'center',
     width: '100%'
   },
   dialogContainer: {
