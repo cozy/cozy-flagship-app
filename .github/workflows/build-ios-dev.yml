@@ -31,7 +31,7 @@ jobs:
       - name: Set NodeJS version
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
 
       - name: Setup Ruby (bundle)
         uses: ruby/setup-ruby@v1
@@ -107,4 +107,3 @@ jobs:
         with:
           name: XCode Build Logs
           path: '/Users/runner/Library/Logs/gym/CozyReactNative-CozyReactNative.log'
-          
