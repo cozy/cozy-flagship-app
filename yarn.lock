@@ -16929,20 +16929,20 @@ react-native-document-scanner-plugin@^0.7.3:
   resolved "https://registry.yarnpkg.com/react-native-document-scanner-plugin/-/react-native-document-scanner-plugin-0.7.3.tgz#a0212e687681e3b1ed9b4aebcb1e7fc20d52ab50"
   integrity sha512-cddhp1rDK3nwCyi3qhbDsuWzC2svBgoGhHNQRgxJvrgfM4uoQKAGSU3XYY3VXjAZCzlqVZz9PYziYDD6fdEIcw==
 
-react-native-file-logger@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/react-native-file-logger/-/react-native-file-logger-0.4.1.tgz#6d4cdfd333489a32b20242f898cff0b196444707"
-  integrity sha512-UpdMtpQvSgOB4ohid2QxwWFkI92gqKEl2woFbcPEWRbmfrwpTZuNPzNEooMTjmIhFBQPfaOcymCL9gK1naE01g==
+react-native-file-logger@^0.5.6:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/react-native-file-logger/-/react-native-file-logger-0.5.6.tgz#b6439717a943b4677b99a6c43ffba43991ea08e9"
+  integrity sha512-npp0IB94QDhy6JjsA9jipuNmbHwcFGGSf8xPXquVbU7z2zM9GQk/JTtXm4IVidQxbDiy0Mzk48eUGkxhry0Ofg==
 
 react-native-file-viewer@^2.1.5:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/react-native-file-viewer/-/react-native-file-viewer-2.1.5.tgz#cd4544f573108e79002b5c7e1ebfce4371885250"
   integrity sha512-MGC6sx9jsqHdefhVQ6o0akdsPGpkXgiIbpygb2Sg4g4bh7v6K1cardLV1NwGB9A6u1yICOSDT/MOC//9Ez6EUg==
 
-react-native-flipper@^0.163.0:
-  version "0.163.0"
-  resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.163.0.tgz#3ede9fed252555d0ac3c6212e7ed6e5af3c85604"
-  integrity sha512-RG0yMlEMe/fYqaoUkhvW2HrqBuRYtq1K3me9y52RBFwPWooZTmUlWjIWGKT9VYVS9T2GGrUV9tpBA8pY9g7CSg==
+react-native-flipper@^0.269.0:
+  version "0.269.0"
+  resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.269.0.tgz#d0fdd2117d978ea6130019e8a35ee424d51bcc21"
+  integrity sha512-pg/dCCaYWWZVTv4AV//LoLGBYUq3zdmFaNcF7XqGEVXtwgL1nnBvzeOgLLH+BHoaUpQfzzidPVV7cKbRYEv8ag==
 
 react-native-fs@^2.20.0:
   version "2.20.0"
