@@ -369,15 +369,20 @@ class ReactNativeLauncher extends Launcher {
       await this.stop()
     } catch (err) {
       log.error(JSON.stringify(err), 'start error')
-      await this.fetchAndSaveDebugData()
-      await this.stop({ message: err.message })
+      const automaticDebugTraceFlag = flag('clisk.automatic.html-on-error')
+      if (automaticDebugTraceFlag) {
+        this.emit('SHOW_TRACE_DEBUG_VIEW', err)
+      } else {
+        await this.fetchAndSaveDebugData()
+        await this.stop({ message: err.message })
+      }
     }
     this.emit('KONNECTOR_EXECUTION_END')
   }
 
-  async fetchAndSaveDebugData() {
+  async fetchAndSaveDebugData(force) {
     const flagvalue = flag('clisk.html-on-error')
-    if (!flagvalue) {
+    if (!flagvalue && !force) {
       return true
     }
     try {
@@ -409,11 +414,8 @@ class ReactNativeLauncher extends Launcher {
         .collection('io.cozy.files')
         .ensureDirectoryExists('/Settings/Logs')
 
-      await client.save({
-        _type: 'io.cozy.files',
-        type: 'file',
-        data:
-          `<!-- ${url} -->
+      const traceFileContent = await this.hideCredentials(
+        `<!-- ${url} -->
         ` +
           html +
           `
@@ -424,7 +426,13 @@ class ReactNativeLauncher extends Launcher {
                   line[2][0]
                 )} : ${JSON.stringify(line[2].slice(1))}`
             )
-            .join('\n')} -->`,
+            .join('\n')} -->`
+      )
+
+      await client.save({
+        _type: 'io.cozy.files',
+        type: 'file',
+        data: traceFileContent,
         dirId: existingLogsFolderId,
         name
       })
@@ -443,6 +451,24 @@ class ReactNativeLauncher extends Launcher {
         msg: 'Error while saving debug data : ' + message
       })
     }
+  }
+
+  /**
+   * Removes user's credentials from debug trace file content
+   *
+   * @param {String} traceFileContent - content of the trace file
+   * @returns
+   */
+  async hideCredentials(traceFileContent) {
+    let result = traceFileContent
+    const credentials = await this.getCredentials()
+    if (credentials) {
+      const toHide = Object.values(credentials)
+      for (const value of toHide) {
+        result = result.replace(value, '******')
+      }
+    }
+    return result
   }
 
   /**
