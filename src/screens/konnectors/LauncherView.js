@@ -47,6 +47,7 @@ export class LauncherView extends Component {
     this.onWorkerLoad = this.onWorkerLoad.bind(this)
     this.onWorkerOpenWindow = this.onWorkerOpenWindow.bind(this)
     this.onStopExecution = this.onStopExecution.bind(this)
+    this.onSendTraces = this.onSendTraces.bind(this)
     this.onCreatedAccount = this.onCreatedAccount.bind(this)
     this.onCreatedJob = this.onCreatedJob.bind(this)
     this.onStoppedJob = this.onStoppedJob.bind(this)
@@ -60,7 +61,8 @@ export class LauncherView extends Component {
       workerInnerUrl: null,
       worker: {},
       workerKey: 0,
-      workerInteractionBlockerVisible: false
+      workerInteractionBlockerVisible: false,
+      traceDebugView: false
     }
     this.DEBUG = false
   }
@@ -68,9 +70,20 @@ export class LauncherView extends Component {
   /**
    * Run when the job is stopped by the user
    */
-  onStopExecution() {
-    this.launcher.stop({ message: 'stopped by user', invisible: true })
+  onStopExecution(err) {
+    this.launcher.stop({
+      message: err ? err.message : 'stopped by user',
+      invisible: !err
+    })
     this.props.setLauncherContext({ state: 'default' })
+  }
+
+  /**
+   * Run when the user wants to save debug traces on failed execution
+   */
+  async onSendTraces(err) {
+    await this.launcher.fetchAndSaveDebugData(true)
+    this.onStopExecution(err)
   }
 
   /**
@@ -194,6 +207,9 @@ export class LauncherView extends Component {
       })
     })
 
+    this.launcher.on('SHOW_TRACE_DEBUG_VIEW', err =>
+      this.setState({ traceDebugView: err })
+    )
     this.launcher.on('BLOCK_WORKER_INTERACTIONS', () =>
       this.setState({ workerInteractionBlockerVisible: true })
     )
@@ -220,8 +236,8 @@ export class LauncherView extends Component {
     stopTimeout()
 
     // in DEBUG mode, do not hide the worker in the end of the konnector execution
-    // this allows to make it easier to try pilot commands in web inspector
-    if (!this.DEBUG) this.props.setLauncherContext({ state: 'default' })
+    if (!this.DEBUG && !this.state.traceDebugView)
+      this.props.setLauncherContext({ state: 'default' })
   }
 
   componentWillUnmount() {
@@ -235,7 +251,9 @@ export class LauncherView extends Component {
   }
 
   render() {
-    const workerVisible = this.state.worker.visible || this.DEBUG
+    const traceDebugView = this.state.traceDebugView
+    const workerVisible =
+      this.state.worker.visible || this.DEBUG || traceDebugView
     const workerStyle = workerVisible
       ? styles.workerVisible
       : styles.workerHidden
@@ -297,10 +315,12 @@ export class LauncherView extends Component {
                 javaScriptCanOpenWindowsAutomatically={true}
                 onOpenWindow={this.onWorkerOpenWindow}
                 onStopExecution={this.onStopExecution}
+                onSendTraces={() => this.onSendTraces(traceDebugView)}
                 showInteractionBlocker={
                   workerVisible && this.state.workerInteractionBlockerVisible
                 }
                 workerVisible={workerVisible}
+                traceDebugView={traceDebugView}
                 isDebug={this.DEBUG}
               />
             </View>
@@ -434,8 +454,10 @@ const WorkerView = React.forwardRef((props, ref) => {
   const {
     isDebug,
     onStopExecution,
+    onSendTraces,
     showInteractionBlocker,
     workerVisible,
+    traceDebugView,
     ...webViewProps
   } = props
 
@@ -455,7 +477,7 @@ const WorkerView = React.forwardRef((props, ref) => {
       <View style={styles.headerStyle}>
         <TouchableOpacity
           activeOpacity={0.5}
-          onPress={onStopExecution}
+          onPress={() => onStopExecution(traceDebugView)}
           style={styles.headerTouchableStyle}
         >
           <BackTo color={colors.primaryColor} width={16} height={16} />
@@ -463,6 +485,17 @@ const WorkerView = React.forwardRef((props, ref) => {
             {strings.konnectors.worker.backButton}
           </Text>
         </TouchableOpacity>
+        {traceDebugView ? (
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={onSendTraces}
+            style={styles.headerTouchableStyle}
+          >
+            <Text style={styles.headerTextStyle}>
+              {strings.konnectors.worker.sendTraces}
+            </Text>
+          </TouchableOpacity>
+        ) : null}
       </View>
       <WebView ref={ref} {...webViewProps} />
       {showInteractionBlocker ? <InteractionBlocker isDebug={isDebug} /> : null}

@@ -17,7 +17,9 @@
   "authLogin": "/auth/login?redirect=",
   "konnectors": {
     "worker": {
-      "backButton": "RETOUR À MON COZY"
+      "backButton": "RETOUR À MON COZY",
+      "sendTraces": "Envoyer les traces"
+              
     }
   },
   "cloudery": {
