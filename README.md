@@ -104,7 +104,7 @@ You can then connect to your local stack using the following URL : `http://fooba
 ```bash
 $ yarn test
 ```
-
+ 
 ### Debugging
 
 Android: To get native log on Android:
