@@ -4,6 +4,7 @@ import Social
 import MobileCoreServices
 import Photos
 
+@available(iOSApplicationExtension, unavailable)
 class ShareViewController: UIViewController {
  let hostAppBundleIdentifier = "io.cozy.flagship.mobile"
  let shareProtocol = "cozyShare"
@@ -188,19 +189,19 @@ class ShareViewController: UIViewController {
    extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
  }
 
- private func redirectToHostApp(type: RedirectType) {
-   let url = URL(string: "\(shareProtocol)://dataUrl=\(sharedKey)#\(type)")
-   var responder = self as UIResponder?
-   let selectorOpenURL = sel_registerName("openURL:")
+  // Changed from package readme because https://github.com/ajith-ab/react-native-receive-sharing-intent/issues/185#issuecomment-2407291651
+  private func redirectToHostApp(type: RedirectType) {
+    guard let url = URL(string: "\(shareProtocol)://dataUrl=\(sharedKey)#\(type)") else {
+      dismissWithError()
+      return //be safe
+    }
 
-   while (responder != nil) {
-     if (responder?.responds(to: selectorOpenURL))! {
-       let _ = responder?.perform(selectorOpenURL, with: url)
-     }
-     responder = responder!.next
-   }
-   extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
- }
+    UIApplication.shared.open(url, options: [:], completionHandler: completeRequest)
+  }
+
+  func completeRequest(success: Bool) {
+    extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+  }
 
  enum RedirectType {
    case media
