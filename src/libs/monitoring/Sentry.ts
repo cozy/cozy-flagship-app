@@ -36,7 +36,11 @@ Sentry.init({
   onReady: ({ didCallNativeInit }) =>
     didCallNativeInit &&
     isSentryDebugMode() &&
-    devlog('Sentry native SDK initialized')
+    devlog('Sentry native SDK initialized'),
+  tracesSampleRate: 1.0,
+  _experiments: {
+    profilesSampleRate: 1.0
+  }
 })
 
 Sentry.setTag(SentryCustomTags.Version, version)
