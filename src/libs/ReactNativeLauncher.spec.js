@@ -36,10 +36,13 @@ import {
 
 const fixtures = {
   job: { _id: 'normal_job_id' },
-  account: { _id: 'normal_account_id' },
+  account: {
+    _id: 'normal_account_id',
+    auth: { accountName: 'testsourceaccountidentifier' }
+  },
   trigger: {
     _id: 'normal_trigger_id',
-    message: { folder_to_save: 'normalfolderid' }
+    message: { folder_to_save: 'testfolderid' }
   }
 }
 
@@ -148,10 +151,6 @@ describe('ReactNativeLauncher', () => {
         state: null
       })
       expect(client.save).toHaveBeenNthCalledWith(2, {
-        _id: 'normal_account_id',
-        auth: { accountName: 'testsourceaccountidentifier' }
-      })
-      expect(client.save).toHaveBeenNthCalledWith(3, {
         _type: 'io.cozy.triggers',
         type: '@client',
         worker: 'konnector',
@@ -162,7 +161,7 @@ describe('ReactNativeLauncher', () => {
         }
       })
       expect(client.save).toHaveBeenNthCalledWith(
-        4,
+        3,
         expect.objectContaining({
           _type: 'io.cozy.triggers',
           type: '@in',
@@ -251,14 +250,8 @@ describe('ReactNativeLauncher', () => {
           }
         })
       )
-      expect(client.save).toHaveBeenNthCalledWith(1, {
-        _id: 'normal_account_id',
-        auth: {
-          accountName: 'testsourceaccountidentifier'
-        }
-      })
       expect(client.save).toHaveBeenNthCalledWith(
-        2,
+        1,
         expect.objectContaining({
           _type: 'io.cozy.triggers',
           type: '@in',
@@ -272,7 +265,7 @@ describe('ReactNativeLauncher', () => {
           }
         })
       )
-      expect(client.save).toHaveBeenNthCalledWith(3, {
+      expect(client.save).toHaveBeenNthCalledWith(2, {
         _id: 'normal_job_id',
         attributes: {
           state: 'done'
@@ -411,7 +404,7 @@ describe('ReactNativeLauncher', () => {
         })
         .mockRejectedValue(new Error('test error message'))
       await launcher.start()
-      expect(client.save).toHaveBeenNthCalledWith(3, {
+      expect(client.save).toHaveBeenNthCalledWith(2, {
         _id: 'normal_job_id',
         attributes: {
           state: 'errored',
@@ -563,6 +556,43 @@ describe('ReactNativeLauncher', () => {
         'ensureAuthenticated',
         { account: fixtures.account }
       )
+    })
+    it('should raise WRONG_ACCOUNT_IDENTIFIER when the user authenticates with the wrong identifiers twice', async () => {
+      const { launcher, client, launch } = setup()
+      const konnector = {
+        slug: 'konnectorslug',
+        clientSide: true,
+        permissions: { files: { type: 'io.cozy.files' } }
+      }
+      launcher.setStartContext({
+        client,
+        konnector,
+        account: fixtures.account,
+        trigger: fixtures.trigger,
+        manifest: konnector,
+        launcherClient: {
+          setAppMetadata: () => null
+        }
+      })
+      launch.mockResolvedValue({ data: fixtures.job })
+      client.query.mockResolvedValue({ data: fixtures.account, included: [] })
+      client.queryAll.mockResolvedValue([])
+      client.save.mockImplementation(async doc => ({
+        data: { ...doc, _id: doc._id ? doc._id : 'newid' }
+      }))
+      launcher.pilot.call.mockImplementation(method => {
+        if (method === 'getUserDataFromWebsite') {
+          return { sourceAccountIdentifier: 'wrongtestsourceaccountidentifier' }
+        } else {
+          return true
+        }
+      })
+      launcher.stop = jest.fn()
+      await launcher.start()
+      expect(launcher.pilot.call).toHaveBeenCalledWith('ensureNotAuthenticated')
+      expect(launcher.stop).toHaveBeenCalledWith({
+        message: 'WRONG_ACCOUNT_IDENTIFIER'
+      })
     })
   })
   describe('runInWorker', () => {
