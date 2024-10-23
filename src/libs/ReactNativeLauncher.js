@@ -318,15 +318,21 @@ class ReactNativeLauncher extends Launcher {
           await this.pilot.call('ensureNotAuthenticated')
         }
       }
-      await this.pilot.call('ensureAuthenticated', { account: prevAccount })
 
-      const userDataResult = await this.pilot.call('getUserDataFromWebsite')
-      if (!userDataResult?.sourceAccountIdentifier) {
-        throw new Error(
-          'getUserDataFromWebsite did not return any sourceAccountIdentifier. Cannot continue the execution.'
+      try {
+        this.setUserData(
+          await this.initAndCheckSourceAccountIdentifier(prevAccount)
         )
+      } catch (err) {
+        if (err.message === 'WRONG_ACCOUNT_IDENTIFIER') {
+          await this.pilot.call('ensureNotAuthenticated')
+          this.setUserData(
+            await this.initAndCheckSourceAccountIdentifier(prevAccount)
+          )
+        } else {
+          throw err
+        }
       }
-      this.setUserData(userDataResult)
 
       const ensureResult = await this.ensureAccountTriggerAndLaunch()
       await this.createTimeoutTrigger()
@@ -369,6 +375,7 @@ class ReactNativeLauncher extends Launcher {
       await this.stop()
     } catch (err) {
       log.error(JSON.stringify(err), 'start error')
+      log.error(err.message, 'start error message')
       const automaticDebugTraceFlag = flag('clisk.automatic.html-on-error')
       if (automaticDebugTraceFlag) {
         this.emit('SHOW_TRACE_DEBUG_VIEW', err)
@@ -378,6 +385,48 @@ class ReactNativeLauncher extends Launcher {
       }
     }
     this.emit('KONNECTOR_EXECUTION_END')
+  }
+
+  /**
+   * Try to run authentication phase of the konnector and check if the sourceAccountIdentifier
+   * is the same as the account, if any.
+   * @param {import('cozy-client/types/types').IOCozyAccount} account
+   * @returns {Object}
+   * @throws 'WRONG_ACCOUNT_IDENTIFIER'
+   */
+  async initAndCheckSourceAccountIdentifier(account) {
+    this.log({
+      namespace: 'ReactNativeLauncher',
+      label: 'initAndCheckSourceAccountIdentifier',
+      level: 'debug',
+      msg: 'start'
+    })
+    await this.pilot.call('ensureAuthenticated', { account })
+
+    const userDataResult = await this.pilot.call('getUserDataFromWebsite')
+
+    if (!userDataResult?.sourceAccountIdentifier) {
+      throw new Error(
+        'getUserDataFromWebsite did not return any sourceAccountIdentifier. Cannot continue the execution.'
+      )
+    }
+    if (
+      account &&
+      userDataResult.sourceAccountIdentifier !== account?.auth?.accountName
+    ) {
+      this.log({
+        namespace: 'ReactNativeLauncher',
+        label: '_start',
+        level: 'error',
+        msg:
+          'Wrong account identifier: ' +
+          userDataResult.sourceAccountIdentifier +
+          ' should be ' +
+          account?.auth?.accountName
+      })
+      throw new Error('WRONG_ACCOUNT_IDENTIFIER')
+    }
+    return userDataResult
   }
 
   async fetchAndSaveDebugData(force) {
