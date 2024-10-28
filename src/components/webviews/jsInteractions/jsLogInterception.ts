@@ -20,6 +20,13 @@ export const jsLogInterception = `
     info: (...log) => consoleLog('info', log),
     warn: (...log) => consoleLog('log', ['warn:', ...log]),
     error: (...log) => consoleLog('error', log),
+    group: (...log) => consoleLog('group', log),
+    groupEnd: (...log) => consoleLog('groupEnd', log),
+    count: () => consoleLog('log', ['console.count is not supported in the flagship app']),
+    countReset: () => consoleLog('log', ['console.countReset is not supported in the flagship app']),
+    table: () => consoleLog('log', ['console.table is not supported in the flagship app']),
+    time: () => consoleLog('log', ['console.time is not supported in the flagship app']),
+    timeEnd: () => consoleLog('log', ['console.timeEnd is not supported in the flagship app']),
   }
 `
 
