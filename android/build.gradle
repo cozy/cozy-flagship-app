@@ -38,7 +38,13 @@ allprojects {
         }
     }
 
-
+    // androidx.annotation:annotation:1.9.1 breaks our build, maybe because of kotlin version
+    // https://developer.android.com/jetpack/androidx/releases/annotation#1.9.1
+    configurations.all {
+        resolutionStrategy {
+            force 'androidx.annotation:annotation:1.9.0'  // Replace with the desired version
+        }
+    }
     // For unknown reasons at this time, the build fails with Javadoc tasks on JDK11
     // A temporary workaround for that is to disable Javadoc generation for all modules
     // tasks.withType(Javadoc).all { enabled = false }
