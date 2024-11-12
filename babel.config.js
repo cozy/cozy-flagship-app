@@ -9,6 +9,9 @@ module.exports = {
         alias: {
           '^/(.+)': './src/\\1',
           'pouchdb-collate': '@craftzdog/pouchdb-collate-react-native',
+          crypto: 'react-native-quick-crypto',
+          stream: 'readable-stream',
+          buffer: '@craftzdog/react-native-buffer',
           '@cozy/minilog': 'cozy-minilog'
         },
         extensions: [
