@@ -472,6 +472,32 @@ export default class Launcher {
   }
 
   /**
+   * Save data in the current account's data attribute
+   *
+   * @param {Object} data - any object serializable with JSON.stringify
+   * @returns <Promise<import('cozy-client/types/types').IOCozyAccount>>
+   */
+  async saveAccountData(data) {
+    const { launcherClient: client, account } = this.getStartContext() || {}
+
+    if (!account._id) {
+      throw new Error('Launcher: No associated account. Cannot save account data yet')
+    }
+
+    const { data: currentAccount } = await client.query(
+      Q('io.cozy.accounts').getById(account._id)
+    )
+    currentAccount.data = data
+    const { data: newAccount } = await client.save(currentAccount)
+
+    this.setStartContext({
+      ...this.getStartContext(),
+      account: newAccount
+    })
+    return newAccount
+  }
+
+  /**
    * Calls cozy-konnector-libs' saveFiles function
    *
    * @param {Array<FileDocument>} entries - list of file entries to save
