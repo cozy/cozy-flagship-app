@@ -157,7 +157,8 @@ class ReactNativeLauncher extends Launcher {
           'saveCookieToKeychain',
           'getCookieByDomainAndName',
           'getCookieFromKeychainByName',
-          'saveAccountData'
+          'saveAccountData',
+          'runServerJob'
         ],
         listenedEventsNames: ['log']
       }),
