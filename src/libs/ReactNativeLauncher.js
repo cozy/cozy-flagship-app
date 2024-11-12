@@ -151,6 +151,7 @@ class ReactNativeLauncher extends Launcher {
           'saveIdentity',
           'queryAll',
           'setUserAgent',
+          'setIncognito',
           'getCredentials',
           'saveCredentials',
           'getCookiesByDomain',
@@ -581,6 +582,15 @@ class ReactNativeLauncher extends Launcher {
    */
   async setUserAgent(userAgent) {
     this.emit('SET_USER_AGENT', userAgent)
+  }
+
+  /**
+   * Set incognito mode for worker webview
+   *
+   * @param {Boolean} incognito
+   */
+  async setIncognito(incognito) {
+    this.emit('SET_INCOGNITO', incognito)
   }
 
   /**
