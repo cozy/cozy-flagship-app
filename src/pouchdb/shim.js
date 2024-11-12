@@ -1,6 +1,3 @@
-import { shim } from 'react-native-quick-base64'
+import { install } from 'react-native-quick-crypto'
 
-shim()
-
-// Avoid using node dependent modules
-process.browser = true
+install()

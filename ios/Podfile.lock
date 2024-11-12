@@ -188,6 +188,10 @@ PODS:
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
   - NVHTarGzip (1.0.1)
+  - op-sqlite (6.2.11):
+    - React
+    - React-callinvoker
+    - React-Core
   - OpenSSL-Universal (1.1.1100)
   - PromisesObjC (2.4.0)
   - Protobuf (3.28.2)
@@ -1109,6 +1113,12 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
+  - react-native-quick-crypto (0.7.6):
+    - glog
+    - OpenSSL-Universal
+    - RCT-Folly (= 2022.05.16.00)
+    - React
+    - React-Core
   - react-native-quick-sqlite (8.0.6):
     - React
     - React-callinvoker
@@ -1395,6 +1405,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
+  - "op-sqlite (from `../node_modules/@op-engineering/op-sqlite`)"
   - OpenSSL-Universal (= 1.1.1100)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
@@ -1439,6 +1450,7 @@ DEPENDENCIES:
   - react-native-performance (from `../node_modules/react-native-performance`)
   - react-native-print (from `../node_modules/react-native-print`)
   - react-native-quick-base64 (from `../node_modules/react-native-quick-base64`)
+  - react-native-quick-crypto (from `../node_modules/react-native-quick-crypto`)
   - react-native-quick-sqlite (from `../node_modules/react-native-quick-sqlite`)
   - "react-native-receive-sharing-intent (from `../node_modules/@mythologi/react-native-receive-sharing-intent`)"
   - react-native-restart (from `../node_modules/react-native-restart`)
@@ -1546,6 +1558,8 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2024-04-29-RNv0.73.8-644c8be78af1eae7c138fa4093fb87f0f4f8db85
+  op-sqlite:
+    :path: "../node_modules/@op-engineering/op-sqlite"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -1626,6 +1640,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-print"
   react-native-quick-base64:
     :path: "../node_modules/react-native-quick-base64"
+  react-native-quick-crypto:
+    :path: "../node_modules/react-native-quick-crypto"
   react-native-quick-sqlite:
     :path: "../node_modules/react-native-quick-sqlite"
   react-native-receive-sharing-intent:
@@ -1769,6 +1785,7 @@ SPEC CHECKSUMS:
   MMKVCore: c04b296010fcb1d1638f2c69405096aac12f6390
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   NVHTarGzip: 74cc227b902e5725900d37eb6d79b57e93005a73
+  op-sqlite: b4f61f3085ea3b70f264f3a64b724c81ab117e58
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   Protobuf: 28c89b24435762f60244e691544ed80f50d82701
@@ -1812,6 +1829,7 @@ SPEC CHECKSUMS:
   react-native-performance: ff93f8af3b2ee9519fd7879896aa9b8b8272691d
   react-native-print: f704aef52d931bfce6d1d84351dbb5232d7ecb89
   react-native-quick-base64: e1ea036b3dec44c6da2439bd62881a09de614b23
+  react-native-quick-crypto: 070488f041b282af3e375e511490061f1cf50474
   react-native-quick-sqlite: e0e23b749382a85e4b57146f753de737a6c3a9e1
   react-native-receive-sharing-intent: 0c21b8e80f629a73341f2566ce9b99df8124bb10
   react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
@@ -1868,4 +1886,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: e53a16a804de17b86c29f5452d36e0ae6205ef23
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2
