@@ -185,7 +185,7 @@ PODS:
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
   - NVHTarGzip (1.0.1)
-  - op-sqlite (10.0.0-tokenizers-beta7):
+  - op-sqlite (6.2.11):
     - React
     - React-callinvoker
     - React-Core
@@ -1765,7 +1765,7 @@ SPEC CHECKSUMS:
   MLKitVision: e87dc3f2e456a6ab32361ebd985e078dd2746143
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   NVHTarGzip: 74cc227b902e5725900d37eb6d79b57e93005a73
-  op-sqlite: 63367aa66fc397c5fcb142e68825df464e0ee07a
+  op-sqlite: b4f61f3085ea3b70f264f3a64b724c81ab117e58
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   Protobuf: 5a8a7781d8e1004302f108977ac2d5b99323146f

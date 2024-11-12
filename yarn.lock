@@ -4197,11 +4197,6 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@op-engineering/op-sqlite@^10.0.0-tokenizers-beta7":
-  version "10.0.0-tokenizers-beta7"
-  resolved "https://registry.yarnpkg.com/@op-engineering/op-sqlite/-/op-sqlite-10.0.0-tokenizers-beta7.tgz#992c9c8da540ea8ecb47624e3d66a97f026c822d"
-  integrity sha512-VKDiVU4MwBfo9+sb2fjZAa3hAFYmppEChTLfPsL7HCD1MlHUT5jqMiDvhgsPnWFtmk5NpbDef8OxPp6ZGxPA+g==
-
 "@op-engineering/op-sqlite@^6.2.11":
   version "6.2.11"
   resolved "https://registry.yarnpkg.com/@op-engineering/op-sqlite/-/op-sqlite-6.2.11.tgz#0e5b127561c80cdb8748809d17f25ff1fd629219"
