@@ -187,7 +187,7 @@ PODS:
   - NVHTarGzip (1.0.1)
   - OpenSSL-Universal (1.1.1100)
   - PromisesObjC (2.4.0)
-  - Protobuf (3.28.2)
+  - Protobuf (3.28.3)
   - RCT-Folly (2022.05.16.00):
     - boost
     - DoubleConversion
@@ -1096,7 +1096,8 @@ PODS:
   - react-native-print (0.11.0):
     - React-Core
   - react-native-quick-base64 (2.1.2):
-    - RCT-Folly (= 2021.07.22.00)
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
     - React-Core
   - react-native-quick-sqlite (8.0.6):
     - React
@@ -1750,7 +1751,7 @@ SPEC CHECKSUMS:
   NVHTarGzip: 74cc227b902e5725900d37eb6d79b57e93005a73
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  Protobuf: 28c89b24435762f60244e691544ed80f50d82701
+  Protobuf: 5a8a7781d8e1004302f108977ac2d5b99323146f
   RCT-Folly: 7169b2b1c44399c76a47b5deaaba715eeeb476c0
   RCTRequired: 3c70a68a1acbfe8dec71921ddaf955ddceb6a8bd
   RCTTypeSafety: 6b502ff289b30da23609b707734e9c04089baa4f
@@ -1788,7 +1789,7 @@ SPEC CHECKSUMS:
   react-native-mlkit-ocr: 72cdbde86f8d29cba26cf9fa0a1865fe45c8f8d6
   react-native-netinfo: 48c5f79a84fbc3ba1d28a8b0d04adeda72885fa8
   react-native-print: f704aef52d931bfce6d1d84351dbb5232d7ecb89
-  react-native-quick-base64: 42a805dcf2ae4f38c4d2c7e7a3c7dd936e5d248a
+  react-native-quick-base64: e1ea036b3dec44c6da2439bd62881a09de614b23
   react-native-quick-sqlite: e0e23b749382a85e4b57146f753de737a6c3a9e1
   react-native-receive-sharing-intent: 0c21b8e80f629a73341f2566ce9b99df8124bb10
   react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
