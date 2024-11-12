@@ -57,6 +57,7 @@ export class LauncherView extends Component {
     this.workerWebview = null
     this.state = {
       userAgent: undefined,
+      incognito: false,
       konnector: null,
       workerInnerUrl: null,
       worker: {},
@@ -220,6 +221,9 @@ export class LauncherView extends Component {
     this.launcher.on('SET_USER_AGENT', userAgent => {
       this.setState({ userAgent })
     })
+    this.launcher.on('SET_INCOGNITO', incognito => {
+      this.setState({ incognito })
+    })
     this.launcher.on('CREATED_ACCOUNT', this.onCreatedAccount)
     this.launcher.on('CREATED_JOB', this.onCreatedJob)
     this.launcher.on('STOPPED_JOB', this.onStoppedJob)
@@ -304,6 +308,7 @@ export class LauncherView extends Component {
                 javaScriptEnabled={true}
                 onContentProcessDidTerminate={this.onWorkerWebviewKilled}
                 onRenderProcessGone={this.onWorkerWebviewKilled}
+                incognito={this.state.incognito}
                 userAgent={this.state.userAgent}
                 source={{
                   uri: this.state.worker.url
