@@ -69,6 +69,8 @@ describe('ReactNativeLauncher', () => {
     const ensureDirectoryExists = jest.fn()
     const addReferencesTo = jest.fn()
     const get = jest.fn().mockResolvedValue({ data: { _id: 'testfolderid' } })
+    const create = jest.fn()
+    const waitFor = jest.fn()
     const statByPath = jest
       .fn()
       .mockResolvedValue({ data: { _id: 'testfolderid' } })
@@ -93,7 +95,9 @@ describe('ReactNativeLauncher', () => {
         get,
         statByPath,
         statById,
-        add
+        add,
+        create,
+        waitFor
       }),
       getInstanceOptions: jest.fn().mockReturnValueOnce({ locale: 'fr' })
     }
@@ -103,10 +107,12 @@ describe('ReactNativeLauncher', () => {
       client,
       findReferencedBy,
       get,
+      create,
       ensureDirectoryExists,
       addReferencesTo,
       statByPath,
-      add
+      add,
+      waitFor
     }
   }
 
@@ -945,6 +951,41 @@ describe('ReactNativeLauncher', () => {
       await expect(() =>
         launcher.setWorkerState({ url: 'https://cozy.io', timeout: 1 })
       ).rejects.toEqual(ERRORS.SET_WORKER_STATE_TOO_LONG_TO_INIT)
+    })
+  })
+  describe('runServerJob', () => {
+    it('should create job with proper parameters', async () => {
+      const { launcher, client, create, waitFor } = setup()
+      create.mockResolvedValueOnce({ data: { id: 'testjobid' } })
+      waitFor.mockResolvedValueOnce({ data: { id: 'testjobid' } })
+      const konnector = {
+        slug: 'konnectorslug',
+        clientSide: true
+      }
+      launcher.setStartContext({
+        client,
+        konnector,
+        manifest: konnector,
+        launcherClient: {
+          setAppMetadata: () => null
+        },
+        account: fixtures.account,
+        trigger: fixtures.trigger
+      })
+      const result = await launcher.runServerJob({ test: 'testvalue' })
+      expect(create).toHaveBeenCalledTimes(1)
+      expect(create).toHaveBeenCalledWith(
+        'konnector',
+        {
+          test: 'testvalue',
+          account: 'normal_account_id',
+          folder_to_save: 'testfolderid',
+          konnector: 'konnectorslug'
+        },
+        {},
+        true
+      )
+      expect(result).toEqual({ data: { id: 'testjobid' } })
     })
   })
 })

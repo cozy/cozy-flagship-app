@@ -472,6 +472,30 @@ export default class Launcher {
   }
 
   /**
+   * Allow client konnector to run a server version of itself. Wait for the end of the execution
+   * and the returns the result of the execution
+   *
+   * @param {Object} args - any arguments we want to pass to server job. Must be serializable as string
+   * @param {Object} [options] - options object
+   * @param {Number} [options.timeout] - timeout in ms
+   * @param {Number} [options.max_exec_count] - maximum errored execution count
+   * @returns {Promise<Object>}
+   */
+  async runServerJob(args = {}, options = {}) {
+    const { client, konnector, trigger, account } = this.getStartContext() || {}
+    const jobArgs = {
+      ...args,
+      konnector: konnector.slug,
+      account: account._id,
+      folder_to_save: trigger.message?.folder_to_save
+    }
+    const { data: job } = await client
+      .collection('io.cozy.jobs')
+      .create('konnector', jobArgs, options, true)
+    return await client.collection('io.cozy.jobs').waitFor(job.id)
+  }
+
+  /**
    * Save data in the current account's data attribute
    *
    * @param {Object} data - any object serializable with JSON.stringify
@@ -481,7 +505,9 @@ export default class Launcher {
     const { launcherClient: client, account } = this.getStartContext() || {}
 
     if (!account._id) {
-      throw new Error('Launcher: No associated account. Cannot save account data yet')
+      throw new Error(
+        'Launcher: No associated account. Cannot save account data yet'
+      )
     }
 
     const { data: currentAccount } = await client.query(
