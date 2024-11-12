@@ -53,7 +53,12 @@ export const getLinks = (): CozyLink[] => {
         ]
       })
     ),
-    performanceApi: PouchLinkPerformanceApi
+    performanceApi: PouchLinkPerformanceApi,
+    pouch: {
+      options: {
+        adapter: 'react-native-sqlite'
+      }
+    }
   }
 
   const stackLink = new StackLink({
