@@ -52,7 +52,7 @@ PODS:
     - Flipper-Fmt (= 7.1.7)
     - Flipper-Glog
     - libevent (~> 2.1.12)
-    - OpenSSL-Universal (= 1.1.1100)
+    - OpenSSL-Universal (= 1.1.2200)
   - Flipper-Glog (0.5.0.5)
   - Flipper-PeerTalk (0.0.4)
   - FlipperKit (0.201.0):
@@ -189,7 +189,7 @@ PODS:
     - React
     - React-callinvoker
     - React-Core
-  - OpenSSL-Universal (1.1.1100)
+  - OpenSSL-Universal (1.1.2200)
   - PromisesObjC (2.4.0)
   - Protobuf (3.28.3)
   - RCT-Folly (2022.05.16.00):
@@ -1396,7 +1396,7 @@ DEPENDENCIES:
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
   - "op-sqlite (from `../node_modules/@op-engineering/op-sqlite`)"
-  - OpenSSL-Universal (= 1.1.1100)
+  - OpenSSL-Universal (= 1.1.2200)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
