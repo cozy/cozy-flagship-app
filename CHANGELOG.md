@@ -1,4 +1,4 @@
-# 1.1.31
+# 1.1.32
 
 ## ✨ Features
 
@@ -7,6 +7,27 @@
 
 
 ## 🔧 Tech
+
+
+# 1.1.31
+
+## ✨ Features
+
+* Allow clisk konnectors to save data in their own account ([PR #1260](https://github.com/cozy/cozy-flagship-app/pull/1260))
+* Allow clisk konnectors to run server job ([PR #1260](https://github.com/cozy/cozy-flagship-app/pull/1260))
+* Allow clisk konnectors to have incognito mode ([PR #1260](https://github.com/cozy/cozy-flagship-app/pull/1260))
+* Do not download the same file multiple times when multiple bills are related to the same file ([PR #1259](https://github.com/cozy/cozy-flagship-app/pull/1259))
+* Force logout when konnector identifier is different from account name (to allow multi-account for clisk konnectors) ([PR #1255](https://github.com/cozy/cozy-flagship-app/pull/1255))
+* Offers the possibility to save html traces on clisk konnector error ([PR #1254](https://github.com/cozy/cozy-flagship-app/pull/1254))
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+* Upgrade cozy-clisk to 0.38.1 ([PR #1259](https://github.com/cozy/cozy-flagship-app/pull/1259))
+* Update Sentry to 5.33.1 ([PR #1252](https://github.com/cozy/cozy-flagship-app/pull/1252))
+* Remove ui.darkmode.enabled flag condition ([PR #1246](https://github.com/cozy/cozy-flagship-app/pull/1246))
 
 # 1.1.30
 
