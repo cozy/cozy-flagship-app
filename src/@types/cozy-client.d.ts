@@ -133,6 +133,20 @@ declare module 'cozy-client' {
   } & CozyClientDocument
 
   interface Collection {
+    waitFor(id: string): Promise<object>
+    create(
+      workerType: string,
+      jobArgs: {
+        konnector: string
+        account: string | undefined
+        folder_to_save: string
+      },
+      options: {
+        timeout?: number | undefined
+        max_exec_count?: number | undefined
+      },
+      manual: boolean
+    ): Promise<{ data: { id: string } }>
     findReferencedBy: (
       params: object
     ) => Promise<{ included: { attributes: unknown }[] }>
