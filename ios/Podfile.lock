@@ -1081,7 +1081,7 @@ PODS:
     - React-Core
   - react-native-document-scanner-plugin (0.7.3):
     - React-Core
-  - react-native-flipper (0.212.0):
+  - react-native-flipper (0.269.0):
     - React-Core
   - react-native-get-random-values (1.11.0):
     - React-Core
@@ -1798,7 +1798,7 @@ SPEC CHECKSUMS:
   react-native-config: 5330c8258265c1e5fdb8c009d2cabd6badd96727
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
   react-native-document-scanner-plugin: df5b82df67ff612262c40c26ef2c8239c5af5c55
-  react-native-flipper: 9c1957af24b76493ba74f46d000a5c1d485e7731
+  react-native-flipper: 2a568e19c9d7051f01bf9725f886474fc818ba05
   react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
   react-native-gzip: 5ffb84bf191c7cd135338eca748317bc466d41a1
   react-native-idle-timer: f1920a59fe776340d004ff9de13c4a6eedcc8807
