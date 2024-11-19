@@ -292,7 +292,12 @@ class ReactNativeLauncher extends Launcher {
   }
 
   async _start({ initKonnectorError } = {}) {
-    const { account: prevAccount, konnector, client } = this.getStartContext()
+    const {
+      account: prevAccount,
+      konnector,
+      client,
+      trigger: contextTrigger
+    } = this.getStartContext()
     await initialize(client)
     if (flag('clisk.html-on-error')) {
       Minilog.pipe(Minilog.backends.array)
@@ -324,13 +329,19 @@ class ReactNativeLauncher extends Launcher {
 
       try {
         this.setUserData(
-          await this.initAndCheckSourceAccountIdentifier(prevAccount)
+          await this.initAndCheckSourceAccountIdentifier({
+            account: prevAccount,
+            trigger: contextTrigger
+          })
         )
       } catch (err) {
         if (err.message === 'WRONG_ACCOUNT_IDENTIFIER') {
           await this.pilot.call('ensureNotAuthenticated')
           this.setUserData(
-            await this.initAndCheckSourceAccountIdentifier(prevAccount)
+            await this.initAndCheckSourceAccountIdentifier({
+              account: prevAccount,
+              trigger: contextTrigger
+            })
           )
         } else {
           throw err
@@ -397,14 +408,14 @@ class ReactNativeLauncher extends Launcher {
    * @returns {Object}
    * @throws 'WRONG_ACCOUNT_IDENTIFIER'
    */
-  async initAndCheckSourceAccountIdentifier(account) {
+  async initAndCheckSourceAccountIdentifier({ account, trigger }) {
     this.log({
       namespace: 'ReactNativeLauncher',
       label: 'initAndCheckSourceAccountIdentifier',
       level: 'debug',
       msg: 'start'
     })
-    await this.pilot.call('ensureAuthenticated', { account })
+    await this.pilot.call('ensureAuthenticated', { account, trigger })
 
     const userDataResult = await this.pilot.call('getUserDataFromWebsite')
 
