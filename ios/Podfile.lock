@@ -1097,6 +1097,8 @@ PODS:
     - React
   - react-native-netinfo (9.5.0):
     - React-Core
+  - react-native-performance (5.1.2):
+    - React-Core
   - react-native-print (0.11.0):
     - React-Core
   - react-native-quick-base64 (2.1.2):
@@ -1437,6 +1439,7 @@ DEPENDENCIES:
   - react-native-mail (from `../node_modules/react-native-mail`)
   - react-native-mlkit-ocr (from `../node_modules/react-native-mlkit-ocr`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-performance (from `../node_modules/react-native-performance`)
   - react-native-print (from `../node_modules/react-native-print`)
   - react-native-quick-base64 (from `../node_modules/react-native-quick-base64`)
   - react-native-quick-crypto (from `../node_modules/react-native-quick-crypto`)
@@ -1619,6 +1622,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-mlkit-ocr"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-performance:
+    :path: "../node_modules/react-native-performance"
   react-native-print:
     :path: "../node_modules/react-native-print"
   react-native-quick-base64:
@@ -1806,6 +1811,7 @@ SPEC CHECKSUMS:
   react-native-mail: 8fdcd3aef007c33a6877a18eb4cf7447a1d4ce4a
   react-native-mlkit-ocr: 72cdbde86f8d29cba26cf9fa0a1865fe45c8f8d6
   react-native-netinfo: 48c5f79a84fbc3ba1d28a8b0d04adeda72885fa8
+  react-native-performance: ff93f8af3b2ee9519fd7879896aa9b8b8272691d
   react-native-print: f704aef52d931bfce6d1d84351dbb5232d7ecb89
   react-native-quick-base64: e1ea036b3dec44c6da2439bd62881a09de614b23
   react-native-quick-crypto: 070488f041b282af3e375e511490061f1cf50474
