@@ -17712,6 +17712,16 @@ react-native-modal-selector@^2.1.1:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-performance-flipper-reporter@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-performance-flipper-reporter/-/react-native-performance-flipper-reporter-5.0.0.tgz#a0f33863e9ce99a848ca5033cb5cf53f0d9e0048"
+  integrity sha512-nlr1tI3C3kBpraCUw5TLdf++Brdf/eahg5be/70kAS3p10/A6zIiGf/4qDhrsWZyZh2YKzAiCfa8XsJeprP3QA==
+
+react-native-performance@^5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-performance/-/react-native-performance-5.1.2.tgz#5d9e3720e1db26a2c0d2982e5746483c1f9d36db"
+  integrity sha512-l5JOJphNzox9a9icL3T6O/gEqZuqWqcbejW04WPa10m0UanBdIYrNkPFl48B3ivWw3MabpjB6GiDYv7old9/fw==
+
 react-native-permissions@^3.9.3:
   version "3.9.3"
   resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-3.9.3.tgz#b12b118634437784205b5fd56c2a7edd69707314"
