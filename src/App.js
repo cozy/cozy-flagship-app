@@ -14,6 +14,7 @@ import { NativeIntentProvider } from 'cozy-intent'
 import rnperformance, {
   configurePerformances
 } from '/app/domain/performances/measure'
+import { usePerformancesUniversalLinks } from '/app/domain/performances/hooks/usePerformancesUniversalLinks'
 import { RootNavigator } from '/AppRouter'
 import * as RootNavigation from '/libs/RootNavigation'
 import NetStatusBoundary from '/libs/services/NetStatusBoundary'
@@ -116,6 +117,7 @@ const App = ({ setClient }) => {
   useGeolocationTracking()
   useCozyEnvironmentOverride()
   useOfflineDebugUniversalLinks(client)
+  usePerformancesUniversalLinks(client)
 
   const {
     LauncherDialog,
