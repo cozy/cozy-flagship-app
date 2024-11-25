@@ -1,8 +1,13 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { decode, encode } from 'base-64'
 import React, { useEffect, useState } from 'react'
-import { StatusBar, StyleSheet, View } from 'react-native'
-
+import {
+  StatusBar,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  InteractionManager
+} from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -71,9 +76,15 @@ import { ClouderyOffer } from '/app/view/IAP/ClouderyOffer'
 import { useDimensions } from '/libs/dimensions'
 import { configureFileLogger } from '/app/domain/logger/fileLogger'
 import { useColorScheme } from '/app/theme/colorScheme'
+import {
+  hasMigratedFromAsyncStorage,
+  migrateFromAsyncStorage,
+  storage
+} from '/libs/localStore/storage'
 
 if (__DEV__) {
   require('react-native-performance-flipper-reporter').setupDefaultFlipperReporter()
+  require('react-native-mmkv-flipper-plugin').initializeMMKVFlipper({ default: storage })
 }
 
 configurePerformances()
@@ -293,6 +304,30 @@ const Wrapper = () => {
     initFlagshipUIService()
     setTimeoutForSplashScreen()
   }, [])
+
+  const [hasMigrated, setHasMigrated] = useState(hasMigratedFromAsyncStorage)
+
+  useEffect(() => {
+    if (!hasMigratedFromAsyncStorage) {
+      InteractionManager.runAfterInteractions(async () => {
+        try {
+          await migrateFromAsyncStorage()
+          setHasMigrated(true)
+        } catch (e) {
+          // TODO: fall back to AsyncStorage? Wipe storage clean and use MMKV? Crash app?
+        }
+      })
+    }
+  }, [])
+
+  if (!hasMigrated) {
+    // show loading indicator while app is migrating storage...
+    return (
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator color="black" />
+      </View>
+    )
+  }
 
   return (
     <>
