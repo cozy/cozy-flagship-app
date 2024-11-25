@@ -11,6 +11,7 @@ import {
 import { useNativeIntent } from 'cozy-intent'
 import Minilog from 'cozy-minilog'
 
+import rnperformance from '/app/domain/performances/measure'
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { navigateToApp } from '/libs/functions/openApp'
 import {
@@ -71,6 +72,16 @@ const HomeView = ({ route, navigation }) => {
   const filesToUpload = useFilesToUpload()
 
   const { componentId } = useFlagshipUI('HomeView', ScreenIndexes.HOME_VIEW)
+
+  useEffect(() => {
+    if (uri && shouldWaitCozyApp !== undefined && !shouldWaitCozyApp) {
+      rnperformance.measure('HomeStartRenderChild', 'AppStart')
+    }
+  }, [uri, shouldWaitCozyApp])
+
+  useEffect(() => {
+    rnperformance.measure('HomeStart', 'AppStart')
+  }, [])
 
   useEffect(() => {
     const subscription = AppState.addEventListener(
@@ -146,6 +157,7 @@ const HomeView = ({ route, navigation }) => {
       session
 
     const getHomeUri = async () => {
+      rnperformance.mark('getHomeUri')
       const webLink = generateWebLink({
         cozyUrl: client.getStackClient().uri,
         hash: 'connected',
@@ -153,13 +165,16 @@ const HomeView = ({ route, navigation }) => {
         slug: 'home',
         subDomainType: session.subDomainType
       })
+      rnperformance.measure('generateWebLink', 'getHomeUri')
 
       if (await shouldCreateSession(webLink)) {
         const sessionLink = await handleCreateSession(webLink)
         await consumeSessionToken()
 
+        rnperformance.measure('setUri sessionLink', 'getHomeUri')
         setUri(sessionLink)
       } else {
+        rnperformance.measure('setUri webLink', 'getHomeUri')
         setUri(webLink)
       }
     }

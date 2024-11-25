@@ -3,6 +3,8 @@ import { View } from 'react-native'
 
 import Minilog from 'cozy-minilog'
 
+import rnperformance from '/app/domain/performances/measure'
+
 import {
   subscribeToCrypto,
   unsubscribeFromCrypto,
@@ -50,6 +52,7 @@ export const CryptoWebView = ({ setHasCrypto }) => {
   useEffect(() => {
     if (!isLoading) {
       subscribeToCrypto(processMessage)
+      rnperformance.measure('CryptoWebView Loaded', 'AppStart')
       setHasCrypto?.(true)
     }
 

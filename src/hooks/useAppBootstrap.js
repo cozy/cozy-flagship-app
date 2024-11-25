@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { deconstructCozyWebLinkWithSlug } from 'cozy-client'
 
 import { handleLogsDeepLink } from '/app/domain/logger/deeplinkHandler'
+import rnperformance from '/app/domain/performances/measure'
 import { SentryCustomTags, setSentryTag } from '/libs/monitoring/Sentry'
 import { manageIconCache } from '/libs/functions/iconTable'
 import { getDefaultIconParams } from '/libs/functions/openApp'
@@ -34,6 +35,7 @@ export const useAppBootstrap = client => {
   // Handling initial URL init
   useEffect(() => {
     const doAsync = async () => {
+      rnperformance.mark('useAppBootstrapMain')
       if (!client) {
         const onboardingUrl = await Linking.getInitialURL()
         log.debug(`App's initialURL is ${onboardingUrl}`)
@@ -53,12 +55,20 @@ export const useAppBootstrap = client => {
               action.params.magicCode ? 'with magic code' : ''
             }`
           )
+          rnperformance.measure(
+            'setInitialRoute OnboardingLink',
+            'useAppBootstrapMain'
+          )
           return setInitialRoute({
             route: action.route,
             params: action.params
           })
         } else {
           log.debug('Set initialRoute to welcome screen')
+          rnperformance.measure(
+            'setInitialRoute Welcome',
+            'useAppBootstrapMain'
+          )
           return setInitialRoute({
             route: routes.welcome
           })
@@ -85,6 +95,7 @@ export const useAppBootstrap = client => {
           cozyAppFallbackURL = onboardingRedirectionURL
         }
 
+        rnperformance.measure('setInitialRoute home', 'useAppBootstrapMain')
         return setInitialRoute({
           route: routes.home,
           params: {
@@ -103,6 +114,10 @@ export const useAppBootstrap = client => {
               cozyAppFallbackURL
             }}`
           )
+          rnperformance.measure(
+            'setInitialRoute initialURL',
+            'useAppBootstrapMain'
+          )
           return setInitialRoute({
             route: routes.home,
             params: {
@@ -116,6 +131,10 @@ export const useAppBootstrap = client => {
 
         log.debug(
           `Set initialRoute to home screen with fallback from database ${defaultRedirectUrl}`
+        )
+        rnperformance.measure(
+          'setInitialRoute fallback database',
+          'useAppBootstrapMain'
         )
         return setInitialRoute({
           route: routes.home,
@@ -136,6 +155,7 @@ export const useAppBootstrap = client => {
   // Handling app readiness
   useEffect(() => {
     if (initialRoute !== 'fetching' && isLoading) {
+      rnperformance.measure('setIsLoading false', 'useAppBootstrapMain')
       setIsLoading(false)
       if (initialRoute.route !== routes.home) {
         log.debug('useAppBootstrap: hideSplashScreen')

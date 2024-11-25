@@ -4,6 +4,7 @@ import Minilog from 'cozy-minilog'
 
 import { checkOauthClientsLimit } from '/app/domain/limits/checkOauthClientsLimit'
 import { showOauthClientsLimitExceeded } from '/app/domain/limits/OauthClientsLimitService'
+import rnperformance from '/app/domain/performances/measure'
 import { routes } from '/constants/routes'
 import { IndexInjectionWebviewComponent } from '/components/webviews/webViewComponents/IndexInjectionWebviewComponent'
 import { updateCozyAppBundleInBackground } from '/libs/cozyAppBundle/cozyAppBundle'
@@ -23,6 +24,7 @@ export const initHtmlContent = async ({
   navigation,
   t
 }) => {
+  rnperformance.mark('initHtmlContent')
   const cookieAlreadyExists = (await getCookie(client)) !== undefined
   log.debug(`Check cookie already exists: ${cookieAlreadyExists}`)
 
@@ -64,6 +66,7 @@ export const initHtmlContent = async ({
   const { source: sourceActual, nativeConfig: nativeConfigActual } =
     getPlaformSpecificConfig(href, htmlContent || NO_INJECTED_HTML)
 
+  rnperformance.measure('initHtmlContent', 'initHtmlContent')
   setHtmlContentCreationDate(Date.now())
   dispatch(oldState => ({
     ...oldState,
@@ -141,17 +144,31 @@ const getPlaformSpecificConfig = (uri, html) => {
  * @returns true if the WebView rendering should be prevented, false otherwise
  */
 const doesOauthClientsLimitPreventsLoading = async (client, slug, href) => {
+  const markName = `doesOauthClientsLimitPreventsLoading ${slug}`
+  rnperformance.mark(markName)
   const isOauthClientsLimitExeeded = await checkOauthClientsLimit(client)
 
   if (isOauthClientsLimitExeeded) {
     if (slug === 'home') {
       showOauthClientsLimitExceeded(href)
+      rnperformance.measure(
+        `doesOauthClientsLimitPreventsLoading ${slug} exceeded -> false`,
+        markName
+      )
       return false
     } else if (slug !== 'settings') {
       showOauthClientsLimitExceeded(href)
+      rnperformance.measure(
+        `doesOauthClientsLimitPreventsLoading ${slug} exceeded -> true`,
+        markName
+      )
       return true
     }
   }
 
+  rnperformance.measure(
+    `doesOauthClientsLimitPreventsLoading ${slug} -> false`,
+    markName
+  )
   return false
 }
