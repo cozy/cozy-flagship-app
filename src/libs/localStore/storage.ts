@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Cookies } from '@react-native-cookies/cookies'
 import { BiometryType } from 'react-native-biometrics'
+import { MMKV } from 'react-native-mmkv'
 
 import rnperformance from '/app/domain/performances/measure'
 import { logger } from '/libs/functions/logger'
@@ -11,7 +12,9 @@ import { OauthData } from '/libs/clientHelpers/persistClient'
 
 const log = logger('storage.ts')
 
-const { setItem, getItem, removeItem, clear } = AsyncStorage
+export const storage = new MMKV()
+
+const { getItem, removeItem, clear } = AsyncStorage
 
 export type StorageKey = CozyPersistedStorageKeys | DevicePersistedStorageKeys
 
@@ -71,10 +74,11 @@ export interface StorageItems {
 export const storeData = async (
   name: StorageKey,
   value: StorageItems[keyof StorageItems]
+  // eslint-disable-next-line @typescript-eslint/require-await
 ): Promise<void> => {
   try {
     const markName = rnperformance.mark(`setData ${name}`)
-    await setItem(name, JSON.stringify(value))
+    storage.set(name, JSON.stringify(value))
 
     rnperformance.measure({
       markName: markName,
@@ -85,16 +89,19 @@ export const storeData = async (
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export const getData = async <T>(name: StorageKey): Promise<T | null> => {
   try {
     const markName = rnperformance.mark(`getData ${name}`)
-    const value = await getItem(name)
+    const value = storage.getString(name)
 
     rnperformance.measure({
       markName: markName,
       category: 'AsyncStorageGet'
     })
-    return value !== null ? (JSON.parse(value) as T) : null
+    return value !== null && value !== undefined
+      ? (JSON.parse(value) as T)
+      : null
   } catch (error) {
     /*
       If we tried to parse the default redirection url and it failed, we return it as is
@@ -121,6 +128,7 @@ export const clearCozyData = async (): Promise<void> => {
 
     for (const key of keys) {
       await removeItem(key)
+      storage.delete(key)
     }
   } catch (error) {
     log.error(`Failed to clear data from persistent storage`, error)
@@ -130,6 +138,7 @@ export const clearCozyData = async (): Promise<void> => {
 export const clearAllData = async (): Promise<void> => {
   try {
     await clear()
+    storage.clearAll()
   } catch (error) {
     log.error(`Failed to clear all data from persistent storage`, error)
   }
@@ -138,7 +147,43 @@ export const clearAllData = async (): Promise<void> => {
 export const removeData = async (name: StorageKey): Promise<void> => {
   try {
     await removeItem(name)
+    storage.delete(name)
   } catch (error) {
     log.error(`Failed to remove key "${name}" from persistent storage`, error)
   }
+}
+
+// TODO: Remove `hasMigratedFromAsyncStorage` after a while (when everyone has migrated)
+export const hasMigratedFromAsyncStorage = storage.getBoolean(
+  'hasMigratedFromAsyncStorage'
+)
+
+// TODO: Remove `hasMigratedFromAsyncStorage` after a while (when everyone has migrated)
+export async function migrateFromAsyncStorage(): Promise<void> {
+  log.info('Migrating from AsyncStorage -> MMKV...')
+  const markName = `migrateFromAsyncStorage`
+  rnperformance.mark(markName)
+
+  const keys = await AsyncStorage.getAllKeys()
+
+  for (const key of keys) {
+    try {
+      const value = await AsyncStorage.getItem(key)
+
+      if (value != null) {
+        storage.set(key, value)
+      }
+    } catch (error) {
+      log.error(
+        `Failed to migrate key "${key}" from AsyncStorage to MMKV!`,
+        error
+      )
+      throw error
+    }
+  }
+
+  storage.set('hasMigratedFromAsyncStorage', true)
+
+  rnperformance.measure(markName, markName, 'AsyncStorageMigration')
+  log.info(`Migrated from AsyncStorage -> MMKV!`)
 }
