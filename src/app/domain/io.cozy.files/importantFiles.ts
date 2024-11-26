@@ -15,7 +15,7 @@ import { getErrorMessage } from '/libs/functions/getErrorMessage'
 
 const log = Minilog('📁 Offline Files')
 
-const IMPORTANT_FILES_DOWNLOAD_DELAY_IN_MS = 100
+const IMPORTANT_FILES_DOWNLOAD_DELAY_IN_MS = 30 * 1000
 const NB_OF_MONTH_BEFORE_EXPIRATION = 1
 
 export const makeImportantFilesAvailableOfflineInBackground = (
