@@ -12,6 +12,9 @@ import { default as PouchLink } from 'cozy-pouch-link'
 
 const log = Minilog('🔗 GetLinks')
 
+export const REPLICATION_DEBOUNCE = 30 * 1000 // 30s
+export const REPLICATION_DEBOUNCE_MAX_DELAY = 600 * 1000 // 10min
+
 export const offlineDoctypes = [
   // cozy-home
   'io.cozy.accounts',
@@ -37,8 +40,10 @@ export const offlineDoctypes = [
 export const getLinks = (): CozyLink[] => {
   const pouchLinkOptions = {
     doctypes: offlineDoctypes,
-    initialSync: true,
-    periodicSync: true,
+    initialSync: false,
+    periodicSync: false,
+    syncDebounceDelayInMs: REPLICATION_DEBOUNCE,
+    syncDebounceMaxDelayInMs: REPLICATION_DEBOUNCE_MAX_DELAY,
     platform: platformReactNative,
     ignoreWarmup: true,
     doctypesReplicationOptions: Object.fromEntries(
