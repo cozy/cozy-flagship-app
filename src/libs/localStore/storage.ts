@@ -93,7 +93,7 @@ export const getData = async <T>(name: StorageKey): Promise<T | null> => {
     const value = storage.getString(name)
 
     rnperformance.measure(markName, markName, 'AsyncStorageGet')
-    return value !== null ? (JSON.parse(value) as T) : null
+    return value !== null && value !== undefined ? (JSON.parse(value) as T) : null
   } catch (error) {
     /*
       If we tried to parse the default redirection url and it failed, we return it as is
