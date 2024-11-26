@@ -160,11 +160,11 @@ export async function migrateFromAsyncStorage(): Promise<void> {
       const value = await AsyncStorage.getItem(key)
 
       if (value != null) {
-        if (['true', 'false'].includes(value)) {
-          storage.set(key, value === 'true')
-        } else {
+        // if (['true', 'false'].includes(value)) {
+        //   storage.set(key, value === 'true')
+        // } else {
           storage.set(key, value)
-        }
+        // }
       }
     } catch (error) {
       log.error(
