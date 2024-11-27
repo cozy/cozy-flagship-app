@@ -50,6 +50,11 @@ export const checkClientName = async (client: CozyClient): Promise<void> => {
 }
 
 export const synchronizeOnInit = async (client: CozyClient): Promise<void> => {
-  await checkClientName(client)
-  await synchronizeDevice(client)
+  return new Promise((resolve, reject) => {
+    setTimeout(async () => {
+      await checkClientName(client)
+      await synchronizeDevice(client)
+      resolve()
+    }, 10000)
+  })
 }
