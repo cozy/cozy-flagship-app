@@ -170,7 +170,7 @@ export const useAppBootstrap = client => {
       return
     }
 
-    client && manageIconCache(client)
+    client && setTimeout(() => manageIconCache(client), 30000)
     client && setSentryTag(SentryCustomTags.Instance, client.stackClient?.uri)
 
     const subscription = Linking.addEventListener('url', ({ url }) => {
