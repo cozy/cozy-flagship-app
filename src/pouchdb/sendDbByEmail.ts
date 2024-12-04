@@ -51,7 +51,7 @@ export const sendDbByEmail = async (client?: CozyClient): Promise<void> => {
       throw new Error('No token found')
     }
 
-    const date = format(new Date(), 'yyyyMMddHHmmssSSS')
+    const date = format(new Date(), 'yyyyMMdd_HHmmss_SSS')
     const existingLogsFolderId = await client
       .collection('io.cozy.files')
       .ensureDirectoryExists(`/Settings/AALogs/${date}`)
