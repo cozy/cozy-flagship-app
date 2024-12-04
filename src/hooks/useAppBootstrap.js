@@ -25,6 +25,8 @@ import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 
 const log = Minilog('useAppBootstrap')
 
+const MANAGE_ICON_CACHE_DELAY_IN_MS = 30 * 1000
+
 export const useAppBootstrap = client => {
   const [markName] = useState(() => rnperformance.mark('useAppBootstrap'))
   const [initialRoute, setInitialRoute] = useState('fetching')
@@ -176,7 +178,8 @@ export const useAppBootstrap = client => {
       return
     }
 
-    client && manageIconCache(client)
+    client &&
+      setTimeout(() => manageIconCache(client), MANAGE_ICON_CACHE_DELAY_IN_MS)
     client && setSentryTag(SentryCustomTags.Instance, client.stackClient?.uri)
 
     const subscription = Linking.addEventListener('url', ({ url }) => {
