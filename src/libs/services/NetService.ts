@@ -12,7 +12,7 @@ import { showSplashScreen } from '/app/theme/SplashScreenService'
 export const netLogger = Minilog('🛜 NetService')
 
 // Function to configure NetInfo service with the given client
-const configureService = (client?: CozyClient): void => {
+export const configureNetService = (client?: CozyClient): void => {
   NetInfo.configure({
     reachabilityUrl: client?.isLogged
       ? `${client.getStackClient().uri}/${strings.reachability.stack}`
@@ -24,7 +24,7 @@ const configureService = (client?: CozyClient): void => {
 export const useNetService = (client?: CozyClient): void =>
   useEffect(() => {
     const configure = (): void => {
-      configureService(client)
+      configureNetService(client)
     }
 
     client?.on('logout', configure)
