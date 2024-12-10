@@ -1,5 +1,7 @@
 import { Linking } from 'react-native'
 import { getDeviceName } from 'react-native-device-info'
+// import { deflate, inflate } from 'react-native-gzipe';
+import msgpack from 'msgpack-lite'
 
 import CozyClient, { QueryDefinition } from 'cozy-client'
 import type { FileDocument } from 'cozy-client/types/types'
@@ -67,6 +69,7 @@ import {
   requestPermissions
 } from '/app/domain/nativePermissions'
 import { t } from '/locales/i18n'
+import { testData, testDataStr } from './localMethodsTest'
 
 const log = Minilog('localMethods')
 
@@ -407,6 +410,23 @@ export const localMethods = (
       flagshipLinkRequest(operation as QueryDefinition, client),
     downloadFile: (_options, file) =>
       downloadFileAndPreview(file as FileDocument, client),
+    getPerfs: () => {
+      return testData
+    },
+    getPerfsSerialized: async () => {
+      const resultString = JSON.stringify(testData)
+      return resultString
+    },
+    getPerfsCompressed: async () => {
+      // const resultString = JSON.stringify(testData)
+      // console.log('🌈 resultString', resultString.length)
+      // const resultCompressed = await deflate(resultString)
+      // console.log('🌈 resultCompressed', resultCompressed.length)
+      // return resultCompressed
+      var buffer = JSON.stringify(msgpack.encode(testData));
+      return buffer
+
+    },
     ...mergedMethods
   }
 }
