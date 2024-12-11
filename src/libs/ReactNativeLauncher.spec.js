@@ -285,7 +285,7 @@ describe('ReactNativeLauncher', () => {
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(
         2,
         'ensureAuthenticated',
-        { account: fixtures.account }
+        { account: fixtures.account, trigger: fixtures.trigger }
       )
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(
         3,
@@ -522,7 +522,7 @@ describe('ReactNativeLauncher', () => {
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(
         4,
         'ensureAuthenticated',
-        { account: fixtures.account }
+        { account: fixtures.account, trigger: fixtures.trigger }
       )
     })
     it('should not fail when clisk version is less than 0.10.0', async () => {
@@ -560,7 +560,7 @@ describe('ReactNativeLauncher', () => {
       expect(launcher.pilot.call).toHaveBeenNthCalledWith(
         3,
         'ensureAuthenticated',
-        { account: fixtures.account }
+        { account: fixtures.account, trigger: fixtures.trigger }
       )
     })
     it('should raise WRONG_ACCOUNT_IDENTIFIER when the user authenticates with the wrong identifiers twice', async () => {
