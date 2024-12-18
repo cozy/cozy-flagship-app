@@ -7,7 +7,9 @@ import Minilog from 'cozy-minilog'
 
 import { normalizeFqdn } from './functions/stringHelpers'
 
-import rnperformance from '/app/domain/performances/measure'
+import rnperformance, {
+  CozyClientPerformanceApi
+} from '/app/domain/performances/measure'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import {
   listenTokenRefresh,
@@ -62,7 +64,8 @@ export const getClient = async () => {
       version: packageJSON.version
     },
     links,
-    schema
+    schema,
+    performanceApi: CozyClientPerformanceApi
   })
   listenTokenRefresh(client)
   client.getStackClient().setOAuthOptions(oauthOptions)

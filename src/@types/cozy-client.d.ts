@@ -2,6 +2,7 @@
 
 import 'cozy-client'
 import { QueryDefinition, CozyLink } from 'cozy-client'
+import type { PerformanceAPI } from 'cozy-client/types/performances/types'
 import {
   FileDocument,
   CozyClientDocument,
@@ -27,6 +28,7 @@ declare module 'cozy-client' {
     token?: Token
     uri?: string
     warningForCustomHandlers?: boolean
+    performanceApi?: PerformanceAPI
   }
 
   interface OAuthOptions {
