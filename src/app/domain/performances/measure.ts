@@ -37,3 +37,18 @@ export default {
   mark,
   measure: measure('Flagship')
 }
+
+export const CozyClientPerformanceApi = {
+  measure: measure('CozyClient'),
+  mark
+}
+
+export const PouchLinkPerformanceApi = {
+  measure: measure('PouchLink'),
+  mark
+}
+
+export const StackLinkPerformanceApi = {
+  measure: measure('StackLink'),
+  mark
+}
