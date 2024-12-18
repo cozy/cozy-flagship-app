@@ -1,5 +1,6 @@
 import CozyClient from 'cozy-client'
 
+import { CozyClientPerformanceApi } from '/app/domain/performances/measure'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import type { Konnector } from '/libs/konnectors/models'
 /**
@@ -29,7 +30,8 @@ export const getLauncherClient = async (
       appMetadata: {
         slug: konnector.slug,
         version: konnector.version
-      }
+      },
+      performanceApi: CozyClientPerformanceApi
     })
 
     callback?.(newClient)
