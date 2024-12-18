@@ -1,3 +1,5 @@
+import { formatISO, parseISO } from 'date-fns'
+
 import { CozyPersistedStorageKeys, getData, storeData } from '/libs/localStore'
 
 export interface OfflineFile {
@@ -7,16 +9,27 @@ export interface OfflineFile {
   lastOpened: Date
 }
 
+interface SerializedOfflineFile {
+  id: string
+  rev: string
+  path: string
+  lastOpened: string
+}
+
 export type OfflineFilesConfiguration = Map<string, OfflineFile>
-export type SerializedOfflineFilesConfiguration = [string, OfflineFile][]
+export type SerializedOfflineFilesConfiguration = [
+  string,
+  SerializedOfflineFile
+][]
 
 export const getOfflineFilesConfiguration =
   async (): Promise<OfflineFilesConfiguration> => {
-    const filesArray = await getData<OfflineFilesConfiguration>(
-      CozyPersistedStorageKeys.OfflineFiles
-    )
+    const serializedFilesArray =
+      await getData<SerializedOfflineFilesConfiguration>(
+        CozyPersistedStorageKeys.OfflineFiles
+      )
 
-    const files = new Map(filesArray)
+    const files = serializedToConfiguration(serializedFilesArray)
 
     return files
   }
@@ -31,7 +44,7 @@ export const addOfflineFileToConfiguration = async (
     lastOpened: new Date()
   })
 
-  const filesArray = Array.from(files.entries())
+  const filesArray = configurationToSerialized(files)
 
   return storeData(CozyPersistedStorageKeys.OfflineFiles, filesArray)
 }
@@ -43,7 +56,7 @@ export const removeOfflineFileFromConfiguration = async (
 
   files.delete(fileId)
 
-  const filesArray = Array.from(files.entries())
+  const filesArray = configurationToSerialized(files)
 
   return storeData(CozyPersistedStorageKeys.OfflineFiles, filesArray)
 }
@@ -72,4 +85,32 @@ export const updateLastOpened = async (fileId: string): Promise<void> => {
   file.lastOpened = new Date()
 
   await addOfflineFileToConfiguration(file)
+}
+
+const serializedToConfiguration = (
+  serializedConfiguration: SerializedOfflineFilesConfiguration | null
+): OfflineFilesConfiguration => {
+  const configurationArray = serializedConfiguration?.map(([key, file]) => {
+    const parsedFile = {
+      ...file,
+      lastOpened: file.lastOpened ? parseISO(file.lastOpened) : null
+    }
+
+    return [key, parsedFile] as [string, OfflineFile]
+  })
+
+  return new Map(configurationArray)
+}
+
+const configurationToSerialized = (
+  configuration: OfflineFilesConfiguration
+): SerializedOfflineFilesConfiguration => {
+  return Array.from(configuration.entries()).map(([key, file]) => {
+    const parsedFile = {
+      ...file,
+      lastOpened: file.lastOpened ? formatISO(file.lastOpened) : ''
+    }
+
+    return [key, parsedFile] as [string, SerializedOfflineFile]
+  })
 }

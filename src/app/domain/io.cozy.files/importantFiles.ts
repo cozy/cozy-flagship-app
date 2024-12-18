@@ -65,8 +65,8 @@ const cleanOldNonImportantFiles = async (
       const lastOpened = offlineFile.lastOpened
       if (
         !importantFilesIds.includes(offlineFile.id) &&
-        (differenceInMonths(lastOpened, now) > NB_OF_MONTH_BEFORE_EXPIRATION ||
-          !lastOpened)
+        (!lastOpened ||
+          differenceInMonths(now, lastOpened) > NB_OF_MONTH_BEFORE_EXPIRATION)
       ) {
         log.debug(
           `Remove old unimportant file ${
