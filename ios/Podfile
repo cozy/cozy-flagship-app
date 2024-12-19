@@ -60,6 +60,8 @@ target 'CozyReactNative' do
 
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
+  pod 'OpenSSL-Universal', :modular_headers => true, :configurations => ['Release']
+
   target 'CozyReactNativeDev' do
     inherit! :complete
     # Pods for testing
