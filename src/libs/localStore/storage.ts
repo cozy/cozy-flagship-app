@@ -161,8 +161,7 @@ export const hasMigratedFromAsyncStorage = storage.getBoolean(
 // TODO: Remove `hasMigratedFromAsyncStorage` after a while (when everyone has migrated)
 export async function migrateFromAsyncStorage(): Promise<void> {
   log.info('Migrating from AsyncStorage -> MMKV...')
-  const markName = `migrateFromAsyncStorage`
-  rnperformance.mark(markName)
+  const markName = rnperformance.mark('migrateFromAsyncStorage')
 
   const keys = await AsyncStorage.getAllKeys()
 
@@ -184,6 +183,9 @@ export async function migrateFromAsyncStorage(): Promise<void> {
 
   storage.set('hasMigratedFromAsyncStorage', true)
 
-  rnperformance.measure(markName, markName, 'AsyncStorageMigration')
+  rnperformance.measure({
+    markName: markName,
+    category: 'AsyncStorageMigration'
+  })
   log.info(`Migrated from AsyncStorage -> MMKV!`)
 }
