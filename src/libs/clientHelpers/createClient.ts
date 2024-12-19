@@ -1,6 +1,7 @@
 import CozyClient from 'cozy-client'
 import flag from 'cozy-flags'
 
+import { CozyClientPerformanceApi } from '/app/domain/performances/measure'
 import strings from '/constants/strings.json'
 import {
   listenTokenRefresh,
@@ -43,7 +44,8 @@ export const createClient = async (instance: string): Promise<CozyClient> => {
       version: packageJSON.version
     },
     links,
-    schema
+    schema,
+    performanceApi: CozyClientPerformanceApi
   }
 
   const client = new CozyClient(options)

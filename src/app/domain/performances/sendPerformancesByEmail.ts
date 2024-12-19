@@ -10,6 +10,7 @@ import { getSharingLink } from 'cozy-client/dist/models/sharing'
 import Minilog from 'cozy-minilog'
 
 import { fetchSupportMail } from '/app/domain/logger/supportEmail'
+import { getPerformancesLogs } from '/app/domain/performances/measure'
 import { uploadFileWithConflictStrategy } from '/app/domain/upload/services'
 import {
   hideSplashScreen,
@@ -18,14 +19,16 @@ import {
 } from '/app/theme/SplashScreenService'
 import { getInstanceAndFqdnFromClient } from '/libs/client'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
+import { normalizeFqdn } from '/libs/functions/stringHelpers'
 
-const log = Minilog('🗒️ DB Mailer')
+const log = Minilog('🗒️ Performances Mailer')
 
-export const sendDbByEmail = async (client?: CozyClient): Promise<void> => {
-  log.info('Send DB by email')
+export const sendPerformancesByEmail = async (client?: CozyClient): Promise<void> => {
+  log.info('Send Performances by email')
+  log.debug(getPerformancesLogs())
 
   if (!client) {
-    log.info('SendDbByEmail called with no client, return')
+    log.info('SendPerformancesByEmail called with no client, return')
     return
   }
 
@@ -39,11 +42,7 @@ export const sendDbByEmail = async (client?: CozyClient): Promise<void> => {
 
     const instance = client.getStackClient().uri ?? 'not logged app'
 
-    const subject = `DB files for ${instance}`
-
-    const files = await RNFS.readDir(RNFS.DocumentDirectoryPath)
-
-    const dbFiles = files.filter(f => f.name.startsWith(`${fqdn}_`))
+    const subject = `Performance files for ${instance}`
 
     const token = client.getStackClient().token.accessToken
 
@@ -56,18 +55,27 @@ export const sendDbByEmail = async (client?: CozyClient): Promise<void> => {
       .collection('io.cozy.files')
       .ensureDirectoryExists(`/Settings/AALogs/${date}`)
 
-    for (const dbFile of dbFiles) {
-      const url = getUrl(client, existingLogsFolderId, dbFile.name)
+    const normalizedFqdn = normalizeFqdn(fqdn)
 
-      log.info('Send file', dbFile.name)
-      await uploadFileWithConflictStrategy({
-        url,
-        token,
-        filename: dbFile.name,
-        filepath: dbFile.path,
-        mimetype: '.sqlite'
-      })
-    }
+    const performanceFolderPath = `${RNFS.DocumentDirectoryPath}/${normalizedFqdn}/Performances`
+
+    await RNFS.mkdir(performanceFolderPath)
+
+    const performanceFileName = `Performances${date}.json`
+    const performanceFilePath = `${performanceFolderPath}/${performanceFileName}`
+
+    await RNFS.writeFile(performanceFilePath, getPerformancesLogs())
+
+    const url = getUrl(client, existingLogsFolderId, performanceFileName)
+
+    log.info('Send file', performanceFileName)
+    await uploadFileWithConflictStrategy({
+      url,
+      token,
+      filename: performanceFileName,
+      filepath: performanceFilePath,
+      mimetype: '.json'
+    })
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const link: string = await getSharingLink(client, [existingLogsFolderId])
@@ -98,7 +106,7 @@ export const sendDbByEmail = async (client?: CozyClient): Promise<void> => {
     await hideSplashScreen(splashScreens.SEND_LOG_EMAIL)
   } catch (error) {
     const errorMessage = getErrorMessage(error)
-    log.error('Error while trying to send DB email', errorMessage)
+    log.error('Error while trying to send performances email', errorMessage)
   }
 }
 

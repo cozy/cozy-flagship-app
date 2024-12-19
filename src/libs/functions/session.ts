@@ -1,6 +1,7 @@
 import type CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
+import rnperformance from '/app/domain/performances/measure'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import strings from '/constants/strings.json'
 import { isSameCozy } from '/libs/functions/urlHelpers'
@@ -61,15 +62,24 @@ const wrapUrl = async (
 }
 
 const shouldCreateSession = async (): Promise<boolean> => {
+  const markName = rnperformance.mark('shouldCreateSession')
   try {
     const sessionCreatedFlag = await getData(
       CozyPersistedStorageKeys.SessionCreated
     )
 
+    rnperformance.measure({
+      markName: markName,
+      measureName: `${markName} success`
+    })
     return !sessionCreatedFlag
   } catch (error) {
     log.error(`Error when reading the AsyncStorage : ${getErrorMessage(error)}`)
 
+    rnperformance.measure({
+      markName: markName,
+      measureName: `${markName} fail`
+    })
     return false
   }
 }
