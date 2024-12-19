@@ -1,9 +1,10 @@
-import { Platform } from 'react-native'
+import { Alert, Platform } from 'react-native'
 
 import Minilog from 'cozy-minilog'
 
 import { checkOauthClientsLimit } from '/app/domain/limits/checkOauthClientsLimit'
 import { showOauthClientsLimitExceeded } from '/app/domain/limits/OauthClientsLimitService'
+import { routes } from '/constants/routes'
 import { IndexInjectionWebviewComponent } from '/components/webviews/webViewComponents/IndexInjectionWebviewComponent'
 import { updateCozyAppBundleInBackground } from '/libs/cozyAppBundle/cozyAppBundle'
 import { getCookie } from '/libs/httpserver/httpCookieManager'
@@ -18,7 +19,9 @@ export const initHtmlContent = async ({
   href,
   client,
   dispatch,
-  setHtmlContentCreationDate
+  setHtmlContentCreationDate,
+  navigation,
+  t
 }) => {
   const cookieAlreadyExists = (await getCookie(client)) !== undefined
   log.debug(`Check cookie already exists: ${cookieAlreadyExists}`)
@@ -31,7 +34,24 @@ export const initHtmlContent = async ({
     return
   }
 
-  const htmlContent = await httpServerContext.getIndexHtmlForSlug(slug, client)
+  const { html: htmlContent, source: htmlSource } =
+    await httpServerContext.getIndexHtmlForSlug(slug, client)
+
+  if (htmlSource === 'offline') {
+    log.debug(
+      `Stop loading HTML because cozy-app ${slug} is not available for offline mode`
+    )
+    Alert.alert(
+      t('errors.offline_unsupported_title'),
+      t('errors.offline_unsupported_message'),
+      undefined,
+      {
+        cancelable: true
+      }
+    )
+    navigation.navigate(routes.home)
+    return
+  }
 
   if (
     !cookieAlreadyExists &&
@@ -47,6 +67,7 @@ export const initHtmlContent = async ({
   setHtmlContentCreationDate(Date.now())
   dispatch(oldState => ({
     ...oldState,
+    activateCache: htmlSource === 'cache' && Platform.OS === 'android',
     html: htmlContent,
     nativeConfig: nativeConfigActual,
     source: sourceActual

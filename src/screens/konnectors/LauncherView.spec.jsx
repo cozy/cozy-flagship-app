@@ -10,6 +10,7 @@ jest.mock('@fengweichong/react-native-gzip', () => {
 })
 
 jest.mock('cozy-client', () => ({
+  ...jest.requireActual('cozy-client'),
   withClient: jest.fn().mockReturnValue({})
 }))
 

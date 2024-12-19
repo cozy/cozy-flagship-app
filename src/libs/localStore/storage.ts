@@ -4,6 +4,7 @@ import { BiometryType } from 'react-native-biometrics'
 
 import { logger } from '/libs/functions/logger'
 import type { FirstTimeserie } from '/app/domain/geolocation/helpers/quota'
+import { SerializedOfflineFilesConfiguration } from '/app/domain/io.cozy.files/offlineFilesConfiguration'
 import type { OnboardingPartner } from '/screens/welcome/install-referrer/onboardingPartner'
 import { OauthData } from '/libs/clientHelpers/persistClient'
 
@@ -36,7 +37,8 @@ export enum CozyPersistedStorageKeys {
   ServiceWebhookURL = 'CozyGPSMemory.ServiceWebhookURL',
   Oauth = '@cozy_AmiralAppOAuthConfig',
   Cookie = '@cozy_AmiralAppCookieConfig',
-  SessionCreated = '@cozy_AmiralAppSessionCreated'
+  SessionCreated = '@cozy_AmiralAppSessionCreated',
+  OfflineFiles = '@cozy_AmiralAppOfflineFiles'
 }
 
 /*
@@ -62,6 +64,7 @@ export interface StorageItems {
   cookie: Cookies
   clouderyEnv: string
   logsEnabled: number
+  offlineFiles: SerializedOfflineFilesConfiguration
 }
 
 export const storeData = async (

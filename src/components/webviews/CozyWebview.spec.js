@@ -63,6 +63,7 @@ jest.mock('cozy-intent', () => ({
 }))
 
 jest.mock('cozy-client', () => ({
+  ...jest.requireActual('cozy-client'),
   useClient: jest.fn().mockReturnValue({}),
   useInstanceInfo: jest.fn().mockReturnValue({})
 }))

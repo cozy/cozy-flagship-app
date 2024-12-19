@@ -10,12 +10,14 @@ import Config from 'react-native-config'
 import type CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
+import { isOfflineCompatible } from '/app/domain/offline/isOfflineCompatible'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import HttpServer from '/libs/httpserver/HttpServer'
 import { fetchAppDataForSlug } from '/libs/httpserver/indexDataFetcher'
 import { getServerBaseFolder } from '/libs/httpserver/httpPaths'
 import { queryResultToCrypto } from '/components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
 import { setCookie } from '/libs/httpserver/httpCookieManager'
+import { HtmlSource } from '/libs/httpserver/models'
 
 import {
   addBodyClasses,
@@ -35,6 +37,11 @@ const DEFAULT_PORT = Config.HTTP_SERVER_DEFAULT_PORT
   ? Number(Config.HTTP_SERVER_DEFAULT_PORT)
   : 5759
 
+interface IndexHtmlForSlug {
+  source: HtmlSource
+  html: string | false
+}
+
 interface HttpServerState {
   server: HttpServer | undefined
   securityKey: string
@@ -43,7 +50,7 @@ interface HttpServerState {
   getIndexHtmlForSlug: (
     slug: string,
     client: CozyClient
-  ) => Promise<string | false>
+  ) => Promise<IndexHtmlForSlug | false>
 }
 
 interface SecurityKeyResult {
@@ -118,7 +125,7 @@ export const HttpServerProvider = (
   const getIndexHtmlForSlug = async (
     slug: string,
     client: CozyClient
-  ): Promise<string | false> => {
+  ): Promise<IndexHtmlForSlug> => {
     try {
       if (!serverInstance) {
         throw new Error('ServerInstance is null, should not happen')
@@ -128,13 +135,39 @@ export const HttpServerProvider = (
 
       const { host: fqdn } = new URL(rootURL)
 
-      const { cookie, templateValues } = await fetchAppDataForSlug(slug, client)
+      const { cookie, source, templateValues } = await fetchAppDataForSlug(
+        slug,
+        client
+      )
+
+      if (source === 'cache') {
+        log.debug(
+          'App from cache detected, cheking if the app is compatible with offline mode'
+        )
+        const isOffflineCompatitble = await isOfflineCompatible(fqdn, slug)
+
+        if (!isOffflineCompatitble) {
+          log.debug(
+            `App ${slug}' is NOT compatible with offline, abort index generation`
+          )
+          return {
+            html: false,
+            source: 'offline'
+          }
+        }
+        log.debug(
+          `App ${slug}' is compatible with offline, continue index generation`
+        )
+      }
 
       await setCookie(cookie, client)
-      const rawHtml = await getIndexForFqdnAndSlug(fqdn, slug)
+      const rawHtml = await getIndexForFqdnAndSlug(fqdn, slug, source)
 
       if (!rawHtml) {
-        return false
+        return {
+          html: false,
+          source: 'none'
+        }
       }
 
       const computedHtml = await fillIndexWithData({
@@ -146,20 +179,30 @@ export const HttpServerProvider = (
         indexData: templateValues
       })
       if (slug === 'home') {
-        return flow(
+        const html = flow(
           addColorSchemeMetaIfNecessary,
           addBarStyles,
           addBodyClasses,
           addMetaAttributes
         )(computedHtml)
+
+        return {
+          source,
+          html
+        }
       } else {
         // We do not need the bar styles for other app. We only need it for
         // the Home application since this is the only "immersive app"
-        return flow(
+        const html = flow(
           addColorSchemeMetaIfNecessary,
           addBodyClasses,
           addMetaAttributes
         )(computedHtml)
+
+        return {
+          source,
+          html
+        }
       }
     } catch (err) {
       const errorMessage = getErrorMessage(err)
@@ -167,7 +210,10 @@ export const HttpServerProvider = (
         `Error while generating Index.html for ${slug}. Cozy-stack version will be used instead. Error was: ${errorMessage}`
       )
 
-      return false
+      return {
+        html: false,
+        source: 'offline'
+      }
     }
   }
 

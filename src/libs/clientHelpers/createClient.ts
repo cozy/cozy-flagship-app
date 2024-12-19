@@ -13,6 +13,8 @@ import googleServicesJson from '/../android/app/src/prod/google-services.json'
 import packageJSON from '../../../package.json'
 
 import { startListening } from '/app/domain/authentication/services/AuthService'
+import { getLinks } from '/pouchdb/getLinks'
+import schema from '/pouchdb/schema'
 
 /**
  * Create a CozyClient for the given Cozy instance and register it
@@ -21,6 +23,8 @@ import { startListening } from '/app/domain/authentication/services/AuthService'
  * @returns {CozyClient} - The created and registered CozyClient
  */
 export const createClient = async (instance: string): Promise<CozyClient> => {
+  const links = getLinks()
+
   const options = {
     scope: ['*'],
     oauth: {
@@ -37,7 +41,9 @@ export const createClient = async (instance: string): Promise<CozyClient> => {
     appMetadata: {
       slug: 'flagship',
       version: packageJSON.version
-    }
+    },
+    links,
+    schema
   }
 
   const client = new CozyClient(options)

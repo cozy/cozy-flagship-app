@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import 'cozy-client'
-import { FileDocument, CozyClientDocument } from 'cozy-client/types/types'
+import { QueryDefinition, CozyLink } from 'cozy-client'
+import {
+  FileDocument,
+  CozyClientDocument,
+  QueryOptions,
+  QueryResult
+} from 'cozy-client/types/types'
 
 declare module 'cozy-client' {
   interface ClientOptions {
@@ -105,6 +111,7 @@ declare module 'cozy-client' {
   export interface FileCollectionGetResult {
     data: {
       _id: string
+      _rev: string
       name: string
       path: string
       metadata?: {
@@ -171,6 +178,11 @@ declare module 'cozy-client' {
     on: (event: string, callback: () => void) => void
     removeListener: (event: string, callback: () => void) => void
     logout: () => Promise<void>
+    query: (
+      queryDefinition: QueryDefinition,
+      options?: QueryOptions
+    ) => Promise<QueryResult>
+    links: CozyLink[]
   }
 
   export const createMockClient = (options?: ClientOptions): CozyClient =>

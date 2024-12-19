@@ -1,5 +1,5 @@
 module.exports = {
-  presets: ['module:metro-react-native-babel-preset'],
+  presets: ['module:@react-native/babel-preset'],
   plugins: [
     'optional-require',
     [
@@ -8,6 +8,7 @@ module.exports = {
         root: ['./'],
         alias: {
           '^/(.+)': './src/\\1',
+          'pouchdb-collate': '@craftzdog/pouchdb-collate-react-native',
           '@cozy/minilog': 'cozy-minilog'
         },
         extensions: [

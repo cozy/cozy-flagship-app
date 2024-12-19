@@ -127,3 +127,20 @@ jest.mock('../src/core/tools/env', () => ({
   devlog: jest.fn(),
   shouldDisableAutolock: jest.fn().mockReturnValue(false)
 }))
+
+jest.mock('../src/pouchdb/pouchdb', () => ({}))
+jest.mock('react-native-quick-websql', () => ({}))
+
+class mockPouchLink {
+  constructor() {}
+}
+
+jest.mock('cozy-pouch-link', () => {
+  return jest.fn().mockImplementation(() => {
+    return new mockPouchLink()
+  })
+})
+
+jest.mock('react-native-mail', () => ({
+  mail: jest.fn()
+}))

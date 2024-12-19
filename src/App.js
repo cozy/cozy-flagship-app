@@ -41,6 +41,7 @@ import { useGeolocationTracking } from '/app/domain/geolocation/hooks/useGeoloca
 import { OsReceiveProvider } from '/app/view/OsReceive/OsReceiveProvider'
 import { ErrorProvider } from '/app/view/Error/ErrorProvider'
 import { LoadingOverlayProvider } from '/app/view/Loading/LoadingOverlayProvider'
+import { useOfflineDebugUniversalLinks } from '/app/domain/offline/hooks/useOfflineDebugUniversalLinks'
 import { OsReceiveApi } from '/app/domain/osReceive/services/OsReceiveApi'
 import {
   useOsReceiveDispatch,
@@ -59,6 +60,7 @@ import {
   LauncherContextProvider
 } from '/screens/home/hooks/useLauncherContext'
 import LauncherView from '/screens/konnectors/LauncherView'
+import { makeImportantFilesAvailableOfflineInBackground } from '/app/domain/io.cozy.files/importantFiles'
 import { useShareFiles } from '/app/domain/osReceive/services/shareFilesService'
 import { ClouderyOffer } from '/app/view/IAP/ClouderyOffer'
 import { useDimensions } from '/libs/dimensions'
@@ -100,6 +102,7 @@ const App = ({ setClient }) => {
   useNotifications()
   useGeolocationTracking()
   useCozyEnvironmentOverride()
+  useOfflineDebugUniversalLinks(client)
 
   const {
     LauncherDialog,
@@ -111,6 +114,13 @@ const App = ({ setClient }) => {
     resetLauncherContext,
     setLauncherContext
   } = useLauncherContext()
+
+  useEffect(() => {
+    if (!client) {
+      return
+    }
+    makeImportantFilesAvailableOfflineInBackground(client)
+  }, [client])
 
   if (isLoading) {
     return null
@@ -217,7 +227,13 @@ const WrappedApp = () => {
     [client]
   )
 
-  if (client === null) return <Nav client={client} setClient={setClient} />
+  if (client === null) {
+    return (
+      <NetStatusBoundary>
+        <Nav client={client} setClient={setClient} />
+      </NetStatusBoundary>
+    )
+  }
 
   if (client)
     return (
@@ -251,13 +267,11 @@ const Wrapper = () => {
                 <HomeStateProvider>
                   <SplashScreenProvider>
                     <SecureBackgroundSplashScreenWrapper>
-                      <NetStatusBoundary>
-                        <ThemeProvider>
-                          <PermissionsChecker>
-                            <WrappedApp />
-                          </PermissionsChecker>
-                        </ThemeProvider>
-                      </NetStatusBoundary>
+                      <ThemeProvider>
+                        <PermissionsChecker>
+                          <WrappedApp />
+                        </PermissionsChecker>
+                      </ThemeProvider>
                     </SecureBackgroundSplashScreenWrapper>
                   </SplashScreenProvider>
                 </HomeStateProvider>
