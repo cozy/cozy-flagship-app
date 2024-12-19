@@ -31,7 +31,7 @@ jobs:
       - name: Set NodeJS version
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
 
       - name: Setup Ruby (bundle)
         uses: ruby/setup-ruby@v1
@@ -74,7 +74,7 @@ jobs:
         run: yarn brand:configure:${{ inputs.brand }} --force
 
       - name: Install Pods
-        run: cd ios && pod install --repo-update && cd ..
+        run: cd ios && NO_FLIPPER=1 pod install --repo-update && cd ..
 
       - name: Build IOS App
         id: ios_build
@@ -107,4 +107,3 @@ jobs:
         with:
           name: XCode Build Logs
           path: '/Users/runner/Library/Logs/gym/CozyReactNative-CozyReactNative.log'
-          

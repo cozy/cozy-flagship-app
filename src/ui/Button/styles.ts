@@ -27,12 +27,10 @@ export const styles = (colors: CozyThemeColors): ButtonStyles =>
       borderWidth: 1
     },
     disabled_primary: {
-      boxShadow: 'none',
       color: colors.actionColorDisabled,
       backgroundColor: colors.actionColorDisabledBackground
     },
     disabled_secondary: {
-      boxShadow: 'none',
       color: colors.actionColorDisabled,
       backgroundColor: 'transparent'
     }
