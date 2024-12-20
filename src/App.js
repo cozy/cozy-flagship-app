@@ -41,7 +41,7 @@ import { useCozyEnvironmentOverride } from '/hooks/useCozyEnvironmentOverride'
 import { useNotifications } from '/hooks/useNotifications'
 import { useSynchronizeOnInit } from '/hooks/useSynchronizeOnInit'
 import { useInitBackup } from '/app/domain/backup/hooks'
-import { useNetService } from '/libs/services/NetService'
+import { configureNetService, useNetService } from '/libs/services/NetService'
 import { withSentry } from '/libs/monitoring/Sentry'
 import { ThemeProvider } from '/app/theme/ThemeProvider'
 import { useInitI18n } from '/locales/useInitI18n'
@@ -90,6 +90,7 @@ if (__DEV__) {
 }
 
 configurePerformances()
+configureNetService()
 configureFileLogger()
 
 const markStartName = rnperformance.mark('AppStart')
