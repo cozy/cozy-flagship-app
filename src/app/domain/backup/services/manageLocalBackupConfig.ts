@@ -205,11 +205,15 @@ export const fixLocalBackupConfigIfNecessary = async (
   const fileQuery = buildFileQuery(
     localBackupConfig.remoteBackupConfig.backupFolder.id
   )
+  const fileQueryOptions = { forceStack: true }
 
   let remoteBackupFolderUpdated
 
   try {
-    const { data } = (await client.query(fileQuery)) as FileCollectionGetResult
+    const { data } = (await client.query(
+      fileQuery,
+      fileQueryOptions
+    )) as FileCollectionGetResult
 
     remoteBackupFolderUpdated = data
   } catch (e) {
