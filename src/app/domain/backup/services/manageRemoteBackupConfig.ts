@@ -230,9 +230,11 @@ export const createRemoteBackupFolder = async (
   )
 
   const fileQuery = buildFileQuery(backupFolderId)
+  const fileQueryOptions = { forceStack: true }
 
   const { data: backupFolder } = (await client.query(
-    fileQuery
+    fileQuery,
+    fileQueryOptions
   )) as FileCollectionGetResult
 
   const remoteBackupConfig = {
@@ -331,8 +333,12 @@ export const getRemoteFiles = (): File[] => {
 
 const fetchAllRemoteFiles = async (client: CozyClient): Promise<File[]> => {
   const filesQuery = buildAllMediasFilesQuery()
+  const fileQueryOptions = { forceStack: true }
 
-  const remoteFiles = (await client.queryAll(filesQuery)) as FilesQueryAllResult
+  const remoteFiles = (await client.queryAll(
+    filesQuery,
+    fileQueryOptions
+  )) as FilesQueryAllResult
 
   const remoteFilesNotInTrash = remoteFiles.filter(
     file => !isInTrash(file.path)
@@ -372,7 +378,11 @@ export const fetchBackupedMedias = async (
 
   const filesQuery = buildFilesQuery(deviceId)
 
-  const data = (await client.queryAll(filesQuery)) as FilesQueryAllResult
+  const filesQueryOption = { forceStack: true }
+  const data = (await client.queryAll(
+    filesQuery,
+    filesQueryOption
+  )) as FilesQueryAllResult
 
   const backupedMedias = filterMediasAlreadyBackuped(allMedias, data)
 
