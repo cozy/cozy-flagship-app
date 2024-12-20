@@ -9,6 +9,8 @@ import { saveClient } from '/libs/clientHelpers/persistClient'
 
 export const syncLog = Minilog('📱 SynchronizeService')
 
+export const SYNCHRONIZE_DELAY_IN_MS = 10 * 1000
+
 export const synchronizeDevice = async (client: CozyClient): Promise<void> => {
   try {
     await client.getStackClient().fetchJSON('POST', '/settings/synchronized')
@@ -50,6 +52,12 @@ export const checkClientName = async (client: CozyClient): Promise<void> => {
 }
 
 export const synchronizeOnInit = async (client: CozyClient): Promise<void> => {
-  await checkClientName(client)
-  await synchronizeDevice(client)
+  return new Promise(resolve => {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    setTimeout(async (): Promise<void> => {
+      await checkClientName(client)
+      await synchronizeDevice(client)
+      resolve()
+    }, SYNCHRONIZE_DELAY_IN_MS)
+  })
 }

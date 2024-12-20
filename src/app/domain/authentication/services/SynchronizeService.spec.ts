@@ -11,6 +11,9 @@ const {
   synchronizeOnInit
 } = SynchronizeService
 
+// @ts-expect-error TS see this as a const but we can edit it on tests runtime
+SynchronizeService.SYNCHRONIZE_DELAY_IN_MS = 0
+
 jest.mock('cozy-client')
 
 describe('SynchronizeService', () => {
