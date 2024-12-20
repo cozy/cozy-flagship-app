@@ -5,7 +5,7 @@ import Minilog from 'cozy-minilog'
 
 import { normalizeFqdn } from '/libs/functions/stringHelpers'
 import { AppData } from '/libs/httpserver/models'
-import { getData, storeData } from '/libs/localStore/storage'
+import { getData, storeData, storage } from '/libs/localStore/storage'
 
 const log = Minilog('clientCachedStorage.ts')
 
@@ -54,6 +54,14 @@ export const getClientCachedData = async <T extends CacheableObject>(
 export const clearClientCachedData = async (
   client: CozyClient | null
 ): Promise<void> => {
+  await clearClientCachedDataAsyncStorage(client)
+  await clearClientCachedDataMMKV(client)
+}
+
+// TODO: Remove `clearClientCachedDataAsyncStorage` after a while (when everyone has migrated)
+const clearClientCachedDataAsyncStorage = async (
+  client: CozyClient | null
+): Promise<void> => {
   try {
     if (!client) return
 
@@ -68,7 +76,35 @@ export const clearClientCachedData = async (
       await removeItem(key)
     }
   } catch (error) {
-    log.error(`Failed to clear ClientCache data from persistent storage`, error)
+    log.error(
+      `Failed to clear ClientCache data from persistent storage (AsyncStorage)`,
+      error
+    )
+  }
+}
+
+const clearClientCachedDataMMKV = async (
+  client: CozyClient | null
+  // eslint-disable-next-line @typescript-eslint/require-await
+): Promise<void> => {
+  try {
+    if (!client) return
+
+    const normalizedFqdn = getNormalizedFqdn(client)
+    const keys = storage.getAllKeys()
+
+    const clientCacheKeys = keys.filter(k =>
+      k.startsWith(`${clientCachePrefix}${normalizedFqdn}`)
+    )
+
+    for (const key of clientCacheKeys) {
+      storage.delete(key)
+    }
+  } catch (error) {
+    log.error(
+      `Failed to clear ClientCache data from persistent storage (MMKV)`,
+      error
+    )
   }
 }
 
