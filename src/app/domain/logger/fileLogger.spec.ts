@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { FileLogger } from 'react-native-file-logger'
 import { Alert } from 'react-native'
 
@@ -15,7 +14,8 @@ import * as SplashScreenService from '/app/theme/SplashScreenService'
 import {
   DevicePersistedStorageKeys,
   getData,
-  storeData
+  storeData,
+  storage
 } from '/libs/localStore'
 
 jest.mock('react-native-file-logger')
@@ -149,7 +149,7 @@ describe('fileLogger', () => {
     })
 
     it('should configure FileLogger with ConsoleCapture disabled if logs are not configured in AsyncStorage', async () => {
-      await AsyncStorage.clear()
+      storage.clearAll()
 
       await configureFileLogger()
 

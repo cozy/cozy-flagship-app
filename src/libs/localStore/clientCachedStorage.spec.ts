@@ -1,5 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import CozyClient from 'cozy-client'
 
 import {
@@ -7,14 +5,13 @@ import {
   getClientCachedData,
   storeClientCachedData
 } from '/libs/localStore/clientCachedStorage'
+import { storage } from '/libs/localStore/storage'
 import { AppData } from '/libs/httpserver/models'
 import {
   clearAllData,
   CozyPersistedStorageKeys,
   storeData
 } from '/libs/localStore/storage'
-
-const { getAllKeys } = AsyncStorage
 
 describe('clientCachedStorage', () => {
   beforeEach(async () => {
@@ -26,7 +23,7 @@ describe('clientCachedStorage', () => {
       const request = 'SomeRequestName'
 
       await storeClientCachedData(aliceClient, request, getFakeAppData())
-      const keys = await getAllKeys()
+      const keys = storage.getAllKeys()
 
       expect(keys).toStrictEqual([
         '@ccCache_alice.mycozy.cloud_SomeRequestName'
@@ -42,7 +39,7 @@ describe('clientCachedStorage', () => {
       }
 
       await storeClientCachedData(aliceClient, request, getFakeAppData())
-      const keys = await getAllKeys()
+      const keys = storage.getAllKeys()
 
       expect(keys).toStrictEqual([
         '@ccCache_alice.mycozy.cloud_eyJtZXRob2QiOiJHRVQiLCJwYXRoIjoiL3NvbWUvcGF0aCIsImJvZHkiOnt9LCJvcHRpb25zIjp7fX0='
@@ -112,7 +109,7 @@ describe('clientCachedStorage', () => {
       await storeData(CozyPersistedStorageKeys.Activities, 'SomeValue')
       await storeData(CozyPersistedStorageKeys.AutoLockEnabled, 'SomeValue')
 
-      const keys = await getAllKeys()
+      const keys = storage.getAllKeys()
       expect(keys).toStrictEqual([
         '@ccCache_alice.mycozy.cloud_SomeRequestName',
         '@ccCache_alice.mycozy.cloud_eyJtZXRob2QiOiJHRVQiLCJwYXRoIjoiL3NvbWUvcGF0aCIsImJvZHkiOnt9LCJvcHRpb25zIjp7fX0=',
@@ -122,7 +119,7 @@ describe('clientCachedStorage', () => {
 
       await clearClientCachedData(aliceClient)
 
-      const keys2 = await getAllKeys()
+      const keys2 = storage.getAllKeys()
       expect(keys2).toStrictEqual([
         CozyPersistedStorageKeys.Activities,
         CozyPersistedStorageKeys.AutoLockEnabled
@@ -146,7 +143,7 @@ describe('clientCachedStorage', () => {
         'SomeValue'
       )
 
-      const keys = await getAllKeys()
+      const keys = storage.getAllKeys()
       expect(keys).toStrictEqual([
         '@ccCache_alice.mycozy.cloud_SomeRequestName',
         '@ccCache_alice.mycozy.cloud_eyJtZXRob2QiOiJHRVQiLCJwYXRoIjoiL3NvbWUvcGF0aCIsImJvZHkiOnt9LCJvcHRpb25zIjp7fX0=',
@@ -155,7 +152,7 @@ describe('clientCachedStorage', () => {
 
       await clearClientCachedData(aliceClient)
 
-      const keys2 = await getAllKeys()
+      const keys2 = storage.getAllKeys()
       expect(keys2).toStrictEqual(['@ccCache_bob.mycozy.cloud_SomeRequestName'])
     })
   })

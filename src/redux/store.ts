@@ -9,16 +9,29 @@ import {
   persistReducer,
   persistStore
 } from 'redux-persist'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import logger from 'redux-logger'
 
 import konnectorLogsSlice from '/redux/KonnectorState/KonnectorLogsSlice'
 import currentKonnectorSlice from '/redux/KonnectorState/CurrentKonnectorSlice'
 import { shouldEnableReduxLogger } from '/core/tools/env'
+import { storage as mmkvStorage } from '/libs/localStore'
 
 const persistConfig = {
   key: 'root',
-  storage: AsyncStorage
+  storage: {
+    getItem: (key: string): unknown => {
+      const value = mmkvStorage.getString(key)
+      return Promise.resolve(value)
+    },
+    setItem: (key: string, value: string): unknown => {
+      mmkvStorage.set(key, value)
+      return Promise.resolve(true)
+    },
+    removeItem: (key: string): unknown => {
+      mmkvStorage.delete(key)
+      return Promise.resolve()
+    }
+  }
 }
 
 const rootReducter = combineReducers({
