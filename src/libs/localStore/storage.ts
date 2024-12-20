@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Cookies } from '@react-native-cookies/cookies'
 import { BiometryType } from 'react-native-biometrics'
 
+import rnperformance from '/app/domain/performances/measure'
 import { logger } from '/libs/functions/logger'
 import type { FirstTimeserie } from '/app/domain/geolocation/helpers/quota'
 import { SerializedOfflineFilesConfiguration } from '/app/domain/io.cozy.files/offlineFilesConfiguration'
@@ -72,7 +73,13 @@ export const storeData = async (
   value: StorageItems[keyof StorageItems]
 ): Promise<void> => {
   try {
+    const markName = rnperformance.mark(`setData ${name}`)
     await setItem(name, JSON.stringify(value))
+
+    rnperformance.measure({
+      markName: markName,
+      category: 'AsyncStorageSet'
+    })
   } catch (error) {
     log.error(`Failed to store key "${name}" to persistent storage`, error)
   }
@@ -80,8 +87,13 @@ export const storeData = async (
 
 export const getData = async <T>(name: StorageKey): Promise<T | null> => {
   try {
+    const markName = rnperformance.mark(`getData ${name}`)
     const value = await getItem(name)
 
+    rnperformance.measure({
+      markName: markName,
+      category: 'AsyncStorageGet'
+    })
     return value !== null ? (JSON.parse(value) as T) : null
   } catch (error) {
     /*

@@ -1,5 +1,9 @@
 import RNRestart from 'react-native-restart'
 
+import {
+  PouchLinkPerformanceApi,
+  StackLinkPerformanceApi
+} from '/app/domain/performances/measure'
 import { platformReactNative } from '/pouchdb/platformReactNative'
 
 import CozyClient, { CozyLink, StackLink } from 'cozy-client'
@@ -46,11 +50,13 @@ export const getLinks = (): CozyLink[] => {
           }
         ]
       })
-    )
+    ),
+    performanceApi: PouchLinkPerformanceApi
   }
 
   const stackLink = new StackLink({
-    platform: platformReactNative
+    platform: platformReactNative,
+    performanceApi: StackLinkPerformanceApi
   })
 
   const pouchLink = new PouchLink({

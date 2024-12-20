@@ -13,6 +13,7 @@ import { mockRNBackgroundGeolocation } from '../__mocks__/react-native-backgroun
 import { mockRNFS } from '../__mocks__/react-native-fs-mock'
 import { mockRNIAP } from '../__mocks__/react-native-iap-mock'
 import { mockRNInAppBrowser } from '../__mocks__/react-native-inappbrowser-reborn-mock'
+import { mockRNPerformance } from '../__mocks__/react-native-performance-mock'
 
 jest.mock('react-native-device-info', () => mockRNDeviceInfo)
 
@@ -29,6 +30,7 @@ jest.mock('@sentry/react-native', () => ({
 jest.mock('react-native-fs', () => mockRNFS)
 jest.mock('react-native-iap', () => mockRNIAP)
 jest.mock('react-native-inappbrowser-reborn', () => mockRNInAppBrowser)
+jest.mock('react-native-performance', () => mockRNPerformance)
 jest.mock('react-native-ios11-devicecheck', () => ({
   getToken: jest.fn()
 }))

@@ -64,7 +64,8 @@ describe('client', () => {
           version: packageJSON.version
         },
         links: expect.anything(),
-        schema: expect.anything()
+        schema: expect.anything(),
+        performanceApi: expect.anything()
       })
     })
 

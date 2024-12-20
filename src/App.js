@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { decode, encode } from 'base-64'
 import React, { useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
+
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -10,6 +11,10 @@ import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
 import { CozyProvider, useClient } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
 
+import rnperformance, {
+  configurePerformances
+} from '/app/domain/performances/measure'
+import { usePerformancesUniversalLinks } from '/app/domain/performances/hooks/usePerformancesUniversalLinks'
 import { RootNavigator } from '/AppRouter'
 import * as RootNavigation from '/libs/RootNavigation'
 import NetStatusBoundary from '/libs/services/NetStatusBoundary'
@@ -67,7 +72,15 @@ import { useDimensions } from '/libs/dimensions'
 import { configureFileLogger } from '/app/domain/logger/fileLogger'
 import { useColorScheme } from '/app/theme/colorScheme'
 
+if (__DEV__) {
+  require('react-native-performance-flipper-reporter').setupDefaultFlipperReporter()
+}
+
+configurePerformances()
 configureFileLogger()
+
+const markStartName = rnperformance.mark('AppStart')
+rnperformance.measure({ markName: markStartName })
 
 // Polyfill needed for cozy-client connection
 if (!global.btoa) {
@@ -86,6 +99,7 @@ const LoggedInWrapper = ({ children }) => {
 
 // eslint-disable-next-line react/display-name
 const App = ({ setClient }) => {
+  const [markNameApp] = useState(() => rnperformance.mark('App'))
   const client = useClient()
 
   useSynchronizeOnInit()
@@ -103,6 +117,7 @@ const App = ({ setClient }) => {
   useGeolocationTracking()
   useCozyEnvironmentOverride()
   useOfflineDebugUniversalLinks(client)
+  usePerformancesUniversalLinks(client)
 
   const {
     LauncherDialog,
@@ -121,6 +136,22 @@ const App = ({ setClient }) => {
     }
     makeImportantFilesAvailableOfflineInBackground(client)
   }, [client])
+
+  useEffect(() => {
+    if (!isLoading) {
+      rnperformance.measure({
+        markName: markNameApp,
+        measureName: 'useAppBootstrap'
+      })
+    }
+  }, [isLoading, markNameApp])
+
+  useEffect(() => {
+    rnperformance.measure({
+      markName: markNameApp,
+      measureName: 'Mount <App />'
+    })
+  }, [markNameApp])
 
   if (isLoading) {
     return null
@@ -145,11 +176,19 @@ const App = ({ setClient }) => {
 }
 
 const InnerNav = ({ client, setClient }) => {
+  const [markNameInnerNav] = useState(() => rnperformance.mark('InnerNav'))
   useDimensions()
   const colors = getColors()
   const osReceiveState = useOsReceiveState()
   const osReceiveDispatch = useOsReceiveDispatch()
   const { shareFiles } = useShareFiles()
+
+  useEffect(() => {
+    rnperformance.measure({
+      markName: markNameInnerNav,
+      measureName: 'Mount <InnerNav />'
+    })
+  }, [markNameInnerNav])
 
   return (
     <NativeIntentProvider
@@ -181,23 +220,34 @@ const InnerNav = ({ client, setClient }) => {
   )
 }
 
-const Nav = ({ client, setClient }) => (
-  <NavigationContainer ref={RootNavigation.navigationRef}>
-    <SafeAreaProvider>
-      <ErrorProvider>
-        <LoadingOverlayProvider>
-          <OsReceiveProvider>
-            <InnerNav client={client} setClient={setClient} />
-          </OsReceiveProvider>
-        </LoadingOverlayProvider>
-      </ErrorProvider>
-      {client && <ClouderyOffer />}
-      <LockScreenWrapper />
-    </SafeAreaProvider>
-  </NavigationContainer>
-)
+const Nav = ({ client, setClient }) => {
+  const [markNameNav] = useState(() => rnperformance.mark('Nav'))
+  useEffect(() => {
+    rnperformance.measure({
+      markName: markNameNav,
+      measureName: 'Mount <Nav />'
+    })
+  }, [markNameNav])
+
+  return (
+    <NavigationContainer ref={RootNavigation.navigationRef}>
+      <SafeAreaProvider>
+        <ErrorProvider>
+          <LoadingOverlayProvider>
+            <OsReceiveProvider>
+              <InnerNav client={client} setClient={setClient} />
+            </OsReceiveProvider>
+          </LoadingOverlayProvider>
+        </ErrorProvider>
+        {client && <ClouderyOffer />}
+        <LockScreenWrapper />
+      </SafeAreaProvider>
+    </NavigationContainer>
+  )
+}
 
 const WrappedApp = () => {
+  const [markNameWrappedApp] = useState(() => rnperformance.mark('WrappedApp'))
   const [client, setClient] = useState(undefined)
 
   useEffect(() => {
@@ -227,6 +277,13 @@ const WrappedApp = () => {
     [client]
   )
 
+  useEffect(() => {
+    rnperformance.measure({
+      markName: markNameWrappedApp,
+      measureName: 'Mount <WrappedApp />'
+    })
+  }, [markNameWrappedApp])
+
   if (client === null) {
     return (
       <NetStatusBoundary>
@@ -248,12 +305,17 @@ const WrappedApp = () => {
 }
 
 const Wrapper = () => {
+  const [markNameWrapper] = useState(() => rnperformance.mark('Wrapper'))
   const [hasCrypto, setHasCrypto] = useState(false)
 
   useEffect(() => {
+    rnperformance.measure({
+      markName: markNameWrapper,
+      measureName: 'Mount <Wrapper />'
+    })
     initFlagshipUIService()
     setTimeoutForSplashScreen()
-  }, [])
+  }, [markNameWrapper])
 
   return (
     <>

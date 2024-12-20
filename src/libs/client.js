@@ -7,6 +7,9 @@ import Minilog from 'cozy-minilog'
 
 import { normalizeFqdn } from './functions/stringHelpers'
 
+import rnperformance, {
+  CozyClientPerformanceApi
+} from '/app/domain/performances/measure'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import {
   listenTokenRefresh,
@@ -45,6 +48,7 @@ const log = Minilog('LoginScreen')
  * @returns {CozyClient}
  */
 export const getClient = async () => {
+  const markName = rnperformance.mark('getClient')
   const oauthData = await getData(CozyPersistedStorageKeys.Oauth)
   if (!oauthData) {
     return false
@@ -60,7 +64,8 @@ export const getClient = async () => {
       version: packageJSON.version
     },
     links,
-    schema
+    schema,
+    performanceApi: CozyClientPerformanceApi
   })
   listenTokenRefresh(client)
   client.getStackClient().setOAuthOptions(oauthOptions)
@@ -75,6 +80,7 @@ export const getClient = async () => {
   await client.registerPlugin(flag.plugin)
   await client.plugins.flags.initializing
 
+  rnperformance.measure({ markName: markName })
   return client
 }
 

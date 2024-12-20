@@ -3,6 +3,8 @@ import { View } from 'react-native'
 
 import Minilog from 'cozy-minilog'
 
+import rnperformance from '/app/domain/performances/measure'
+
 import {
   subscribeToCrypto,
   unsubscribeFromCrypto,
@@ -18,6 +20,7 @@ const log = Minilog('🥷 CryptoWebView')
 export const CryptoWebView = ({ setHasCrypto }) => {
   const [isLoading, setIsLoading] = useState(true)
   const webviewRef = useRef()
+  const [markName] = useState(() => rnperformance.mark('CryptoWebView'))
 
   const processMessage = (message, messageId, param) => {
     const payload = JSON.stringify({
@@ -50,6 +53,10 @@ export const CryptoWebView = ({ setHasCrypto }) => {
   useEffect(() => {
     if (!isLoading) {
       subscribeToCrypto(processMessage)
+      rnperformance.measure({
+        markName: markName,
+        measureName: 'CryptoWebView Loaded'
+      })
       setHasCrypto?.(true)
     }
 

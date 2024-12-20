@@ -6,6 +6,7 @@ import RNBootSplash, {
 
 import Minilog from 'cozy-minilog'
 
+import rnperformance from '/app/domain/performances/measure'
 import { flagshipUIEventHandler, flagshipUIEvents } from '/app/view/FlagshipUI'
 import { logToSentry } from '/libs/monitoring/Sentry'
 import config from '/app/theme/config.json'
@@ -68,6 +69,7 @@ export const showSplashScreen = async (
   setTimeoutForSplashScreen(bootsplashName)
 
   try {
+    rnperformance.mark(`Show SplashScreen ${bootsplashName}`)
     const result = await RNBootSplash.show({ fade: true, bootsplashName })
     splashScreenLogger.info(
       `Splash screen shown "${bootsplashName}" (${result.toString()})`
@@ -155,6 +157,7 @@ const manageTimersAndHideSplashScreen = async (
     destroyTimer(bootsplashName, fromTimeout)
 
   try {
+    rnperformance.mark(`Hide SplashScreen ${bootsplashName}`)
     return await RNBootSplash.hide({ fade: true, bootsplashName })
   } catch (error) {
     splashScreenLogger.error(
