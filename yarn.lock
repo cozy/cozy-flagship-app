@@ -3089,23 +3089,18 @@
   dependencies:
     microee "0.0.6"
 
-"@craftzdog/pouchdb-adapter-websql-core@^7.2.3":
-  version "7.2.3"
-  resolved "https://registry.yarnpkg.com/@craftzdog/pouchdb-adapter-websql-core/-/pouchdb-adapter-websql-core-7.2.3.tgz#01ebaaf71dd7b844c66c58ae8cc460ec3aeb8009"
-  integrity sha512-bXt9rOwMgUEyQhcr8KWDAhOA1J7XfI//mrlEg0O3KQo81Ck5i6oxWU+BYpw9wC2pnKmhboRkIwFAz9QQbHefrg==
-  dependencies:
-    pouchdb-adapter-utils "^7.2.2"
-    pouchdb-binary-utils "^7.2.2"
-    pouchdb-collections "^7.2.2"
-    pouchdb-errors "^7.2.2"
-    pouchdb-json "^7.2.2"
-    pouchdb-merge "^7.2.2"
-    pouchdb-utils "^7.2.2"
-
 "@craftzdog/pouchdb-collate-react-native@^7.3.0":
   version "7.3.0"
   resolved "https://registry.yarnpkg.com/@craftzdog/pouchdb-collate-react-native/-/pouchdb-collate-react-native-7.3.0.tgz#4bc25c8d11f1f270f5c7de4a1a4c4819b04e4147"
   integrity sha512-ZC1fBSt7lBy8A3bGLsZVuDf/f3NWTOj+x0ygYUMWPCZPtzKfbRWdirv/pPKKxsO09Aw2EGuo94v51UOAIQkpRQ==
+
+"@craftzdog/react-native-buffer@^6.0.5":
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/@craftzdog/react-native-buffer/-/react-native-buffer-6.0.5.tgz#0d4fbe0dd104186d2806655e3c0d25cebdae91d3"
+  integrity sha512-Av+YqfwA9e7jhgI9GFE/gTpwl/H+dRRLmZyJPOpKTy107j9Oj7oXlm3/YiMNz+C/CEGqcKAOqnXDLs4OL6AAFw==
+  dependencies:
+    ieee754 "^1.2.1"
+    react-native-quick-base64 "^2.0.5"
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
@@ -4201,6 +4196,11 @@
   dependencies:
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
+
+"@op-engineering/op-sqlite@^6.2.11":
+  version "6.2.11"
+  resolved "https://registry.yarnpkg.com/@op-engineering/op-sqlite/-/op-sqlite-6.2.11.tgz#0e5b127561c80cdb8748809d17f25ff1fd629219"
+  integrity sha512-gYIMJh55ZDHQ6w6qgTSFOQGQaHvA/EKk8uiCqq+jJTduE5DzrJYOfxeHrye+/BffdWE2T5Wm6voDeLSMbFvr2g==
 
 "@pmmmwh/react-refresh-webpack-plugin@0.4.3":
   version "0.4.3"
@@ -7869,6 +7869,14 @@ buffer@^5.2.0, buffer@^5.4.3, buffer@^5.5.0:
     base64-js "^1.3.1"
     ieee754 "^1.1.13"
 
+buffer@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/buffer/-/buffer-6.0.3.tgz#2ace578459cc8fbe2a70aaa8f52ee63b6a74c6c6"
+  integrity sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==
+  dependencies:
+    base64-js "^1.3.1"
+    ieee754 "^1.2.1"
+
 builtin-modules@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-2.0.0.tgz#60b7ef5ae6546bd7deefa74b08b62a43a232648e"
@@ -9174,6 +9182,13 @@ debug@^3.1.1, debug@^3.2.6, debug@^3.2.7:
   integrity sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==
   dependencies:
     ms "^2.1.1"
+
+debug@^4.3.5:
+  version "4.3.7"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.7.tgz#87945b4151a011d76d95a198d7111c865c360a52"
+  integrity sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==
+  dependencies:
+    ms "^2.1.3"
 
 decamelize@^1.2.0:
   version "1.2.0"
@@ -14908,7 +14923,7 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-ms@^2.0.0, ms@^2.1.1:
+ms@^2.0.0, ms@^2.1.1, ms@^2.1.3:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
@@ -16775,33 +16790,40 @@ pouchdb-adapter-http@^8.0.1:
     pouchdb-fetch "8.0.1"
     pouchdb-utils "8.0.1"
 
-pouchdb-adapter-react-native-sqlite@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/pouchdb-adapter-react-native-sqlite/-/pouchdb-adapter-react-native-sqlite-3.0.1.tgz#f20e8e23389ecc57607668104aca018b2d9b7c05"
-  integrity sha512-oODToI/j0Q/C3VbJMR/sStdjrXwcANFzpwaWdMWrQK95V0NrbtTHlOKycHW+6or1asu2giSjwbvJYMpL/nmi3g==
+pouchdb-adapter-react-native-sqlite@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/pouchdb-adapter-react-native-sqlite/-/pouchdb-adapter-react-native-sqlite-4.0.5.tgz#6ece1526b1e0e68367266f038b5c803383f5beb3"
+  integrity sha512-tvNbGJnVJ1j5dbMVJhkQQmC+SpXGbZqSpd+pn3R3vsCz982cWIhN5y5sN+dEqPKLG2CuxqIbeFLRAvMzgRIj9w==
   dependencies:
-    "@craftzdog/pouchdb-adapter-websql-core" "^7.2.3"
+    "@op-engineering/op-sqlite" "^6.2.11"
+    debug "^4.3.5"
+    pouchdb-adapter-utils "^8.0.1"
+    pouchdb-binary-utils "^8.0.1"
+    pouchdb-errors "^8.0.1"
+    pouchdb-json "^8.0.1"
+    pouchdb-merge "^8.0.1"
+    pouchdb-utils "^8.0.1"
 
-pouchdb-adapter-utils@^7.2.2:
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/pouchdb-adapter-utils/-/pouchdb-adapter-utils-7.3.1.tgz#7237cb597f8d337057df15d4859bfe3c881d8832"
-  integrity sha512-uKLG6dClwTs/sLIJ4WkLAi9wlnDBpOnfyhpeAgOjlOGN/XLz5nKHrA4UJRnURDyc+uv79S9r/Unc4hVpmbSPUw==
+pouchdb-adapter-utils@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/pouchdb-adapter-utils/-/pouchdb-adapter-utils-8.0.1.tgz#8bf5daf50cf08cc4830705cb358f04ca39c24107"
+  integrity sha512-2nTeYaImu958BU4e46SSdv0IdkXYS/PSy5CXyfb7jK9g0aBAp/JRi7qh9nsTjk4FewpT6OpaE/7evxMQa7UuMg==
   dependencies:
-    pouchdb-binary-utils "7.3.1"
-    pouchdb-collections "7.3.1"
-    pouchdb-errors "7.3.1"
-    pouchdb-md5 "7.3.1"
-    pouchdb-merge "7.3.1"
-    pouchdb-utils "7.3.1"
+    pouchdb-binary-utils "8.0.1"
+    pouchdb-collections "8.0.1"
+    pouchdb-errors "8.0.1"
+    pouchdb-md5 "8.0.1"
+    pouchdb-merge "8.0.1"
+    pouchdb-utils "8.0.1"
 
-pouchdb-binary-utils@7.3.1, pouchdb-binary-utils@^7.2.2:
+pouchdb-binary-utils@7.3.1:
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/pouchdb-binary-utils/-/pouchdb-binary-utils-7.3.1.tgz#eea22d9a5f880fcd95062476f4f5484cdf61496f"
   integrity sha512-crZJNfAEOnUoRk977Qtmk4cxEv6sNKllQ6vDDKgQrQLFjMUXma35EHzNyIJr1s76J77Q4sqKQAmxz9Y40yHGtw==
   dependencies:
     buffer-from "1.1.2"
 
-pouchdb-binary-utils@8.0.1:
+pouchdb-binary-utils@8.0.1, pouchdb-binary-utils@^8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/pouchdb-binary-utils/-/pouchdb-binary-utils-8.0.1.tgz#aa77248b9c0ad2a68f75f8f7cf2b594fe3dbd559"
   integrity sha512-WsuR/S0aoUlcA0Alt99czkXsfuXWcrYXAcvGiTW02zawVXOafCnb/qHjA09TUaV0oy5HeHmYaNnDckoOUqspeA==
@@ -16847,7 +16869,7 @@ pouchdb-collate@8.0.1:
   resolved "https://registry.yarnpkg.com/pouchdb-collate/-/pouchdb-collate-8.0.1.tgz#14b6ad9330d2831fd8ef135de680060366502a1b"
   integrity sha512-DTuNz1UJjBTGZMUlWS1klSE1rPsmHy8IIDie3MFH1ZTz/C+SwGgGwkiAyUDv/n00D18EMLgXq5mu+r7L6K1BwQ==
 
-pouchdb-collections@7.3.1, pouchdb-collections@^7.2.2:
+pouchdb-collections@7.3.1:
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/pouchdb-collections/-/pouchdb-collections-7.3.1.tgz#4f1819cf4dd6936a422c29f7fa26a9b5dca428f5"
   integrity sha512-yUyDqR+OJmtwgExOSJegpBJXDLAEC84TWnbAYycyh+DZoA51Yw0+XVQF5Vh8Ii90/Ut2xo88fmrmp0t6kqom8w==
@@ -16870,14 +16892,14 @@ pouchdb-core@^8.0.1:
     pouchdb-utils "8.0.1"
     uuid "8.3.2"
 
-pouchdb-errors@7.3.1, pouchdb-errors@^7.2.2:
+pouchdb-errors@7.3.1:
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/pouchdb-errors/-/pouchdb-errors-7.3.1.tgz#78be36721e2edc446fac158a236a9218c7bcdb14"
   integrity sha512-Zktz4gnXEUcZcty8FmyvtYUYsHskoST05m6H5/E2gg/0mCfEXq/XeyyLkZHaZmqD0ZPS9yNmASB1VaFWEKEaDw==
   dependencies:
     inherits "2.0.4"
 
-pouchdb-errors@8.0.1:
+pouchdb-errors@8.0.1, pouchdb-errors@^8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/pouchdb-errors/-/pouchdb-errors-8.0.1.tgz#d57afd57e07490d8d0b4ef19c10bfc85dbf27ae5"
   integrity sha512-H+ZsQxcG/JV3Tn29gnM6c9+lRPCN91ZYOkoIICsLjVRYgOTzN1AvNUD/G5JCB+81aI/u3fxZec0LEaZh6g6NHA==
@@ -16921,10 +16943,10 @@ pouchdb-generate-replication-id@8.0.1:
     pouchdb-collate "8.0.1"
     pouchdb-md5 "8.0.1"
 
-pouchdb-json@^7.2.2:
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/pouchdb-json/-/pouchdb-json-7.3.1.tgz#a80a3060aa2914959e4dca7a4e2022ab20c7119a"
-  integrity sha512-AyOKsmc85/GtHjMZyEacqzja8qLVfycS1hh1oskR+Bm5PIITX52Fb8zyi0hEetV6VC0yuGbn0RqiLjJxQePeqQ==
+pouchdb-json@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/pouchdb-json/-/pouchdb-json-8.0.1.tgz#118da1865ec3f5b5d59dcf91d122ea1e6f03db3e"
+  integrity sha512-P9P0QuD+q5QAcz1ykTZHJ/F2CHCfEr7RF/Gj+hjDj6+CeYwlO0TjvwKI0Dg83eLWz6W2cqaVIARDl62DS98dFw==
   dependencies:
     vuvuzela "1.0.3"
 
@@ -16971,12 +16993,7 @@ pouchdb-md5@8.0.1:
     pouchdb-binary-utils "8.0.1"
     spark-md5 "3.0.2"
 
-pouchdb-merge@7.3.1, pouchdb-merge@^7.2.2:
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/pouchdb-merge/-/pouchdb-merge-7.3.1.tgz#97aae682d7d8499b62b6ce234dcb9527c7bf6f02"
-  integrity sha512-FeK3r35mKimokf2PQ2tUI523QWyZ4lYZ0Yd75FfSch/SPY6wIokz5XBZZ6PHdu5aOJsEKzoLUxr8CpSg9DhcAw==
-
-pouchdb-merge@8.0.1:
+pouchdb-merge@8.0.1, pouchdb-merge@^8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/pouchdb-merge/-/pouchdb-merge-8.0.1.tgz#7f948298274908546d89050c26ec52ac2f3cd252"
   integrity sha512-79dw6+K7js2+/kt9u4hKOkGCnz+ov0+yft2k21n6M+ylFEQyMKuWHEZRoFWr72o1vxwjhIXhUM1PB2PIdxIh0Q==
@@ -17009,7 +17026,7 @@ pouchdb-selector-core@8.0.1:
     pouchdb-collate "8.0.1"
     pouchdb-utils "8.0.1"
 
-pouchdb-utils@7.3.1, pouchdb-utils@^7.2.2:
+pouchdb-utils@7.3.1:
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/pouchdb-utils/-/pouchdb-utils-7.3.1.tgz#d25f0a034427f388ba5ae37d9ae3fbed210e8720"
   integrity sha512-R3hHBo1zTdTu/NFs3iqkcaQAPwhIH0gMIdfVKd5lbDYlmP26rCG5pdS+v7NuoSSFLJ4xxnaGV+Gjf4duYsJ8wQ==
@@ -17023,7 +17040,7 @@ pouchdb-utils@7.3.1, pouchdb-utils@^7.2.2:
     pouchdb-md5 "7.3.1"
     uuid "8.3.2"
 
-pouchdb-utils@8.0.1:
+pouchdb-utils@8.0.1, pouchdb-utils@^8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/pouchdb-utils/-/pouchdb-utils-8.0.1.tgz#3fb0c9fe00f52e4d8404278a609f277c1c155b70"
   integrity sha512-pWgxdk9EHVWJmjQoEvTe+ZlPXyjcuQ/vgLITN+RjGwcYhoQYUE1M0PksQd2dUP3V8lGS4+wrg9lEM/qSJPYcpw==
@@ -17747,12 +17764,23 @@ react-native-print@0.11.0:
   resolved "https://registry.yarnpkg.com/react-native-print/-/react-native-print-0.11.0.tgz#3dc69fb05552f0c5da5be0dd345a93e1604621d1"
   integrity sha512-hFDzb9dVJVT8c3VHNNWgkPfLF3Jfyw0WVJ3o7wUmSMmi5hJx6b++veNJ3J95d3lW3Y0sZUpGbn9+yzXrLANnJQ==
 
-react-native-quick-base64@2.1.2:
+react-native-quick-base64@2.1.2, react-native-quick-base64@^2.0.5:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/react-native-quick-base64/-/react-native-quick-base64-2.1.2.tgz#062b09b165c1530095fe99b94544c948318dbe99"
   integrity sha512-xghaXpWdB0ji8OwYyo0fWezRroNxiNFCNFpGUIyE7+qc4gA/IGWnysIG5L0MbdoORv8FkTKUvfd6yCUN5R2VFA==
   dependencies:
     base64-js "^1.5.1"
+
+react-native-quick-crypto@^0.7.6:
+  version "0.7.6"
+  resolved "https://registry.yarnpkg.com/react-native-quick-crypto/-/react-native-quick-crypto-0.7.6.tgz#b7b28d3b8ce4d8a4aec2f8157042a164e8dbec01"
+  integrity sha512-ElIBJ0N9bU+xKTWO653cI8XJJSVF50leVuziigWrOe+XEuUEuaf057Opx76vLiJuSltGNcXwcF7A56eooi0mPw==
+  dependencies:
+    "@craftzdog/react-native-buffer" "^6.0.5"
+    events "^3.3.0"
+    readable-stream "^4.5.2"
+    string_decoder "^1.3.0"
+    util "^0.12.5"
 
 react-native-quick-sqlite@8.0.6:
   version "8.0.6"
@@ -18065,6 +18093,17 @@ readable-stream@^3.4.0:
     inherits "^2.0.3"
     string_decoder "^1.1.1"
     util-deprecate "^1.0.1"
+
+readable-stream@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-4.5.2.tgz#9e7fc4c45099baeed934bff6eb97ba6cf2729e09"
+  integrity sha512-yjavECdqeZ3GLXNgRXgeQEdz9fvDDkNKyHnbHRFtOr7/LcfgBcmct7t/ET+HaCTqfh06OzoAxrkN/IfjJBVe+g==
+  dependencies:
+    abort-controller "^3.0.0"
+    buffer "^6.0.3"
+    events "^3.3.0"
+    process "^0.11.10"
+    string_decoder "^1.3.0"
 
 readable-web-to-node-stream@^3.0.0:
   version "3.0.2"
@@ -19554,7 +19593,7 @@ string.prototype.trimstart@^1.0.7:
     define-properties "^1.2.0"
     es-abstract "^1.22.1"
 
-string_decoder@^1.0.0, string_decoder@^1.1.1:
+string_decoder@^1.0.0, string_decoder@^1.1.1, string_decoder@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.3.0.tgz#42f114594a46cf1a8e30b0a84f56c78c3edac21e"
   integrity sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==
@@ -20609,7 +20648,7 @@ util@^0.11.0:
   dependencies:
     inherits "2.0.3"
 
-util@^0.12.4:
+util@^0.12.4, util@^0.12.5:
   version "0.12.5"
   resolved "https://registry.yarnpkg.com/util/-/util-0.12.5.tgz#5f17a6059b73db61a875668781a1c2b136bd6fbc"
   integrity sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==
