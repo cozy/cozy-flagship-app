@@ -34,6 +34,7 @@ export const getLinks = (): CozyLink[] => {
   const pouchLinkOptions = {
     doctypes: offlineDoctypes,
     initialSync: true,
+    periodicSync: true,
     platform: platformReactNative,
     ignoreWarmup: true,
     doctypesReplicationOptions: Object.fromEntries(
