@@ -3,7 +3,6 @@ import {
   PhotoIdentifiersPage,
   PhotoIdentifier
 } from '@react-native-camera-roll/camera-roll'
-import mime from 'mime/lite'
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 
@@ -24,6 +23,7 @@ import {
 } from '/app/domain/backup/helpers'
 import { getBackupInfo } from '/app/domain/backup/services/manageBackup'
 import { t } from '/locales/i18n'
+import { getMime } from '/utils/mime'
 
 const MEDIAS_BY_PAGE = 500
 
@@ -51,7 +51,7 @@ export const getMimeType = (media: Media): string => {
     return media.mimeType
   }
 
-  const guessedMimeType = mime.getType(media.name)
+  const guessedMimeType = getMime(media.name)
 
   if (guessedMimeType === null) {
     throw new Error(t('services.backup.errors.fileNotSupported'))
