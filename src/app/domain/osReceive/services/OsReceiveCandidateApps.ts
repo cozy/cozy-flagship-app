@@ -1,4 +1,3 @@
-import mime from 'mime/lite'
 import RNFS from 'react-native-fs'
 
 import {
@@ -9,6 +8,7 @@ import {
 } from '/app/domain/osReceive/models/OsReceiveCozyApp'
 import { OsReceiveFile } from '/app/domain/osReceive/models/OsReceiveState'
 import { t } from '/locales/i18n'
+import { getMime } from '/utils/mime'
 
 export const getAppsForUpload = async (
   filesToUpload: OsReceiveFile[],
@@ -81,7 +81,7 @@ const checkFileMimes =
       acceptedMime.includes('*/*') ||
       filesToUpload.every(file => {
         const guessedMimeType =
-          mime.getType(file.file.mimeType) ?? file.file.mimeType
+          getMime(file.file.mimeType) ?? file.file.mimeType
 
         return app.accept_documents_from_flagship.accepted_mime_types.includes(
           guessedMimeType
