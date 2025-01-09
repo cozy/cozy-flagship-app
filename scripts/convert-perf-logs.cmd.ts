@@ -119,7 +119,21 @@ const convertFile = (): void => {
           tid: 259,
           ts: (entry.startTime + entry.duration) * 1000
         }
-      })
+      }),
+      ...marksToEntry('nativeLaunch', performanceLogs),
+      ...marksToEntry('reactContextThread', performanceLogs),
+      ...marksToEntry('processCoreReactPackage', performanceLogs),
+      ...marksToEntry('buildNativeModuleRegistry', performanceLogs),
+      ...marksToEntry('loadReactNativeSoFile', performanceLogs),
+      ...marksToEntry('createCatalystInstance', performanceLogs),
+      ...marksToEntry('createReactContext', performanceLogs),
+      ...marksToEntry('preSetupReactContext', performanceLogs),
+      ...marksToEntry('setupReactContext', performanceLogs),
+      ...marksToEntry('attachMeasuredRootViews', performanceLogs),
+      ...marksToEntry('createUiManagerModule', performanceLogs),
+      ...marksToEntry('createViewManagers', performanceLogs),
+      ...marksToEntry('createUiManagerModuleConstants', performanceLogs),
+      ...marksToEntry('runJsBundle', performanceLogs)
     ]
   }
 
@@ -164,6 +178,50 @@ const entryToTrack = (entry: PerfEntry): TrackInfo => {
     color: 'tertiary',
     track: 'global'
   }
+}
+
+const marksToEntry = (eventName: string, performanceLogs: PerfEntry[]) => {
+  console.log('Do', eventName)
+  const startMark = `${eventName}Start`
+  const endMark = `${eventName}End`
+  const startEvent = performanceLogs.find(e => e.name === startMark)!
+  const endEvent = performanceLogs.find(e => e.name === endMark)!
+
+  return [
+    {
+      args: {
+        startTime: startEvent.startTime,
+        detail: JSON.stringify({
+          devtools: {
+            dataType: 'track-entry',
+            ...entryToTrack(startEvent),
+            trackGroup: 'Cozy Flagship App'
+          }
+        })
+      },
+      cat: 'blink.user_timing',
+      id2: {
+        local: '0x' + (performanceLogs.length + 1).toString(16)
+      },
+      name: eventName,
+      ph: 'b',
+      pid: (performanceLogs.length + 1),
+      tid: 259,
+      ts: startEvent.startTime * 1000
+    },
+    {
+      args: {},
+      cat: 'blink.user_timing',
+      id2: {
+        local: '0x' + (performanceLogs.length + 1).toString(16)
+      },
+      name: eventName,
+      ph: 'e',
+      pid: (performanceLogs.length + 1),
+      tid: 259,
+      ts: (startEvent.startTime + (endEvent.startTime - startEvent.startTime)) * 1000
+    }
+  ]
 }
 
 convertFile()
