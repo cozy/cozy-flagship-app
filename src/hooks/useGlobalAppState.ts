@@ -13,6 +13,7 @@ import { showSplashScreen, splashScreens } from '/app/theme/SplashScreenService'
 import { handleSecurityFlowWakeUp } from '/app/domain/authorization/services/SecurityService'
 import { devlog } from '/core/tools/env'
 import { synchronizeDevice } from '/app/domain/authentication/services/SynchronizeService'
+import { triggerPouchReplication } from '/app/domain/offline/utils'
 
 const log = Minilog('useGlobalAppState')
 
@@ -54,9 +55,11 @@ const onStateChange = (
   if (isGoingToSleep(nextAppState)) handleSleep()
 
   if (isGoingToWakeUp(nextAppState)) {
-    Promise.all([handleWakeUp(client), synchronizeDevice(client)]).catch(
-      reason => log.error('Failed when waking up', reason)
-    )
+    Promise.all([
+      handleWakeUp(client),
+      synchronizeDevice(client),
+      triggerPouchReplication(client)
+    ]).catch(reason => log.error('Failed when waking up', reason))
   }
 
   appState = nextAppState
