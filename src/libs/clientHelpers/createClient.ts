@@ -1,5 +1,7 @@
 import CozyClient from 'cozy-client'
 import flag from 'cozy-flags'
+// @ts-expect-error cozy-realtime is not typed yet
+import { RealtimePlugin } from 'cozy-realtime'
 
 import { CozyClientPerformanceApi } from '/app/domain/performances/measure'
 import strings from '/constants/strings.json'
@@ -69,6 +71,7 @@ export const finalizeClientCreation = async (
 
 const registerPlugins = async (client: CozyClient): Promise<void> => {
   await client.registerPlugin(flag.plugin, null)
+  await client.registerPlugin(RealtimePlugin, null)
 }
 
 const initializePlugins = async (client: CozyClient): Promise<void> => {
