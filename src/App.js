@@ -71,6 +71,7 @@ import {
 } from '/screens/home/hooks/useLauncherContext'
 import LauncherView from '/screens/konnectors/LauncherView'
 import { makeImportantFilesAvailableOfflineInBackground } from '/app/domain/io.cozy.files/importantFiles'
+import { useOfflineReplicationOnRealtime } from '/app/domain/offline/hooks/useOfflineReplicationOnRealtime'
 import { useShareFiles } from '/app/domain/osReceive/services/shareFilesService'
 import { ClouderyOffer } from '/app/view/IAP/ClouderyOffer'
 import { useDimensions } from '/libs/dimensions'
@@ -130,6 +131,7 @@ const App = ({ setClient }) => {
   useNotifications()
   useGeolocationTracking()
   useCozyEnvironmentOverride()
+  useOfflineReplicationOnRealtime()
   useOfflineDebugUniversalLinks(client)
   usePerformancesUniversalLinks(client)
 
