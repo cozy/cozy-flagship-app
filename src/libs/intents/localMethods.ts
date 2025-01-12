@@ -3,6 +3,7 @@ import { getDeviceName } from 'react-native-device-info'
 
 import CozyClient, { QueryDefinition } from 'cozy-client'
 import type { FileDocument } from 'cozy-client/types/types'
+import type { SearchOptions } from 'cozy-dataproxy-lib/dist/search/types'
 import {
   FlagshipUI,
   NativeMethodsRegisterWithOptions,
@@ -17,6 +18,7 @@ import {
   isScannerAvailable
 } from '/app/domain/scanner/services/scanner'
 import { processOcr, isOcrAvailable } from '/app/domain/ocr/services/ocr'
+import { search as doSearch } from '/app/domain/search/search'
 import { setColorScheme } from '/app/theme/colorScheme'
 import { printBase64Doc as print } from '/libs/intents/printBase64Doc'
 import { setHomeThemeIntent } from '/libs/intents/setHomeThemeIntent'
@@ -95,6 +97,10 @@ export const backToHome = (): Promise<null> => {
   return Promise.resolve(null)
 }
 
+const search = (query: string, options: SearchOptions): unknown => {
+  return doSearch(query, options)
+}
+
 const isAvailable = (featureName: string): Promise<boolean> => {
   if (featureName === 'geolocationTracking') {
     return Promise.resolve(true)
@@ -115,6 +121,8 @@ const isAvailable = (featureName: string): Promise<boolean> => {
   } else if (featureName === 'colorScheme') {
     return Promise.resolve(true)
   } else if (featureName === 'downloadFile') {
+    return Promise.resolve(true)
+  } else if (featureName === 'search') {
     return Promise.resolve(true)
   }
 
@@ -219,6 +227,7 @@ interface CustomMethods {
   storeSharedMemory: (key: string, value: SharedMemoryData) => Promise<void>
   removeSharedMemory: (key: string) => Promise<void>
   setColorScheme: (colorScheme: string | undefined) => Promise<void>
+  search: (query: string, options: SearchOptions) => unknown
 }
 
 type WithOptions<T> = {
@@ -407,6 +416,11 @@ export const localMethods = (
       flagshipLinkRequest(operation as QueryDefinition, client),
     downloadFile: (_options, file) =>
       downloadFileAndPreview(file as FileDocument, client),
+    search: (
+      _options: PostMeMessageOptions,
+      query: string,
+      options: SearchOptions
+    ) => search(query, options),
     ...mergedMethods
   }
 }
