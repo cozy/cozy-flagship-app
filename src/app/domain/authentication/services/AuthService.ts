@@ -2,9 +2,9 @@ import { Linking } from 'react-native'
 
 import type CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
-import PouchLink from 'cozy-pouch-link'
 
 import { asyncLogoutNoClient } from '/app/domain/authentication/utils/asyncLogoutNoClient'
+import { triggerPouchReplication } from '/app/domain/offline/utils'
 
 export const authLogger = Minilog('AuthService')
 let clientInstance: CozyClient | null = null
@@ -34,8 +34,7 @@ const handleLogin = (): void => {
     authLogger.info('Debounce replication')
     if (clientInstance === null) throw new Error('No client instance set')
 
-    const pouchLink = getPouchLink(clientInstance)
-    pouchLink?.startReplicationWithDebounce()
+    triggerPouchReplication(clientInstance)
   } catch (error) {
     authLogger.error('Error while handling login', error)
   }
@@ -46,12 +45,4 @@ export const startListening = (client: CozyClient): void => {
   clientInstance = client
   clientInstance.on('revoked', handleTokenError)
   clientInstance.on('login', handleLogin)
-}
-
-const getPouchLink = (client?: CozyClient): PouchLink | null => {
-  if (!client) {
-    return null
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return client.links.find(link => link instanceof PouchLink) || null
 }
