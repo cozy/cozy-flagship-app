@@ -185,6 +185,8 @@ declare module 'cozy-client' {
       options?: QueryOptions
     ) => Promise<QueryResult>
     links: CozyLink[]
+    plugins: Record<string, unknown>
+    registerPlugin: (plugin: unknown, options?: unknown) => void
   }
 
   export const createMockClient = (options?: ClientOptions): CozyClient =>
