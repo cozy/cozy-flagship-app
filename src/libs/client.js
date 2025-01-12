@@ -4,6 +4,7 @@ import CozyClient from 'cozy-client'
 // @ts-ignore
 import flag from 'cozy-flags'
 import Minilog from 'cozy-minilog'
+import { RealtimePlugin } from 'cozy-realtime'
 
 import { normalizeFqdn } from './functions/stringHelpers'
 
@@ -77,6 +78,7 @@ export const getClient = async () => {
     token
   })
 
+  await client.registerPlugin(RealtimePlugin)
   await client.registerPlugin(flag.plugin)
   await client.plugins.flags.initializing
 
