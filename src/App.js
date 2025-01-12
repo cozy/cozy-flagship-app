@@ -73,6 +73,7 @@ import LauncherView from '/screens/konnectors/LauncherView'
 import { makeImportantFilesAvailableOfflineInBackground } from '/app/domain/io.cozy.files/importantFiles'
 import { useOfflineReplicationOnRealtime } from '/app/domain/offline/hooks/useOfflineReplicationOnRealtime'
 import { useShareFiles } from '/app/domain/osReceive/services/shareFilesService'
+import { initSearchEngine } from '/app/domain/search/search'
 import { ClouderyOffer } from '/app/view/IAP/ClouderyOffer'
 import { useDimensions } from '/libs/dimensions'
 import { configureFileLogger } from '/app/domain/logger/fileLogger'
@@ -134,6 +135,12 @@ const App = ({ setClient }) => {
   useOfflineReplicationOnRealtime()
   useOfflineDebugUniversalLinks(client)
   usePerformancesUniversalLinks(client)
+
+  useEffect(() => {
+    if (client) {
+      initSearchEngine(client)
+    }
+  }, [client])
 
   const {
     LauncherDialog,
