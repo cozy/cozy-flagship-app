@@ -214,10 +214,14 @@ export const fixLocalBackupConfigIfNecessary = async (
     remoteBackupFolderUpdated = data
   } catch (e) {
     if (e instanceof Error) {
-      const { errors } = JSON.parse(e.message) as StackErrors
+      try {
+        const { errors } = JSON.parse(e.message) as StackErrors
 
-      if (errors.find(e => e.status === '404')) {
-        throw new Error('Remote backup folder has been deleted.')
+        if (errors.find(e => e.status === '404')) {
+          throw new Error('Remote backup folder has been deleted.')
+        }
+      } catch {
+        throw e
       }
     }
 
