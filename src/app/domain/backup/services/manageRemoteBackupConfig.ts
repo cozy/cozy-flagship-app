@@ -123,18 +123,22 @@ const createRemoteBackupFolderWithConflictStrategy = async (
     )) as FileCollectionGetResult
   } catch (e) {
     if (e instanceof Error) {
-      const { errors } = JSON.parse(e.message) as StackErrors
+      try {
+        const { errors } = JSON.parse(e.message) as StackErrors
 
-      if (errors.find(e => e.status === '409')) {
-        const { filename } = models.file.splitFilename({
-          type: 'file',
-          name: backupFolderAttributes.name
-        } as IOCozyFile) as SplitFilenameResult
+        if (errors.find(e => e.status === '409')) {
+          const { filename } = models.file.splitFilename({
+            type: 'file',
+            name: backupFolderAttributes.name
+          } as IOCozyFile) as SplitFilenameResult
 
-        return await createRemoteBackupFolderWithConflictStrategy(client, {
-          ...backupFolderAttributes,
-          name: models.file.generateNewFileNameOnConflict(filename)
-        })
+          return await createRemoteBackupFolderWithConflictStrategy(client, {
+            ...backupFolderAttributes,
+            name: models.file.generateNewFileNameOnConflict(filename)
+          })
+        }
+      } catch {
+        throw e
       }
     }
 
