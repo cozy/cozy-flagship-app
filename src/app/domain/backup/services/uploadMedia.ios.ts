@@ -1,4 +1,5 @@
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
+import { Platform } from 'react-native'
 
 import { getMimeType } from '/app/domain/backup/services/getMedias'
 import { Media } from '/app/domain/backup/models/Media'
@@ -35,6 +36,13 @@ const getRealFilepath = async (media: Media): Promise<string> => {
   }
 
   filepath = filepath.replace('file://', '')
+
+  // Special case for iOS, where in iOS >= 18, CameraRoll returns the path
+  // with a suffix starting with "#"" breaking the upload
+  // https://github.com/react-native-cameraroll/react-native-cameraroll/issues/671
+  if (Platform.OS === 'ios') {
+    filepath = filepath.split('#')[0]
+  }
 
   if (media.type === 'video' && media.subType === 'PhotoLive') {
     return getVideoPathFromLivePhoto(filepath)
