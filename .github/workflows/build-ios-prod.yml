@@ -103,7 +103,7 @@ jobs:
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
 
       - name: Upload XCode error logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always() && steps.ios_build.outcome == 'failure'
         with:
           name: XCode Build Logs

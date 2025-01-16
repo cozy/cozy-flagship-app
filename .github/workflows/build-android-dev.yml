@@ -113,7 +113,7 @@ jobs:
           BUILD_TOOLS_VERSION: "33.0.0"
 
       - name: Upload Dev artifact to GitHub
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Signed Android Package Dev Env ${{ inputs.brand }}
           path: |
@@ -132,7 +132,7 @@ jobs:
           BUILD_TOOLS_VERSION: "33.0.0"
 
       - name: Upload Prod artifact to GitHub
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Signed Android Package Prod Env ${{ inputs.brand }}
           path: |
