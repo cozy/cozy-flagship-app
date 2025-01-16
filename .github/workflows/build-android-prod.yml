@@ -92,7 +92,7 @@ jobs:
           BUILD_TOOLS_VERSION: "33.0.0"
 
       - name: Upload AAB artifact to GitHub
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: AAB
           path: android/app/build/outputs/bundle/prodRelease/*.aab
@@ -147,7 +147,7 @@ jobs:
         id: artifact_info
 
       - name: Upload APK artifact to GitHub
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.artifact_info.outputs.artifact_name }}
           path: ./extracted-apks/cozy_flagship_universal.apk
