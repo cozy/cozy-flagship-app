@@ -1,9 +1,8 @@
 import CozyClient from 'cozy-client'
-// We cannot use `cozy-dataproxy-lib/api` here due to our bundler configuration.
-// In the future we should find a way to homogenize bundlers configuration.
-import { SearchEngine } from 'cozy-dataproxy-lib/dist/api'
 import type { SearchOptions } from 'cozy-dataproxy-lib/dist/search/types'
 import Minilog from 'cozy-minilog'
+
+import { SearchEngine } from '/app/domain/search/dataproxy-wrapper'
 
 const log = Minilog('📱🗂️ Search')
 
