@@ -24,7 +24,7 @@ jobs:
 
       - name: Select Xcode 15.3
         run: sudo xcode-select -s /Applications/Xcode_15.3.app/Contents/Developer
-  
+
       - name: Check out Git repository
         uses: actions/checkout@v3
 
@@ -103,7 +103,7 @@ jobs:
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
 
       - name: Upload XCode error logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always() && steps.ios_build.outcome == 'failure'
         with:
           name: XCode Build Logs

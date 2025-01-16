@@ -96,15 +96,14 @@ jobs:
           export-method: ad-hoc
 
       - name: Upload artifact to GitHub
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: iOS App Store Package
           path: 'output.ipa'
 
       - name: Upload XCode error logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always() && steps.ios_build.outcome == 'failure'
         with:
           name: XCode Build Logs
           path: '/Users/runner/Library/Logs/gym/CozyReactNative-CozyReactNative.log'
-          
