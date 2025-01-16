@@ -146,3 +146,7 @@ jest.mock('cozy-pouch-link', () => {
 jest.mock('react-native-mail', () => ({
   mail: jest.fn()
 }))
+
+jest.mock('/app/domain/search/dataproxy-wrapper', () => ({
+  SearchEngine: jest.fn()
+}))
