@@ -71,7 +71,7 @@ export const finalizeClientCreation = async (
 
 const registerPlugins = async (client: CozyClient): Promise<void> => {
   await client.registerPlugin(flag.plugin, null)
-  await client.registerPlugin(RealtimePlugin, null)
+  await client.registerPlugin(RealtimePlugin, {})
 }
 
 const initializePlugins = async (client: CozyClient): Promise<void> => {
