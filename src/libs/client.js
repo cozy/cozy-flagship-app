@@ -78,7 +78,7 @@ export const getClient = async () => {
     token
   })
 
-  await client.registerPlugin(RealtimePlugin)
+  await client.registerPlugin(RealtimePlugin, {})
   await client.registerPlugin(flag.plugin)
   await client.plugins.flags.initializing
 
