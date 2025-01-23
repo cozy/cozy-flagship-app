@@ -11,7 +11,10 @@ import androidx.annotation.Nullable;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
+import com.reactnativecommunity.webview.RNCWebView;
+import com.reactnativecommunity.webview.RNCWebViewClient;
 import com.reactnativecommunity.webview.RNCWebViewManager;
+import com.reactnativecommunity.webview.RNCWebViewWrapper;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -33,8 +36,8 @@ public class IndexInjectionWebViewManager extends RNCWebViewManager {
   private static final String TAG = "IndexInjectionWebView";
 
   @Override
-  protected RNCWebView createRNCWebViewInstance(ThemedReactContext reactContext) {
-    return new IndexInjectionWebView(reactContext);
+  public RNCWebViewWrapper createViewInstance(ThemedReactContext reactContext) {
+    return super.createViewInstance(reactContext, new IndexInjectionWebView(reactContext));
   }
 
   @Override
@@ -43,13 +46,13 @@ public class IndexInjectionWebViewManager extends RNCWebViewManager {
   }
 
   @Override
-  protected void addEventEmitters(ThemedReactContext reactContext, WebView view) {
-    view.setWebViewClient(new IndexInjectionWebViewClient());
+  protected void addEventEmitters(ThemedReactContext reactContext, RNCWebViewWrapper view) {
+    view.getWebView().setWebViewClient(new IndexInjectionWebViewClient());
   }
 
   @ReactProp(name = "injectedIndex")
-  public void setInjectedIndex(WebView view, String url) {
-    ((IndexInjectionWebView) view).setInjectedIndex(url);
+  public void setInjectedIndex(RNCWebViewWrapper view, String url) {
+    ((IndexInjectionWebView) view.getWebView()).setInjectedIndex(url);
   }
 
   protected static class IndexInjectionWebViewClient extends RNCWebViewClient {
@@ -78,8 +81,7 @@ public class IndexInjectionWebViewManager extends RNCWebViewManager {
   }
 
   protected static class IndexInjectionWebView extends RNCWebView {
-    protected @Nullable
-    String mInjectedIndex;
+    protected @Nullable String mInjectedIndex;
 
     public IndexInjectionWebView(ThemedReactContext reactContext) {
       super(reactContext);
