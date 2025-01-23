@@ -7,7 +7,6 @@ buildscript {
         compileSdkVersion = 34
         targetSdkVersion = 34
         androidXBrowser = "1.4.0"
-        googlePlayServicesLocationVersion = "20.0.0"
         DocumentScanner_compileSdkVersion = 34
         DocumentScanner_targetSdkVersion = 34
         QuickBase64_compileSdkVersion = 34
@@ -34,18 +33,6 @@ buildscript {
 apply plugin: "com.facebook.react.rootproject"
 
 allprojects {
-    repositories {
-        maven {
-          url("${project(':react-native-background-geolocation').projectDir}/libs")
-        }
-        maven {
-          url("${project(':react-native-background-fetch').projectDir}/libs")
-        }
-        maven {
-          url 'https://developer.huawei.com/repo/'
-        }
-    }
-
     // androidx.annotation:annotation:1.9.1 breaks our build, maybe because of kotlin version
     // https://developer.android.com/jetpack/androidx/releases/annotation#1.9.1
     configurations.all {

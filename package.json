@@ -89,8 +89,6 @@
     "react-dom": "18.2.0",
     "react-i18next": "14.0.0",
     "react-native": "0.73.10",
-    "react-native-background-fetch": "^4.2.5",
-    "react-native-background-geolocation": "^4.16.3",
     "react-native-background-upload": "^6.6.0",
     "react-native-biometrics": "3.0.1",
     "react-native-bootsplash": "github:cozy/react-native-bootsplash#0.0.3",
@@ -215,9 +213,6 @@
   },
   "reactNativePermissionsIOS": [
     "PhotoLibrary",
-    "Notifications",
-    "LocationAlways",
-    "LocationWhenInUse",
-    "Motion"
+    "Notifications"
   ]
 }

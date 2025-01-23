@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>com.transistorsoft.fetch</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -113,14 +109,6 @@
 	<string>Afin de prendre des photos pour Drive ou MesPapiers afin d'importer des documents</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Permet le déverouillage de l'application en utilisant FaceID</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Mémoriser vos déplacements nécessite de ≪ toujours autoriser ≫</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Mémoriser vos déplacements nécessite de ≪ toujours autoriser ≫</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Mémoriser vos déplacements nécessite d' ≪ autoriser lorsque l'app est active ≫</string>
-	<key>NSMotionUsageDescription</key>
-	<string>Autoriser l'accès aux mouvements améliore la détection des déplacements.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Pour faire un backup de vos photos</string>
 	<key>UIAppFonts</key>
@@ -130,9 +118,6 @@
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>fetch</string>
-		<string>location</string>
-		<string>processing</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

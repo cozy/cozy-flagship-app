@@ -18,7 +18,6 @@
     "unknown_error": "Ha ocurrido un error inesperado, por favor inténtalo de nuevo.",
     "reset": "Volver al inicio",
     "showDetails": "Ver detalles del error",
-    "platformNotSupported": "Plataforma no compatible con esta solicitud",
     "serverError": "Se ha producido un error al procesar su solicitud",
     "cacheCheckError": "Se ha producido un error al procesar su solicitud",
     "print": "No se ha podido imprimir, inténtelo de nuevo.",
@@ -140,11 +139,6 @@
         "onProgressTitle": "Subiendo",
         "onProgressMessage": "Se está subiendo un archivo"
       }
-    },
-    "geolocationTracking": {
-      "androidBackgroundPermissionMessage": "Registrar sus movimientos requiere ≪ {backgroundPermissionOptionLabel} ≫",
-      "androidNotificationTitle": "Servicio de localización en",
-      "androidNotificationDescription": "Tu viaje quedará registrado en tu Cozy"
     },
     "osReceive": {
       "documentType": "Tipo de documento :",
