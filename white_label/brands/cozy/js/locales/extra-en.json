@@ -38,11 +38,6 @@
       "body": "It seems you have revoked this device from your Cozy. To access your data again, please log in again. If you did not perform this action, please feel free to contact us at <linkTag>{{email}}</linkTag>."
     }
   },
-  "services": {
-    "geolocationTracking": {
-      "androidNotificationDescription": "Your journey will be recorded into your Cozy"
-    }
-  },
   "software": {
     "name": "Cozy Mobile Application"
   }

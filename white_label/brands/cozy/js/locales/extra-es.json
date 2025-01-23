@@ -38,11 +38,6 @@
       "body": "Parece que has revocado este dispositivo de tu Cozy. Para volver a acceder a tus datos, inicia sesión de nuevo. Si esta acción no procede de usted, no dude en ponerse en contacto con nosotros en <linkTag>{{email}}</linkTag>."
     }
   },
-  "services": {
-    "geolocationTracking": {
-      "androidNotificationDescription": "Tu viaje quedará registrado en tu Cozy"
-    }
-  },
   "software": {
     "name": "Aplicación Móvil Cozy"
   }
