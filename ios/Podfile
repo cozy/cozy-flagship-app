@@ -30,9 +30,6 @@ end
 setup_permissions([
   'PhotoLibrary',
   'Notifications',
-  'LocationAlways',
-  'LocationWhenInUse',
-  'Motion'
 ])
 
 target 'CozyReactNative' do

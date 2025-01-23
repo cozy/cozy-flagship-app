@@ -18,7 +18,6 @@
     "unknown_error": "An unexpected error occurred, please try again.",
     "reset": "Return to home",
     "showDetails": "Show error details",
-    "platformNotSupported": "Platform not supported for this request",
     "serverError": "An error occurred while processing your request",
     "cacheCheckError": "An error occurred while processing your request",
     "print": "Failed to print, please try again.",
@@ -140,11 +139,6 @@
         "onProgressTitle": "Uploading",
         "onProgressMessage": "A file is being uploaded"
       }
-    },
-    "geolocationTracking": {
-      "androidBackgroundPermissionMessage": "Recording your movements requires to ≪ {backgroundPermissionOptionLabel} ≫",
-      "androidNotificationTitle": "Location service on",
-      "androidNotificationDescription": "Your journey will be recorded into your Cozy"
     },
     "osReceive": {
       "documentType": "Document Type:",

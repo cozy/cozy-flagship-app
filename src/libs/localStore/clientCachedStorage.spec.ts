@@ -106,14 +106,14 @@ describe('clientCachedStorage', () => {
         '@ccCache_alice.mycozy.cloud_eyJtZXRob2QiOiJHRVQiLCJwYXRoIjoiL3NvbWUvcGF0aCIsImJvZHkiOnt9LCJvcHRpb25zIjp7fX0=',
         'SomeValue'
       )
-      await storeData(CozyPersistedStorageKeys.Activities, 'SomeValue')
+      await storeData(CozyPersistedStorageKeys.Oauth, 'SomeValue')
       await storeData(CozyPersistedStorageKeys.AutoLockEnabled, 'SomeValue')
 
       const keys = storage.getAllKeys()
       expect(keys).toStrictEqual([
         '@ccCache_alice.mycozy.cloud_SomeRequestName',
         '@ccCache_alice.mycozy.cloud_eyJtZXRob2QiOiJHRVQiLCJwYXRoIjoiL3NvbWUvcGF0aCIsImJvZHkiOnt9LCJvcHRpb25zIjp7fX0=',
-        CozyPersistedStorageKeys.Activities,
+        CozyPersistedStorageKeys.Oauth,
         CozyPersistedStorageKeys.AutoLockEnabled
       ])
 
@@ -121,7 +121,7 @@ describe('clientCachedStorage', () => {
 
       const keys2 = storage.getAllKeys()
       expect(keys2).toStrictEqual([
-        CozyPersistedStorageKeys.Activities,
+        CozyPersistedStorageKeys.Oauth,
         CozyPersistedStorageKeys.AutoLockEnabled
       ])
     })
