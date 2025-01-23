@@ -38,8 +38,6 @@
 		E4924AB629963CAD00F415CE /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0572B798A7D41908174A427 /* Lato-Regular.ttf */; };
 		E4924AC12996437D00F415CE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4924AC02996437D00F415CE /* GoogleService-Info.plist */; };
 		E4924AC32996438600F415CE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4924AC22996438600F415CE /* GoogleService-Info.plist */; };
-		E4F47BF72AAA008D008ACFC1 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F47BF62AAA0081008ACFC1 /* RNBackgroundFetch+AppDelegate.m */; };
-		E4F47BF82AAA008D008ACFC1 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F47BF62AAA0081008ACFC1 /* RNBackgroundFetch+AppDelegate.m */; };
 		E4F8716029DDEC1E00C52A35 /* base@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715C29DDEC1E00C52A35 /* base@2x.png */; };
 		E4F8716129DDEC1E00C52A35 /* base@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715C29DDEC1E00C52A35 /* base@2x.png */; };
 		E4F8716229DDEC1E00C52A35 /* mespapiers@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715D29DDEC1E00C52A35 /* mespapiers@2x.png */; };
@@ -125,7 +123,6 @@
 		E4924ABF29963CAD00F415CE /* CozyReactNativeDev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "CozyReactNativeDev-Info.plist"; path = "/Users/theo/cozy/cozy-flagship-app/ios/CozyReactNativeDev-Info.plist"; sourceTree = "<absolute>"; };
 		E4924AC02996437D00F415CE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Dev/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E4924AC22996438600F415CE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Prod/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		E4F47BF62AAA0081008ACFC1 /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; };
 		E4F8715C29DDEC1E00C52A35 /* base@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "base@2x.png"; sourceTree = "<group>"; };
 		E4F8715D29DDEC1E00C52A35 /* mespapiers@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mespapiers@2x.png"; sourceTree = "<group>"; };
 		E4F8715E29DDEC1E00C52A35 /* mespapiers@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mespapiers@3x.png"; sourceTree = "<group>"; };
@@ -203,7 +200,6 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				997B98B12769CFD100089037 /* BootSplash.storyboard */,
-				E4F47BF62AAA0081008ACFC1 /* RNBackgroundFetch+AppDelegate.m */,
 			);
 			name = CozyReactNative;
 			sourceTree = "<group>";
@@ -808,7 +804,6 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				2C7AA455281584D30052F4D8 /* HttpServer.m in Sources */,
-				E4F47BF72AAA008D008ACFC1 /* RNBackgroundFetch+AppDelegate.m in Sources */,
 				2C7AA45328157D2E0052F4D8 /* HttpServer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -828,7 +823,6 @@
 				E4924AAA29963CAD00F415CE /* AppDelegate.m in Sources */,
 				E4924AAB29963CAD00F415CE /* main.m in Sources */,
 				E4924AAC29963CAD00F415CE /* HttpServer.m in Sources */,
-				E4F47BF82AAA008D008ACFC1 /* RNBackgroundFetch+AppDelegate.m in Sources */,
 				E4924AAD29963CAD00F415CE /* HttpServer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

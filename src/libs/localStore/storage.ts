@@ -3,7 +3,6 @@ import { Cookies } from '@react-native-cookies/cookies'
 import { BiometryType } from 'react-native-biometrics'
 
 import { logger } from '/libs/functions/logger'
-import type { FirstTimeserie } from '/app/domain/geolocation/helpers/quota'
 import type { OnboardingPartner } from '/screens/welcome/install-referrer/onboardingPartner'
 import { OauthData } from '/libs/clientHelpers/persistClient'
 
@@ -24,16 +23,6 @@ export enum CozyPersistedStorageKeys {
   LastActivity = '@cozy_AmiralApp_lastActivity',
   DefaultRedirectionUrl = '@cozy_AmiralAppDefaultRedirectionUrl',
   IconsTable = '@cozy_AmiralAppIcons',
-  IdStorageAdress = 'CozyGPSMemory.Id',
-  FlagFailUploadStorageAdress = 'CozyGPSMemory.FlagFailUpload',
-  LastPointUploadedAdress = 'CozyGPSMemory.LastPointUploaded',
-  ShouldBeTrackingFlagStorageAdress = 'CozyGPSMemory.ShouldBeTrackingFlag',
-  LastStopTransitionTsKey = 'CozyGPSMemory.LastStopTransitionTsKey',
-  LastStartTransitionTsKey = 'CozyGPSMemory.LastStartTransitionTsKey',
-  GeolocationTrackingConfig = 'CozyGPSMemory.TrackingConfig',
-  Activities = 'CozyGPSMemory.Activities',
-  FirstTimeserie = 'CozyGPSMemory.FirstTimeserie',
-  ServiceWebhookURL = 'CozyGPSMemory.ServiceWebhookURL',
   Oauth = '@cozy_AmiralAppOAuthConfig',
   Cookie = '@cozy_AmiralAppCookieConfig',
   SessionCreated = '@cozy_AmiralAppSessionCreated'
@@ -57,7 +46,6 @@ export interface StorageItems {
   biometryActivated: boolean
   biometryType?: BiometryType
   iconCache: IconsCache
-  firstTimeserie: FirstTimeserie
   onboardingPartner: OnboardingPartner
   oauth: OauthData
   cookie: Cookies

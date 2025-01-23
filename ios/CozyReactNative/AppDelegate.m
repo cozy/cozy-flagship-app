@@ -6,8 +6,6 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTHTTPRequestHandler.h>
 
-#import <TSBackgroundFetch/TSBackgroundFetch.h>
-
 #import "RNBootSplash.h" // <- add the header import
 #import "RNCConfig.h"
 
@@ -39,8 +37,6 @@ static void SetCustomNSURLSessionConfiguration() {
   self.initialProps = @{};
 
   SetCustomNSURLSessionConfiguration();
-
-  [[TSBackgroundFetch sharedInstance] didFinishLaunching]; // danger
 
   [super application:application didFinishLaunchingWithOptions:launchOptions];
 

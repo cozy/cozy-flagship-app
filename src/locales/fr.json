@@ -16,7 +16,6 @@
     "unknown_error": "Une erreur inattendue s'est produite, veuillez ré-essayer.",
     "reset": "Revenir à l'accueil",
     "showDetails": "Voir les détails de l'erreur",
-    "platformNotSupported": "Plateforme non supportée pour cette demande",
     "serverError": "Une erreur est survenue pendant le traitement de votre requête",
     "cacheCheckError": "Une erreur est survenue pendant le traitement de votre requête",
     "print": "Échec de l'impression, merci de ressayer.",
@@ -153,11 +152,6 @@
         "onProgressTitle": "Envoi en cours",
         "onProgressMessage": "Un fichier est en cours d'envoi"
       }
-    },
-    "geolocationTracking": {
-      "androidBackgroundPermissionMessage": "Mémoriser vos déplacements nécessite de ≪ {backgroundPermissionOptionLabel} ≫",
-      "androidNotificationTitle": "Service de localisation actif",
-      "androidNotificationDescription": "Votre déplacement sera enregistré dans votre Cozy"
     },
     "osReceive": {
       "documentType": "Ajouter dans votre Cozy en tant que :",

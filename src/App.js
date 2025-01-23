@@ -37,7 +37,6 @@ import { ThemeProvider } from '/app/theme/ThemeProvider'
 import { useInitI18n } from '/locales/useInitI18n'
 import { SecureBackgroundSplashScreenWrapper } from '/app/theme/SecureBackgroundSplashScreenWrapper'
 import { PermissionsChecker } from '/app/domain/nativePermissions/components/PermissionsChecker'
-import { useGeolocationTracking } from '/app/domain/geolocation/hooks/useGeolocationTracking'
 import { OsReceiveProvider } from '/app/view/OsReceive/OsReceiveProvider'
 import { ErrorProvider } from '/app/view/Error/ErrorProvider'
 import { LoadingOverlayProvider } from '/app/view/Loading/LoadingOverlayProvider'
@@ -98,7 +97,6 @@ const App = ({ setClient }) => {
   useSecureBackgroundSplashScreen()
   useCookieResyncOnResume()
   useNotifications()
-  useGeolocationTracking()
   useCozyEnvironmentOverride()
 
   const {

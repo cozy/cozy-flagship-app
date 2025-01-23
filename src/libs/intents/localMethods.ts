@@ -49,19 +49,6 @@ import {
 import { sendProgressToWebview } from '/app/domain/backup/services/manageProgress'
 import { BackupInfo, ProgressCallback } from '/app/domain/backup/models'
 import { changeLanguage } from '/locales/i18n'
-import {
-  getGeolocationTrackingStatus,
-  stopTrackingAndClearData,
-  getGeolocationTrackingId,
-  setGeolocationTrackingId,
-  setGeolocationTracking,
-  sendGeolocationTrackingLogs,
-  forceUploadGeolocationTrackingData
-} from '/app/domain/geolocation/services/tracking'
-import {
-  checkPermissions,
-  requestPermissions
-} from '/app/domain/nativePermissions'
 import { t } from '/locales/i18n'
 
 const log = Minilog('localMethods')
@@ -73,7 +60,6 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
 
   await sendKonnectorsLogs(client)
   await client.logout()
-  await stopTrackingAndClearData()
   await deleteKeychain()
   await clearCookies()
   await clearCozyData()
@@ -91,9 +77,7 @@ export const backToHome = (): Promise<null> => {
 }
 
 const isAvailable = (featureName: string): Promise<boolean> => {
-  if (featureName === 'geolocationTracking') {
-    return Promise.resolve(true)
-  } else if (featureName === 'ocr') {
+  if (featureName === 'ocr') {
     return Promise.resolve(isOcrAvailable())
   } else if (featureName === 'backup') {
     return Promise.resolve(true)
@@ -194,17 +178,9 @@ interface CustomMethods {
   prepareBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
   startBackup: (onProgress: ProgressCallback) => Promise<BackupInfo>
   stopBackup: () => Promise<BackupInfo>
-  checkPermissions: typeof checkPermissions
-  requestPermissions: typeof requestPermissions
   checkBackupPermissions: typeof checkBackupPermissions
   requestBackupPermissions: typeof requestBackupPermissions
   setLang: typeof setLang
-  getGeolocationTrackingStatus: typeof getGeolocationTrackingStatus
-  setGeolocationTracking: typeof setGeolocationTracking
-  sendGeolocationTrackingLogs: typeof sendGeolocationTrackingLogs
-  getGeolocationTrackingId: typeof getGeolocationTrackingId
-  setGeolocationTrackingId: typeof setGeolocationTrackingId
-  forceUploadGeolocationTrackingData: typeof forceUploadGeolocationTrackingData
   getDeviceInfo: typeof getDeviceInfo
   isAvailable: typeof isAvailable
   print: typeof print
@@ -350,32 +326,12 @@ export const localMethods = (
     prepareBackup: () => prepareBackupWithClient(client),
     startBackup: () => startBackupWithClient(client),
     stopBackup: () => stopBackupWithClient(client),
-    checkPermissions: (
-      _options: PostMeMessageOptions,
-      ...args: Parameters<typeof checkPermissions>
-    ) => checkPermissions(...args),
-    requestPermissions: (
-      _options: PostMeMessageOptions,
-      ...args: Parameters<typeof requestPermissions>
-    ) => requestPermissions(...args),
     checkBackupPermissions,
     requestBackupPermissions,
     setLang: (
       _options: PostMeMessageOptions,
       ...args: Parameters<typeof setLang>
     ) => setLang(...args),
-    getGeolocationTrackingStatus: () => getGeolocationTrackingStatus(client),
-    setGeolocationTracking: (
-      _options: PostMeMessageOptions,
-      ...args: Parameters<typeof setGeolocationTracking>
-    ) => setGeolocationTracking(...args),
-    getGeolocationTrackingId,
-    setGeolocationTrackingId: (
-      _options: PostMeMessageOptions,
-      ...args: Parameters<typeof setGeolocationTrackingId>
-    ) => setGeolocationTrackingId(...args),
-    sendGeolocationTrackingLogs: () => sendGeolocationTrackingLogs(client),
-    forceUploadGeolocationTrackingData,
     getDeviceInfo,
     isAvailable: (_options, ...args: Parameters<typeof isAvailable>) =>
       isAvailable(...args),

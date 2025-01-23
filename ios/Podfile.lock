@@ -646,11 +646,6 @@ PODS:
     - React-jsi (= 0.72.12)
     - React-logger (= 0.72.12)
     - React-perflogger (= 0.72.12)
-  - RNBackgroundFetch (4.2.5):
-    - React-Core
-  - RNBackgroundGeolocation (4.16.4):
-    - CocoaLumberjack (~> 3.8.5)
-    - React-Core
   - RNBootSplash (3.2.4):
     - React-Core
   - RNCAsyncStorage (1.21.0):
@@ -799,8 +794,6 @@ DEPENDENCIES:
   - React-runtimescheduler (from `../node_modules/react-native/ReactCommon/react/renderer/runtimescheduler`)
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - RNBackgroundFetch (from `../node_modules/react-native-background-fetch`)
-  - RNBackgroundGeolocation (from `../node_modules/react-native-background-geolocation`)
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
@@ -985,10 +978,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/utils"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
-  RNBackgroundFetch:
-    :path: "../node_modules/react-native-background-fetch"
-  RNBackgroundGeolocation:
-    :path: "../node_modules/react-native-background-geolocation"
   RNBootSplash:
     :path: "../node_modules/react-native-bootsplash"
   RNCAsyncStorage:
@@ -1131,8 +1120,6 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 8aea338c561b2175f47018124c076d89d3808d30
   React-utils: 9a24cb88f950d1020ee55bddacbc8c16a611e2dc
   ReactCommon: 76843a9bb140596351ac2786257ac9fe60cafabb
-  RNBackgroundFetch: 2f800a04434620db15ede2e8f21886608a2d1743
-  RNBackgroundGeolocation: 7df16548756b443aac809663cba8a4e03f0b8732
   RNBootSplash: 4844706cbb56a3270556c9b94e59dedadccd47e4
   RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNCClipboard: 60fed4b71560d7bfe40e9d35dea9762b024da86d
@@ -1150,7 +1137,7 @@ SPEC CHECKSUMS:
   RNKeychain: 4f63aada75ebafd26f4bc2c670199461eab85d94
   RNLocalize: d4b8af4e442d4bcca54e68fc687a2129b4d71a81
   RNNotifee: f3c01b391dd8e98e67f539f9a35a9cbcd3bae744
-  RNPermissions: 83168e00be08bd043f51fb738256bf761f38952d
+  RNPermissions: 52d6a55ba77d3b33a428b98bb64b0c8992b8d3fd
   RNScreens: ad1c105ac9107cf1a613bf80889485458eb20bd7
   RNSentry: d059115a1ee0a77087030e141a1b0aa4983ef9bc
   RNShare: 859ff710211285676b0bcedd156c12437ea1d564
@@ -1160,6 +1147,6 @@ SPEC CHECKSUMS:
   Yoga: 87e59f6d458e5061d2421086c5de994b3f7cd151
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 7378e598021ba848ee2378ea0d79a2249d55b657
+PODFILE CHECKSUM: 8a6cd6c889668d394873741de39cd242a350d62a
 
 COCOAPODS: 1.14.3

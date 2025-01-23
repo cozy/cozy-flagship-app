@@ -13,4 +13,3 @@
 -keep class io.cozy.flagship.mobile.BuildConfig { *; }
 -keep public class io.cozy.flagship.mobile.MainActivitybase { *; }
 -keep public class io.cozy.flagship.mobile.MainActivitymespapiers { *; }
--keep class com.transistorsoft.rnbackgroundfetch.HeadlessTask { *; }

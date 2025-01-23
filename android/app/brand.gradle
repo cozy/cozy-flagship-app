@@ -4,7 +4,6 @@ android {
       manifestPlaceholders = [
         universalLinkUrl: "links.mycozy.cloud",
         appScheme: "cozy",
-        reactNativeBackgroundGeolocationKey: "c6c304fbd6010061e1f29903f277b40c9fc55ac085803495dde2caa32f536657",
       ]
   }
 }
