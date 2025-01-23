@@ -15,7 +15,6 @@ on:
         type: choice
         options:
         - cozy
-        - mabulle
 
 jobs:
   android-build:
