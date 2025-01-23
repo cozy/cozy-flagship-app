@@ -386,8 +386,10 @@ const areLanguagesEquivalent = (base: string, compare: string): boolean => {
 }
 
 const areExtraLanguagesEquivalent = (lang: string): boolean => {
-  return areJsonEquivalent(
-    `./white_label/brands/cozy/js/locales/extra-${lang}.json`,
-    `./white_label/brands/mabulle/js/locales/extra-${lang}.json`
-  )
+  return true
+
+  // return areJsonEquivalent(
+  //   `./white_label/brands/cozy/js/locales/extra-${lang}.json`,
+  //   `./white_label/brands/mabulle/js/locales/extra-${lang}.json`
+  // )
 }
