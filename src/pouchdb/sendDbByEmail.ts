@@ -6,7 +6,7 @@ import DeviceInfo from 'react-native-device-info'
 
 import type CozyClient from 'cozy-client'
 // @ts-expect-error Not typed
-import { getSharingLink } from 'cozy-client/dist/models/sharing'
+import { makeSharingLink } from 'cozy-client/dist/models/sharing'
 import Minilog from 'cozy-minilog'
 
 import { fetchSupportMail } from '/app/domain/logger/supportEmail'
@@ -70,7 +70,7 @@ export const sendDbByEmail = async (client?: CozyClient): Promise<void> => {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-    const link: string = await getSharingLink(client, [existingLogsFolderId])
+    const link: string = await makeSharingLink(client, [existingLogsFolderId])
 
     await showSplashScreen(splashScreens.SEND_LOG_EMAIL)
     log.info('Start email intent')
