@@ -59,7 +59,7 @@
     "@sentry/integrations": "7.114.0",
     "@sentry/react-native": "5.33.1",
     "base-64": "^1.0.0",
-    "cozy-client": "^52.0.0",
+    "cozy-client": "^53.0.0",
     "cozy-clisk": "^0.38.1",
     "cozy-dataproxy-lib": "^3.2.0",
     "cozy-device-helper": "^2.7.0",
