@@ -182,7 +182,7 @@ export const _shouldLockApp = (timeSinceLastActivity?: number): boolean => {
 }
 
 const tryLockingApp = async (client?: CozyClient): Promise<void> => {
-  devlog('tryLockingApp with', { client })
+  devlog('tryLockingApp')
   return await determineSecurityFlow(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     client!
