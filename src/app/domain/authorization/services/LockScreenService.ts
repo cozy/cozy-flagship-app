@@ -41,11 +41,23 @@ const checkCachedPassword = async (
   hashedInputPassword: LoginData,
   storedHash: string
 ): Promise<void> => {
-  await client
-    .getStackClient()
-    .fetchJSON('POST', '/settings/passphrase/check', {
-      passphrase: storedHash
-    })
+  try {
+    await client
+      .getStackClient()
+      .fetchJSON('POST', '/settings/passphrase/check', {
+        passphrase: storedHash
+      })
+  } catch (err: unknown) {
+    // When offline we cannot check for password correctness on the server side
+    // we can only check it against the locally stored hash (see following code)
+    // this is less secure as it is possible to disconnect the device from internet
+    // during the unlock process to skip the server verification and then reconnect
+    // it (however the user should still need to know the password)
+    const message = getErrorMessage(err)
+    if (message !== 'Network request failed') {
+      throw err
+    }
+  }
 
   if (hashedInputPassword.passwordHash !== storedHash) {
     throw new Error('Cached password mismatch')
