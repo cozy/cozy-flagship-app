@@ -62,8 +62,9 @@ export const sendPerformancesByEmail = async (
     const performanceFolderPath = `${RNFS.DocumentDirectoryPath}/${normalizedFqdn}/Performances`
 
     await RNFS.mkdir(performanceFolderPath)
+    const deviceName = await DeviceInfo.getDeviceName()
 
-    const performanceFileName = `Performances${date}.json`
+    const performanceFileName = `Performances_${date}_${deviceName}.json`
     const performanceFilePath = `${performanceFolderPath}/${performanceFileName}`
 
     await RNFS.writeFile(performanceFilePath, getPerformancesLogs())
