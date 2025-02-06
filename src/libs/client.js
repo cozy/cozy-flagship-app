@@ -176,6 +176,41 @@ export const fetchCozyDataForSlug = async (slug, client, cookie) => {
 }
 
 /**
+ * @typedef {object} CozyPreloginData
+ * @property {number} KdfIterations - The appliation data
+ */
+
+/**
+ * Call /public/prelogin and return result from web or from cache if offline
+ *
+ * @param {object} client - A CozyClient instance
+ * @returns {Promise<CozyPreloginData>} - The cozy's prelogin data
+ */
+export const fetchCozyPreloginData = async client => {
+  const cacheKey = `CozyPreloginData`
+
+  try {
+    const preloginData = await client
+      .getStackClient()
+      .fetchJSON('GET', '/public/prelogin')
+
+    storeClientCachedData(client, cacheKey, preloginData)
+
+    return preloginData
+  } catch (err) {
+    if (err.message === 'Network request failed') {
+      const cachedResult = await getClientCachedData(client, cacheKey)
+
+      if (cachedResult) {
+        return cachedResult
+      }
+    }
+
+    throw err
+  }
+}
+
+/**
  * @typedef {Object} getInstanceAndFqdnFromClient
  * @property {string} fqdn - The fqdn is the raw host of the cozy instance (usually you don't want to use it)
  * @property {string} normalizedFqdn - The normalizedFqdn is the fqdn with special characters replaced by underscores
