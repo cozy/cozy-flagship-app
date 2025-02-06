@@ -6,7 +6,10 @@ import { FaceId } from '/ui/Icons/FaceId'
 import { Fingerprint } from '/ui/Icons/Fingerprint'
 import { asyncLogout } from '/libs/intents/localMethods'
 import { doHashPassword } from '/libs/functions/passwordHelpers'
-import { getInstanceAndFqdnFromClient } from '/libs/client'
+import {
+  fetchCozyPreloginData,
+  getInstanceAndFqdnFromClient
+} from '/libs/client'
 import {
   getVaultInformation,
   removeVaultInformation,
@@ -28,9 +31,8 @@ const hashInputPassword = async (
   input: string
 ): Promise<LoginData> => {
   const { fqdn } = getInstanceAndFqdnFromClient(client)
-  const { KdfIterations } = await client
-    .getStackClient()
-    .fetchJSON<{ KdfIterations: number }>('GET', '/public/prelogin')
+
+  const { KdfIterations } = await fetchCozyPreloginData(client)
   return doHashPassword({ password: input }, fqdn, KdfIterations)
 }
 

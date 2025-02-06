@@ -17,6 +17,9 @@ jest.mock('/libs/client', () => ({
   __esModule: true,
   getInstanceAndFqdnFromClient: jest.fn().mockReturnValue({
     fqdn: 'http://test.fqdn'
+  }),
+  fetchCozyPreloginData: jest.fn().mockReturnValue({
+    KdfIterations: 1337
   })
 }))
 
@@ -57,9 +60,6 @@ describe('validatePassword', () => {
   })
 
   it('should succeed when cached password is correct and input is correct', async () => {
-    // Mock the server response for the KdfIterations
-    mockFetchJSON.mockResolvedValueOnce({ KdfIterations: 1337 })
-
     // Mock the local password cache hash value
     mockGetVaultInformation.mockResolvedValue('1337')
 
@@ -86,9 +86,6 @@ describe('validatePassword', () => {
   })
 
   it('should fail when cached password is correct but user input is not correct', async () => {
-    // Mock the server response for the KdfIterations
-    mockFetchJSON.mockResolvedValueOnce({ KdfIterations: 1337 })
-
     // Mock the local password cache hash value
     mockGetVaultInformation.mockResolvedValue('1337')
 
@@ -115,9 +112,6 @@ describe('validatePassword', () => {
   })
 
   it('should succeed when cached password is correct but user input is not correct', async () => {
-    // Mock the server response for the KdfIterations
-    mockFetchJSON.mockResolvedValueOnce({ KdfIterations: 1337 })
-
     // Mock the local password cache hash value
     mockGetVaultInformation.mockResolvedValue('1337')
 
@@ -150,9 +144,6 @@ describe('validatePassword', () => {
   })
 
   it('should fail when both cached and user input passwords are not correct', async () => {
-    // Mock the server response for the KdfIterations
-    mockFetchJSON.mockResolvedValueOnce({ KdfIterations: 1337 })
-
     // Mock the local password cache hash value
     mockGetVaultInformation.mockResolvedValue('1337')
 
@@ -182,9 +173,6 @@ describe('validatePassword', () => {
   })
 
   it('should handle unexpected server error during cached password check', async () => {
-    // Mock the server response for the KdfIterations
-    mockFetchJSON.mockResolvedValueOnce({ KdfIterations: 1337 })
-
     // Mock the local password cache hash value
     mockGetVaultInformation.mockResolvedValue('1337')
 
@@ -211,9 +199,6 @@ describe('validatePassword', () => {
   })
 
   it('should handle unexpected server error during input password check', async () => {
-    // Mock the server response for the KdfIterations
-    mockFetchJSON.mockResolvedValueOnce({ KdfIterations: 1337 })
-
     // Mock the local password cache hash value
     mockGetVaultInformation.mockResolvedValue('1337')
 
