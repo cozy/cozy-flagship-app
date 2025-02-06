@@ -15,26 +15,26 @@ const log = Minilog('🔗 GetLinks')
 export const REPLICATION_DEBOUNCE = 30 * 1000 // 30s
 export const REPLICATION_DEBOUNCE_MAX_DELAY = 600 * 1000 // 10min
 
+// The io.cozy.jobs are intentionnaly skipped from this list
 export const offlineDoctypes = [
-  // cozy-home
+  'io.cozy.permissions',
+  'io.cozy.bills',
+  'io.cozy.sharings',
   'io.cozy.accounts',
   'io.cozy.apps',
   'io.cozy.contacts',
   'io.cozy.files',
   'io.cozy.files.shortcuts',
-  'io.cozy.home.settings',
-  'io.cozy.jobs',
   'io.cozy.konnectors',
   'io.cozy.settings',
   'io.cozy.apps.suggestions',
   'io.cozy.triggers',
   'io.cozy.apps_registry',
 
-  // mespapiers
-  'io.cozy.bills',
-  'io.cozy.sharings',
+  // app specific
   'io.cozy.mespapiers.settings',
-  'io.cozy.permissions'
+  'io.cozy.files.settings',
+  'io.cozy.home.settings'
 ]
 
 export const getLinks = (): CozyLink[] => {
