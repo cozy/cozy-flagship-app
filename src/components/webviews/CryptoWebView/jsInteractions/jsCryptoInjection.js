@@ -1,4 +1,3 @@
-import { computePKCEFunctionDeclaration } from './jsFunctions/jsComputePKCE'
 import { computePassFunctionDeclaration } from './jsFunctions/jsComputePass'
 import {
   postMessageFunctionDeclaration,
@@ -12,12 +11,10 @@ const jsCode = `
   ${listenMessageFunctionDeclaration}
   ${windowPasswordObjectDeclaration}
   ${computePassFunctionDeclaration}
-  ${computePKCEFunctionDeclaration}
   ${subtleFunctionDeclaration}
 
   const messagingFunctions = {
     computePass,
-    computePKCE,
     sublteProxy
   }
 
