@@ -68,7 +68,7 @@
     "cozy-logger": "^1.10.0",
     "cozy-minilog": "3.3.1",
     "cozy-pouch-link": "^52.0.0",
-    "cozy-realtime": "^5.6.2",
+    "cozy-realtime": "^5.6.4",
     "date-fns": "2.29.3",
     "events": "^3.3.0",
     "html-entities": "^2.3.3",
