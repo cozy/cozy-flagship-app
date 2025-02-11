@@ -97,8 +97,15 @@ export const backToHome = (): Promise<null> => {
   return Promise.resolve(null)
 }
 
-const search = (query: string, options: SearchOptions): unknown => {
-  return doSearch(query, options)
+const search = async (
+  client: CozyClient | undefined,
+  query: string,
+  options: SearchOptions
+): Promise<unknown> => {
+  if (!client) {
+    throw new Error('search should not be called with undefined client')
+  }
+  return doSearch(client, query, options)
 }
 
 const isAvailable = (featureName: string): Promise<boolean> => {
@@ -227,7 +234,7 @@ interface CustomMethods {
   storeSharedMemory: (key: string, value: SharedMemoryData) => Promise<void>
   removeSharedMemory: (key: string) => Promise<void>
   setColorScheme: (colorScheme: string | undefined) => Promise<void>
-  search: (query: string, options: SearchOptions) => unknown
+  search: (query: string, options: SearchOptions) => Promise<unknown>
 }
 
 type WithOptions<T> = {
@@ -420,7 +427,7 @@ export const localMethods = (
       _options: PostMeMessageOptions,
       query: string,
       options: SearchOptions
-    ) => search(query, options),
+    ) => search(client, query, options),
     ...mergedMethods
   }
 }
