@@ -4231,10 +4231,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-clipboard/clipboard/-/clipboard-1.13.2.tgz#28adcfc43ed2addddf79a59198ec1b25087c115e"
   integrity sha512-uVM55oEGc6a6ZmSATDeTcMm55A/C1km5X47g0xaoF0Zagv7N/8RGvLceA5L/izPwflIy78t7XQeJUcnGSib0nA==
 
-"@react-native-community/blur@4.3.2":
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/blur/-/blur-4.3.2.tgz#185a2c7dd03ba168cc95069bc4742e9505fd6c6c"
-  integrity sha512-0ID+pyZKdC4RdgC7HePxUQ6JmsbNrgz03u+6SgqYpmBoK/rE+7JffqIw7IEsfoKitLEcRNLGekIBsfwCqiEkew==
+"@react-native-community/blur@4.4.1":
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/@react-native-community/blur/-/blur-4.4.1.tgz#72cbc0be5a84022c33091683ec6888925ebcca6e"
+  integrity sha512-XBSsRiYxE/MOEln2ayunShfJtWztHwUxLFcSL20o+HNNRnuUDv+GXkF6FmM2zE8ZUfrnhQ/zeTqvnuDPGw6O8A==
 
 "@react-native-community/cli-clean@12.3.7":
   version "12.3.7"
