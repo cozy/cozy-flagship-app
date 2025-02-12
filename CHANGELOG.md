@@ -1,4 +1,4 @@
-# 1.1.32
+# 1.1.33
 
 ## ✨ Features
 
@@ -8,6 +8,19 @@
 
 ## 🔧 Tech
 
+
+# 1.1.32
+
+## ✨ Features
+
+* Added Offline support for cozy-home and mespapiers ([PR #1239](https://github.com/cozy/cozy-flagship-app/pull/1239))
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+* Upgraded ReactNative version to 0.73.10 ([PR #1253](https://github.com/cozy/cozy-flagship-app/pull/1253))
 
 # 1.1.31
 
