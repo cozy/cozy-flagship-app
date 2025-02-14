@@ -1450,9 +1450,9 @@ PODS:
     - React-Core
   - react-native-change-icon (4.0.0):
     - React-Core
-  - react-native-config (1.5.0):
-    - react-native-config/App (= 1.5.0)
-  - react-native-config/App (1.5.0):
+  - react-native-config (1.5.5):
+    - react-native-config/App (= 1.5.5)
+  - react-native-config/App (1.5.5):
     - React-Core
   - react-native-cookies (6.2.1):
     - React-Core
@@ -1468,7 +1468,7 @@ PODS:
   - react-native-mlkit-ocr (0.3.0):
     - GoogleMLKit/TextRecognition (= 2.6.0)
     - React
-  - react-native-netinfo (9.5.0):
+  - react-native-netinfo (11.4.1):
     - React-Core
   - react-native-performance (5.1.2):
     - React-Core
@@ -1909,7 +1909,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNLocalize (2.2.6):
+  - RNLocalize (3.4.1):
     - React-Core
   - RNNotifee (7.8.0):
     - React-Core
@@ -2429,14 +2429,14 @@ SPEC CHECKSUMS:
   react-native-blur: 5b2d13981ad6ce3d15339e135377336cb9be2d68
   react-native-cameraroll: 2a198b0eb86c7ccf3303fb57702b2465cc292c94
   react-native-change-icon: ea9bb7255b09e89f41cbf282df16eade91ab1833
-  react-native-config: 5330c8258265c1e5fdb8c009d2cabd6badd96727
+  react-native-config: 3367df9c1f25bb96197007ec531c7087ed4554c3
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
   react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
   react-native-gzip: 5ffb84bf191c7cd135338eca748317bc466d41a1
   react-native-idle-timer: f1920a59fe776340d004ff9de13c4a6eedcc8807
   react-native-mail: 8fdcd3aef007c33a6877a18eb4cf7447a1d4ce4a
   react-native-mlkit-ocr: 72cdbde86f8d29cba26cf9fa0a1865fe45c8f8d6
-  react-native-netinfo: 48c5f79a84fbc3ba1d28a8b0d04adeda72885fa8
+  react-native-netinfo: f0a9899081c185db1de5bb2fdc1c88c202a059ac
   react-native-performance: ff93f8af3b2ee9519fd7879896aa9b8b8272691d
   react-native-print: f704aef52d931bfce6d1d84351dbb5232d7ecb89
   react-native-quick-base64: d87272898345e0fc3c3afb8e5dff335d51214f3e
@@ -2490,7 +2490,7 @@ SPEC CHECKSUMS:
   RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
   RNIOS11DeviceCheck: 9b36378a945711eba558e5e0db3a15a9ccb83150
   RNKeychain: 85cfe8e9ddb9ed9176274718a91e8e32c8271f92
-  RNLocalize: d4b8af4e442d4bcca54e68fc687a2129b4d71a81
+  RNLocalize: 06991b9c31e7a898a9fa6ddb204ce0f53a967248
   RNNotifee: f3c01b391dd8e98e67f539f9a35a9cbcd3bae744
   RNPermissions: 52d6a55ba77d3b33a428b98bb64b0c8992b8d3fd
   RNScreens: 3082c87c02ef4b1765c41aee5804223d9f8f7ee0
