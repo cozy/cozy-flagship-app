@@ -110,6 +110,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT_JSON_TEXT }}
           packageName: ${{ inputs.brand != 'cozy' && format('io.cozy.flagship.mobile.{0}', inputs.brand) || 'io.cozy.flagship.mobile' }}
           releaseFiles: android/app/build/outputs/bundle/prodRelease/*.aab
+          changesNotSentForReview: true
           track: internal
 
       - name: Download BundleTool
