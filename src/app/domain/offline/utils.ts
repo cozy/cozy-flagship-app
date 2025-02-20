@@ -4,10 +4,17 @@ import PouchLink from 'cozy-pouch-link'
 
 const log = Minilog('📶 Offline utils')
 
-export const triggerPouchReplication = (client?: CozyClient): void => {
+export const triggerPouchReplication = (
+  client?: CozyClient,
+  { withDebounce = true } = {}
+): void => {
   log.debug('Trigger PouchReplication (debounce)')
   const pouchLink = getPouchLink(client)
-  pouchLink?.startReplicationWithDebounce()
+  if (withDebounce) {
+    pouchLink?.startReplicationWithDebounce()
+  } else {
+    pouchLink?.startReplication()
+  }
 }
 
 export const getPouchLink = (client?: CozyClient): PouchLink | null => {
