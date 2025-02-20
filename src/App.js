@@ -81,6 +81,7 @@ import {
   migrateFromAsyncStorage,
   storage
 } from '/libs/localStore/storage'
+import { makeSearchEngine } from '/app/domain/search/search'
 
 if (__DEV__) {
   require('react-native-performance-flipper-reporter').setupDefaultFlipperReporter()
@@ -143,6 +144,12 @@ const App = ({ setClient }) => {
     resetLauncherContext,
     setLauncherContext
   } = useLauncherContext()
+
+  useEffect(() => {
+    if (client) {
+      makeSearchEngine(client)
+    }
+  }, [client])
 
   useEffect(() => {
     if (!client) {
