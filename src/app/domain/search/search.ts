@@ -19,18 +19,34 @@ const storage: StorageInterface = {
   getData: getData
 }
 
+export const makeSearchEngine = (client: CozyClient): SearchEngine => {
+  if (searchEngine) {
+    // Already exist, do nothing
+    return searchEngine
+  }
+  searchEngine = new SearchEngine(
+    client,
+    storage,
+    CozyClientPerformanceApi,
+    { shouldInit: false } // Do the init manually to ensure all the indexes are ready
+  )
+  return searchEngine
+}
+
 export const initSearchEngine = (client: CozyClient): Promise<SearchEngine> => {
   log.debug('Init SearchEngine')
 
   if (!searchInitPromise) {
     // Use promise to handle parallel init
     searchInitPromise = (async (): Promise<SearchEngine> => {
-      searchEngine = new SearchEngine(
-        client,
-        storage,
-        CozyClientPerformanceApi,
-        { shouldInit: false } // Do the init manually to ensure all the indexes are ready
-      )
+      if (!searchEngine) {
+        searchEngine = new SearchEngine(
+          client,
+          storage,
+          CozyClientPerformanceApi,
+          { shouldInit: false } // Do the init manually to ensure all the indexes are ready
+        )
+      }
       await searchEngine.init() // Once the init is done, we can safely search
       searchInitPromise = null
       return searchEngine
@@ -45,7 +61,9 @@ export const search = async (
   options: SearchOptions
 ): Promise<unknown> => {
   log.debug('Search for', query)
-  if (!searchEngine) {
+
+  if (!searchEngine || Object.keys(searchEngine.searchIndexes).length < 1) {
+    // The search indexes are not ready yet: let's init
     searchEngine = await initSearchEngine(client)
   }
   return searchEngine.search(query, options)
