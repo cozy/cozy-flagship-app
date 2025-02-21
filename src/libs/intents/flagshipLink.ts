@@ -56,7 +56,7 @@ export const flagshipLinkRequest = async (
   } catch (error) {
     const errorMessage = getErrorMessage(error)
     log.error(
-      `Something when wrong while processing FlagshipLinkRequest: ${errorMessage}`,
+      `Something went wrong while processing FlagshipLinkRequest: ${errorMessage}`,
       operation
     )
     rnperformance.measure({
