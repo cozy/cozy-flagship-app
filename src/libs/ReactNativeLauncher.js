@@ -309,7 +309,10 @@ class ReactNativeLauncher extends Launcher {
         throw initKonnectorError
       }
       await this.pilot.call('setContentScriptType', 'pilot')
-      await this.worker.call('setContentScriptType', 'worker')
+      const workerOptions = {
+        shouldRecord: flag('clisk.record')
+      }
+      await this.worker.call('setContentScriptType', 'worker', workerOptions)
       const shouldLogout = await this.cleanCredentialsAccounts(konnector.slug)
       if (shouldLogout) {
         log(
@@ -689,7 +692,10 @@ class ReactNativeLauncher extends Launcher {
         listenedEventsNames: this.workerListenedEventsNames,
         label: 'launcher => worker'
       })
-      await this.worker.call('setContentScriptType', 'worker')
+      const workerOptions = {
+        shouldRecord: flag('clisk.record')
+      }
+      await this.worker.call('setContentScriptType', 'worker', workerOptions)
     } catch (err) {
       throw new Error(`worker bridge restart init error: ${err.message}`)
     }
