@@ -988,4 +988,36 @@ describe('ReactNativeLauncher', () => {
       expect(result).toEqual({ data: { id: 'testjobid' } })
     })
   })
+  describe('CliskRecorder integration', () => {
+    it('should handle clisk events correctly', async () => {
+      const { launcher } = setup()
+      const mockHandleRecorderEvent = jest.spyOn(
+        launcher.cliskRecorder,
+        'handleRecorderEvent'
+      )
+
+      launcher.setStartContext({
+        konnector: { slug: 'testslug' },
+        job: { id: 'testjobid' }
+      })
+
+      const logContent = { message: 'Test log message' }
+      launcher.log({ level: 'info', ...logContent })
+
+      expect(mockHandleRecorderEvent).toHaveBeenCalledWith({
+        type: 5,
+        data: {
+          tag: 'log',
+          payload: {
+            ...logContent,
+            level: 'info'
+          }
+        },
+        timestamp: expect.any(Number),
+        konnectorSlug: 'testslug',
+        jobId: 'testjobid',
+        sessionId: expect.any(Number)
+      })
+    })
+  })
 })
