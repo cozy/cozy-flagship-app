@@ -25,6 +25,10 @@ import {
 } from '/app/domain/sleep/services/sleep'
 import { hasPermission } from '/app/domain/manifest/permissions'
 
+import { v4 as uuidv4 } from 'uuid'
+
+import CliskRecorder from '/screens/konnectors/core/record'
+
 const log = Minilog('ReactNativeLauncher')
 
 const SET_WORKER_STATE_TIMEOUT_MS = 30 * 1000
@@ -55,11 +59,13 @@ class ReactNativeLauncher extends Launcher {
       'sendToPilot',
       'getCookiesByDomain',
       'getCookieByDomainAndName',
-      'getCookieFromKeychainByName'
+      'getCookieFromKeychainByName',
+      'saveCookieToKeychain'
     ]
     this.workerListenedEventsNames = ['log', 'workerEvent']
 
     this.controller = new AbortController()
+    this.sessionId = uuidv4() // Génération du sessionId unique pour cette instance
 
     const wrapTimer = wrapTimerFactory({
       logFn: (/** @type {String} */ msg) =>
@@ -91,6 +97,7 @@ class ReactNativeLauncher extends Launcher {
       'ensureAccountTriggerAndLaunch'
     )
     this.onWorkerWillReload = debounce(this.onWorkerWillReload.bind(this))
+    this.cliskRecorder = new CliskRecorder(this)
   }
 
   /**
@@ -121,6 +128,21 @@ class ReactNativeLauncher extends Launcher {
     if (context.job) {
       jobId = context.job.id
     }
+
+    this.cliskRecorder.handleRecorderEvent({
+      type: 5,
+      data: {
+        tag: 'log',
+        payload: {
+          ...logContent,
+          level: newLevel
+        }
+      },
+      timestamp: Date.now(),
+      konnectorSlug: slug,
+      jobId
+    })
+
     this.logger({
       ...logContent,
       slug,
@@ -448,6 +470,7 @@ class ReactNativeLauncher extends Launcher {
 
   async fetchAndSaveDebugData(force) {
     const flagvalue = flag('clisk.html-on-error')
+    await this.cliskRecorder.flush()
     if (!flagvalue && !force) {
       return true
     }
@@ -501,12 +524,6 @@ class ReactNativeLauncher extends Launcher {
         data: traceFileContent,
         dirId: existingLogsFolderId,
         name
-      })
-      this.log({
-        namespace: 'ReactNativeLauncher',
-        label: 'fetchAndSaveDebugData',
-        level: 'debug',
-        msg: `Saved debug data in /Settings/Logs/${name}`
       })
     } catch (err) {
       const message = err instanceof Error ? err.message : err
