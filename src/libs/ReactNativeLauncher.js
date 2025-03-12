@@ -24,6 +24,7 @@ import {
   deactivateKeepAwake
 } from '/app/domain/sleep/services/sleep'
 import { hasPermission } from '/app/domain/manifest/permissions'
+import CliskRecorder from '/screens/konnectors/core/record'
 
 const log = Minilog('ReactNativeLauncher')
 
@@ -60,6 +61,7 @@ class ReactNativeLauncher extends Launcher {
     this.workerListenedEventsNames = ['log', 'workerEvent']
 
     this.controller = new AbortController()
+    this.sessionId = Date.now()
 
     const wrapTimer = wrapTimerFactory({
       logFn: (/** @type {String} */ msg) =>
@@ -91,6 +93,7 @@ class ReactNativeLauncher extends Launcher {
       'ensureAccountTriggerAndLaunch'
     )
     this.onWorkerWillReload = debounce(this.onWorkerWillReload.bind(this))
+    this.cliskRecorder = new CliskRecorder(this)
   }
 
   /**
@@ -121,6 +124,21 @@ class ReactNativeLauncher extends Launcher {
     if (context.job) {
       jobId = context.job.id
     }
+
+    this.cliskRecorder.handleRecorderEvent({
+      type: 5,
+      data: {
+        tag: 'log',
+        payload: {
+          ...logContent,
+          level: newLevel
+        }
+      },
+      timestamp: Date.now(),
+      konnectorSlug: slug,
+      jobId
+    })
+
     this.logger({
       ...logContent,
       slug,
@@ -252,6 +270,7 @@ class ReactNativeLauncher extends Launcher {
       })
     }
     await sendKonnectorsLogs(client)
+    await this.cliskRecorder.flush()
     if (job) {
       launcherEvent.emit('launchResult', { cancel: true })
       if (message) {
@@ -501,12 +520,6 @@ class ReactNativeLauncher extends Launcher {
         data: traceFileContent,
         dirId: existingLogsFolderId,
         name
-      })
-      this.log({
-        namespace: 'ReactNativeLauncher',
-        label: 'fetchAndSaveDebugData',
-        level: 'debug',
-        msg: `Saved debug data in /Settings/Logs/${name}`
       })
     } catch (err) {
       const message = err instanceof Error ? err.message : err
