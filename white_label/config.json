@@ -11,18 +11,5 @@
     "packages": {
       "react-native-iap": "^12.11.0"
     }
-  },
-  "mabulle": {
-    "appName": "Cozy Métropole de Lyon",
-    "bundleId": "io.cozy.flagship.mobile.mabulle",
-    "httpServerDefaultPort": 5758,
-    "provisionningProfile": "amiral-mabulle-ci-profile",
-    "provisionningDevProfile": "amiral-mabulle-dev-profile",
-    "scheme": "cozygrandlyon",
-    "shareScheme": "cozygrandlyonShare",
-    "userAgent": "io.cozy.mabulle.mobile",
-    "packages": {
-      "react-native-iap": "remove"
-    }
   }
 }
