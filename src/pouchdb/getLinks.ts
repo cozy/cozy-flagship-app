@@ -12,8 +12,8 @@ import { default as PouchLink } from 'cozy-pouch-link'
 
 const log = Minilog('🔗 GetLinks')
 
-export const REPLICATION_DEBOUNCE = 5 * 60 * 1000 // 5 min
-export const REPLICATION_DEBOUNCE_MAX_DELAY = 10 * 60 * 1000 // 10min
+export const REPLICATION_DEBOUNCE = 60 * 1000 // 60 seconds
+export const REPLICATION_DEBOUNCE_MAX_DELAY = 5 * 60 * 1000 // 5 min
 
 // The io.cozy.jobs are intentionnaly skipped from this list
 export const offlineDoctypes = [
