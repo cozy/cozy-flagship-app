@@ -5,13 +5,13 @@ This notably includes the possiblity to run client-side konnectors, to get your 
 
 ## Setup / Requirements
 
-- Node 16
+- Node 20
 - [React-Native Environnement setup](https://reactnative.dev/docs/environment-setup)
   - Please follow the React Native CLI part and make sure all the requirements are met with the correct versions.
-- [iOS only] Install XCode 
+- [iOS only] Install XCode
 - [Android only] Install Android Studio (or Android SDK)
-- [Android only] Java 11
-- [Android only] Install NDK (21.4.7075529) and CMake (3.10.2) from Android Studio's SDK Manager
+- [Android only] Java 17
+- [Android only] Install NDK and CMake from Android Studio's SDK Manager
 - [Android only] Copy the Android's `debug.keystore` from Cozy's password-store into `android/app/debug.keystore`
   - Run `pass show app-amirale/Certificates/debug.keystore > android/app/debug.keystore`
   - If you don't have access to Cozy's password-store, just generate a new `debug.keystore` file
@@ -64,12 +64,10 @@ More information about Android variant [here](https://github.com/cozy/cozy-flags
 
 ### Working with local stack
 
-If you need to access a local instance, do not forget to enable the `--host` and `mailhog` options:
+If you need to access a local instance, do not forget to enable the `--host` and `--mailhog` options:
 `$ cozy-stack serve --host 0.0.0.0 --mailhog`
 
 You also need a running mailhog server. To have more details about how to send mails, [see here](https://docs.cozy.io/en/howTos/dev/sendmail/).
-
-
 
 ### Working with locally hosted webviews
 
@@ -274,7 +272,7 @@ error: cannot find symbol
                                           ^
   symbol:   variable USER_AGENT
   location: class BuildConfig
-``` 
+```
 Run `yarn brand:configure:cozy`
 
 * `INSTALL_FAILED_VERSION_DOWNGRADE` error
