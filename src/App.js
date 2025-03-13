@@ -175,6 +175,7 @@ const App = ({ setClient }) => {
 
   return (
     <>
+      <CryptoWebView />
       <RootNavigator initialRoute={initialRoute} setClient={setClient} />
       {canDisplayLauncher() && (
         <LauncherView
@@ -322,7 +323,6 @@ const WrappedApp = () => {
 
 const Wrapper = () => {
   const [markNameWrapper] = useState(() => rnperformance.mark('Wrapper'))
-  const [hasCrypto, setHasCrypto] = useState(false)
 
   useEffect(() => {
     rnperformance.measure({
@@ -361,26 +361,23 @@ const Wrapper = () => {
     <>
       <RestartProvider>
         {__DEV__ && <FlipperAsyncStorage />}
-        <CryptoWebView setHasCrypto={setHasCrypto} />
-        {hasCrypto && (
-          <Provider store={store}>
-            <PersistGate loading={null} persistor={persistor}>
-              <HttpServerProvider>
-                <HomeStateProvider>
-                  <SplashScreenProvider>
-                    <SecureBackgroundSplashScreenWrapper>
-                      <ThemeProvider>
-                        <PermissionsChecker>
-                          <WrappedApp />
-                        </PermissionsChecker>
-                      </ThemeProvider>
-                    </SecureBackgroundSplashScreenWrapper>
-                  </SplashScreenProvider>
-                </HomeStateProvider>
-              </HttpServerProvider>
-            </PersistGate>
-          </Provider>
-        )}
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <HttpServerProvider>
+              <HomeStateProvider>
+                <SplashScreenProvider>
+                  <SecureBackgroundSplashScreenWrapper>
+                    <ThemeProvider>
+                      <PermissionsChecker>
+                        <WrappedApp />
+                      </PermissionsChecker>
+                    </ThemeProvider>
+                  </SecureBackgroundSplashScreenWrapper>
+                </SplashScreenProvider>
+              </HomeStateProvider>
+            </HttpServerProvider>
+          </PersistGate>
+        </Provider>
       </RestartProvider>
     </>
   )
