@@ -48,9 +48,7 @@ describe('fetchDefaultRedirectionUrl', () => {
     client.query = async (): Promise<InstanceSettings> => {
       return Promise.resolve({
         data: {
-          attributes: {
-            default_redirection: 'drive/#/folder'
-          }
+          default_redirection: 'drive/#/folder'
         }
       })
     }
@@ -66,7 +64,7 @@ describe('fetchDefaultRedirectionUrl', () => {
   it('should return null if request was bad', async () => {
     client.query = async (): Promise<object> => {
       return Promise.resolve({
-        data: {}
+        data: null
       })
     }
 

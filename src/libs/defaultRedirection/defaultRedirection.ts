@@ -19,9 +19,7 @@ export const DEFAULT_REDIRECTION_DELAY_IN_MS = 3000
 
 export interface InstanceSettings {
   data: {
-    attributes: {
-      default_redirection: string
-    }
+    default_redirection: string
   }
 }
 
@@ -40,7 +38,7 @@ export const fetchDefaultRedirectionUrl = async (
       }
     )) as InstanceSettings
 
-    const defaultRedirection = data.attributes.default_redirection
+    const defaultRedirection = data.default_redirection
 
     defaultRedirectionUrl = formatRedirectLink(defaultRedirection, client)
   } catch {
