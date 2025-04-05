@@ -1076,9 +1076,9 @@ PODS:
     - React-Core
   - react-native-change-icon (4.0.0):
     - React-Core
-  - react-native-config (1.5.0):
-    - react-native-config/App (= 1.5.0)
-  - react-native-config/App (1.5.0):
+  - react-native-config (1.5.5):
+    - react-native-config/App (= 1.5.5)
+  - react-native-config/App (1.5.5):
     - React-Core
   - react-native-cookies (6.2.1):
     - React-Core
@@ -1103,7 +1103,7 @@ PODS:
     - MMKV (>= 1.3.3)
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - react-native-netinfo (9.5.0):
+  - react-native-netinfo (11.4.1):
     - React-Core
   - react-native-performance (5.1.2):
     - React-Core
@@ -1342,7 +1342,7 @@ PODS:
     - React
   - RNKeychain (8.0.0):
     - React-Core
-  - RNLocalize (2.2.6):
+  - RNLocalize (3.4.1):
     - React-Core
   - RNNotifee (7.8.0):
     - React-Core
@@ -1805,7 +1805,7 @@ SPEC CHECKSUMS:
   react-native-blur: cfdad7b3c01d725ab62a8a729f42ea463998afa2
   react-native-cameraroll: 2a198b0eb86c7ccf3303fb57702b2465cc292c94
   react-native-change-icon: ea9bb7255b09e89f41cbf282df16eade91ab1833
-  react-native-config: 5330c8258265c1e5fdb8c009d2cabd6badd96727
+  react-native-config: 3367df9c1f25bb96197007ec531c7087ed4554c3
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
   react-native-document-scanner-plugin: df5b82df67ff612262c40c26ef2c8239c5af5c55
   react-native-flipper: 2a568e19c9d7051f01bf9725f886474fc818ba05
@@ -1815,7 +1815,7 @@ SPEC CHECKSUMS:
   react-native-mail: 8fdcd3aef007c33a6877a18eb4cf7447a1d4ce4a
   react-native-mlkit-ocr: 72cdbde86f8d29cba26cf9fa0a1865fe45c8f8d6
   react-native-mmkv: 1fdc81aa70c1aba09370718e6a63a09cbbbac8d2
-  react-native-netinfo: 48c5f79a84fbc3ba1d28a8b0d04adeda72885fa8
+  react-native-netinfo: f0a9899081c185db1de5bb2fdc1c88c202a059ac
   react-native-performance: ff93f8af3b2ee9519fd7879896aa9b8b8272691d
   react-native-print: f704aef52d931bfce6d1d84351dbb5232d7ecb89
   react-native-quick-base64: e1ea036b3dec44c6da2439bd62881a09de614b23
@@ -1861,7 +1861,7 @@ SPEC CHECKSUMS:
   RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
   RNIOS11DeviceCheck: 9b36378a945711eba558e5e0db3a15a9ccb83150
   RNKeychain: 4f63aada75ebafd26f4bc2c670199461eab85d94
-  RNLocalize: d4b8af4e442d4bcca54e68fc687a2129b4d71a81
+  RNLocalize: 06991b9c31e7a898a9fa6ddb204ce0f53a967248
   RNNotifee: f3c01b391dd8e98e67f539f9a35a9cbcd3bae744
   RNPermissions: 83168e00be08bd043f51fb738256bf761f38952d
   RNScreens: e842cdccb23c0a084bd6307f6fa83fd1c1738029
@@ -1874,4 +1874,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 5ca14179a4e0b17ebbb7dd74c2a5fcb845f82a9d
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.14.3
