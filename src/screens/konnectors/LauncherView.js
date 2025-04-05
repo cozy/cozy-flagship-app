@@ -421,6 +421,7 @@ export class LauncherView extends Component {
    */
   onWorkerMessage(event) {
     tryConsole(event, log, 'CONSOLE_WORKER')
+    this.launcher.cliskRecorder.tryCliskRecord(this.launcher, event)
     if (event.nativeEvent && event.nativeEvent.data) {
       const msg = JSON.parse(event.nativeEvent.data)
       if (msg.message === 'NEW_WORKER_INITIALIZING') {
