@@ -92,6 +92,8 @@
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>twakemail.mobile</string>
+		<string>twake.chat</string>
 		<string>cozydrive</string>
 		<string>cozybanks</string>
 		<string>cozypass</string>
