@@ -3269,9 +3269,9 @@
   resolved "https://registry.yarnpkg.com/@fastify/deepmerge/-/deepmerge-2.0.2.tgz#5dcbda2acb266e309b8a1ca92fa48b2125e65fc0"
   integrity sha512-3wuLdX5iiiYeZWP6bQrjqhrcvBIf0NHbQH1Ur1WbHvoiuTYUEItgygea3zs8aHpiitn0lOB8gX20u1qO+FDm7Q==
 
-"@fengweichong/react-native-gzip@github:cozy/react-native-gzip#1.1.0":
+"@fengweichong/react-native-gzip@github:cozy/react-native-gzip#1.2.0":
   version "2.0.0"
-  resolved "https://codeload.github.com/cozy/react-native-gzip/tar.gz/41178cf223fe3c866dfa6ede78a881461de066fd"
+  resolved "https://codeload.github.com/cozy/react-native-gzip/tar.gz/6849a504aba17de01e7879f0184bdc2153319a07"
 
 "@gar/promisify@^1.0.1":
   version "1.1.3"
