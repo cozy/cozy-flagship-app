@@ -37,7 +37,7 @@
   "dependencies": {
     "@craftzdog/pouchdb-collate-react-native": "^7.3.0",
     "@craftzdog/react-native-buffer": "^6.0.5",
-    "@fengweichong/react-native-gzip": "github:cozy/react-native-gzip#1.1.0",
+    "@fengweichong/react-native-gzip": "github:cozy/react-native-gzip#1.2.0",
     "@mythologi/react-native-receive-sharing-intent": "2.2.1",
     "@notifee/react-native": "^7.8.0",
     "@op-engineering/op-sqlite": "^6.2.11",
