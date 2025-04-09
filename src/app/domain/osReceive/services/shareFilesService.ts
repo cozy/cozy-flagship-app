@@ -16,15 +16,33 @@ import {
 
 import { PostMeMessageOptions } from 'cozy-intent'
 
+const buildDownloadOptions = (
+  fileInfo: FileMetadata
+): { url: string; path: string } => {
+  const { url, name } = fileInfo
+
+  let destinationName = name
+
+  // For Cozy notes, we change the file extension to .md because it is a more usable format
+  if (destinationName.endsWith('.cozy-note')) {
+    destinationName = destinationName.replace('.cozy-note', '.md')
+  }
+
+  const path = `${RNFS.DocumentDirectoryPath}/${destinationName}`
+
+  return {
+    url,
+    path
+  }
+}
+
 const downloadFilesInParallel = async (
   fileInfos: FileMetadata[],
   headers: string
 ): Promise<string[]> => {
   const fileURIs = await Promise.all(
     fileInfos.map(async fileInfo => {
-      const { url, name } = fileInfo
-      const filename = `${name}`
-      const path = `${RNFS.DocumentDirectoryPath}/${filename}`
+      const { url, path } = buildDownloadOptions(fileInfo)
 
       const downloadOptions = {
         fromUrl: url,
