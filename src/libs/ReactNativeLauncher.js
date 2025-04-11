@@ -24,6 +24,7 @@ import {
   deactivateKeepAwake
 } from '/app/domain/sleep/services/sleep'
 import { hasPermission } from '/app/domain/manifest/permissions'
+import CliskRecorder from '/screens/konnectors/core/record'
 
 const log = Minilog('ReactNativeLauncher')
 
@@ -55,11 +56,13 @@ class ReactNativeLauncher extends Launcher {
       'sendToPilot',
       'getCookiesByDomain',
       'getCookieByDomainAndName',
-      'getCookieFromKeychainByName'
+      'getCookieFromKeychainByName',
+      'saveCookieToKeychain'
     ]
     this.workerListenedEventsNames = ['log', 'workerEvent']
 
     this.controller = new AbortController()
+    this.sessionId = Date.now()
 
     const wrapTimer = wrapTimerFactory({
       logFn: (/** @type {String} */ msg) =>
@@ -91,6 +94,7 @@ class ReactNativeLauncher extends Launcher {
       'ensureAccountTriggerAndLaunch'
     )
     this.onWorkerWillReload = debounce(this.onWorkerWillReload.bind(this))
+    this.cliskRecorder = new CliskRecorder(this)
   }
 
   /**
@@ -121,6 +125,21 @@ class ReactNativeLauncher extends Launcher {
     if (context.job) {
       jobId = context.job.id
     }
+
+    this.cliskRecorder.handleRecorderEvent({
+      type: 5,
+      data: {
+        tag: 'log',
+        payload: {
+          ...logContent,
+          level: newLevel
+        }
+      },
+      timestamp: Date.now(),
+      konnectorSlug: slug,
+      jobId
+    })
+
     this.logger({
       ...logContent,
       slug,
@@ -252,6 +271,7 @@ class ReactNativeLauncher extends Launcher {
       })
     }
     await sendKonnectorsLogs(client)
+    await this.cliskRecorder.flush()
     if (job) {
       launcherEvent.emit('launchResult', { cancel: true })
       if (message) {
@@ -309,7 +329,10 @@ class ReactNativeLauncher extends Launcher {
         throw initKonnectorError
       }
       await this.pilot.call('setContentScriptType', 'pilot')
-      await this.worker.call('setContentScriptType', 'worker')
+      const workerOptions = {
+        shouldRecord: flag('clisk.record')
+      }
+      await this.worker.call('setContentScriptType', 'worker', workerOptions)
       const shouldLogout = await this.cleanCredentialsAccounts(konnector.slug)
       if (shouldLogout) {
         log(
@@ -499,12 +522,6 @@ class ReactNativeLauncher extends Launcher {
         dirId: existingLogsFolderId,
         name
       })
-      this.log({
-        namespace: 'ReactNativeLauncher',
-        label: 'fetchAndSaveDebugData',
-        level: 'debug',
-        msg: `Saved debug data in /Settings/Logs/${name}`
-      })
     } catch (err) {
       const message = err instanceof Error ? err.message : err
       this.log({
@@ -689,7 +706,10 @@ class ReactNativeLauncher extends Launcher {
         listenedEventsNames: this.workerListenedEventsNames,
         label: 'launcher => worker'
       })
-      await this.worker.call('setContentScriptType', 'worker')
+      const workerOptions = {
+        shouldRecord: flag('clisk.record')
+      }
+      await this.worker.call('setContentScriptType', 'worker', workerOptions)
     } catch (err) {
       throw new Error(`worker bridge restart init error: ${err.message}`)
     }
