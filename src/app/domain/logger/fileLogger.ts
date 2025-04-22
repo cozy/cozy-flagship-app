@@ -6,11 +6,21 @@ import type CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import { fetchSupportMail } from '/app/domain/logger/supportEmail'
+import { sendEmailToSupport } from '/app/domain/supportEmailer/sendEmail'
+import {
+  cleanTempDir,
+  saveToTempDir
+} from '/app/domain/supportEmailer/temporaryFile'
+import {
+  File,
+  uploadFilesToSupportFolder
+} from '/app/domain/supportEmailer/uploadFiles'
 import {
   hideSplashScreen,
   showSplashScreen,
   splashScreens
 } from '/app/theme/SplashScreenService'
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import {
   DevicePersistedStorageKeys,
   getData,
@@ -43,11 +53,42 @@ export const sendLogs = async (client?: CozyClient): Promise<void> => {
     return showDisabledLogsError()
   }
 
-  const supportEmail = await fetchSupportMail(client)
+  if (!client) {
+    return sendLogsByEmailOnly()
+  }
 
-  const instance = client?.getStackClient().uri ?? 'not logged app'
+  try {
+    const subject = 'Log file'
 
-  const subject = `Log file for ${instance}`
+    const logFilePaths = await FileLogger.getLogFilePaths()
+
+    const logFiles: File[] = []
+    for (const logFilePath of logFilePaths) {
+      const fileName = getFileNameFromPath(logFilePath)
+
+      const filePath = await saveToTempDir(client, logFilePath, fileName)
+
+      logFiles.push({
+        name: fileName,
+        path: filePath,
+        mimetype: '.log'
+      })
+    }
+
+    const link = await uploadFilesToSupportFolder(logFiles, client)
+    await sendEmailToSupport(subject, link, client)
+
+    await cleanTempDir(client)
+  } catch (error) {
+    const errorMessage = getErrorMessage(error)
+    log.error('Error while trying to send log email', errorMessage)
+  }
+}
+
+const sendLogsByEmailOnly = async (): Promise<void> => {
+  const supportEmail = await fetchSupportMail(undefined)
+
+  const subject = `Log file for not logged app`
 
   await showSplashScreen(splashScreens.SEND_LOG_EMAIL)
   log.info('Start email intent')
@@ -112,4 +153,12 @@ const buildMessageBody = (): string => {
   const deviceInfo = `Device info: ${deviceBrand} ${deviceModel} ${os} ${version}`
 
   return `${appInfo}\n${bundleInfo}\n${deviceInfo}`
+}
+
+const getFileNameFromPath = (path: string): string => {
+  const pathParts = path.split('/')
+
+  const fileName = pathParts.at(-1)
+
+  return fileName ?? 'unknown.txt'
 }
