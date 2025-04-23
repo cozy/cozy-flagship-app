@@ -7,7 +7,6 @@ export const Link = ({
   children,
   disabled,
   onPress,
-  style,
   ...props
 }: LinkProps): JSX.Element => (
   <Pressable onPress={onPress} disabled={disabled} {...props}>
