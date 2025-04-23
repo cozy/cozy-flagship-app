@@ -15,7 +15,7 @@ import { useDimensions } from '/libs/dimensions'
 import { useHomeStateContext } from '/screens/home/HomeStateProvider'
 import { getColorScheme } from '/app/theme/colorScheme'
 
-import { Animation } from './CozyAppScreen.Animation'
+import { AnimatedIconScreen } from './AnimatedIconScreen/AnimatedIconScreen'
 import { handleError } from './CozyAppScreen.functions'
 import { styles } from './CozyAppScreen.styles'
 import { CozyAppScreenProps } from './CozyAppScreen.types'
@@ -42,8 +42,6 @@ export const CozyAppScreen = ({
   const [UIState, setUIState] = useState<FlagshipUI>({})
   const { bottomBackground, bottomOverlay, topBackground, topOverlay } = UIState
   const [isReady, setReady] = useState(false)
-  const [isFirstHalf, setFirstHalf] = useState(false)
-  const [shouldExitAnimation, setShouldExitAnimation] = useState(false)
   const { setShouldWaitCozyApp } = useHomeStateContext()
   const colors = getColors()
 
@@ -85,32 +83,34 @@ export const CozyAppScreen = ({
   const dimensions = useDimensions()
 
   const onLoadEnd = useCallback(() => {
-    setShouldExitAnimation(true)
-    setShouldWaitCozyApp(false)
+    setTimeout(() => {
+      setReady(true)
+      setShouldWaitCozyApp(false)
+    }, 2000)
   }, [setShouldWaitCozyApp])
 
   const wrapperStyle = useMemo(
-    () => ({ ...styles[isFirstHalf ? 'ready' : 'notReady'] }),
-    [isFirstHalf]
+    () => ({ ...styles[isReady ? 'ready' : 'notReady'] }),
+    [isReady]
   )
 
   return (
     <>
-      <View
-        style={{
-          height: dimensions.statusBarHeight,
-          backgroundColor: isFirstHalf
-            ? topBackground ?? colors.paperBackgroundColor
-            : 'transparent'
-        }}
-      >
+      {isReady && (
         <View
           style={{
-            backgroundColor: topOverlay,
-            ...styles.innerOverlay
+            height: dimensions.statusBarHeight,
+            backgroundColor: topBackground ?? colors.paperBackgroundColor
           }}
-        />
-      </View>
+        >
+          <View
+            style={{
+              backgroundColor: topOverlay,
+              ...styles.innerOverlay
+            }}
+          />
+        </View>
+      )}
 
       <View style={styles.mainView}>
         <CozyProxyWebView
@@ -128,33 +128,23 @@ export const CozyAppScreen = ({
         />
       </View>
 
-      <View
-        style={{
-          height: dimensions.navbarHeight,
-          backgroundColor: isFirstHalf
-            ? bottomBackground ?? colors.paperBackgroundColor
-            : 'transparent'
-        }}
-      >
+      {isReady && (
         <View
           style={{
-            backgroundColor: bottomOverlay,
-            ...styles.innerOverlay
+            height: dimensions.navbarHeight,
+            backgroundColor: bottomBackground ?? colors.paperBackgroundColor
           }}
-        />
-      </View>
-      {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        route.params.iconParams && !isReady && (
-          <Animation
-            onFirstHalf={setFirstHalf}
-            onFinished={setReady}
-            shouldExit={shouldExitAnimation}
-            params={route.params.iconParams}
-            slug={route.params.slug}
+        >
+          <View
+            style={{
+              backgroundColor: bottomOverlay,
+              ...styles.innerOverlay
+            }}
           />
-        )
-      }
+        </View>
+      )}
+
+      {!isReady && <AnimatedIconScreen slug={route.params.slug} />}
     </>
   )
 }
