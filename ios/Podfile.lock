@@ -155,6 +155,12 @@ PODS:
     - hermes-engine/Pre-built (= 0.73.10)
   - hermes-engine/Pre-built (0.73.10)
   - libevent (2.1.12)
+  - lottie-ios (4.5.0)
+  - lottie-react-native (7.2.2):
+    - glog
+    - lottie-ios (= 4.5.0)
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
   - MLImage (1.0.0-beta2)
   - MLKitCommon (5.0.0):
     - GoogleDataTransport (~> 9.0)
@@ -1400,6 +1406,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
+  - lottie-react-native (from `../node_modules/lottie-react-native`)
   - "op-sqlite (from `../node_modules/@op-engineering/op-sqlite`)"
   - OpenSSL-Universal
   - OpenSSL-Universal (= 1.1.1100)
@@ -1523,6 +1530,7 @@ SPEC REPOS:
     - GoogleUtilitiesComponents
     - GTMSessionFetcher
     - libevent
+    - lottie-ios
     - MLImage
     - MLKitCommon
     - MLKitTextRecognition
@@ -1552,6 +1560,8 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2024-04-29-RNv0.73.8-644c8be78af1eae7c138fa4093fb87f0f4f8db85
+  lottie-react-native:
+    :path: "../node_modules/lottie-react-native"
   op-sqlite:
     :path: "../node_modules/@op-engineering/op-sqlite"
   RCT-Folly:
@@ -1766,6 +1776,8 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
   hermes-engine: 42a7a4cbe3e20050fb031f64aaaffbe0c0b4a38f
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
+  lottie-ios: a881093fab623c467d3bce374367755c272bdd59
+  lottie-react-native: b4730698370eee677234dfab3236e04f35bfe230
   MLImage: a454f9f8ecfd537783a12f9488f5be1a68820829
   MLKitCommon: 3bc17c6f7d25ce3660f030350b46ae7ec9ebca6e
   MLKitTextRecognition: 8b0e0023a4babc66ca83d8b82864e57931164445
@@ -1863,7 +1875,7 @@ SPEC CHECKSUMS:
   RNKeychain: 4f63aada75ebafd26f4bc2c670199461eab85d94
   RNLocalize: d4b8af4e442d4bcca54e68fc687a2129b4d71a81
   RNNotifee: f3c01b391dd8e98e67f539f9a35a9cbcd3bae744
-  RNPermissions: 83168e00be08bd043f51fb738256bf761f38952d
+  RNPermissions: 52d6a55ba77d3b33a428b98bb64b0c8992b8d3fd
   RNScreens: e842cdccb23c0a084bd6307f6fa83fd1c1738029
   RNSentry: 3fa4b9e7c16ac99ad269db964a3b2ca6bb0192ac
   RNShare: 859ff710211285676b0bcedd156c12437ea1d564
@@ -1872,6 +1884,6 @@ SPEC CHECKSUMS:
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: 66a97477b94264cc4e49990c8fe6b153260d871d
 
-PODFILE CHECKSUM: 5ca14179a4e0b17ebbb7dd74c2a5fcb845f82a9d
+PODFILE CHECKSUM: ffa593b12c30a7e7caee95758144754e377e8623
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.14.3
