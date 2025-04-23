@@ -1329,11 +1329,12 @@ PODS:
     - Firebase/Messaging (= 8.15.0)
     - React-Core
     - RNFBApp
-  - RNFileLogger (0.5.6):
-    - CocoaLumberjack
+  - RNFileLogger (0.6.0):
+    - CocoaLumberjack (~> 3.8.5)
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
+    - SSZipArchive (~> 2.4.3)
   - RNFileViewer (2.1.5):
     - React-Core
   - RNFS (2.20.0):
@@ -1375,6 +1376,7 @@ PODS:
     - React-Core
   - Sentry/HybridSDK (8.36.0)
   - SocketRocket (0.6.1)
+  - SSZipArchive (2.4.3)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1545,6 +1547,7 @@ SPEC REPOS:
     - Protobuf
     - Sentry
     - SocketRocket
+    - SSZipArchive
 
 EXTERNAL SOURCES:
   boost:
@@ -1865,7 +1868,7 @@ SPEC CHECKSUMS:
   RNDeviceInfo: 4701f0bf2a06b34654745053db0ce4cb0c53ada7
   RNFBApp: e4439717c23252458da2b41b81b4b475c86f90c4
   RNFBMessaging: 40dac204b4197a2661dec5be964780c6ec39bf65
-  RNFileLogger: 2abb4af567fc2876a9b4b8b4959d0f3ad25abd29
+  RNFileLogger: 624443561ee79bce4bdbfecf8d53d8168d434f00
   RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
@@ -1882,6 +1885,7 @@ SPEC CHECKSUMS:
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
+  SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
   Yoga: 66a97477b94264cc4e49990c8fe6b153260d871d
 
 PODFILE CHECKSUM: ffa593b12c30a7e7caee95758144754e377e8623
