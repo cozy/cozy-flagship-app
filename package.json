@@ -68,6 +68,7 @@
     "intl": "^1.2.5",
     "intl-pluralrules": "2.0.1",
     "lodash": "^4.17.21",
+    "lottie-react-native": "^6.7.2",
     "microee": "^0.0.6",
     "mime": "^3.0.0",
     "patch-package": "^8.0.0",
