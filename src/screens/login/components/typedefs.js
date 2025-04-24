@@ -87,6 +87,7 @@
 /**
  * Set error.
  * @callback setErrorCallback
+ * @param {string} errorMessage
  * @param {object} error
  */
 
