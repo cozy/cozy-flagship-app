@@ -6,6 +6,7 @@ import {
   storeData,
   StorageItems
 } from '/libs/localStore/storage'
+import { getClouderyTypeFromAsyncStorage } from '/screens/login/cloudery-env/clouderyType'
 import { getOnboardingPartner } from '/screens/welcome/install-referrer/onboardingPartner'
 import strings from '/constants/strings.json'
 
@@ -62,23 +63,24 @@ const getOnboardingPartnerRelativeUrl = async (): Promise<string | null> => {
 
 export const getClouderyUrls = async (): Promise<ClouderyUrls> => {
   const clouderyEnv = await getClouderyEnvFromAsyncStorage()
+  const clouderyType = await getClouderyTypeFromAsyncStorage()
 
   const baseUris: Record<ClouderyEnv, string> = {
-    PROD: strings.cloudery.prodBaseUri,
-    INT: strings.cloudery.intBaseUri,
-    DEV: strings.cloudery.devBaseUri
+    PROD: strings.cloudery[clouderyType].prodBaseUri,
+    INT: strings.cloudery[clouderyType].intBaseUri,
+    DEV: strings.cloudery[clouderyType].devBaseUri
   }
   const baseUri = baseUris[clouderyEnv]
 
   const onboardingPartnerPath = await getOnboardingPartnerRelativeUrl()
   const relativeLoginUri =
-    onboardingPartnerPath ?? strings.cloudery.cozyLoginRelativeUri
-  const relativeSigninUri = strings.cloudery.cozySigninRelativeUri
+    onboardingPartnerPath ?? strings.cloudery[clouderyType].cozyLoginRelativeUri
+  const relativeSigninUri = strings.cloudery[clouderyType].cozySigninRelativeUri
 
   const queryString =
     Platform.OS === 'ios'
-      ? strings.cloudery.iOSQueryString
-      : strings.cloudery.androidQueryString
+      ? strings.cloudery[clouderyType].iOSQueryString
+      : strings.cloudery[clouderyType].androidQueryString
 
   const loginUrl = `${baseUri}${relativeLoginUri}?${queryString}`
   const signinUrl = `${baseUri}${relativeSigninUri}?${queryString}`
