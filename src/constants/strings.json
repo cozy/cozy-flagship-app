@@ -68,6 +68,9 @@
   },
   "fqdn": "fqdn",
   "home": "home",
+  "twake": {
+    "privacyUrl": "https://github.com/linagora/tmail-flutter/blob/master/privacy.md"
+  },
   "registerToken": "registerToken",
   "reachability": {
     "cloud": "https://manager.cozycloud.cc/connection_check",

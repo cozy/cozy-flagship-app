@@ -37,6 +37,7 @@ import { routes } from '/constants/routes'
 import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { getInstanceFromFqdn } from '/screens/login/components/functions/getInstanceFromFqdn'
 import { getInstanceDataFromFqdn } from '/screens/login/components/functions/getInstanceDataFromRequest'
+import { TwakeWelcomeView } from './components/TwakeWelcomeView'
 
 const log = Minilog('LoginScreen')
 
@@ -55,6 +56,7 @@ const colors = getColors()
 
 const LoginSteps = ({
   clouderyMode,
+  clouderyType,
   clouderyTheme,
   disableAutofocus,
   goBack,
@@ -556,18 +558,28 @@ const LoginSteps = ({
   }, [])
 
   if (state.step === CLOUDERY_STEP) {
-    return (
-      <ClouderyView
-        clouderyTheme={clouderyTheme}
-        clouderyMode={clouderyMode}
-        disableAutofocus={disableAutofocus}
-        setClouderyTheme={setClouderyTheme}
-        setInstanceData={setInstanceData}
-        startOidcOAuth={startOidcOAuth}
-        startOidcOnboarding={startOidcOnboarding}
-        setError={setError}
-      />
-    )
+    if (clouderyType === 'twake') {
+      return (
+        <TwakeWelcomeView
+          startOidcOAuth={startOidcOAuth}
+          startOidcOnboarding={startOidcOnboarding}
+          setInstanceData={setInstanceData}
+        />
+      )
+    } else {
+      return (
+        <ClouderyView
+          clouderyTheme={clouderyTheme}
+          clouderyMode={clouderyMode}
+          disableAutofocus={disableAutofocus}
+          setClouderyTheme={setClouderyTheme}
+          setInstanceData={setInstanceData}
+          startOidcOAuth={startOidcOAuth}
+          startOidcOnboarding={startOidcOnboarding}
+          setError={setError}
+        />
+      )
+    }
   }
 
   if (state.step === PASSWORD_STEP) {
@@ -683,6 +695,7 @@ const LoginSteps = ({
 
 export const LoginScreen = ({
   clouderyMode,
+  clouderyType,
   disableAutofocus,
   goBack,
   navigation,
@@ -709,6 +722,7 @@ export const LoginScreen = ({
     >
       <LoginSteps
         clouderyMode={clouderyMode}
+        clouderyType={clouderyType}
         clouderyTheme={clouderyTheme}
         navigation={navigation}
         route={route}

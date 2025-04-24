@@ -14,7 +14,8 @@ const USER_CANCELED = 'USER_CANCELED'
 const INVALID_CALLBACK = 'INVALID_CALLBACK'
 
 const OIDC_CALLBACK_URL_PARAM = 'redirect_after_oidc'
-const OIDC_CALLBACK_URL = `${strings.COZY_SCHEME}flagship/oidc_result`
+const OIDC_CALLBACK_SCHEME_URL = `${strings.COZY_SCHEME}flagship/oidc_result`
+const OIDC_CALLBACK_UL_URL = `${strings.UNIVERSAL_LINK_BASE}`
 
 export const LOGIN_FLAGSHIP_URL = 'https://loginflagship'
 
@@ -112,17 +113,29 @@ const parseOIDCResultUrl = (url: string): OidcCallback | null => {
   return parseOIDCLoginUrl(url) ?? parseOIDCOnboardingStartUrl(url)
 }
 
+interface UrlContainer {
+  url: string
+}
+
 /**
  * Display InAppBrowser to the given OIDC url
  * @param request - NavigationRequest called by the Cloudery to start the OIDC process
  * @returns OIDC result
  */
 export const processOIDC = (
-  request: WebViewNavigation
+  request: WebViewNavigation | UrlContainer,
+  useUniversalLinkForCallback = false
 ): Promise<OidcCallback> => {
   return new Promise((resolve, reject) => {
     const oidcUrl = new URL(request.url)
-    oidcUrl.searchParams.append(OIDC_CALLBACK_URL_PARAM, OIDC_CALLBACK_URL)
+    if (useUniversalLinkForCallback) {
+      oidcUrl.searchParams.append(OIDC_CALLBACK_URL_PARAM, OIDC_CALLBACK_UL_URL)
+    } else {
+      oidcUrl.searchParams.append(
+        OIDC_CALLBACK_URL_PARAM,
+        OIDC_CALLBACK_SCHEME_URL
+      )
+    }
 
     void showInAppBrowser({ url: oidcUrl.toString() }).then(result => {
       if (result.type === 'cancel') {
