@@ -20,6 +20,7 @@ import { useInstallReferrer } from '/screens/welcome/install-referrer/useInstall
 import { useWelcomeInit } from '/app/view/Welcome/useWelcomeInit'
 import { ErrorTokenModal } from '/app/view/Auth/ErrorTokenModal'
 import { handleSupportEmail } from '/app/domain/authentication/services/AuthService'
+import { useClouderyType } from '/screens/login/cloudery-env/useClouderyType'
 
 interface WelcomeViewProps {
   setIsWelcomeModalDisplayed: (value: boolean) => void
@@ -81,6 +82,7 @@ export const WelcomeScreen = ({
   const [isWelcomeModalDisplayed, setIsWelcomeModalDisplayed] = useState(true)
   const { isInitialized, onboardingPartner } = useInstallReferrer()
   const [clouderyMode, setClouderyMode] = useState(CLOUDERY_MODE_LOGIN)
+  const clouderyType = useClouderyType()
 
   useFlagshipUI(
     'WelcomeScreen',
@@ -98,10 +100,13 @@ export const WelcomeScreen = ({
 
   if (!isInitialized) return null
 
+  if (!clouderyType.type) return null
+
   return (
     <>
       <LoginScreen
         clouderyMode={clouderyMode}
+        clouderyType={clouderyType.type}
         // @ts-expect-error: the LoginScreen component is not typed
         style={styles.view}
         disableAutofocus={isWelcomeModalDisplayed}
@@ -118,12 +123,14 @@ export const WelcomeScreen = ({
         />
       )}
 
-      {isWelcomeModalDisplayed && !onboardingPartner?.hasReferral && (
-        <WelcomeView
-          setIsWelcomeModalDisplayed={setIsWelcomeModalDisplayed}
-          setClouderyMode={setClouderyMode}
-        />
-      )}
+      {isWelcomeModalDisplayed &&
+        !onboardingPartner?.hasReferral &&
+        clouderyType.type !== 'twake' && (
+          <WelcomeView
+            setIsWelcomeModalDisplayed={setIsWelcomeModalDisplayed}
+            setClouderyMode={setClouderyMode}
+          />
+        )}
     </>
   )
 }

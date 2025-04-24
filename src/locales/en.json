@@ -101,6 +101,21 @@
       "buttonSignin": "Create",
       "buttonLogin": "I already have a Personal Cloud",
       "title": "Personal Cloud"
+    },
+    "welcomeTwake": {
+      "body": "Access your Twake Workplace now, the digital home to gather all your data",
+      "buttonSignin": "Create Twake ID",
+      "buttonLogin": "Login",
+      "title": "Twake Workplace",
+      "useYourCompanyServer": "Use your company server",
+      "byContinuingYourAgreeingToOur": "By continuing, you're agreeing to our",
+      "privacyPolicy": "Privacy Policy"
+    },
+    "companyServer": {
+      "title": "Login",
+      "body": "To log in and access your Cozy, please enter its URL",
+      "textFieldLabel": "Url",
+      "buttonLogin": "Next"
     }
   },
   "services": {
