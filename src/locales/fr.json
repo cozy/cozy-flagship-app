@@ -105,6 +105,21 @@
       "buttonSignin": "Créer",
       "buttonLogin": "J'ai déjà un Cloud Personnel",
       "title": "Cloud Personnel"
+    },
+    "welcomeTwake": {
+      "body": "Accédez dès maintenant à votre Twake Workplace, le domicile numérique pour réunir toutes vos données",
+      "buttonSignin": "Créer un Twake ID",
+      "buttonLogin": "Se connecter",
+      "title": "Twake Workplace",
+      "useYourCompanyServer": "Utiliser le serveur de votre entreprise",
+      "byContinuingYourAgreeingToOur": "En continuant, vous acceptez notre",
+      "privacyPolicy": "Politique de confidentialité"
+    },
+    "companyServer": {
+      "title": "Se connecter",
+      "body": "Pour vous connecter et accéder à votre Cozy, veuillez saisir son URL",
+      "textFieldLabel": "Serveur",
+      "buttonLogin": "Suivant"
     }
   },
   "services": {
