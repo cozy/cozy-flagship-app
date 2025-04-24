@@ -22,7 +22,10 @@
     "cacheCheckError": "Une erreur est survenue pendant le traitement de votre requête",
     "print": "Échec de l'impression, merci de ressayer.",
     "shareFiles_other": "Nous n'avons pas pu partager vos fichiers, veuillez réessayer.",
-    "shareFiles_interval": "(1)[Nous n'avons pas pu partager votre fichier, veuillez réessayer.]||||(2-inf)[Nous n'avons pas pu partager vos fichiers, veuillez réessayer.]"
+    "shareFiles_interval": "(1)[Nous n'avons pas pu partager votre fichier, veuillez réessayer.]||||(2-inf)[Nous n'avons pas pu partager vos fichiers, veuillez réessayer.]",
+    "cozyUrlRequired": "L'adresse du Cozy est requise",
+    "hasMispelledCozy": "Oups, ce n'est pas la bonne adresse. Essayez d'écrire \"cozy\" avec un \"z\" !",
+    "noEmailAsCozyUrl": "L'adresse de votre Cozy n'est pas votre email"
   },
   "logout_dialog": {
     "cancel": "Annuler",
