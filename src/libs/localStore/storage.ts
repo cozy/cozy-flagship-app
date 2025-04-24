@@ -42,6 +42,7 @@ export enum DevicePersistedStorageKeys {
   LogsEnabled = '@cozy_AmiralAppLogsEnabled',
   OnboardingPartner = '@cozy_AmiralAppOnboardingPartnerConfig',
   ClouderyEnv = '@cozy_AmiralAppClouderyEnvConfig',
+  ClouderyType = '@cozy_AmiralAppClouderyTypeConfig',
   Bundle = '@cozy_AmiralAppBundleConfig'
 }
 
@@ -55,6 +56,7 @@ export interface StorageItems {
   oauth: OauthData
   cookie: Cookies
   clouderyEnv: string
+  clouderyType: string
   logsEnabled: number
   offlineFiles: SerializedOfflineFilesConfiguration
 }
