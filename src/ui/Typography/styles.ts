@@ -57,7 +57,6 @@ export const styles = (colors: CozyThemeColors): TypographyStyles =>
       fontFamily: 'Lato-Bold',
       fontSize: 14,
       lineHeight: 18,
-      textTransform: 'uppercase',
       textAlign: 'center'
     },
     h1: { fontSize: 16 },
