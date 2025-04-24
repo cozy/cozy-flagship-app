@@ -1,3 +1,5 @@
+import { t } from '/locales/i18n'
+
 const cozyDomain = '.mycozy.cloud'
 
 const normalizeURL = (value: string, defaultDomain: string): string => {
@@ -39,15 +41,15 @@ export const sanitizeUrlInput = (
 ): string => {
   // Prevent empty url
   if (!inputUrl) {
-    throw new Error('cozyUrlRequired')
+    throw new Error(t('errors.cozyUrlRequired'))
   }
   // Prevent email input
   if (inputUrl.includes('@')) {
-    throw new Error('noEmailAsCozyUrl')
+    throw new Error(t('errors.noEmailAsCozyUrl'))
   }
 
   if (hasMispelledCozy(inputUrl)) {
-    throw new Error('hasMispelledCozy')
+    throw new Error(t('errors.hasMispelledCozy'))
   }
 
   return normalizeURL(inputUrl, domain)

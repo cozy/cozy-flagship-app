@@ -22,7 +22,10 @@
     "cacheCheckError": "Se ha producido un error al procesar su solicitud",
     "print": "No se ha podido imprimir, inténtelo de nuevo.",
     "shareFiles_other": "No pudimos compartir tus archivos, por favor intenta de nuevo.",
-    "shareFiles_interval": "(1)[No pudimos compartir tu archivo, por favor intenta de nuevo.]||||(2-inf)[No pudimos compartir tus archivos, por favor intenta de nuevo.]"
+    "shareFiles_interval": "(1)[No pudimos compartir tu archivo, por favor intenta de nuevo.]||||(2-inf)[No pudimos compartir tus archivos, por favor intenta de nuevo.]",
+    "cozyUrlRequired": "Se requiere la dirección de Cozy",
+    "hasMispelledCozy": "Woops, la dirección no es correcta. ¡Prueba con \"cozy\" con \"z\"!",
+    "noEmailAsCozyUrl": "La dirección de Cozy no es tu correo electrónico"
   },
   "logout_dialog": {
     "cancel": "Cancelar",

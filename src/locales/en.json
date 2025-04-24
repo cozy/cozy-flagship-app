@@ -22,7 +22,10 @@
     "cacheCheckError": "An error occurred while processing your request",
     "print": "Failed to print, please try again.",
     "shareFiles_other": "We couldn't share your files, please try again.",
-    "shareFiles_interval": "(1)[We couldn't share your file, please try again.]||||(2-inf)[We couldn't share your files, please try again.]"
+    "shareFiles_interval": "(1)[We couldn't share your file, please try again.]||||(2-inf)[We couldn't share your files, please try again.]",
+    "cozyUrlRequired": "Cozy address is required",
+    "hasMispelledCozy": "Woops, the address is not correct. Try with \"cozy\" with a \"z\"!",
+    "noEmailAsCozyUrl": "The Cozy address is not your email"
   },
   "logout_dialog": {
     "cancel": "Cancel",
