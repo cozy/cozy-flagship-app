@@ -61,7 +61,10 @@ export const styles = (colors: CozyThemeColors): TypographyStyles =>
       textAlign: 'center'
     },
     h1: { fontSize: 16 },
-    h2: { fontSize: 16 },
+    h2: {
+      fontSize: 35,
+      fontFamily: 'Lato-Bold'
+    },
     h3: {
       fontSize: 20,
       fontFamily: 'Lato-Bold',
