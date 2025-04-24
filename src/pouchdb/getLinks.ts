@@ -9,6 +9,7 @@ import { platformReactNative } from '/pouchdb/platformReactNative'
 import CozyClient, { CozyLink, StackLink } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 import { default as PouchLink } from 'cozy-pouch-link'
+import { PouchLinkOptions } from 'cozy-pouch-link/types/CozyPouchLink'
 
 const log = Minilog('🔗 GetLinks')
 
@@ -62,7 +63,7 @@ export const getLinks = (): CozyLink[] => {
         adapter: 'react-native-sqlite'
       }
     }
-  }
+  } as unknown as PouchLinkOptions
 
   const stackLink = new StackLink({
     platform: platformReactNative,
