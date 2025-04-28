@@ -27,6 +27,7 @@ import { hasPermission } from '/app/domain/manifest/permissions'
 import CliskRecorder from '/screens/konnectors/core/record'
 
 const log = Minilog('ReactNativeLauncher')
+const RRWEB_CUSTOM_EVENT = 5
 
 const SET_WORKER_STATE_TIMEOUT_MS = 30 * 1000
 
@@ -125,8 +126,9 @@ class ReactNativeLauncher extends Launcher {
       jobId = context.job.id
     }
 
+    // Record rrweb custom event for each clisk konnector log
     this.cliskRecorder.handleRecorderEvent({
-      type: 5,
+      type: RRWEB_CUSTOM_EVENT,
       data: {
         tag: 'log',
         payload: {
