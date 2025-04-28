@@ -25,7 +25,9 @@ export const sendDbByEmail = async (client?: CozyClient): Promise<void> => {
 
     const { fqdn } = getInstanceAndFqdnFromClient(client)
 
-    const files = await RNFS.readDir(RNFS.DocumentDirectoryPath)
+    const files = await RNFS.readDir(
+      RNFS.DocumentDirectoryPath + '/../databases'
+    )
 
     const dbFiles = files.filter(f => f.name.startsWith(`${fqdn}_`))
 
