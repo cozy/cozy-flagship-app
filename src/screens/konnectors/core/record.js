@@ -84,7 +84,13 @@ class CliskRecorder {
    */
   async tryCliskRecord(launcher, event) {
     try {
-      if (!event || !launcher) return console.error('no event or launcher') // eslint-disable-line no-console
+      if (!event || !launcher)
+        return this.launcher.log({
+          namespace: 'ReactNativeLauncher',
+          label: 'saveCliskEvents',
+          level: 'error',
+          msg: 'No event or launcher: '
+        })
 
       const { data: rawData } = event.nativeEvent
 
@@ -100,7 +106,12 @@ class CliskRecorder {
 
       await this.handleRecorderEvent(dataPayload)
     } catch (e) {
-      console.error('clisk recorder error', e) // eslint-disable-line no-console
+      this.launcher.log({
+        namespace: 'ReactNativeLauncher',
+        label: 'saveCliskEvents',
+        level: 'error',
+        msg: 'clisk recorder error' + e.message
+      })
     }
   }
 }
