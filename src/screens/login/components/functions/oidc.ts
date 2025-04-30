@@ -1,6 +1,6 @@
 import Minilog from 'cozy-minilog'
 
-import { Linking } from 'react-native'
+import { Linking, Platform } from 'react-native'
 import type { WebViewNavigation } from 'react-native-webview'
 
 import strings from '/constants/strings.json'
@@ -15,7 +15,6 @@ const INVALID_CALLBACK = 'INVALID_CALLBACK'
 
 const OIDC_CALLBACK_URL_PARAM = 'redirect_after_oidc'
 const OIDC_CALLBACK_SCHEME_URL = `${strings.COZY_SCHEME}flagship/oidc_result`
-const OIDC_CALLBACK_UL_URL = `${strings.UNIVERSAL_LINK_BASE}`
 
 export const LOGIN_FLAGSHIP_URL = 'https://loginflagship'
 
@@ -128,14 +127,17 @@ export const processOIDC = (
 ): Promise<OidcCallback> => {
   return new Promise((resolve, reject) => {
     const oidcUrl = new URL(request.url)
+    let redirect = ''
     if (useUniversalLinkForCallback) {
-      oidcUrl.searchParams.append(OIDC_CALLBACK_URL_PARAM, OIDC_CALLBACK_UL_URL)
+      if (Platform.OS === 'android') {
+        redirect = strings.UNIVERSAL_LINK_BASE
+      } else {
+        redirect = strings.COZY_SCHEME
+      }
     } else {
-      oidcUrl.searchParams.append(
-        OIDC_CALLBACK_URL_PARAM,
-        OIDC_CALLBACK_SCHEME_URL
-      )
+      redirect = OIDC_CALLBACK_SCHEME_URL
     }
+    oidcUrl.searchParams.append(OIDC_CALLBACK_URL_PARAM, redirect)
 
     void showInAppBrowser({ url: oidcUrl.toString() }).then(result => {
       if (result.type === 'cancel') {

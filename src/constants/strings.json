@@ -26,8 +26,8 @@
       "prodBaseUri": "https://manager.cozycloud.cc",
       "intBaseUri": "https://staging-manager.cozycloud.cc",
       "devBaseUri": "https://manager-dev.cozycloud.cc",
-      "cozyLoginRelativeUri": "/v2/neutral/start",
-      "cozySigninRelativeUri": "/v2/postcode",
+      "cozyLoginRelativeUri": "/v2/neutral/start?",
+      "cozySigninRelativeUri": "/v2/postcode?",
       "iOSQueryString": "universallink_for_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fmanager&redirect_after_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fonboarding%3Fflagship%3Dtrue%26fallback=cozy%253A%252F%252Fonboarding%253Fflagship%253Dtrue&redirect_after_login=https%3A%2F%2Floginflagship",
       "androidQueryString": "universallink_for_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fmanager&redirect_after_email=https%3A%2F%2Flinks.mycozy.cloud%2Fflagship%2Fonboarding%3Fflagship%3Dtrue%26fallback=cozy%253A%252F%252Fonboarding%253Fflagship%253Dtrue&redirect_after_login=https%3A%2F%2Floginflagship"
     },
@@ -35,8 +35,8 @@
       "prodBaseUri": "https://manager.cozycloud.cc",
       "intBaseUri": "https://manager-int.cozycloud.cc",
       "devBaseUri": "https://manager-dev.cozycloud.cc",
-      "cozyLoginRelativeUri": "/linagora/twake",
-      "cozySigninRelativeUri": "/linagora/twake",
+      "cozyLoginRelativeUri": "/linagora/twake?",
+      "cozySigninRelativeUri": "/linagora/twake?register",
       "iOSQueryString": "",
       "androidQueryString": ""
     }

@@ -82,8 +82,8 @@ export const getClouderyUrls = async (): Promise<ClouderyUrls> => {
       ? strings.cloudery[clouderyType].iOSQueryString
       : strings.cloudery[clouderyType].androidQueryString
 
-  const loginUrl = `${baseUri}${relativeLoginUri}?${queryString}`
-  const signinUrl = `${baseUri}${relativeSigninUri}?${queryString}`
+  const loginUrl = `${baseUri}${relativeLoginUri}${queryString}`
+  const signinUrl = `${baseUri}${relativeSigninUri}${queryString}`
 
   if (onboardingPartnerPath) {
     return {

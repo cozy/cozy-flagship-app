@@ -62,6 +62,30 @@ export const TwakeWelcomeView = ({
     }
   }
 
+  const onRegister = async (): Promise<void> => {
+    try {
+      const clouderyUrl = await getClouderyUrls()
+
+      const url = clouderyUrl.isOnboardingPartner
+        ? clouderyUrl.loginUrl
+        : clouderyUrl.signinUrl
+
+      const oidcResult = await processOIDC({ url: url }, true)
+
+      if (isOidcOnboardingStartCallback(oidcResult)) {
+        void startOidcOnboarding(oidcResult.onboardUrl, oidcResult.code)
+      } else {
+        setOnboardedRedirection(oidcResult.defaultRedirection ?? '')
+        void startOidcOAuth(oidcResult.fqdn, oidcResult.code)
+      }
+    } catch (error: unknown) {
+      if (error !== 'USER_CANCELED') {
+        // @ts-expect-error error is always a valid type here
+        setError(getErrorMessage(error), error)
+      }
+    }
+  }
+
   const openOnPremise = (): void => {
     setIsCustomServer(true)
   }
@@ -118,7 +142,7 @@ export const TwakeWelcomeView = ({
             />
             <Button
               // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onPress={onLogin}
+              onPress={onRegister}
               variant="secondary"
               textColor={colors.primaryColor}
               label={t('screens.welcomeTwake.buttonSignin')}
