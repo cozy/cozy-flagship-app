@@ -1,0 +1,17 @@
+<resources>
+    <!-- Base application theme. -->
+    <!-- Support light and dark mode in the entire app -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Additional customizations can be added here -->
+        <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        <item name="android:enforceNavigationBarContrast">false</item> <!-- Optional: Disabling enforced contrast for navigation bar -->
+        <item name="android:forceDarkAllowed">false</item> <!-- Prevent the system from applying automatic dark mode transformations -->
+    </style>
+
+    <style name="BootTheme" parent="AppTheme">
+        <item name="android:background">@drawable/bootsplash</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+</resources>
