@@ -1,7 +1,8 @@
 import * as React from 'react'
 import Svg, { Path } from 'react-native-svg'
 
-const SvgComponent = props => (
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const SvgComponent = (props?: any): JSX.Element => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={210}
