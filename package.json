@@ -10,7 +10,7 @@
     "build": "react-app-rewired build",
     "build:android:debug": "./scripts/build-debug-offline-apk.sh",
     "build:whitelabel": "yarn tsc --project white_label",
-    "generate-boot-icon": "yarn react-native generate-bootsplash src/assets/icon-cozy.png --background-color=297EF2 --logo-width=160 --assets-path=src/assets --flavor=main",
+    "generate-boot-icon": "yarn react-native generate-bootsplash src/assets/icon-cozy.png --background-color=ffffff --logo-width=160 --assets-path=src/assets --flavor=main",
     "home:build": "(cd cozy-home && yarn build:mobile)",
     "home:watch": "(cd cozy-home && yarn watch:mobile)",
     "install:home:local": "bash ./scripts/install-home.sh",
