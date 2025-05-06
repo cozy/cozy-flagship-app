@@ -15,7 +15,7 @@ import { Button } from '/ui/Button'
 import { ConditionalWrapper } from '/components/ConditionalWrapper'
 import { ConfirmDialog } from '/ui/CozyDialogs/ConfirmDialog'
 import { Container } from '/ui/Container'
-import { CozyCircle } from '/ui/Icons/CozyCircle'
+import { LinagoraCircle } from '/ui/Icons/LinagoraCircle'
 import { Eye } from '/ui/Icons/Eye'
 import { EyeClosed } from '/ui/Icons/EyeClosed'
 import { Grid } from '/ui/Grid'
@@ -106,7 +106,7 @@ const LockView = ({
           </Grid>
 
           <Grid alignItems="center" direction="column">
-            <Icon icon={CozyCircle} style={{ marginBottom: 14 }} />
+            <Icon icon={LinagoraCircle} style={{ marginBottom: 14 }} />
 
             <Typography variant="h4" color="primary">
               {mode === 'password' ? t('screens.lock.title') : null}
