@@ -12,6 +12,7 @@ import { TransitionToAuthorizeView } from './components/transitions/TransitionTo
 import { TwoFactorAuthenticationView } from './components/TwoFactorAuthenticationView'
 
 import { navigateToError } from '/app/domain/errors/navigateToError'
+import { useLoadingOverlay } from '/app/view/Loading/LoadingOverlayProvider'
 import {
   callInitClient,
   call2FAInitClient,
@@ -65,6 +66,7 @@ const LoginSteps = ({
   setClient,
   setClouderyTheme
 }) => {
+  const { hideOverlay } = useLoadingOverlay()
   const { showSplashScreen } = useSplashScreen()
   const [state, setState] = useState({
     step: CLOUDERY_STEP
@@ -254,6 +256,7 @@ const LoginSteps = ({
 
       const result = await connectOidcClient(client, code)
 
+      hideOverlay()
       if (result.state === STATE_2FA_NEEDED) {
         setState(oldState => ({
           ...oldState,
@@ -356,6 +359,7 @@ const LoginSteps = ({
   )
 
   const startOidcOnboarding = (onboardUrl, code) => {
+    hideOverlay()
     setState(oldState => ({
       ...oldState,
       step: OIDC_ONBOARD_STEP,

@@ -4,6 +4,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { SvgXml } from 'react-native-svg'
 
 import { getColorScheme } from '/app/theme/colorScheme'
+import { useLoadingOverlay } from '/app/view/Loading/LoadingOverlayProvider'
 import strings from '/constants/strings.json'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { openUrlInAppBrowser } from '/libs/functions/urlHelpers'
@@ -41,6 +42,7 @@ export const TwakeWelcomeView = ({
   setInstanceData,
   startOidcOauthNoCode
 }: TwakeWelcomeViewProps): JSX.Element => {
+  const { showOverlay, hideOverlay } = useLoadingOverlay()
   const { setOnboardedRedirection } = useHomeStateContext()
   const [isCustomServer, setIsCustomServer] = useState(false)
 
@@ -48,6 +50,7 @@ export const TwakeWelcomeView = ({
     try {
       const clouderyUrl = await getClouderyUrls()
 
+      showOverlay()
       const oidcResult = await processOIDC({ url: clouderyUrl.loginUrl }, true)
 
       if (isOidcOnboardingStartCallback(oidcResult)) {
@@ -57,6 +60,7 @@ export const TwakeWelcomeView = ({
         void startOidcOAuth(oidcResult.fqdn, oidcResult.code)
       }
     } catch (error: unknown) {
+      hideOverlay()
       if (error !== 'USER_CANCELED') {
         // @ts-expect-error error is always a valid type here
         setError(getErrorMessage(error), error)
@@ -72,6 +76,7 @@ export const TwakeWelcomeView = ({
         ? clouderyUrl.loginUrl
         : clouderyUrl.signinUrl
 
+      showOverlay()
       const oidcResult = await processOIDC({ url: url }, true)
 
       if (isOidcOnboardingStartCallback(oidcResult)) {
@@ -81,6 +86,7 @@ export const TwakeWelcomeView = ({
         void startOidcOAuth(oidcResult.fqdn, oidcResult.code)
       }
     } catch (error: unknown) {
+      hideOverlay()
       if (error !== 'USER_CANCELED') {
         // @ts-expect-error error is always a valid type here
         setError(getErrorMessage(error), error)
