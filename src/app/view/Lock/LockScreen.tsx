@@ -92,14 +92,14 @@ const LockView = ({
         <Grid container direction="column" justifyContent="space-between">
           <Grid justifyContent="space-between">
             <IconButton onPress={toggleLogoutDialog}>
-              <Icon icon={LogoutFlipped} color={colors.primaryColor} />
+              <Icon icon={LogoutFlipped} color={colors.primaryTextColor} />
             </IconButton>
 
             {biometryType && biometryEnabled ? (
               <IconButton onPress={(): void => void handleBiometry()}>
                 <Icon
                   icon={getBiometryIcon(biometryType)}
-                  color={colors.primaryColor}
+                  color={colors.primaryTextColor}
                 />
               </IconButton>
             ) : null}
@@ -108,13 +108,12 @@ const LockView = ({
           <Grid alignItems="center" direction="column">
             <Icon icon={LinagoraCircle} style={{ marginBottom: 14 }} />
 
-            <Typography variant="h4" color="primary">
+            <Typography variant="h4">
               {mode === 'password' ? t('screens.lock.title') : null}
               {mode === 'PIN' ? t('screens.lock.pin_title') : null}
             </Typography>
 
             <Typography
-              color="primary"
               style={{ opacity: 0.64, marginBottom: 24 }}
               variant="body2"
             >
@@ -205,9 +204,7 @@ export const LockScreen = (): JSX.Element => {
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <CozyTheme variant="inverted">
-            <LockView {...useLockScreenProps()} />
-          </CozyTheme>
+          <LockView {...useLockScreenProps()} />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </ConditionalWrapper>
