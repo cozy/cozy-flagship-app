@@ -1,6 +1,6 @@
 import Minilog from 'cozy-minilog'
 
-import { Linking, Platform } from 'react-native'
+import { Linking } from 'react-native'
 import type { WebViewNavigation } from 'react-native-webview'
 
 import strings from '/constants/strings.json'
@@ -129,11 +129,7 @@ export const processOIDC = (
     const oidcUrl = new URL(request.url)
     let redirect = ''
     if (useUniversalLinkForCallback) {
-      if (Platform.OS === 'android') {
-        redirect = strings.UNIVERSAL_LINK_BASE
-      } else {
-        redirect = strings.COZY_SCHEME
-      }
+      redirect = strings.COZY_SCHEME
     } else {
       redirect = OIDC_CALLBACK_SCHEME_URL
     }
