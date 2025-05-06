@@ -37,7 +37,7 @@ import { routes } from '/constants/routes'
 import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { getInstanceFromFqdn } from '/screens/login/components/functions/getInstanceFromFqdn'
 import { getInstanceDataFromFqdn } from '/screens/login/components/functions/getInstanceDataFromRequest'
-import { TwakeWelcomeView } from './components/TwakeWelcomeView'
+import { TwakeWelcomeView } from '/screens/login/components/TwakeWelcomeView'
 
 const log = Minilog('LoginScreen')
 
