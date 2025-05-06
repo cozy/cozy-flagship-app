@@ -36,7 +36,7 @@
       "intBaseUri": "https://manager-int.cozycloud.cc",
       "devBaseUri": "https://manager-dev.cozycloud.cc",
       "cozyLoginRelativeUri": "/linagora/twake?",
-      "cozySigninRelativeUri": "/linagora/twake?register",
+      "cozySigninRelativeUri": "/linagora/twake?register=true",
       "iOSQueryString": "",
       "androidQueryString": ""
     }
