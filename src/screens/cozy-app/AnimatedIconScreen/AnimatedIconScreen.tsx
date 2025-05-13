@@ -8,6 +8,7 @@ import defaultAnimation from './animations/default.json'
 import driveAnimation from './animations/drive.json'
 import notesAnimation from './animations/notes.json'
 import storeAnimation from './animations/store.json'
+import passwordsAnimation from './animations/passwords.json'
 
 import { getColors } from '/ui/colors'
 
@@ -16,6 +17,7 @@ const AVAILABLE_ANIMATIONS: Record<string, AnimationObject> = {
   contacts: contactsAnimation,
   notes: notesAnimation,
   store: storeAnimation,
+  passwords: passwordsAnimation,
   default: defaultAnimation
 }
 
