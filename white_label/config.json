@@ -1,6 +1,6 @@
 {
   "cozy" : {
-    "appName": "Cozy",
+    "appName": "Twake Workplace",
     "bundleId": "io.cozy.flagship.mobile",
     "httpServerDefaultPort": 5759,
     "provisionningProfile": "amiral-ci-profile",

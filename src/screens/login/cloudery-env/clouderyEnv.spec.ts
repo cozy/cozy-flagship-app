@@ -29,15 +29,13 @@ describe('extractEnvFromUrl', () => {
 
     expect(result).toStrictEqual({
       loginUrl:
-        strings.cloudery.prodBaseUri +
-        strings.cloudery.cozyLoginRelativeUri +
-        '?' +
-        strings.cloudery.androidQueryString,
+        strings.cloudery.twake.prodBaseUri +
+        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.androidQueryString,
       signinUrl:
-        strings.cloudery.prodBaseUri +
-        strings.cloudery.cozySigninRelativeUri +
-        '?' +
-        strings.cloudery.androidQueryString,
+        strings.cloudery.twake.prodBaseUri +
+        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.androidQueryString,
       isOnboardingPartner: false
     })
   })
@@ -49,15 +47,13 @@ describe('extractEnvFromUrl', () => {
 
     expect(result).toStrictEqual({
       loginUrl:
-        strings.cloudery.devBaseUri +
-        strings.cloudery.cozyLoginRelativeUri +
-        '?' +
-        strings.cloudery.androidQueryString,
+        strings.cloudery.twake.devBaseUri +
+        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.androidQueryString,
       signinUrl:
-        strings.cloudery.devBaseUri +
-        strings.cloudery.cozySigninRelativeUri +
-        '?' +
-        strings.cloudery.androidQueryString,
+        strings.cloudery.twake.devBaseUri +
+        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.androidQueryString,
       isOnboardingPartner: false
     })
   })
@@ -69,15 +65,13 @@ describe('extractEnvFromUrl', () => {
 
     expect(result).toStrictEqual({
       loginUrl:
-        strings.cloudery.intBaseUri +
-        strings.cloudery.cozyLoginRelativeUri +
-        '?' +
-        strings.cloudery.androidQueryString,
+        strings.cloudery.twake.intBaseUri +
+        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.androidQueryString,
       signinUrl:
-        strings.cloudery.intBaseUri +
-        strings.cloudery.cozySigninRelativeUri +
-        '?' +
-        strings.cloudery.androidQueryString,
+        strings.cloudery.twake.intBaseUri +
+        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.androidQueryString,
       isOnboardingPartner: false
     })
   })
@@ -90,15 +84,13 @@ describe('extractEnvFromUrl', () => {
 
     expect(result).toStrictEqual({
       loginUrl:
-        strings.cloudery.intBaseUri +
-        strings.cloudery.cozyLoginRelativeUri +
-        '?' +
-        strings.cloudery.iOSQueryString,
+        strings.cloudery.twake.intBaseUri +
+        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.iOSQueryString,
       signinUrl:
-        strings.cloudery.intBaseUri +
-        strings.cloudery.cozySigninRelativeUri +
-        '?' +
-        strings.cloudery.iOSQueryString,
+        strings.cloudery.twake.intBaseUri +
+        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.iOSQueryString,
       isOnboardingPartner: false
     })
   })
@@ -108,15 +100,13 @@ describe('extractEnvFromUrl', () => {
 
     expect(result).toStrictEqual({
       loginUrl:
-        strings.cloudery.prodBaseUri +
-        strings.cloudery.cozyLoginRelativeUri +
-        '?' +
-        strings.cloudery.androidQueryString,
+        strings.cloudery.twake.prodBaseUri +
+        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.androidQueryString,
       signinUrl:
-        strings.cloudery.prodBaseUri +
-        strings.cloudery.cozySigninRelativeUri +
-        '?' +
-        strings.cloudery.androidQueryString,
+        strings.cloudery.twake.prodBaseUri +
+        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.androidQueryString,
       isOnboardingPartner: false
     })
   })
@@ -128,15 +118,13 @@ describe('extractEnvFromUrl', () => {
 
     expect(result).toStrictEqual({
       loginUrl:
-        strings.cloudery.prodBaseUri +
-        strings.cloudery.cozyLoginRelativeUri +
-        '?' +
-        strings.cloudery.androidQueryString,
+        strings.cloudery.twake.prodBaseUri +
+        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.androidQueryString,
       signinUrl:
-        strings.cloudery.prodBaseUri +
-        strings.cloudery.cozySigninRelativeUri +
-        '?' +
-        strings.cloudery.androidQueryString,
+        strings.cloudery.twake.prodBaseUri +
+        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.androidQueryString,
       isOnboardingPartner: false
     })
   })
@@ -153,9 +141,9 @@ describe('extractEnvFromUrl', () => {
 
     expect(result).toStrictEqual({
       loginUrl:
-        strings.cloudery.prodBaseUri +
-        '/v2/SOME_SOURCE/SOME_CONTEXT?' +
-        strings.cloudery.androidQueryString,
+        strings.cloudery.twake.prodBaseUri +
+        '/v2/SOME_SOURCE/SOME_CONTEXT' +
+        strings.cloudery.twake.androidQueryString,
       isOnboardingPartner: true
     })
   })
@@ -170,15 +158,13 @@ describe('extractEnvFromUrl', () => {
 
     expect(result).toStrictEqual({
       loginUrl:
-        strings.cloudery.prodBaseUri +
-        strings.cloudery.cozyLoginRelativeUri +
-        '?' +
-        strings.cloudery.androidQueryString,
+        strings.cloudery.twake.prodBaseUri +
+        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.androidQueryString,
       signinUrl:
-        strings.cloudery.prodBaseUri +
-        strings.cloudery.cozySigninRelativeUri +
-        '?' +
-        strings.cloudery.androidQueryString,
+        strings.cloudery.twake.prodBaseUri +
+        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.androidQueryString,
       isOnboardingPartner: false
     })
   })

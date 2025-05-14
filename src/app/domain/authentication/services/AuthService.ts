@@ -8,6 +8,7 @@ import { triggerPouchReplication } from '/app/domain/offline/utils'
 
 export const authLogger = Minilog('AuthService')
 let clientInstance: CozyClient | null = null
+const DELAY_BEFORE_REPLICATION = 10000 // 10 sec
 
 const handleTokenError = async (): Promise<void> => {
   try {
@@ -34,7 +35,14 @@ const handleLogin = (): void => {
     authLogger.info('Debounce replication')
     if (clientInstance === null) throw new Error('No client instance set')
 
-    triggerPouchReplication(clientInstance)
+    setTimeout(() => {
+      if (clientInstance) {
+        // Use custom delay for this special case: we want the replication to happen
+        // fast enough to ensure all data is retrieved, but not too fast, to avoid
+        // slowing down the user login
+        triggerPouchReplication(clientInstance, { withDebounce: false })
+      }
+    }, DELAY_BEFORE_REPLICATION)
   } catch (error) {
     authLogger.error('Error while handling login', error)
   }

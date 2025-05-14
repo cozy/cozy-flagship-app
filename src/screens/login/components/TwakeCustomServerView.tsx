@@ -1,0 +1,169 @@
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { BackHandler, StyleSheet } from 'react-native'
+import DeviceInfo from 'react-native-device-info'
+
+import { BlockedCozyError, rootCozyUrl } from 'cozy-client'
+import { getErrorMessage } from 'cozy-intent'
+
+import { routes } from '/constants/routes'
+import strings from '/constants/strings.json'
+import { sanitizeUrlInput } from '/app/domain/authentication/utils/cozySanitizeUrl'
+import { navigate } from '/libs/RootNavigation'
+import { t } from '/locales/i18n'
+import { getColors } from '/ui/colors'
+import { Container } from '/ui/Container'
+import { Button } from '/ui/Button'
+import { Grid } from '/ui/Grid'
+import { Icon } from '/ui/Icon'
+import { IconButton } from '/ui/IconButton'
+import { Left } from '/ui/Icons/Left'
+import { Link } from '/ui/Link'
+import { TextField } from '/ui/TextField'
+import { Typography } from '/ui/Typography'
+
+const colors = getColors()
+
+const getVersion = (): string => {
+  const appVersion = DeviceInfo.getVersion()
+  const appBuild = DeviceInfo.getBuildNumber()
+
+  return `${appVersion} (${appBuild})`
+}
+
+interface TwakeCustomServerViewProps {
+  openTos: () => void
+  close: () => void
+  setInstanceData: setInstanceData
+}
+
+export const TwakeCustomServerView = ({
+  openTos,
+  close,
+  setInstanceData
+}: TwakeCustomServerViewProps): JSX.Element => {
+  const [input, setInput] = useState('')
+  const [error, setError] = useState<string | undefined>()
+
+  const version = useMemo(() => getVersion(), [])
+
+  const handleBackPress = useCallback(() => {
+    close()
+    return true
+  }, [close])
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+  }, [handleBackPress])
+
+  const handleInput = (input: string): void => {
+    setInput(input)
+  }
+
+  const handleLogin = async (): Promise<void> => {
+    setError(undefined)
+    try {
+      const sanitizedInput = sanitizeUrlInput(input)
+      const sanitizedUrl = new URL(sanitizedInput)
+      const checkInstanceData = {
+        instance: sanitizedUrl.origin,
+        fqdn: sanitizedUrl.host
+      }
+
+      await rootCozyUrl(new URL(checkInstanceData.instance))
+
+      setInstanceData({ ...checkInstanceData })
+    } catch (e: unknown) {
+      if (e instanceof BlockedCozyError) {
+        navigate(routes.error, {
+          type: strings.errorScreens.cozyBlocked
+        })
+        return
+      }
+      // setError(t('screens.cozyNotFound.title'))
+      setError(getErrorMessage(e))
+    }
+  }
+
+  return (
+    <Container transparent={false}>
+      <Grid container direction="column" justifyContent="space-between">
+        <Grid alignItems="flex-start" direction="column">
+          <Grid alignItems="flex-start" direction="column">
+            <IconButton onPress={handleBackPress}>
+              <Icon icon={Left} color={colors.primaryColor} />
+            </IconButton>
+          </Grid>
+          <Grid alignItems="center" direction="column" style={styles.loginGrid}>
+            <Typography variant="h2" color="textPrimary">
+              {t('screens.companyServer.title')}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="textPrimary"
+              style={{
+                textAlign: 'center'
+              }}
+            >
+              {t('screens.companyServer.body')}
+            </Typography>
+            <TextField
+              style={styles.urlField}
+              label={t('screens.companyServer.textFieldLabel')}
+              onChangeText={handleInput}
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onSubmitEditing={handleLogin}
+              returnKeyType="go"
+              value={input}
+              autoCapitalize="none"
+              autoFocus={false}
+              placeholder="https://claude.mycozy.cloud"
+              placeholderTextColor={colors.actionColorDisabled}
+            />
+            {error && (
+              <Typography variant="body2" color="error">
+                {error}
+              </Typography>
+            )}
+          </Grid>
+        </Grid>
+
+        <Grid alignItems="center" direction="column" style={styles.footerGrid}>
+          <Button
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onPress={handleLogin}
+            variant="primary"
+            label={t('screens.companyServer.buttonLogin')}
+            style={styles.loginButton}
+          />
+          <Typography variant="caption">
+            {t('screens.welcome.byContinuingYourAgreeingToOur')}
+          </Typography>
+          <Link onPress={openTos}>
+            <Typography variant="caption" color="primary">
+              {t('screens.welcome.privacyPolicy')}
+            </Typography>
+          </Link>
+          <Typography variant="caption">{version}</Typography>
+        </Grid>
+      </Grid>
+    </Container>
+  )
+}
+
+const styles = StyleSheet.create({
+  loginGrid: {
+    marginTop: 30
+  },
+  footerGrid: {
+    gap: 0
+  },
+  urlField: {
+    marginTop: 30
+  },
+  loginButton: {
+    marginBottom: 30
+  }
+})
