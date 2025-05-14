@@ -1,19 +1,19 @@
 diff --git a/node_modules/react-native-webview/apple/RNCWebView.m b/node_modules/react-native-webview/apple/RNCWebView.m
-index 563af79..ec056a2 100644
+index 563af79..5119996 100644
 --- a/node_modules/react-native-webview/apple/RNCWebView.m
 +++ b/node_modules/react-native-webview/apple/RNCWebView.m
-@@ -411,6 +411,14 @@ - (WKWebViewConfiguration *)setUpWkWebViewConfig
- 
- - (void)didMoveToWindow
- {
-+  #if __MAC_OS_X_VERSION_MAX_ALLOWED >= 130300 || \
+@@ -452,6 +452,14 @@ - (void)didMoveToWindow
+       _webView.scrollView.automaticallyAdjustsScrollIndicatorInsets = _savedAutomaticallyAdjustsScrollIndicatorInsets;
+     }
+ #endif
++#if __MAC_OS_X_VERSION_MAX_ALLOWED >= 130300 || \
 +    __IPHONE_OS_VERSION_MAX_ALLOWED >= 160400 || \
 +    __TV_OS_VERSION_MAX_ALLOWED >= 160400
 +    // https://webkit.org/blog/13936/enabling-the-inspection-of-web-content-in-apps/
 +    if (@available(macos 13.3, ios 16.4, tvOS 16.4, *)) {
 +        _webView.inspectable = YES;
 +    }
-+  #endif
-   if (self.window != nil && _webView == nil) {
-     WKWebViewConfiguration *wkWebViewConfig = [self setUpWkWebViewConfig];
- #if !TARGET_OS_OSX
++#endif
+ 
+     [self addSubview:_webView];
+     [self setHideKeyboardAccessoryView: _savedHideKeyboardAccessoryView];
