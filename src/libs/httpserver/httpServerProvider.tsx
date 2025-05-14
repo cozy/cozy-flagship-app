@@ -10,15 +10,19 @@ import Config from 'react-native-config'
 import type CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
+import { generateHttpServerSecurityKey } from '/app/domain/crypto/services/crypto'
 import { isOfflineCompatible } from '/app/domain/offline/isOfflineCompatible'
 import rnperformance from '/app/domain/performances/measure'
 import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import HttpServer from '/libs/httpserver/HttpServer'
 import { fetchAppDataForSlug } from '/libs/httpserver/indexDataFetcher'
 import { getServerBaseFolder } from '/libs/httpserver/httpPaths'
-import { queryResultToCrypto } from '/components/webviews/CryptoWebView/cryptoObservable/cryptoObservable'
 import { setCookie } from '/libs/httpserver/httpCookieManager'
 import { HtmlSource } from '/libs/httpserver/models'
+import {
+  fillIndexWithData,
+  getIndexForFqdnAndSlug
+} from '/libs/httpserver/indexGenerator'
 
 import {
   addBodyClasses,
@@ -26,11 +30,6 @@ import {
   addBarStyles,
   addColorSchemeMetaIfNecessary
 } from './server-helpers'
-
-import {
-  fillIndexWithData,
-  getIndexForFqdnAndSlug
-} from '/libs/httpserver/indexGenerator'
 
 const log = Minilog('HttpServerProvider')
 
@@ -52,10 +51,6 @@ interface HttpServerState {
     slug: string,
     client: CozyClient
   ) => Promise<IndexHtmlForSlug | false>
-}
-
-interface SecurityKeyResult {
-  securityKey: string
 }
 
 export const HttpServerContext = createContext<HttpServerState | undefined>(
@@ -99,9 +94,7 @@ export const HttpServerProvider = (
       .then(async url => {
         log.debug('🚀 Serving at URL', url)
 
-        const { securityKey } = (await queryResultToCrypto(
-          'generateHttpServerSecurityKey'
-        )) as unknown as SecurityKeyResult
+        const securityKey = generateHttpServerSecurityKey()
 
         await server.setSecurityKey(securityKey)
         setServerSecurityKey(securityKey)
