@@ -81,7 +81,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>0101326</string>
+	<string>0101327</string>
 	<key>FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED</key>
 	<true/>
 	<key>FirebaseDataCollectionDefaultEnabled</key>
