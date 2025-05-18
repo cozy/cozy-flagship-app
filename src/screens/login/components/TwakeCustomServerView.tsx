@@ -139,11 +139,11 @@ export const TwakeCustomServerView = ({
             style={styles.loginButton}
           />
           <Typography variant="caption">
-            {t('screens.welcome.byContinuingYourAgreeingToOur')}
+            {t('screens.welcomeTwake.byContinuingYourAgreeingToOur')}
           </Typography>
           <Link onPress={openTos}>
             <Typography variant="caption" color="primary">
-              {t('screens.welcome.privacyPolicy')}
+              {t('screens.welcomeTwake.privacyPolicy')}
             </Typography>
           </Link>
           <Typography variant="caption">{version}</Typography>
