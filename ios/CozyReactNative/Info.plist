@@ -131,6 +131,8 @@
 	<string>Pour faire un backup de vos photos</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>Inter-Bold.ttf</string>
+		<string>Inter-Regular.ttf</string>
 		<string>Lato-Bold.ttf</string>
 		<string>Lato-Regular.ttf</string>
 	</array>

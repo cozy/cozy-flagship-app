@@ -27,6 +27,6 @@ export const styles = StyleSheet.create({
     color: palette.Primary.ContrastText,
     flex: 1,
     fontSize: 12,
-    fontFamily: 'Lato-Bold'
+    fontFamily: 'Inter-Bold'
   }
 })
