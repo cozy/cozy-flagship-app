@@ -17,7 +17,7 @@ export const styles = (colors: CozyThemeColors): TextFieldStyles =>
       borderWidth: 1,
       display: 'flex',
       flexDirection: 'row',
-      fontFamily: 'Lato-Regular',
+      fontFamily: 'Inter-Regular',
       alignItems: 'center',
       justifyContent: 'space-between',
       position: 'relative',
@@ -34,7 +34,7 @@ export const styles = (colors: CozyThemeColors): TextFieldStyles =>
     endAdornment: { marginRight: 16 },
     input: {
       color: colors.primaryTextColor,
-      fontFamily: 'Lato-Regular',
+      fontFamily: 'Inter-Regular',
       fontSize: 16,
       paddingLeft: 16,
       paddingRight: 40,

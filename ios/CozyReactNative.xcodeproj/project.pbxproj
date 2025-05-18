@@ -47,6 +47,8 @@
 		E4F8716629DDEC1E00C52A35 /* base@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715F29DDEC1E00C52A35 /* base@3x.png */; };
 		E4F8716729DDEC1E00C52A35 /* base@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715F29DDEC1E00C52A35 /* base@3x.png */; };
 		F3B83720E44641879E6927C6 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0572B798A7D41908174A427 /* Lato-Regular.ttf */; };
+		92832EDB00FF4C2EAD9F811A /* Inter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 90B0EC53D3AE4171BBD95A6D /* Inter-Bold.ttf */; };
+		ACA0A767CBF24490B0ED8EC2 /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5680E07156234AC2874D356F /* Inter-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,6 +132,8 @@
 		EBA740E658AB4C90BED7F6D9 /* Lato-Regular.woff2 */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.woff2"; path = "../assets/fonts/Lato-Regular.woff2"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FB7AC79E047043178F1289F7 /* Lato-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Bold.ttf"; path = "../assets/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
+		90B0EC53D3AE4171BBD95A6D /* Inter-Bold.ttf */ = {isa = PBXFileReference; name = "Inter-Bold.ttf"; path = "../assets/fonts/Inter-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5680E07156234AC2874D356F /* Inter-Regular.ttf */ = {isa = PBXFileReference; name = "Inter-Regular.ttf"; path = "../assets/fonts/Inter-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -318,6 +322,8 @@
 				EBA740E658AB4C90BED7F6D9 /* Lato-Regular.woff2 */,
 				FB7AC79E047043178F1289F7 /* Lato-Bold.ttf */,
 				A0572B798A7D41908174A427 /* Lato-Regular.ttf */,
+				90B0EC53D3AE4171BBD95A6D /* Inter-Bold.ttf */,
+				5680E07156234AC2874D356F /* Inter-Regular.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -478,6 +484,8 @@
 				F3B83720E44641879E6927C6 /* Lato-Regular.ttf in Resources */,
 				E4924AC32996438600F415CE /* GoogleService-Info.plist in Resources */,
 				7585C5DE689CEA1E2E42E533 /* PrivacyInfo.xcprivacy in Resources */,
+				92832EDB00FF4C2EAD9F811A /* Inter-Bold.ttf in Resources */,
+				ACA0A767CBF24490B0ED8EC2 /* Inter-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

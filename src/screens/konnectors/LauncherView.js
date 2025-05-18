@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
   headerTextStyle: {
     marginLeft: 10,
     fontSize: 13,
-    fontFamily: 'Lato-Bold',
+    fontFamily: 'Inter-Bold',
     lineHeight: HEADER_LINE_HEIGHT,
     color: colors.primaryColor
   },
