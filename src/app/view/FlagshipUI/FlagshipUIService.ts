@@ -46,8 +46,8 @@ export const flagshipState: FlagshipState = {
     {
       id: 'Splashscreen',
       ui: {
-        topTheme: 'light',
-        bottomTheme: 'light'
+        topTheme: 'dark',
+        bottomTheme: 'dark'
       },
       zIndex: ScreenIndexes.SPLASH_SCREEN
     }
@@ -55,8 +55,8 @@ export const flagshipState: FlagshipState = {
 }
 
 export const DEFAULT_FLAGSHIP_UI: FlagshipUI = {
-  topTheme: 'light',
-  bottomTheme: 'light'
+  topTheme: 'dark',
+  bottomTheme: 'dark'
 }
 
 const renderFlagshipUiRecursive = (remaining: SettedUI[]): void => {
