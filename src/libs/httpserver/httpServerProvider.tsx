@@ -186,7 +186,8 @@ export const HttpServerProvider = (
         port: serverInstance.port,
         securityKey: serverSecurityKey,
         indexContent: rawHtml,
-        indexData: templateValues
+        indexData: templateValues,
+        client: client
       })
       if (slug === 'home') {
         const html = flow(
