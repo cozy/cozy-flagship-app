@@ -29,7 +29,7 @@ export interface TypographyStyles {
 
 export const styles = (colors: CozyThemeColors): TypographyStyles =>
   StyleSheet.create({
-    base: { fontFamily: 'Lato-Regular' },
+    base: { fontFamily: 'Inter-Regular' },
     initial: { color: colors.primaryTextColor }, // should be removed?
     inherit: { color: colors.primaryTextColor }, // should be removed?
     primary: { color: colors.primaryColor },
@@ -38,12 +38,12 @@ export const styles = (colors: CozyThemeColors): TypographyStyles =>
     textSecondary: { color: colors.secondaryTextColor },
     error: { color: colors.errorColor },
     h4: {
-      fontFamily: 'Lato-Bold',
+      fontFamily: 'Inter-Bold',
       fontSize: 20,
       lineHeight: 23
     },
     body2: {
-      fontFamily: 'Lato-Regular',
+      fontFamily: 'Inter-Regular',
       fontSize: 14,
       lineHeight: 19
     },
@@ -54,7 +54,7 @@ export const styles = (colors: CozyThemeColors): TypographyStyles =>
     },
     button: {
       color: palette.Primary['600'],
-      fontFamily: 'Lato-Bold',
+      fontFamily: 'Inter-Bold',
       fontSize: 14,
       lineHeight: 18,
       textAlign: 'center'
@@ -62,25 +62,25 @@ export const styles = (colors: CozyThemeColors): TypographyStyles =>
     h1: { fontSize: 16 },
     h2: {
       fontSize: 35,
-      fontFamily: 'Lato-Bold'
+      fontFamily: 'Inter-Bold'
     },
     h3: {
       fontSize: 20,
-      fontFamily: 'Lato-Bold',
+      fontFamily: 'Inter-Bold',
       color: palette.Grey['900']
     },
-    h5: { fontSize: 18, fontFamily: 'Lato-Bold', lineHeight: 23 },
+    h5: { fontSize: 18, fontFamily: 'Inter-Bold', lineHeight: 23 },
     subtitle1: { fontSize: 16 },
     subtitle2: {
       fontSize: 12,
       lineHeight: 16,
-      fontFamily: 'Lato-Bold',
+      fontFamily: 'Inter-Bold',
       textTransform: 'uppercase'
     },
     body1: { fontSize: 16 },
-    caption: { fontSize: 12, lineHeight: 16, fontFamily: 'Lato-Regular' },
+    caption: { fontSize: 12, lineHeight: 16, fontFamily: 'Inter-Regular' },
     link: {
-      fontFamily: 'Lato-Regular',
+      fontFamily: 'Inter-Regular',
       fontSize: 14,
       lineHeight: 19,
       textDecorationLine: 'underline'

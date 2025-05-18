@@ -13,6 +13,18 @@ export const getLocalFonts = (): string => {
       android: 'file:///android_asset/fonts/Lato-Bold.ttf'
     }) ?? ''
 
+  const fontUrlInterRegular =
+    Platform.select({
+      ios: 'Inter-Regular.ttf',
+      android: 'file:///android_asset/fonts/Inter-Regular.ttf'
+    }) ?? ''
+
+  const fontUrlInterBold =
+    Platform.select({
+      ios: 'Inter-Bold.ttf',
+      android: 'file:///android_asset/fonts/Inter-Bold.ttf'
+    }) ?? ''
+
   return `
     @font-face {
       font-family: Lato;
@@ -30,8 +42,24 @@ export const getLocalFonts = (): string => {
       font-display: fallback;
     }
 
+    @font-face {
+      font-family: Inter;
+      font-style: normal;
+      font-weight: normal;
+      src: url("${fontUrlInterRegular}");
+      font-display: fallback;
+    }
+
+    @font-face {
+      font-family: Inter;
+      font-style: normal;
+      font-weight: bold;
+      src: url("${fontUrlInterBold}");
+      font-display: fallback;
+    }
+
     body {
-      font-family: Lato;
+      font-family: Inter;
     }
   `
 }
