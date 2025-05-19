@@ -39,7 +39,8 @@ const log = Minilog('IndexGenerator')
 // - cozy-pass-web cannot be injected because fetch with { mode: 'no-cors' } does not work
 const slugAllowList = [
   { platform: 'ALL', slug: 'home' },
-  { platform: 'android', slug: 'ALL' }
+  { platform: 'android', slug: 'ALL' },
+  { platform: 'ALL', slug: 'papillon' }
 ]
 
 const slugBlockList = [{ platform: 'ALL', slug: 'passwords' }]
@@ -163,9 +164,15 @@ export const fillIndexWithData = async ({
   )
 
   const absoluteIndexData = enforceAbsoluteUrlsInTemplate(indexData, client)
+  console.log('🟥 absoluteIndexData', absoluteIndexData)
+  console.log('🟥 indexData', indexData)
   Object.entries(absoluteIndexData).forEach(([key, value]) => {
     output = replaceAll(output, `{{.${key}}}`, value)
   })
+
+  const protocol = isSecureProtocol(client) ? 'https' : 'http'
+  output = replaceAll(output, 'href="//', `href="${protocol}://`)
+  output = replaceAll(output, 'src="//', `src="${protocol}://`)
 
   return output
 }
