@@ -56,7 +56,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.32</string>
+	<string>1.1.33</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -81,7 +81,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>0101329</string>
+	<string>0101330</string>
 	<key>FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED</key>
 	<true/>
 	<key>FirebaseDataCollectionDefaultEnabled</key>
