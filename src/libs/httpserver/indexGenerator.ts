@@ -36,7 +36,8 @@ const log = Minilog('IndexGenerator')
 // - cozy-pass-web cannot be injected because fetch with { mode: 'no-cors' } does not work
 const slugAllowList = [
   { platform: 'ALL', slug: 'home' },
-  { platform: 'android', slug: 'ALL' }
+  { platform: 'android', slug: 'ALL' },
+  { platform: 'ALL', slug: 'papillon' }
 ]
 
 const slugBlockList = [{ platform: 'ALL', slug: 'passwords' }]
