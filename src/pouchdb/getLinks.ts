@@ -31,6 +31,11 @@ export const offlineDoctypes = [
   'io.cozy.apps.suggestions',
   'io.cozy.triggers',
   'io.cozy.apps_registry',
+  'io.cozy.calendar.events',
+  'io.cozy.calendar.todos',
+  'io.cozy.calendar.presence',
+  'io.cozy.timeseries.grades',
+  'io.cozy.identities',
 
   // app specific
   'io.cozy.mespapiers.settings',
