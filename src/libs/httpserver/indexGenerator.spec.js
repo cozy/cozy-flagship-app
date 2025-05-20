@@ -53,6 +53,12 @@ jest.mock('react-native-bootsplash', () => ({
   show: jest.fn()
 }))
 
+const client = {
+  getStackClient: () => ({
+    uri: 'https://claude.mycozy.cloud'
+  })
+}
+
 const ifTestEnabled = shouldDisableGetIndex() ? describe.skip : describe
 
 ifTestEnabled('indexGenerator', () => {
@@ -69,7 +75,8 @@ ifTestEnabled('indexGenerator', () => {
         port: 5757,
         securityKey: 'SOME_SECURITY_KEY',
         indexContent: rawContent,
-        indexData: fakeData
+        indexData: fakeData,
+        client
       })
 
       expect(result).toBe(expectedContent)
@@ -86,7 +93,8 @@ ifTestEnabled('indexGenerator', () => {
           port: 5757,
           securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
-          indexData: fakeData
+          indexData: fakeData,
+          client
         })
 
         expect(result).toBe(
@@ -104,7 +112,8 @@ ifTestEnabled('indexGenerator', () => {
           port: 5757,
           securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
-          indexData: fakeData
+          indexData: fakeData,
+          client
         })
 
         expect(result)
@@ -122,7 +131,8 @@ ifTestEnabled('indexGenerator', () => {
           port: 5757,
           securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
-          indexData: fakeData
+          indexData: fakeData,
+          client
         })
 
         expect(result).toBe(
@@ -140,7 +150,8 @@ ifTestEnabled('indexGenerator', () => {
           port: 5757,
           securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
-          indexData: fakeData
+          indexData: fakeData,
+          client
         })
 
         expect(result)
@@ -158,11 +169,12 @@ ifTestEnabled('indexGenerator', () => {
           port: 5757,
           securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
-          indexData: fakeData
+          indexData: fakeData,
+          client
         })
 
         expect(result).toBe(
-          '<link rel="stylesheet" href="//claude.mycozy.cloud/vendors-home.4740287bb69e5ea49e26.0.min.css" />'
+          '<link rel="stylesheet" href="https://claude.mycozy.cloud/vendors-home.4740287bb69e5ea49e26.0.min.css" />'
         )
       })
     })
@@ -178,7 +190,8 @@ ifTestEnabled('indexGenerator', () => {
           port: 5757,
           securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
-          indexData: fakeData
+          indexData: fakeData,
+          client
         })
 
         expect(result).toBe(
@@ -196,7 +209,8 @@ ifTestEnabled('indexGenerator', () => {
           port: 5757,
           securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
-          indexData: fakeData
+          indexData: fakeData,
+          client
         })
 
         expect(result)
@@ -214,7 +228,8 @@ ifTestEnabled('indexGenerator', () => {
           port: 5757,
           securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
-          indexData: fakeData
+          indexData: fakeData,
+          client
         })
 
         expect(result).toBe(
@@ -232,7 +247,8 @@ ifTestEnabled('indexGenerator', () => {
           port: 5757,
           securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
-          indexData: fakeData
+          indexData: fakeData,
+          client
         })
 
         expect(result)
@@ -250,11 +266,12 @@ ifTestEnabled('indexGenerator', () => {
           port: 5757,
           securityKey: 'SOME_SECURITY_KEY',
           indexContent: content,
-          indexData: fakeData
+          indexData: fakeData,
+          client
         })
 
         expect(result).toBe(
-          '<script src="//claude.mycozy.cloud/vendors/home.000f5f10d9fca3ceac41.js"></script>'
+          '<script src="https://claude.mycozy.cloud/vendors/home.000f5f10d9fca3ceac41.js"></script>'
         )
       })
     })
@@ -451,7 +468,7 @@ const expectedContent = `<!DOCTYPE html>
     />
     <link rel="stylesheet" href="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/vendors-home.4740287bb69e5ea49e26.0.min.css" />
     <link rel="stylesheet" href="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/app-home.53f72c970a7c14ef3a0c.min.css" />
-    <link rel="stylesheet" href="//claude.mycozy.cloud/assets/fonts/fonts.css" />
+    <link rel="stylesheet" href="https://claude.mycozy.cloud/assets/fonts/fonts.css" />
     <link rel="stylesheet" type="text/css" href="https://URL_TO_COZY_THEME_CSS"> <script src="https://URL_TO_COZY_CLIENT_JS"></script>
   </head>
   <body>
@@ -473,7 +490,7 @@ const expectedContent = `<!DOCTYPE html>
     >
       <script src="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/vendors/home.000f5f10d9fca3ceac41.js"></script>
       <script src="http://localhost:5757/SOME_SECURITY_KEY/claude.mycozy.cloud/home/embedded/app/home.f6f22f0d747344045d69.js"></script>
-      <script src="//claude.mycozy.cloud/assets/js/piwik.js" async></script>
+      <script src="https://claude.mycozy.cloud/assets/js/piwik.js" async></script>
     </div>
   </body>
 </html>

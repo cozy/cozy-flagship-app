@@ -1,6 +1,7 @@
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 
+import CozyClient from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import rnperformance from '/app/domain/performances/measure'
@@ -22,6 +23,8 @@ import {
 import { replaceAll } from '/libs/functions/stringHelpers'
 import { shouldDisableGetIndex } from '/core/tools/env'
 
+import { isSecureProtocol } from '../functions/isSecureProtocol'
+
 const log = Minilog('IndexGenerator')
 
 // The slug's allowlist should be used to list apps
@@ -36,7 +39,8 @@ const log = Minilog('IndexGenerator')
 // - cozy-pass-web cannot be injected because fetch with { mode: 'no-cors' } does not work
 const slugAllowList = [
   { platform: 'ALL', slug: 'home' },
-  { platform: 'android', slug: 'ALL' }
+  { platform: 'android', slug: 'ALL' },
+  { platform: 'ALL', slug: 'papillon' }
 ]
 
 const slugBlockList = [{ platform: 'ALL', slug: 'passwords' }]
@@ -133,6 +137,7 @@ interface FillIndexWithDataParams {
   securityKey: string
   indexContent: string
   indexData: TemplateValues
+  client: CozyClient
 }
 
 export const fillIndexWithData = async ({
@@ -141,7 +146,8 @@ export const fillIndexWithData = async ({
   port,
   securityKey,
   indexContent,
-  indexData
+  indexData,
+  client
 }: FillIndexWithDataParams): Promise<string> => {
   let output = indexContent
 
@@ -157,9 +163,16 @@ export const fillIndexWithData = async ({
     absoluteUrlBasePath
   )
 
-  Object.entries(indexData).forEach(([key, value]) => {
+  const absoluteIndexData = enforceAbsoluteUrlsInTemplate(indexData, client)
+  console.log('🟥 absoluteIndexData', absoluteIndexData)
+  console.log('🟥 indexData', indexData)
+  Object.entries(absoluteIndexData).forEach(([key, value]) => {
     output = replaceAll(output, `{{.${key}}}`, value)
   })
+
+  const protocol = isSecureProtocol(client) ? 'https' : 'http'
+  output = replaceAll(output, 'href="//', `href="${protocol}://`)
+  output = replaceAll(output, 'src="//', `src="${protocol}://`)
 
   return output
 }
@@ -180,4 +193,19 @@ const replaceProtocolRelativeUrlsWithAbsoluteUrls = (
   return str
     .replace(/href="(?!http|\/\/)/g, `href="${absoluteUrlBasePath}/`)
     .replace(/src="(?!http|\/\/)/g, `src="${absoluteUrlBasePath}/`)
+}
+
+const enforceAbsoluteUrlsInTemplate = (
+  templateValues: TemplateValues,
+  client: CozyClient
+): TemplateValues => {
+  const protocol = isSecureProtocol(client) ? 'https' : 'http'
+
+  const absoluteTemplateValues = Object.fromEntries(
+    Object.entries(templateValues).map(([key, value]) => {
+      return [key, replaceAll(value, 'href="//', `href="${protocol}://`)]
+    })
+  ) as TemplateValues
+
+  return absoluteTemplateValues
 }

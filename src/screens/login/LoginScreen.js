@@ -12,6 +12,7 @@ import { TransitionToAuthorizeView } from './components/transitions/TransitionTo
 import { TwoFactorAuthenticationView } from './components/TwoFactorAuthenticationView'
 
 import { navigateToError } from '/app/domain/errors/navigateToError'
+import { useLoadingOverlay } from '/app/view/Loading/LoadingOverlayProvider'
 import {
   callInitClient,
   call2FAInitClient,
@@ -37,6 +38,7 @@ import { routes } from '/constants/routes'
 import { setStatusBarColorToMatchBackground } from '/screens/login/components/functions/clouderyBackgroundFetcher'
 import { getInstanceFromFqdn } from '/screens/login/components/functions/getInstanceFromFqdn'
 import { getInstanceDataFromFqdn } from '/screens/login/components/functions/getInstanceDataFromRequest'
+import { TwakeWelcomeView } from '/screens/login/components/TwakeWelcomeView'
 
 const log = Minilog('LoginScreen')
 
@@ -55,6 +57,7 @@ const colors = getColors()
 
 const LoginSteps = ({
   clouderyMode,
+  clouderyType,
   clouderyTheme,
   disableAutofocus,
   goBack,
@@ -63,6 +66,7 @@ const LoginSteps = ({
   setClient,
   setClouderyTheme
 }) => {
+  const { hideOverlay } = useLoadingOverlay()
   const { showSplashScreen } = useSplashScreen()
   const [state, setState] = useState({
     step: CLOUDERY_STEP
@@ -252,6 +256,7 @@ const LoginSteps = ({
 
       const result = await connectOidcClient(client, code)
 
+      hideOverlay()
       if (result.state === STATE_2FA_NEEDED) {
         setState(oldState => ({
           ...oldState,
@@ -331,6 +336,7 @@ const LoginSteps = ({
   )
 
   const startOidcOnboarding = (onboardUrl, code) => {
+    hideOverlay()
     setState(oldState => ({
       ...oldState,
       step: OIDC_ONBOARD_STEP,
@@ -556,18 +562,28 @@ const LoginSteps = ({
   }, [])
 
   if (state.step === CLOUDERY_STEP) {
-    return (
-      <ClouderyView
-        clouderyTheme={clouderyTheme}
-        clouderyMode={clouderyMode}
-        disableAutofocus={disableAutofocus}
-        setClouderyTheme={setClouderyTheme}
-        setInstanceData={setInstanceData}
-        startOidcOAuth={startOidcOAuth}
-        startOidcOnboarding={startOidcOnboarding}
-        setError={setError}
-      />
-    )
+    if (clouderyType === 'twake') {
+      return (
+        <TwakeWelcomeView
+          startOidcOAuth={startOidcOAuth}
+          startOidcOnboarding={startOidcOnboarding}
+          setInstanceData={setInstanceData}
+        />
+      )
+    } else {
+      return (
+        <ClouderyView
+          clouderyTheme={clouderyTheme}
+          clouderyMode={clouderyMode}
+          disableAutofocus={disableAutofocus}
+          setClouderyTheme={setClouderyTheme}
+          setInstanceData={setInstanceData}
+          startOidcOAuth={startOidcOAuth}
+          startOidcOnboarding={startOidcOnboarding}
+          setError={setError}
+        />
+      )
+    }
   }
 
   if (state.step === PASSWORD_STEP) {
@@ -683,6 +699,7 @@ const LoginSteps = ({
 
 export const LoginScreen = ({
   clouderyMode,
+  clouderyType,
   disableAutofocus,
   goBack,
   navigation,
@@ -709,6 +726,7 @@ export const LoginScreen = ({
     >
       <LoginSteps
         clouderyMode={clouderyMode}
+        clouderyType={clouderyType}
         clouderyTheme={clouderyTheme}
         navigation={navigation}
         route={route}

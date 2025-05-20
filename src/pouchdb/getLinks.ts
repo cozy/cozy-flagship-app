@@ -9,11 +9,12 @@ import { platformReactNative } from '/pouchdb/platformReactNative'
 import CozyClient, { CozyLink, StackLink } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 import { default as PouchLink } from 'cozy-pouch-link'
+import { PouchLinkOptions } from 'cozy-pouch-link/types/CozyPouchLink'
 
 const log = Minilog('🔗 GetLinks')
 
-export const REPLICATION_DEBOUNCE = 5 * 60 * 1000 // 5 min
-export const REPLICATION_DEBOUNCE_MAX_DELAY = 10 * 60 * 1000 // 10min
+export const REPLICATION_DEBOUNCE = 60 * 1000 // 60 seconds
+export const REPLICATION_DEBOUNCE_MAX_DELAY = 5 * 60 * 1000 // 5 min
 
 // The io.cozy.jobs are intentionnaly skipped from this list
 export const offlineDoctypes = [
@@ -30,6 +31,11 @@ export const offlineDoctypes = [
   'io.cozy.apps.suggestions',
   'io.cozy.triggers',
   'io.cozy.apps_registry',
+  'io.cozy.calendar.events',
+  'io.cozy.calendar.todos',
+  'io.cozy.calendar.presence',
+  'io.cozy.timeseries.grades',
+  'io.cozy.identities',
 
   // app specific
   'io.cozy.mespapiers.settings',
@@ -62,7 +68,7 @@ export const getLinks = (): CozyLink[] => {
         adapter: 'react-native-sqlite'
       }
     }
-  }
+  } as unknown as PouchLinkOptions
 
   const stackLink = new StackLink({
     platform: platformReactNative,

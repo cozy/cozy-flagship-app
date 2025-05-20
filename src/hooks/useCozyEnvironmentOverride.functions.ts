@@ -12,6 +12,12 @@ import {
   getClouderyEnvFromAsyncStorage,
   saveClouderyEnvOnAsyncStorage
 } from '/screens/login/cloudery-env/clouderyEnv'
+import {
+  ClouderyType,
+  getClouderyTypeFromAsyncStorage,
+  isClouderyType,
+  saveClouderyTypeOnAsyncStorage
+} from '/screens/login/cloudery-env/clouderyType'
 
 const ENV_OVERRIDE_PATH = 'cozy_env_override' as const
 
@@ -53,14 +59,27 @@ const parseClouderyEnvFromUrl = (url: string): ClouderyEnv | null => {
   return clouderyEnv
 }
 
+const parseClouderyTypeFromUrl = (url: string): ClouderyType | null => {
+  const partnerUrl = new URL(url)
+
+  const clouderyType = partnerUrl.searchParams.get('cloudery_type')
+
+  if (!clouderyType || !isClouderyType(clouderyType)) {
+    return null
+  }
+
+  return clouderyType
+}
+
 const alertNewEnvironment = async (): Promise<void> => {
   const clouderyEnv = await getClouderyEnvFromAsyncStorage()
+  const clouderyType = await getClouderyTypeFromAsyncStorage()
   const partner = await getOnboardingPartner()
 
   const partnerString = partner.hasReferral
     ? `Partner: ${partner.source} / ${partner.context}`
     : 'Partner: (none)'
-  const environmentString = `Cloudery: ${clouderyEnv}`
+  const environmentString = `Cloudery: ${clouderyType} - ${clouderyEnv}`
 
   Alert.alert(
     'Environment',
@@ -88,6 +107,12 @@ export const extractEnvFromUrl = async (url: string | null): Promise<void> => {
   const clouderyEnv = parseClouderyEnvFromUrl(url)
   if (clouderyEnv) {
     await saveClouderyEnvOnAsyncStorage(clouderyEnv)
+    envHasChanged = true
+  }
+
+  const clouderyType = parseClouderyTypeFromUrl(url)
+  if (clouderyType) {
+    await saveClouderyTypeOnAsyncStorage(clouderyType)
     envHasChanged = true
   }
 
