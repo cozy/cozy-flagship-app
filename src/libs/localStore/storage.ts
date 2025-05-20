@@ -100,11 +100,16 @@ export const getData = async <T>(name: StorageKey): Promise<T | null> => {
 
 export const clearCozyData = async (): Promise<void> => {
   try {
-    const keys = Object.values(CozyPersistedStorageKeys)
+    const keys = storage.getAllKeys()
+    const keysToKeep = Object.values(
+      DevicePersistedStorageKeys
+    ) as unknown as string
 
     for (const key of keys) {
-      await removeItem(key)
-      storage.delete(key)
+      if (!keysToKeep.includes(key)) {
+        await removeItem(key)
+        storage.delete(key)
+      }
     }
   } catch (error) {
     log.error(`Failed to clear data from persistent storage`, error)
