@@ -7,6 +7,7 @@ import { Typography } from '/ui/Typography'
 
 type ButtonPropsbase = TouchableOpacityProps & {
   variant?: 'primary' | 'secondary'
+  textColor?: string
 }
 
 type ButtonPropsWithChildren = ButtonPropsbase & {
@@ -28,6 +29,7 @@ export const Button = ({
   onPress,
   style,
   variant = 'primary',
+  textColor,
   ...props
 }: ButtonProps): JSX.Element | null => {
   const { colors } = useCozyTheme()
@@ -54,7 +56,8 @@ export const Button = ({
             variant === 'primary' && {
               color: colors.primaryContrastTextColor
             },
-            disabled && { color: colors.actionColorDisabled }
+            disabled && { color: colors.actionColorDisabled },
+            textColor !== undefined && { color: textColor }
           ]}
         >
           {label}

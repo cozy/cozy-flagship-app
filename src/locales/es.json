@@ -22,7 +22,10 @@
     "cacheCheckError": "Se ha producido un error al procesar su solicitud",
     "print": "No se ha podido imprimir, inténtelo de nuevo.",
     "shareFiles_other": "No pudimos compartir tus archivos, por favor intenta de nuevo.",
-    "shareFiles_interval": "(1)[No pudimos compartir tu archivo, por favor intenta de nuevo.]||||(2-inf)[No pudimos compartir tus archivos, por favor intenta de nuevo.]"
+    "shareFiles_interval": "(1)[No pudimos compartir tu archivo, por favor intenta de nuevo.]||||(2-inf)[No pudimos compartir tus archivos, por favor intenta de nuevo.]",
+    "cozyUrlRequired": "Se requiere la dirección de Cozy",
+    "hasMispelledCozy": "Woops, la dirección no es correcta. ¡Prueba con \"cozy\" con \"z\"!",
+    "noEmailAsCozyUrl": "La dirección de Cozy no es tu correo electrónico"
   },
   "logout_dialog": {
     "cancel": "Cancelar",
@@ -102,6 +105,21 @@
       "buttonSignin": "Crear",
       "buttonLogin": "Ya tengo una Nube Personal",
       "title": "Nube Personal"
+    },
+    "welcomeTwake": {
+      "body": "Accede ya a tu Twake Workplace, el hogar digital donde reunir todos tus datos",
+      "buttonSignin": "Crear Twake ID",
+      "buttonLogin": "Acceso",
+      "title": "Twake Workplace",
+      "useYourCompanyServer": "Utilice el servidor de su empresa",
+      "byContinuingYourAgreeingToOur": "Al continuar, acepta nuestra",
+      "privacyPolicy": "Política de Privacidad"
+    },
+    "companyServer": {
+      "title": "Acceso",
+      "body": "Para conectarse y acceder a su Cozy, introduzca su URL",
+      "textFieldLabel": "Url",
+      "buttonLogin": "Siguiente"
     }
   },
   "services": {

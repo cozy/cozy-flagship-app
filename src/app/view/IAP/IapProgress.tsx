@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   headerTextStyle: {
     fontSize: 13,
-    fontFamily: 'Lato-Bold',
+    fontFamily: 'Inter-Bold',
     color: colors.paperBackgroundColor,
     textAlign: 'center',
     marginTop: 16

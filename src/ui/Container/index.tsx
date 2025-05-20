@@ -5,11 +5,14 @@ import { useDimensions } from '/libs/dimensions'
 import { styles } from '/ui/Container/styles'
 import { useCozyTheme } from '/ui/CozyTheme/CozyTheme'
 
-type ContainerProps = ViewProps
+type ContainerProps = ViewProps & {
+  transparent?: boolean
+}
 
 export const Container = ({
   children,
   style,
+  transparent = false,
   ...props
 }: ContainerProps): JSX.Element => {
   const dimensions = useDimensions()
@@ -21,7 +24,9 @@ export const Container = ({
         styles.container,
         {
           paddingBottom: dimensions.navbarHeight + 16,
-          backgroundColor: colors.paperBackgroundColor
+          backgroundColor: transparent
+            ? 'transparent'
+            : colors.paperBackgroundColor
         },
         style
       ]}

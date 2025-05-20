@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 import { Platform } from 'react-native'
 
 import CozyClient from 'cozy-client'
@@ -52,6 +53,7 @@ const fns = getDevModeFunctions(
 )
 
 export const determineSecurityFlow = async (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   client: CozyClient
 ): Promise<void> => {
   if (await fns.isAutoLockEnabled()) {
@@ -68,6 +70,12 @@ export const determineSecurityFlow = async (
     devlog('🔏', 'Application does not have autolock activated')
     devlog('🔏', 'Device is unsecured')
 
+    // XXX For now we want to disable LOCK enforcing on unsecure devices
+    // since Twake users don't have any password. So until we find a better
+    // way to handle this, lets disable this part
+    //*
+    await hideSplashScreen(splashScreens.LOCK_SCREEN)
+    /*/
     const params = await getSecFlowInitParams(client)
 
     if (params.createPassword) {
@@ -75,6 +83,7 @@ export const determineSecurityFlow = async (
     } else {
       return showSecurityScreen(lockScreens.PIN_PROMPT)
     }
+    // */
   }
 }
 

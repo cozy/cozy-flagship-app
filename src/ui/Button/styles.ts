@@ -13,9 +13,10 @@ export interface ButtonStyles {
 export const styles = (colors: CozyThemeColors): ButtonStyles =>
   StyleSheet.create({
     button: {
-      borderRadius: 2,
-      paddingHorizontal: 16,
-      paddingVertical: 11,
+      borderRadius: 100,
+      paddingHorizontal: 24,
+      paddingVertical: 14,
+      minHeight: 40,
       width: '100%'
     },
     primary: {

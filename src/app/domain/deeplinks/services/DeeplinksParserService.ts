@@ -104,9 +104,9 @@ export const parseFallbackURL = (url: string | null): FallbackUrl => {
 
     if (
       fallback?.startsWith(strings.COZY_SCHEME) ||
-      fallback?.startsWith(strings.cloudery.prodBaseUri) ||
-      fallback?.startsWith(strings.cloudery.intBaseUri) ||
-      fallback?.startsWith(strings.cloudery.devBaseUri)
+      fallback?.startsWith(strings.cloudery.cozy.prodBaseUri) ||
+      fallback?.startsWith(strings.cloudery.cozy.intBaseUri) ||
+      fallback?.startsWith(strings.cloudery.cozy.devBaseUri)
     ) {
       fallback = undefined
     }

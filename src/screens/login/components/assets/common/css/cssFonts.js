@@ -11,6 +11,10 @@ export const fontsCss = instance => {
   boldLatoUrl.pathname = 'assets/fonts/Lato-Bold.immutable.woff2'
   const boldLatoUrlString = boldLatoUrl.toString()
 
+  const interUrl = new URL(instance)
+  interUrl.pathname = 'assets/fonts/Inter-VariableFont_opsz,wght.ttf'
+  const interUrlString = interUrl.toString()
+
   return `
 @font-face {
   font-family: Lato;
@@ -24,6 +28,14 @@ export const fontsCss = instance => {
   font-style: normal;
   font-weight: bold;
   src: url("${boldLatoUrlString}") format("woff2");
+  font-display: fallback;
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  src: url("${interUrlString}");
   font-display: fallback;
 }
 `
