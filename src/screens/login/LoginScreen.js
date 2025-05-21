@@ -283,6 +283,29 @@ const LoginSteps = ({
     }
   }
 
+  const startOidcOauthNoCode = async instance => {
+    if (await NetService.isOffline())
+      NetService.handleOffline(routes.authenticate)
+
+    try {
+      const client = await createClient(instance)
+
+      await client.certifyFlagship()
+
+      await authorizeClientAndLogin({
+        client,
+        sessionCode: undefined
+      })
+
+      showSplashScreen()
+      setClient(client)
+    } catch (error) {
+      if (error !== OAUTH_USER_CANCELED_ERROR) {
+        setError(error.message, error)
+      }
+    }
+  }
+
   const startMagicLinkOAuth = useCallback(
     async (fqdn, magicCode) => {
       if (await NetService.isOffline())
@@ -564,6 +587,7 @@ const LoginSteps = ({
           startOidcOAuth={startOidcOAuth}
           startOidcOnboarding={startOidcOnboarding}
           setInstanceData={setInstanceData}
+          startOidcOauthNoCode={startOidcOauthNoCode}
         />
       )
     } else {

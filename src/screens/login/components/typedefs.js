@@ -77,6 +77,12 @@
  */
 
 /**
+ * Start OIDC Oauth process for current instance without code.
+ * @callback startOidcOauthNoCode
+ * @param {string} instance
+ */
+
+/**
  * Start OIDC Onboarding process.
  * @callback startOidcOnboarding
  * @param {string} onboardUrl

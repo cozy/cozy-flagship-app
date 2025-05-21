@@ -31,13 +31,15 @@ interface TwakeWelcomeViewProps {
   startOidcOAuth: startOidcOAuth
   startOidcOnboarding: startOidcOnboarding
   setInstanceData: setInstanceData
+  startOidcOauthNoCode: startOidcOauthNoCode
 }
 
 export const TwakeWelcomeView = ({
   setError,
   startOidcOAuth,
   startOidcOnboarding,
-  setInstanceData
+  setInstanceData,
+  startOidcOauthNoCode
 }: TwakeWelcomeViewProps): JSX.Element => {
   const { setOnboardedRedirection } = useHomeStateContext()
   const [isCustomServer, setIsCustomServer] = useState(false)
@@ -100,6 +102,7 @@ export const TwakeWelcomeView = ({
         close={(): void => setIsCustomServer(false)}
         openTos={openTos}
         setInstanceData={setInstanceData}
+        startOidcOauthNoCode={startOidcOauthNoCode}
       />
     )
   }
