@@ -2,12 +2,13 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { BackHandler, StyleSheet } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 
-import { BlockedCozyError, rootCozyUrl } from 'cozy-client'
-import { getErrorMessage } from 'cozy-intent'
+import { BlockedCozyError, fetchRegistrationDetails } from 'cozy-client'
+import Minilog from 'cozy-minilog'
 
 import { routes } from '/constants/routes'
 import strings from '/constants/strings.json'
 import { sanitizeUrlInput } from '/app/domain/authentication/utils/cozySanitizeUrl'
+import { getErrorMessage } from '/libs/functions/getErrorMessage'
 import { navigate } from '/libs/RootNavigation'
 import { t } from '/locales/i18n'
 import { getColors } from '/ui/colors'
@@ -20,6 +21,8 @@ import { Left } from '/ui/Icons/Left'
 import { Link } from '/ui/Link'
 import { TextField } from '/ui/TextField'
 import { Typography } from '/ui/Typography'
+
+const log = Minilog('TwakeCustomServerView')
 
 const colors = getColors()
 
@@ -34,12 +37,14 @@ interface TwakeCustomServerViewProps {
   openTos: () => void
   close: () => void
   setInstanceData: setInstanceData
+  startOidcOauthNoCode: startOidcOauthNoCode
 }
 
 export const TwakeCustomServerView = ({
   openTos,
   close,
-  setInstanceData
+  setInstanceData,
+  startOidcOauthNoCode
 }: TwakeCustomServerViewProps): JSX.Element => {
   const [input, setInput] = useState('')
   const [error, setError] = useState<string | undefined>()
@@ -66,16 +71,24 @@ export const TwakeCustomServerView = ({
     setError(undefined)
     try {
       const sanitizedInput = sanitizeUrlInput(input)
-      const sanitizedUrl = new URL(sanitizedInput)
-      const checkInstanceData = {
-        instance: sanitizedUrl.origin,
-        fqdn: sanitizedUrl.host
+
+      const details = await fetchRegistrationDetails(new URL(sanitizedInput))
+
+      if (details.isOIDC) {
+        startOidcOauthNoCode(details.rootUrl.origin)
+      } else {
+        const url = new URL(details.rootUrl)
+        const checkInstanceData = {
+          instance: url.origin,
+          fqdn: url.host
+        }
+        setInstanceData({ ...checkInstanceData })
       }
-
-      await rootCozyUrl(new URL(checkInstanceData.instance))
-
-      setInstanceData({ ...checkInstanceData })
     } catch (e: unknown) {
+      const errorMessage = getErrorMessage(e)
+      log.error(
+        `Something went wrong while trying to login to Custom Server: ${errorMessage}`
+      )
       if (e instanceof BlockedCozyError) {
         navigate(routes.error, {
           type: strings.errorScreens.cozyBlocked
