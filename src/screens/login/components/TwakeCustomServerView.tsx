@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { BackHandler, StyleSheet } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 
-import { BlockedCozyError, registrationDetails } from 'cozy-client'
+import { BlockedCozyError, fetchRegistrationDetails } from 'cozy-client'
 import Minilog from 'cozy-minilog'
 
 import { routes } from '/constants/routes'
@@ -72,7 +72,7 @@ export const TwakeCustomServerView = ({
     try {
       const sanitizedInput = sanitizeUrlInput(input)
 
-      const details = await registrationDetails(new URL(sanitizedInput))
+      const details = await fetchRegistrationDetails(new URL(sanitizedInput))
 
       if (details.isOIDC) {
         startOidcOauthNoCode(details.rootUrl.origin)
