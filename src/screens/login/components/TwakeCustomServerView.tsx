@@ -120,6 +120,7 @@ export const TwakeCustomServerView = ({
               autoFocus={false}
               placeholder="https://claude.mycozy.cloud"
               placeholderTextColor={colors.actionColorDisabled}
+              inputMode="url"
             />
             {error && (
               <Typography variant="body2" color="error">
