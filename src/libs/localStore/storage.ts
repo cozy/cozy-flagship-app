@@ -8,6 +8,7 @@ import { logger } from '/libs/functions/logger'
 import { SerializedOfflineFilesConfiguration } from '/app/domain/io.cozy.files/offlineFilesConfiguration'
 import type { OnboardingPartner } from '/screens/welcome/install-referrer/onboardingPartner'
 import { OauthData } from '/libs/clientHelpers/persistClient'
+import { UserPersistedStorageKeys } from '/libs/localStore/userPersistedStorage'
 
 const log = logger('storage.ts')
 
@@ -101,9 +102,10 @@ export const getData = async <T>(name: StorageKey): Promise<T | null> => {
 export const clearCozyData = async (): Promise<void> => {
   try {
     const keys = storage.getAllKeys()
-    const keysToKeep = Object.values(
-      DevicePersistedStorageKeys
-    ) as unknown as string
+    const keysToKeep = [
+      ...Object.values(DevicePersistedStorageKeys),
+      ...Object.values(UserPersistedStorageKeys)
+    ] as string[]
 
     for (const key of keys) {
       if (!keysToKeep.includes(key)) {
