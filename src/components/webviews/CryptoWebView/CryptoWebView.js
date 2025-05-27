@@ -17,7 +17,7 @@ import { SupervisedWebView } from '/components/webviews/SupervisedWebView'
 
 const log = Minilog('🥷 CryptoWebView')
 
-export const CryptoWebView = ({ setHasCrypto }) => {
+export const CryptoWebView = () => {
   const [isLoading, setIsLoading] = useState(true)
   const webviewRef = useRef()
   const [markName] = useState(() => rnperformance.mark('CryptoWebView'))
@@ -57,16 +57,14 @@ export const CryptoWebView = ({ setHasCrypto }) => {
         markName: markName,
         measureName: 'CryptoWebView Loaded'
       })
-      setHasCrypto?.(true)
     }
 
     return () => {
       if (!isLoading) {
         unsubscribeFromCrypto(processMessage)
-        setHasCrypto?.(false)
       }
     }
-  }, [isLoading, setHasCrypto, webviewRef])
+  }, [isLoading, webviewRef])
 
   return (
     <View style={styles.cryptoView}>
