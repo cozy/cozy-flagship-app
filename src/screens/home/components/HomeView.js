@@ -1,15 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { get } from 'lodash'
 import { useFocusEffect } from '@react-navigation/native'
-import { AppState } from 'react-native'
 
 import {
   deconstructCozyWebLinkWithSlug,
   generateWebLink,
   useClient
 } from 'cozy-client'
-import { useNativeIntent } from 'cozy-intent'
-import Minilog from 'cozy-minilog'
 
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { navigateToApp } from '/libs/functions/openApp'
@@ -23,22 +19,6 @@ import { devlog } from '/core/tools/env'
 import { ScreenIndexes, useFlagshipUI } from '/app/view/FlagshipUI'
 import { OsReceiveScreen } from '/app/view/OsReceive/OsReceiveScreen'
 import { useFilesToUpload } from '/app/view/OsReceive/state/OsReceiveState'
-
-const log = Minilog('🏠 HomeView')
-
-const unzoomHomeView = webviewRef => {
-  try {
-    webviewRef?.injectJavaScript(
-      'window.dispatchEvent(new Event("closeApp"));true;'
-    )
-  } catch (e) {
-    // When reloading the CozyProxyWebView after HTML_CONTENT_EXPIRATION_DELAY_IN_MS
-    // then this JS injection can fail due to a race condition (during the reload process the WebView is unmount)
-    // This is not problematic as the newly refreshed WebView is already zoomed out
-    // However we still want to log this as an error to keep track of unexpected scenario
-    log.error('Error while calling unzoomHomeView', e.message)
-  }
-}
 
 /**
  * @typedef Props
@@ -54,10 +34,8 @@ const HomeView = ({ route, navigation }) => {
   const [uri, setUri] = useState('')
   const { shouldWaitCozyApp, setShouldWaitCozyApp } = useHomeStateContext()
   const [trackedWebviewInnerUri, setTrackedWebviewInnerUri] = useState('')
-  const nativeIntent = useNativeIntent()
   const session = useSession()
   const didBlurOnce = useRef(false)
-  const [webviewRef, setParentRef] = useState()
   const mainAppFallbackURLInitialParam = useInitialParam(
     'mainAppFallbackURL',
     route,
@@ -73,15 +51,6 @@ const HomeView = ({ route, navigation }) => {
   const { componentId } = useFlagshipUI('HomeView', ScreenIndexes.HOME_VIEW)
 
   useEffect(() => {
-    const subscription = AppState.addEventListener(
-      'change',
-      nextAppState => nextAppState === 'active' && unzoomHomeView(webviewRef)
-    )
-
-    return subscription.remove
-  }, [webviewRef])
-
-  useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
       didBlurOnce.current = true
       if (trackedWebviewInnerUri && client.isLogged) {
@@ -91,18 +60,6 @@ const HomeView = ({ route, navigation }) => {
 
     return unsubscribe
   }, [navigation, trackedWebviewInnerUri, client])
-
-  useFocusEffect(
-    useCallback(() => {
-      if (didBlurOnce.current) {
-        devlog(
-          'HomeView: useFocusEffect, didBlurOnce.current: true, unzoom Home View'
-        )
-
-        unzoomHomeView(webviewRef)
-      }
-    }, [webviewRef])
-  )
 
   useFocusEffect(
     useCallback(() => {
@@ -219,22 +176,12 @@ const HomeView = ({ route, navigation }) => {
   return uri && shouldWaitCozyApp !== undefined && !shouldWaitCozyApp ? (
     <>
       <CozyProxyWebView
-        setParentRef={setParentRef}
         slug="home"
         href={uri}
         trackWebviewInnerUri={handleTrackWebviewInnerUri}
         navigation={navigation}
         route={route}
         logId="HomeView"
-        onMessage={async event => {
-          const data = get(event, 'nativeEvent.data')
-
-          if (data) {
-            const { methodName } = JSON.parse(data)
-
-            if (methodName === 'openApp') nativeIntent?.call(uri, 'openApp')
-          }
-        }}
         componentId={componentId}
       />
 
