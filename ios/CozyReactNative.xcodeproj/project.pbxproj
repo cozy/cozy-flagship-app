@@ -19,11 +19,13 @@
 		643009FE24043073DD6A15DE /* libPods-CozyReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CA875020D8BE788449DD47FC /* libPods-CozyReactNative.a */; };
 		6B8CB25C2807246700E1F390 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 6B8CB25B2807246700E1F390 /* assets */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		92832EDB00FF4C2EAD9F811A /* Inter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 90B0EC53D3AE4171BBD95A6D /* Inter-Bold.ttf */; };
 		94BEBCC36EFC4F1DDD8E6E50 /* libPods-CozyReactNative-CozyReactNativeDev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A6C35B4CE552A45F0087FDE /* libPods-CozyReactNative-CozyReactNativeDev.a */; };
 		997B98B22769CFD100089037 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 997B98B12769CFD100089037 /* BootSplash.storyboard */; };
 		A98E5EB52A8CC8EF00CAC55D /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98E5EB42A8CC8EF00CAC55D /* ShareViewController.swift */; };
 		A98E5EB82A8CC8EF00CAC55D /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A98E5EB62A8CC8EF00CAC55D /* MainInterface.storyboard */; };
 		A98E5EBC2A8CC8EF00CAC55D /* CozyShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A98E5EB22A8CC8EF00CAC55D /* CozyShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		ACA0A767CBF24490B0ED8EC2 /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5680E07156234AC2874D356F /* Inter-Regular.ttf */; };
 		E4924AAA29963CAD00F415CE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		E4924AAB29963CAD00F415CE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		E4924AAC29963CAD00F415CE /* HttpServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7AA454281584D30052F4D8 /* HttpServer.m */; };
@@ -47,8 +49,6 @@
 		E4F8716629DDEC1E00C52A35 /* base@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715F29DDEC1E00C52A35 /* base@3x.png */; };
 		E4F8716729DDEC1E00C52A35 /* base@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4F8715F29DDEC1E00C52A35 /* base@3x.png */; };
 		F3B83720E44641879E6927C6 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0572B798A7D41908174A427 /* Lato-Regular.ttf */; };
-		92832EDB00FF4C2EAD9F811A /* Inter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 90B0EC53D3AE4171BBD95A6D /* Inter-Bold.ttf */; };
-		ACA0A767CBF24490B0ED8EC2 /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5680E07156234AC2874D356F /* Inter-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,10 +98,12 @@
 		2C7AA45128157D2D0052F4D8 /* CozyReactNative-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CozyReactNative-Bridging-Header.h"; sourceTree = "<group>"; };
 		2C7AA45228157D2E0052F4D8 /* HttpServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpServer.swift; sourceTree = "<group>"; };
 		2C7AA454281584D30052F4D8 /* HttpServer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HttpServer.m; sourceTree = "<group>"; };
+		5680E07156234AC2874D356F /* Inter-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Regular.ttf"; path = "../assets/fonts/Inter-Regular.ttf"; sourceTree = "<group>"; };
 		6B8CB25B2807246700E1F390 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 		79997E63AEB566EB66642538 /* Pods-CozyReactNative-CozyReactNativeDev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative-CozyReactNativeDev.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative-CozyReactNativeDev/Pods-CozyReactNative-CozyReactNativeDev.release.xcconfig"; sourceTree = "<group>"; };
 		79D616F87DFFDD069B1F634E /* libPods-CozyReactNative-CozyReactNativeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CozyReactNative-CozyReactNativeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CozyReactNative/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		90B0EC53D3AE4171BBD95A6D /* Inter-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Bold.ttf"; path = "../assets/fonts/Inter-Bold.ttf"; sourceTree = "<group>"; };
 		997B98B12769CFD100089037 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = CozyReactNative/BootSplash.storyboard; sourceTree = "<group>"; };
 		99A26C682632A5AC00365D30 /* CozyReactNative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = CozyReactNative.entitlements; path = CozyReactNative/CozyReactNative.entitlements; sourceTree = "<group>"; };
 		9A8507EB61A9895B473A06A3 /* Pods-CozyReactNative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CozyReactNative.release.xcconfig"; path = "Target Support Files/Pods-CozyReactNative/Pods-CozyReactNative.release.xcconfig"; sourceTree = "<group>"; };
@@ -131,8 +133,6 @@
 		EBA740E658AB4C90BED7F6D9 /* Lato-Regular.woff2 */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.woff2"; path = "../assets/fonts/Lato-Regular.woff2"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FB7AC79E047043178F1289F7 /* Lato-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Bold.ttf"; path = "../assets/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
-		90B0EC53D3AE4171BBD95A6D /* Inter-Bold.ttf */ = {isa = PBXFileReference; name = "Inter-Bold.ttf"; path = "../assets/fonts/Inter-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		5680E07156234AC2874D356F /* Inter-Regular.ttf */ = {isa = PBXFileReference; name = "Inter-Regular.ttf"; path = "../assets/fonts/Inter-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
