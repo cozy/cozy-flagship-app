@@ -6,7 +6,7 @@ import {
 } from '/libs/localStore/storage'
 
 const ALL_CLOUDERY_TYPES = ['cozy', 'twake'] as const
-const CLOUDERY_DEFAULT_TYPE = 'twake'
+const CLOUDERY_DEFAULT_TYPE = 'cozy'
 type ClouderyTypeTuple = typeof ALL_CLOUDERY_TYPES
 export type ClouderyType = ClouderyTypeTuple[number]
 

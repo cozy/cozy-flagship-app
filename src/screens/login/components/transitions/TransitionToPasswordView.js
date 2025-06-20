@@ -154,7 +154,8 @@ export const TransitionToPasswordView = ({
               { translateY: animatedTranslateY },
               { scaleX: animatedScale },
               { scaleY: animatedScale }
-            ]
+            ],
+            display: 'none'
           }
         ]}
       >

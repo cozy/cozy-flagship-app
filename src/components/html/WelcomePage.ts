@@ -1,16 +1,10 @@
-import { getLogoSvg } from '/ui/Logo/logo'
-import { getColors } from '/ui/colors'
+import { getTwakeLogoSvg } from '/ui/Logo/logo'
 import { t } from '/locales/i18n'
-
-const colors = getColors()
 
 const body = `
   <div class="d-flex flex-grow-1 flex-column justify-content-center text-center">
     <div class="mb-4">
-      ${getLogoSvg({
-        backgroundColor: colors.primaryColor,
-        foregroundColor: colors.paperBackgroundColor
-      })}
+      ${getTwakeLogoSvg()}
     </div>
 
     <div class="h2 mb-3">${t('screens.welcome.title')}</div>

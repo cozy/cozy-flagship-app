@@ -18,7 +18,7 @@ import { readonlyJs } from '../common/js/jsReadonly'
 import { getDimensions } from '/libs/dimensions'
 import type { ClouderyTheme } from '/screens/login/components/functions/clouderyThemeFetcher'
 import { cssPadding } from '/screens/login/components/functions/webViewPaddingInjection'
-import { getAvatarDataUri } from '/ui/Logo/avatar'
+import { getTwakeAvatarDataUri } from '/ui/Logo/avatar'
 
 const strBackButton = "Revenir à l'écran précédent"
 const strPasswordField = 'Mot de passe'
@@ -52,7 +52,7 @@ export const getHtml = (
   const avatarUrl = new URL(instance)
   avatarUrl.pathname = 'public/avatar'
   const dimensions = getDimensions()
-  const avatarSvgUrl = getAvatarDataUri()
+  const avatarSvgUrl = getTwakeAvatarDataUri()
 
   return `
 <!DOCTYPE html>
@@ -68,7 +68,7 @@ export const getHtml = (
     <style type="text/css">${cssPadding}</style>
     ${getCustomThemeLink(clouderyTheme)}
   </head>
-  <body class="cirrus theme-inverted">
+  <body class="cirrus">
     <form id="login-form" method="POST" action="#" class="d-contents">
       <input id="trusted-device-token" type="hidden" name="trusted-device-token" value="" />
       <main class="wrapper">
@@ -80,7 +80,7 @@ export const getHtml = (
         </header>
 
         <div class="d-flex flex-column align-items-center">
-          <img src="${avatarSvgUrl}" alt="" id="avatar" class="avatar my-3 border border-primary border-2 rounded-circle" style="box-sizing: content-box;" />
+          <img src="${avatarSvgUrl}" alt="" id="avatar" class="avatar my-3" style="box-sizing: content-box;" />
           <h1 class="h4 h2-md mb-0 text-center">${encode(title)}</h1>
           <p class="mb-4 mb-md-5 text-muted">${encode(fqdn)}</p>
           <div id="login-field" class="input-group form-floating has-validation w-100">

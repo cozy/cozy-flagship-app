@@ -103,7 +103,8 @@ export const TransitionToAuthorizeView = ({
             left: targetLeft,
             height: targetSize,
             width: targetSize,
-            transform: [{ scaleX: animatedScale }, { scaleY: animatedScale }]
+            transform: [{ scaleX: animatedScale }, { scaleY: animatedScale }],
+            display: 'none'
           }
         ]}
       >
