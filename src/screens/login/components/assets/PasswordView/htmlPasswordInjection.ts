@@ -25,7 +25,7 @@ const strPasswordField = 'Mot de passe'
 const strPasswordHide = 'Cacher le mot de passe'
 const strPasswordShow = 'Afficher le mot de passe'
 const strForgotPassword = "J'ai oublié mon mot de passe"
-const strSubmit = 'SE CONNECTER'
+const strSubmit = 'Se connecter'
 
 const locale = 'fr'
 

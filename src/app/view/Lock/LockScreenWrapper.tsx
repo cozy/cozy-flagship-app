@@ -12,6 +12,9 @@ import { PasswordPrompt } from '/app/view/Secure/PasswordPrompt'
 import { PinPrompt } from '/app/view/Secure/PinPrompt'
 import { SetPasswordView } from '/app/view/Secure/SetPasswordView'
 import { SetPinView } from '/app/view/Secure/SetPinView'
+import { getColors } from '/ui/colors'
+
+const colors = getColors()
 
 export const LockScreenWrapper = (): JSX.Element | null => {
   const { currentSecurityScreen } = useLockScreenWrapper()
@@ -69,6 +72,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: ScreenIndexes.LOCK_SCREEN
+    zIndex: ScreenIndexes.LOCK_SCREEN,
+    backgroundColor: colors.paperBackgroundColor
   }
 })
