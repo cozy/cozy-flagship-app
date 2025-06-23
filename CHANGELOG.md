@@ -1,7 +1,9 @@
-# 1.1.32
+# 1.1.35
+
+# 1.1.34
 
 ## ✨ Features
-
+ - New Twake UI
 
 ## 🐛 Bug Fixes
 
