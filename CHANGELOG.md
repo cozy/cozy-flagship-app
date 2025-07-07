@@ -1,4 +1,8 @@
+# 1.1.36
+
 # 1.1.35
+
+Bump only version to update iOS app name
 
 # 1.1.34
 
