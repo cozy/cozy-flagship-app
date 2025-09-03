@@ -1,28 +1,28 @@
 {
   "logout_dialog": {
-    "content": "Êtes-vous sûr de vouloir vous déconnecter de votre Cozy ?"
+    "content": "Êtes-vous sûr de vouloir vous déconnecter de votre Twake ?"
   },
   "screens": {
     "clouderyOffer": {
-      "backButton": "RETOUR À MON COZY",
+      "backButton": "RETOUR À MON TWAKE",
       "success": {
-        "body": "Votre Cozy est en cours de mise à jour.\nVous recevrez une notification dès que votre achat sera finalisé."
+        "body": "Votre Twake est en cours de mise à jour.\nVous recevrez une notification dès que votre achat sera finalisé."
       }
     },
     "cozyBlocked": {
-      "title": "Le fonctionnement de votre Cozy a été momentanément interrompu"
+      "title": "Le fonctionnement de votre Twake a été momentanément interrompu"
     },
     "cozyNotFound": {
-      "body": "Nous n'avons trouvé aucun Cozy à cette adresse. Il s'agit peut-être d'une erreur de frappe. Pour le savoir, vérifiez l'adresse de votre Cozy dans l'e-mail que nous vous avons envoyé au moment de sa création.",
-      "title": "L'adresse de ce Cozy n'existe pas."
+      "body": "Nous n'avons trouvé aucun Twake à cette adresse. Il s'agit peut-être d'une erreur de frappe. Pour le savoir, vérifiez l'adresse de votre Twake dans l'e-mail que nous vous avons envoyé au moment de sa création.",
+      "title": "L'adresse de ce Twake n'existe pas."
     },
     "SecureScreen": {
-      "passwordprompt_body": "L’accès à votre appareil n’est pas sécurisé. Choisir un mot de passe pour sécuriser l’accès à votre Cozy.",
-      "passwordprompt_title": "Sécuriser l’accès à votre Cozy",
+      "passwordprompt_body": "L’accès à votre appareil n’est pas sécurisé. Choisir un mot de passe pour sécuriser l’accès à votre Twake.",
+      "passwordprompt_title": "Sécuriser l’accès à votre Twake",
       "pinprompt_body": "Accédez plus rapidement à votre application en activant le déverrouillage de votre application par code PIN"
     },
     "login": {
-      "invalidMagicCode": "Le lien pour accéder à votre Cozy est tronqué ou a expiré"
+      "invalidMagicCode": "Le lien pour accéder à votre Twake est tronqué ou a expiré"
     },
     "welcome": {
       "body": "Accédez dès maintenant à votre Cloud Personnel, le domicile numérique pour réunir toutes vos données",
@@ -32,13 +32,13 @@
   },
   "modals": {
     "IconChangedModal": {
-      "description": "L'icône de l'application « Cozy » a été modifiée."
+      "description": "L'icône de l'application « Twake » a été modifiée."
     },
     "ErrorToken": {
-      "body": "Vous semblez avoir révoqué cet appareil depuis votre Cozy. Pour accéder à nouveau à vos données, veuillez vous reconnecter. Si cette action ne vient pas de vous, n'hésitez pas à nous contacter à <linkTag>email</linkTag>."
+      "body": "Vous semblez avoir révoqué cet appareil depuis votre Twake. Pour accéder à nouveau à vos données, veuillez vous reconnecter. Si cette action ne vient pas de vous, n'hésitez pas à nous contacter à <linkTag>email</linkTag>."
     }
   },
   "software": {
-    "name": "Application Mobile Cozy"
+    "name": "Application Mobile Twake"
   }
 }

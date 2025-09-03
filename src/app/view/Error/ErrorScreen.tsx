@@ -63,7 +63,7 @@ const HTML: Record<string, ErrorPageGenerator> = {
 const handlers: Handlers = {
   backButton: { call: goBack, shouldCatch: false },
   mailto: {
-    call: () => Linking.openURL('mailto:contact@cozycloud.cc'),
+    call: () => Linking.openURL('mailto:support@twake.app'),
     shouldCatch: true
   },
   reset: {

@@ -67,9 +67,7 @@ describe('AuthService', () => {
 
   it('opens the mail app when handleSupportEmail is called', () => {
     handleSupportEmail()
-    expect(mockLinking.openURL).toHaveBeenCalledWith(
-      'mailto:support@cozycloud.cc'
-    )
+    expect(mockLinking.openURL).toHaveBeenCalledWith('mailto:support@twake.app')
   })
 
   it('logs an error when handleSupportEmail fails', () => {
