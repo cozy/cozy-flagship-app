@@ -24,7 +24,7 @@ const handleTokenError = async (): Promise<void> => {
 
 export const handleSupportEmail = (): void => {
   try {
-    void Linking.openURL('mailto:support@cozycloud.cc')
+    void Linking.openURL('mailto:support@twake.app')
   } catch (error) {
     authLogger.error('Error while opening email app', error)
   }

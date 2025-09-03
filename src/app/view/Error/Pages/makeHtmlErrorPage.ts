@@ -31,7 +31,7 @@ const headerTemplate = `
 
 const footerTemplate = `
   <p class="text-center mb-3">
-    ${t('errors.contactUs')} <a id="mailto" href="#">contact@cozycloud.cc</a>.
+    ${t('errors.contactUs')} <a id="mailto" href="#">support@twake.app</a>.
   </p>
 `
 
@@ -138,7 +138,7 @@ export const makeHtmlErrorPage = ({
           if (mailToLink) {
             mailToLink.onclick = (e) => {
               e.preventDefault();
-  
+
               window.ReactNativeWebView.postMessage(JSON.stringify({
                 message: 'mailto'
               }))
