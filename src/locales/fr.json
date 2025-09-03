@@ -116,7 +116,12 @@
     "companyServer": {
       "title": "Se connecter",
       "body": {
-        "byUrl": "Pour vous connecter et accéder à votre Twake, veuillez saisir son URL"
+        "byUrl": "Pour vous connecter et accéder à votre Twake, veuillez saisir son URL",
+        "byEmail": "Pour vous connecter et accéder à votre Twake, veuillez saisir votre adresse email d'entreprise"
+      },
+      "toggle": {
+        "url": "Entrer l'URL de mon Twake",
+        "email": "Entrer mon adresse email d'entreprise"
       },
       "textFieldLabel": "Serveur",
       "buttonLogin": "Suivant"

@@ -46,7 +46,9 @@ export const TwakeCustomServerView = ({
   setInstanceData,
   startOidcOauthNoCode
 }: TwakeCustomServerViewProps): JSX.Element => {
+  const [isLoginByEmail, setIsLoginByEmail] = useState(true)
   const [urlInput, setUrlInput] = useState('')
+  const [emailInput, setEmailInput] = useState('')
   const [error, setError] = useState<string | undefined>()
 
   const version = useMemo(() => getVersion(), [])
@@ -63,8 +65,17 @@ export const TwakeCustomServerView = ({
       BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
   }, [handleBackPress])
 
+  const toggleLoginByEmail = (): void => {
+    setIsLoginByEmail(!isLoginByEmail)
+    setError(undefined)
+  }
+
   const handleUrlInput = (input: string): void => {
     setUrlInput(input)
+  }
+
+  const handleEmailInput = (input: string): void => {
+    setEmailInput(input)
   }
 
   const handleLoginByUrl = async (): Promise<void> => {
@@ -99,6 +110,10 @@ export const TwakeCustomServerView = ({
     }
   }
 
+  const handleLoginByEmail = async (): Promise<void> => {
+    // TODO
+  }
+
   return (
     <Container transparent={false}>
       <Grid container direction="column" justifyContent="space-between">
@@ -112,29 +127,68 @@ export const TwakeCustomServerView = ({
             <Typography variant="h2" color="textPrimary">
               {t('screens.companyServer.title')}
             </Typography>
-            <Typography
-              variant="body2"
-              color="textPrimary"
-              style={{
-                textAlign: 'center'
-              }}
-            >
-              {t('screens.companyServer.body.byUrl')}
-            </Typography>
-            <TextField
-              style={styles.urlField}
-              label={t('screens.companyServer.textFieldLabel')}
-              onChangeText={handleUrlInput}
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onSubmitEditing={handleLoginByUrl}
-              returnKeyType="go"
-              value={urlInput}
-              autoCapitalize="none"
-              autoFocus={false}
-              placeholder="https://claude.mycozy.cloud"
-              placeholderTextColor={colors.actionColorDisabled}
-              inputMode="url"
-            />
+            {isLoginByEmail ? (
+              <>
+                <Typography
+                  variant="body2"
+                  color="textPrimary"
+                  style={{
+                    textAlign: 'center'
+                  }}
+                >
+                  {t('screens.companyServer.body.byEmail')}
+                </Typography>
+                <TextField
+                  style={styles.urlField}
+                  label="Email"
+                  onChangeText={handleEmailInput}
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onSubmitEditing={handleLoginByEmail}
+                  returnKeyType="go"
+                  value={emailInput}
+                  autoCapitalize="none"
+                  autoFocus={false}
+                  placeholder="claude@company.com"
+                  placeholderTextColor={colors.actionColorDisabled}
+                  inputMode="email"
+                />
+              </>
+            ) : (
+              <>
+                <Typography
+                  variant="body2"
+                  color="textPrimary"
+                  style={{
+                    textAlign: 'center'
+                  }}
+                >
+                  {t('screens.companyServer.body.byUrl')}
+                </Typography>
+                <TextField
+                  style={styles.urlField}
+                  label={t('screens.companyServer.textFieldLabel')}
+                  onChangeText={handleUrlInput}
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onSubmitEditing={handleLoginByUrl}
+                  returnKeyType="go"
+                  value={urlInput}
+                  autoCapitalize="none"
+                  autoFocus={false}
+                  placeholder="https://claude.mycozy.cloud"
+                  placeholderTextColor={colors.actionColorDisabled}
+                  inputMode="url"
+                />
+              </>
+            )}
+
+            <Link onPress={toggleLoginByEmail}>
+              <Typography variant="caption" color="primary">
+                {isLoginByEmail
+                  ? t('screens.companyServer.toggle.url')
+                  : t('screens.companyServer.toggle.email')}
+              </Typography>
+            </Link>
+
             {error && (
               <Typography variant="body2" color="error">
                 {error}
@@ -146,7 +200,7 @@ export const TwakeCustomServerView = ({
         <Grid alignItems="center" direction="column" style={styles.footerGrid}>
           <Button
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onPress={handleLoginByUrl}
+            onPress={isLoginByEmail ? handleLoginByEmail : handleLoginByUrl}
             variant="primary"
             label={t('screens.companyServer.buttonLogin')}
             style={styles.loginButton}
