@@ -126,7 +126,8 @@
         "email": "Enter my company email address"
       },
       "textFieldLabel": "Url",
-      "buttonLogin": "Next"
+      "buttonLogin": "Next",
+      "companyServerNotFound": "Company server not found"
     }
   },
   "services": {
