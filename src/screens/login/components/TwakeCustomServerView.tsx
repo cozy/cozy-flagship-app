@@ -46,7 +46,7 @@ export const TwakeCustomServerView = ({
   setInstanceData,
   startOidcOauthNoCode
 }: TwakeCustomServerViewProps): JSX.Element => {
-  const [input, setInput] = useState('')
+  const [urlInput, setUrlInput] = useState('')
   const [error, setError] = useState<string | undefined>()
 
   const version = useMemo(() => getVersion(), [])
@@ -63,14 +63,14 @@ export const TwakeCustomServerView = ({
       BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
   }, [handleBackPress])
 
-  const handleInput = (input: string): void => {
-    setInput(input)
+  const handleUrlInput = (input: string): void => {
+    setUrlInput(input)
   }
 
-  const handleLogin = async (): Promise<void> => {
+  const handleLoginByUrl = async (): Promise<void> => {
     setError(undefined)
     try {
-      const sanitizedInput = sanitizeUrlInput(input)
+      const sanitizedInput = sanitizeUrlInput(urlInput)
 
       const details = await fetchRegistrationDetails(new URL(sanitizedInput))
 
@@ -119,16 +119,16 @@ export const TwakeCustomServerView = ({
                 textAlign: 'center'
               }}
             >
-              {t('screens.companyServer.body')}
+              {t('screens.companyServer.body.byUrl')}
             </Typography>
             <TextField
               style={styles.urlField}
               label={t('screens.companyServer.textFieldLabel')}
-              onChangeText={handleInput}
+              onChangeText={handleUrlInput}
               // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onSubmitEditing={handleLogin}
+              onSubmitEditing={handleLoginByUrl}
               returnKeyType="go"
-              value={input}
+              value={urlInput}
               autoCapitalize="none"
               autoFocus={false}
               placeholder="https://claude.mycozy.cloud"
@@ -146,7 +146,7 @@ export const TwakeCustomServerView = ({
         <Grid alignItems="center" direction="column" style={styles.footerGrid}>
           <Button
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onPress={handleLogin}
+            onPress={handleLoginByUrl}
             variant="primary"
             label={t('screens.companyServer.buttonLogin')}
             style={styles.loginButton}
