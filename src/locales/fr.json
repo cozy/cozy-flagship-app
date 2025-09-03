@@ -1,6 +1,6 @@
 {
   "support": {
-    "email": "support@cozycloud.cc"
+    "email": "support@twake.app"
   },
   "konnectors": {
     "errorDoubleRun": {
@@ -23,19 +23,19 @@
     "print": "Échec de l'impression, merci de ressayer.",
     "shareFiles_other": "Nous n'avons pas pu partager vos fichiers, veuillez réessayer.",
     "shareFiles_interval": "(1)[Nous n'avons pas pu partager votre fichier, veuillez réessayer.]||||(2-inf)[Nous n'avons pas pu partager vos fichiers, veuillez réessayer.]",
-    "cozyUrlRequired": "L'adresse du Cozy est requise",
+    "cozyUrlRequired": "L'adresse du Twake est requise",
     "hasMispelledCozy": "Oups, ce n'est pas la bonne adresse. Essayez d'écrire \"cozy\" avec un \"z\" !",
-    "noEmailAsCozyUrl": "L'adresse de votre Cozy n'est pas votre email"
+    "noEmailAsCozyUrl": "L'adresse de votre Twake n'est pas votre email"
   },
   "logout_dialog": {
     "cancel": "Annuler",
     "confirm": "Déconnecter",
-    "content": "Êtes-vous sûr de vouloir vous déconnecter de votre Cozy ?",
+    "content": "Êtes-vous sûr de vouloir vous déconnecter de votre Twake ?",
     "title": "Déconnexion"
   },
   "screens": {
     "clouderyOffer": {
-      "backButton": "RETOUR À MON COZY",
+      "backButton": "RETOUR À MON TWAKE",
       "iapProgress": "Achat en cours",
       "error": {
         "title": "Une erreur est survenue",
@@ -44,20 +44,20 @@
       },
       "success": {
         "title": "Paiement effectué",
-        "body": "Votre Cozy est en cours de mise à jour.\nVous recevrez une notification dès que votre achat sera finalisé.",
+        "body": "Votre Twake est en cours de mise à jour.\nVous recevrez une notification dès que votre achat sera finalisé.",
         "close": "Fermer"
       }
     },
     "cozyBlocked": {
-      "body": "Contactez-nous, si vous souhaitez en savoir plus, à l'adresse <a id=\"mailto\" href=\"#\">contact@cozycloud.cc</a>.",
-      "title": "Le fonctionnement de votre Cozy a été momentanément interrompu"
+      "body": "Contactez-nous, si vous souhaitez en savoir plus, à l'adresse <a id=\"mailto\" href=\"#\">support@twake.app</a>.",
+      "title": "Le fonctionnement de votre Twake a été momentanément interrompu"
     },
     "cozyNotFound": {
-      "body": "Nous n'avons trouvé aucun Cozy à cette adresse. Il s'agit peut-être d'une erreur de frappe. Pour le savoir, vérifiez l'adresse de votre Cozy dans l'e-mail que nous vous avons envoyé au moment de sa création.",
-      "title": "L'adresse de ce Cozy n'existe pas."
+      "body": "Nous n'avons trouvé aucun Twake à cette adresse. Il s'agit peut-être d'une erreur de frappe. Pour le savoir, vérifiez l'adresse de votre Twake dans l'e-mail que nous vous avons envoyé au moment de sa création.",
+      "title": "L'adresse de ce Twake n'existe pas."
     },
     "cozyNotOnboarded": {
-      "body": "Vous devez cliquer sur l'email envoyé à la fin de votre inscription pour terminer celle-ci. Si vous ne retrouvez pas cet email, n'hésitez pas à nous contacter à <a id=\"mailto\" href=\"#\">contact@cozycloud.cc</a>.",
+      "body": "Vous devez cliquer sur l'email envoyé à la fin de votre inscription pour terminer celle-ci. Si vous ne retrouvez pas cet email, n'hésitez pas à nous contacter à <a id=\"mailto\" href=\"#\">support@twake.app</a>.",
       "title": "Vous n'avez pas terminé votre inscription"
     },
     "genericError": {
@@ -79,9 +79,9 @@
     },
     "SecureScreen": {
       "confirm_pin_error": "Les codes PIN ne correspondent pas",
-      "passwordprompt_body": "L’accès à votre appareil n’est pas sécurisé. Choisir un mot de passe pour sécuriser l’accès à votre Cozy.",
+      "passwordprompt_body": "L’accès à votre appareil n’est pas sécurisé. Choisir un mot de passe pour sécuriser l’accès à votre Twake.",
       "passwordprompt_cta": "Choisir un mot de passe",
-      "passwordprompt_title": "Sécuriser l’accès à votre Cozy",
+      "passwordprompt_title": "Sécuriser l’accès à votre Twake",
       "pinprompt_body": "Accédez plus rapidement à votre application en activant le déverrouillage de votre application par code PIN",
       "pinprompt_cta": "Déverrouiller avec un code pin",
       "pinprompt_refusal": "Non merci",
@@ -94,10 +94,10 @@
       "pinsave_step2_title": "Confirmer votre code PIN"
     },
     "login": {
-      "invalidMagicCode": "Le lien pour accéder à votre Cozy est tronqué ou a expiré"
+      "invalidMagicCode": "Le lien pour accéder à votre Twake est tronqué ou a expiré"
     },
     "offline": {
-      "body": "Vérifier votre connexion internet pour accéder à votre Cozy.",
+      "body": "Vérifier votre connexion internet pour accéder à votre Twake.",
       "title": "Pas de connexion internet"
     },
     "welcome": {
@@ -117,7 +117,7 @@
     },
     "companyServer": {
       "title": "Se connecter",
-      "body": "Pour vous connecter et accéder à votre Cozy, veuillez saisir son URL",
+      "body": "Pour vous connecter et accéder à votre Twake, veuillez saisir son URL",
       "textFieldLabel": "Serveur",
       "buttonLogin": "Suivant"
     }
@@ -159,7 +159,7 @@
       }
     },
     "osReceive": {
-      "documentType": "Ajouter dans votre Cozy en tant que :",
+      "documentType": "Ajouter dans votre Twake en tant que :",
       "submit": "Suivant",
       "abort": "Annuler",
       "nElementsTitle": "{{n}} éléments",
@@ -184,11 +184,11 @@
   },
   "modals": {
     "IconChangedModal": {
-      "description": "L'icône de l'application « Cozy » a été modifiée."
+      "description": "L'icône de l'application « Twake » a été modifiée."
     },
     "ErrorToken": {
       "title": "Accès révoqué",
-      "body": "Vous semblez avoir révoqué cet appareil depuis votre Cozy. Pour accéder à nouveau à vos données, veuillez vous reconnecter. Si cette action ne vient pas de vous, n'hésitez pas à nous contacter à <linkTag>email</linkTag>.",
+      "body": "Vous semblez avoir révoqué cet appareil depuis votre Twake. Pour accéder à nouveau à vos données, veuillez vous reconnecter. Si cette action ne vient pas de vous, n'hésitez pas à nous contacter à <linkTag>email</linkTag>.",
       "button": "Se reconnecter"
     },
     "LogDisabledError": {
@@ -202,7 +202,7 @@
   },
   "software": {
     "id": "amiral",
-    "name": "Application Mobile Cozy"
+    "name": "Application Mobile Twake"
   },
   "ui": {
     "buttons": {
