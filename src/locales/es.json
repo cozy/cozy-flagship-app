@@ -115,7 +115,9 @@
     },
     "companyServer": {
       "title": "Acceso",
-      "body": "Para conectarse y acceder a su Twake, introduzca su URL",
+      "body": {
+        "byUrl": "Para conectarse y acceder a su Twake, introduzca su URL"
+      },
       "textFieldLabel": "Url",
       "buttonLogin": "Siguiente"
     }
