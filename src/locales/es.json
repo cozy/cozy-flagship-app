@@ -126,7 +126,8 @@
         "email": "Introduzca la dirección de correo electrónico corporativa"
       },
       "textFieldLabel": "Url",
-      "buttonLogin": "Siguiente"
+      "buttonLogin": "Siguiente",
+      "companyServerNotFound": "No se ha encontrado el servidor de la corporativa"
     }
   },
   "services": {
