@@ -103,6 +103,8 @@ export const TwakeWelcomeView = ({
         openTos={openTos}
         setInstanceData={setInstanceData}
         startOidcOauthNoCode={startOidcOauthNoCode}
+        startOidcOAuth={startOidcOAuth}
+        startOidcOnboarding={startOidcOnboarding}
       />
     )
   }

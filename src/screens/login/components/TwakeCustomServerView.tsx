@@ -21,6 +21,13 @@ import { Left } from '/ui/Icons/Left'
 import { Link } from '/ui/Link'
 import { TextField } from '/ui/TextField'
 import { Typography } from '/ui/Typography'
+import { useHomeStateContext } from '/screens/home/HomeStateProvider'
+import {
+  isOidcOnboardingStartCallback,
+  processOIDC
+} from '/screens/login/components/functions/oidc'
+import { useLoadingOverlay } from '/app/view/Loading/LoadingOverlayProvider'
+import { getLoginUri } from '/screens/login/components/functions/autodiscovery'
 
 const log = Minilog('TwakeCustomServerView')
 
@@ -38,18 +45,24 @@ interface TwakeCustomServerViewProps {
   close: () => void
   setInstanceData: setInstanceData
   startOidcOauthNoCode: startOidcOauthNoCode
+  startOidcOAuth: startOidcOAuth
+  startOidcOnboarding: startOidcOnboarding
 }
 
 export const TwakeCustomServerView = ({
   openTos,
   close,
   setInstanceData,
-  startOidcOauthNoCode
+  startOidcOauthNoCode,
+  startOidcOAuth,
+  startOidcOnboarding
 }: TwakeCustomServerViewProps): JSX.Element => {
   const [isLoginByEmail, setIsLoginByEmail] = useState(true)
   const [urlInput, setUrlInput] = useState('')
   const [emailInput, setEmailInput] = useState('')
   const [error, setError] = useState<string | undefined>()
+  const { setOnboardedRedirection } = useHomeStateContext()
+  const { showOverlay, hideOverlay } = useLoadingOverlay()
 
   const version = useMemo(() => getVersion(), [])
 
@@ -111,7 +124,31 @@ export const TwakeCustomServerView = ({
   }
 
   const handleLoginByEmail = async (): Promise<void> => {
-    // TODO
+    setError(undefined)
+    try {
+      const loginUri = await getLoginUri(emailInput)
+
+      if (!loginUri) {
+        setError(t('screens.companyServer.companyServerNotFound'))
+        return
+      }
+
+      showOverlay()
+      const oidcResult = await processOIDC({ url: loginUri.toString() }, true)
+
+      if (isOidcOnboardingStartCallback(oidcResult)) {
+        void startOidcOnboarding(oidcResult.onboardUrl, oidcResult.code)
+      } else {
+        setOnboardedRedirection(oidcResult.defaultRedirection ?? '')
+        void startOidcOAuth(oidcResult.fqdn, oidcResult.code)
+      }
+    } catch (error: unknown) {
+      hideOverlay()
+      if (error !== 'USER_CANCELED') {
+        // @ts-expect-error error is always a valid type here
+        setError(getErrorMessage(error), error)
+      }
+    }
   }
 
   return (

@@ -124,7 +124,8 @@
         "email": "Entrer mon adresse email d'entreprise"
       },
       "textFieldLabel": "Serveur",
-      "buttonLogin": "Suivant"
+      "buttonLogin": "Suivant",
+      "companyServerNotFound": "Serveur d'entreprise introuvable"
     }
   },
   "services": {
