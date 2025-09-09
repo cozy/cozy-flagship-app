@@ -2,15 +2,15 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "34.0.0"
+        buildToolsVersion = "35.0.0"
         minSdkVersion = 23
-        compileSdkVersion = 34
-        targetSdkVersion = 34
+        compileSdkVersion = 35
+        targetSdkVersion = 35
         androidXBrowser = "1.4.0"
-        DocumentScanner_compileSdkVersion = 34
-        DocumentScanner_targetSdkVersion = 34
-        QuickBase64_compileSdkVersion = 34
-        QuickBase64_targetSdkVersion = 34
+        DocumentScanner_compileSdkVersion = 35
+        DocumentScanner_targetSdkVersion = 35
+        QuickBase64_compileSdkVersion = 35
+        QuickBase64_targetSdkVersion = 35
         ndkVersion = "25.1.8937393"
         kotlinVersion = "1.8.0"
     }
