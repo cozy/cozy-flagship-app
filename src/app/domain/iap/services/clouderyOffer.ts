@@ -10,7 +10,7 @@ import Minilog from 'cozy-minilog'
 
 import {
   clearTransactionIOS,
-  ProrationModesAndroid,
+  ReplacementModesAndroid,
   requestSubscription,
   Subscription,
   SubscriptionAndroid,
@@ -174,7 +174,7 @@ export const buySubscription = async (
         obfuscatedAccountIdAndroid: accountId,
         subscriptionOffers: offers,
         purchaseTokenAndroid: purchaseToken ?? undefined,
-        prorationModeAndroid: parseProrationMode(prorationMode)
+        replacementModeAndroid: parseProrationMode(prorationMode)
       })
     }
 
@@ -258,17 +258,17 @@ const extractBaseCozyDomain = (client: CozyClient): string => {
 
 const parseProrationMode = (
   prorationMode: string | null
-): ProrationModesAndroid | undefined => {
+): ReplacementModesAndroid | undefined => {
   if (!prorationMode) {
     return undefined
   }
 
   switch (prorationMode) {
     case 'DEFERRED': {
-      return ProrationModesAndroid.DEFERRED
+      return ReplacementModesAndroid.DEFERRED
     }
     case 'CHARGE_PRORATED_PRICE': {
-      return ProrationModesAndroid.IMMEDIATE_AND_CHARGE_PRORATED_PRICE
+      return ReplacementModesAndroid.CHARGE_PRORATED_PRICE
     }
     default: {
       throw new Error(`Unknown prorationMode ${prorationMode}`)
