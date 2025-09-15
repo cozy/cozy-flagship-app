@@ -16655,10 +16655,10 @@ react-native-gesture-handler@1.10.3:
   version "1.0.1"
   resolved "https://codeload.github.com/cozy/react-native-google-play-integrity/tar.gz/ad182ed9e5c83a38e7cd5ee55f1fc06b5ca93e11"
 
-react-native-iap@^12.16.4:
-  version "12.16.4"
-  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-12.16.4.tgz#52bf9782c0f5210760eec8ae472411ec41af9c90"
-  integrity sha512-3l3/k5ho2hzVCyfwlPRTrdn4gY1ku3dZFN9qJ7giZUBGr3wffciL5WRKxVUs7jQAXOgAtea9JexrMrgvEXSO/w==
+react-native-iap@12.16.2:
+  version "12.16.2"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-12.16.2.tgz#56d870e5bd851ceafe3990089ec7099feee451cd"
+  integrity sha512-pIyO3eSZkYJYLdgDF90Or2wUsbiiYwa5xgUpaHBqZuVEk5Nz0ZDN4acwoXFfPa/a52MmQOYEeHbYLAQQW0o+rg==
 
 react-native-idle-timer@^2.2.1:
   version "2.2.1"
