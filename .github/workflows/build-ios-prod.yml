@@ -24,6 +24,9 @@ jobs:
       - name: Select Xcode 16.2
         run: sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer
 
+      - name: Download iOS 18.2 platform
+        run: xcodebuild -downloadPlatform iOS -buildVersion 18.2
+
       - name: Check out Git repository
         uses: actions/checkout@v3
 
