@@ -143,7 +143,7 @@ describe('extractEnvFromUrl', () => {
 
     expect(Alert.alert).toHaveBeenCalledWith(
       'Environment',
-      'Environment has been overriden\n\nPartner: SOME_PARTNER / SOME_CONTEXT\nCloudery: cozy - DEV',
+      'Environment has been overriden\n\nPartner: SOME_PARTNER / SOME_CONTEXT\nCloudery: twake - DEV',
       undefined,
       { cancelable: true }
     )
@@ -156,7 +156,7 @@ describe('extractEnvFromUrl', () => {
 
     expect(Alert.alert).toHaveBeenCalledWith(
       'Environment',
-      'Environment has been overriden\n\nPartner: (none)\nCloudery: cozy - DEV',
+      'Environment has been overriden\n\nPartner: (none)\nCloudery: twake - DEV',
       undefined,
       { cancelable: true }
     )
