@@ -1,4 +1,24 @@
+# 1.1.37
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+
 # 1.1.36
+
+## ✨ Features
+ - New Twake login
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
 
 # 1.1.35
 
