@@ -109,7 +109,7 @@
       "buttonSignin": "Créer un Twake ID",
       "buttonLogin": "Se connecter",
       "title": "Twake Workplace",
-      "useYourCompanyServer": "Utiliser le serveur de votre entreprise",
+      "useYourCompanyServer": "Utiliser le serveur de votre organisation",
       "byContinuingYourAgreeingToOur": "En continuant, vous acceptez notre",
       "privacyPolicy": "Politique de confidentialité"
     },
@@ -117,15 +117,15 @@
       "title": "Se connecter",
       "body": {
         "byUrl": "Pour vous connecter et accéder à votre Twake, veuillez saisir son URL",
-        "byEmail": "Pour vous connecter et accéder à votre Twake, veuillez saisir votre adresse email d'entreprise"
+        "byEmail": "Pour vous connecter et accéder à votre Twake, veuillez saisir votre adresse email d'organisation"
       },
       "toggle": {
         "url": "Entrer l'URL de mon Twake",
-        "email": "Entrer mon adresse email d'entreprise"
+        "email": "Entrer mon adresse email d'organisation"
       },
       "textFieldLabel": "Serveur",
       "buttonLogin": "Suivant",
-      "companyServerNotFound": "Serveur d'entreprise introuvable"
+      "companyServerNotFound": "Serveur d'organisation introuvable"
     }
   },
   "services": {
