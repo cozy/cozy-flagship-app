@@ -30,11 +30,11 @@ describe('extractEnvFromUrl', () => {
     expect(result).toStrictEqual({
       loginUrl:
         strings.cloudery.twake.prodBaseUri +
-        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.prodCozyLoginRelativeUri +
         strings.cloudery.twake.androidQueryString,
       signinUrl:
         strings.cloudery.twake.prodBaseUri +
-        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.prodCozySigninRelativeUri +
         strings.cloudery.twake.androidQueryString,
       isOnboardingPartner: false
     })
@@ -48,11 +48,11 @@ describe('extractEnvFromUrl', () => {
     expect(result).toStrictEqual({
       loginUrl:
         strings.cloudery.twake.devBaseUri +
-        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.devCozyLoginRelativeUri +
         strings.cloudery.twake.androidQueryString,
       signinUrl:
         strings.cloudery.twake.devBaseUri +
-        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.devCozySigninRelativeUri +
         strings.cloudery.twake.androidQueryString,
       isOnboardingPartner: false
     })
@@ -66,11 +66,11 @@ describe('extractEnvFromUrl', () => {
     expect(result).toStrictEqual({
       loginUrl:
         strings.cloudery.twake.intBaseUri +
-        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.intCozyLoginRelativeUri +
         strings.cloudery.twake.androidQueryString,
       signinUrl:
         strings.cloudery.twake.intBaseUri +
-        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.intCozySigninRelativeUri +
         strings.cloudery.twake.androidQueryString,
       isOnboardingPartner: false
     })
@@ -85,11 +85,11 @@ describe('extractEnvFromUrl', () => {
     expect(result).toStrictEqual({
       loginUrl:
         strings.cloudery.twake.intBaseUri +
-        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.intCozyLoginRelativeUri +
         strings.cloudery.twake.iOSQueryString,
       signinUrl:
         strings.cloudery.twake.intBaseUri +
-        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.intCozySigninRelativeUri +
         strings.cloudery.twake.iOSQueryString,
       isOnboardingPartner: false
     })
@@ -101,11 +101,11 @@ describe('extractEnvFromUrl', () => {
     expect(result).toStrictEqual({
       loginUrl:
         strings.cloudery.twake.prodBaseUri +
-        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.prodCozyLoginRelativeUri +
         strings.cloudery.twake.androidQueryString,
       signinUrl:
         strings.cloudery.twake.prodBaseUri +
-        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.prodCozySigninRelativeUri +
         strings.cloudery.twake.androidQueryString,
       isOnboardingPartner: false
     })
@@ -119,11 +119,11 @@ describe('extractEnvFromUrl', () => {
     expect(result).toStrictEqual({
       loginUrl:
         strings.cloudery.twake.prodBaseUri +
-        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.prodCozyLoginRelativeUri +
         strings.cloudery.twake.androidQueryString,
       signinUrl:
         strings.cloudery.twake.prodBaseUri +
-        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.prodCozySigninRelativeUri +
         strings.cloudery.twake.androidQueryString,
       isOnboardingPartner: false
     })
@@ -159,11 +159,11 @@ describe('extractEnvFromUrl', () => {
     expect(result).toStrictEqual({
       loginUrl:
         strings.cloudery.twake.prodBaseUri +
-        strings.cloudery.twake.cozyLoginRelativeUri +
+        strings.cloudery.twake.prodCozyLoginRelativeUri +
         strings.cloudery.twake.androidQueryString,
       signinUrl:
         strings.cloudery.twake.prodBaseUri +
-        strings.cloudery.twake.cozySigninRelativeUri +
+        strings.cloudery.twake.prodCozySigninRelativeUri +
         strings.cloudery.twake.androidQueryString,
       isOnboardingPartner: false
     })
