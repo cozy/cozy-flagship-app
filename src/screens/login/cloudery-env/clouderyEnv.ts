@@ -72,10 +72,23 @@ export const getClouderyUrls = async (): Promise<ClouderyUrls> => {
   }
   const baseUri = baseUris[clouderyEnv]
 
+  const baseCozyLoginRelativeUris: Record<ClouderyEnv, string> = {
+    PROD: strings.cloudery[clouderyType].prodCozyLoginRelativeUri,
+    INT: strings.cloudery[clouderyType].intCozyLoginRelativeUri,
+    DEV: strings.cloudery[clouderyType].devCozyLoginRelativeUri
+  }
+  const baseCozyLoginRelativeUri = baseCozyLoginRelativeUris[clouderyEnv]
+
+  const baseCozySigninRelativeUris: Record<ClouderyEnv, string> = {
+    PROD: strings.cloudery[clouderyType].prodCozySigninRelativeUri,
+    INT: strings.cloudery[clouderyType].intCozySigninRelativeUri,
+    DEV: strings.cloudery[clouderyType].devCozySigninRelativeUri
+  }
+  const baseCozySigninRelativeUri = baseCozySigninRelativeUris[clouderyEnv]
+
   const onboardingPartnerPath = await getOnboardingPartnerRelativeUrl()
-  const relativeLoginUri =
-    onboardingPartnerPath ?? strings.cloudery[clouderyType].cozyLoginRelativeUri
-  const relativeSigninUri = strings.cloudery[clouderyType].cozySigninRelativeUri
+  const relativeLoginUri = onboardingPartnerPath ?? baseCozyLoginRelativeUri
+  const relativeSigninUri = baseCozySigninRelativeUri
 
   const queryString =
     Platform.OS === 'ios'
