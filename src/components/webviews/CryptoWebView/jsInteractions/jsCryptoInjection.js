@@ -1,6 +1,4 @@
-import { computePKCEFunctionDeclaration } from './jsFunctions/jsComputePKCE'
 import { computePassFunctionDeclaration } from './jsFunctions/jsComputePass'
-import { generateHttpServerSecurityKeyFunctionDeclaration } from './jsFunctions/jsGenerateHttpServerSecurityKey'
 import {
   postMessageFunctionDeclaration,
   listenMessageFunctionDeclaration
@@ -13,14 +11,10 @@ const jsCode = `
   ${listenMessageFunctionDeclaration}
   ${windowPasswordObjectDeclaration}
   ${computePassFunctionDeclaration}
-  ${computePKCEFunctionDeclaration}
-  ${generateHttpServerSecurityKeyFunctionDeclaration}
   ${subtleFunctionDeclaration}
 
   const messagingFunctions = {
     computePass,
-    computePKCE,
-    generateHttpServerSecurityKey,
     sublteProxy
   }
 

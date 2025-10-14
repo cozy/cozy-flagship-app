@@ -139,7 +139,8 @@
     "redux-logger": "3.0.6",
     "redux-persist": "^6.0.0",
     "rn-flipper-async-storage-advanced": "^1.0.4",
-    "semver": "^7.3.2"
+    "semver": "^7.3.2",
+    "text-encoding-polyfill": "^0.6.7"
   },
   "devDependencies": {
     "@babel/core": "7.14.8",
