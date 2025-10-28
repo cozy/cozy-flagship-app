@@ -60,6 +60,7 @@ describe('handleBackPress', () => {
   it('should add event listeners with bound callbacks if Platform.OS is android', () => {
     const callback1 = jest.fn()
     const callback2 = jest.fn()
+    const addEventListenerSpy = jest.spyOn(BackHandler, 'addEventListener')
 
     const removeListeners = handleBackPress(launcherView, [
       callback1,
@@ -68,10 +69,7 @@ describe('handleBackPress', () => {
 
     expect(callback1).not.toHaveBeenCalled()
     expect(callback2).not.toHaveBeenCalled()
-    expect(jest.spyOn(BackHandler, 'addEventListener')).toHaveBeenCalledTimes(2)
-    expect(
-      jest.spyOn(BackHandler, 'removeEventListener')
-    ).not.toHaveBeenCalled()
+    expect(addEventListenerSpy).toHaveBeenCalledTimes(2)
 
     // Simulate hardware back press
     // @ts-expect-error mockPressBack is defined in the mock but not in the types of the mock
@@ -80,11 +78,18 @@ describe('handleBackPress', () => {
     expect(callback1).toHaveBeenCalledWith(launcherView)
     expect(callback2).toHaveBeenCalledWith(launcherView)
 
+    // Get the subscription objects returned by addEventListener
+    const subscriptions = addEventListenerSpy.mock.results.map(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      result => result.value
+    )
+    const removeSpy1 = jest.spyOn(subscriptions[0], 'remove')
+    const removeSpy2 = jest.spyOn(subscriptions[1], 'remove')
+
     // Call removeListeners to remove event listeners
     removeListeners()
 
-    expect(
-      jest.spyOn(BackHandler, 'removeEventListener')
-    ).toHaveBeenCalledTimes(2)
+    expect(removeSpy1).toHaveBeenCalledTimes(1)
+    expect(removeSpy2).toHaveBeenCalledTimes(1)
   })
 })

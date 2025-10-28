@@ -106,18 +106,15 @@ $ yarn test
 
 ### Debugging
 
-Android: To get native log on Android:
+Android native logs:
 
 ```bash
 adb logcat --pid=$(adb shell pidof -s io.cozy.flagship.mobile)
 ```
 
-Use [flipper](https://fbflipper.com/docs/features/react-native/) to
-have access to a React Native Debuguer.
-If you are running MacOS on a M1 or M2 computer, use [this optimized version](https://github.com/chiragramani/FlipperReleases) instead.
+React logs, debugger, profilers:
 
-To have access to the AsyncStorage content you can install async-storage-advanced plugin (see https://github.com/cozy/cozy-react-native/pull/270
-for more information).
+[React Native DevTools](https://reactnative.dev/docs/react-native-devtools)
 
 A guide for debugging in release mode can be found here: [How to retrieve logs in release mode](docs/how-to-retrieve-logs-in-release.md)
 

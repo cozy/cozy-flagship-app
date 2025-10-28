@@ -102,7 +102,6 @@ jest.mock('../src/locales/i18n', () => {
   }
 })
 
-jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper')
 jest.mock('@notifee/react-native', () => mockNotifee)
 
 jest.mock('react-native/Libraries/Components/Switch/Switch', () => {

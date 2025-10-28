@@ -72,10 +72,12 @@ export const TwakeCustomServerView = ({
   }, [close])
 
   useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackPress
+    )
 
-    return () =>
-      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+    return () => backHandler.remove()
   }, [handleBackPress])
 
   const toggleLoginByEmail = (): void => {

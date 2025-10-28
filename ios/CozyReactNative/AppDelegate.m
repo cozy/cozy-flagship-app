@@ -5,6 +5,7 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTHTTPRequestHandler.h>
+#import <ReactAppDependencyProvider/RCTAppDependencyProvider.h>
 
 #import "RNBootSplash.h" // <- add the header import
 #import "RNCConfig.h"
@@ -31,6 +32,7 @@ static void SetCustomNSURLSessionConfiguration() {
   [FIRApp configure];
 
   self.moduleName = @"CozyReactNative";
+  self.dependencyProvider = [RCTAppDependencyProvider new];
 
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.

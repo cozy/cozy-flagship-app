@@ -73,7 +73,7 @@ jobs:
         run: yarn brand:configure:${{ inputs.brand }} --force
 
       - name: Install Pods
-        run: cd ios && NO_FLIPPER=1 pod install --repo-update && cd ..
+        run: cd ios && pod install --repo-update && cd ..
 
       - name: Build IOS App
         id: ios_build

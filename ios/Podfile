@@ -7,19 +7,11 @@ require Pod::Executable.execute_command('node', ['-p',
 
 require_relative '../node_modules/react-native-permissions/scripts/setup'
 
+# Disable New Architecture
+ENV['RCT_NEW_ARCH_ENABLED'] = '0'
+
 platform :ios, min_ios_version_supported # 12.4
 prepare_react_native_project!
-
-# If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
-# because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
-#
-# To fix this you can also exclude `react-native-flipper` using a `react-native.config.js`
-# ```js
-# module.exports = {
-#   dependencies: {
-#     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
-# ```
-flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
 
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
@@ -37,11 +29,6 @@ target 'CozyReactNative' do
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # Enables Flipper.
-    #
-    # Note that if you have use_frameworks! enabled, Flipper will not work and
-    # you should disable the next line.
-    :flipper_configuration => flipper_config,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
@@ -57,7 +44,7 @@ target 'CozyReactNative' do
 
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
-  pod 'OpenSSL-Universal', :modular_headers => true, :configurations => ['Release']
+  pod 'OpenSSL-Universal', :modular_headers => true, :configurations => ['Debug', 'Release']
 
   target 'CozyReactNativeDev' do
     inherit! :complete
@@ -74,7 +61,8 @@ target 'CozyReactNative' do
     react_native_post_install(
       installer,
       config[:reactNativePath],
-      :mac_catalyst_enabled => false
+      :mac_catalyst_enabled => false,
+      # :ccache_enabled => true
     )
 
     installer.pods_project.targets.each do |target|
