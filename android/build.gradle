@@ -3,7 +3,7 @@
 buildscript {
     ext {
         buildToolsVersion = "35.0.0"
-        minSdkVersion = 23
+        minSdkVersion = 24
         compileSdkVersion = 35
         targetSdkVersion = 35
         androidXBrowser = "1.4.0"
@@ -11,8 +11,8 @@ buildscript {
         DocumentScanner_targetSdkVersion = 35
         QuickBase64_compileSdkVersion = 35
         QuickBase64_targetSdkVersion = 35
-        ndkVersion = "25.1.8937393"
-        kotlinVersion = "1.8.0"
+        ndkVersion = "27.1.12297006"
+        kotlinVersion = "2.0.21"
     }
     repositories {
         google()

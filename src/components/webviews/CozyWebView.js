@@ -86,10 +86,12 @@ export const CozyWebView = ({
   }, [canGoBack, isFocused, webviewRef])
 
   useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackPress
+    )
 
-    return () =>
-      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+    return () => backHandler.remove()
   }, [handleBackPress])
 
   useEffect(() => {

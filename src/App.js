@@ -11,7 +11,6 @@ import {
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
-import FlipperAsyncStorage from 'rn-flipper-async-storage-advanced'
 
 import { CozyProvider, useClient } from 'cozy-client'
 import { NativeIntentProvider } from 'cozy-intent'
@@ -78,17 +77,9 @@ import { configureFileLogger } from '/app/domain/logger/fileLogger'
 import { useColorScheme } from '/app/theme/colorScheme'
 import {
   hasMigratedFromAsyncStorage,
-  migrateFromAsyncStorage,
-  storage
+  migrateFromAsyncStorage
 } from '/libs/localStore/storage'
 import { makeSearchEngine } from '/app/domain/search/search'
-
-if (__DEV__) {
-  require('react-native-performance-flipper-reporter').setupDefaultFlipperReporter()
-  require('react-native-mmkv-flipper-plugin').initializeMMKVFlipper({
-    default: storage
-  })
-}
 
 configurePerformances()
 configureNetService()
@@ -365,7 +356,6 @@ const Wrapper = () => {
   return (
     <>
       <RestartProvider>
-        {__DEV__ && <FlipperAsyncStorage />}
         <CryptoWebView setHasCrypto={setHasCrypto} />
         {hasCrypto && (
           <Provider store={store}>

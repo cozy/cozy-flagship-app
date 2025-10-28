@@ -1,4 +1,3 @@
-import { CaptureConsole } from '@sentry/integrations'
 import * as Sentry from '@sentry/react-native'
 import flow from 'lodash/fp/flow'
 
@@ -25,14 +24,16 @@ export const logToSentry = (error: unknown): void => {
 
 Sentry.init({
   beforeBreadcrumb: (breadcrumb, hint) =>
-    flow(scrubPhoneNumbers)(breadcrumb, hint) as Sentry.Breadcrumb,
+    flow(scrubPhoneNumbers)(breadcrumb, hint) as Sentry.Breadcrumb | null,
   beforeSend: (event, hint) =>
-    flow(scrubPhoneNumbers, groupBackupErrors)(event, hint) as Sentry.Event,
+    flow(scrubPhoneNumbers, groupBackupErrors)(
+      event,
+      hint
+    ) as Sentry.ErrorEvent | null,
   debug: isSentryDebugMode(),
   dsn: strings.SENTRY_DSN_URL,
   enabled: EnvService.hasSentryEnabled(),
   environment: EnvService.name,
-  integrations: [new CaptureConsole({ levels: ['error', 'warn'] })],
   onReady: ({ didCallNativeInit }) =>
     didCallNativeInit &&
     isSentryDebugMode() &&

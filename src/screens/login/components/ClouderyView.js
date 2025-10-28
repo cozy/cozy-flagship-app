@@ -1,4 +1,5 @@
 import Minilog from 'cozy-minilog'
+
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   BackHandler,
@@ -128,10 +129,12 @@ export const ClouderyView = ({
   }, [canGoBack, webviewRef])
 
   useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackPress
+    )
 
-    return () =>
-      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+    return () => backHandler.remove()
   }, [handleBackPress])
 
   const Wrapper = Platform.OS === 'ios' ? View : KeyboardAvoidingView

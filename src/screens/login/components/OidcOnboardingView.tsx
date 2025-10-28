@@ -1,4 +1,5 @@
 import Minilog from 'cozy-minilog'
+
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   BackHandler,
@@ -84,10 +85,12 @@ export const OidcOnboardingView = ({
   }, [canGoBack, webviewRef])
 
   useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackPress
+    )
 
-    return () =>
-      BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+    return () => backHandler.remove()
   }, [handleBackPress])
 
   const processMessage = (event: WebViewMessageEvent): void => {

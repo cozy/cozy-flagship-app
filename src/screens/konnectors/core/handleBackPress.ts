@@ -22,13 +22,13 @@ export const handleBackPress = (
     callback.bind(null, launcherView)
   )
 
-  boundCallbacks.forEach(boundCallback => {
-    BackHandler.addEventListener('hardwareBackPress', boundCallback)
+  const backHandlers = boundCallbacks.map(boundCallback => {
+    return BackHandler.addEventListener('hardwareBackPress', boundCallback)
   })
 
   return (): void => {
-    boundCallbacks.forEach(boundCallback => {
-      BackHandler.removeEventListener('hardwareBackPress', boundCallback)
+    backHandlers.forEach(backHandler => {
+      backHandler.remove()
     })
   }
 }
