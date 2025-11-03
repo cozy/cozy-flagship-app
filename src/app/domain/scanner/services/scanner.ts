@@ -1,7 +1,6 @@
 import { Platform } from 'react-native'
-import DocumentScanner, {
-  ResponseType
-} from 'react-native-document-scanner-plugin'
+import DocumentScanner from 'react-native-document-scanner-plugin'
+import type { ResponseType } from 'react-native-document-scanner-plugin/src/NativeDocumentScanner'
 
 import {
   storeSharedMemory,
@@ -15,7 +14,7 @@ export const scanDocument = async (): Promise<Base64 | undefined> => {
     removeSharedMemory('mespapiers', 'scanDocument')
 
     const { scannedImages } = await DocumentScanner.scanDocument({
-      responseType: ResponseType.Base64,
+      responseType: 'base64' as ResponseType,
       maxNumDocuments: 1
     })
 
