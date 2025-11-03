@@ -85,7 +85,7 @@ export const RootNavigator = ({ initialRoute, setClient }) => (
       component={OsReceiveScreen}
       options={{
         presentation: 'transparentModal',
-        animationEnabled: false
+        animation: 'none'
       }}
     />
 
@@ -94,7 +94,7 @@ export const RootNavigator = ({ initialRoute, setClient }) => (
       component={CozyAppScreen}
       options={{
         presentation: 'transparentModal',
-        animationEnabled: false
+        animation: 'none'
       }}
     />
 
@@ -103,7 +103,7 @@ export const RootNavigator = ({ initialRoute, setClient }) => (
       component={LockScreen}
       options={{
         presentation: 'transparentModal',
-        animationEnabled: false
+        animation: 'none'
       }}
     />
   </Root.Navigator>
