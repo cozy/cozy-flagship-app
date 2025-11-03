@@ -16,7 +16,8 @@ import { shouldDisableGetIndex } from '/core/tools/env'
 
 jest.mock('react-native', () => ({
   Platform: {
-    OS: 'ios'
+    OS: 'ios',
+    select: jest.fn(options => options.default || options.ios)
   },
   AppState: {
     addEventListener: jest.fn()

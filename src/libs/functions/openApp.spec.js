@@ -22,7 +22,8 @@ jest.mock('react-native', () => ({
     openURL: jest.fn()
   },
   Platform: {
-    OS: 'ios'
+    OS: 'ios',
+    select: jest.fn(options => options.default || options.ios)
   }
 }))
 

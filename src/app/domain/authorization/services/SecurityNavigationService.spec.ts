@@ -3,6 +3,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+
 import { BackHandler, AppState } from 'react-native'
 import * as MockBackHandler from 'react-native/Libraries/Utilities/__mocks__/BackHandler'
 
@@ -23,6 +25,10 @@ jest.mock('react-native', () => ({
     currentState: 'active',
     addEventListener: jest.fn().mockReturnThis(),
     remove: jest.fn()
+  },
+  Platform: {
+    OS: 'ios',
+    select: jest.fn(options => options.default || options.ios)
   }
 }))
 
