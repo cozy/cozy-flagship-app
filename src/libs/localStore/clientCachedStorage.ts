@@ -98,7 +98,7 @@ const clearClientCachedDataMMKV = async (
     )
 
     for (const key of clientCacheKeys) {
-      storage.delete(key)
+      storage.remove(key)
     }
   } catch (error) {
     log.error(
