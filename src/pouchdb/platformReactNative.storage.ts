@@ -8,7 +8,7 @@ export const storage = {
     if (value === undefined) return
     return Promise.resolve(mmkvStorage.set(key, value))
   },
-  removeItem: async (key: string): Promise<void> => {
-    return Promise.resolve(mmkvStorage.delete(key))
+  removeItem: async (key: string): Promise<boolean> => {
+    return Promise.resolve(mmkvStorage.remove(key))
   }
 }

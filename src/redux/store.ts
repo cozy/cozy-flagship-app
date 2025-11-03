@@ -28,7 +28,7 @@ const persistConfig = {
       return Promise.resolve(true)
     },
     removeItem: (key: string): unknown => {
-      mmkvStorage.delete(key)
+      mmkvStorage.remove(key)
       return Promise.resolve()
     }
   }

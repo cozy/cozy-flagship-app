@@ -147,3 +147,11 @@ jest.mock('react-native-mail', () => ({
 jest.mock('/app/domain/search/dataproxy-wrapper', () => ({
   SearchEngine: jest.fn()
 }))
+
+jest.mock('react-native-nitro-modules', () => {
+  return {
+    NitroModules: () => {
+      return {}
+    }
+  }
+})
