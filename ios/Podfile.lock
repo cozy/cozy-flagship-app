@@ -1837,8 +1837,27 @@ PODS:
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (1.10.3):
+  - RNGestureHandler (2.25.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNIap (12.16.4):
     - React-Core
   - RNInAppBrowser (3.5.1):
@@ -1875,7 +1894,7 @@ PODS:
     - React-Core
   - RNPermissions (3.9.3):
     - React-Core
-  - RNScreens (3.37.0):
+  - RNScreens (4.13.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2440,7 +2459,7 @@ SPEC CHECKSUMS:
   RNFileLogger: 23ccd51aa6cb3809042801b58887dc7895407174
   RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
+  RNGestureHandler: 83e18e53d3388ac5cb165a1404bc3be1e4cbdad0
   RNIap: cc6ad44185936b2ced74691b154cc9c322a2cb5a
   RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
   RNIOS11DeviceCheck: 9b36378a945711eba558e5e0db3a15a9ccb83150
@@ -2448,7 +2467,7 @@ SPEC CHECKSUMS:
   RNLocalize: d4b8af4e442d4bcca54e68fc687a2129b4d71a81
   RNNotifee: f3c01b391dd8e98e67f539f9a35a9cbcd3bae744
   RNPermissions: 52d6a55ba77d3b33a428b98bb64b0c8992b8d3fd
-  RNScreens: af11224a74bb6967b1ad40b9b1ff395042ce96ca
+  RNScreens: 3082c87c02ef4b1765c41aee5804223d9f8f7ee0
   RNSentry: 80d3ab9bc3acd7a7035335210b2540fe18767abc
   RNShare: 859ff710211285676b0bcedd156c12437ea1d564
   RNSVG: 91e34bb3a2e3821a4e053c8c683e3bfff151a4e7
