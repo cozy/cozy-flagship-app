@@ -178,8 +178,9 @@ export const useAppBootstrap = client => {
       return
     }
 
-    client &&
-      setTimeout(() => manageIconCache(client), MANAGE_ICON_CACHE_DELAY_IN_MS)
+    const timeoutId = client
+      ? setTimeout(() => manageIconCache(client), MANAGE_ICON_CACHE_DELAY_IN_MS)
+      : undefined
     client && setSentryTag(SentryCustomTags.Instance, client.stackClient?.uri)
 
     const subscription = Linking.addEventListener('url', ({ url }) => {
@@ -231,6 +232,9 @@ export const useAppBootstrap = client => {
     })
 
     return () => {
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId)
+      }
       subscription.remove()
     }
   }, [client, isLoading, setOnboardedRedirection])
