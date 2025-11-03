@@ -5,6 +5,27 @@ PODS:
   - CocoaLumberjack (3.8.5):
     - CocoaLumberjack/Core (= 3.8.5)
   - CocoaLumberjack/Core (3.8.5)
+  - DocumentScanner (2.0.2):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - DoubleConversion (1.1.6)
   - fast_float (6.1.4)
   - FBLazyVector (0.77.3)
@@ -1389,8 +1410,6 @@ PODS:
     - React-Core
   - react-native-cookies (6.2.1):
     - React-Core
-  - react-native-document-scanner-plugin (0.7.3):
-    - React-Core
   - react-native-get-random-values (1.11.0):
     - React-Core
   - react-native-gzip (2.0.0):
@@ -1431,27 +1450,8 @@ PODS:
     - React-Core
   - react-native-print (0.11.0):
     - React-Core
-  - react-native-quick-base64 (2.1.2):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2024.11.18.00)
-    - RCTRequired
-    - RCTTypeSafety
+  - react-native-quick-base64 (2.2.2):
     - React-Core
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-rendererdebug
-    - React-utils
-    - ReactCodegen
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - Yoga
   - react-native-quick-crypto (0.7.17):
     - DoubleConversion
     - glog
@@ -1845,8 +1845,27 @@ PODS:
     - React-Core
   - RNIOS11DeviceCheck (0.0.3):
     - React
-  - RNKeychain (8.0.0):
+  - RNKeychain (10.0.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNLocalize (2.2.6):
     - React-Core
   - RNNotifee (7.8.0):
@@ -1913,6 +1932,7 @@ PODS:
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
+  - DocumentScanner (from `../node_modules/react-native-document-scanner-plugin`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -1960,7 +1980,6 @@ DEPENDENCIES:
   - react-native-change-icon (from `../node_modules/react-native-change-icon`)
   - react-native-config (from `../node_modules/react-native-config`)
   - "react-native-cookies (from `../node_modules/@react-native-cookies/cookies`)"
-  - react-native-document-scanner-plugin (from `../node_modules/react-native-document-scanner-plugin`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - "react-native-gzip (from `../node_modules/@fengweichong/react-native-gzip`)"
   - react-native-idle-timer (from `../node_modules/react-native-idle-timer`)
@@ -2067,6 +2086,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   BVLinearGradient:
     :path: "../node_modules/react-native-linear-gradient"
+  DocumentScanner:
+    :path: "../node_modules/react-native-document-scanner-plugin"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   fast_float:
@@ -2154,8 +2175,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-config"
   react-native-cookies:
     :path: "../node_modules/@react-native-cookies/cookies"
-  react-native-document-scanner-plugin:
-    :path: "../node_modules/react-native-document-scanner-plugin"
   react-native-get-random-values:
     :path: "../node_modules/react-native-get-random-values"
   react-native-gzip:
@@ -2297,6 +2316,7 @@ SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   BVLinearGradient: 880f91a7854faff2df62518f0281afb1c60d49a3
   CocoaLumberjack: 6a459bc897d6d80bd1b8c78482ec7ad05dffc3f0
+  DocumentScanner: 1689eb5996b395fa794aba536a9aafa4ec681cd3
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: 23d8c5470c648a635893dc0956c6dbaead54b656
@@ -2365,7 +2385,6 @@ SPEC CHECKSUMS:
   react-native-change-icon: ea9bb7255b09e89f41cbf282df16eade91ab1833
   react-native-config: 5330c8258265c1e5fdb8c009d2cabd6badd96727
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
-  react-native-document-scanner-plugin: df5b82df67ff612262c40c26ef2c8239c5af5c55
   react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
   react-native-gzip: 5ffb84bf191c7cd135338eca748317bc466d41a1
   react-native-idle-timer: f1920a59fe776340d004ff9de13c4a6eedcc8807
@@ -2375,7 +2394,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: 48c5f79a84fbc3ba1d28a8b0d04adeda72885fa8
   react-native-performance: ff93f8af3b2ee9519fd7879896aa9b8b8272691d
   react-native-print: f704aef52d931bfce6d1d84351dbb5232d7ecb89
-  react-native-quick-base64: 27bade09b88268e7ed63121def711e55fb4aef82
+  react-native-quick-base64: d87272898345e0fc3c3afb8e5dff335d51214f3e
   react-native-quick-crypto: 0799c5a1dc66fc2c0aeca62c672d042cba03d1ba
   react-native-receive-sharing-intent: 0c21b8e80f629a73341f2566ce9b99df8124bb10
   react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
@@ -2425,7 +2444,7 @@ SPEC CHECKSUMS:
   RNIap: cc6ad44185936b2ced74691b154cc9c322a2cb5a
   RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
   RNIOS11DeviceCheck: 9b36378a945711eba558e5e0db3a15a9ccb83150
-  RNKeychain: 4f63aada75ebafd26f4bc2c670199461eab85d94
+  RNKeychain: 85cfe8e9ddb9ed9176274718a91e8e32c8271f92
   RNLocalize: d4b8af4e442d4bcca54e68fc687a2129b4d71a81
   RNNotifee: f3c01b391dd8e98e67f539f9a35a9cbcd3bae744
   RNPermissions: 52d6a55ba77d3b33a428b98bb64b0c8992b8d3fd

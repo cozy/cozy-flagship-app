@@ -136,6 +136,10 @@ jest.mock('cozy-pouch-link', () => {
   })
 })
 
+jest.mock('react-native-document-scanner-plugin', () => ({
+  scan: jest.fn()
+}))
+
 jest.mock('react-native-mail', () => ({
   mail: jest.fn()
 }))
