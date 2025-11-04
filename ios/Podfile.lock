@@ -195,6 +195,10 @@ PODS:
     - ReactCommon/turbomodule/core
     - Yoga
   - NVHTarGzip (1.0.1)
+  - op-sqlite (12.0.3):
+    - React
+    - React-callinvoker
+    - React-Core
   - OpenSSL-Universal (3.3.3001)
   - PromisesObjC (2.4.0)
   - Protobuf (3.29.5)
@@ -1966,6 +1970,7 @@ DEPENDENCIES:
   - lottie-react-native (from `../node_modules/lottie-react-native`)
   - NitroMmkv (from `../node_modules/react-native-mmkv`)
   - NitroModules (from `../node_modules/react-native-nitro-modules`)
+  - "op-sqlite (from `../node_modules/@op-engineering/op-sqlite`)"
   - OpenSSL-Universal
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
@@ -2129,6 +2134,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-mmkv"
   NitroModules:
     :path: "../node_modules/react-native-nitro-modules"
+  op-sqlite:
+    :path: "../node_modules/@op-engineering/op-sqlite"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTDeprecation:
@@ -2372,6 +2379,7 @@ SPEC CHECKSUMS:
   NitroMmkv: 5ddc617800fa1b1b82ced9907bec0c848a36cdf0
   NitroModules: f36ec9c3a4f25c502bc00ff32ac7193f48ee1773
   NVHTarGzip: 74cc227b902e5725900d37eb6d79b57e93005a73
+  op-sqlite: 123533ff3eccc1a1c555f7492e20018099006767
   OpenSSL-Universal: 6082b0bf950e5636fe0d78def171184e2b3899c2
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   Protobuf: 164aea2ae380c3951abdc3e195220c01d17400e0
@@ -2483,6 +2491,6 @@ SPEC CHECKSUMS:
   SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
   Yoga: 92f3bb322c40a86b7233b815854730442e01b8c4
 
-PODFILE CHECKSUM: 3b2840ae6f2557f0a20ce1870e827bd84d3c751e
+PODFILE CHECKSUM: b5145b039951f808f06d7a0a17dd86c12f1bb9d6
 
 COCOAPODS: 1.14.3
