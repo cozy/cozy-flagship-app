@@ -1,4 +1,4 @@
-import { useNavigation, useNavigationState } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import React, { useReducer, useEffect } from 'react'
 
 import { useClient } from 'cozy-client'
@@ -23,6 +23,7 @@ import { AcceptFromFlagshipManifest } from '/app/domain/osReceive/models/OsRecei
 import { backToHome } from '/libs/intents/localMethods'
 import { OsReceiveLogger } from '/app/domain/osReceive'
 import { LoadingOverlay } from '/ui/LoadingOverlay'
+import { navigationRef } from '/libs/RootNavigation'
 
 export const OsReceiveProvider = ({
   children
@@ -31,8 +32,8 @@ export const OsReceiveProvider = ({
   const [state, dispatch] = useReducer(osReceiveReducer, initialState)
   const { t } = useI18n()
   const { handleError } = useError()
-  const navigationState = useNavigationState(state => state)
   const navigation = useNavigation()
+  const isNavigationReady = navigationRef.isReady()
 
   useEffect(() => {
     const onFilesReceived = (files: OsReceiveFile[]): void => {
@@ -87,24 +88,19 @@ export const OsReceiveProvider = ({
   // If an error is detected, we handle that by abandoning the flow.
   // The user will be redirected to the home screen and the osReceive mode is ended until next file osReceive.
   useEffect(() => {
-    if (state.errored) {
+    if (isNavigationReady && state.errored) {
+      const navigationState = navigation.getState()
+
       dispatch({ type: OsReceiveActionType.SetRecoveryState })
-      if (navigationState.routes[navigationState.index].name !== routes.lock) {
+      const currentRoute = navigationState?.routes[navigationState?.index].name
+
+      if (currentRoute !== routes.lock) {
         handleError(t('errors.unknown_error'), () => {
           navigation.navigate(routes.home as never)
         })
       }
     }
-  }, [
-    handleError,
-    navigation,
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    navigationState?.index,
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    navigationState?.routes,
-    state,
-    t
-  ])
+  }, [handleError, isNavigationReady, navigation, state, t])
 
   // If every file is either uploaded or failed to upload, the flow is ended
   useEffect(() => {
