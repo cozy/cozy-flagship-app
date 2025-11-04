@@ -242,7 +242,10 @@ const Nav = ({ client, setClient }) => {
   }, [markNameNav])
 
   return (
-    <NavigationContainer ref={RootNavigation.navigationRef}>
+    <NavigationContainer
+      ref={RootNavigation.navigationRef}
+      navigationInChildEnabled
+    >
       <SafeAreaProvider>
         <ErrorProvider>
           <LoadingOverlayProvider>
