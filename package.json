@@ -40,6 +40,7 @@
     "@fengweichong/react-native-gzip": "github:cozy/react-native-gzip#1.2.0",
     "@mythologi/react-native-receive-sharing-intent": "2.2.1",
     "@notifee/react-native": "^7.8.0",
+    "@op-engineering/op-sqlite": "12.0.3",
     "@react-native-async-storage/async-storage": "1.21.0",
     "@react-native-camera-roll/camera-roll": "^7.2.0",
     "@react-native-clipboard/clipboard": "^1.13.2",

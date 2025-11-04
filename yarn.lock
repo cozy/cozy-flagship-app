@@ -4711,7 +4711,7 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@op-engineering/op-sqlite@^12.0.2":
+"@op-engineering/op-sqlite@12.0.3", "@op-engineering/op-sqlite@^12.0.2":
   version "12.0.3"
   resolved "https://registry.yarnpkg.com/@op-engineering/op-sqlite/-/op-sqlite-12.0.3.tgz#5ee6c3a16153e1cbd8d235c80908ee1c4e9ffa6e"
   integrity sha512-SlO6vEJ5RuaA9sWtaP2JfE7zIOZruKoznpk3Ihw/Gcl8Z+XjSYHR03AJkMOlZsz0Qfo0VZh/9K6tsHELob69qA==
