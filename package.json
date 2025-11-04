@@ -92,7 +92,7 @@
     "react-native-change-icon": "^4.0.0",
     "react-native-config": "1.5.5",
     "react-native-device-info": "^10.3.0",
-    "react-native-document-scanner-plugin": "^2.0.2",
+    "react-native-document-scanner-plugin": "1.0.1",
     "react-native-file-logger": "^0.6.0",
     "react-native-file-viewer": "^2.1.5",
     "react-native-fs": "^2.20.0",
