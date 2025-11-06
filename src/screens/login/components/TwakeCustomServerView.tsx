@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { BackHandler, StyleSheet } from 'react-native'
+import {
+  BackHandler,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet
+} from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 
 import { BlockedCozyError, fetchRegistrationDetails } from 'cozy-client'
@@ -155,110 +160,122 @@ export const TwakeCustomServerView = ({
 
   return (
     <Container transparent={false}>
-      <Grid container direction="column" justifyContent="space-between">
-        <Grid alignItems="flex-start" direction="column">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <Grid container direction="column" justifyContent="space-between">
           <Grid alignItems="flex-start" direction="column">
-            <IconButton onPress={handleBackPress}>
-              <Icon icon={Left} color={colors.primaryColor} />
-            </IconButton>
-          </Grid>
-          <Grid alignItems="center" direction="column" style={styles.loginGrid}>
-            <Typography variant="h2" color="textPrimary">
-              {t('screens.companyServer.title')}
-            </Typography>
-            {isLoginByEmail ? (
-              <>
-                <Typography
-                  variant="body2"
-                  color="textPrimary"
-                  style={{
-                    textAlign: 'center'
-                  }}
-                >
-                  {t('screens.companyServer.body.byEmail')}
-                </Typography>
-                <TextField
-                  style={styles.urlField}
-                  label="Email"
-                  onChangeText={handleEmailInput}
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                  onSubmitEditing={handleLoginByEmail}
-                  returnKeyType="go"
-                  value={emailInput}
-                  autoCapitalize="none"
-                  autoComplete="off"
-                  autoCorrect={false}
-                  autoFocus={false}
-                  placeholder="claude@company.com"
-                  placeholderTextColor={colors.actionColorDisabled}
-                  inputMode="email"
-                />
-              </>
-            ) : (
-              <>
-                <Typography
-                  variant="body2"
-                  color="textPrimary"
-                  style={{
-                    textAlign: 'center'
-                  }}
-                >
-                  {t('screens.companyServer.body.byUrl')}
-                </Typography>
-                <TextField
-                  style={styles.urlField}
-                  label={t('screens.companyServer.textFieldLabel')}
-                  onChangeText={handleUrlInput}
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                  onSubmitEditing={handleLoginByUrl}
-                  returnKeyType="go"
-                  value={urlInput}
-                  autoCapitalize="none"
-                  autoComplete="off"
-                  autoCorrect={false}
-                  autoFocus={false}
-                  placeholder="https://claude.mycozy.cloud"
-                  placeholderTextColor={colors.actionColorDisabled}
-                  inputMode="url"
-                />
-              </>
-            )}
+            <Grid alignItems="flex-start" direction="column">
+              <IconButton onPress={handleBackPress}>
+                <Icon icon={Left} color={colors.primaryColor} />
+              </IconButton>
+            </Grid>
+            <Grid
+              alignItems="center"
+              direction="column"
+              style={styles.loginGrid}
+            >
+              <Typography variant="h2" color="textPrimary">
+                {t('screens.companyServer.title')}
+              </Typography>
+              {isLoginByEmail ? (
+                <>
+                  <Typography
+                    variant="body2"
+                    color="textPrimary"
+                    style={{
+                      textAlign: 'center'
+                    }}
+                  >
+                    {t('screens.companyServer.body.byEmail')}
+                  </Typography>
+                  <TextField
+                    style={styles.urlField}
+                    label="Email"
+                    onChangeText={handleEmailInput}
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                    onSubmitEditing={handleLoginByEmail}
+                    returnKeyType="go"
+                    value={emailInput}
+                    autoCapitalize="none"
+                    autoComplete="off"
+                    autoCorrect={false}
+                    autoFocus={false}
+                    placeholder="claude@company.com"
+                    placeholderTextColor={colors.actionColorDisabled}
+                    inputMode="email"
+                  />
+                </>
+              ) : (
+                <>
+                  <Typography
+                    variant="body2"
+                    color="textPrimary"
+                    style={{
+                      textAlign: 'center'
+                    }}
+                  >
+                    {t('screens.companyServer.body.byUrl')}
+                  </Typography>
+                  <TextField
+                    style={styles.urlField}
+                    label={t('screens.companyServer.textFieldLabel')}
+                    onChangeText={handleUrlInput}
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                    onSubmitEditing={handleLoginByUrl}
+                    returnKeyType="go"
+                    value={urlInput}
+                    autoCapitalize="none"
+                    autoComplete="off"
+                    autoCorrect={false}
+                    autoFocus={false}
+                    placeholder="https://claude.mycozy.cloud"
+                    placeholderTextColor={colors.actionColorDisabled}
+                    inputMode="url"
+                  />
+                </>
+              )}
 
-            <Link onPress={toggleLoginByEmail}>
+              <Link onPress={toggleLoginByEmail}>
+                <Typography variant="caption" color="primary">
+                  {isLoginByEmail
+                    ? t('screens.companyServer.toggle.url')
+                    : t('screens.companyServer.toggle.email')}
+                </Typography>
+              </Link>
+
+              {error && (
+                <Typography variant="body2" color="error">
+                  {error}
+                </Typography>
+              )}
+            </Grid>
+          </Grid>
+
+          <Grid
+            alignItems="center"
+            direction="column"
+            style={styles.footerGrid}
+          >
+            <Button
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onPress={isLoginByEmail ? handleLoginByEmail : handleLoginByUrl}
+              variant="primary"
+              label={t('screens.companyServer.buttonLogin')}
+              style={styles.loginButton}
+            />
+            <Typography variant="caption">
+              {t('screens.welcomeTwake.byContinuingYourAgreeingToOur')}
+            </Typography>
+            <Link onPress={openTos}>
               <Typography variant="caption" color="primary">
-                {isLoginByEmail
-                  ? t('screens.companyServer.toggle.url')
-                  : t('screens.companyServer.toggle.email')}
+                {t('screens.welcomeTwake.privacyPolicy')}
               </Typography>
             </Link>
-
-            {error && (
-              <Typography variant="body2" color="error">
-                {error}
-              </Typography>
-            )}
+            <Typography variant="caption">{version}</Typography>
           </Grid>
         </Grid>
-
-        <Grid alignItems="center" direction="column" style={styles.footerGrid}>
-          <Button
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onPress={isLoginByEmail ? handleLoginByEmail : handleLoginByUrl}
-            variant="primary"
-            label={t('screens.companyServer.buttonLogin')}
-            style={styles.loginButton}
-          />
-          <Typography variant="caption">
-            {t('screens.welcomeTwake.byContinuingYourAgreeingToOur')}
-          </Typography>
-          <Link onPress={openTos}>
-            <Typography variant="caption" color="primary">
-              {t('screens.welcomeTwake.privacyPolicy')}
-            </Typography>
-          </Link>
-          <Typography variant="caption">{version}</Typography>
-        </Grid>
-      </Grid>
+      </KeyboardAvoidingView>
     </Container>
   )
 }
