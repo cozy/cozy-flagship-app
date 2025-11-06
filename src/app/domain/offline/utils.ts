@@ -8,6 +8,9 @@ export const triggerPouchReplication = (
   client?: CozyClient,
   { withDebounce = true } = {}
 ): void => {
+  log.debug('Trigger PouchReplication has been disabled')
+  return
+
   log.debug('Trigger PouchReplication (debounce)')
   const pouchLink = getPouchLink(client)
   if (withDebounce) {

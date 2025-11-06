@@ -68,8 +68,8 @@ import {
   LauncherContextProvider
 } from '/screens/home/hooks/useLauncherContext'
 import LauncherView from '/screens/konnectors/LauncherView'
-import { makeImportantFilesAvailableOfflineInBackground } from '/app/domain/io.cozy.files/importantFiles'
-import { useOfflineReplicationOnRealtime } from '/app/domain/offline/hooks/useOfflineReplicationOnRealtime'
+// import { makeImportantFilesAvailableOfflineInBackground } from '/app/domain/io.cozy.files/importantFiles'
+// import { useOfflineReplicationOnRealtime } from '/app/domain/offline/hooks/useOfflineReplicationOnRealtime'
 import { useShareFiles } from '/app/domain/osReceive/services/shareFilesService'
 import { ClouderyOffer } from '/app/view/IAP/ClouderyOffer'
 import { useDimensions } from '/libs/dimensions'
@@ -79,7 +79,7 @@ import {
   hasMigratedFromAsyncStorage,
   migrateFromAsyncStorage
 } from '/libs/localStore/storage'
-import { makeSearchEngine } from '/app/domain/search/search'
+// import { makeSearchEngine } from '/app/domain/search/search'
 
 configurePerformances()
 configureNetService()
@@ -121,7 +121,7 @@ const App = ({ setClient }) => {
   useCookieResyncOnResume()
   useNotifications()
   useCozyEnvironmentOverride()
-  useOfflineReplicationOnRealtime()
+  // useOfflineReplicationOnRealtime()
   useOfflineDebugUniversalLinks(client)
   usePerformancesUniversalLinks(client)
 
@@ -136,18 +136,18 @@ const App = ({ setClient }) => {
     setLauncherContext
   } = useLauncherContext()
 
-  useEffect(() => {
-    if (client) {
-      makeSearchEngine(client)
-    }
-  }, [client])
+  // useEffect(() => {
+  //   if (client) {
+  //     makeSearchEngine(client)
+  //   }
+  // }, [client])
 
-  useEffect(() => {
-    if (!client) {
-      return
-    }
-    makeImportantFilesAvailableOfflineInBackground(client)
-  }, [client])
+  // useEffect(() => {
+  //   if (!client) {
+  //     return
+  //   }
+  //   makeImportantFilesAvailableOfflineInBackground(client)
+  // }, [client])
 
   useEffect(() => {
     if (!isLoading) {
