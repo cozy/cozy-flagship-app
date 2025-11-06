@@ -1,15 +1,15 @@
 import RNRestart from 'react-native-restart'
 
 import {
-  PouchLinkPerformanceApi,
+  // PouchLinkPerformanceApi,
   StackLinkPerformanceApi
 } from '/app/domain/performances/measure'
 import { platformReactNative } from '/pouchdb/platformReactNative'
 
 import CozyClient, { CozyLink, StackLink } from 'cozy-client'
 import Minilog from 'cozy-minilog'
-import { default as PouchLink } from 'cozy-pouch-link'
-import { PouchLinkOptions } from 'cozy-pouch-link/types/CozyPouchLink'
+// import { default as PouchLink } from 'cozy-pouch-link'
+// import { PouchLinkOptions } from 'cozy-pouch-link/types/CozyPouchLink'
 
 const log = Minilog('🔗 GetLinks')
 
@@ -44,42 +44,42 @@ export const offlineDoctypes = [
 ]
 
 export const getLinks = (): CozyLink[] => {
-  const pouchLinkOptions = {
-    doctypes: offlineDoctypes,
-    initialSync: false,
-    periodicSync: false,
-    syncDebounceDelayInMs: REPLICATION_DEBOUNCE,
-    syncDebounceMaxDelayInMs: REPLICATION_DEBOUNCE_MAX_DELAY,
-    platform: platformReactNative,
-    ignoreWarmup: true,
-    doctypesReplicationOptions: Object.fromEntries(
-      offlineDoctypes.map(doctype => {
-        return [
-          doctype,
-          {
-            strategy: 'fromRemote'
-          }
-        ]
-      })
-    ),
-    performanceApi: PouchLinkPerformanceApi,
-    pouch: {
-      options: {
-        adapter: 'react-native-sqlite'
-      }
-    }
-  } as unknown as PouchLinkOptions
+  // const pouchLinkOptions = {
+  //   doctypes: offlineDoctypes,
+  //   initialSync: false,
+  //   periodicSync: false,
+  //   syncDebounceDelayInMs: REPLICATION_DEBOUNCE,
+  //   syncDebounceMaxDelayInMs: REPLICATION_DEBOUNCE_MAX_DELAY,
+  //   platform: platformReactNative,
+  //   ignoreWarmup: true,
+  //   doctypesReplicationOptions: Object.fromEntries(
+  //     offlineDoctypes.map(doctype => {
+  //       return [
+  //         doctype,
+  //         {
+  //           strategy: 'fromRemote'
+  //         }
+  //       ]
+  //     })
+  //   ),
+  //   performanceApi: PouchLinkPerformanceApi,
+  //   pouch: {
+  //     options: {
+  //       adapter: 'react-native-sqlite'
+  //     }
+  //   }
+  // } as unknown as PouchLinkOptions
 
   const stackLink = new StackLink({
     platform: platformReactNative,
     performanceApi: StackLinkPerformanceApi
   })
 
-  const pouchLink = new PouchLink({
-    ...pouchLinkOptions
-  })
+  // const pouchLink = new PouchLink({
+  //   ...pouchLinkOptions
+  // })
 
-  return [stackLink, pouchLink]
+  return [stackLink]
 }
 
 export const resetLinksAndRestart = async (

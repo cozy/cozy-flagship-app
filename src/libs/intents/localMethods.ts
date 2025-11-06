@@ -111,11 +111,11 @@ const isAvailable = (featureName: string): Promise<boolean> => {
     return Promise.resolve(true)
   } else if (featureName === 'colorScheme') {
     return Promise.resolve(true)
-  } else if (featureName === 'downloadFile') {
-    return Promise.resolve(true)
-  } else if (featureName === 'search') {
-    return Promise.resolve(true)
-  }
+  } // else if (featureName === 'downloadFile') {
+  //   return Promise.resolve(true)
+  // } else if (featureName === 'search') {
+  //   return Promise.resolve(true)
+  // }
 
   return Promise.resolve(false)
 }

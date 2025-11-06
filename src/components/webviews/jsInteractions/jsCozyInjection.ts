@@ -17,7 +17,7 @@ const makeMetadata = (routeName?: string): string => {
   return JSON.stringify({
     immersive: routeName ? immersiveRoutes.includes(routeName) : false,
     navbarHeight,
-    offline_available: true,
+    // offline_available: true,
     platform: Platform,
     routeName,
     statusBarHeight,
