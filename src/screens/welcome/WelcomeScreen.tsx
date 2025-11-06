@@ -1,5 +1,5 @@
 import { NavigationProp, RouteProp } from '@react-navigation/native'
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { BackHandler, StyleSheet, View } from 'react-native'
 
 import type CozyClient from 'cozy-client'
@@ -21,6 +21,7 @@ import { useWelcomeInit } from '/app/view/Welcome/useWelcomeInit'
 import { ErrorTokenModal } from '/app/view/Auth/ErrorTokenModal'
 import { handleSupportEmail } from '/app/domain/authentication/services/AuthService'
 import { useClouderyType } from '/screens/login/cloudery-env/useClouderyType'
+import { getColorScheme } from '/app/theme/colorScheme'
 
 interface WelcomeViewProps {
   setIsWelcomeModalDisplayed: (value: boolean) => void
@@ -68,11 +69,6 @@ interface WelcomeScreenProps {
   setClient: (client: CozyClient) => void
 }
 
-const defaultFlagshipUI: FlagshipUI = {
-  bottomTheme: 'dark',
-  topTheme: 'dark'
-}
-
 export const WelcomeScreen = ({
   navigation,
   route,
@@ -83,6 +79,15 @@ export const WelcomeScreen = ({
   const { isInitialized, onboardingPartner } = useInstallReferrer()
   const [clouderyMode, setClouderyMode] = useState(CLOUDERY_MODE_LOGIN)
   const clouderyType = useClouderyType()
+
+  const defaultFlagshipUI: FlagshipUI = useMemo(() => {
+    const colorScheme = getColorScheme()
+    const theme = colorScheme === 'dark' ? 'light' : 'dark'
+    return {
+      bottomTheme: theme,
+      topTheme: theme
+    }
+  }, [])
 
   useFlagshipUI(
     'WelcomeScreen',
