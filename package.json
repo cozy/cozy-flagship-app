@@ -21,7 +21,7 @@
     "perf:convert": "yarn tsc --project scripts && node scripts/dist/convert-perf-logs.cmd.js",
     "postinstall": "patch-package && yarn install:scripts && react-native setup-ios-permissions && pod-install",
     "pre-commit": "yarn lint",
-    "start": "react-native start",
+    "start": "react-native start --host 127.0.0.1",
     "test": "jest src/**/* scripts/* --detectOpenHandles --forceExit --config __tests__/jest.config.js",
     "token": "node scripts/token.js",
     "tx": "tx pull -l en,es,fr && yarn validate:locales",
@@ -30,7 +30,7 @@
     "web": "webpack serve --open --config webpack.config.js --inline --hot --port=9999",
     "web:test": "react-app-rewired test --env=jsdom",
     "prestorybook": "yarn storybook:update",
-    "storybook": "STORYBOOK_ENABLED=true react-native start",
+    "storybook": "STORYBOOK_ENABLED=true react-native start --host 127.0.0.1",
     "storybook:watch": "sb-rn-watcher",
     "storybook:update": "sb-rn-get-stories"
   },
