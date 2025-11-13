@@ -3,6 +3,7 @@ android {
       applicationId "io.cozy.flagship.mobile"
       manifestPlaceholders = [
         universalLinkUrl: "links.mycozy.cloud",
+        universalLinkUrlTwake: "links.twake.app",
         appScheme: "cozy",
       ]
   }
