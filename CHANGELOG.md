@@ -1,7 +1,47 @@
-# 1.1.32
+# 1.1.39
 
 ## ✨ Features
 
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+
+# 1.1.38
+
+## ✨ Features
+
+
+## 🐛 Bug Fixes
+- Keep login button displayed when keyboard open
+- Set correct top and bottom bar colors when logging out
+
+## 🔧 Tech
+- Migrate to React Native 0.77
+- Migrate to React Native MMKV
+- Support Android 16KB page size
+
+# 1.1.37
+
+## ✨ Features
+ - New Twake login
+
+## 🐛 Bug Fixes
+
+
+## 🔧 Tech
+
+
+# 1.1.35
+
+Bump only version to update iOS app name
+
+# 1.1.34
+
+## ✨ Features
+ - New Twake UI
 
 ## 🐛 Bug Fixes
 
