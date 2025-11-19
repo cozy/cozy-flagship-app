@@ -12,6 +12,8 @@ export const isOfflineCompatible = async (
   fqdn: string,
   slug: string
 ): Promise<boolean> => {
+  return false
+
   try {
     const appConfiguration = await getCurrentAppConfigurationForFqdnAndSlug(
       fqdn,
