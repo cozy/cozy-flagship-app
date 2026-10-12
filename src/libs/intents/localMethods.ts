@@ -37,6 +37,7 @@ import {
 import { deleteKeychain } from '/libs/keychain'
 import { hideSplashScreen } from '/app/theme/SplashScreenService'
 import { openApp } from '/libs/functions/openApp'
+import { isHomeUnavailable } from '/libs/functions/homeAvailability'
 import { routes } from '/constants/routes'
 import { sendKonnectorsLogs } from '/libs/konnectors/sendKonnectorsLogs'
 import { setDefaultRedirection } from '/libs/defaultRedirection/defaultRedirection'
@@ -87,6 +88,8 @@ export const asyncLogout = async (client?: CozyClient): Promise<null> => {
 }
 
 export const backToHome = (): Promise<null> => {
+  if (isHomeUnavailable()) return Promise.resolve(null)
+
   const isOnHomeScreen =
     RootNavigation.navigationRef.current?.getCurrentRoute()?.name === 'default'
 

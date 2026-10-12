@@ -235,7 +235,7 @@ export const HttpServerProvider = (
       })
       return {
         html: false,
-        source: 'offline'
+        source: 'none'
       }
     }
   }

@@ -2,6 +2,8 @@ import CozyClient from 'cozy-client'
 
 import { AppData, AppAttributes } from '/libs/httpserver/models'
 import { fetchCozyDataForSlug } from '/libs/client'
+import { isFetchError } from '/libs/clientHelpers/types'
+import { markHomeUnavailable } from '/libs/functions/homeAvailability'
 import { getCookie } from '/libs/httpserver/httpCookieManager'
 import { logToSentry } from '/libs/monitoring/Sentry'
 import { replaceAll } from '/libs/functions/stringHelpers'
@@ -70,6 +72,10 @@ export const fetchAppDataForSlug = async (
       }
     }
   } catch (error) {
+    if (slug === 'home' && isFetchError(error) && error.status === 404) {
+      markHomeUnavailable()
+    }
+
     logToSentry(error)
     throw error
   }

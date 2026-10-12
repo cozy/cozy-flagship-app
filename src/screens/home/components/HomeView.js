@@ -10,6 +10,8 @@ import {
 import rnperformance from '/app/domain/performances/measure'
 import { CozyProxyWebView } from '/components/webviews/CozyProxyWebView'
 import { navigateToApp } from '/libs/functions/openApp'
+import { useIsHomeUnavailable } from '/libs/functions/homeAvailability'
+import { getOrFetchDefaultRedirectionUrl } from '/libs/defaultRedirection/defaultRedirection'
 import {
   consumeRouteParameter,
   useInitialParam
@@ -48,6 +50,7 @@ const HomeView = ({ route, navigation }) => {
     navigation
   )
   const filesToUpload = useFilesToUpload()
+  const isHomeUnavailable = useIsHomeUnavailable()
   const [markNameHome] = useState(() => rnperformance.mark('HomeView'))
 
   const { componentId } = useFlagshipUI('HomeView', ScreenIndexes.HOME_VIEW)
@@ -78,6 +81,38 @@ const HomeView = ({ route, navigation }) => {
 
     return unsubscribe
   }, [navigation, trackedWebviewInnerUri, client])
+
+  // Some instances don't have the home app installed, so it answers a 404 and
+  // this view has nothing to render. Every route leading back here would show
+  // that empty view, so redirect to the instance default redirection instead,
+  // each time this screen gets focused
+  useFocusEffect(
+    useCallback(() => {
+      if (!isHomeUnavailable) return
+
+      const redirectToDefaultRedirection = async () => {
+        const defaultRedirectionUrl = await getOrFetchDefaultRedirectionUrl(
+          client
+        )
+
+        if (!defaultRedirectionUrl) return
+
+        const subdomainType = client.capabilities?.flat_subdomains
+          ? 'flat'
+          : 'nested'
+        const { slug } = deconstructCozyWebLinkWithSlug(
+          defaultRedirectionUrl,
+          subdomainType
+        )
+
+        if (slug === 'home') return
+
+        navigateToApp({ navigation, href: defaultRedirectionUrl, slug })
+      }
+
+      void redirectToDefaultRedirection()
+    }, [client, isHomeUnavailable, navigation])
+  )
 
   useFocusEffect(
     useCallback(() => {
